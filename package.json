@@ -9,6 +9,7 @@
     "lint": "next lint",
     "test": "jest",
     "test:coverage": "jest --coverage",
+    "db:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -47,6 +48,10 @@
     "@testing-library/react": "^16.0.0",
     "@testing-library/jest-dom": "^6.4.6",
     "@types/jest": "^29.5.12",
-    "@types/bcryptjs": "^2.4.6"
+    "@types/bcryptjs": "^2.4.6",
+    "ts-node": "^10.9.2"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
 }
