@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { Search, MapPin, Briefcase, Globe, Zap, Shield, TrendingUp, Users } from 'lucide-react'
 
