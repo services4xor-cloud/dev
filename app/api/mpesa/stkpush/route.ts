@@ -10,9 +10,20 @@ const schema = z.object({
 })
 
 export async function POST(req: NextRequest) {
+  if (!process.env.MPESA_CONSUMER_KEY || !process.env.MPESA_CONSUMER_SECRET) {
+    return NextResponse.json(
+      { success: false, error: 'M-Pesa not configured — add MPESA_CONSUMER_KEY + MPESA_CONSUMER_SECRET to env vars' },
+      { status: 503 }
+    )
+  }
+
   try {
     const body = await req.json()
-    const { phoneNumber, amount, itemType, itemId } = schema.parse(body)
+    const parsed = schema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, error: parsed.error.issues[0]?.message }, { status: 400 })
+    }
+    const { phoneNumber, amount, itemType, itemId } = parsed.data
 
     const formattedPhone = formatKenyanPhone(phoneNumber)
 
