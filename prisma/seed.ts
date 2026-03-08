@@ -29,7 +29,7 @@ async function main() {
         profile: {
           create: {
             bio: 'Leading telecom company in Kenya, powering M-Pesa.',
-            jobTitle: 'HR Manager',
+            headline: 'HR Manager',
             skills: ['recruitment', 'HR', 'Kenya'],
           },
         },
@@ -46,7 +46,7 @@ async function main() {
         profile: {
           create: {
             bio: 'Kenya Commercial Bank — largest bank in East Africa.',
-            jobTitle: 'Talent Acquisition',
+            headline: 'Talent Acquisition',
             skills: ['banking', 'finance', 'Kenya'],
           },
         },
@@ -70,7 +70,7 @@ async function main() {
       country: 'Kenya',
       status: 'ACTIVE' as const,
       tier: 'FEATURED' as const,
-      userId: employers[0].id,
+      employerId: employers[0].id,
       expiresAt: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
     },
     {
@@ -87,7 +87,7 @@ async function main() {
       country: 'Kenya',
       status: 'ACTIVE' as const,
       tier: 'PREMIUM' as const,
-      userId: employers[0].id,
+      employerId: employers[0].id,
       expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
     },
     {
@@ -104,7 +104,7 @@ async function main() {
       country: 'Kenya',
       status: 'ACTIVE' as const,
       tier: 'FEATURED' as const,
-      userId: employers[1].id,
+      employerId: employers[1].id,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     },
     {
@@ -121,7 +121,7 @@ async function main() {
       country: 'Kenya',
       status: 'ACTIVE' as const,
       tier: 'BASIC' as const,
-      userId: employers[0].id,
+      employerId: employers[0].id,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     },
     {
@@ -138,7 +138,7 @@ async function main() {
       country: 'Kenya',
       status: 'ACTIVE' as const,
       tier: 'FEATURED' as const,
-      userId: employers[1].id,
+      employerId: employers[1].id,
       expiresAt: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
     },
     {
@@ -155,7 +155,7 @@ async function main() {
       country: 'Kenya',
       status: 'ACTIVE' as const,
       tier: 'BASIC' as const,
-      userId: employers[0].id,
+      employerId: employers[0].id,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     },
   ]
@@ -182,7 +182,7 @@ async function main() {
         profile: {
           create: {
             bio: 'Experienced software engineer with 5 years building fintech products in Nairobi.',
-            jobTitle: 'Software Engineer',
+            headline: 'Software Engineer',
             skills: ['React', 'Node.js', 'TypeScript', 'PostgreSQL', 'AWS'],
           },
         },
@@ -200,7 +200,7 @@ async function main() {
         profile: {
           create: {
             bio: 'Passionate safari guide with 8 years experience in Masai Mara and Amboseli. Fluent in 3 languages.',
-            jobTitle: 'Senior Safari Guide',
+            headline: 'Senior Safari Guide',
             skills: ['Wildlife Knowledge', 'English', 'Swahili', 'French', 'First Aid'],
           },
         },
