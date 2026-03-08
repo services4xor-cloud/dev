@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "*",
+      "*",
+      "Bash(cmd.exe /c \"where gh\")",
+      "Bash(cmd /c \"gh auth status 2>&1\")",
+      "Bash(cmd /c \"gh --version\")",
+      "Bash(powershell -Command \"gh --version\")",
+      "Skill(ralph-loop:ralph-loop)",
+      "Skill(ralph-loop:ralph-loop:*)",
+      "Bash(git config --global user.name)",
+      "Bash(git config --global user.email)",
+      "Bash(git config --list)"
+    ]
+  }
+}
