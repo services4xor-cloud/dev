@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'claude/**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    name: Lint · Type Check · Test · Build
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/bekenya_test
+      NEXTAUTH_SECRET: ci-test-secret-do-not-use-in-prod
+      NEXTAUTH_URL: http://localhost:3000
+      MPESA_ENVIRONMENT: sandbox
+      MPESA_BUSINESS_SHORT_CODE: "174379"
+      MPESA_PASSKEY: bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test -- --passWithNoTests
+
+      - name: Build (production)
+        run: npm run build
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}

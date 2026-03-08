@@ -195,7 +195,7 @@ export default function HomePage() {
                 <div className="font-semibold text-gray-900 text-sm group-hover:text-brand-orange transition-colors">
                   {cat.label}
                 </div>
-                <div className="text-xs text-gray-400 mt-0.5">{cat.count.toLocaleString()} jobs</div>
+                <div className="text-xs text-gray-400 mt-0.5">{cat.count.toLocaleString('en-US')} jobs</div>
               </div>
             </Link>
           ))}
