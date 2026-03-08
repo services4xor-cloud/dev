@@ -1,0 +1,12 @@
+{
+    "framework": "nextjs",
+    "git": {
+        "deploymentEnabled": {
+            "main": true
+        }
+    },
+    "github": {
+        "silent": false,
+        "autoAlias": true
+    }
+}
