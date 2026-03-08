@@ -1,0 +1,2 @@
+[    1764ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://vercel.com/api/v1/projects/prj_fG1myZNA5mikboY2npLnQ9VEcB9e/production-deployment?teamId=tobias-projects-81752e2c:0
+[    1964ms] [WARNING] Deprecated API for given entry type. @ https://vercel.com/_next/static/chunks/1dfda0c757f6ddb8.js?dpl=dpl_6v9o1TBjEmGgGQgUnDMJUGaAsQmr:18

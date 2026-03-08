@@ -11,7 +11,14 @@
       "Skill(ralph-loop:ralph-loop:*)",
       "Bash(git config --global user.name)",
       "Bash(git config --global user.email)",
-      "Bash(git config --list)"
+      "Bash(git config --list)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "Bash(curl -s:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(dep.get\\(''url'',''''\\), dep.get\\(''state'',''''\\), dep.get\\(''meta'',{}\\).get\\(''githubCommitMessage'',''''\\)[:60]\\) for dep in d.get\\(''deployments'',[]\\)]\")",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "mcp__plugin_playwright_playwright__browser_fill_form",
+      "mcp__plugin_playwright_playwright__browser_select_option"
     ]
   }
 }
