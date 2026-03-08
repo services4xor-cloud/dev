@@ -18,7 +18,8 @@
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(dep.get\\(''url'',''''\\), dep.get\\(''state'',''''\\), dep.get\\(''meta'',{}\\).get\\(''githubCommitMessage'',''''\\)[:60]\\) for dep in d.get\\(''deployments'',[]\\)]\")",
       "mcp__plugin_playwright_playwright__browser_click",
       "mcp__plugin_playwright_playwright__browser_fill_form",
-      "mcp__plugin_playwright_playwright__browser_select_option"
+      "mcp__plugin_playwright_playwright__browser_select_option",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }
