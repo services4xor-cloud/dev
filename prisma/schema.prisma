@@ -1,0 +1,174 @@
+// Bekenya.com — Database Schema
+// postgresql with prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Users ───────────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  phone         String?   // Kenyan format: 2547XXXXXXXX
+  role          UserRole  @default(JOB_SEEKER)
+  avatarUrl     String?
+  country       String    @default("KE")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  profile       Profile?
+  postedJobs    Job[]
+  applications  Application[]
+  payments      Payment[]
+  referrals     Referral[]  @relation("ReferredBy")
+  referred      Referral?   @relation("Referred")
+}
+
+enum UserRole {
+  JOB_SEEKER
+  EMPLOYER
+  ADMIN
+}
+
+// ─── Profile ─────────────────────────────────────────────────────────────────
+
+model Profile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  headline    String?
+  bio         String?
+  resumeUrl   String?
+  skills      String[] // Array of skill tags
+  experience  Int?     // Years of experience
+  location    String?
+  linkedinUrl String?
+  videoUrl    String?  // 30-second pitch video
+  isPublic    Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── Jobs ─────────────────────────────────────────────────────────────────────
+
+model Job {
+  id           String      @id @default(cuid())
+  employerId   String
+  employer     User        @relation(fields: [employerId], references: [id])
+  title        String
+  company      String
+  description  String
+  location     String
+  isRemote     Boolean     @default(false)
+  jobType      JobType     @default(FULL_TIME)
+  salaryMin    Int?
+  salaryMax    Int?
+  currency     String      @default("KES")
+  skills       String[]
+  country      String      @default("KE")
+  status       JobStatus   @default(ACTIVE)
+  tier         JobTier     @default(BASIC)
+  expiresAt    DateTime
+  createdAt    DateTime    @default(now())
+
+  applications Application[]
+  payments     Payment[]
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  REMOTE
+  INTERNSHIP
+}
+
+enum JobStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  EXPIRED
+  FILLED
+}
+
+enum JobTier {
+  BASIC
+  FEATURED
+  PREMIUM
+}
+
+// ─── Applications ─────────────────────────────────────────────────────────────
+
+model Application {
+  id          String            @id @default(cuid())
+  jobId       String
+  job         Job               @relation(fields: [jobId], references: [id])
+  applicantId String
+  applicant   User              @relation(fields: [applicantId], references: [id])
+  coverLetter String?
+  status      ApplicationStatus @default(PENDING)
+  appliedAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  SHORTLISTED
+  REJECTED
+  HIRED
+}
+
+// ─── Payments ─────────────────────────────────────────────────────────────────
+
+model Payment {
+  id                 String        @id @default(cuid())
+  userId             String
+  user               User          @relation(fields: [userId], references: [id])
+  jobId              String?
+  job                Job?          @relation(fields: [jobId], references: [id])
+  amount             Int           // In smallest currency unit (KES cents or USD cents)
+  currency           String        @default("KES")
+  method             PaymentMethod
+  status             PaymentStatus @default(PENDING)
+  // M-Pesa specific
+  mpesaReceiptNumber String?
+  checkoutRequestId  String?
+  // Stripe specific
+  stripePaymentId    String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+enum PaymentMethod {
+  MPESA
+  STRIPE
+  FLUTTERWAVE
+  PAYPAL
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+// ─── Referrals ────────────────────────────────────────────────────────────────
+
+model Referral {
+  id           String   @id @default(cuid())
+  referredById String
+  referredBy   User     @relation("ReferredBy", fields: [referredById], references: [id])
+  referredId   String   @unique
+  referred     User     @relation("Referred", fields: [referredId], references: [id])
+  bonusPaid    Boolean  @default(false)
+  bonusAmount  Int?     // KES amount
+  createdAt    DateTime @default(now())
+}
