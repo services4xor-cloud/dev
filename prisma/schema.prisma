@@ -172,3 +172,26 @@ model Referral {
   bonusAmount  Int?     // KES amount
   createdAt    DateTime @default(now())
 }
+
+// ─── Social Media Posts ───────────────────────────────────────────────────────
+
+model SocialPost {
+  id           String   @id @default(cuid())
+  type         String   // 'new_path' | 'safari_package' | 'pioneer_success' | 'charity_update'
+  title        String
+  body         String   @db.Text
+  imageUrl     String?
+  link         String?
+  platforms    String   // JSON array of platform names
+  scheduledFor DateTime?
+  postedAt     DateTime?
+  status       String   @default("draft") // 'draft' | 'scheduled' | 'posted' | 'failed'
+  countryCode  String   @default("KE")
+  results      String?  @db.Text // JSON results per platform
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status])
+  @@index([countryCode])
+  @@index([scheduledFor])
+}

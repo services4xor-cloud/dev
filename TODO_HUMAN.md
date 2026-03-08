@@ -141,6 +141,100 @@ When BeKenya is running, same codebase powers each new country:
 
 ---
 
+## 📱 SOCIAL MEDIA AUTOMATION (Claude will handle everything once you provide keys)
+
+### Instagram / Facebook (Meta Business Suite)
+1. Go to https://developers.facebook.com/apps/
+2. Create App → Business type
+3. Add Instagram Graph API + Facebook Pages API
+4. Get:
+   - INSTAGRAM_ACCESS_TOKEN (long-lived token from Meta)
+   - INSTAGRAM_BUSINESS_ACCOUNT_ID
+   - FACEBOOK_PAGE_ACCESS_TOKEN
+   - FACEBOOK_PAGE_ID
+   - FACEBOOK_APP_ID
+   - FACEBOOK_APP_SECRET
+
+### TikTok for Business
+1. Go to https://developers.tiktok.com/
+2. Create App → Video Kit + Login Kit
+3. Get:
+   - TIKTOK_CLIENT_KEY
+   - TIKTOK_CLIENT_SECRET
+   - TIKTOK_ACCESS_TOKEN (after OAuth)
+
+### WhatsApp Business API (Meta Cloud)
+1. Go to https://developers.facebook.com/docs/whatsapp/cloud-api
+2. Set up through existing Meta App
+3. Get:
+   - WHATSAPP_ACCESS_TOKEN
+   - WHATSAPP_PHONE_NUMBER_ID
+   - WHATSAPP_BUSINESS_ACCOUNT_ID
+
+### Twitter / X API
+1. Go to https://developer.twitter.com/en/portal/dashboard
+2. Create Project → App → Free tier is enough to start
+3. Get:
+   - TWITTER_API_KEY
+   - TWITTER_API_SECRET
+   - TWITTER_ACCESS_TOKEN
+   - TWITTER_ACCESS_TOKEN_SECRET
+
+### Telegram (EASIEST — free, no approval needed)
+1. Message @BotFather on Telegram
+2. /newbot → name it "BeKenya Official"
+3. Get:
+   - TELEGRAM_BOT_TOKEN (given by BotFather)
+4. Create a public channel → invite your bot as admin
+5. Get:
+   - TELEGRAM_CHANNEL_ID (e.g. @bekenya_official)
+
+### LinkedIn (for professional paths)
+1. Go to https://www.linkedin.com/developers/apps
+2. Create App with your Company Page
+3. Request: Marketing Developer Platform access
+4. Get:
+   - LINKEDIN_ACCESS_TOKEN
+   - LINKEDIN_ORGANIZATION_ID
+
+### Once keys are added → Claude automatically posts:
+- New Ventures (professional paths) → LinkedIn + Twitter + Facebook + Telegram
+- Safari packages → Instagram + TikTok + Facebook + WhatsApp
+- Charity updates → all platforms
+- Pioneer success stories → Instagram + TikTok + LinkedIn
+
+---
+
+## 🇰🇪 BEKENYA FAMILY LTD — Legal Setup (You + Partner in Kenya)
+
+### Kenya Company Registration (eCitizen — Your partner does this)
+1. Go to https://ecitizen.go.ke
+2. Business Registration → Name Reservation → "BeKenya Family Ltd"
+3. Company Registration with:
+   - Your partner's ID + KRA PIN
+   - Your passport scan (you = foreign shareholder, 80%)
+4. Get: CR1, CR12, CR8 documents
+
+### Bank Account (Your partner opens — you co-sign)
+1. KCB or Equity Bank
+2. Company documents + CR2 + CR8 + CR12
+3. Set as Dual Signature (without you = no withdrawal)
+4. You get online access + OTP
+
+### M-Pesa Business Till (Safaricom Chapa)
+1. Your partner → Safaricom Shop
+2. Company registration documents
+3. Install CHAPA App → set you as Finance Controller
+4. Set withdrawal limits
+
+### UTAMADUNI CBO Registration
+1. Separately register as CBO (Community Based Organization)
+2. Ministry of Interior → Social Services
+3. Low cost (~KES 2,000)
+4. Links UTAMADUNI to BeKenya Family Ltd officially
+
+---
+
 ## ✅ ALREADY DONE BY CLAUDE (no action needed)
 
 - ✅ GitHub push access
