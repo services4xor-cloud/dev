@@ -5,6 +5,7 @@
 // Autodetect country, emotional, end-user-centric, BeNetwork vocabulary
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { VOCAB, PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
@@ -223,9 +224,9 @@ export default function HomePage() {
       </nav>
 
       {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden min-h-[90vh] flex items-center">
-        {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-green-950" />
+      <section className="relative overflow-hidden min-h-[100vh] flex items-center">
+        {/* Dark gradient background: maroon → near-black */}
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, #5C0A14 0%, #0A0A0F 40%, #0A0A0F 100%)' }} />
 
         {/* Animated flag blob */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
@@ -238,71 +239,92 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Orange glow */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Gold glow top */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-64 rounded-full blur-3xl pointer-events-none" style={{ background: 'radial-gradient(ellipse, rgba(201,162,39,0.18) 0%, transparent 70%)' }} />
+        {/* Maroon glow sides */}
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full blur-3xl pointer-events-none" style={{ background: 'rgba(92,10,20,0.25)' }} />
 
         <div className="relative max-w-5xl mx-auto px-4 py-28 text-center">
-          {/* Geo greeting */}
-          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-5 py-2 text-sm text-gray-300 mb-8">
+
+          {/* Lion logo */}
+          <Image
+            src="/logo-bekenya.svg"
+            width={120}
+            height={120}
+            alt="BeKenya"
+            priority
+            className="mx-auto mb-6 drop-shadow-2xl"
+          />
+
+          {/* Geo greeting chip */}
+          <div className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm text-gray-200 mb-8 border" style={{ background: 'rgba(201,162,39,0.08)', borderColor: 'rgba(201,162,39,0.25)' }}>
             <span className="text-xl">{geo.flag}</span>
             <span>We see you&apos;re in {geo.name}. {geo.greeting}</span>
           </div>
 
           {/* Main headline */}
           <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.1] mb-6">
-            <span className="text-white">Find where you </span>
-            <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
-              belong.
-            </span>
+            <span className="text-white">Find where you</span>
             <br />
-            <span className="text-white">Go </span>
-            <span className="bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
-              there.
-            </span>
+            <span style={{ color: '#C9A227' }}>belong.</span>
+            <br />
+            <span style={{ color: '#FF6B35' }}>Go there.</span>
           </h1>
 
-          <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
             BeKenya is not a job board. It&apos;s a compass — for Pioneers who want to move, grow, and belong somewhere extraordinary.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
             <Link
               href="/compass"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-400 hover:to-yellow-400 text-white font-bold text-lg rounded-full px-10 py-4 transition-all shadow-lg shadow-orange-500/20"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-white font-bold text-lg rounded-full px-10 py-4 transition-all shadow-lg"
+              style={{ background: '#FF6B35', boxShadow: '0 8px 32px rgba(255,107,53,0.30)' }}
             >
               <span>Start My Compass</span>
               <span>&#8594;</span>
             </Link>
             <Link
               href="/ventures"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/20 text-white font-semibold text-lg rounded-full px-10 py-4 transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 font-semibold text-lg rounded-full px-10 py-4 transition-all border"
+              style={{ color: '#C9A227', borderColor: '#C9A227', background: 'transparent' }}
             >
               <span>Browse Ventures</span>
             </Link>
           </div>
 
+          {/* Thin gold decorative line */}
+          <div className="mx-auto mb-8 h-px w-48" style={{ background: 'linear-gradient(to right, transparent, #C9A227, transparent)' }} />
+
           {/* Tiny trust line */}
-          <p className="mt-8 text-gray-600 text-sm">
+          <p className="text-gray-600 text-sm">
             Pioneers active today ·{' '}
-            <span className="text-green-400 font-medium">KES 50 from every booking</span>{' '}
+            <span className="font-medium" style={{ color: '#C9A227' }}>KES 50 from every booking</span>{' '}
             funds UTAMADUNI community work
           </p>
+
+          {/* Gold dot pulse at bottom center */}
+          <div className="mt-12 flex justify-center">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#C9A227' }} />
+              <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: '#C9A227' }} />
+            </span>
+          </div>
         </div>
       </section>
 
       {/* ── 2. WHAT IS THE BENETWORK ─────────────────────────────────────────── */}
-      <section className="py-24 bg-gray-900">
+      <section className="py-24" style={{ background: '#0A0A0F' }}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <p className="text-orange-400 text-sm font-semibold uppercase tracking-widest mb-3">
+            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: '#C9A227' }}>
               The BeNetwork
             </p>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
               Three kinds of people. One network.
             </h2>
-            <p className="text-gray-400 max-w-xl mx-auto">
+            <p className="text-gray-300 max-w-xl mx-auto">
               No jargon. No CVs rotting in inboxes. Just Pioneers, Anchors, and Explorers — finding each other.
             </p>
           </div>
@@ -311,14 +333,20 @@ export default function HomePage() {
             {BENETWORK_PILLARS.map((pillar) => (
               <div
                 key={pillar.for}
-                className={`bg-gradient-to-br ${pillar.gradient} rounded-3xl p-8 border border-white/5 flex flex-col`}
+                className="rounded-3xl p-8 flex flex-col border"
+                style={{ background: 'rgba(92,10,20,0.20)', borderColor: 'rgba(201,162,39,0.30)' }}
               >
-                <div className="text-5xl mb-5">{pillar.icon}</div>
-                <div className={`text-xs font-bold uppercase tracking-widest ${pillar.accent} mb-1`}>
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-5 border"
+                  style={{ background: '#5C0A14', borderColor: 'rgba(201,162,39,0.50)' }}
+                >
+                  {pillar.icon}
+                </div>
+                <div className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#C9A227' }}>
                   {pillar.for}
                 </div>
                 <div className="text-gray-400 text-xs mb-4">{pillar.subtitle}</div>
-                <p className="text-white text-sm leading-relaxed flex-1 mb-6">{pillar.desc}</p>
+                <p className="text-gray-300 text-sm leading-relaxed flex-1 mb-6">{pillar.desc}</p>
                 <Link
                   href={pillar.href}
                   className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-full px-5 py-2 transition-colors w-fit"
@@ -535,32 +563,35 @@ export default function HomePage() {
       </section>
 
       {/* ── 6. UTAMADUNI BANNER ──────────────────────────────────────────────── */}
-      <section className="py-16 bg-gradient-to-r from-green-900 via-green-800 to-yellow-900 relative overflow-hidden">
+      <section className="py-16 relative overflow-hidden" style={{ background: 'linear-gradient(to right, #5C0A14, #006600)' }}>
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,_rgba(255,255,255,0.15),transparent)]" />
         </div>
-        <div className="relative max-w-5xl mx-auto px-4 text-center">
-          <div className="text-4xl mb-4">&#127807;</div>
-          <h2 className="font-display text-2xl md:text-4xl font-bold text-white mb-4">
-            Every venture supports UTAMADUNI
-          </h2>
-          <p className="text-green-200 text-lg mb-2 max-w-2xl mx-auto">
-            Kenya&apos;s community development CBO — education, conservation, women&apos;s empowerment.
-          </p>
-          <p className="text-yellow-300 font-bold text-xl mb-8">
-            KES 50 from every booking. Automatically. Always.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 mb-8 text-green-200 text-sm">
-            <span>&#127979; Education for rural children</span>
-            <span>&#127807; Wildlife conservation</span>
-            <span>&#128101; Women&apos;s empowerment cooperatives</span>
+        <div className="relative max-w-5xl mx-auto px-4">
+          {/* Gold accent left border strip */}
+          <div className="border-l-4 pl-8 mb-8 text-center md:text-left" style={{ borderColor: '#C9A227' }}>
+            <div className="text-4xl mb-4">&#127807;</div>
+            <h2 className="font-display text-2xl md:text-4xl font-bold mb-4" style={{ color: '#C9A227' }}>
+              Every venture supports UTAMADUNI
+            </h2>
+            <p className="text-white text-lg mb-2 max-w-2xl">
+              Kenya&apos;s community development CBO — education, conservation, women&apos;s empowerment.
+            </p>
+            <p className="font-bold text-xl mb-8" style={{ color: '#C9A227' }}>
+              KES 50 from every booking. Automatically. Always.
+            </p>
+            <div className="flex flex-wrap items-center gap-8 mb-8 text-white text-sm">
+              <span>&#127979; Education for rural children</span>
+              <span>&#127807; Wildlife conservation</span>
+              <span>&#128101; Women&apos;s empowerment cooperatives</span>
+            </div>
+            <Link
+              href="/charity"
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold rounded-full px-8 py-3 transition-colors"
+            >
+              Learn about UTAMADUNI &#8594;
+            </Link>
           </div>
-          <Link
-            href="/charity"
-            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold rounded-full px-8 py-3 transition-colors"
-          >
-            Learn about UTAMADUNI &#8594;
-          </Link>
         </div>
       </section>
 
@@ -586,6 +617,14 @@ export default function HomePage() {
                 }`}
               >
                 <span className="text-2xl">{c.flag}</span>
+                {/* Lion circle badge */}
+                <span
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-sm border shrink-0"
+                  style={{ background: '#5C0A14', borderColor: 'rgba(201,162,39,0.60)' }}
+                  title="BeNetwork"
+                >
+                  🦁
+                </span>
                 <div className="text-left">
                   <div className="font-bold text-sm">{c.name}</div>
                   <div className={`text-xs ${c.status === 'live' ? 'text-orange-400' : 'text-gray-600'}`}>
