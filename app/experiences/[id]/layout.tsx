@@ -16,8 +16,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const title       = pkg.name
-  const description = `${pkg.name} — ${pkg.duration}. ${pkg.location}. ${pkg.highlights?.[0] ?? 'Unforgettable Kenya experience.'}. Book via M-Pesa or Stripe.`
-  const ogImage     = `/og?title=${encodeURIComponent(pkg.name)}&sub=${encodeURIComponent(pkg.location + ' · ' + pkg.duration)}&type=venture`
+  const description = `${pkg.name} — ${pkg.duration}. ${pkg.destination}. ${pkg.highlights?.[0] ?? 'Unforgettable Kenya experience.'}. Book via M-Pesa or Stripe.`
+  const ogImage     = `/og?title=${encodeURIComponent(pkg.name)}&sub=${encodeURIComponent(pkg.destination + ' · ' + pkg.duration)}&type=venture`
 
   return {
     title,
