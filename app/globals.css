@@ -4,8 +4,24 @@
 
 @layer base {
   :root {
+    /* Typography */
     --font-inter: 'Inter', sans-serif;
     --font-plus-jakarta: 'Plus Jakarta Sans', sans-serif;
+
+    /* BeKenya Brand Palette */
+    --color-maroon: #5C0A14;
+    --color-maroon-light: #7A1020;
+    --color-gold: #C9A227;
+    --color-gold-light: #D4AF37;
+    --color-gold-dark: #8B6914;
+    --color-orange: #FF6B35;
+    --color-green: #006600;
+    --color-teal: #0891B2;
+    --color-bg: #0A0A0F;
+    --color-surface: #111118;
+    --color-surface-2: #1A1A25;
+    --color-text: #F5F0E8;
+    --color-text-muted: #9B8B72;
   }
 
   * {
@@ -20,30 +36,75 @@
   }
 
   body {
-    @apply bg-surface-light text-gray-900 font-sans antialiased;
+    @apply font-sans antialiased;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Focus visible for accessibility — gold ring matches brand */
+  *:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  /* High-contrast text selection */
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-maroon);
   }
 }
 
 @layer components {
+  /* Skip to main content — keyboard accessibility */
+  .skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-gold);
+    color: var(--color-maroon);
+    padding: 8px 16px;
+    font-weight: bold;
+    z-index: 9999;
+    transition: top 0.2s;
+    border-radius: 0 0 8px 0;
+  }
+  .skip-to-content:focus {
+    top: 0;
+  }
+
   .btn-primary {
-    @apply bg-brand-orange text-white font-semibold px-6 py-3 rounded-xl
-           hover:bg-orange-600 active:scale-95 transition-all duration-150
-           focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2;
+    @apply bg-[#FF6B35] text-white font-semibold px-6 py-3 rounded-xl
+           hover:bg-orange-500 active:scale-95 transition-all duration-150
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2;
   }
 
   .btn-secondary {
-    @apply bg-white text-gray-900 font-semibold px-6 py-3 rounded-xl border border-gray-200
-           hover:bg-gray-50 active:scale-95 transition-all duration-150;
+    @apply font-semibold px-6 py-3 rounded-xl border transition-all duration-150 active:scale-95;
+    background: var(--color-surface);
+    color: var(--color-gold);
+    border-color: rgba(201, 162, 39, 0.3);
+  }
+  .btn-secondary:hover {
+    background: var(--color-surface-2);
+    border-color: rgba(201, 162, 39, 0.6);
   }
 
   .card {
-    @apply bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200;
+    @apply rounded-2xl border shadow-sm hover:shadow-md transition-shadow duration-200;
+    background: var(--color-surface);
+    border-color: rgba(201, 162, 39, 0.12);
   }
 
   .input {
-    @apply w-full px-4 py-3 rounded-xl border border-gray-200
-           focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent
-           placeholder:text-gray-400 text-gray-900 bg-white;
+    @apply w-full px-4 py-3 rounded-xl border
+           focus:outline-none focus:ring-2 focus:ring-[#C9A227] focus:border-transparent
+           placeholder:opacity-50;
+    background: var(--color-surface-2);
+    border-color: rgba(201, 162, 39, 0.2);
+    color: var(--color-text);
   }
 
   .badge {
@@ -59,6 +120,9 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
+  background: rgba(201, 162, 39, 0.3);
   border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 162, 39, 0.5);
 }

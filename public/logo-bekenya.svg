@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#5C0A14"/>
+
+  <!-- Lion body - simplified majestic silhouette -->
+  <!-- Mane outer ring -->
+  <ellipse cx="200" cy="145" rx="72" ry="68" fill="#C9A227" opacity="0.9"/>
+  <ellipse cx="200" cy="145" rx="62" ry="60" fill="#8B6914" opacity="0.7"/>
+
+  <!-- Lion face -->
+  <ellipse cx="200" cy="138" rx="48" ry="44" fill="#C9A227"/>
+
+  <!-- Mane spikes radiating -->
+  <g fill="#C9A227" opacity="0.85">
+    <polygon points="200,68 194,95 206,95"/>
+    <polygon points="232,74 218,98 228,104"/>
+    <polygon points="258,92 235,110 242,120"/>
+    <polygon points="268,120 242,128 244,140"/>
+    <polygon points="262,152 238,148 240,160"/>
+    <polygon points="248,180 226,165 228,176"/>
+    <polygon points="168,74 182,98 172,104"/>
+    <polygon points="142,92 165,110 158,120"/>
+    <polygon points="132,120 158,128 156,140"/>
+    <polygon points="138,152 162,148 160,160"/>
+    <polygon points="152,180 174,165 172,176"/>
+  </g>
+
+  <!-- Lion ears -->
+  <polygon points="172,110 164,90 185,108" fill="#C9A227"/>
+  <polygon points="228,110 236,90 215,108" fill="#C9A227"/>
+  <!-- Inner ear -->
+  <polygon points="174,108 168,95 183,107" fill="#8B6914"/>
+  <polygon points="226,108 232,95 217,107" fill="#8B6914"/>
+
+  <!-- Lion face features -->
+  <!-- Forehead -->
+  <ellipse cx="200" cy="130" rx="40" ry="34" fill="#C9A227"/>
+
+  <!-- Eyes -->
+  <ellipse cx="185" cy="128" rx="9" ry="7" fill="#3D2B00"/>
+  <ellipse cx="215" cy="128" rx="9" ry="7" fill="#3D2B00"/>
+  <!-- Eye shine -->
+  <circle cx="183" cy="126" r="3" fill="#C9A227" opacity="0.6"/>
+  <circle cx="213" cy="126" r="3" fill="#C9A227" opacity="0.6"/>
+  <!-- Pupils -->
+  <ellipse cx="185" cy="128" rx="5" ry="6" fill="#1A1200"/>
+  <ellipse cx="215" cy="128" rx="5" ry="6" fill="#1A1200"/>
+
+  <!-- Nose -->
+  <ellipse cx="200" cy="148" rx="10" ry="7" fill="#8B6914"/>
+  <ellipse cx="200" cy="147" rx="7" ry="5" fill="#3D2B00"/>
+
+  <!-- Mouth/chin -->
+  <path d="M 195 154 Q 200 160 205 154" stroke="#3D2B00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M 182 154 Q 185 152 190 155" stroke="#8B6914" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 218 154 Q 215 152 210 155" stroke="#8B6914" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Whisker dots -->
+  <circle cx="178" cy="150" r="2" fill="#8B6914"/>
+  <circle cx="175" cy="155" r="2" fill="#8B6914"/>
+  <circle cx="178" cy="160" r="2" fill="#8B6914"/>
+  <circle cx="222" cy="150" r="2" fill="#8B6914"/>
+  <circle cx="225" cy="155" r="2" fill="#8B6914"/>
+  <circle cx="222" cy="160" r="2" fill="#8B6914"/>
+
+  <!-- Chin/lower face -->
+  <ellipse cx="200" cy="162" rx="22" ry="14" fill="#C9A227"/>
+
+  <!-- Lion body/torso -->
+  <ellipse cx="200" cy="240" rx="55" ry="70" fill="#C9A227"/>
+  <!-- Body shading -->
+  <ellipse cx="200" cy="255" rx="40" ry="52" fill="#B8891F" opacity="0.5"/>
+
+  <!-- Chest fur detail -->
+  <ellipse cx="200" cy="205" rx="28" ry="32" fill="#C9A227"/>
+  <!-- Chest shading -->
+  <path d="M 185 190 Q 200 195 215 190 Q 210 225 200 230 Q 190 225 185 190" fill="#D4AF37" opacity="0.4"/>
+
+  <!-- Front legs -->
+  <rect x="165" y="268" width="28" height="55" rx="14" fill="#C9A227"/>
+  <rect x="207" y="268" width="28" height="55" rx="14" fill="#C9A227"/>
+  <!-- Leg shading -->
+  <rect x="170" y="280" width="18" height="40" rx="9" fill="#B8891F" opacity="0.4"/>
+  <rect x="212" y="280" width="18" height="40" rx="9" fill="#B8891F" opacity="0.4"/>
+
+  <!-- Paws -->
+  <ellipse cx="179" cy="324" rx="16" ry="10" fill="#C9A227"/>
+  <ellipse cx="221" cy="324" rx="16" ry="10" fill="#C9A227"/>
+  <!-- Claws -->
+  <g fill="#8B6914">
+    <ellipse cx="170" cy="330" rx="4" ry="6"/>
+    <ellipse cx="179" cy="332" rx="4" ry="6"/>
+    <ellipse cx="188" cy="330" rx="4" ry="6"/>
+    <ellipse cx="212" cy="330" rx="4" ry="6"/>
+    <ellipse cx="221" cy="332" rx="4" ry="6"/>
+    <ellipse cx="230" cy="330" rx="4" ry="6"/>
+  </g>
+
+  <!-- BE KENYA text -->
+  <text x="200" y="368"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="36"
+        font-weight="bold"
+        fill="#C9A227"
+        text-anchor="middle"
+        letter-spacing="4">BE KENYA</text>
+
+  <!-- Subtle bottom line under text -->
+  <line x1="100" y1="376" x2="300" y2="376" stroke="#C9A227" stroke-width="1" opacity="0.5"/>
+</svg>

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Circular clip -->
+  <defs>
+    <clipPath id="circle">
+      <circle cx="100" cy="100" r="95"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="100" fill="#5C0A14"/>
+  <!-- Gold border ring -->
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#C9A227" stroke-width="3"/>
+
+  <!-- Scaled-down lion (viewBox shift) -->
+  <g transform="translate(-100,-80) scale(0.5)" clip-path="url(#circle)">
+    <!-- Mane -->
+    <ellipse cx="400" cy="290" rx="72" ry="68" fill="#C9A227" opacity="0.9"/>
+    <ellipse cx="400" cy="290" rx="62" ry="60" fill="#8B6914" opacity="0.7"/>
+    <!-- Face -->
+    <ellipse cx="400" cy="283" rx="48" ry="44" fill="#C9A227"/>
+    <!-- Eyes -->
+    <ellipse cx="385" cy="272" rx="9" ry="7" fill="#1A1200"/>
+    <ellipse cx="415" cy="272" rx="9" ry="7" fill="#1A1200"/>
+    <!-- Nose -->
+    <ellipse cx="400" cy="291" rx="7" ry="5" fill="#3D2B00"/>
+    <!-- Mouth -->
+    <path d="M 395 297 Q 400 303 405 297" stroke="#3D2B00" stroke-width="2.5" fill="none"/>
+    <!-- Chin -->
+    <ellipse cx="400" cy="307" rx="22" ry="14" fill="#C9A227"/>
+    <!-- Body -->
+    <ellipse cx="400" cy="385" rx="55" ry="70" fill="#C9A227"/>
+    <!-- Legs -->
+    <rect x="365" y="413" width="28" height="55" rx="14" fill="#C9A227"/>
+    <rect x="407" y="413" width="28" height="55" rx="14" fill="#C9A227"/>
+    <!-- Paws -->
+    <ellipse cx="379" cy="469" rx="16" ry="10" fill="#C9A227"/>
+    <ellipse cx="421" cy="469" rx="16" ry="10" fill="#C9A227"/>
+  </g>
+
+  <!-- Text below -->
+  <text x="100" y="172"
+        font-family="Georgia, serif"
+        font-size="16"
+        font-weight="bold"
+        fill="#C9A227"
+        text-anchor="middle"
+        letter-spacing="3">BE KENYA</text>
+</svg>
