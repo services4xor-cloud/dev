@@ -67,7 +67,7 @@ export default function Nav() {
         aria-label="Main navigation"
         className="bg-[#5C0A14] border-b border-[#C9A227]/25 sticky top-0 z-50"
       >
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="flex items-center justify-between h-16">
 
             {/* ── Logo ─────────────────────────────────────── */}

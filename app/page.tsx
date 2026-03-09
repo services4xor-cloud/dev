@@ -195,33 +195,7 @@ export default function HomePage() {
   const compassHref = `/compass${compassParams.toString() ? '?' + compassParams.toString() : ''}`
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
-
-      {/* ── NAV ─────────────────────────────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50 bg-gray-950/90 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="font-display font-bold text-2xl text-white">
-            Be<span className="text-orange-400">Kenya</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
-            <Link href="/compass" className="hover:text-white transition-colors">Compass</Link>
-            <Link href="/ventures" className="hover:text-white transition-colors">Ventures</Link>
-            <Link href="/charity" className="hover:text-white transition-colors">UTAMADUNI</Link>
-            <Link href="/pricing" className="hover:text-white transition-colors">Anchors</Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm text-gray-400 hover:text-white transition-colors px-3 py-2">
-              Sign In
-            </Link>
-            <Link
-              href="/compass"
-              className="text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white rounded-full px-5 py-2 transition-colors"
-            >
-              Start My Compass
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <div className="bg-gray-950 text-white overflow-x-hidden">
 
       {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden min-h-[100vh] flex items-center">
@@ -244,15 +218,16 @@ export default function HomePage() {
         {/* Maroon glow sides */}
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full blur-3xl pointer-events-none" style={{ background: 'rgba(92,10,20,0.25)' }} />
 
-        <div className="relative max-w-5xl mx-auto px-4 py-28 text-center">
+        <div className="relative max-w-5xl 3xl:max-w-7xl mx-auto px-4 py-28 3xl:py-40 text-center">
 
-          {/* Lion logo */}
+          {/* Compass rose logo */}
           <Image
-            src="/logo-bekenya.svg"
-            width={120}
-            height={120}
-            alt="BeKenya"
+            src="/logo.svg"
+            width={100}
+            height={100}
+            alt=""
             priority
+            aria-hidden="true"
             className="mx-auto mb-6 drop-shadow-2xl"
           />
 
@@ -263,7 +238,7 @@ export default function HomePage() {
           </div>
 
           {/* Main headline */}
-          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.1] mb-6">
+          <h1 className="font-display text-5xl md:text-7xl xl:text-8xl 3xl:text-9xl font-bold leading-[1.1] mb-6">
             <span className="text-white">Find where you</span>
             <br />
             <span style={{ color: '#C9A227' }}>belong.</span>
@@ -316,7 +291,7 @@ export default function HomePage() {
 
       {/* ── 2. WHAT IS THE BENETWORK ─────────────────────────────────────────── */}
       <section className="py-24" style={{ background: '#0A0A0F' }}>
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: '#C9A227' }}>
               The BeNetwork
@@ -329,7 +304,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 3xl:gap-8">
             {BENETWORK_PILLARS.map((pillar) => (
               <div
                 key={pillar.for}
@@ -457,7 +432,7 @@ export default function HomePage() {
 
       {/* ── 4. FEATURED VENTURES ─────────────────────────────────────────────── */}
       <section className="py-24 bg-gray-950">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="flex items-end justify-between mb-12">
             <div>
               <p className="text-orange-400 text-sm font-semibold uppercase tracking-widest mb-3">Featured Ventures</p>
@@ -505,7 +480,7 @@ export default function HomePage() {
 
       {/* ── 5. EXPERIENCES STRIP (Safari) ────────────────────────────────────── */}
       <section className="py-24 bg-gradient-to-b from-gray-950 to-amber-950/30">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-12">
             <p className="text-yellow-500 text-sm font-semibold uppercase tracking-widest mb-3">Safari Experiences</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
@@ -650,7 +625,7 @@ export default function HomePage() {
 
       {/* ── 8. PIONEER TYPES ─────────────────────────────────────────────────── */}
       <section className="py-24 bg-gray-900">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-14">
             <p className="text-orange-400 text-sm font-semibold uppercase tracking-widest mb-3">Pioneer Types</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
@@ -728,7 +703,7 @@ export default function HomePage() {
 
       {/* ── 10. TESTIMONIALS ─────────────────────────────────────────────────── */}
       <section className="py-24 bg-gray-900">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-14">
             <p className="text-green-400 text-sm font-semibold uppercase tracking-widest mb-3">Pioneer Stories</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
@@ -787,60 +762,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FOOTER ──────────────────────────────────────────────────────────── */}
-      <footer className="bg-gray-950 text-gray-500 py-16 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid md:grid-cols-5 gap-8 mb-12">
-            <div className="md:col-span-2">
-              <div className="font-display font-bold text-2xl text-white mb-3">
-                Be<span className="text-orange-400">Kenya</span>
-              </div>
-              <p className="text-sm leading-relaxed mb-4 max-w-xs">
-                Find where you belong. Go there. Built for Pioneers, Anchors, and Explorers — Kenya first, world always.
-              </p>
-              <p className="text-xs text-gray-700">
-                &#127810; UTAMADUNI CBO Partner · KES 50 per booking to community
-              </p>
-            </div>
-            <div>
-              <div className="font-semibold text-white text-xs uppercase tracking-widest mb-4">For Pioneers</div>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/compass" className="hover:text-white transition-colors">My Compass</Link></li>
-                <li><Link href="/ventures" className="hover:text-white transition-colors">Browse Ventures</Link></li>
-                <li><Link href="/signup" className="hover:text-white transition-colors">Create Profile</Link></li>
-                <li><Link href="/referral" className="hover:text-white transition-colors">Referral Program</Link></li>
-              </ul>
-            </div>
-            <div>
-              <div className="font-semibold text-white text-xs uppercase tracking-widest mb-4">For Anchors</div>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/post-job" className="hover:text-white transition-colors">Post a Path</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link href="/employers" className="hover:text-white transition-colors">Anchor Dashboard</Link></li>
-              </ul>
-            </div>
-            <div>
-              <div className="font-semibold text-white text-xs uppercase tracking-widest mb-4">BeNetwork</div>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-                <li><Link href="/charity" className="hover:text-white transition-colors">UTAMADUNI</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-white/5 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-            <div>
-              &copy; {new Date().getFullYear()} BeKenya &mdash; {VOCAB.tagline}
-            </div>
-            <div className="flex items-center gap-3">
-              {BE_COUNTRIES.map((c) => (
-                <span key={c.name} className="text-lg" title={c.name}>{c.flag}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

@@ -8,6 +8,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        // Micro devices (small phones, min viable web width)
+        xs: '380px',
+        // Standard Tailwind: sm 640, md 768, lg 1024, xl 1280, 2xl 1536
+        // TV / large displays
+        '3xl': '1920px',
+        // Ultra-wide / 4K
+        '4xl': '2560px',
+      },
       colors: {
         // Bekenya brand — warm Kenyan earth tones + modern accent
         brand: {
