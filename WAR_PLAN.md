@@ -1,187 +1,161 @@
-# 🌍 Bekenya.com — War Plan: World's Best International Job Platform
+# BeKenya WAR PLAN
+## Vision: Be[Country] — One Mission. Every Country. Every Community.
 
-> **Mission:** Make Bekenya.com the #1 destination for international job seekers and employers — starting with Kenya (M-Pesa) and expanding to the world's biggest economies. Fast, fun, mobile-first, money-making.
+### THE MISSION
+Not a job board. Not a platform. A Compass.
+Identity-first life routing for Pioneers who want to move, grow, and belong somewhere extraordinary.
+Every purchase, every booking, every connection — a % goes to UTAMADUNI community development.
 
----
+### THE VOCABULARY (Our Language, Not Silicon Valley's)
+| Our Word | What Others Call It |
+|---|---|
+| Pioneer | Job Seeker / User |
+| Anchor | Employer / Company |
+| Path | Job / Position |
+| Chapter | Application |
+| Venture | Experience / Safari / Booking |
+| Compass | Smart Search / Routing |
+| The BeNetwork | The Platform |
+| Gate | Country Entry Point |
+| Route | Country Corridor |
 
-## 🎯 Vision
-
-A global job marketplace that:
-- Works seamlessly on any phone (mobile-first)
-- Pays and gets paid via **M-Pesa, Stripe, Flutterwave, PayPal, UPI** and more
-- Connects Kenyan talent with global employers — and vice versa
-- Makes the job hunt **fun** (gamified progress, instant notifications, swipe UX)
-- Earns revenue for the platform AND for job seekers
-
----
-
-## 🗺️ Phase Roadmap
-
-### Phase 1 — Foundation (Weeks 1–4)
-**Goal:** Functional MVP on Vercel, mobile-ready, M-Pesa live
-
-- [ ] Next.js 14 App Router scaffold
-- [ ] Tailwind CSS + shadcn/ui design system
-- [ ] Job listings (browse, search, filter)
-- [ ] Employer posting flow
-- [ ] Job seeker profile + resume upload
-- [ ] **M-Pesa STK Push** (Kenya) — pay for premium listings
-- [ ] Basic auth (email + Google OAuth)
-- [ ] Vercel deployment with preview URLs
-
-### Phase 2 — Global Payments (Weeks 5–8)
-**Goal:** Accept money from everywhere
-
-| Market | Payment Method | API |
-|--------|---------------|-----|
-| 🇰🇪 Kenya | M-Pesa | Safaricom Daraja |
-| 🇺🇸 USA | Credit/Debit, ACH | Stripe |
-| 🇬🇧 UK | Cards, Open Banking | Stripe |
-| 🇳🇬 Nigeria | Cards, Bank Transfer | Flutterwave |
-| 🇮🇳 India | UPI, Cards | Razorpay |
-| 🇧🇷 Brazil | PIX, Cards | Stripe |
-| 🇩🇪 Germany | SEPA, Cards | Stripe |
-| 🌍 Africa-wide | Mobile Money | Flutterwave |
-
-### Phase 3 — Smart Features (Weeks 9–16)
-**Goal:** Best UX, AI-powered matching
-
-- [ ] AI job matching (Claude API) — match candidates to jobs by skills
-- [ ] Swipe-to-apply mobile interface (Tinder for jobs)
-- [ ] Instant WhatsApp/SMS notifications when matched
-- [ ] Video intro for job seekers (30-second pitch)
-- [ ] Employer dashboard with analytics
-- [ ] Verified badges for employers and top candidates
-- [ ] Referral program — earn M-Pesa / cash for referring
-
-### Phase 4 — Scale (Weeks 17–24)
-**Goal:** 100K users, profitable
-
-- [ ] Multi-language (Swahili, French, Spanish, Hindi, Portuguese)
-- [ ] Remote job board (global)
-- [ ] Skills assessment + certificates
-- [ ] Gig/freelance marketplace
-- [ ] Corporate accounts (bulk hiring)
-- [ ] Mobile app (React Native)
-
----
-
-## 💰 Revenue Streams
-
-| Stream | Model | Price |
-|--------|-------|-------|
-| Job Posting | Employer pays per post | $10–$50 |
-| Premium Listing | Featured/boosted jobs | $25–$100 |
-| Candidate Premium | Job seeker subscription | $5–15/month |
-| Referral Bounties | Platform earns % of hire | 5–15% salary |
-| AI Resume Review | One-time fee | $9.99 |
-| Skills Badges | Certification fee | $19.99 |
-
-**M-Pesa pricing in KES** (Kenya Shillings) for all Kenya transactions.
-
----
-
-## 🏗️ Technical Architecture
-
+### ARCHITECTURE OVERVIEW
 ```
-bekenya.com
-├── Frontend: Next.js 14 (App Router) + TypeScript
-├── Styling: Tailwind CSS + shadcn/ui
-├── Database: PostgreSQL (Neon / Supabase)
-├── Auth: NextAuth.js (Google, Email, Phone)
-├── Payments:
-│   ├── M-Pesa: Safaricom Daraja API v2 (STK Push)
-│   ├── Global: Stripe (cards, bank transfers)
-│   └── Africa: Flutterwave
-├── AI: Claude API (job matching, resume parsing)
-├── Storage: Cloudflare R2 (resumes, profile pics)
-├── Email: Resend
-├── SMS/WhatsApp: Africa's Talking / Twilio
-└── Deploy: Vercel (edge functions for speed)
+BeNetwork Core:
+├── lib/vocabulary.ts        — Our language layer
+├── lib/countries.ts         — 12-country config
+├── lib/compass.ts           — Route corridors
+├── lib/matching.ts          — Pioneer <-> Path scoring
+├── lib/safari-packages.ts   — Real experience data
+├── lib/social-media.ts      — 9-platform automation
+├── lib/whatsapp-templates.ts — 10 message templates
+├── lib/email.ts             — Email automation (Resend)
+└── prisma/schema.prisma     — Data models
+
+Pages:
+├── / (homepage)             — Identity-first compass landing
+├── /compass                 — 4-step route finder
+├── /ventures                — Unified path + experience feed
+├── /experiences/[id]        — Safari detail + booking
+├── /onboarding              — 5-step Pioneer capture
+├── /pioneers/dashboard      — Pioneer personal hub
+├── /pioneers/notifications  — Notification center
+├── /anchors/dashboard       — Anchor management
+├── /anchors/post-path       — Path creation wizard
+├── /charity                 — UTAMADUNI CBO
+├── /business                — BeKenya Family Ltd
+├── /be/[country]            — Country landing pages
+├── /admin                   — Platform admin
+└── /compass, /pricing, /about, /contact, etc.
+
+APIs:
+├── /api/paths               — Path CRUD
+├── /api/compass             — Geo detection + routing
+├── /api/onboarding          — Pioneer profile capture
+├── /api/social              — Social media queue
+├── /api/search              — Smart search with matching
+├── /api/mpesa/stkpush       — M-Pesa STK Push v2
+├── /api/mpesa/callback      — M-Pesa webhook
+├── /api/auth                — NextAuth (Google + credentials)
+└── /api/profile             — Profile CRUD
 ```
 
----
+### BUSINESS STRUCTURE
+- BeKenya Family Ltd (Kenya, eCitizen registration)
+- Shareholders: Foreign founder 80% / Kenya partner 20%
+- Banking: KCB/Equity dual-signature
+- M-Pesa: Safaricom Business Till (Chapa)
+- UTAMADUNI: Registered CBO for community impact
 
-## 🇰🇪 M-Pesa Integration Plan
+### REVENUE MODEL
+1. Path listings: KES 500 (Basic) / KES 2,000 (Featured) / KES 5,000 (Premium)
+2. Safari/Experience bookings: Commission (15-30%) on Victoria Paradise, FessyTours
+3. Pioneer Pro: KES 500/mo for enhanced compass features
+4. Anchor subscription: KES 2,000/mo for unlimited paths
+5. UTAMADUNI donations: Voluntary contributions
 
-### How It Works
-1. User selects "Pay with M-Pesa"
-2. Enter phone number (07XX XXX XXX)
-3. Safaricom sends STK Push to their phone
-4. User enters M-Pesa PIN — done!
-5. Webhook confirms payment → unlock feature
+### PHASE 1 CHECKLIST (Current)
+- [x] Next.js 14 foundation (16+ pages)
+- [x] Revolutionary vocabulary (BeNetwork language)
+- [x] Be[Country] architecture (12 countries)
+- [x] Lion logo + maroon/gold brand identity
+- [x] Safari packages (real pricing from Victoria Safari/FessyTours)
+- [x] Smart matching engine (4-dimension scoring)
+- [x] Social media automation (9 platforms)
+- [x] WhatsApp templates (10, en/sw/de)
+- [x] M-Pesa Daraja v2 STK Push
+- [x] Email automation (Resend)
+- [x] UTAMADUNI charity page
+- [x] BeKenya Family Ltd business page
+- [x] Pioneer onboarding (5 steps)
+- [x] Anchor dashboard + Post-a-Path wizard
+- [x] Pioneer dashboard + notifications
+- [x] Admin dashboard
+- [x] CI/CD (GitHub Actions)
+- [x] SEO (OG tags, sitemap, robots)
+- [x] Accessibility (WCAG 2.1 AA)
+- [x] PWA manifest
+- [ ] DATABASE_URL (Neon PostgreSQL) — Human task
+- [ ] M-Pesa live credentials — Human task
+- [ ] Social media API keys — Human task
+- [ ] BeKenya Family Ltd registration — Human task
 
-### Daraja API Flow
-```
-App → POST /mpesa/stkpush → Safaricom Daraja
-Safaricom → STK Push → User's Phone
-User → Enters PIN
-Safaricom → Webhook Callback → App
-App → Unlock Premium Feature
-```
+### PHASE 2 GOALS
+- Real-time matching (when DB connected)
+- Social media live posting
+- Mobile app (React Native from same codebase)
+- BeGermany launch
+- BeNigeria launch
+- Stripe Connect for international anchors
 
-### Sandbox Testing
-- Daraja sandbox: `https://sandbox.safaricom.co.ke`
-- Test credentials available at developer.safaricom.co.ke
-- Live production requires business verification
-
----
-
-## 📱 Mobile-First Design Principles
-
-1. **Thumb zone** — all primary actions within thumb reach
-2. **Speed** — <2s load on 3G (critical in Kenya/Africa)
-3. **Offline-ready** — cache job listings for offline browse
-4. **WhatsApp-style** — familiar UI patterns for African users
-5. **Low data mode** — compressed images, lazy loading
-6. **USSD fallback** (Phase 4) — for feature phones
-
----
-
-## 🚀 Go-to-Market Strategy
-
-### Kenya Launch
-- Partner with universities (top engineering/business schools)
-- WhatsApp groups outreach
-- M-Pesa referral bonuses (earn KES 500 per hire)
-- Nairobi tech community (iHub, Andela alumni)
-
-### Global Expansion
-- LinkedIn competitor positioning
-- Remote-first job boards
-- Diaspora communities (Kenyans abroad hiring back home)
-- Embassy job boards partnerships
-
----
-
-## 🔑 Key Differentiators vs LinkedIn/Indeed
-
-| Feature | LinkedIn | Indeed | **Bekenya** |
-|---------|----------|--------|------------|
-| M-Pesa payments | ❌ | ❌ | ✅ |
-| Africa-first | ❌ | Partial | ✅ |
-| Swipe UX | ❌ | ❌ | ✅ |
-| Video intros | ❌ | ❌ | ✅ |
-| WhatsApp notifications | ❌ | ❌ | ✅ |
-| AI matching | Limited | Limited | ✅ |
-| Gamified progress | ❌ | ❌ | ✅ |
-| Multi-currency | ❌ | USD only | ✅ |
+### COUNTRY EXPANSION SEQUENCE
+1. Kenya — BeKenya (NOW — test & learn)
+2. Germany — BeGermany (Q2 — high demand for KE professionals)
+3. Nigeria — BeNigeria (Q2 — Flutterwave ready)
+4. UK — BeUK (Q3 — NHS Pioneer corridor)
+5. USA — BeAmerica (Q4 — H1B pioneers)
+6. UAE — BeUAE (Q4 — hospitality corridor)
 
 ---
 
-## ✅ Week 1 Sprint — Build Now
+## Technical Decisions Log
 
-1. `package.json` — Next.js 14 + dependencies
-2. `app/layout.tsx` — Root layout with fonts, theme
-3. `app/page.tsx` — Landing page (hero, features, CTA)
-4. `app/jobs/page.tsx` — Job listings with search
-5. `app/post-job/page.tsx` — Employer job posting form
-6. `components/` — JobCard, SearchBar, PaymentModal
-7. `lib/mpesa.ts` — M-Pesa Daraja API client
-8. `app/api/mpesa/` — STK Push + callback webhook
-9. `.env.example` — All required environment variables
-10. Deploy to Vercel → live preview
+### Why Next.js 14 App Router
+- Server components reduce JS bundle (critical for Kenya 3G)
+- Edge functions for geo-routing (Compass feature)
+- Vercel deployment with zero config
+- TypeScript strict mode throughout
+
+### Why Neon PostgreSQL
+- Serverless branching matches Vercel preview deployments
+- Prisma ORM for type-safe queries
+- Free tier sufficient for MVP
+
+### Why M-Pesa Daraja v2
+- Only API for Kenya mobile money (market leader, 30M+ users)
+- STK Push = best UX (no app switching)
+- Sandbox available for development
+
+### Why Resend for Email
+- Developer-first, simple API
+- React Email templates
+- Kenya email deliverability verified
 
 ---
 
-*Built with ❤️ for Kenya and the world. Bekenya.com — Where Talent Meets Opportunity.*
+## Key Differentiators vs LinkedIn/Indeed
+
+| Feature | LinkedIn | Indeed | The BeNetwork |
+|---------|----------|--------|---------------|
+| M-Pesa payments | No | No | Yes |
+| Africa-first UX | No | Partial | Yes |
+| Vocabulary-first identity | No | No | Yes |
+| Safari/experience booking | No | No | Yes |
+| UTAMADUNI impact | No | No | Yes |
+| WhatsApp notifications | No | No | Yes |
+| Be[Country] multi-market | No | Limited | Yes |
+| Pioneer/Anchor/Path language | No | No | Yes |
+
+---
+
+*The BeNetwork — Identity-first life routing. Not a job board. A Compass.*

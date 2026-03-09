@@ -1,0 +1,14 @@
+name: Preview Deployment
+on:
+  push:
+    branches: [claude/keen-jemison]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preview deployed
+        run: |
+          echo "Preview URL: https://dev-git-claude-keen-jemison-tobias-projects-81752e2c.vercel.app"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"

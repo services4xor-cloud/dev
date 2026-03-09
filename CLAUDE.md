@@ -38,5 +38,30 @@ The user has explicitly granted full autonomous operation for this project.
 4. Keep mock data in pages until real DB is connected
 5. Commit and push after every meaningful change
 
+## Vocabulary Reference (ALWAYS use these terms in code + copy)
+| BeNetwork Term | Meaning | Never Say |
+|---|---|---|
+| Pioneer | A person seeking paths | "user", "job seeker", "candidate" |
+| Anchor | An organization offering paths | "employer", "company", "recruiter" |
+| Path | An opportunity/position | "job", "vacancy", "listing" |
+| Chapter | An engagement/application | "application", "submission" |
+| Venture | Experience + professional path | "job", "tour", "booking" |
+| Compass | Smart routing system | "search", "finder", "directory" |
+| The BeNetwork | The platform | "the app", "the platform", "the website" |
+| Gate | Country entry point | "country page" |
+| Route | Country-to-country corridor | "migration", "job market" |
+
+## New Pages (added Session 3)
+- /compass — Smart route finder
+- /ventures — Unified path feed (replaces /jobs)
+- /experiences/[id] — Safari detail
+- /charity — UTAMADUNI page
+- /business — BeKenya Family Ltd
+- /onboarding — Pioneer capture
+- /pioneers/dashboard — Pioneer hub
+- /anchors/dashboard — Anchor hub (updated)
+- /be/[country] — Country landing pages
+- /admin — Admin panel
+
 ## Credentials Location
 See `C:\Users\tobia\.claude\projects\C--GIT-dev\memory\MEMORY.md`
