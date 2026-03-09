@@ -17,6 +17,44 @@ const config: Config = {
         // Ultra-wide / 4K
         '4xl': '2560px',
       },
+      // ── Golden Ratio (φ = 1.618) Design Tokens ─────────────────────────
+      // Spacing: Fibonacci → 4 6 10 16 26 42 68 110 178px
+      // Each step × φ. Use phi-N for harmonious layouts.
+      spacing: {
+        'phi-1': '0.25rem',   // 4px
+        'phi-2': '0.375rem',  // 6px
+        'phi-3': '0.625rem',  // 10px
+        'phi-4': '1rem',      // 16px
+        'phi-5': '1.625rem',  // 26px
+        'phi-6': '2.625rem',  // 42px
+        'phi-7': '4.25rem',   // 68px
+        'phi-8': '6.875rem',  // 110px
+        'phi-9': '11.125rem', // 178px
+      },
+      fontSize: {
+        // φ-based typography scale. body = 1rem, each step × 1.272 (√φ) or φ.
+        'phi-xs':  ['0.618rem',  { lineHeight: '1.0' }],
+        'phi-sm':  ['0.764rem',  { lineHeight: '1.4' }],
+        'phi-base':['1rem',      { lineHeight: '1.618' }],  // Golden line-height
+        'phi-lg':  ['1.272rem',  { lineHeight: '1.5' }],
+        'phi-xl':  ['1.618rem',  { lineHeight: '1.4' }],   // φ rem
+        'phi-2xl': ['2.058rem',  { lineHeight: '1.3' }],
+        'phi-3xl': ['2.618rem',  { lineHeight: '1.2' }],   // φ² rem
+        'phi-4xl': ['4.236rem',  { lineHeight: '1.1' }],   // φ³ rem
+        'phi-5xl': ['6.854rem',  { lineHeight: '1.0' }],   // φ⁴ rem
+      },
+      borderRadius: {
+        // φ border radius steps
+        'phi-sm': '6px',
+        'phi-md': '10px',
+        'phi-lg': '16px',
+        'phi-xl': '26px',
+        'phi-2xl':'42px',
+      },
+      lineHeight: {
+        'phi': '1.618',       // The golden line-height — most harmonious ratio
+        'phi-tight': '1.272', // √φ — for headings
+      },
       colors: {
         // Bekenya brand — warm Kenyan earth tones + modern accent
         brand: {
