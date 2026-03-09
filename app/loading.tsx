@@ -1,9 +1,48 @@
+// Server Component — no 'use client' needed
+// Global loading state shown while pages load
+
 export default function Loading() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 bg-brand-orange rounded-2xl animate-pulse" />
-        <div className="text-gray-400 text-sm">Loading...</div>
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{ backgroundColor: '#0A0A12' }}
+    >
+      <div className="flex flex-col items-center gap-6">
+        {/* Lion paw spinning emblem */}
+        <div
+          className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl animate-spin"
+          style={{
+            backgroundColor: '#5C0A14',
+            border: '2px solid #C9A227',
+            animationDuration: '2s',
+          }}
+        >
+          🐾
+        </div>
+
+        {/* Tagline fading */}
+        <p
+          className="text-sm font-medium animate-pulse"
+          style={{ color: '#C9A227', animationDuration: '1.5s' }}
+        >
+          Your compass is loading...
+        </p>
+
+        {/* Three bouncing gold dots */}
+        <div className="flex items-center gap-2">
+          <span
+            className="w-2.5 h-2.5 rounded-full animate-bounce"
+            style={{ backgroundColor: '#C9A227', animationDelay: '0ms', animationDuration: '1s' }}
+          />
+          <span
+            className="w-2.5 h-2.5 rounded-full animate-bounce"
+            style={{ backgroundColor: '#C9A227', animationDelay: '150ms', animationDuration: '1s' }}
+          />
+          <span
+            className="w-2.5 h-2.5 rounded-full animate-bounce"
+            style={{ backgroundColor: '#C9A227', animationDelay: '300ms', animationDuration: '1s' }}
+          />
+        </div>
       </div>
     </div>
   )
