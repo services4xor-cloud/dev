@@ -513,7 +513,7 @@ export default function PioneerDashboard() {
   return (
     <div className="min-h-screen bg-[#0a0005] text-white">
       {/* Header */}
-      <header className="bg-[#0d0208] border-b border-[#5C0A14]/50 sticky top-0 z-30">
+      <header className="bg-[#0d0208] border-b border-[#5C0A14]/50 sticky top-16 z-30">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-2xl">🦁</span>

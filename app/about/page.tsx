@@ -47,20 +47,7 @@ const sectors = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Nav */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            <span className="text-gray-900">Beke</span>
-            <span className="text-brand-orange">nya</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/jobs" className="text-gray-600 hover:text-brand-orange">Jobs</Link>
-            <Link href="/post-job" className="btn-primary px-4 py-2 text-sm">Post a Job</Link>
-          </div>
-        </div>
-      </div>
+    <div className="bg-gray-50">
 
       {/* Hero */}
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-24 px-4">
@@ -199,11 +186,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="bg-gray-900 text-gray-400 py-8 px-4 text-center text-sm">
-        <p>© 2024 Bekenya. Built with ❤️ for Kenya and the world.</p>
-        <p className="mt-1">🇰🇪 Nairobi, Kenya · Payments: M-Pesa • Stripe • Flutterwave</p>
-      </div>
     </div>
   )
 }

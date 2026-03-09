@@ -47,7 +47,7 @@ export default function PostJobPage() {
 
   return (
     <div className="min-h-screen bg-surface-light">
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <nav className="sticky top-16 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-3xl mx-auto px-4 h-16 flex items-center gap-4">
           <Link href="/" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <ChevronLeft size={20} />

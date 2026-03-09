@@ -272,7 +272,7 @@ export default function NotificationsPage() {
   return (
     <div className="min-h-screen bg-[#0a0005] text-white">
       {/* Header */}
-      <header className="bg-[#0d0208] border-b border-[#5C0A14]/50 sticky top-0 z-30">
+      <header className="bg-[#0d0208] border-b border-[#5C0A14]/50 sticky top-16 z-30">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/pioneers/dashboard" className="text-gray-400 hover:text-white transition-colors text-sm">

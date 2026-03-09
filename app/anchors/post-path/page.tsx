@@ -831,7 +831,7 @@ export default function PostPathPage() {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Top nav */}
-      <nav className="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-700/50">
+      <nav className="sticky top-16 z-40 bg-gray-900/90 backdrop-blur-md border-b border-gray-700/50">
         <div className="max-w-3xl mx-auto px-4 h-16 flex items-center gap-4">
           <Link href="/anchors/dashboard" className="p-2 hover:bg-gray-800 rounded-xl transition-colors text-gray-400 hover:text-white">
             <ChevronLeft className="w-5 h-5" />
