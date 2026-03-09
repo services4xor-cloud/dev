@@ -5,104 +5,102 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X, ChevronDown } from 'lucide-react'
+import { COUNTRIES } from '@/lib/countries'
 
-// ──────────────────────────────────────────────
-// Primary nav links
-// ──────────────────────────────────────────────
+// ── Brand name derives from env — "BeKenya", "BeGermany", etc. ────
+const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
+const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
+
+// ── Primary nav links ──────────────────────────────────────────────
 const PRIMARY_LINKS = [
-  { href: '/ventures',    label: 'Ventures',    aria: 'Explore venture opportunities' },
-  { href: '/compass',     label: 'Compass',     aria: 'Get career guidance and find your path' },
+  { href: '/ventures',    label: 'Ventures',    aria: 'Explore all paths and experiences' },
+  { href: '/compass',     label: 'Compass',     aria: 'Find your route across countries' },
   { href: '/experiences', label: 'Experiences', aria: 'Safari and cultural experiences' },
-  { href: '/charity',     label: 'Charity',     aria: 'UTAMADUNI charity programmes' },
-  { href: '/pricing',     label: 'Pricing',     aria: 'View pricing plans' },
+  { href: '/charity',     label: 'Community',   aria: 'UTAMADUNI community impact' },
+  { href: '/pricing',     label: 'Pricing',     aria: 'Anchor pricing plans' },
 ]
 
-// "About" dropdown entries
+// ── "About" dropdown ──────────────────────────────────────────────
 const ABOUT_LINKS = [
-  { href: '/about',    label: 'About BeKenya',        aria: 'Learn about BeKenya' },
-  { href: '/business', label: 'BeKenya Family Ltd',   aria: 'BeKenya business and legal structure' },
-  { href: '/referral', label: 'Referral Programme',   aria: 'Join our referral programme' },
+  { href: '/about',    label: 'About',          aria: `About the ${BRAND} platform` },
+  { href: '/business', label: 'Family Ltd',     aria: 'Business and legal structure' },
+  { href: '/referral', label: 'Refer & Earn',   aria: 'Referral programme' },
 ]
 
+// ─────────────────────────────────────────────────────────────────
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [aboutOpen, setAboutOpen] = useState(false)
+  const [aboutOpen, setAboutOpen]   = useState(false)
   const pathname = usePathname()
   const aboutRef = useRef<HTMLDivElement>(null)
-  const mobileMenuId = 'mobile-navigation-menu'
+  const mobileMenuId = 'mobile-nav'
 
-  // Close "About" dropdown when clicking outside
+  // Close dropdown when clicking outside
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
+    function onPointer(e: PointerEvent) {
       if (aboutRef.current && !aboutRef.current.contains(e.target as Node)) {
         setAboutOpen(false)
       }
     }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
+    document.addEventListener('pointerdown', onPointer)
+    return () => document.removeEventListener('pointerdown', onPointer)
   }, [])
 
-  // Close mobile menu on route change
+  // Close everything on route change
   useEffect(() => {
     setMobileOpen(false)
     setAboutOpen(false)
   }, [pathname])
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
+  const isActive      = (href: string) => pathname === href || pathname.startsWith(href + '/')
   const isAboutActive = ABOUT_LINKS.some(l => isActive(l.href))
 
   return (
     <header>
-      {/* Skip to main content — visible on focus for keyboard users */}
-      <a
-        href="#main-content"
-        className="skip-to-content focus:not-sr-only"
-      >
+      {/* Keyboard skip link — visible only on focus */}
+      <a href="#main-content" className="skip-to-content focus:not-sr-only">
         Skip to main content
       </a>
 
       <nav
         role="navigation"
         aria-label="Main navigation"
-        className="bg-[#5C0A14] border-b border-[#C9A227]/30 sticky top-0 z-50"
+        className="bg-[#5C0A14] border-b border-[#C9A227]/25 sticky top-0 z-50"
       >
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
 
-            {/* ── Logo ── */}
+            {/* ── Logo ─────────────────────────────────────── */}
             <Link
               href="/"
-              className="flex items-center gap-2.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] rounded-lg"
-              aria-label="BeKenya — Home"
+              className="flex items-center gap-2.5 shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
+              aria-label={`${BRAND} — Home`}
             >
               <Image
-                src="/logo-bekenya.svg"
-                alt="BeKenya — Find where you belong"
-                width={40}
-                height={40}
-                className="rounded-md"
+                src="/logo.svg"
+                alt=""
+                width={36}
+                height={36}
                 priority
-              />
-              <span
-                className="text-xl font-bold text-[#C9A227] tracking-wide"
                 aria-hidden="true"
-              >
-                BeKenya
+              />
+              <span className="text-[#C9A227] font-bold text-lg tracking-wide" aria-hidden="true">
+                {BRAND}
               </span>
             </Link>
 
-            {/* ── Desktop primary links ── */}
-            <ul className="hidden md:flex items-center gap-1 list-none" role="list">
+            {/* ── Desktop links ─────────────────────────────── */}
+            <ul className="hidden md:flex items-center gap-0.5 list-none" role="list">
               {PRIMARY_LINKS.map(link => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     aria-label={link.aria}
                     aria-current={isActive(link.href) ? 'page' : undefined}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] ${
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] ${
                       isActive(link.href)
                         ? 'bg-[#C9A227]/15 text-[#C9A227]'
-                        : 'text-[#C9A227]/80 hover:text-[#C9A227] hover:bg-[#C9A227]/10'
+                        : 'text-[#C9A227]/75 hover:text-[#C9A227] hover:bg-[#C9A227]/10'
                     }`}
                   >
                     {link.label}
@@ -114,15 +112,16 @@ export default function Nav() {
               <li>
                 <div className="relative" ref={aboutRef}>
                   <button
+                    type="button"
                     onClick={() => setAboutOpen(v => !v)}
                     aria-expanded={aboutOpen}
-                    aria-haspopup="true"
+                    aria-haspopup="listbox"
                     aria-controls="about-dropdown"
-                    aria-label="About BeKenya — expand for sub-pages"
-                    className={`flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] ${
+                    aria-label="About — expand sub-pages"
+                    className={`flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] ${
                       isAboutActive
                         ? 'bg-[#C9A227]/15 text-[#C9A227]'
-                        : 'text-[#C9A227]/80 hover:text-[#C9A227] hover:bg-[#C9A227]/10'
+                        : 'text-[#C9A227]/75 hover:text-[#C9A227] hover:bg-[#C9A227]/10'
                     }`}
                   >
                     About
@@ -135,17 +134,17 @@ export default function Nav() {
                   {aboutOpen && (
                     <ul
                       id="about-dropdown"
-                      role="list"
-                      className="absolute left-0 top-full mt-1.5 w-56 bg-[#3D0610] border border-[#C9A227]/30 rounded-2xl shadow-xl py-1.5 z-50 list-none"
+                      role="listbox"
+                      className="absolute left-0 top-full mt-1.5 w-52 bg-[#3D0610] border border-[#C9A227]/25 rounded-2xl shadow-xl py-1.5 z-50 list-none"
                     >
                       {ABOUT_LINKS.map(link => (
-                        <li key={link.href}>
+                        <li key={link.href} role="option" aria-selected={isActive(link.href)}>
                           <Link
                             href={link.href}
                             onClick={() => setAboutOpen(false)}
                             aria-label={link.aria}
                             aria-current={isActive(link.href) ? 'page' : undefined}
-                            className={`block px-4 py-2.5 text-sm font-medium transition-colors rounded-xl mx-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ${
+                            className={`block px-4 py-2.5 text-sm font-medium transition-colors duration-150 rounded-xl mx-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ${
                               isActive(link.href)
                                 ? 'bg-[#C9A227]/15 text-[#C9A227]'
                                 : 'text-[#C9A227]/70 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
@@ -161,43 +160,42 @@ export default function Nav() {
               </li>
             </ul>
 
-            {/* ── Desktop auth / CTA ── */}
+            {/* ── Desktop auth / CTA ────────────────────────── */}
             <div className="hidden md:flex items-center gap-3">
               <Link
                 href="/anchors/dashboard"
-                aria-label="Anchors dashboard — manage your listings"
+                aria-label="Anchors — manage your paths"
                 aria-current={isActive('/anchors/dashboard') ? 'page' : undefined}
-                className={`text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] rounded-md px-1 ${
-                  isActive('/anchors/dashboard')
-                    ? 'text-[#C9A227]'
-                    : 'text-[#C9A227]/70 hover:text-[#C9A227]'
+                className={`text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] rounded-md px-1 ${
+                  isActive('/anchors/dashboard') ? 'text-[#C9A227]' : 'text-[#C9A227]/65 hover:text-[#C9A227]'
                 }`}
               >
                 Anchors
               </Link>
               <Link
                 href="/login"
-                aria-label="Sign in to your BeKenya account"
-                className="text-sm font-medium text-[#C9A227]/70 hover:text-[#C9A227] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] rounded-md px-1"
+                aria-label="Sign in"
+                className="text-sm font-medium text-[#C9A227]/65 hover:text-[#C9A227] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] rounded-md px-1"
               >
                 Sign In
               </Link>
               <Link
                 href="/compass"
-                aria-label="Start My Compass — find your path with BeKenya"
-                className="bg-[#FF6B35] text-white font-semibold px-5 py-2 rounded-xl text-sm hover:bg-orange-500 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
+                aria-label="Start My Compass — find your path"
+                className="bg-[#C9A227] text-[#0A0A0F] font-semibold px-5 py-2 rounded-xl text-sm hover:bg-[#D4AF35] active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
               >
-                Start My Compass
+                Start Compass
               </Link>
             </div>
 
-            {/* ── Mobile menu toggle ── */}
+            {/* ── Mobile toggle ─────────────────────────────── */}
             <button
+              type="button"
               onClick={() => setMobileOpen(v => !v)}
               aria-expanded={mobileOpen}
               aria-controls={mobileMenuId}
-              aria-label="Toggle navigation menu"
-              className="md:hidden p-2 rounded-xl text-[#C9A227]/80 hover:text-[#C9A227] hover:bg-[#C9A227]/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
+              aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              className="md:hidden p-2 rounded-xl text-[#C9A227]/80 hover:text-[#C9A227] hover:bg-[#C9A227]/10 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
             >
               {mobileOpen
                 ? <X className="w-5 h-5" aria-hidden="true" />
@@ -207,11 +205,11 @@ export default function Nav() {
           </div>
         </div>
 
-        {/* ── Mobile menu ── */}
+        {/* ── Mobile menu ───────────────────────────────────── */}
         <div
           id={mobileMenuId}
           hidden={!mobileOpen}
-          className={`md:hidden border-t border-[#C9A227]/20 bg-[#3D0610] px-4 py-4 space-y-1 ${mobileOpen ? '' : 'hidden'}`}
+          className="md:hidden border-t border-[#C9A227]/20 bg-[#3D0610] px-4 py-4 space-y-1"
         >
           <ul role="list" className="list-none space-y-1">
             {PRIMARY_LINKS.map(link => (
@@ -221,7 +219,7 @@ export default function Nav() {
                   onClick={() => setMobileOpen(false)}
                   aria-label={link.aria}
                   aria-current={isActive(link.href) ? 'page' : undefined}
-                  className={`block px-4 py-3 rounded-xl font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ${
+                  className={`block px-4 py-3 rounded-xl font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ${
                     isActive(link.href)
                       ? 'bg-[#C9A227]/15 text-[#C9A227]'
                       : 'text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
@@ -233,9 +231,8 @@ export default function Nav() {
             ))}
           </ul>
 
-          {/* About section in mobile */}
           <div className="pt-2">
-            <p className="px-4 pt-1 pb-1 text-xs font-semibold text-[#C9A227]/50 uppercase tracking-wider">
+            <p className="px-4 py-1 text-xs font-semibold text-[#C9A227]/50 uppercase tracking-widest">
               About
             </p>
             <ul role="list" className="list-none space-y-1">
@@ -246,7 +243,7 @@ export default function Nav() {
                     onClick={() => setMobileOpen(false)}
                     aria-label={link.aria}
                     aria-current={isActive(link.href) ? 'page' : undefined}
-                    className={`block px-4 py-3 rounded-xl font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ${
+                    className={`block px-4 py-3 rounded-xl font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ${
                       isActive(link.href)
                         ? 'bg-[#C9A227]/15 text-[#C9A227]'
                         : 'text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
@@ -259,32 +256,29 @@ export default function Nav() {
             </ul>
           </div>
 
-          {/* Auth / CTA */}
           <div className="pt-3 border-t border-[#C9A227]/20 space-y-2">
             <Link
               href="/anchors/dashboard"
               onClick={() => setMobileOpen(false)}
-              aria-label="Anchors dashboard — manage your listings"
-              aria-current={isActive('/anchors/dashboard') ? 'page' : undefined}
-              className="block px-4 py-3 rounded-xl text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
+              aria-label="Anchors dashboard"
+              className="block px-4 py-3 rounded-xl text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
             >
               Anchors Dashboard
             </Link>
             <Link
               href="/login"
               onClick={() => setMobileOpen(false)}
-              aria-label="Sign in to your BeKenya account"
-              className="block px-4 py-3 rounded-xl text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
+              className="block px-4 py-3 rounded-xl text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
             >
               Sign In
             </Link>
             <Link
               href="/compass"
               onClick={() => setMobileOpen(false)}
-              aria-label="Start My Compass — find your path with BeKenya"
-              className="bg-[#FF6B35] text-white font-semibold block text-center py-3 rounded-xl hover:bg-orange-500 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35]"
+              aria-label="Start My Compass"
+              className="bg-[#C9A227] text-[#0A0A0F] font-semibold block text-center py-3 rounded-xl hover:bg-[#D4AF35] active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
             >
-              Start My Compass
+              Start Compass
             </Link>
           </div>
         </div>

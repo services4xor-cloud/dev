@@ -1,0 +1,25 @@
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Be[Country] — Compass">
+  <!--
+    Compass Rose — Be[Country] Platform
+    Symbol: Identity at center, paths radiating in every direction.
+    Gold (major) = aspiration and possibility
+    Maroon (minor) = grounding and heritage
+    Transparent background — works on any surface
+  -->
+
+  <!-- Minor diagonal points (maroon, 45° rotated) -->
+  <polygon points="32,16 34.5,25 32,32 29.5,25" fill="#5C0A14" transform="rotate(45,32,32)"/>
+  <polygon points="32,16 34.5,25 32,32 29.5,25" fill="#5C0A14" transform="rotate(135,32,32)"/>
+  <polygon points="32,16 34.5,25 32,32 29.5,25" fill="#5C0A14" transform="rotate(225,32,32)"/>
+  <polygon points="32,16 34.5,25 32,32 29.5,25" fill="#5C0A14" transform="rotate(315,32,32)"/>
+
+  <!-- Major cardinal points (gold — N/S/E/W) -->
+  <polygon points="32,4 36.5,20 32,32 27.5,20" fill="#C9A227"/>
+  <polygon points="32,60 36.5,44 32,32 27.5,44" fill="#C9A227"/>
+  <polygon points="60,32 44,27.5 32,32 44,36.5" fill="#C9A227"/>
+  <polygon points="4,32 20,27.5 32,32 20,36.5" fill="#C9A227"/>
+
+  <!-- Center: identity -->
+  <circle cx="32" cy="32" r="5" fill="#F5F0E8"/>
+  <circle cx="32" cy="32" r="2.5" fill="#5C0A14"/>
+</svg>

@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import Nav from '@/components/Nav'
+import Footer from '@/components/Footer'
 import './globals.css'
 
+// ── Fonts ──────────────────────────────────────────────────────────
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -15,95 +17,85 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: 'swap',
 })
 
+// ── Site metadata (country-aware) ──────────────────────────────────
+const siteUrl     = process.env.NEXT_PUBLIC_APP_URL || 'https://bekenya.com'
+const countryCode = process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE'
+
+const COUNTRY_META: Record<string, { title: string; description: string; twitter: string }> = {
+  KE: {
+    title:       'BeKenya — Find Where You Belong. Go There.',
+    description: 'An identity-first compass for Pioneers. Safari paths, professional ventures, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
+    twitter:     '@BeKenya',
+  },
+  DE: {
+    title:       'BeGermany — Find Your Path in Germany.',
+    description: 'Your compass for professional paths, experiences, and community in Germany. SEPA payments, skilled worker routes, European connections.',
+    twitter:     '@BeGermany',
+  },
+}
+
+const meta = COUNTRY_META[countryCode] ?? COUNTRY_META.KE
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://bekenya.com'),
+  metadataBase: new URL(siteUrl),
+
   title: {
-    default: 'BeKenya — Find Where You Belong. Go There.',
-    template: '%s | BeKenya — The BeNetwork',
+    default:  meta.title,
+    template: `%s | Be[Country] — The BeNetwork`,
   },
-  description:
-    'BeKenya is the BeNetwork — an identity-first compass for Pioneers who want to move, grow, and belong somewhere extraordinary. Safaris, professional paths, creative ventures. Kenya-first, globally connected.',
+  description: meta.description,
+
   keywords: [
-    'Kenya jobs',
-    'safari guide jobs Kenya',
-    'work in Kenya',
-    'BeKenya',
-    'Africa opportunities',
-    'M-Pesa',
-    'Kenya careers',
-    'Maasai Mara safari',
-    'eco-tourism Kenya',
-    'work abroad from Kenya',
-    'Kenya talent',
-    'BeNetwork',
+    'BeNetwork', 'Kenya jobs', 'safari guide jobs Kenya', 'work in Kenya',
+    'Africa opportunities', 'M-Pesa', 'Kenya careers', 'Maasai Mara safari',
+    'eco-tourism Kenya', 'work abroad Kenya', 'country routing', 'dignified work Africa',
   ],
-  authors: [{ name: 'BeKenya Family Ltd', url: 'https://bekenya.com' }],
-  creator: 'BeKenya Family Ltd',
+
+  authors:   [{ name: 'BeKenya Family Ltd', url: siteUrl }],
+  creator:   'BeKenya Family Ltd',
   publisher: 'BeKenya Family Ltd',
+
   robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
+    index: true, follow: true,
+    googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
+
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://bekenya.com',
-    siteName: 'BeKenya',
-    title: 'BeKenya — Find Where You Belong. Go There.',
-    description:
-      "BeKenya is not a job board. It's a compass — for Pioneers who want to move, grow, and belong somewhere extraordinary.",
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'BeKenya — The BeNetwork. Find where you belong.',
-      },
-    ],
+    type: 'website', locale: 'en_US', url: siteUrl,
+    siteName: 'Be[Country]', title: meta.title, description: meta.description,
+    images: [{ url: '/og', width: 1200, height: 630, alt: 'Be[Country] — Find where you belong.' }],
   },
+
   twitter: {
-    card: 'summary_large_image',
-    title: 'BeKenya — Find Where You Belong. Go There.',
-    description: "BeKenya is not a job board. It's a compass for Pioneers.",
-    images: ['/og-image.png'],
-    creator: '@BeKenya',
+    card: 'summary_large_image', title: meta.title, description: meta.description,
+    images: ['/og'], creator: meta.twitter,
   },
-  icons: {
-    icon: '/logo-bekenya-circle.svg',
-    shortcut: '/logo-bekenya-circle.svg',
-    apple: '/logo-bekenya.svg',
-  },
+
+  icons: { icon: '/logo-circle.svg', shortcut: '/logo-circle.svg', apple: '/logo.svg' },
   manifest: '/manifest.webmanifest',
-  alternates: {
-    canonical: 'https://bekenya.com',
-  },
+  alternates: { canonical: siteUrl },
 }
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#5C0A14' },
+    { media: '(prefers-color-scheme: dark)',  color: '#5C0A14' },
     { media: '(prefers-color-scheme: light)', color: '#5C0A14' },
   ],
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 5, // Allow zoom for accessibility
+  maximumScale: 5,
 }
 
+// ── Root layout ────────────────────────────────────────────────────
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${plusJakarta.variable}`}>
-      <body className="bg-[#0A0A0F] text-[#F5F0E8] font-sans antialiased">
+      <body className="bg-[#0A0A0F] text-[#F5F0E8] font-sans antialiased flex flex-col min-h-screen">
         <Nav />
-        <main id="main-content" tabIndex={-1}>
+        <main id="main-content" tabIndex={-1} className="flex-1">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   )
