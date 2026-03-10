@@ -1,6 +1,6 @@
 # Be[Country] — Live Progress Tracker
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 5 (2026-03-10)
+> Last updated: Session 8 (2026-03-10)
 
 ---
 
@@ -108,6 +108,19 @@ Vercel: Auto-deploys from main
 - [x] Fixed all duplicate nav/footer stacking (sticky top-16 z-40 pattern)
 - [x] About page brand audit (further rewritten in session 5)
 
+### Session 8 (2026-03-10) — Language Architecture + UX Unification + Quality
+- [x] **Language registry** — `lib/country-selector.ts`: 14 languages with metadata (nativeName, countries, digitalReach), `languages[]` on all 16 countries
+- [x] **Language matching** — `getCountriesBySharedLanguage()`, `languageOverlap()`, `getGroupedByLanguage()` for collaboration routing
+- [x] **Ventures/Experiences unified** — `/experiences` now redirects to `/ventures`. Single unified feed. Detail pages at `/experiences/[id]` preserved.
+- [x] **Nav cleanup** — Removed Experiences from Nav (redundant). Fixed alignment: `inline-flex items-center` on all desktop nav items.
+- [x] **Compass stepper fix** — Numbers + labels now in vertical columns instead of two separate rows. Connector lines properly centered.
+- [x] **countries.ts vocabulary** — Removed `#FF6B35` (4 instances), replaced job/employer/hired → Path/Anchor/Pioneer vocabulary
+- [x] **vocabulary.ts** — Global adoption header with translation hints (de/fr/sw), updated file header from BeKenya → BeNetwork
+- [x] **Jest 29 → 30** — Node.js 24 compatibility fix. 25/25 tests pass. next/jest transformer works.
+- [x] **Orange sweep continued** — admin, anchors/dashboard, anchors/post-path, business, referral, profile, notifications, experiences/[id]
+- [x] **lib/email.ts** — Planned: HTML email templates still use #FF6B35 (lower priority — not visible in app)
+- [x] TypeScript: 0 errors ✅
+
 ### Session 7 (2026-03-10) — Docs System + Playwright Visual Testing
 - [x] **CLAUDE.md** — Rewritten as lean master agent index (~200 lines). All doc cross-references inline.
 - [x] **PRD.md v5** — Self-resolved Q&A clash log (9 questions), acceptance criteria, revenue model
@@ -137,38 +150,47 @@ Vercel: Auto-deploys from main
 - [x] **app/page.tsx** — Full orange sweep: 25+ references → maroon buttons + gold accents. `/post-job` href → `/anchors/post-path`.
 - [x] TypeScript: 0 errors ✅
 
-### Immediate Next (Phase 2 Queue)
-1. [ ] **Kenya Offerings pages** — `/offerings/safaris`, `/offerings/eco-tourism`, `/offerings/trade`
-   - Real package cards with book-now buttons
-   - M-Pesa payment flow for each
-   - UTAMADUNI % shown on each booking
+### Immediate Next — Frontend Finalization
+1. [ ] **Remaining dark theme pages** — login, signup, pricing, contact, fashion, media
+2. [ ] **Email templates brand fix** — `lib/email.ts` still uses #FF6B35 in HTML
+3. [ ] **Old vocabulary sweep** — 9 pages still reference "job"/"employer" (see audit)
 
-2. [ ] **Booking flow** — End-to-end M-Pesa booking
-   - Select package → enter details → M-Pesa STK Push → confirmation
-   - Email confirmation via Resend
-   - WhatsApp notification to Pioneer + Anchor
+### Backend Adaptation Plan (Phase 2 Core)
 
-3. [ ] **Database connection** — Wire Neon PostgreSQL
-   - Remove all mock data from pages
-   - Connect Pioneer registration to DB
-   - Connect Path listings to DB
-   - BLOCKER: needs DATABASE_URL env var (human action)
+**Step 1: Human Setup** (must be done by human — see HUMAN_MANUAL.md)
+| Task | Account | Est. Time | Command After |
+|------|---------|-----------|---------------|
+| Create Neon PostgreSQL DB | neon.tech | 15 min | Set `DATABASE_URL` in Vercel |
+| Generate `NEXTAUTH_SECRET` | Terminal | 1 min | `openssl rand -base64 32` |
+| Create Google OAuth App | console.cloud.google.com | 15 min | Set `GOOGLE_CLIENT_ID` + `SECRET` |
+| Create Resend Account | resend.com | 5 min | Set `RESEND_API_KEY` |
+| Create M-Pesa Sandbox | developer.safaricom.co.ke | 30 min | Set `MPESA_CONSUMER_KEY` + `SECRET` |
 
-4. [ ] **Real auth** — Activate NextAuth
-   - Google OAuth working
-   - Email/password with bcrypt
-   - Session guards on dashboard pages
-   - BLOCKER: needs GOOGLE_CLIENT_ID + SECRET (human action)
+**Step 2: Database Migration** (Claude can do after Step 1)
+- [ ] `npx prisma migrate deploy` — create tables from schema.prisma
+- [ ] Seed initial data: 12 countries, 5 safari packages, Pioneer types
+- [ ] Replace all mock data arrays with Prisma queries
+- [ ] Add connection pooling config for Neon
 
-5. [ ] **Pioneer Compass working** — Geo detection live
-   - /api/compass detects IP → suggests routes
-   - Compass page shows personalized routes
-   - Route scoring based on Pioneer profile
+**Step 3: Auth Integration** (Claude can do after Step 1)
+- [ ] Enable Google OAuth in NextAuth config
+- [ ] Enable email/password with bcrypt
+- [ ] Add session guards to `/pioneers/dashboard`, `/anchors/dashboard`
+- [ ] Wire signup → create Pioneer/Anchor in DB
+- [ ] Wire login → session with user role (pioneer/anchor/admin)
 
-6. [ ] **Navigation + Layout** — Connect Nav/Footer globally
-   - Verify Nav.tsx is in app/layout.tsx
-   - Mobile menu working
-   - Country switcher in Nav
+**Step 4: Payment Flow** (Claude can do after Step 1)
+- [ ] Wire M-Pesa STK Push button in experience detail pages
+- [ ] Implement callback → update payment status in DB
+- [ ] Email receipt via Resend
+- [ ] WhatsApp receipt via templates (if WA Business API available)
+
+**Step 5: API Completion** (Claude can do after Step 2)
+- [ ] `/api/paths` — real CRUD against DB (currently mock)
+- [ ] `/api/compass` — geo detection + language-aware route scoring
+- [ ] `/api/chapters` — Pioneer creates chapter (application) against a Path
+- [ ] `/api/ventures` — list + filter with Prisma (replaces mock data)
+- [ ] `/api/profile` — CRUD Pioneer profile with DB
 
 ---
 
