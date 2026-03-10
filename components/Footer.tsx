@@ -52,6 +52,7 @@ export default function Footer() {
                 alt="Be[Country] compass"
                 width={36}
                 height={36}
+                unoptimized
               />
               <span className="text-[#C9A227] font-bold text-lg tracking-wide">
                 Be[Country]

@@ -19,7 +19,7 @@ export default function NotFound() {
 
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <Image src="/logo.svg" alt="BeNetwork Compass" width={64} height={64} className="opacity-70" />
+          <Image src="/logo.svg" alt="BeNetwork Compass" width={64} height={64} className="opacity-70" unoptimized />
         </div>
 
         {/* 404 number */}

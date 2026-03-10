@@ -91,7 +91,7 @@ export default function CompassPage() {
           Your Compass is active
         </div>
         <div className="flex justify-center mb-5">
-          <Image src="/logo.svg" alt="BeNetwork Compass" width={64} height={64} className="opacity-90" />
+          <Image src="/logo.svg" alt="BeNetwork Compass" width={64} height={64} className="opacity-90" unoptimized />
         </div>
         <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold text-white mb-3 leading-tight">
           Your Compass is ready.<br />

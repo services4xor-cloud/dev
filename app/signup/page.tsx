@@ -26,12 +26,12 @@ export default function SignupPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 bg-brand-orange rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#5C0A14] rounded-xl flex items-center justify-center">
               <Briefcase className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold">
               <span className="text-gray-900">Beke</span>
-              <span className="text-brand-orange">nya</span>
+              <span className="text-[#C9A227]">nya</span>
             </span>
           </Link>
           <h1 className="mt-4 text-2xl font-bold text-gray-900">Create your account</h1>
@@ -48,16 +48,16 @@ export default function SignupPage() {
                   onClick={() => setRole('JOB_SEEKER')}
                   className={`relative p-5 rounded-2xl border-2 text-left transition-all ${
                     role === 'JOB_SEEKER'
-                      ? 'border-brand-orange bg-orange-50'
+                      ? 'border-[#5C0A14] bg-[#5C0A14]/5'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
                   {role === 'JOB_SEEKER' && (
-                    <div className="absolute top-3 right-3 w-5 h-5 bg-brand-orange rounded-full flex items-center justify-center">
+                    <div className="absolute top-3 right-3 w-5 h-5 bg-[#5C0A14] rounded-full flex items-center justify-center">
                       <Check className="w-3 h-3 text-white" />
                     </div>
                   )}
-                  <Users className="w-8 h-8 mb-2 text-brand-orange" />
+                  <Users className="w-8 h-8 mb-2 text-[#C9A227]" />
                   <div className="font-semibold text-gray-900">Job Seeker</div>
                   <div className="text-sm text-gray-500 mt-1">Find my dream job</div>
                 </button>
@@ -67,16 +67,16 @@ export default function SignupPage() {
                   onClick={() => setRole('EMPLOYER')}
                   className={`relative p-5 rounded-2xl border-2 text-left transition-all ${
                     role === 'EMPLOYER'
-                      ? 'border-brand-orange bg-orange-50'
+                      ? 'border-[#5C0A14] bg-[#5C0A14]/5'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
                   {role === 'EMPLOYER' && (
-                    <div className="absolute top-3 right-3 w-5 h-5 bg-brand-orange rounded-full flex items-center justify-center">
+                    <div className="absolute top-3 right-3 w-5 h-5 bg-[#5C0A14] rounded-full flex items-center justify-center">
                       <Check className="w-3 h-3 text-white" />
                     </div>
                   )}
-                  <Building2 className="w-8 h-8 mb-2 text-brand-orange" />
+                  <Building2 className="w-8 h-8 mb-2 text-[#C9A227]" />
                   <div className="font-semibold text-gray-900">Employer</div>
                   <div className="text-sm text-gray-500 mt-1">Hire top talent</div>
                 </button>
@@ -194,7 +194,7 @@ export default function SignupPage() {
 
         <p className="text-center mt-6 text-gray-600">
           Already have an account?{' '}
-          <Link href="/login" className="text-brand-orange font-semibold hover:underline">
+          <Link href="/login" className="text-[#C9A227] font-semibold hover:underline">
             Sign in →
           </Link>
         </p>

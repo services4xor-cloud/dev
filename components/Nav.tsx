@@ -82,6 +82,7 @@ export default function Nav() {
                 width={36}
                 height={36}
                 priority
+                unoptimized
                 aria-hidden="true"
               />
               <span className="text-[#C9A227] font-bold text-lg tracking-wide" aria-hidden="true">
@@ -90,7 +91,7 @@ export default function Nav() {
             </Link>
 
             {/* ── Desktop links ─────────────────────────────── */}
-            <ul className="hidden md:flex items-center gap-0.5 list-none" role="list">
+            <ul className="hidden xl:flex items-center gap-0.5 list-none" role="list">
               {PRIMARY_LINKS.map(link => (
                 <li key={link.href}>
                   <Link
@@ -161,7 +162,7 @@ export default function Nav() {
             </ul>
 
             {/* ── Desktop auth / CTA ────────────────────────── */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden xl:flex items-center gap-3">
               <Link
                 href="/anchors/dashboard"
                 aria-label="Anchors — manage your paths"
@@ -195,7 +196,7 @@ export default function Nav() {
               aria-expanded={mobileOpen}
               aria-controls={mobileMenuId}
               aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              className="md:hidden p-2 rounded-xl text-[#C9A227]/80 hover:text-[#C9A227] hover:bg-[#C9A227]/10 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
+              className="xl:hidden p-2 rounded-xl text-[#C9A227]/80 hover:text-[#C9A227] hover:bg-[#C9A227]/10 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
             >
               {mobileOpen
                 ? <X className="w-5 h-5" aria-hidden="true" />
@@ -209,7 +210,7 @@ export default function Nav() {
         <div
           id={mobileMenuId}
           hidden={!mobileOpen}
-          className="md:hidden border-t border-[#C9A227]/20 bg-[#3D0610] px-4 py-4 space-y-1"
+          className="xl:hidden border-t border-[#C9A227]/20 bg-[#3D0610] px-4 py-4 space-y-1"
         >
           <ul role="list" className="list-none space-y-1">
             {PRIMARY_LINKS.map(link => (

@@ -56,7 +56,7 @@ const PILLARS = [
     description:
       'Documenting, celebrating, and sharing Kenyan traditions with the world. From Maasai beadwork to Luo music — culture is not just heritage, it is a living economy that feeds communities with pride.',
     programs: ['Cultural Documentation', 'Artisan Marketplaces', 'Storytelling Archives', 'Cultural Tourism'],
-    color: 'from-amber-50 to-orange-50',
+    color: 'from-[#5C0A14]/10 to-[#5C0A14]/5',
     border: 'border-amber-100',
     accent: 'text-amber-700',
     badge: 'bg-amber-100 text-amber-800',
@@ -291,7 +291,7 @@ export default function CharityPage() {
 
                 <button
                   onClick={() => setExpandedStory(expandedStory === i ? null : i)}
-                  className="text-[#C9A227] text-xs font-medium mb-4 hover:text-orange-400 transition-colors text-left"
+                  className="text-[#C9A227] text-xs font-medium mb-4 hover:text-[#D4AF37] transition-colors text-left"
                 >
                   {expandedStory === i ? 'Show less' : 'Read full story →'}
                 </button>

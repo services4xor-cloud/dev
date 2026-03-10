@@ -68,7 +68,7 @@ export default function AboutPage() {
         />
         <div className="relative max-w-4xl mx-auto">
           <div className="flex justify-center mb-8">
-            <Image src="/logo.svg" alt="BeNetwork" width={80} height={80} className="drop-shadow-2xl" />
+            <Image src="/logo.svg" alt="BeNetwork" width={80} height={80} className="drop-shadow-2xl" unoptimized />
           </div>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C9A227]/10 border border-[#C9A227]/30 text-[#C9A227] text-sm font-medium mb-8">
             <Compass className="w-3.5 h-3.5" />

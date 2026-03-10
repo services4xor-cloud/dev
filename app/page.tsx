@@ -227,6 +227,7 @@ export default function HomePage() {
             height={100}
             alt=""
             priority
+            unoptimized
             aria-hidden="true"
             className="mx-auto mb-6 drop-shadow-2xl"
           />

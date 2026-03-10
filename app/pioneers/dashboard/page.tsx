@@ -69,7 +69,7 @@ const MOCK_REFERRAL_STATS = {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    New: 'bg-orange-500 text-white animate-pulse',
+    New: 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/30 animate-pulse',
     'Under Review': 'bg-blue-600 text-white',
     Shortlisted: 'bg-green-600 text-white shadow-lg shadow-green-500/30',
     Offer: 'bg-yellow-500 text-black font-bold',
@@ -83,7 +83,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function MatchScoreBadge({ score }: { score: number }) {
-  const color = score >= 80 ? 'text-green-400' : score >= 60 ? 'text-yellow-400' : 'text-orange-400'
+  const color = score >= 80 ? 'text-green-400' : score >= 60 ? 'text-yellow-400' : 'text-[#C9A227]'
   return (
     <span className={`text-sm font-bold ${color}`}>{score}% match</span>
   )
@@ -182,7 +182,7 @@ function CompassTab() {
         <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4 col-span-1">
           <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">New Matches</p>
           <p className="text-3xl font-bold text-white">3</p>
-          <span className="text-xs bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-full">
+          <span className="text-xs bg-[#5C0A14]/30 text-[#C9A227] border border-[#C9A227]/30 px-2 py-0.5 rounded-full">
             🔥 New this week
           </span>
         </div>
@@ -524,7 +524,7 @@ export default function PioneerDashboard() {
             <Link href="/compass" className="hover:text-white transition-colors">Compass</Link>
             <Link href="/pioneers/notifications" className="hover:text-white transition-colors relative">
               Notifications
-              <span className="absolute -top-1 -right-3 w-2 h-2 bg-orange-500 rounded-full"></span>
+              <span className="absolute -top-1 -right-3 w-2 h-2 bg-[#C9A227] rounded-full"></span>
             </Link>
           </nav>
           <div className="flex items-center gap-3">

@@ -35,6 +35,7 @@
     -webkit-tap-highlight-color: transparent;
     /* Fluid base font: 14px on phones → 16px desktop → 18px on TV */
     font-size: clamp(14px, 1vw + 11px, 18px);
+    overflow-x: hidden; /* Prevent horizontal scroll at any viewport width */
   }
 
   body {
@@ -44,6 +45,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    overflow-x: hidden; /* Prevent horizontal scroll from nav/layout overflow at any breakpoint */
   }
 
   /* Focus visible for accessibility — gold ring matches brand */

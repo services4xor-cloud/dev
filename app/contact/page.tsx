@@ -20,15 +20,15 @@ export default function ContactPage() {
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold">
             <span className="text-gray-900">Beke</span>
-            <span className="text-brand-orange">nya</span>
+            <span className="text-[#C9A227]">nya</span>
           </Link>
-          <Link href="/jobs" className="text-gray-600 hover:text-brand-orange text-sm">Browse Jobs</Link>
+          <Link href="/jobs" className="text-gray-600 hover:text-[#C9A227] text-sm">Browse Jobs</Link>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <MessageSquare className="w-12 h-12 text-brand-orange mx-auto mb-4" />
+          <MessageSquare className="w-12 h-12 text-[#C9A227] mx-auto mb-4" />
           <h1 className="text-3xl font-black text-gray-900 mb-2">Get in touch</h1>
           <p className="text-gray-500">We respond within 24 hours on business days</p>
         </div>
@@ -45,8 +45,8 @@ export default function ContactPage() {
               const Icon = item.icon
               return (
                 <div key={item.label} className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-5 h-5 text-brand-orange" />
+                  <div className="w-10 h-10 bg-[#5C0A14]/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-5 h-5 text-[#C9A227]" />
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900 text-sm">{item.label}</div>

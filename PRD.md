@@ -1,6 +1,7 @@
-# Be[Country] — Product Requirements Document
-> **Living document.** v4.0 · 2026-03-09 · Sessions completed: 4
-> Owner: Tobias | Platform: BeKenya → Be[Country] | Model: BeNetwork
+# BeNetwork — Product Requirements Document
+> **v5.0 · 2026-03-10 · Sessions completed: 6**
+> Owner: Tobias | Platform: BeKenya → Be[Country]
+> ← Back to [CLAUDE.md](./CLAUDE.md) | Related: [ROADMAP.md](./ROADMAP.md) · [ARCHITECTURE.md](./ARCHITECTURE.md)
 
 ---
 
@@ -8,346 +9,236 @@
 
 > **"Find where you belong. Go there."**
 
-Be[Country] is the **BeNetwork** — an identity-first compass connecting people with dignified work, extraordinary experiences, and community across countries.
+BeNetwork is an **identity-first life-routing platform** for people who want to work, experience, and belong across countries. It is not a job board. It is a compass.
 
-It reverses colonial economic flows by empowering people in the Global South to move, contribute, and thrive on their own terms. One codebase. Every country. Same mission.
+**The deeper mission**: Reverse colonial economic flows. Empower people in the Global South to move, contribute, and thrive on their own terms — through open trade, fair compensation, and direct country-to-country connections. No intermediaries. No gatekeepers.
+
+**Architecture**: One codebase → many countries via `NEXT_PUBLIC_COUNTRY_CODE`. Currently live as **BeKenya**. Next: BeGermany, BeNigeria.
 
 ---
 
-## The Golden Ratio Design System (φ = 1.618)
+## Self-Resolved Questions & Clash Log
 
-Every measurement in this platform follows the golden ratio. This is not decoration — it creates harmony users *feel* even when they can't name it.
+*Questions I asked myself, answered based on vision + repo state + user conversations.*
 
-**Fibonacci spacing scale (px):**
-```
-4 → 6 → 10 → 16 → 26 → 42 → 68 → 110 → 178
-```
-(Each step × 1.618 from previous)
+### Q1: Is this a job board or a life platform?
+**A: Life platform first.** A job board lists vacancies. BeNetwork routes people. The Compass finds corridors (Kenya→Germany, Kenya→UAE) based on visa viability, demand score, and Pioneer identity — not just keyword matching. Safari experiences and professional Paths are unified in the same feed (Ventures) because the line between "work" and "experience" is artificial for a mobile generation.
 
-Mapped to Tailwind: `p-1(4) p-1.5(6) p-2.5(10) p-4(16) p-7(28≈26) p-10(40≈42) p-16(64≈68)`
+### Q2: Dark theme everywhere, or mixed?
+**A: Dark everywhere.** The few remaining light-themed pages (business, contact, login, signup, pricing, profile, referral) are legacy tech debt from early sessions. They must be rewritten dark. Rule: `background: #0A0A0F` on all pages, no exceptions. The brand is night-sky dark + maroon warmth + gold light — this communicates premium, global, serious.
 
-**Typography scale (rem, φ-based):**
-```
-xs: 0.618   →  body-sm: 1.000  →  body: 1.000
-h6: 1.000   →  h5: 1.146       →  h4: 1.272
-h3: 1.414   →  h2: 1.618       →  h1: 2.618
-display: 4.236
-```
+### Q3: Job board vocabulary clash — do we have "jobs" or "paths"?
+**A: Paths only.** The word "job" never appears in user-facing UI. API routes `/api/jobs` are internal plumbing — rename to `/api/paths` in Phase 3 refactor. User sees: Pioneer → Compass → Ventures (Paths + Experiences) → Chapter. This vocabulary is enforced in `lib/vocabulary.ts`.
 
-**Column proportions:**
-- Primary / secondary split: **61.8% / 38.2%**
-- Used in: hero text vs. CTA, content vs. sidebar, card image vs. content
-- Footer brand column: `lg:col-span-2` of 5 = 40% ≈ 38.2% (close enough)
+### Q4: Safari/tourism + professional jobs in same app — doesn't that fragment focus?
+**A: No — this is the differentiation.** LinkedIn has no safaris. Airbnb has no professional placements. BeNetwork bridges work + experience because East Africa offers both, and international Anchors (eco-lodges, NGOs, tech firms) need both Pioneers and Explorers. The unified Ventures feed is intentional and competitive.
 
-**Border radius scale:**
-```
-4px (sm) → 6px → 10px → 16px (md) → 26px (lg) → 42px (full pills)
-```
+### Q5: M-Pesa only or multi-payment?
+**A: Multi-payment with M-Pesa as hero.** M-Pesa first because: it's Kenya-native, it signals "we built this for you not for the West", and 85%+ of Kenyan adults use it. Stripe for international Explorers. Flutterwave for expansion to Nigeria/Ghana. Each country gets its own payment config in `lib/countries.ts`.
 
-**Applied in current codebase:**
-- `rounded-xl` = 12px, `rounded-2xl` = 16px, `rounded-3xl` = 24px
-- **TODO:** Extend tailwind borderRadius config with exact φ steps
-- Nav height: 64px (current) — nearest φ step is 68px → update to `h-[68px]` in Nav.tsx
-- Section padding: `py-24` (96px) ≈ 89 (φ⁸) — harmonious ✓
+### Q6: Mobile app now or later?
+**A: PWA now, native later.** The platform is already responsive from xs(380px) to 4K. The `manifest.ts` + `theme_color` are already set. Build PWA installability first (it's free). React Native wrapper in Phase 5 only after proof of daily active use.
+
+### Q7: Should UTAMADUNI be an integral feature or a marketing add-on?
+**A: Integral.** KES 50 from every booking is not charity marketing — it's a structural redistribution mechanism. The platform routes money BACK to communities that generate the value (safari locations, conservation areas, cultural heritage). This is the moral core and the differentiation from exploitative booking platforms.
+
+### Q8: What is the right agent documentation structure?
+**A: Flat hierarchy, CLAUDE.md as gateway.** Too many deep nested docs = agents losing context. Structure:
+- `CLAUDE.md` — read this FIRST, always. Contains inline rules + links to everything.
+- All other .md files are FLAT in root. Agents know where to find them.
+- No subdirectory docs except `__tests__/` test files.
+
+### Q9: Playwright visual tests — what exactly to check?
+**A: Three layers:**
+1. **Smoke** (every CI run): all pages return 200, no console errors.
+2. **Brand** (every CI run): no `#FF6B35` or `orange-*` visible in DOM.
+3. **Visual** (weekly screenshots): capture at xs/sm/md/lg/3xl — human reviews diff.
 
 ---
 
 ## BeNetwork Vocabulary
 
-| BeNetwork     | Plain English      | Description                                        |
-|---------------|--------------------|----------------------------------------------------|
-| **Pioneer**   | Seeker / user      | Person looking for paths, safaris, or routes       |
-| **Anchor**    | Employer / host    | Organization that opens opportunities              |
-| **Path**      | Job / opportunity  | What Anchors post; what Pioneers pursue            |
-| **Chapter**   | Application        | A Pioneer opening a Path                           |
-| **Venture**   | Experience / offer | Safari, gig, professional placement                |
-| **Compass**   | Smart matcher      | 4-step route finder across countries               |
-| **Gate**      | Country entry      | `/be/[country]` landing page                       |
-| **Route**     | Corridor           | e.g. KE→DE, KE→GB, KE→AE                          |
+| BeNetwork     | Never say          | Description                                          |
+|---------------|--------------------|------------------------------------------------------|
+| **Pioneer**   | user, job seeker   | Person looking for paths, experiences, or routes     |
+| **Anchor**    | employer, company  | Organisation that opens opportunities for Pioneers   |
+| **Path**      | job, vacancy       | What Anchors post; what Pioneers pursue              |
+| **Chapter**   | application        | A Pioneer opening a Path; the engagement record      |
+| **Venture**   | tour, booking, gig | Experience (safari, eco) OR professional placement   |
+| **Compass**   | search, filter     | 4-step smart route wizard; country-to-country engine |
+| **Gate**      | country page       | `/be/[country]` landing (e.g. `/be/ke`, `/be/de`)    |
+| **Route**     | migration path     | Country corridor: KE→DE, KE→GB, KE→AE, etc.         |
+
+Source: `lib/vocabulary.ts` — IMPORT `VOCAB` from here, never hardcode strings.
 
 ---
 
 ## Target Users
 
-### Pioneers (Primary)
+### Pioneers (Primary — 80% of traffic)
+Real people, not personas. Three archetypes:
 
-Real people. Not personas.
+**African Professional (25–38)**
+- Has: Skills in tech, healthcare, eco-tourism, engineering, education
+- Wants: International opportunity without gatekeepers or visa exploitation
+- Blocked by: Unclear visa routes, foreign-currency payment barriers, trust deficit
+- BeNetwork solves: Compass shows viable corridors + requirements; M-Pesa pays them
 
-- **Kenyan 25–38** — skilled, ambitious, underplaced. Wants a fair international shot.
-- **African professional** — tech, healthcare, eco-tourism, craft, NGO.
-- **International explorer** — wants authentic Kenya, not a resort.
-- **Diaspora returning** — has skills, wants community connection.
+**International Explorer (28–55)**
+- Has: Budget, curiosity, carbon guilt
+- Wants: Authentic safari/experience that isn't a resort, contributes to community
+- Blocked by: Cannot distinguish legitimate operators from tourist traps
+- BeNetwork solves: Verified Anchors, transparent UTAMADUNI contribution, local pricing
 
-**Six Pioneer types built into the platform:**
-Explorer · Professional · Artisan · Guardian · Creator · Healer
+**Diaspora Returnee (30–45)**
+- Has: Foreign skills + money, wants to invest back in East Africa
+- Wants: Legitimate local Anchor to work with, community connection
+- Blocked by: Doesn't know who to trust locally
+- BeNetwork solves: Verified Anchor directory, Compass reverse routing (abroad → Kenya)
 
-**Jobs to be done:**
-1. Find a legitimate international opportunity matching my actual skills
-2. Book a safari I can trust without getting ripped off
-3. Understand what it actually takes to get to my target country
-4. Get paid in KES via M-Pesa without friction
+### Anchors (Secondary — 15% of traffic, 80% of revenue)
+- Safari lodges (Sarova, Serena, eco-operators) — need multilingual guides, managers
+- International NGOs (GIZ, DfID implementers) — need field staff
+- Tech companies (Safaricom, Andela, MPESA APIs) — need global-mobile engineers
+- Kenyan hospitals + schools — need certified diaspora staff
+- European/Gulf employers — seeking East African professionals
 
-### Anchors (Secondary)
-
-- Safari lodges and eco-operators needing guides, managers, chefs
-- Kenyan and international NGOs seeking qualified local staff
-- Tech companies (Safaricom, Andela, MTN) hiring globally-mobile talent
-- Hospitals, schools, and institutions needing certified staff
-- European and Gulf employers seeking East African professionals
-
-### Explorers (Tertiary)
-
-- International tourists (German, British, American, Gulf)
-- Corporate groups booking safari retreats
-- Solo travellers wanting curated, community-impact experiences
-
----
-
-## What Is Actually Built Today
-
-This is the honest, realistic picture. No aspirational fiction.
-
-### ✅ Confirmed Working (Vercel: READY, commit `8e87c65`)
-
-**Foundation:**
-- Next.js 14.2.35 App Router with TypeScript strict mode
-- Tailwind CSS 3 with golden-ratio-compatible breakpoints (xs→4K)
-- Prisma ORM schema (User, Job, Application, Payment, Referral, SocialPost)
-- GitHub Actions CI/CD (lint + typecheck + test + build)
-- Vercel auto-deploy on `main` push
-
-**Frontend (28+ pages):**
-- `/` — Homepage: geolocation greeting, hero, Compass preview, Ventures, Testimonials, UTAMADUNI strip
-- `/compass` — 4-step routing wizard (UI complete, matching engine wired)
-- `/ventures` — Unified feed (Paths + Experiences) with Pioneer type filter
-- `/experiences/[id]` — Safari detail pages with pricing
-- `/be/[country]` — Country Gate pages (12 countries configured)
-- `/pricing` — Anchor subscription tiers
-- `/about` — BeNetwork mission
-- `/charity` — UTAMADUNI CBO page
-- `/business` — BeKenya Family Ltd structure
-- `/onboarding` — 5-step Pioneer identity capture (UI)
-- `/anchors/dashboard` — 5-tab Anchor dashboard (UI)
-- `/anchors/post-path` — Post a Path wizard (UI)
-- `/pioneers/dashboard` — 5-tab Pioneer dashboard (UI)
-- `/admin` — Admin dashboard (UI)
-- `/contact`, `/privacy`, `/about`, `/referral`
-
-**Backend (API routes):**
-- `/api/paths` — Paths CRUD (ready, needs DB)
-- `/api/compass` — Route matching + geo detection
-- `/api/mpesa/stkpush` — M-Pesa STK Push v2 (coded, needs live credentials)
-- `/api/mpesa/callback` — M-Pesa webhook handler
-- `/api/search` — Smart search with 4-dimension scoring
-- `/api/social` — Social media automation queue
-- `/api/onboarding` — Pioneer onboarding persistence (needs DB)
-- `/og` — Dynamic OG image (edge runtime, ImageResponse)
-
-**Core libraries:**
-- `lib/vocabulary.ts` — BeNetwork language constants
-- `lib/safari-packages.ts` — 4 real safari products (Victoria, Tsavo, Mara 3d/5d)
-- `lib/compass.ts` — Country corridors (KE→DE, KE→GB, KE→AE, KE→US, etc.)
-- `lib/matching.ts` — 4-dimension scoring engine (demand, fit, barriers, opportunity)
-- `lib/countries.ts` — 12-country config (currency, language, sectors, payment)
-- `lib/social-media.ts` — 9-platform social config + copy generation
-- `lib/whatsapp-templates.ts` — 10 WhatsApp templates (EN/SW/DE)
-- `lib/email.ts` — Resend email with branded HTML
-- `lib/mpesa.ts` — Safaricom Daraja API v2 client
-
-**Design system:**
-- Compass rose logo — 8-point geometric SVG, transparent, works for all Be[Country]
-- Brand: Maroon `#5C0A14` + Gold `#C9A227` + Near-black `#0A0A0F`
-- WCAG AA contrast throughout (gold on dark = 8.9:1 ratio)
-- Fluid typography: `clamp(14px, 1vw+11px, 18px)` — phone→TV
-- Responsive: xs(380px) → sm → md → lg → xl → 2xl → 3xl(1920 TV) → 4xl(2560 4K)
-- Touch targets: 44px minimum (WCAG 2.5.5)
-- Semantic HTML + aria-labels + skip-to-content + focus-visible
-
-**SEO:**
-- Per-page metadata via directory `layout.tsx` files
-- Dynamic `generateMetadata` for `/experiences/[id]` and `/be/[country]`
-- OG images + Twitter cards on every page
-- `/sitemap.ts` + `/robots.ts`
-- Open Graph dynamic image API at `/og`
-
-**Tests (Jest):**
-- `__tests__/lib/vocabulary.test.ts` (20+ tests)
-- `__tests__/lib/matching.test.ts` (20+ tests)
-- `__tests__/lib/safari-packages.test.ts` (20+ tests)
-- `__tests__/lib/compass.test.ts` (20+ tests)
-- `__tests__/lib/whatsapp-templates.test.ts` (20+ tests)
-- `__tests__/lib/social-media.test.ts` (20+ tests)
-- `__tests__/api/mpesa.test.ts`
-
-**Security:**
-- Next.js 14.2.35 (critical CVEs patched: auth bypass, cache poisoning, SSRF)
-- Remaining flags are dev-only (eslint glob, typescript-eslint minimatch) — not in prod bundle
+### UTAMADUNI Partners (5% of traffic)
+- Conservation workers, local guides, cultural educators
+- Receive direct allocation from every booking — not charity, structural income
 
 ---
 
-### ❌ Not Yet Working (Needs Human Action)
+## Core User Flows (with Acceptance Criteria)
 
-| What                         | Why blocked            | Human action needed                         |
-|------------------------------|------------------------|---------------------------------------------|
-| Any data persistence         | No database connected  | Add `DATABASE_URL` to Vercel env vars       |
-| User authentication          | No OAuth configured    | Add `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` |
-| Real M-Pesa payments         | No live credentials    | Get keys from developer.safaricom.co.ke     |
-| Real email sending           | No Resend key          | Add `RESEND_API_KEY` to Vercel env vars     |
-| Real Stripe payments         | No Stripe key          | Add `STRIPE_SECRET_KEY` to Vercel env vars  |
+### Flow 1: Pioneer Compass Journey
+```
+Homepage → Country Select → Compass Step 1 (Countries) → Step 2 (Pioneer Type) → Step 3 (Skills) → Step 4 (Timeline) → Route Results → Browse Ventures → Open Chapter
+```
+**Acceptance Criteria:**
+- [ ] Country selection uses `lib/country-selector.ts` with proximity clustering
+- [ ] Proximity (< 1800km Haversine) shows green pulse badge
+- [ ] Up to 5 countries in priority order
+- [ ] Route results show real corridor data from `lib/compass.ts`
+- [ ] Results filtered by Pioneer type (Explorer/Professional/etc.)
+- [ ] "Start Compass" button present on every page that leads to `/compass`
 
-**The app is 100% production-ready in its UI and logic. It needs credentials to become live.**
+### Flow 2: Safari Booking
+```
+Ventures feed → Experience card → /experiences/[id] → Date select → M-Pesa or Card → Confirmation → WhatsApp receipt
+```
+**Acceptance Criteria:**
+- [ ] `formatPackagePrice(pkg)` shows correct KES/USD based on session
+- [ ] M-Pesa button sends STK Push to user's phone
+- [ ] Confirmation shows: Booking ID, UTAMADUNI contribution (KES 50), Anchor contact
+- [ ] WhatsApp template sent from `lib/whatsapp-templates.ts`
+- [ ] Email sent via `lib/email.ts` (Resend)
+
+### Flow 3: Anchor Post-Path
+```
+Anchor signs up → /anchors/post-path → Fill wizard (5 steps) → Preview → Publish → Path live in Ventures feed
+```
+**Acceptance Criteria:**
+- [ ] Path requires: title, description, category, salary range, requirements
+- [ ] Category maps to Ventures filter (professional/explorer/creative/community)
+- [ ] Published path appears in `/ventures` feed within 60s
+- [ ] Anchor gets email confirmation + WhatsApp notification
+- [ ] KES 500 payment charged at publish (M-Pesa or Stripe)
+
+### Flow 4: Pioneer Onboarding
+```
+Sign up → /onboarding (5 steps: name, type, skills, countries, timeline) → /pioneers/dashboard
+```
+**Acceptance Criteria:**
+- [ ] Step 3 uses `CountryPrioritySelector` component
+- [ ] Pioneer type persisted to DB (when DB available)
+- [ ] Dashboard shows personalized Paths based on Pioneer type + countries
+- [ ] Progress bar shows onboarding completion %
 
 ---
 
-## Phase Roadmap (Realistic)
+## Feature Inventory (Current State)
 
-### Phase 1 — Foundation ✅ DONE (Sessions 1–4)
-Everything listed in "What Is Actually Built" above. Complete.
+### ✅ Phase 1 Complete
 
-### Phase 2 — Go Live (Next 2–4 weeks, needs human credentials first)
+| Feature | File | Status |
+|---------|------|--------|
+| Homepage (identity-first) | `app/page.tsx` | ✅ Dark theme, brand consistent |
+| Compass wizard (4 steps) | `app/compass/page.tsx` | ✅ Uses CountryPrioritySelector |
+| Ventures unified feed | `app/ventures/page.tsx` | ✅ Single filter, no duplicates |
+| Safari experience detail | `app/experiences/[id]/page.tsx` | ✅ Booking UI, gold brand |
+| Pioneer dashboard | `app/pioneers/dashboard/page.tsx` | ✅ 5 tabs, dark theme |
+| Anchor dashboard | `app/anchors/dashboard/page.tsx` | ✅ 5 tabs, dark theme |
+| Post-Path wizard | `app/anchors/post-path/page.tsx` | ✅ Multi-step form |
+| Pioneer onboarding | `app/onboarding/page.tsx` | ✅ 5 steps, country selector |
+| Country Gate | `app/be/[country]/page.tsx` | ✅ 12 countries |
+| About | `app/about/page.tsx` | ✅ Golden ratio layout |
+| 404 | `app/not-found.tsx` | ✅ Dark theme, BeNetwork vocab |
+| UTAMADUNI | `app/charity/page.tsx` | ✅ Brand sweep done |
+| M-Pesa API | `app/api/mpesa/stkpush` | ✅ Coded, needs live keys |
+| Country priority selector | `components/CountryPrioritySelector.tsx` | ✅ Proximity clustering |
 
-**Week 1: Connect the database**
-- [ ] Human: Create Neon PostgreSQL, add `DATABASE_URL` to Vercel
-- [ ] Run `prisma migrate deploy` on production
-- [ ] Test: create a Pioneer account end-to-end
+### 🔄 Phase 2 In Progress
 
-**Week 2: Real authentication**
-- [ ] Human: Configure Google OAuth app in Google Cloud Console
-- [ ] Test: sign in → onboarding → dashboard
-
-**Week 3: Real bookings**
-- [ ] Human: Activate M-Pesa Daraja production keys
-- [ ] Wire `/experiences/[id]` booking button → `/api/mpesa/stkpush`
-- [ ] Test: book a safari, receive M-Pesa prompt on real Safaricom number
-- [ ] Human: Add Stripe keys for international bookings
-
-**Week 4: Real paths**
-- [ ] Wire Anchor post-path UI → `/api/paths` → database
-- [ ] Wire Pioneer Compass results → real Paths in database
-- [ ] Soft launch: 5 real Anchor partners, 50 real Pioneers
-
-### Phase 3 — Traction (Month 2–3)
-
-**Realistic targets:**
-- 500 Pioneer profiles
-- 50 active Paths
-- 20 safari bookings/month
-- UTAMADUNI: KES 50,000/month routed
-- 1 real Anchor paying monthly subscription
-
-**Features to build:**
-- Push notifications (Pioneers get matched Path alerts)
-- Pioneer → Anchor direct message thread
-- Referral programme (KES reward per successful Chapter)
-- Review system (Pioneers rate Anchors and Ventures)
-- Social sharing (auto-generate shareable route cards)
-
-### Phase 4 — Expansion (Month 4–6)
-
-**BeGermany first expansion:**
-- New `NEXT_PUBLIC_COUNTRY_CODE=DE` deployment on Vercel
-- SEPA payment rail (Stripe SEPA Debit)
-- German job sector config in `lib/countries.ts`
-- German language support for `/be/de` Gate
-
-**BeNigeria (parallel):**
-- Flutterwave NGN rails
-- Lagos timezone, Nigerian sectors (tech, oil, FMCG)
-
-### Phase 5 — Platform (Month 7–12)
-
-- Mobile app (React Native / Expo wrapper)
-- AI compass narrative (GPT-4 + BeNetwork data → personalised route story)
-- Live Anchor API (webhooks for safari lodge booking confirmation)
-- UTAMADUNI live impact dashboard
-- BeNetwork community (Pioneers helping Pioneers)
-- Verified Anchor badge
+| Feature | File | Status |
+|---------|------|--------|
+| Dark theme rewrites | business, contact, login, signup, pricing, profile | ⏳ Legacy light theme |
+| Real database | Prisma + Neon | ⛔ Needs DATABASE_URL |
+| Real auth | NextAuth + Google | ⛔ Needs GOOGLE_ keys |
+| Real M-Pesa | Daraja v2 live | ⛔ Needs MPESA_ keys |
+| Real email | Resend | ⛔ Needs RESEND_API_KEY |
+| Kenya Offerings pages | `/offerings/safaris` etc | ❌ Not built |
+| E2E booking flow | frontend → API → payment | ❌ Not wired |
+| Visual test suite | `tests/visual/` | 🔧 Being built now |
 
 ---
 
 ## Revenue Model
 
-| Stream                       | Mechanism                        | Price (launch)   | Realistic Month-3 |
-|------------------------------|----------------------------------|------------------|-------------------|
-| Anchor Path listing          | Per listing fee                  | KES 500/Path     | KES 50,000/mo     |
-| Anchor subscription          | Monthly seat licensing           | KES 2,500/mo     | KES 25,000/mo     |
-| Safari booking commission    | 10% platform fee                 | Variable         | KES 30,000/mo     |
-| Pioneer featured profile     | Promoted in Ventures feed        | KES 200/week     | KES 10,000/mo     |
-| UTAMADUNI donation uplift    | Optional at checkout             | Any              | KES 5,000/mo      |
-| **Total realistic Month 3**  |                                  |                  | **~KES 120,000/mo** |
+| Stream | Mechanism | Price | Month-3 Target |
+|--------|-----------|-------|----------------|
+| Anchor Path listing | Per-post fee | KES 500 | KES 50,000/mo |
+| Anchor subscription | Monthly seat | KES 2,500 | KES 25,000/mo |
+| Safari booking commission | 10% platform fee | Variable | KES 30,000/mo |
+| Pioneer featured profile | Promoted in feed | KES 200/week | KES 10,000/mo |
+| International transfers | Stripe/FW spread | 0.5–1.5% | KES 15,000/mo |
+| **Total Month-3 target** | | | **~KES 130,000/mo** |
+
+**Unit economics:** 1 safari booking (avg KES 52,000) = KES 5,200 revenue + KES 50 UTAMADUNI = 10% margin. Payback on pioneer acquisition < 1 booking.
 
 ---
 
-## Golden Ratio — Implementation Plan
+## Technical Constraints & Rules
 
-To make the platform harmonically balanced, these specific changes are queued:
-
-**Typography (apply to tailwind.config.ts):**
-```typescript
-fontSize: {
-  'phi-xs':  ['0.618rem', { lineHeight: '1.0' }],
-  'phi-sm':  ['0.764rem', { lineHeight: '1.4' }],
-  'phi-md':  ['1.000rem', { lineHeight: '1.618' }],  // base
-  'phi-lg':  ['1.272rem', { lineHeight: '1.5' }],
-  'phi-xl':  ['1.618rem', { lineHeight: '1.4' }],
-  'phi-2xl': ['2.058rem', { lineHeight: '1.3' }],
-  'phi-3xl': ['2.618rem', { lineHeight: '1.2' }],
-  'phi-4xl': ['4.236rem', { lineHeight: '1.1' }],
-  'phi-5xl': ['6.854rem', { lineHeight: '1.0' }],
-}
-```
-
-**Spacing (apply to tailwind.config.ts):**
-```typescript
-spacing: {
-  'phi-1': '0.25rem',  // 4px
-  'phi-2': '0.375rem', // 6px
-  'phi-3': '0.625rem', // 10px
-  'phi-4': '1rem',     // 16px
-  'phi-5': '1.625rem', // 26px
-  'phi-6': '2.625rem', // 42px
-  'phi-7': '4.25rem',  // 68px
-  'phi-8': '6.875rem', // 110px
-  'phi-9': '11.125rem',// 178px
-}
-```
-
-**Section rhythm:** Every section uses `py-phi-7` (68px) or `py-phi-8` (110px) — replacing mixed `py-16/py-24`
-**Nav height:** Update to `h-[42px]` mobile / `h-[68px]` desktop (φ steps)
-**Logo size:** 42×42px in nav (perfect φ step)
-**Card border-radius:** `rounded-[10px]` (φ-3), `rounded-[16px]` (φ-4), `rounded-[26px]` (φ-5)
+1. **`'use client'` at line 1** for every file with `onClick`, `useState`, `useEffect`
+2. **`prisma generate`** runs before `next build` (in `package.json` build script)
+3. **Mock data** in all pages until `DATABASE_URL` is set (see `lib/db.ts`)
+4. **Country data** in `lib/country-selector.ts` ONLY — never inline in pages
+5. **Vocabulary** in `lib/vocabulary.ts` ONLY — never hardcode BeNetwork terms
+6. **Brand colors** in `tailwind.config.ts` — never use `#FF6B35` or `orange-*` classes
+7. **Push after every commit** — Vercel auto-deploys from `main`
 
 ---
 
-## Agentic Documentation
+## Accessibility Requirements (Non-negotiable)
 
-| File             | Purpose                                                  |
-|------------------|----------------------------------------------------------|
-| `CLAUDE.md`      | AI operating manual — autonomy rules, commands, workflow |
-| `PRD.md`         | This document — product requirements + roadmap          |
-| `ARCHITECTURE.md`| Technical + conceptual system design                     |
-| `PROGRESS.md`    | Live task tracker — per-session execution log            |
-| `README.md`      | Public-facing project overview                           |
-
----
-
-## Human Checklist — To Go Live
-
-```
-□ Neon PostgreSQL → DATABASE_URL (console.neon.tech)
-□ M-Pesa Daraja production → MPESA_CONSUMER_KEY + MPESA_CONSUMER_SECRET
-□ Google OAuth → GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET
-□ Resend API → RESEND_API_KEY
-□ Stripe → STRIPE_SECRET_KEY + STRIPE_PUBLISHABLE_KEY
-□ NextAuth → NEXTAUTH_SECRET (generate: openssl rand -base64 32)
-□ Domain → Point bekenya.com to Vercel project
-□ BeKenya Family Ltd → Register on eCitizen Kenya
-□ UTAMADUNI CBO → Official CBO registration
-□ M-Pesa STK Push → Test with real Safaricom number before launch
-```
-
-All env vars: Vercel → Project → Settings → Environment Variables → Production
+- WCAG AA minimum for all text (gold `#C9A227` on dark `#0A0A0F` = 8.9:1 ✅)
+- Touch targets: 44px minimum (WCAG 2.5.5) — enforced in `globals.css`
+- Skip-to-content link on every page (in `globals.css` `.skip-to-content`)
+- Focus-visible ring: 2px gold ring on all focusable elements
+- `aria-label` on all icon-only buttons
+- `alt` text on all images
+- Keyboard navigation for all interactive elements
 
 ---
 
-*Maintained by the AI development agent. Updated after every session. The mission is real. The platform is ready. The only thing missing is credentials.*
+## Phase Summary
+
+See [ROADMAP.md](./ROADMAP.md) for full strategic phases with milestones and success metrics.
+
+**Current Phase: 2 — BeKenya Live**
+**Next milestone:** Connect database + real auth → 5 real Anchor partners + 50 real Pioneers.
+
+---
+
+*Last updated: Session 6 (2026-03-10)*
