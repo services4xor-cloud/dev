@@ -4,60 +4,88 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import {
+  Menu, X, ChevronDown,
+  Compass, Map, Camera, DollarSign,
+  Heart, Info, Building2, Gift,
+  LayoutDashboard, PlusSquare, LogIn,
+} from 'lucide-react'
 import { COUNTRIES } from '@/lib/countries'
 
-// ── Brand name derives from env — "BeKenya", "BeGermany", etc. ────
-const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
+const CC    = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
 const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
 
-// ── Primary nav links ──────────────────────────────────────────────
+// ── Navigation structure ──────────────────────────────────────────
 const PRIMARY_LINKS = [
-  { href: '/ventures',    label: 'Ventures',    aria: 'Explore all paths and experiences' },
-  { href: '/compass',     label: 'Compass',     aria: 'Find your route across countries' },
-  { href: '/experiences', label: 'Experiences', aria: 'Safari and cultural experiences' },
-  { href: '/charity',     label: 'Community',   aria: 'UTAMADUNI community impact' },
-  { href: '/pricing',     label: 'Pricing',     aria: 'Anchor pricing plans' },
+  { href: '/ventures',    label: 'Ventures',    icon: Map,     aria: 'Explore all paths and experiences' },
+  { href: '/compass',     label: 'Compass',     icon: Compass, aria: 'Find your route across countries'  },
+  { href: '/experiences', label: 'Experiences', icon: Camera,  aria: 'Safari and cultural experiences'   },
+  { href: '/pricing',     label: 'Pricing',     icon: DollarSign, aria: 'Anchor pricing plans'           },
 ]
 
-// ── "About" dropdown ──────────────────────────────────────────────
+const PIONEER_LINKS = [
+  { href: '/ventures',          label: 'Browse Ventures',   icon: Map,     aria: 'Explore all paths and experiences' },
+  { href: '/compass',           label: 'Find My Path',      icon: Compass, aria: 'Smart route wizard'                 },
+  { href: '/experiences',       label: 'Experiences',       icon: Camera,  aria: 'Safari and cultural experiences'    },
+  { href: '/charity',           label: 'Community',         icon: Heart,   aria: 'UTAMADUNI community impact'         },
+]
+
+const ANCHOR_LINKS = [
+  { href: '/anchors/dashboard', label: 'Anchor Dashboard',  icon: LayoutDashboard, aria: 'Manage your paths and chapters' },
+  { href: '/anchors/post-path', label: 'Post a Path',       icon: PlusSquare,      aria: 'Create a new opportunity'       },
+]
+
 const ABOUT_LINKS = [
-  { href: '/about',    label: 'About',          aria: `About the ${BRAND} platform` },
-  { href: '/business', label: 'Family Ltd',     aria: 'Business and legal structure' },
-  { href: '/referral', label: 'Refer & Earn',   aria: 'Referral programme' },
+  { href: '/about',    label: 'About',       icon: Info,      aria: `About the ${BRAND} platform` },
+  { href: '/business', label: 'Family Ltd',  icon: Building2, aria: 'Business and legal structure'  },
+  { href: '/referral', label: 'Refer & Earn',icon: Gift,      aria: 'Referral programme'              },
 ]
 
 // ─────────────────────────────────────────────────────────────────
 export default function Nav() {
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [aboutOpen, setAboutOpen]   = useState(false)
+  const [mobileOpen, setMobileOpen]   = useState(false)
+  const [aboutOpen,  setAboutOpen]    = useState(false)
+  const [anchorOpen, setAnchorOpen]   = useState(false)
   const pathname = usePathname()
-  const aboutRef = useRef<HTMLDivElement>(null)
-  const mobileMenuId = 'mobile-nav'
+  const aboutRef  = useRef<HTMLDivElement>(null)
+  const anchorRef = useRef<HTMLDivElement>(null)
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     function onPointer(e: PointerEvent) {
-      if (aboutRef.current && !aboutRef.current.contains(e.target as Node)) {
-        setAboutOpen(false)
-      }
+      if (aboutRef.current  && !aboutRef.current.contains(e.target as Node))  setAboutOpen(false)
+      if (anchorRef.current && !anchorRef.current.contains(e.target as Node)) setAnchorOpen(false)
     }
     document.addEventListener('pointerdown', onPointer)
     return () => document.removeEventListener('pointerdown', onPointer)
   }, [])
 
-  // Close everything on route change
-  useEffect(() => {
-    setMobileOpen(false)
-    setAboutOpen(false)
-  }, [pathname])
+  useEffect(() => { setMobileOpen(false); setAboutOpen(false); setAnchorOpen(false) }, [pathname])
 
-  const isActive      = (href: string) => pathname === href || pathname.startsWith(href + '/')
-  const isAboutActive = ABOUT_LINKS.some(l => isActive(l.href))
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
+  const isAboutActive  = ABOUT_LINKS.some(l => isActive(l.href))
+  const isAnchorActive = ANCHOR_LINKS.some(l => isActive(l.href))
+
+  // Shared link class helpers
+  const desktopLink = (active: boolean) =>
+    `relative px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-150
+     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0F]
+     ${active
+       ? 'text-[#C9A227] bg-[#C9A227]/8'
+       : 'text-white/65 hover:text-white hover:bg-white/5'
+     }`
+
+  const dropdownLink = (active: boolean) =>
+    `flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-150 mx-1
+     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+     ${active
+       ? 'text-[#C9A227] bg-[#C9A227]/10'
+       : 'text-white/70 hover:text-white hover:bg-white/6'
+     }`
 
   return (
     <header>
-      {/* Keyboard skip link — visible only on focus */}
+      {/* Skip link */}
       <a href="#main-content" className="skip-to-content focus:not-sr-only">
         Skip to main content
       </a>
@@ -65,69 +93,133 @@ export default function Nav() {
       <nav
         role="navigation"
         aria-label="Main navigation"
-        className="bg-[#5C0A14] border-b border-[#C9A227]/25 sticky top-0 z-50"
+        className="bg-[#0A0A0F]/95 backdrop-blur-xl border-b border-white/8 sticky top-0 z-50"
       >
-        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
-          <div className="flex items-center justify-between h-16">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-6">
+          <div className="flex items-center justify-between h-15" style={{ height: '60px' }}>
 
-            {/* ── Logo ─────────────────────────────────────── */}
+            {/* ── Logo ─────────────────────────────────────────── */}
             <Link
               href="/"
-              className="flex items-center gap-2.5 shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
+              className="flex items-center gap-2 shrink-0 rounded-lg
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+                         focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0F]"
               aria-label={`${BRAND} — Home`}
             >
-              <Image
-                src="/logo.svg"
-                alt=""
-                width={36}
-                height={36}
-                priority
-                unoptimized
-                aria-hidden="true"
-              />
-              <span className="text-[#C9A227] font-bold text-lg tracking-wide" aria-hidden="true">
-                {BRAND}
+              <div className="relative">
+                <div
+                  className="absolute inset-0 rounded-lg blur-sm opacity-40"
+                  style={{ background: '#C9A227' }}
+                  aria-hidden="true"
+                />
+                <Image
+                  src="/logo.svg"
+                  alt=""
+                  width={32}
+                  height={32}
+                  priority
+                  unoptimized
+                  aria-hidden="true"
+                  className="relative rounded-lg"
+                />
+              </div>
+              <span className="font-bold text-[15px] tracking-wide" aria-hidden="true">
+                <span className="text-[#C9A227]">Be</span>
+                <span className="text-white">{COUNTRIES[CC]?.name ?? 'Country'}</span>
               </span>
             </Link>
 
-            {/* ── Desktop links ─────────────────────────────── */}
-            <ul className="hidden xl:flex items-center gap-0.5 list-none" role="list">
+            {/* ── Desktop links ─────────────────────────────────── */}
+            <ul className="hidden xl:flex items-center gap-0.5 list-none">
               {PRIMARY_LINKS.map(link => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     aria-label={link.aria}
                     aria-current={isActive(link.href) ? 'page' : undefined}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] ${
-                      isActive(link.href)
-                        ? 'bg-[#C9A227]/15 text-[#C9A227]'
-                        : 'text-[#C9A227]/75 hover:text-[#C9A227] hover:bg-[#C9A227]/10'
-                    }`}
+                    className={desktopLink(isActive(link.href))}
                   >
+                    {isActive(link.href) && (
+                      <span
+                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                        style={{ background: '#C9A227' }}
+                        aria-hidden="true"
+                      />
+                    )}
                     {link.label}
                   </Link>
                 </li>
               ))}
+
+              {/* For Anchors dropdown */}
+              <li>
+                <div className="relative" ref={anchorRef}>
+                  <button
+                    type="button"
+                    onClick={() => { setAnchorOpen(v => !v); setAboutOpen(false) }}
+                    aria-expanded={anchorOpen}
+                    aria-haspopup="listbox"
+                    aria-controls="anchor-dropdown"
+                    aria-label="For Anchors — expand sub-pages"
+                    className={desktopLink(isAnchorActive)}
+                  >
+                    {isAnchorActive && (
+                      <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A227]" aria-hidden="true" />
+                    )}
+                    For Anchors
+                    <ChevronDown
+                      className={`inline-block ml-0.5 w-3.5 h-3.5 transition-transform duration-200 ${anchorOpen ? 'rotate-180' : ''}`}
+                      aria-hidden="true"
+                    />
+                  </button>
+
+                  {anchorOpen && (
+                    <ul
+                      id="anchor-dropdown"
+                      role="listbox"
+                      className="absolute left-0 top-full mt-2 w-56 rounded-2xl shadow-2xl py-1.5 list-none
+                                 border border-white/10 backdrop-blur-xl"
+                      style={{ background: 'rgba(17,17,24,0.97)' }}
+                    >
+                      {ANCHOR_LINKS.map(link => {
+                        const Icon = link.icon
+                        return (
+                          <li key={link.href} role="option" aria-selected={isActive(link.href)}>
+                            <Link
+                              href={link.href}
+                              onClick={() => setAnchorOpen(false)}
+                              aria-label={link.aria}
+                              className={dropdownLink(isActive(link.href))}
+                            >
+                              <Icon className="w-4 h-4 shrink-0 text-[#C9A227]/60" aria-hidden="true" />
+                              {link.label}
+                            </Link>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
+              </li>
 
               {/* About dropdown */}
               <li>
                 <div className="relative" ref={aboutRef}>
                   <button
                     type="button"
-                    onClick={() => setAboutOpen(v => !v)}
+                    onClick={() => { setAboutOpen(v => !v); setAnchorOpen(false) }}
                     aria-expanded={aboutOpen}
                     aria-haspopup="listbox"
                     aria-controls="about-dropdown"
                     aria-label="About — expand sub-pages"
-                    className={`flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] ${
-                      isAboutActive
-                        ? 'bg-[#C9A227]/15 text-[#C9A227]'
-                        : 'text-[#C9A227]/75 hover:text-[#C9A227] hover:bg-[#C9A227]/10'
-                    }`}
+                    className={desktopLink(isAboutActive)}
                   >
+                    {isAboutActive && (
+                      <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A227]" aria-hidden="true" />
+                    )}
                     About
                     <ChevronDown
-                      className={`w-3.5 h-3.5 transition-transform duration-200 ${aboutOpen ? 'rotate-180' : ''}`}
+                      className={`inline-block ml-0.5 w-3.5 h-3.5 transition-transform duration-200 ${aboutOpen ? 'rotate-180' : ''}`}
                       aria-hidden="true"
                     />
                   </button>
@@ -136,153 +228,201 @@ export default function Nav() {
                     <ul
                       id="about-dropdown"
                       role="listbox"
-                      className="absolute left-0 top-full mt-1.5 w-52 bg-[#3D0610] border border-[#C9A227]/25 rounded-2xl shadow-xl py-1.5 z-50 list-none"
+                      className="absolute left-0 top-full mt-2 w-52 rounded-2xl shadow-2xl py-1.5 list-none
+                                 border border-white/10 backdrop-blur-xl"
+                      style={{ background: 'rgba(17,17,24,0.97)' }}
                     >
-                      {ABOUT_LINKS.map(link => (
-                        <li key={link.href} role="option" aria-selected={isActive(link.href)}>
-                          <Link
-                            href={link.href}
-                            onClick={() => setAboutOpen(false)}
-                            aria-label={link.aria}
-                            aria-current={isActive(link.href) ? 'page' : undefined}
-                            className={`block px-4 py-2.5 text-sm font-medium transition-colors duration-150 rounded-xl mx-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ${
-                              isActive(link.href)
-                                ? 'bg-[#C9A227]/15 text-[#C9A227]'
-                                : 'text-[#C9A227]/70 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
-                            }`}
-                          >
-                            {link.label}
-                          </Link>
-                        </li>
-                      ))}
+                      {ABOUT_LINKS.map(link => {
+                        const Icon = link.icon
+                        return (
+                          <li key={link.href} role="option" aria-selected={isActive(link.href)}>
+                            <Link
+                              href={link.href}
+                              onClick={() => setAboutOpen(false)}
+                              aria-label={link.aria}
+                              className={dropdownLink(isActive(link.href))}
+                            >
+                              <Icon className="w-4 h-4 shrink-0 text-[#C9A227]/60" aria-hidden="true" />
+                              {link.label}
+                            </Link>
+                          </li>
+                        )
+                      })}
                     </ul>
                   )}
                 </div>
               </li>
             </ul>
 
-            {/* ── Desktop auth / CTA ────────────────────────── */}
-            <div className="hidden xl:flex items-center gap-3">
-              <Link
-                href="/anchors/dashboard"
-                aria-label="Anchors — manage your paths"
-                aria-current={isActive('/anchors/dashboard') ? 'page' : undefined}
-                className={`text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] rounded-md px-1 ${
-                  isActive('/anchors/dashboard') ? 'text-[#C9A227]' : 'text-[#C9A227]/65 hover:text-[#C9A227]'
-                }`}
-              >
-                Anchors
-              </Link>
+            {/* ── Desktop auth / CTA ─────────────────────────────── */}
+            <div className="hidden xl:flex items-center gap-2">
+              <div className="w-px h-5 bg-white/10 mx-1" aria-hidden="true" />
               <Link
                 href="/login"
-                aria-label="Sign in"
-                className="text-sm font-medium text-[#C9A227]/65 hover:text-[#C9A227] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14] rounded-md px-1"
+                aria-label="Sign in to your account"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-medium text-white/60
+                           hover:text-white hover:bg-white/5 transition-all duration-150
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
               >
+                <LogIn className="w-4 h-4" aria-hidden="true" />
                 Sign In
               </Link>
               <Link
                 href="/compass"
-                aria-label="Start My Compass — find your path"
-                className="bg-[#C9A227] text-[#0A0A0F] font-semibold px-5 py-2 rounded-xl text-sm hover:bg-[#D4AF35] active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
+                aria-label="Start My Compass — find your path across countries"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-[#0A0A0F]
+                           hover:brightness-110 active:scale-[0.97] transition-all duration-150
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+                           focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0F]"
+                style={{
+                  background: 'linear-gradient(135deg, #C9A227, #D4AF37)',
+                  boxShadow: '0 2px 12px rgba(201,162,39,0.3)',
+                }}
               >
+                <Compass className="w-4 h-4" aria-hidden="true" />
                 Start Compass
               </Link>
             </div>
 
-            {/* ── Mobile toggle ─────────────────────────────── */}
+            {/* ── Mobile toggle ───────────────────────────────────── */}
             <button
               type="button"
               onClick={() => setMobileOpen(v => !v)}
               aria-expanded={mobileOpen}
-              aria-controls={mobileMenuId}
-              aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              className="xl:hidden p-2 rounded-xl text-[#C9A227]/80 hover:text-[#C9A227] hover:bg-[#C9A227]/10 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#5C0A14]"
+              aria-controls="mobile-nav"
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              className="xl:hidden p-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/8
+                         transition-all duration-150 focus-visible:outline-none focus-visible:ring-2
+                         focus-visible:ring-[#C9A227]"
             >
               {mobileOpen
-                ? <X className="w-5 h-5" aria-hidden="true" />
+                ? <X    className="w-5 h-5" aria-hidden="true" />
                 : <Menu className="w-5 h-5" aria-hidden="true" />
               }
             </button>
           </div>
         </div>
 
-        {/* ── Mobile menu ───────────────────────────────────── */}
-        <div
-          id={mobileMenuId}
-          hidden={!mobileOpen}
-          className="xl:hidden border-t border-[#C9A227]/20 bg-[#3D0610] px-4 py-4 space-y-1"
-        >
-          <ul role="list" className="list-none space-y-1">
-            {PRIMARY_LINKS.map(link => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  aria-label={link.aria}
-                  aria-current={isActive(link.href) ? 'page' : undefined}
-                  className={`block px-4 py-3 rounded-xl font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ${
-                    isActive(link.href)
-                      ? 'bg-[#C9A227]/15 text-[#C9A227]'
-                      : 'text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        {/* ── Mobile Menu — full-width overlay ─────────────────────── */}
+        {mobileOpen && (
+          <div
+            id="mobile-nav"
+            className="xl:hidden border-t border-white/8"
+            style={{ background: 'rgba(10,10,15,0.98)' }}
+          >
+            <div className="px-4 py-4 space-y-1 max-h-[calc(100vh-60px)] overflow-y-auto">
 
-          <div className="pt-2">
-            <p className="px-4 py-1 text-xs font-semibold text-[#C9A227]/50 uppercase tracking-widest">
-              About
-            </p>
-            <ul role="list" className="list-none space-y-1">
-              {ABOUT_LINKS.map(link => (
-                <li key={link.href}>
+              {/* EXPLORE section */}
+              <p className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-widest text-white/30">
+                Explore
+              </p>
+              {PIONEER_LINKS.map(link => {
+                const Icon = link.icon
+                return (
                   <Link
+                    key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
                     aria-label={link.aria}
                     aria-current={isActive(link.href) ? 'page' : undefined}
-                    className={`block px-4 py-3 rounded-xl font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ${
-                      isActive(link.href)
-                        ? 'bg-[#C9A227]/15 text-[#C9A227]'
-                        : 'text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
-                    }`}
+                    className={`flex items-center gap-3 px-3 py-3.5 rounded-xl font-medium transition-all duration-150
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+                      ${isActive(link.href)
+                        ? 'bg-[#C9A227]/12 text-[#C9A227]'
+                        : 'text-white/75 hover:bg-white/6 hover:text-white'
+                      }`}
                   >
+                    <Icon className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`} aria-hidden="true" />
+                    {link.label}
+                    {isActive(link.href) && (
+                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C9A227]" aria-hidden="true" />
+                    )}
+                  </Link>
+                )
+              })}
+
+              {/* FOR ANCHORS section */}
+              <p className="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-white/30">
+                For Anchors
+              </p>
+              {ANCHOR_LINKS.map(link => {
+                const Icon = link.icon
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    aria-label={link.aria}
+                    aria-current={isActive(link.href) ? 'page' : undefined}
+                    className={`flex items-center gap-3 px-3 py-3.5 rounded-xl font-medium transition-all duration-150
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+                      ${isActive(link.href)
+                        ? 'bg-[#C9A227]/12 text-[#C9A227]'
+                        : 'text-white/75 hover:bg-white/6 hover:text-white'
+                      }`}
+                  >
+                    <Icon className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`} aria-hidden="true" />
                     {link.label}
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+                )
+              })}
 
-          <div className="pt-3 border-t border-[#C9A227]/20 space-y-2">
-            <Link
-              href="/anchors/dashboard"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Anchors dashboard"
-              className="block px-4 py-3 rounded-xl text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
-            >
-              Anchors Dashboard
-            </Link>
-            <Link
-              href="/login"
-              onClick={() => setMobileOpen(false)}
-              className="block px-4 py-3 rounded-xl text-[#C9A227]/80 hover:bg-[#C9A227]/10 hover:text-[#C9A227] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/compass"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Start My Compass"
-              className="bg-[#C9A227] text-[#0A0A0F] font-semibold block text-center py-3 rounded-xl hover:bg-[#D4AF35] active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
-            >
-              Start Compass
-            </Link>
+              {/* ABOUT section */}
+              <p className="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-white/30">
+                About
+              </p>
+              {[...ABOUT_LINKS, { href: '/pricing', label: 'Pricing', icon: DollarSign, aria: 'Plans and pricing' }].map(link => {
+                const Icon = link.icon
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    aria-label={link.aria}
+                    aria-current={isActive(link.href) ? 'page' : undefined}
+                    className={`flex items-center gap-3 px-3 py-3.5 rounded-xl font-medium transition-all duration-150
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+                      ${isActive(link.href)
+                        ? 'bg-[#C9A227]/12 text-[#C9A227]'
+                        : 'text-white/75 hover:bg-white/6 hover:text-white'
+                      }`}
+                  >
+                    <Icon className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`} aria-hidden="true" />
+                    {link.label}
+                  </Link>
+                )
+              })}
+
+              {/* Auth / CTA */}
+              <div className="pt-4 border-t border-white/8 space-y-2">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3.5 rounded-xl text-white/70 hover:bg-white/6 hover:text-white
+                             font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
+                >
+                  <LogIn className="w-5 h-5 text-white/30" aria-hidden="true" />
+                  Sign In
+                </Link>
+                <Link
+                  href="/compass"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Start My Compass"
+                  className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-[#0A0A0F]
+                             active:scale-[0.98] transition-all duration-150
+                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
+                  style={{
+                    background: 'linear-gradient(135deg, #C9A227, #D4AF37)',
+                    boxShadow: '0 4px 16px rgba(201,162,39,0.25)',
+                  }}
+                >
+                  <Compass className="w-5 h-5" aria-hidden="true" />
+                  Start My Compass
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </nav>
     </header>
   )

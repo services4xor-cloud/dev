@@ -42,6 +42,11 @@ prisma/migrations/
 # playwright browser automation logs
 .playwright-mcp/
 
+# playwright test artifacts (screenshots, reports, results — not committed)
+tests/screenshots/
+tests/results/
+tests/playwright-report/
+
 # claude code local settings (keep settings.json but not settings.local.json)
 .claude/settings.local.json
 
