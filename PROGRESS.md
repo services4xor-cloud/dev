@@ -1,7 +1,7 @@
 # Be[Country] — Live Progress Tracker
 
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 11 (2026-03-10)
+> Last updated: Session 12 (2026-03-10)
 
 ---
 
@@ -207,6 +207,20 @@ Vercel: Auto-deploys from main
 - [x] Build: ✅ 0 errors
 - [x] Tests: ✅ 25/25 pass
 - [x] TypeScript: 0 errors ✅
+
+### Session 12 (2026-03-10) — Inline Data Centralization
+
+- [x] **data/mock/anchors-dashboard.ts** — Extracted 8 mock arrays (~200 lines) from anchors/dashboard
+- [x] **data/mock/about.ts** — Extracted 5 arrays (values, sectors, payments, stats, vocab)
+- [x] **data/mock/charity.ts** — Extracted 4 arrays (impact, pillars, stories, partners)
+- [x] **data/mock/business.ts** — Extracted 3 arrays (divisions, countries, shares)
+- [x] **data/mock/anchors-post-path.ts** — Extracted 4 arrays (currencies, payments, skills, steps)
+- [x] **data/mock/profile.ts** — Extracted skills suggestions
+- [x] **data/mock/index.ts** — Barrel export updated with all new modules
+- [x] All 6 page files rewired to import from `@/data/mock`
+- [x] Zero inline mock data remaining in page files
+- [x] Build: 0 errors, TypeScript: 0 errors, lint-staged clean
+- [x] Committed + pushed to main
 
 ### Session 11 (2026-03-10) — Brand Sweep: amber/yellow → gold #C9A227
 
