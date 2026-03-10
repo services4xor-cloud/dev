@@ -17,99 +17,21 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { MapPin, Clock, Star, Zap, Globe, ArrowRight } from 'lucide-react'
-import { PIONEER_TYPES, VOCAB } from '@/lib/vocabulary'
+import { VOCAB } from '@/lib/vocabulary'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
+import { MOCK_VENTURE_PATHS } from '@/data/mock'
+import type { FilterCategory, PathListItem } from '@/types/domain'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Types & data
+// Filter config
 // ─────────────────────────────────────────────────────────────────────────────
-
-type FilterCategory = 'all' | 'professional' | 'explorer' | 'creative' | 'community'
 
 const FILTERS: { id: FilterCategory; label: string; icon: string; desc: string }[] = [
-  { id: 'all',          label: 'All Ventures',  icon: '🌍', desc: 'Everything' },
-  { id: 'explorer',     label: 'Explorer',       icon: '🌿', desc: 'Safaris & eco-tourism' },
-  { id: 'professional', label: 'Professional',   icon: '💼', desc: 'Tech, finance, healthcare' },
-  { id: 'creative',     label: 'Creative',       icon: '🎬', desc: 'Media, design, arts' },
-  { id: 'community',    label: 'Community',      icon: '🤝', desc: 'Social impact & guardian' },
-]
-
-interface Path {
-  id: string
-  title: string
-  anchor: string
-  location: string
-  category: FilterCategory
-  salary: string
-  posted: string
-  icon: string
-  tags: string[]
-  isRemote: boolean
-  isFeatured: boolean
-  pioneersNeeded?: number
-}
-
-const MOCK_PATHS: Path[] = [
-  {
-    id: 'p1', title: 'Senior Software Pioneer', anchor: 'Safaricom PLC',
-    location: 'Nairobi, Kenya', category: 'professional', salary: 'KES 250,000 – 400,000/mo',
-    posted: '2h ago', icon: '📡', tags: ['React', 'Node.js', 'AWS'],
-    isRemote: false, isFeatured: true, pioneersNeeded: 3,
-  },
-  {
-    id: 'p2', title: 'Financial Pioneer — UK Markets', anchor: 'Barclays UK',
-    location: 'London, UK', category: 'professional', salary: '£45,000 – £60,000/yr',
-    posted: '5h ago', icon: '🏦', tags: ['Excel', 'Python', 'Bloomberg'],
-    isRemote: false, isFeatured: true, pioneersNeeded: 1,
-  },
-  {
-    id: 'p3', title: 'Remote Community Support', anchor: 'Shopify',
-    location: 'Remote — Worldwide', category: 'professional', salary: '$40,000 – $55,000/yr',
-    posted: '1d ago', icon: '🛍️', tags: ['Customer Service', 'Zendesk'],
-    isRemote: true, isFeatured: false,
-  },
-  {
-    id: 'p4', title: 'Healer Pioneer — NHS Scotland', anchor: 'NHS Scotland',
-    location: 'Edinburgh, UK', category: 'professional', salary: '£28,000 – £36,000/yr',
-    posted: '2d ago', icon: '🏥', tags: ['Nursing', 'ICU', 'NMC'],
-    isRemote: false, isFeatured: false, pioneersNeeded: 8,
-  },
-  {
-    id: 'p5', title: 'Wildlife Photography Creator', anchor: 'Nat Geo Expeditions',
-    location: 'Maasai Mara, Kenya', category: 'creative', salary: '$2,500 – $4,000/expedition',
-    posted: '3d ago', icon: '📸', tags: ['Photography', 'Wildlife', 'Documentary'],
-    isRemote: false, isFeatured: false,
-  },
-  {
-    id: 'p6', title: 'Community Garden Pioneer', anchor: 'UTAMADUNI CBO',
-    location: 'Nairobi West, Kenya', category: 'community', salary: 'KES 45,000/mo + training',
-    posted: '1w ago', icon: '🌱', tags: ['Community', 'Agriculture', 'Education'],
-    isRemote: false, isFeatured: false,
-  },
-  {
-    id: 'p7', title: 'Dubai Construction Guardian', anchor: 'EMAAR Properties',
-    location: 'Dubai, UAE', category: 'community', salary: 'AED 12,000 – 18,000/mo',
-    posted: '4d ago', icon: '🏗️', tags: ['Construction', 'Safety', 'Project Management'],
-    isRemote: false, isFeatured: false,
-  },
-  {
-    id: 'p8', title: 'Eco-Lodge Host Pioneer', anchor: 'Basecamp Explorer',
-    location: 'Laikipia, Kenya', category: 'explorer', salary: 'KES 60,000/mo + accommodation',
-    posted: '6d ago', icon: '🏡', tags: ['Hospitality', 'Eco-Tourism', 'Swahili'],
-    isRemote: false, isFeatured: false, pioneersNeeded: 4,
-  },
-  {
-    id: 'p9', title: 'Content Creator — Nairobi', anchor: 'Africa Digital Media',
-    location: 'Nairobi, Kenya', category: 'creative', salary: 'KES 80,000 – 150,000/mo',
-    posted: '2d ago', icon: '🎥', tags: ['Video', 'TikTok', 'Brand'],
-    isRemote: true, isFeatured: false,
-  },
-  {
-    id: 'p10', title: 'Germany Engineering Pioneer', anchor: 'VDMA Partner',
-    location: 'Munich, Germany', category: 'professional', salary: '€55,000 – €75,000/yr',
-    posted: '1d ago', icon: '⚙️', tags: ['Mechanical', 'AutoCAD', 'EU Blue Card'],
-    isRemote: false, isFeatured: true, pioneersNeeded: 2,
-  },
+  { id: 'all', label: 'All Ventures', icon: '🌍', desc: 'Everything' },
+  { id: 'explorer', label: 'Explorer', icon: '🌿', desc: 'Safaris & eco-tourism' },
+  { id: 'professional', label: 'Professional', icon: '💼', desc: 'Tech, finance, healthcare' },
+  { id: 'creative', label: 'Creative', icon: '🎬', desc: 'Media, design, arts' },
+  { id: 'community', label: 'Community', icon: '🤝', desc: 'Social impact & guardian' },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -119,21 +41,19 @@ const MOCK_PATHS: Path[] = [
 export default function VenturesPage() {
   const [filter, setFilter] = useState<FilterCategory>('all')
 
-  const featuredSafari = SAFARI_PACKAGES.find(p => p.id === 'maasai-mara-3day') ?? SAFARI_PACKAGES[0]
+  const featuredSafari =
+    SAFARI_PACKAGES.find((p) => p.id === 'maasai-mara-3day') ?? SAFARI_PACKAGES[0]
 
-  const filteredPaths = MOCK_PATHS.filter(p =>
-    filter === 'all' || p.category === filter
-  )
+  const filteredPaths = MOCK_VENTURE_PATHS.filter((p) => filter === 'all' || p.category === filter)
 
   const showSafaris = filter === 'all' || filter === 'explorer'
   const visibleSafaris = SAFARI_PACKAGES.slice(0, filter === 'explorer' ? 6 : 3)
 
-  const featuredPaths = filteredPaths.filter(p => p.isFeatured)
-  const regularPaths  = filteredPaths.filter(p => !p.isFeatured)
+  const featuredPaths = filteredPaths.filter((p) => p.isFeatured)
+  const regularPaths = filteredPaths.filter((p) => !p.isFeatured)
 
   return (
     <div className="min-h-screen bg-[#0A0A0F]">
-
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
         className="pt-16 pb-10 px-4 text-center"
@@ -145,22 +65,24 @@ export default function VenturesPage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C9A227] opacity-60" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C9A227]" />
             </span>
-            {MOCK_PATHS.length + SAFARI_PACKAGES.length}+ open ventures across 30+ countries
+            {MOCK_VENTURE_PATHS.length + SAFARI_PACKAGES.length}+ open ventures across 30+ countries
           </div>
 
           <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight">
-            Open Paths.<br />
-            <span style={{ color: '#C9A227' }}>Real Ventures.</span><br />
+            Open Paths.
+            <br />
+            <span style={{ color: '#C9A227' }}>Real Ventures.</span>
+            <br />
             Your Chapter Starts Here.
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
-            From Maasai Mara game drives to London fintech floors — every path here is
-            a real chapter waiting to be written by a Pioneer like you.
+            From Maasai Mara game drives to London fintech floors — every path here is a real
+            chapter waiting to be written by a Pioneer like you.
           </p>
 
           {/* ── Unified filter — one row, no duplicates ── */}
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {FILTERS.map(f => (
+            {FILTERS.map((f) => (
               <button
                 key={f.id}
                 onClick={() => setFilter(f.id)}
@@ -179,13 +101,15 @@ export default function VenturesPage() {
       </section>
 
       <div className="max-w-5xl mx-auto px-4 pb-20 space-y-12">
-
         {/* ── Featured Maasai Mara card ─────────────────────────────────── */}
         {showSafaris && (
           <Link href={`/experiences/${featuredSafari.id}`} className="block -mt-4">
             <div
               className="rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 border hover:scale-[1.01] transition-transform duration-200 shadow-xl"
-              style={{ background: 'linear-gradient(135deg, #7B3F00 0%, #C9A227 100%)', border: '1px solid #C9A22750' }}
+              style={{
+                background: 'linear-gradient(135deg, #7B3F00 0%, #C9A227 100%)',
+                border: '1px solid #C9A22750',
+              }}
             >
               <div className="flex items-start gap-4">
                 <div className="text-5xl">🦁</div>
@@ -198,12 +122,15 @@ export default function VenturesPage() {
                   </div>
                   <h3 className="text-xl font-bold text-white mb-1">{featuredSafari.name}</h3>
                   <p className="text-white/80 text-sm">
-                    {featuredSafari.destination} · {featuredSafari.duration} · Max {featuredSafari.maxGuests} Pioneers
+                    {featuredSafari.destination} · {featuredSafari.duration} · Max{' '}
+                    {featuredSafari.maxGuests} Pioneers
                   </p>
                 </div>
               </div>
               <div className="flex-shrink-0 text-right">
-                <div className="text-2xl font-black text-white">{formatPackagePrice(featuredSafari)}</div>
+                <div className="text-2xl font-black text-white">
+                  {formatPackagePrice(featuredSafari)}
+                </div>
                 <div className="text-white/60 text-xs mb-3">{featuredSafari.priceNote}</div>
                 <div className="inline-flex items-center gap-1.5 bg-white text-[#7B3F00] font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-[#C9A227] transition-colors">
                   {VOCAB.chapter_open} <ArrowRight className="w-4 h-4" />
@@ -219,15 +146,20 @@ export default function VenturesPage() {
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 🌿 <span>Explorer Ventures</span>
-                <span className="text-xs font-normal text-gray-500 ml-1">{visibleSafaris.length} available</span>
+                <span className="text-xs font-normal text-gray-500 ml-1">
+                  {visibleSafaris.length} available
+                </span>
               </h2>
-              <Link href="/experiences" className="text-[#C9A227] text-sm font-medium hover:text-yellow-400 flex items-center gap-1 transition-colors">
+              <Link
+                href="/experiences"
+                className="text-[#C9A227] text-sm font-medium hover:text-yellow-400 flex items-center gap-1 transition-colors"
+              >
                 See all <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {visibleSafaris.map(pkg => (
+              {visibleSafaris.map((pkg) => (
                 <Link key={pkg.id} href={`/experiences/${pkg.id}`}>
                   <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden hover:border-[#C9A227]/40 hover:shadow-lg hover:shadow-[#5C0A14]/20 transition-all duration-200 h-full group">
                     {/* Image area */}
@@ -235,16 +167,24 @@ export default function VenturesPage() {
                       className="h-36 flex items-center justify-center text-5xl"
                       style={{ background: 'linear-gradient(135deg, #3D1A00, #7B3F00)' }}
                     >
-                      {pkg.type === 'deep_sea_fishing' ? '🎣' :
-                       pkg.type === 'wildlife_safari' ? '🦁' :
-                       pkg.type === 'eco_lodge' ? '🏡' : '🎭'}
+                      {pkg.type === 'deep_sea_fishing'
+                        ? '🎣'
+                        : pkg.type === 'wildlife_safari'
+                          ? '🦁'
+                          : pkg.type === 'eco_lodge'
+                            ? '🏡'
+                            : '🎭'}
                     </div>
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-[#5C0A14]/60 text-[#C9A227] border border-[#C9A227]/20">
-                          {pkg.type === 'wildlife_safari' ? '🦁 Wildlife Safari' :
-                           pkg.type === 'eco_lodge' ? '🏡 Eco-Lodge' :
-                           pkg.type === 'deep_sea_fishing' ? '🎣 Deep Sea' : '🎭 Cultural'}
+                          {pkg.type === 'wildlife_safari'
+                            ? '🦁 Wildlife Safari'
+                            : pkg.type === 'eco_lodge'
+                              ? '🏡 Eco-Lodge'
+                              : pkg.type === 'deep_sea_fishing'
+                                ? '🎣 Deep Sea'
+                                : '🎭 Cultural'}
                         </span>
                         {pkg.season === 'high' && (
                           <span className="text-xs text-[#C9A227] font-medium">High Season</span>
@@ -253,10 +193,14 @@ export default function VenturesPage() {
                       <h3 className="font-bold text-white text-sm leading-tight mb-1 group-hover:text-[#C9A227] transition-colors">
                         {pkg.name}
                       </h3>
-                      <p className="text-gray-400 text-xs mb-3 line-clamp-2">{pkg.highlights.slice(0, 2).join(' · ')}</p>
+                      <p className="text-gray-400 text-xs mb-3 line-clamp-2">
+                        {pkg.highlights.slice(0, 2).join(' · ')}
+                      </p>
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="font-black text-white text-base">{formatPackagePrice(pkg)}</span>
+                          <span className="font-black text-white text-base">
+                            {formatPackagePrice(pkg)}
+                          </span>
                           <span className="text-gray-500 text-xs ml-1">/ person</span>
                         </div>
                         <div className="flex items-center gap-1 text-gray-500 text-xs">
@@ -281,7 +225,7 @@ export default function VenturesPage() {
               <span className="text-xs font-normal text-gray-500">{featuredPaths.length} open</span>
             </div>
             <div className="space-y-3">
-              {featuredPaths.map(path => (
+              {featuredPaths.map((path) => (
                 <PathCard key={path.id} path={path} featured />
               ))}
             </div>
@@ -293,16 +237,22 @@ export default function VenturesPage() {
           <section>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                {filter === 'explorer'     ? '🌿 Explorer Paths' :
-                 filter === 'professional' ? '💼 Professional Paths' :
-                 filter === 'creative'     ? '🎬 Creative Paths' :
-                 filter === 'community'    ? '🤝 Community Paths' :
-                                            '💼 All Paths'}
-                <span className="text-xs font-normal text-gray-500">{filteredPaths.length} open</span>
+                {filter === 'explorer'
+                  ? '🌿 Explorer Paths'
+                  : filter === 'professional'
+                    ? '💼 Professional Paths'
+                    : filter === 'creative'
+                      ? '🎬 Creative Paths'
+                      : filter === 'community'
+                        ? '🤝 Community Paths'
+                        : '💼 All Paths'}
+                <span className="text-xs font-normal text-gray-500">
+                  {filteredPaths.length} open
+                </span>
               </h2>
             </div>
             <div className="space-y-3">
-              {regularPaths.map(path => (
+              {regularPaths.map((path) => (
                 <PathCard key={path.id} path={path} />
               ))}
             </div>
@@ -314,7 +264,9 @@ export default function VenturesPage() {
           <div className="text-center py-20">
             <div className="text-5xl mb-4">🧭</div>
             <p className="text-xl font-semibold text-white mb-2">No Paths match this filter yet</p>
-            <p className="text-gray-400 text-sm mb-6">New paths are added every day. Check back or try another category.</p>
+            <p className="text-gray-400 text-sm mb-6">
+              New paths are added every day. Check back or try another category.
+            </p>
             <button
               onClick={() => setFilter('all')}
               className="px-6 py-3 rounded-xl bg-[#5C0A14] text-white font-semibold border border-[#C9A227]/30 hover:bg-[#7a0e1a] transition-colors"
@@ -327,12 +279,16 @@ export default function VenturesPage() {
         {/* ── CTA strip ─────────────────────────────────────────────────── */}
         <div
           className="rounded-2xl p-8 text-center"
-          style={{ background: 'linear-gradient(135deg, #5C0A14 0%, #0A0A0F 100%)', border: '1px solid #C9A22740' }}
+          style={{
+            background: 'linear-gradient(135deg, #5C0A14 0%, #0A0A0F 100%)',
+            border: '1px solid #C9A22740',
+          }}
         >
           <Globe className="w-8 h-8 text-[#C9A227] mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-white mb-2">Are you an Anchor?</h3>
           <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
-            Post a Path and reach 12,000+ Pioneers across 50+ countries. Local payment rails included.
+            Post a Path and reach 12,000+ Pioneers across 50+ countries. Local payment rails
+            included.
           </p>
           <Link
             href="/anchors/post-path"
@@ -341,7 +297,6 @@ export default function VenturesPage() {
             Post a Path →
           </Link>
         </div>
-
       </div>
     </div>
   )
@@ -351,28 +306,33 @@ export default function VenturesPage() {
 // PathCard sub-component
 // ─────────────────────────────────────────────────────────────────────────────
 
-function PathCard({ path, featured = false }: { path: Path; featured?: boolean }) {
+function PathCard({ path, featured = false }: { path: PathListItem; featured?: boolean }) {
   return (
     <Link href={`/ventures/${path.id}`}>
-      <div className={`group flex items-start gap-4 p-5 rounded-2xl border transition-all duration-200 hover:scale-[1.005] hover:shadow-lg ${
-        featured
-          ? 'bg-[#5C0A14]/20 border-[#C9A227]/30 hover:border-[#C9A227]/60 hover:shadow-[#5C0A14]/30'
-          : 'bg-gray-900/60 border-gray-800 hover:border-[#C9A227]/30 hover:shadow-[#5C0A14]/20'
-      }`}>
-
+      <div
+        className={`group flex items-start gap-4 p-5 rounded-2xl border transition-all duration-200 hover:scale-[1.005] hover:shadow-lg ${
+          featured
+            ? 'bg-[#5C0A14]/20 border-[#C9A227]/30 hover:border-[#C9A227]/60 hover:shadow-[#5C0A14]/30'
+            : 'bg-gray-900/60 border-gray-800 hover:border-[#C9A227]/30 hover:shadow-[#5C0A14]/20'
+        }`}
+      >
         {/* Icon */}
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 ${
-          featured ? 'bg-[#5C0A14]/60 border border-[#C9A227]/20' : 'bg-gray-800'
-        }`}>
+        <div
+          className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 ${
+            featured ? 'bg-[#5C0A14]/60 border border-[#C9A227]/20' : 'bg-gray-800'
+          }`}
+        >
           {path.icon}
         </div>
 
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3 mb-1">
-            <h3 className={`font-bold text-base leading-tight group-hover:text-[#C9A227] transition-colors ${
-              featured ? 'text-[#C9A227]' : 'text-white'
-            }`}>
+            <h3
+              className={`font-bold text-base leading-tight group-hover:text-[#C9A227] transition-colors ${
+                featured ? 'text-[#C9A227]' : 'text-white'
+              }`}
+            >
               {path.title}
             </h3>
             {featured && (
@@ -382,19 +342,20 @@ function PathCard({ path, featured = false }: { path: Path; featured?: boolean }
             )}
           </div>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-400 mb-3">
-            <span className="font-medium text-gray-300">{path.anchor}</span>
+            <span className="font-medium text-gray-300">{path.anchorName}</span>
             <span className="flex items-center gap-1">
               <MapPin className="w-3 h-3" />
               {path.location}
             </span>
-            {path.isRemote && (
-              <span className="text-[#C9A227] text-xs font-semibold">Remote</span>
-            )}
+            {path.isRemote && <span className="text-[#C9A227] text-xs font-semibold">Remote</span>}
           </div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap gap-1.5">
-              {path.tags.slice(0, 3).map(tag => (
-                <span key={tag} className="text-[11px] px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 border border-gray-700">
+              {path.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[11px] px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 border border-gray-700"
+                >
                   {tag}
                 </span>
               ))}

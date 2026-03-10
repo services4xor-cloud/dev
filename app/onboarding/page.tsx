@@ -4,61 +4,13 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { PIONEER_TYPES, PioneerType } from '@/lib/vocabulary'
 import { COUNTRY_OPTIONS, CORRIDOR_BADGE } from '@/lib/country-selector'
-
-// ─── Skills per Pioneer Type ──────────────────────────────────────────────────
-const SKILLS_BY_TYPE: Record<PioneerType, string[]> = {
-  explorer: [
-    'Wildlife knowledge', 'Swahili', '4x4 driving', 'First Aid', 'Bird ID',
-    'Marine biology', 'Tracking', 'Camping', 'Navigation', 'Photography',
-    'Eco-lodge operations', 'Guest relations', 'Conservation', 'Snorkeling/Diving',
-    'Boat handling', 'Foraging', 'Entomology', 'Tree identification', 'Fly fishing',
-    'Community liaison', 'Astronomy', 'Archery', 'Rock climbing', 'Horseback riding',
-  ],
-  professional: [
-    'JavaScript', 'Python', 'Financial analysis', 'Project management', 'SQL',
-    'React', 'Node.js', 'Data analysis', 'Excel/Sheets', 'PowerPoint',
-    'Accounting', 'Business development', 'Strategic planning', 'Marketing',
-    'Leadership', 'Agile/Scrum', 'Cloud (AWS/GCP)', 'API design', 'DevOps',
-    'UX design', 'Legal research', 'Procurement', 'Audit', 'Risk management',
-  ],
-  artisan: [
-    'Sewing/tailoring', 'Leather craft', 'Photography', 'Graphic design',
-    'Jewelry making', 'Pottery', 'Weaving', 'Beadwork', 'Batik/Tie-dye',
-    'Woodcarving', 'Illustration', 'Screen printing', 'Pattern making',
-    'Brand development', 'Product photography', 'Social media content',
-    'Video editing', 'Adobe Creative Suite', 'Interior design', 'Embroidery',
-    'Crochet/Knitting', 'Shoe making', 'Bag making', 'Glass art',
-  ],
-  guardian: [
-    'Security operations', 'Logistics coordination', 'Fleet management',
-    'Risk assessment', 'First Aid/CPR', 'Supply chain', 'Inventory management',
-    'CCTV monitoring', 'Emergency response', 'Crowd control', 'Firefighting',
-    'Drone operation', 'Radio communication', 'K9 handling', 'Investigation',
-    'Safety auditing', 'Customs & compliance', 'Warehousing', 'Route planning',
-    'Event security', 'IT security', 'Cybersecurity', 'Border control', 'Aviation security',
-  ],
-  creator: [
-    'Video production', 'YouTube content', 'Instagram reels', 'TikTok', 'Podcast production',
-    'Scriptwriting', 'Copywriting', 'Photography', 'Photo editing', 'Motion graphics',
-    'Live streaming', 'Sound engineering', 'Music production', 'Voiceover',
-    'Journalism', 'Blogging', 'SEO', 'Email marketing', 'Brand storytelling',
-    'Community management', 'Influencer marketing', 'Animation', 'AR/VR content', 'Game design',
-  ],
-  healer: [
-    'Nursing', 'Clinical medicine', 'Pharmacy', 'Counseling', 'Midwifery',
-    'Community health', 'Nutrition', 'Mental health support', 'Public health',
-    'Laboratory science', 'Physiotherapy', 'Occupational therapy', 'Social work',
-    'Teaching', 'Curriculum design', 'NGO coordination', 'Fundraising',
-    'Youth mentorship', 'Disability support', 'Elder care', 'Trauma support',
-    'HIV/AIDS programs', 'Water & sanitation', 'Food security', 'Palliative care',
-  ],
-}
+import { SKILLS_BY_TYPE } from '@/data/mock'
 
 // ─── Timezone detection (uses canonical COUNTRY_OPTIONS from lib) ─────────────
 function detectCountryFromTimezone(): string {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const match = COUNTRY_OPTIONS.find(c => c.tz === tz || tz.startsWith(c.tz.split('/')[0]))
+    const match = COUNTRY_OPTIONS.find((c) => c.tz === tz || tz.startsWith(c.tz.split('/')[0]))
     return match?.code ?? 'KE'
   } catch {
     return 'KE'
@@ -72,7 +24,7 @@ function ConfettiBlast() {
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
-      {pieces.map(i => (
+      {pieces.map((i) => (
         <div
           key={i}
           className="absolute w-3 h-3 rounded-sm animate-bounce"
@@ -97,7 +49,9 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
   return (
     <div className="w-full mb-8">
       <div className="flex justify-between text-sm text-gray-500 mb-2">
-        <span>Step {step} of {total}</span>
+        <span>
+          Step {step} of {total}
+        </span>
         <span>{pct}% complete</span>
       </div>
       <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -137,27 +91,25 @@ export default function OnboardingPage() {
     setFromCountry(code)
   }, [])
 
-  const detectedCountryInfo = COUNTRY_OPTIONS.find(c => c.code === detectedCountry)
+  const detectedCountryInfo = COUNTRY_OPTIONS.find((c) => c.code === detectedCountry)
 
   // ── Skill helpers ──
   const toggleSkill = (skill: string) => {
-    setSkills(prev =>
-      prev.includes(skill) ? prev.filter(s => s !== skill) : [...prev, skill]
-    )
+    setSkills((prev) => (prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]))
   }
 
   const addCustomSkill = () => {
     const trimmed = customSkill.trim()
     if (trimmed && !skills.includes(trimmed)) {
-      setSkills(prev => [...prev, trimmed])
+      setSkills((prev) => [...prev, trimmed])
     }
     setCustomSkill('')
   }
 
   // ── Destination helpers ──
   const toggleDestination = (code: string) => {
-    setToCountries(prev =>
-      prev.includes(code) ? prev.filter(c => c !== code) : [...prev, code]
+    setToCountries((prev) =>
+      prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
     )
   }
 
@@ -172,11 +124,11 @@ export default function OnboardingPage() {
   }
 
   const advance = () => {
-    if (canAdvance() && step < TOTAL_STEPS) setStep(s => s + 1)
+    if (canAdvance() && step < TOTAL_STEPS) setStep((s) => s + 1)
   }
 
   const back = () => {
-    if (step > 1) setStep(s => s - 1)
+    if (step > 1) setStep((s) => s - 1)
   }
 
   // ── Submit ──
@@ -188,7 +140,15 @@ export default function OnboardingPage() {
       const res = await fetch('/api/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pioneerType, fromCountry, toCountries, skills, headline, bio, phone }),
+        body: JSON.stringify({
+          pioneerType,
+          fromCountry,
+          toCountries,
+          skills,
+          headline,
+          bio,
+          phone,
+        }),
       })
       const data = await res.json()
       if (data.success) {
@@ -218,9 +178,18 @@ export default function OnboardingPage() {
             Your profile is ready. We&apos;re finding the best Paths for you...
           </p>
           <div className="flex items-center justify-center gap-2 text-[#5C0A14]">
-            <div className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce" style={{ animationDelay: '0ms' }} />
-            <div className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce" style={{ animationDelay: '150ms' }} />
-            <div className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div
+              className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce"
+              style={{ animationDelay: '0ms' }}
+            />
+            <div
+              className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce"
+              style={{ animationDelay: '150ms' }}
+            />
+            <div
+              className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce"
+              style={{ animationDelay: '300ms' }}
+            />
           </div>
           <p className="text-sm text-gray-400 mt-4">Taking you to your Ventures...</p>
         </div>
@@ -241,34 +210,41 @@ export default function OnboardingPage() {
 
       {/* Step Content */}
       <div className="max-w-2xl mx-auto px-4 pb-24">
-
         {/* ── STEP 1: Pioneer Type ── */}
         {step === 1 && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              What kind of Pioneer are you?
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">What kind of Pioneer are you?</h1>
             <p className="text-gray-500 mb-8">
               Pick the one that feels most like you. You can always refine later.
             </p>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              {(Object.entries(PIONEER_TYPES) as [PioneerType, typeof PIONEER_TYPES[PioneerType]][]).map(([type, info]) => (
+              {(
+                Object.entries(PIONEER_TYPES) as [
+                  PioneerType,
+                  (typeof PIONEER_TYPES)[PioneerType],
+                ][]
+              ).map(([type, info]) => (
                 <button
                   key={type}
                   onClick={() => setPioneerType(type)}
                   className={`
                     relative p-5 rounded-2xl border-2 text-left transition-all duration-200
                     hover:shadow-lg hover:-translate-y-0.5 active:scale-95
-                    ${pioneerType === type
-                      ? 'border-[#5C0A14] bg-[#5C0A14/5] shadow-md ring-2 ring-[#C9A227/40] ring-offset-1'
-                      : 'border-gray-200 bg-white hover:border-[#5C0A14/20]'
+                    ${
+                      pioneerType === type
+                        ? 'border-[#5C0A14] bg-[#5C0A14/5] shadow-md ring-2 ring-[#C9A227/40] ring-offset-1'
+                        : 'border-gray-200 bg-white hover:border-[#5C0A14/20]'
                     }
                   `}
                 >
                   {pioneerType === type && (
                     <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#5C0A14] flex items-center justify-center">
                       <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </div>
                   )}
@@ -284,9 +260,7 @@ export default function OnboardingPage() {
         {/* ── STEP 2: Current Country ── */}
         {step === 2 && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Where are you right now?
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Where are you right now?</h1>
             {detectedCountryInfo && fromCountry === detectedCountry && (
               <div className="flex items-center gap-2 mb-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
                 <span className="text-xl">{detectedCountryInfo.flag}</span>
@@ -301,29 +275,40 @@ export default function OnboardingPage() {
             <div className="relative">
               <select
                 value={fromCountry}
-                onChange={e => setFromCountry(e.target.value)}
+                onChange={(e) => setFromCountry(e.target.value)}
                 className="w-full p-4 pr-10 rounded-2xl border-2 border-gray-200 bg-white text-gray-900 text-lg
                   appearance-none focus:outline-none focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20]
                   transition-all cursor-pointer"
               >
                 <option value="">Select your country...</option>
                 <option value="OTHER">🌍 Other</option>
-                {COUNTRY_OPTIONS.map(c => (
+                {COUNTRY_OPTIONS.map((c) => (
                   <option key={c.code} value={c.code}>
                     {c.flag} {c.name}
                   </option>
                 ))}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  className="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
             </div>
 
             {fromCountry && fromCountry !== detectedCountry && (
               <p className="mt-3 text-sm text-gray-500">
-                Got it — your profile will be calibrated for {COUNTRY_OPTIONS.find(c => c.code === fromCountry)?.name ?? fromCountry}.
+                Got it — your profile will be calibrated for{' '}
+                {COUNTRY_OPTIONS.find((c) => c.code === fromCountry)?.name ?? fromCountry}.
               </p>
             )}
           </div>
@@ -332,14 +317,12 @@ export default function OnboardingPage() {
         {/* ── STEP 3: Destinations ── */}
         {step === 3 && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Where do you want to go?
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Where do you want to go?</h1>
             <p className="text-gray-500 mb-6">
               Select one or more destinations. We&apos;ll prioritize Paths in these locations.
             </p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {COUNTRY_OPTIONS.map(dest => {
+              {COUNTRY_OPTIONS.map((dest) => {
                 const isSelected = toCountries.includes(dest.code)
                 const badge = CORRIDOR_BADGE[dest.corridorStrength]
                 return (
@@ -349,9 +332,10 @@ export default function OnboardingPage() {
                     className={`
                       p-4 rounded-2xl border-2 text-left transition-all duration-200
                       hover:shadow-md hover:-translate-y-0.5 active:scale-95
-                      ${isSelected
-                        ? 'border-[#5C0A14] bg-[#5C0A14]/5 shadow ring-2 ring-[#C9A227]/30 ring-offset-1'
-                        : 'border-gray-200 bg-white hover:border-[#5C0A14]/30'
+                      ${
+                        isSelected
+                          ? 'border-[#5C0A14] bg-[#5C0A14]/5 shadow ring-2 ring-[#C9A227]/30 ring-offset-1'
+                          : 'border-gray-200 bg-white hover:border-[#5C0A14]/30'
                       }
                     `}
                   >
@@ -361,21 +345,34 @@ export default function OnboardingPage() {
                         <span className="font-semibold text-gray-900">{dest.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${badge.className}`}>
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full font-medium ${badge.className}`}
+                        >
                           {badge.label}
                         </span>
                         {isSelected && (
                           <div className="w-5 h-5 rounded-full bg-[#5C0A14] flex items-center justify-center flex-shrink-0">
-                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            <svg
+                              className="w-3 h-3 text-white"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
                             </svg>
                           </div>
                         )}
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      {dest.topSectors.slice(0, 3).map(s => (
-                        <span key={s} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                      {dest.topSectors.slice(0, 3).map((s) => (
+                        <span
+                          key={s}
+                          className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full"
+                        >
                           {s}
                         </span>
                       ))}
@@ -395,9 +392,7 @@ export default function OnboardingPage() {
         {/* ── STEP 4: Skills ── */}
         {step === 4 && pioneerType && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              What skills do you bring?
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">What skills do you bring?</h1>
             <p className="text-gray-500 mb-2">
               Select at least 3 skills. These power your match score.
             </p>
@@ -413,7 +408,7 @@ export default function OnboardingPage() {
             )}
 
             <div className="flex flex-wrap gap-2 mb-6">
-              {SKILLS_BY_TYPE[pioneerType].map(skill => {
+              {SKILLS_BY_TYPE[pioneerType].map((skill) => {
                 const active = skills.includes(skill)
                 return (
                   <button
@@ -422,9 +417,10 @@ export default function OnboardingPage() {
                     className={`
                       px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-150
                       active:scale-95
-                      ${active
-                        ? 'bg-[#5C0A14] text-white border-[#5C0A14] shadow-sm'
-                        : 'bg-white text-gray-700 border-gray-300 hover:border-[#5C0A14/50] hover:text-[#5C0A14]'
+                      ${
+                        active
+                          ? 'bg-[#5C0A14] text-white border-[#5C0A14] shadow-sm'
+                          : 'bg-white text-gray-700 border-gray-300 hover:border-[#5C0A14/50] hover:text-[#5C0A14]'
                       }
                     `}
                   >
@@ -436,13 +432,15 @@ export default function OnboardingPage() {
             </div>
 
             {/* Custom skills */}
-            {skills.filter(s => !SKILLS_BY_TYPE[pioneerType].includes(s)).length > 0 && (
+            {skills.filter((s) => !SKILLS_BY_TYPE[pioneerType].includes(s)).length > 0 && (
               <div className="mb-4">
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Your custom skills</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                  Your custom skills
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {skills
-                    .filter(s => !SKILLS_BY_TYPE[pioneerType].includes(s))
-                    .map(skill => (
+                    .filter((s) => !SKILLS_BY_TYPE[pioneerType].includes(s))
+                    .map((skill) => (
                       <button
                         key={skill}
                         onClick={() => toggleSkill(skill)}
@@ -459,8 +457,8 @@ export default function OnboardingPage() {
               <input
                 type="text"
                 value={customSkill}
-                onChange={e => setCustomSkill(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && addCustomSkill()}
+                onChange={(e) => setCustomSkill(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addCustomSkill()}
                 placeholder="Add your own skill..."
                 className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-[#5C0A14] text-sm"
               />
@@ -479,9 +477,7 @@ export default function OnboardingPage() {
         {/* ── STEP 5: Headline & Contact ── */}
         {step === 5 && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Tell us your chapter title
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Tell us your chapter title</h1>
             <p className="text-gray-500 mb-6">
               Your headline is the first thing Anchors see. Make it yours.
             </p>
@@ -494,7 +490,7 @@ export default function OnboardingPage() {
                 <input
                   type="text"
                   value={headline}
-                  onChange={e => setHeadline(e.target.value)}
+                  onChange={(e) => setHeadline(e.target.value)}
                   placeholder="e.g. Safari Guide with 5 years experience | Swahili & English"
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:outline-none
                     focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20] text-gray-900
@@ -509,7 +505,7 @@ export default function OnboardingPage() {
                 </label>
                 <textarea
                   value={bio}
-                  onChange={e => setBio(e.target.value)}
+                  onChange={(e) => setBio(e.target.value)}
                   placeholder="A short story about your journey, your passion, what drives you..."
                   rows={4}
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:outline-none
@@ -521,7 +517,9 @@ export default function OnboardingPage() {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   WhatsApp number{' '}
-                  <span className="text-gray-400 font-normal">(optional — get notified about matches)</span>
+                  <span className="text-gray-400 font-normal">
+                    (optional — get notified about matches)
+                  </span>
                 </label>
                 <div className="flex gap-2">
                   <span className="flex items-center px-3 bg-gray-100 border-2 border-gray-200 rounded-l-2xl text-gray-500 text-sm border-r-0">
@@ -530,7 +528,7 @@ export default function OnboardingPage() {
                   <input
                     type="tel"
                     value={phone}
-                    onChange={e => setPhone(e.target.value)}
+                    onChange={(e) => setPhone(e.target.value)}
                     placeholder="254712345678"
                     className="flex-1 px-4 py-3 rounded-r-2xl border-2 border-gray-200 focus:outline-none
                       focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20] text-gray-900
@@ -571,9 +569,10 @@ export default function OnboardingPage() {
               disabled={!canAdvance()}
               className={`
                 flex-1 py-3 rounded-2xl font-semibold text-white transition-all active:scale-95
-                ${canAdvance()
-                  ? 'bg-[#5C0A14] hover:bg-[#7a0e1a] shadow-md hover:shadow-lg'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                ${
+                  canAdvance()
+                    ? 'bg-[#5C0A14] hover:bg-[#7a0e1a] shadow-md hover:shadow-lg'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }
               `}
             >
@@ -585,9 +584,10 @@ export default function OnboardingPage() {
               disabled={!canAdvance() || submitting}
               className={`
                 flex-1 py-3 rounded-2xl font-semibold text-white transition-all active:scale-95
-                ${canAdvance() && !submitting
-                  ? 'bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] hover:from-[#7a0e1a] hover:to-[#5C0A14] shadow-md hover:shadow-lg'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                ${
+                  canAdvance() && !submitting
+                    ? 'bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] hover:from-[#7a0e1a] hover:to-[#5C0A14] shadow-md hover:shadow-lg'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }
               `}
             >

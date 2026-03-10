@@ -6,28 +6,32 @@ const mediaPaths = [
   {
     emoji: '🎬',
     title: 'Video / Documentary',
-    description: 'Safari films, social media content, corporate video, NGO impact documentaries. Kenya\'s landscapes deserve the world\'s screens.',
+    description:
+      "Safari films, social media content, corporate video, NGO impact documentaries. Kenya's landscapes deserve the world's screens.",
     sectors: ['Safari Films', 'Corporate', 'NGO', 'Social Media'],
     earning: 'KES 40,000 – 120,000/project',
   },
   {
     emoji: '📸',
     title: 'Photography',
-    description: 'Wildlife, fashion, events, real estate. Brands and lodges pay top dollar for authentic African imagery that resonates globally.',
+    description:
+      'Wildlife, fashion, events, real estate. Brands and lodges pay top dollar for authentic African imagery that resonates globally.',
     sectors: ['Wildlife', 'Fashion', 'Events', 'Real Estate'],
     earning: 'KES 8,000 – 50,000/day',
   },
   {
     emoji: '✍️',
     title: 'Content Writing',
-    description: 'Travel blogs, brand stories, social media management. Your words can take someone from Berlin to Nairobi before they book a flight.',
+    description:
+      'Travel blogs, brand stories, social media management. Your words can take someone from Berlin to Nairobi before they book a flight.',
     sectors: ['Travel Blogs', 'Brand Stories', 'Social Media'],
     earning: 'KES 20,000 – 80,000/month',
   },
   {
     emoji: '🎵',
     title: 'Music & Audio',
-    description: 'Soundtracks for safari films, podcast production, voice-over for brands. The sound of Africa, heard everywhere.',
+    description:
+      'Soundtracks for safari films, podcast production, voice-over for brands. The sound of Africa, heard everywhere.',
     sectors: ['Soundtracks', 'Podcasts', 'Voice-Over'],
     earning: 'KES 15,000 – 60,000/project',
   },
@@ -37,7 +41,8 @@ const featuredProjects = [
   {
     title: 'Maasai Mara Documentary Series',
     client: 'Commissioned by German travel brand',
-    description: 'A 6-part documentary series capturing the Great Migration, Maasai culture, and Kenya\'s conservation story for German-speaking audiences.',
+    description:
+      "A 6-part documentary series capturing the Great Migration, Maasai culture, and Kenya's conservation story for German-speaking audiences.",
     needs: ['Videographer', 'Editor', 'Guide-Narrator'],
     status: 'Seeking Pioneers',
     flag: '🇩🇪',
@@ -46,7 +51,8 @@ const featuredProjects = [
   {
     title: 'Safaricom Digital Campaign',
     client: 'Safaricom Brand Team',
-    description: '3 content creators needed for a nationwide digital campaign celebrating Kenyan innovation and everyday heroes.',
+    description:
+      '3 content creators needed for a nationwide digital campaign celebrating Kenyan innovation and everyday heroes.',
     needs: ['Content Creator x3', 'Social Media Manager'],
     status: 'Applications Open',
     flag: '🇰🇪',
@@ -55,7 +61,8 @@ const featuredProjects = [
   {
     title: 'Victoria Paradise Social Media',
     client: 'Victoria Paradise Lodge, Kisumu',
-    description: 'Full-time Instagram and TikTok manager needed for a luxury lodge on Lake Victoria. Remote + occasional on-site.',
+    description:
+      'Full-time Instagram and TikTok manager needed for a luxury lodge on Lake Victoria. Remote + occasional on-site.',
     needs: ['Instagram Manager', 'TikTok Creator'],
     status: 'Urgent',
     flag: '🌊',
@@ -85,18 +92,21 @@ export default function MediaPage() {
         </div>
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-[#C9A227]/20 border border-[#C9A227]/40 rounded-full px-4 py-1.5 mb-6">
-            <span className="text-[#C9A227] text-sm font-medium">BeKenya Family Ltd — Media Division</span>
+            <span className="text-[#C9A227] text-sm font-medium">
+              BeKenya Family Ltd — Media Division
+            </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-4">
             <span className="text-[#C9A227]">BeKenya</span>{' '}
-            <span className="text-white">Media</span>
-            {' '}<span className="text-4xl md:text-6xl">🎬</span>
+            <span className="text-white">Media</span>{' '}
+            <span className="text-4xl md:text-6xl">🎬</span>
           </h1>
           <p className="text-2xl md:text-3xl font-light text-[#C9A227] mb-6 tracking-wide">
-            Tell Africa's Stories. Get Paid.
+            Tell Africa&apos;s Stories. Get Paid.
           </p>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Brands, NGOs, safari lodges, and governments need authentic African content. Pioneers who can shoot, edit, write, and create — earn globally from right here in Kenya.
+            Brands, NGOs, safari lodges, and governments need authentic African content. Pioneers
+            who can shoot, edit, write, and create — earn globally from right here in Kenya.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
@@ -123,10 +133,13 @@ export default function MediaPage() {
               <h2 className="text-3xl font-bold text-white mb-6">The Opportunity Is Now</h2>
               <div className="space-y-4 text-gray-300 leading-relaxed">
                 <p>
-                  The world is hungry for authentic African content. A German travel brand needs a Maasai documentary. A British NGO needs impact footage from Kibera. A US safari lodge needs Instagram content that converts.
+                  The world is hungry for authentic African content. A German travel brand needs a
+                  Maasai documentary. A British NGO needs impact footage from Kibera. A US safari
+                  lodge needs Instagram content that converts.
                 </p>
                 <p>
-                  These clients have budgets. They want genuine, locally-created content — not stock footage. And they struggle to find reliable, talented creators in Kenya.
+                  These clients have budgets. They want genuine, locally-created content — not stock
+                  footage. And they struggle to find reliable, talented creators in Kenya.
                 </p>
                 <p className="text-[#C9A227] font-semibold text-lg">
                   That is the gap BeKenya Media exists to fill.
@@ -188,8 +201,13 @@ export default function MediaPage() {
                     <h3 className="text-xl font-bold text-white mb-2">{path.title}</h3>
                     <p className="text-gray-400 text-sm leading-relaxed mb-4">{path.description}</p>
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {path.sectors.map(sector => (
-                        <span key={sector} className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-0.5 rounded-full">{sector}</span>
+                      {path.sectors.map((sector) => (
+                        <span
+                          key={sector}
+                          className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-0.5 rounded-full"
+                        >
+                          {sector}
+                        </span>
                       ))}
                     </div>
                     <div className="text-[#C9A227] font-bold text-sm">{path.earning}</div>
@@ -206,7 +224,8 @@ export default function MediaPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">Featured Projects</h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-            Real commissions from real Anchors. These paths are open — apply and tell Africa's story.
+            Real commissions from real Anchors. These paths are open — apply and tell Africa&apos;s
+            story.
           </p>
           <div className="space-y-6">
             {featuredProjects.map((project) => (
@@ -219,24 +238,35 @@ export default function MediaPage() {
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-3 mb-2">
                       <h3 className="text-xl font-bold text-white">{project.title}</h3>
-                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                        project.status === 'Urgent'
-                          ? 'bg-red-500/20 text-red-400'
-                          : 'bg-green-500/20 text-green-400'
-                      }`}>
+                      <span
+                        className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                          project.status === 'Urgent'
+                            ? 'bg-red-500/20 text-red-400'
+                            : 'bg-green-500/20 text-green-400'
+                        }`}
+                      >
                         {project.status}
                       </span>
                     </div>
                     <div className="text-[#C9A227] text-sm font-medium mb-3">{project.client}</div>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-4">{project.description}</p>
+                    <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                      {project.description}
+                    </p>
                     <div className="flex flex-wrap gap-2">
-                      {project.needs.map(need => (
-                        <span key={need} className="bg-white/5 text-gray-300 text-xs px-2.5 py-1 rounded-full border border-white/10">{need}</span>
+                      {project.needs.map((need) => (
+                        <span
+                          key={need}
+                          className="bg-white/5 text-gray-300 text-xs px-2.5 py-1 rounded-full border border-white/10"
+                        >
+                          {need}
+                        </span>
                       ))}
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-3 min-w-[140px]">
-                    <div className="text-[#C9A227] font-black text-lg text-right">{project.value}</div>
+                    <div className="text-[#C9A227] font-black text-lg text-right">
+                      {project.value}
+                    </div>
                     <Link
                       href="/onboarding?type=creator"
                       className="bg-[#C9A227] text-white text-sm font-bold px-5 py-2 rounded-full hover:opacity-90 transition-colors whitespace-nowrap"
@@ -260,7 +290,9 @@ export default function MediaPage() {
               Create content + we auto-distribute to 9 platforms
             </p>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Pioneers who create for BeKenya Media clients get access to our distribution engine. Post once, reach everywhere. Your content goes from Nairobi to the world automatically — while you focus on the next shoot.
+              Pioneers who create for BeKenya Media clients get access to our distribution engine.
+              Post once, reach everywhere. Your content goes from Nairobi to the world automatically
+              — while you focus on the next shoot.
             </p>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-9 gap-3 mb-12">
@@ -278,11 +310,26 @@ export default function MediaPage() {
             <div className="text-3xl mb-4">⚡</div>
             <h3 className="font-bold text-[#C9A227] text-xl mb-3">How it works</h3>
             <ol className="text-left space-y-3 text-gray-300 text-sm">
-              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">1.</span> Pioneer creates content for an Anchor (lodge, brand, NGO)</li>
-              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">2.</span> Content is approved by Anchor and marked for distribution</li>
-              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">3.</span> BeKenya auto-schedules posts across all 9 platforms</li>
-              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">4.</span> Analytics delivered to both Pioneer and Anchor</li>
-              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">5.</span> Pioneer gets paid via M-Pesa within 48 hours of delivery</li>
+              <li className="flex gap-3">
+                <span className="text-[#C9A227] font-bold">1.</span> Pioneer creates content for an
+                Anchor (lodge, brand, NGO)
+              </li>
+              <li className="flex gap-3">
+                <span className="text-[#C9A227] font-bold">2.</span> Content is approved by Anchor
+                and marked for distribution
+              </li>
+              <li className="flex gap-3">
+                <span className="text-[#C9A227] font-bold">3.</span> BeKenya auto-schedules posts
+                across all 9 platforms
+              </li>
+              <li className="flex gap-3">
+                <span className="text-[#C9A227] font-bold">4.</span> Analytics delivered to both
+                Pioneer and Anchor
+              </li>
+              <li className="flex gap-3">
+                <span className="text-[#C9A227] font-bold">5.</span> Pioneer gets paid via M-Pesa
+                within 48 hours of delivery
+              </li>
             </ol>
           </div>
         </div>
@@ -292,9 +339,13 @@ export default function MediaPage() {
       <section className="py-16 px-4 bg-[#006600]/10 border-t border-[#006600]/30">
         <div className="max-w-4xl mx-auto text-center">
           <div className="text-4xl mb-4">🌍</div>
-          <h2 className="text-2xl font-bold text-white mb-4">Document UTAMADUNI's Impact for the World</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Document UTAMADUNI&apos;s Impact for the World
+          </h2>
           <p className="text-gray-400 mb-6 max-w-xl mx-auto">
-            UTAMADUNI is BeKenya's community charity arm — fighting poverty in Kenya through opportunity and dignity. Media Pioneers can document this impact and share it with the world.
+            UTAMADUNI is BeKenya&apos;s community charity arm — fighting poverty in Kenya through
+            opportunity and dignity. Media Pioneers can document this impact and share it with the
+            world.
           </p>
           <Link
             href="/charity"
@@ -309,10 +360,11 @@ export default function MediaPage() {
       <section className="py-24 px-4 bg-gradient-to-br from-[#0D1F3C] to-[#0A0205]">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl font-black text-white mb-4">
-            Africa's story is waiting to be told.
+            Africa&apos;s story is waiting to be told.
           </h2>
           <p className="text-gray-300 text-lg mb-10 leading-relaxed">
-            Join BeKenya Media as a Pioneer. Shoot. Write. Create. Earn. Distribute to 9 platforms. Paid via M-Pesa.
+            Join BeKenya Media as a Pioneer. Shoot. Write. Create. Earn. Distribute to 9 platforms.
+            Paid via M-Pesa.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link

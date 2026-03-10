@@ -1,6 +1,7 @@
 # Be[Country] — Live Progress Tracker
+
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 9 (2026-03-10)
+> Last updated: Session 10 (2026-03-10)
 
 ---
 
@@ -14,6 +15,7 @@ Vercel: Auto-deploys from main
 ## ✅ Phase 1: Foundation (COMPLETE)
 
 ### Platform Core
+
 - [x] Next.js 14 App Router setup (TypeScript)
 - [x] Tailwind CSS with BeKenya brand (maroon #5C0A14 + gold #C9A227)
 - [x] Prisma schema: User, Path, Chapter, Payment, Referral, SocialPost
@@ -21,6 +23,7 @@ Vercel: Auto-deploys from main
 - [x] Jest test suite + CI/CD (GitHub Actions)
 
 ### BeNetwork Vocabulary System
+
 - [x] lib/vocabulary.ts — VOCAB, PIONEER_TYPES, PATH_CATEGORIES
 - [x] lib/countries.ts — 12-country config registry
 - [x] lib/compass.ts — Country route corridors (KE-DE, KE-GB, KE-AE, KE-US, etc.)
@@ -28,12 +31,14 @@ Vercel: Auto-deploys from main
 - [x] lib/safari-packages.ts — Real Kenya experience packages
 
 ### Communication Layer
+
 - [x] lib/social-media.ts — 9-platform social config + automation
 - [x] lib/whatsapp-templates.ts — 10 WhatsApp templates (en/sw/de)
 - [x] lib/email.ts — Resend email system with branded HTML templates
 - [x] lib/mpesa.ts — M-Pesa Daraja API v2
 
 ### Pages (16+)
+
 - [x] app/page.tsx — Homepage (identity-first compass landing)
 - [x] app/compass/page.tsx — 4-step smart route wizard
 - [x] app/ventures/page.tsx — Unified path + experience feed
@@ -52,6 +57,7 @@ Vercel: Auto-deploys from main
 - [x] app/about, /pricing, /contact, /privacy, /profile, /referral
 
 ### API Routes
+
 - [x] /api/paths — CRUD
 - [x] /api/compass — geo detection + route matching
 - [x] /api/onboarding — Pioneer profile creation
@@ -64,6 +70,7 @@ Vercel: Auto-deploys from main
 - [x] /api/profile — Profile CRUD
 
 ### Infrastructure
+
 - [x] CLAUDE.md — Agentic operating manual
 - [x] PRD.md — Product requirements document
 - [x] PROGRESS.md — This file
@@ -76,20 +83,22 @@ Vercel: Auto-deploys from main
 - [x] public/logo-bekenya.svg — Lion logo (maroon + gold)
 
 ### Tests
-- [x] __tests__/api/mpesa.test.ts — M-Pesa phone formatting
-- [x] __tests__/api/jobs.test.ts — Path schema validation
-- [x] __tests__/lib/vocabulary.test.ts
-- [x] __tests__/lib/matching.test.ts
-- [x] __tests__/lib/safari-packages.test.ts
-- [x] __tests__/lib/compass.test.ts
-- [x] __tests__/lib/whatsapp-templates.test.ts
-- [x] __tests__/lib/social-media.test.ts
+
+- [x] **tests**/api/mpesa.test.ts — M-Pesa phone formatting
+- [x] **tests**/api/jobs.test.ts — Path schema validation
+- [x] **tests**/lib/vocabulary.test.ts
+- [x] **tests**/lib/matching.test.ts
+- [x] **tests**/lib/safari-packages.test.ts
+- [x] **tests**/lib/compass.test.ts
+- [x] **tests**/lib/whatsapp-templates.test.ts
+- [x] **tests**/lib/social-media.test.ts
 
 ---
 
 ## 🔄 Phase 2: BeKenya Live (IN PROGRESS)
 
 ### Session 5 (2026-03-10)
+
 - [x] **lib/country-selector.ts** — Single source of truth: geographic coords, Haversine proximity, region clusters, corridor badges. Replaces all inline country arrays.
 - [x] **components/CountryPrioritySelector.tsx** — Elegant ordered multi-select. Features: proximity glow (< 1800km), green pulse for nearby, priority badges ①②③, sticky priority rail, max 5 selections.
 - [x] **app/compass/page.tsx** — Rewritten: uses CountryPrioritySelector for Step 1, maroon/gold brand, removed DESTINATIONS array, shows multi-destination in route result.
@@ -100,6 +109,7 @@ Vercel: Auto-deploys from main
 - [x] TypeScript: 0 errors.
 
 ### Session 4 (2026-03-09)
+
 - [x] Next.js 14.2.5 → 14.2.35 (security: CVE-2024-46982, CVE-2024-56332 patched)
 - [x] Full responsive system: xs→4K with fluid typography + TV media queries
 - [x] Golden ratio φ=1.618 token system in tailwind.config.ts
@@ -109,6 +119,7 @@ Vercel: Auto-deploys from main
 - [x] About page brand audit (further rewritten in session 5)
 
 ### Session 8 (2026-03-10) — Language Architecture + UX Unification + Quality
+
 - [x] **Language registry** — `lib/country-selector.ts`: 14 languages with metadata (nativeName, countries, digitalReach), `languages[]` on all 16 countries
 - [x] **Language matching** — `getCountriesBySharedLanguage()`, `languageOverlap()`, `getGroupedByLanguage()` for collaboration routing
 - [x] **Ventures/Experiences unified** — `/experiences` now redirects to `/ventures`. Single unified feed. Detail pages at `/experiences/[id]` preserved.
@@ -122,6 +133,7 @@ Vercel: Auto-deploys from main
 - [x] TypeScript: 0 errors ✅
 
 ### Session 7 (2026-03-10) — Docs System + Playwright Visual Testing
+
 - [x] **CLAUDE.md** — Rewritten as lean master agent index (~200 lines). All doc cross-references inline.
 - [x] **PRD.md v5** — Self-resolved Q&A clash log (9 questions), acceptance criteria, revenue model
 - [x] **DESIGN_SYSTEM.md** — NEW: full brand token reference, component patterns, forbidden colors, checklist
@@ -135,11 +147,12 @@ Vercel: Auto-deploys from main
 - [x] **SVG Image fix** — `unoptimized` prop on all `<Image src="/logo.svg"...>` (was 400 error)
 - [x] **Nav breakpoint fix** — Desktop nav now shows at `xl:` (1280px+), not `md:`/`lg:` (prevented overflow at 768–1024px)
 - [x] **globals.css** — `overflow-x: hidden` on both `html` + `body`
-- [x] **Brand sweep continued** — pioneers/dashboard, charity, pricing, contact, signup: all orange-* → maroon/gold
+- [x] **Brand sweep continued** — pioneers/dashboard, charity, pricing, contact, signup: all orange-\* → maroon/gold
 - [x] **.claude/launch.json** — bekenya-dev server config (npm run dev → port 3000)
 - [x] TypeScript: 0 errors ✅
 
 ### Session 6 (2026-03-10) — Brand Consistency + UX Cleanup
+
 - [x] **Brand sweep** — Eliminated `#FF6B35` from ALL 30+ pages/components. Zero orange violations.
 - [x] **tailwind.config.ts** — `brand.orange` + `brand.teal` aliased → `#C9A227` (gold) for backward compat. All `text-brand-orange`, `bg-brand-orange` etc now render as gold.
 - [x] **globals.css** — `btn-primary` rewritten: maroon gradient + gold border ring. CSS var `--color-orange` → gold alias.
@@ -151,6 +164,7 @@ Vercel: Auto-deploys from main
 - [x] TypeScript: 0 errors ✅
 
 ### Session 9 (2026-03-10) — Frontend Finalization Complete
+
 - [x] **Email template brand fix** — `lib/email.ts`: hero gradient #e85d2a→#3a0610, stat-value/footer-brand/highlight → gold #C9A227, badge bg → maroon tints, score-fill gradient → maroon→gold, footer "Jobs"→"Paths", "employer"→"Anchor"
 - [x] **Vocabulary sweep complete** — signup (JOB_SEEKER→PIONEER, EMPLOYER→ANCHOR), pricing (job post→Path post, applicants→Chapters), privacy (job application→Chapter data, employer→Anchor), contact (Job posting help→Path posting help), referral (hired→placed), profile (Job Title→Current Role), about (Pioneers Hired→Pioneers Placed), dashboard (per hire→per placement)
 - [x] **Dark theme complete** — ALL pages now use bg-[#0A0A0F] dark theme:
@@ -167,8 +181,37 @@ Vercel: Auto-deploys from main
 - [x] Tests: ✅ 25/25 pass
 - [x] TypeScript: 0 errors ✅
 
+### Session 10 (2026-03-10) — Backend-Ready Architecture + Dev Tooling
+
+- [x] **types/domain.ts** — Core domain types: Pioneer, PioneerProfile, Anchor, Path, PathListItem, Chapter, Payment, MatchResult, PlatformStats, AdminPioneer, AdminPath, PricingPlan, PaymentMethodInfo, FilterCategory. All enums (UserRole, PathType, PathStatus, ChapterStatus, PaymentStatus, PaymentProvider).
+- [x] **types/api.ts** — API contract types: ApiResponse<T>, PaginatedResponse<T>, CreatePathRequest, UpdatePathRequest, OnboardingRequest, CompassRequest/Response, OpenChapterRequest, MpesaStkPushRequest/Response, MpesaCallbackPayload, SearchRequest/Response, AdminDashboardResponse, UpdateProfileRequest.
+- [x] **services/types.ts** — Service interfaces: IPathService, IPioneerService, IAnchorService, IChapterService, ICompassService, IPaymentService, IAdminService, IPricingService, IStaticDataService. Clean contracts for mock→real DB swap.
+- [x] **data/mock/** — Centralized mock data directory (single source of truth):
+  - `paths.ts` — MOCK_VENTURE_PATHS + MOCK_MATCHING_PATHS
+  - `pioneers.ts` — MOCK_CURRENT_PIONEER, MOCK_CHAPTERS, admin pioneer data
+  - `admin.ts` — MOCK_PLATFORM_STATS, MOCK_ALL_ANCHORS, MOCK_ALL_PATHS, social data
+  - `skills.ts` — SKILLS_BY_TYPE (6 Pioneer types × ~24 skills)
+  - `pricing.ts` — PRICING_PLANS, PAYMENT_METHODS
+  - `homepage.ts` — COUNTRY_GREETINGS, ROTATING_FLAGS, BENETWORK_PILLARS, FEATURED_VENTURES, TESTIMONIALS, BE_COUNTRIES
+  - `index.ts` — Barrel export
+- [x] **All pages rewired** — Every page imports from `@/data/mock` instead of inline arrays:
+  - ventures, onboarding, pricing, admin, pioneers/dashboard, homepage, matching engine
+  - Zero inline mock data remaining in any page file
+- [x] **Prettier** — `.prettierrc.json` (no semis, single quotes, trailing commas, 100 char width)
+- [x] **ESLint** — `.eslintrc.json` (next/core-web-vitals + prettier + strict rules: no-console warn, prefer-const, no-var, eqeqeq)
+- [x] **Husky + lint-staged** — Pre-commit hook: Prettier + ESLint on staged .ts/.tsx, Prettier on .json/.md/.css
+- [x] **.editorconfig** — Consistent formatting across IDEs (2-space indent, LF, UTF-8, trim trailing)
+- [x] **.nvmrc** — Node 20 locked
+- [x] **New scripts** — `npm run format`, `npm run format:check`, `npm run typecheck`
+- [x] **ESLint entity fixes** — fashion, forgot-password, media pages: unescaped `'` and `"` → HTML entities
+- [x] Build: ✅ 0 errors
+- [x] Tests: ✅ 25/25 pass
+- [x] TypeScript: 0 errors ✅
+
 ### Frontend Status: COMPLETE
+
 All 20+ pages now have consistent:
+
 - Dark theme (bg-[#0A0A0F])
 - BeNetwork vocabulary (Pioneer/Anchor/Path/Chapter/Venture/Compass)
 - Brand colors (maroon #5C0A14 + gold #C9A227, zero orange)
@@ -186,12 +229,14 @@ All 20+ pages now have consistent:
 | Create M-Pesa Sandbox | developer.safaricom.co.ke | 30 min | Set `MPESA_CONSUMER_KEY` + `SECRET` |
 
 **Step 2: Database Migration** (Claude can do after Step 1)
+
 - [ ] `npx prisma migrate deploy` — create tables from schema.prisma
 - [ ] Seed initial data: 12 countries, 5 safari packages, Pioneer types
 - [ ] Replace all mock data arrays with Prisma queries
 - [ ] Add connection pooling config for Neon
 
 **Step 3: Auth Integration** (Claude can do after Step 1)
+
 - [ ] Enable Google OAuth in NextAuth config
 - [ ] Enable email/password with bcrypt
 - [ ] Add session guards to `/pioneers/dashboard`, `/anchors/dashboard`
@@ -199,12 +244,14 @@ All 20+ pages now have consistent:
 - [ ] Wire login → session with user role (pioneer/anchor/admin)
 
 **Step 4: Payment Flow** (Claude can do after Step 1)
+
 - [ ] Wire M-Pesa STK Push button in experience detail pages
 - [ ] Implement callback → update payment status in DB
 - [ ] Email receipt via Resend
 - [ ] WhatsApp receipt via templates (if WA Business API available)
 
 **Step 5: API Completion** (Claude can do after Step 2)
+
 - [ ] `/api/paths` — real CRUD against DB (currently mock)
 - [ ] `/api/compass` — geo detection + language-aware route scoring
 - [ ] `/api/chapters` — Pioneer creates chapter (application) against a Path
@@ -217,13 +264,13 @@ All 20+ pages now have consistent:
 
 These cannot be done by Claude — see HUMAN_MANUAL.md:
 
-| Item | Needed For | Est. Time |
-|------|-----------|-----------|
-| DATABASE_URL (Neon) | Everything with real data | 15 min |
-| MPESA_CONSUMER_KEY + SECRET | Live M-Pesa payments | 30 min (Safaricom portal) |
-| GOOGLE_CLIENT_ID + SECRET | Google Sign-In | 15 min (Google Console) |
-| RESEND_API_KEY | Email notifications | 5 min |
-| NEXTAUTH_SECRET | Auth security | 1 min (`openssl rand -base64 32`) |
+| Item                        | Needed For                | Est. Time                         |
+| --------------------------- | ------------------------- | --------------------------------- |
+| DATABASE_URL (Neon)         | Everything with real data | 15 min                            |
+| MPESA_CONSUMER_KEY + SECRET | Live M-Pesa payments      | 30 min (Safaricom portal)         |
+| GOOGLE_CLIENT_ID + SECRET   | Google Sign-In            | 15 min (Google Console)           |
+| RESEND_API_KEY              | Email notifications       | 5 min                             |
+| NEXTAUTH_SECRET             | Auth security             | 1 min (`openssl rand -base64 32`) |
 
 ---
 
@@ -251,17 +298,17 @@ These cannot be done by Claude — see HUMAN_MANUAL.md:
 
 ## 📊 Current Stats
 
-| Metric | Value |
-|--------|-------|
-| Pages live | 20+ |
-| API routes | 12+ |
-| Library modules | 10 |
-| Test files | 8 |
-| Lines of code | ~15,000+ |
-| Countries configured | 12 |
-| Experience packages | 5 |
-| Phase 1 | ✅ Complete |
-| Phase 2 | 🔄 In Progress |
-| Branch | main (direct) |
-| CI | ✅ GitHub Actions |
-| Deploy | Auto via Vercel |
+| Metric               | Value             |
+| -------------------- | ----------------- |
+| Pages live           | 20+               |
+| API routes           | 12+               |
+| Library modules      | 10                |
+| Test files           | 8                 |
+| Lines of code        | ~15,000+          |
+| Countries configured | 12                |
+| Experience packages  | 5                 |
+| Phase 1              | ✅ Complete       |
+| Phase 2              | 🔄 In Progress    |
+| Branch               | main (direct)     |
+| CI                   | ✅ GitHub Actions |
+| Deploy               | Auto via Vercel   |

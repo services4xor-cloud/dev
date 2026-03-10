@@ -3,78 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Check, Zap, Star, Crown, Briefcase, Globe, Users } from 'lucide-react'
+import { PRICING_PLANS, PAYMENT_METHODS } from '@/data/mock'
 
-const plans = [
-  {
-    name: 'Basic',
-    price: 500,
-    currency: 'KES',
-    usd: 4,
-    icon: Briefcase,
-    color: 'gray',
-    description: 'Perfect for Anchors posting occasionally',
-    features: [
-      '1 active Path post (30 days)',
-      'Standard placement',
-      'Up to 50 Chapters',
-      'Email notifications',
-      'Pay via M-Pesa',
-    ],
-    cta: 'Post for KES 500',
-    popular: false,
-  },
-  {
-    name: 'Featured',
-    price: 2000,
-    currency: 'KES',
-    usd: 15,
-    icon: Star,
-    color: 'maroon',
-    description: 'Stand out and attract 3× more qualified Pioneers',
-    features: [
-      '1 featured Path post (45 days)',
-      'Top of Compass results',
-      'Unlimited Chapters',
-      'SMS + email notifications',
-      'Anchor logo displayed',
-      'Highlighted in sector',
-      'Social media boost',
-    ],
-    cta: 'Post Featured — KES 2,000',
-    popular: true,
-  },
-  {
-    name: 'Premium',
-    price: 5000,
-    currency: 'KES',
-    usd: 37,
-    icon: Crown,
-    color: 'gold',
-    description: 'Maximum visibility for serious hiring needs',
-    features: [
-      '3 premium Path posts (60 days)',
-      'Homepage banner placement',
-      'Unlimited Chapters',
-      'Dedicated support',
-      'CV screening assistance',
-      'WhatsApp alerts',
-      'Analytics dashboard',
-      'Featured in newsletter',
-      'International reach',
-    ],
-    cta: 'Go Premium — KES 5,000',
-    popular: false,
-  },
-]
-
-const paymentMethods = [
-  { name: 'M-Pesa', flag: '🇰🇪', desc: 'Kenya, Tanzania, Uganda' },
-  { name: 'Airtel Money', flag: '🌍', desc: 'East & Central Africa' },
-  { name: 'Stripe', flag: '💳', desc: 'USA, UK, EU (cards)' },
-  { name: 'Flutterwave', flag: '🌊', desc: 'Nigeria, Ghana, Africa' },
-  { name: 'PayPal', flag: '🌐', desc: 'Worldwide' },
-  { name: 'USSD', flag: '📱', desc: 'No smartphone needed' },
-]
+const ICON_MAP: Record<string, typeof Briefcase> = { Briefcase, Star, Crown }
 
 export default function PricingPage() {
   const [currency, setCurrency] = useState<'KES' | 'USD'>('KES')
@@ -88,11 +19,10 @@ export default function PricingPage() {
             <Globe className="w-4 h-4" />
             Pay from anywhere — M-Pesa, card, or mobile money
           </div>
-          <h1 className="text-4xl font-black text-white mb-4">
-            Simple, transparent pricing
-          </h1>
+          <h1 className="text-4xl font-black text-white mb-4">Simple, transparent pricing</h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Post a Path in minutes. Pay with M-Pesa. Reach thousands of qualified Pioneers across Kenya and beyond.
+            Post a Path in minutes. Pay with M-Pesa. Reach thousands of qualified Pioneers across
+            Kenya and beyond.
           </p>
 
           {/* Currency toggle */}
@@ -114,13 +44,15 @@ export default function PricingPage() {
 
         {/* Plans */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {plans.map(plan => {
-            const Icon = plan.icon
+          {PRICING_PLANS.map((plan) => {
+            const Icon = ICON_MAP[plan.icon] ?? Briefcase
             return (
               <div
                 key={plan.name}
                 className={`bg-gray-900/60 rounded-2xl p-6 shadow-sm border-2 transition-transform hover:-translate-y-1 relative ${
-                  plan.popular ? 'border-[#C9A227]/50 shadow-lg shadow-[#C9A227]/5' : 'border-gray-800'
+                  plan.popular
+                    ? 'border-[#C9A227]/50 shadow-lg shadow-[#C9A227]/5'
+                    : 'border-gray-800'
                 }`}
               >
                 {plan.popular && (
@@ -129,10 +61,14 @@ export default function PricingPage() {
                   </div>
                 )}
 
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${
-                  plan.popular ? 'bg-[#5C0A14]/50' : 'bg-gray-800'
-                }`}>
-                  <Icon className={`w-6 h-6 ${plan.popular ? 'text-[#C9A227]' : 'text-gray-400'}`} />
+                <div
+                  className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${
+                    plan.popular ? 'bg-[#5C0A14]/50' : 'bg-gray-800'
+                  }`}
+                >
+                  <Icon
+                    className={`w-6 h-6 ${plan.popular ? 'text-[#C9A227]' : 'text-gray-400'}`}
+                  />
                 </div>
 
                 <h3 className="text-xl font-bold text-white">{plan.name}</h3>
@@ -148,7 +84,9 @@ export default function PricingPage() {
                 <ul className="space-y-2 mb-6">
                   {plan.features.map((f, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
-                      <Check className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.popular ? 'text-[#C9A227]' : 'text-green-500'}`} />
+                      <Check
+                        className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.popular ? 'text-[#C9A227]' : 'text-green-500'}`}
+                      />
                       {f}
                     </li>
                   ))}
@@ -172,12 +110,19 @@ export default function PricingPage() {
         {/* Payment Methods */}
         <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-gray-800 mb-16">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-white">Pay from anywhere in Africa and the world</h2>
-            <p className="text-gray-400 mt-2">We accept every major payment method so no one is excluded</p>
+            <h2 className="text-2xl font-bold text-white">
+              Pay from anywhere in Africa and the world
+            </h2>
+            <p className="text-gray-400 mt-2">
+              We accept every major payment method so no one is excluded
+            </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {paymentMethods.map(method => (
-              <div key={method.name} className="text-center p-4 bg-gray-800/60 rounded-xl border border-gray-700/50">
+            {PAYMENT_METHODS.map((method) => (
+              <div
+                key={method.name}
+                className="text-center p-4 bg-gray-800/60 rounded-xl border border-gray-700/50"
+              >
                 <div className="text-2xl mb-1">{method.flag}</div>
                 <div className="font-semibold text-white text-sm">{method.name}</div>
                 <div className="text-xs text-gray-500 mt-0.5">{method.desc}</div>
@@ -191,9 +136,13 @@ export default function PricingPage() {
           <Users className="w-12 h-12 mx-auto mb-4 opacity-80" />
           <h2 className="text-2xl font-bold mb-2">Pioneers — always free</h2>
           <p className="opacity-90 max-w-lg mx-auto mb-6">
-            Creating a profile, opening Chapters, and getting placed is completely free for Pioneers. Always.
+            Creating a profile, opening Chapters, and getting placed is completely free for
+            Pioneers. Always.
           </p>
-          <Link href="/signup?role=pioneer" className="bg-white text-[#5C0A14] font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors inline-block">
+          <Link
+            href="/signup?role=pioneer"
+            className="bg-white text-[#5C0A14] font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors inline-block"
+          >
             Create Free Profile →
           </Link>
         </div>

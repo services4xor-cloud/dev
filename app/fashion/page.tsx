@@ -8,7 +8,8 @@ const fashionPaths = [
     title: 'Catalog Model for Kenya Tourism Board',
     type: 'Model',
     rate: 'KES 8,000/day',
-    description: 'Represent Kenya in international tourism campaigns. Professional photoshoots in iconic Kenyan landscapes.',
+    description:
+      'Represent Kenya in international tourism campaigns. Professional photoshoots in iconic Kenyan landscapes.',
     tags: ['Photoshoot', 'Tourism', 'Commercial'],
     emoji: '👗',
   },
@@ -17,7 +18,8 @@ const fashionPaths = [
     title: 'Textile Designer at Nairobi Fashion Week',
     type: 'Designer',
     rate: 'KES 45,000/month',
-    description: 'Sketch to stitch. Design collections featuring authentic African prints for Nairobi Fashion Week showcases.',
+    description:
+      'Sketch to stitch. Design collections featuring authentic African prints for Nairobi Fashion Week showcases.',
     tags: ['Textile', 'African Prints', 'Fashion Week'],
     emoji: '✂️',
   },
@@ -26,7 +28,8 @@ const fashionPaths = [
     title: 'Brand Photographer (Remote Possible)',
     type: 'Creative',
     rate: 'KES 60,000/month',
-    description: 'Capture brand stories for fashion houses. Portfolio building, creative direction, remote-friendly.',
+    description:
+      'Capture brand stories for fashion houses. Portfolio building, creative direction, remote-friendly.',
     tags: ['Photography', 'Branding', 'Remote'],
     emoji: '📸',
   },
@@ -64,7 +67,8 @@ const protections = [
   {
     icon: '🛡️',
     title: 'Chaperone Service',
-    description: 'A BeKenya chaperone available for every shoot. Never alone if you prefer not to be.',
+    description:
+      'A BeKenya chaperone available for every shoot. Never alone if you prefer not to be.',
   },
   {
     icon: '✅',
@@ -84,7 +88,9 @@ export default function FashionPage() {
         </div>
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-[#C9A227]/20 border border-[#C9A227]/40 rounded-full px-4 py-1.5 mb-6">
-            <span className="text-[#C9A227] text-sm font-medium">BeKenya Family Ltd — Fashion Division</span>
+            <span className="text-[#C9A227] text-sm font-medium">
+              BeKenya Family Ltd — Fashion Division
+            </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-4">
             <span className="text-[#C9A227]">BeKenya</span>{' '}
@@ -94,7 +100,8 @@ export default function FashionPage() {
             Style. Dignity. Africa.
           </p>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-            From Nairobi to the World — African fashion that tells a story. Models, designers, and creatives building careers with dignity.
+            From Nairobi to the World — African fashion that tells a story. Models, designers, and
+            creatives building careers with dignity.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
@@ -118,10 +125,13 @@ export default function FashionPage() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-[#C9A227] mb-6">Our Mission</h2>
           <p className="text-xl md:text-2xl text-gray-200 leading-relaxed font-light">
-            "Fashion that empowers. Every model is a Pioneer. Every garment tells a story."
+            &ldquo;Fashion that empowers. Every model is a Pioneer. Every garment tells a
+            story.&rdquo;
           </p>
           <p className="mt-6 text-gray-400 max-w-2xl mx-auto">
-            BeKenya Fashion exists because Africa's creative talent deserves global opportunity — without the exploitation, without the gatekeepers. We build safe, paid, professional pathways from Kenya to the world.
+            BeKenya Fashion exists because Africa&apos;s creative talent deserves global opportunity
+            — without the exploitation, without the gatekeepers. We build safe, paid, professional
+            pathways from Kenya to the world.
           </p>
         </div>
       </section>
@@ -131,18 +141,25 @@ export default function FashionPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">Three Paths in Fashion</h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-            Whether you walk the runway, sketch the collection, or capture the image — there is a path with your name on it.
+            Whether you walk the runway, sketch the collection, or capture the image — there is a
+            path with your name on it.
           </p>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-gradient-to-b from-[#5C0A14]/40 to-[#5C0A14]/10 border border-[#C9A227]/30 rounded-2xl p-8 hover:border-[#C9A227]/60 transition-colors">
               <div className="text-5xl mb-4">👗</div>
               <h3 className="text-xl font-bold text-[#C9A227] mb-3">Model</h3>
               <p className="text-gray-300 leading-relaxed">
-                Professional photoshoots, brand campaigns, catalog work. Safe. Paid. Professional. Every engagement on your terms.
+                Professional photoshoots, brand campaigns, catalog work. Safe. Paid. Professional.
+                Every engagement on your terms.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {['Photoshoots', 'Campaigns', 'Catalog'].map(tag => (
-                  <span key={tag} className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded-full">{tag}</span>
+                {['Photoshoots', 'Campaigns', 'Catalog'].map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded-full"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
             </div>
@@ -150,11 +167,17 @@ export default function FashionPage() {
               <div className="text-5xl mb-4">✂️</div>
               <h3 className="text-xl font-bold text-[#C9A227] mb-3">Designer</h3>
               <p className="text-gray-300 leading-relaxed">
-                Sketch to stitch. Local production. African prints. Global reach. Bring Kenya's textile tradition to international markets.
+                Sketch to stitch. Local production. African prints. Global reach. Bring Kenya&apos;s
+                textile tradition to international markets.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {['Textiles', 'African Prints', 'Production'].map(tag => (
-                  <span key={tag} className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded-full">{tag}</span>
+                {['Textiles', 'African Prints', 'Production'].map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded-full"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
             </div>
@@ -162,11 +185,17 @@ export default function FashionPage() {
               <div className="text-5xl mb-4">📸</div>
               <h3 className="text-xl font-bold text-[#C9A227] mb-3">Creative</h3>
               <p className="text-gray-300 leading-relaxed">
-                Photography, styling, hair and makeup, set design. The whole world behind the lens. Be the vision behind the brand.
+                Photography, styling, hair and makeup, set design. The whole world behind the lens.
+                Be the vision behind the brand.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {['Photography', 'Styling', 'Set Design'].map(tag => (
-                  <span key={tag} className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded-full">{tag}</span>
+                {['Photography', 'Styling', 'Set Design'].map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded-full"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
             </div>
@@ -177,7 +206,9 @@ export default function FashionPage() {
       {/* Pioneer Protections */}
       <section className="py-20 px-4 bg-gradient-to-br from-[#5C0A14]/30 to-transparent">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-white text-center mb-4">What Makes BeKenya Fashion Different</h2>
+          <h2 className="text-3xl font-bold text-white text-center mb-4">
+            What Makes BeKenya Fashion Different
+          </h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
             Every Pioneer is protected. Full stop.
           </p>
@@ -225,8 +256,13 @@ export default function FashionPage() {
                     </div>
                     <p className="text-gray-400 text-sm mb-3">{path.description}</p>
                     <div className="flex flex-wrap gap-2">
-                      {path.tags.map(tag => (
-                        <span key={tag} className="bg-white/5 text-gray-300 text-xs px-2 py-0.5 rounded">{tag}</span>
+                      {path.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="bg-white/5 text-gray-300 text-xs px-2 py-0.5 rounded"
+                        >
+                          {tag}
+                        </span>
                       ))}
                     </div>
                   </div>
@@ -251,7 +287,8 @@ export default function FashionPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">Partner Anchors</h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-            Organisations that trust BeKenya Fashion to connect them with verified, talented Pioneers
+            Organisations that trust BeKenya Fashion to connect them with verified, talented
+            Pioneers
           </p>
           <div className="grid md:grid-cols-3 gap-6">
             {partnerAnchors.map((anchor) => (
@@ -271,11 +308,10 @@ export default function FashionPage() {
       {/* CTA */}
       <section className="py-24 px-4 bg-gradient-to-br from-[#5C0A14] to-[#3D0A0A]">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl font-black text-white mb-4">
-            Ready to walk your path?
-          </h2>
+          <h2 className="text-4xl font-black text-white mb-4">Ready to walk your path?</h2>
           <p className="text-gray-300 text-lg mb-10 leading-relaxed">
-            Join BeKenya Fashion as a Pioneer. Set your rates. Choose your shoots. Build your career with dignity.
+            Join BeKenya Fashion as a Pioneer. Set your rates. Choose your shoots. Build your career
+            with dignity.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
