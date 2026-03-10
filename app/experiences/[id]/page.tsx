@@ -20,11 +20,11 @@ export default function ExperiencePage() {
 
   if (!pkg) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="text-6xl mb-4">🧭</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Venture Not Found</h1>
-          <p className="text-gray-500 mb-6">
+          <h1 className="text-2xl font-bold text-white mb-2">Venture Not Found</h1>
+          <p className="text-gray-400 mb-6">
             This path may have already been claimed, or doesn&apos;t exist yet.
             Explore other open ventures below.
           </p>
@@ -63,7 +63,7 @@ export default function ExperiencePage() {
   const hasFessyMarkup = pkg.markup && pkg.markup > 0
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0A0A0F]">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#5C0A14] via-[#5C0A14]/80 to-[#0A0A0F] text-white">
         <div className="max-w-5xl mx-auto px-4 py-16">
@@ -129,23 +129,23 @@ export default function ExperiencePage() {
           <div className="lg:col-span-2 space-y-8">
 
             {/* Highlights */}
-            <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">✦ Why This Venture</h2>
+            <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-white mb-4">✦ Why This Venture</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {pkg.highlights.map((highlight, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full bg-[#C9A227]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <span className="text-[#C9A227] text-xs font-bold">✓</span>
                     </div>
-                    <span className="text-gray-700 text-sm leading-relaxed">{highlight}</span>
+                    <span className="text-gray-300 text-sm leading-relaxed">{highlight}</span>
                   </div>
                 ))}
               </div>
             </section>
 
             {/* Included / Excluded */}
-            <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-6">What&apos;s Included</h2>
+            <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-white mb-6">What&apos;s Included</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-sm font-semibold text-green-700 mb-3 flex items-center gap-2">
@@ -154,7 +154,7 @@ export default function ExperiencePage() {
                   </h3>
                   <ul className="space-y-2">
                     {pkg.includes.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                      <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
                         <span className="text-green-500 mt-0.5 flex-shrink-0">✓</span>
                         {item}
                       </li>
@@ -188,28 +188,28 @@ export default function ExperiencePage() {
             </section>
 
             {/* Itinerary */}
-            <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">
+            <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-white mb-4">
                 Day-by-Day Itinerary
               </h2>
               <div className="space-y-3">
                 {pkg.days.map((day, i) => (
-                  <div key={i} className="border border-gray-100 rounded-xl overflow-hidden">
+                  <div key={i} className="border border-gray-800 rounded-xl overflow-hidden">
                     <button
-                      className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-800/50 transition-colors"
                       onClick={() => setOpenDay(openDay === i ? null : i)}
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] font-bold text-sm flex-shrink-0">
                           {day.day}
                         </div>
-                        <span className="font-semibold text-gray-900">{day.title}</span>
+                        <span className="font-semibold text-white">{day.title}</span>
                       </div>
                       {openDay === i ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
                     </button>
                     {openDay === i && (
-                      <div className="px-4 pb-4 border-t border-gray-50">
-                        <p className="text-gray-600 text-sm leading-relaxed mt-3 mb-3">{day.description}</p>
+                      <div className="px-4 pb-4 border-t border-gray-800">
+                        <p className="text-gray-400 text-sm leading-relaxed mt-3 mb-3">{day.description}</p>
                         <div className="flex items-center gap-2 text-xs text-gray-500">
                           <span className="font-medium">Meals:</span>
                           <span>{day.meals}</span>
@@ -223,12 +223,12 @@ export default function ExperiencePage() {
 
             {/* Optional Activities */}
             {pkg.optionalActivities && pkg.optionalActivities.length > 0 && (
-              <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Optional Extras</h2>
+              <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-6">
+                <h2 className="text-lg font-bold text-white mb-4">Optional Extras</h2>
                 <div className="space-y-3">
                   {pkg.optionalActivities.map((activity, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                      <span className="text-gray-800 font-medium text-sm">{activity.name}</span>
+                    <div key={i} className="flex items-center justify-between p-3 bg-gray-800/60 rounded-xl">
+                      <span className="text-gray-200 font-medium text-sm">{activity.name}</span>
                       <div className="text-right">
                         <div className="font-bold text-[#C9A227] text-sm">${activity.priceUSD.toLocaleString('en-US')}</div>
                         <div className="text-gray-400 text-xs">{activity.unit}</div>
@@ -242,10 +242,10 @@ export default function ExperiencePage() {
 
           {/* Booking sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-md p-6 sticky top-6">
+            <div className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-md p-6 sticky top-6">
               {/* Price */}
               <div className="text-center mb-6">
-                <div className="text-3xl font-bold text-gray-900">{formatPackagePrice(pkg)}</div>
+                <div className="text-3xl font-bold text-white">{formatPackagePrice(pkg)}</div>
                 {pkg.priceNote && (
                   <div className="text-gray-500 text-sm mt-1">{pkg.priceNote}</div>
                 )}
@@ -262,7 +262,7 @@ export default function ExperiencePage() {
                     className={`py-3 rounded-xl text-sm font-semibold border transition-all ${
                       paymentMethod === 'mpesa'
                         ? 'bg-[#006600] text-white border-[#006600]'
-                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                        : 'bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700'
                     }`}
                   >
                     📱 M-Pesa
@@ -272,7 +272,7 @@ export default function ExperiencePage() {
                     className={`py-3 rounded-xl text-sm font-semibold border transition-all ${
                       paymentMethod === 'card'
                         ? 'bg-[#0891B2] text-white border-[#0891B2]'
-                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                        : 'bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700'
                     }`}
                   >
                     💳 Card
@@ -299,22 +299,22 @@ export default function ExperiencePage() {
               </p>
 
               {/* Quick info */}
-              <div className="mt-6 pt-6 border-t border-gray-100 space-y-3">
+              <div className="mt-6 pt-6 border-t border-gray-800 space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">Max group size</span>
-                  <span className="font-medium text-gray-900">{pkg.maxGuests} people</span>
+                  <span className="font-medium text-gray-200">{pkg.maxGuests} people</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">Duration</span>
-                  <span className="font-medium text-gray-900">{pkg.duration}</span>
+                  <span className="font-medium text-gray-200">{pkg.duration}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">Provider</span>
-                  <span className="font-medium text-gray-900">{pkg.provider}</span>
+                  <span className="font-medium text-gray-200">{pkg.provider}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">Destination</span>
-                  <span className="font-medium text-gray-900">{pkg.destination}</span>
+                  <span className="font-medium text-gray-200">{pkg.destination}</span>
                 </div>
               </div>
 
@@ -332,16 +332,16 @@ export default function ExperiencePage() {
         {/* More Ventures */}
         {related.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">More Ventures to Explore</h2>
+            <h2 className="text-xl font-bold text-white mb-6">More Ventures to Explore</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {related.map((relPkg) => (
                 <Link key={relPkg.id} href={`/experiences/${relPkg.id}`}>
-                  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden h-full">
+                  <div className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md hover:border-gray-700 transition-all duration-200 overflow-hidden h-full">
                     <div className="bg-gradient-to-br from-gray-800 to-[#5C0A14]/30 h-28 flex items-center justify-center text-4xl">
                       {TYPE_EMOJI[relPkg.type] ?? '🌍'}
                     </div>
                     <div className="p-4">
-                      <h3 className="font-semibold text-gray-900 text-sm mb-1 leading-tight">{relPkg.name}</h3>
+                      <h3 className="font-semibold text-white text-sm mb-1 leading-tight">{relPkg.name}</h3>
                       <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
                         <MapPin size={11} />
                         {relPkg.destination}

@@ -20,10 +20,10 @@ const PILLARS = [
     description:
       'Digital literacy, vocational training, and mentorship programs that give young Kenyans the tools to write their own story. From coding bootcamps to safari guide certification — every skill is a new door.',
     programs: ['Digital Literacy Bootcamps', 'Vocational Certifications', 'Scholarship Pathways', 'Mentor Matching'],
-    color: 'from-blue-50 to-indigo-50',
-    border: 'border-blue-100',
-    accent: 'text-blue-700',
-    badge: 'bg-blue-100 text-blue-800',
+    color: 'from-blue-950/30 to-indigo-950/20',
+    border: 'border-blue-900/50',
+    accent: 'text-blue-400',
+    badge: 'bg-blue-900/40 text-blue-300',
   },
   {
     icon: '👩',
@@ -32,10 +32,10 @@ const PILLARS = [
     description:
       'Professional paths, safe opportunities, and community support for women seeking a better life. We work to provide alternatives to unsafe or exploitative work situations through dignity-first programming.',
     programs: ['Safe Path Program', 'Professional Mentorship', 'Business Skills Training', 'Community Networks'],
-    color: 'from-purple-50 to-pink-50',
-    border: 'border-purple-100',
-    accent: 'text-purple-700',
-    badge: 'bg-purple-100 text-purple-800',
+    color: 'from-purple-950/30 to-pink-950/20',
+    border: 'border-purple-900/50',
+    accent: 'text-purple-400',
+    badge: 'bg-purple-900/40 text-purple-300',
   },
   {
     icon: '🌿',
@@ -44,10 +44,10 @@ const PILLARS = [
     description:
       'Eco-tourism ventures that directly fund wildlife conservation. When you book a safari through BeKenya, a portion flows back to UTAMADUNI to support rangers, anti-poaching efforts, and conservation education.',
     programs: ['Anti-Poaching Support', 'Ranger Training', 'Conservation Education', 'Eco-Tourism Revenue Sharing'],
-    color: 'from-green-50 to-emerald-50',
-    border: 'border-green-100',
-    accent: 'text-green-700',
-    badge: 'bg-green-100 text-green-800',
+    color: 'from-green-950/30 to-emerald-950/20',
+    border: 'border-green-900/50',
+    accent: 'text-green-400',
+    badge: 'bg-green-900/40 text-green-300',
   },
   {
     icon: '🎭',
@@ -56,10 +56,10 @@ const PILLARS = [
     description:
       'Documenting, celebrating, and sharing Kenyan traditions with the world. From Maasai beadwork to Luo music — culture is not just heritage, it is a living economy that feeds communities with pride.',
     programs: ['Cultural Documentation', 'Artisan Marketplaces', 'Storytelling Archives', 'Cultural Tourism'],
-    color: 'from-[#5C0A14]/10 to-[#5C0A14]/5',
-    border: 'border-amber-100',
-    accent: 'text-amber-700',
-    badge: 'bg-amber-100 text-amber-800',
+    color: 'from-[#5C0A14]/30 to-[#5C0A14]/10',
+    border: 'border-amber-900/50',
+    accent: 'text-amber-400',
+    badge: 'bg-amber-900/40 text-amber-300',
   },
 ]
 
@@ -116,7 +116,7 @@ export default function CharityPage() {
   const PRESET_AMOUNTS: DonationAmount[] = [10, 25, 50, 100]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#0A0A0F]">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#006600] via-[#004d00] to-gray-900 text-white">
         <div className="max-w-5xl mx-auto px-4 pt-20 pb-16">
@@ -155,7 +155,7 @@ export default function CharityPage() {
       {/* How it works banner */}
       <div className="bg-[#C9A227]/5 border-y border-[#C9A227]/10 py-6">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <p className="text-gray-700 text-base font-medium">
+          <p className="text-gray-300 text-base font-medium">
             When you book a Venture or open a Path on BeKenya,
             <span className="text-[#C9A227] font-bold"> a percentage flows to UTAMADUNI </span>
             — funding real programs in real communities. No middlemen. Full transparency.
@@ -166,26 +166,26 @@ export default function CharityPage() {
       {/* Impact Numbers */}
       <div className="max-w-5xl mx-auto px-4 py-16">
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Our Impact So Far</h2>
-          <p className="text-gray-500">Aspirational targets for our first programme cycle</p>
+          <h2 className="text-2xl font-bold text-white mb-2">Our Impact So Far</h2>
+          <p className="text-gray-400">Aspirational targets for our first programme cycle</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {IMPACT_STATS.map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-4xl mb-2">{stat.icon}</div>
               <div className="text-4xl font-black text-[#006600] mb-1">{stat.number}</div>
-              <div className="text-gray-600 text-sm font-medium">{stat.label}</div>
+              <div className="text-gray-400 text-sm font-medium">{stat.label}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* 4 Pillars */}
-      <div id="pillars" className="bg-gray-50 py-16">
+      <div id="pillars" className="bg-gray-900/30 py-16">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Our Four Pillars</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
+            <h2 className="text-3xl font-bold text-white mb-3">Our Four Pillars</h2>
+            <p className="text-gray-400 max-w-xl mx-auto">
               Everything we do is built on these foundations — because dignified lives require
               education, safety, a healthy planet, and cultural pride.
             </p>
@@ -201,10 +201,10 @@ export default function CharityPage() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h3 className={`text-xl font-bold ${pillar.accent} mb-0.5`}>{pillar.title}</h3>
-                    <p className="text-gray-500 text-sm italic">{pillar.subtitle}</p>
+                    <p className="text-gray-400 text-sm italic">{pillar.subtitle}</p>
                   </div>
                 </div>
-                <p className="text-gray-700 text-sm leading-relaxed mb-4">{pillar.description}</p>
+                <p className="text-gray-300 text-sm leading-relaxed mb-4">{pillar.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {pillar.programs.map((program) => (
                     <span key={program} className={`text-xs px-2.5 py-1 rounded-full font-medium ${pillar.badge}`}>
@@ -221,16 +221,16 @@ export default function CharityPage() {
       {/* How it works — platform connection */}
       <div className="max-w-5xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">How It Works</h2>
-          <p className="text-gray-500">The BeKenya circle of dignified work</p>
+          <h2 className="text-3xl font-bold text-white mb-3">How It Works</h2>
+          <p className="text-gray-400">The BeKenya circle of dignified work</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="text-center p-6">
             <div className="w-16 h-16 rounded-2xl bg-[#C9A227]/10 flex items-center justify-center text-3xl mx-auto mb-4">
               🌍
             </div>
-            <h3 className="font-bold text-gray-900 mb-2">Pioneers Book Ventures</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
+            <h3 className="font-bold text-white mb-2">Pioneers Book Ventures</h3>
+            <p className="text-gray-400 text-sm leading-relaxed">
               Every safari, eco-lodge stay, or professional path opened on BeKenya generates value in the ecosystem.
             </p>
           </div>
@@ -239,8 +239,8 @@ export default function CharityPage() {
             <div className="w-16 h-16 rounded-2xl bg-[#006600]/10 flex items-center justify-center text-3xl mx-auto mb-4">
               💚
             </div>
-            <h3 className="font-bold text-gray-900 mb-2">Portion Goes to UTAMADUNI</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
+            <h3 className="font-bold text-white mb-2">Portion Goes to UTAMADUNI</h3>
+            <p className="text-gray-400 text-sm leading-relaxed">
               A transparent percentage of each transaction is allocated to UTAMADUNI programs — automatically.
             </p>
           </div>
@@ -249,8 +249,8 @@ export default function CharityPage() {
             <div className="w-16 h-16 rounded-2xl bg-[#0891B2]/10 flex items-center justify-center text-3xl mx-auto mb-4">
               🏘️
             </div>
-            <h3 className="font-bold text-gray-900 mb-2">Communities Thrive</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
+            <h3 className="font-bold text-white mb-2">Communities Thrive</h3>
+            <p className="text-gray-400 text-sm leading-relaxed">
               Funds go directly to skills training, conservation support, and women&apos;s empowerment in Kenyan communities.
             </p>
           </div>
@@ -314,18 +314,18 @@ export default function CharityPage() {
       {/* Partner With Us */}
       <div className="max-w-5xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">Partner With UTAMADUNI</h2>
-          <p className="text-gray-500 max-w-xl mx-auto">
+          <h2 className="text-3xl font-bold text-white mb-3">Partner With UTAMADUNI</h2>
+          <p className="text-gray-400 max-w-xl mx-auto">
             We welcome partnerships with organisations who share our belief in dignified work,
             community development, and conservation.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {PARTNER_TYPES.map((partner) => (
-            <div key={partner.label} className="bg-white border border-gray-100 rounded-2xl p-5 text-center shadow-sm hover:shadow-md transition-shadow">
+            <div key={partner.label} className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 text-center shadow-sm hover:border-gray-700 transition-colors">
               <div className="text-3xl mb-3">{partner.icon}</div>
-              <h3 className="font-semibold text-gray-900 text-sm mb-1">{partner.label}</h3>
-              <p className="text-gray-500 text-xs leading-relaxed">{partner.desc}</p>
+              <h3 className="font-semibold text-white text-sm mb-1">{partner.label}</h3>
+              <p className="text-gray-400 text-xs leading-relaxed">{partner.desc}</p>
             </div>
           ))}
         </div>
@@ -432,7 +432,7 @@ export default function CharityPage() {
       </div>
 
       {/* Legal footer note */}
-      <div className="bg-gray-100 py-6 text-center">
+      <div className="bg-gray-900/30 py-6 text-center border-t border-gray-800">
         <p className="text-gray-500 text-sm max-w-2xl mx-auto px-4">
           UTAMADUNI is registered in Kenya as a Community Based Organisation (CBO).
           Partnered with BeKenya Family Ltd. All programmes are administered locally
