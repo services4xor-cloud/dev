@@ -4,81 +4,60 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import {
-  Menu, X, ChevronDown,
-  Compass, Map, DollarSign,
-  Heart, Info, Building2, Gift,
-  LayoutDashboard, PlusSquare, LogIn,
-} from 'lucide-react'
+import { Menu, X, ChevronDown, Compass, DollarSign, LogIn } from 'lucide-react'
 import { COUNTRIES } from '@/lib/countries'
+import {
+  PRIMARY_LINKS,
+  PIONEER_NAV_LINKS as PIONEER_LINKS,
+  ANCHOR_NAV_LINKS as ANCHOR_LINKS,
+  ABOUT_NAV_LINKS as ABOUT_LINKS,
+} from '@/lib/nav-structure'
 
-const CC    = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
+const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
 const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
-
-// ── Navigation structure ──────────────────────────────────────────
-const PRIMARY_LINKS = [
-  { href: '/ventures',    label: 'Ventures',    icon: Map,     aria: 'Explore all paths and experiences' },
-  { href: '/compass',     label: 'Compass',     icon: Compass, aria: 'Find your route across countries'  },
-  { href: '/pricing',     label: 'Pricing',     icon: DollarSign, aria: 'Anchor pricing plans'           },
-]
-
-const PIONEER_LINKS = [
-  { href: '/ventures',          label: 'Browse Ventures',   icon: Map,     aria: 'Explore all paths and experiences' },
-  { href: '/compass',           label: 'Find My Path',      icon: Compass, aria: 'Smart route wizard'                 },
-  { href: '/charity',           label: 'Community',         icon: Heart,   aria: 'UTAMADUNI community impact'         },
-]
-
-const ANCHOR_LINKS = [
-  { href: '/anchors/dashboard', label: 'Anchor Dashboard',  icon: LayoutDashboard, aria: 'Manage your paths and chapters' },
-  { href: '/anchors/post-path', label: 'Post a Path',       icon: PlusSquare,      aria: 'Create a new opportunity'       },
-]
-
-const ABOUT_LINKS = [
-  { href: '/about',    label: 'About',       icon: Info,      aria: `About the ${BRAND} platform` },
-  { href: '/business', label: 'Family Ltd',  icon: Building2, aria: 'Business and legal structure'  },
-  { href: '/referral', label: 'Refer & Earn',icon: Gift,      aria: 'Referral programme'              },
-]
 
 // ─────────────────────────────────────────────────────────────────
 export default function Nav() {
-  const [mobileOpen, setMobileOpen]   = useState(false)
-  const [aboutOpen,  setAboutOpen]    = useState(false)
-  const [anchorOpen, setAnchorOpen]   = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [aboutOpen, setAboutOpen] = useState(false)
+  const [anchorOpen, setAnchorOpen] = useState(false)
   const pathname = usePathname()
-  const aboutRef  = useRef<HTMLDivElement>(null)
+  const aboutRef = useRef<HTMLDivElement>(null)
   const anchorRef = useRef<HTMLDivElement>(null)
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     function onPointer(e: PointerEvent) {
-      if (aboutRef.current  && !aboutRef.current.contains(e.target as Node))  setAboutOpen(false)
+      if (aboutRef.current && !aboutRef.current.contains(e.target as Node)) setAboutOpen(false)
       if (anchorRef.current && !anchorRef.current.contains(e.target as Node)) setAnchorOpen(false)
     }
     document.addEventListener('pointerdown', onPointer)
     return () => document.removeEventListener('pointerdown', onPointer)
   }, [])
 
-  useEffect(() => { setMobileOpen(false); setAboutOpen(false); setAnchorOpen(false) }, [pathname])
+  useEffect(() => {
+    setMobileOpen(false)
+    setAboutOpen(false)
+    setAnchorOpen(false)
+  }, [pathname])
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
-  const isAboutActive  = ABOUT_LINKS.some(l => isActive(l.href))
-  const isAnchorActive = ANCHOR_LINKS.some(l => isActive(l.href))
+  const isAboutActive = ABOUT_LINKS.some((l) => isActive(l.href))
+  const isAnchorActive = ANCHOR_LINKS.some((l) => isActive(l.href))
 
   // Shared link class helpers
   const desktopLink = (active: boolean) =>
     `relative inline-flex items-center px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-150
      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0F]
-     ${active
-       ? 'text-[#C9A227] bg-[#C9A227]/8'
-       : 'text-white/65 hover:text-white hover:bg-white/5'
+     ${
+       active ? 'text-[#C9A227] bg-[#C9A227]/8' : 'text-white/65 hover:text-white hover:bg-white/5'
      }`
 
   const dropdownLink = (active: boolean) =>
     `flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-150 mx-1
      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
-     ${active
-       ? 'text-[#C9A227] bg-[#C9A227]/10'
-       : 'text-white/70 hover:text-white hover:bg-white/6'
+     ${
+       active ? 'text-[#C9A227] bg-[#C9A227]/10' : 'text-white/70 hover:text-white hover:bg-white/6'
      }`
 
   return (
@@ -95,7 +74,6 @@ export default function Nav() {
       >
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-6">
           <div className="flex items-center justify-between h-15" style={{ height: '60px' }}>
-
             {/* ── Logo ─────────────────────────────────────────── */}
             <Link
               href="/"
@@ -129,7 +107,7 @@ export default function Nav() {
 
             {/* ── Desktop links ─────────────────────────────────── */}
             <ul className="hidden xl:flex items-center gap-0.5 list-none">
-              {PRIMARY_LINKS.map(link => (
+              {PRIMARY_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -154,7 +132,10 @@ export default function Nav() {
                 <div className="relative" ref={anchorRef}>
                   <button
                     type="button"
-                    onClick={() => { setAnchorOpen(v => !v); setAboutOpen(false) }}
+                    onClick={() => {
+                      setAnchorOpen((v) => !v)
+                      setAboutOpen(false)
+                    }}
                     aria-expanded={anchorOpen}
                     aria-haspopup="listbox"
                     aria-controls="anchor-dropdown"
@@ -162,7 +143,10 @@ export default function Nav() {
                     className={desktopLink(isAnchorActive)}
                   >
                     {isAnchorActive && (
-                      <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A227]" aria-hidden="true" />
+                      <span
+                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A227]"
+                        aria-hidden="true"
+                      />
                     )}
                     For Anchors
                     <ChevronDown
@@ -179,7 +163,7 @@ export default function Nav() {
                                  border border-white/10 backdrop-blur-xl"
                       style={{ background: 'rgba(17,17,24,0.97)' }}
                     >
-                      {ANCHOR_LINKS.map(link => {
+                      {ANCHOR_LINKS.map((link) => {
                         const Icon = link.icon
                         return (
                           <li key={link.href} role="option" aria-selected={isActive(link.href)}>
@@ -189,7 +173,10 @@ export default function Nav() {
                               aria-label={link.aria}
                               className={dropdownLink(isActive(link.href))}
                             >
-                              <Icon className="w-4 h-4 shrink-0 text-[#C9A227]/60" aria-hidden="true" />
+                              <Icon
+                                className="w-4 h-4 shrink-0 text-[#C9A227]/60"
+                                aria-hidden="true"
+                              />
                               {link.label}
                             </Link>
                           </li>
@@ -205,7 +192,10 @@ export default function Nav() {
                 <div className="relative" ref={aboutRef}>
                   <button
                     type="button"
-                    onClick={() => { setAboutOpen(v => !v); setAnchorOpen(false) }}
+                    onClick={() => {
+                      setAboutOpen((v) => !v)
+                      setAnchorOpen(false)
+                    }}
                     aria-expanded={aboutOpen}
                     aria-haspopup="listbox"
                     aria-controls="about-dropdown"
@@ -213,7 +203,10 @@ export default function Nav() {
                     className={desktopLink(isAboutActive)}
                   >
                     {isAboutActive && (
-                      <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A227]" aria-hidden="true" />
+                      <span
+                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A227]"
+                        aria-hidden="true"
+                      />
                     )}
                     About
                     <ChevronDown
@@ -230,7 +223,7 @@ export default function Nav() {
                                  border border-white/10 backdrop-blur-xl"
                       style={{ background: 'rgba(17,17,24,0.97)' }}
                     >
-                      {ABOUT_LINKS.map(link => {
+                      {ABOUT_LINKS.map((link) => {
                         const Icon = link.icon
                         return (
                           <li key={link.href} role="option" aria-selected={isActive(link.href)}>
@@ -240,7 +233,10 @@ export default function Nav() {
                               aria-label={link.aria}
                               className={dropdownLink(isActive(link.href))}
                             >
-                              <Icon className="w-4 h-4 shrink-0 text-[#C9A227]/60" aria-hidden="true" />
+                              <Icon
+                                className="w-4 h-4 shrink-0 text-[#C9A227]/60"
+                                aria-hidden="true"
+                              />
                               {link.label}
                             </Link>
                           </li>
@@ -285,7 +281,7 @@ export default function Nav() {
             {/* ── Mobile toggle ───────────────────────────────────── */}
             <button
               type="button"
-              onClick={() => setMobileOpen(v => !v)}
+              onClick={() => setMobileOpen((v) => !v)}
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav"
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
@@ -293,10 +289,11 @@ export default function Nav() {
                          transition-all duration-150 focus-visible:outline-none focus-visible:ring-2
                          focus-visible:ring-[#C9A227]"
             >
-              {mobileOpen
-                ? <X    className="w-5 h-5" aria-hidden="true" />
-                : <Menu className="w-5 h-5" aria-hidden="true" />
-              }
+              {mobileOpen ? (
+                <X className="w-5 h-5" aria-hidden="true" />
+              ) : (
+                <Menu className="w-5 h-5" aria-hidden="true" />
+              )}
             </button>
           </div>
         </div>
@@ -309,12 +306,11 @@ export default function Nav() {
             style={{ background: 'rgba(10,10,15,0.98)' }}
           >
             <div className="px-4 py-4 space-y-1 max-h-[calc(100vh-60px)] overflow-y-auto">
-
               {/* EXPLORE section */}
               <p className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-widest text-white/30">
                 Explore
               </p>
-              {PIONEER_LINKS.map(link => {
+              {PIONEER_LINKS.map((link) => {
                 const Icon = link.icon
                 return (
                   <Link
@@ -325,15 +321,22 @@ export default function Nav() {
                     aria-current={isActive(link.href) ? 'page' : undefined}
                     className={`flex items-center gap-3 px-3 py-3.5 rounded-xl font-medium transition-all duration-150
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
-                      ${isActive(link.href)
-                        ? 'bg-[#C9A227]/12 text-[#C9A227]'
-                        : 'text-white/75 hover:bg-white/6 hover:text-white'
+                      ${
+                        isActive(link.href)
+                          ? 'bg-[#C9A227]/12 text-[#C9A227]'
+                          : 'text-white/75 hover:bg-white/6 hover:text-white'
                       }`}
                   >
-                    <Icon className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`} aria-hidden="true" />
+                    <Icon
+                      className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`}
+                      aria-hidden="true"
+                    />
                     {link.label}
                     {isActive(link.href) && (
-                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C9A227]" aria-hidden="true" />
+                      <span
+                        className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C9A227]"
+                        aria-hidden="true"
+                      />
                     )}
                   </Link>
                 )
@@ -343,7 +346,7 @@ export default function Nav() {
               <p className="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-white/30">
                 For Anchors
               </p>
-              {ANCHOR_LINKS.map(link => {
+              {ANCHOR_LINKS.map((link) => {
                 const Icon = link.icon
                 return (
                   <Link
@@ -354,12 +357,16 @@ export default function Nav() {
                     aria-current={isActive(link.href) ? 'page' : undefined}
                     className={`flex items-center gap-3 px-3 py-3.5 rounded-xl font-medium transition-all duration-150
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
-                      ${isActive(link.href)
-                        ? 'bg-[#C9A227]/12 text-[#C9A227]'
-                        : 'text-white/75 hover:bg-white/6 hover:text-white'
+                      ${
+                        isActive(link.href)
+                          ? 'bg-[#C9A227]/12 text-[#C9A227]'
+                          : 'text-white/75 hover:bg-white/6 hover:text-white'
                       }`}
                   >
-                    <Icon className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`} aria-hidden="true" />
+                    <Icon
+                      className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`}
+                      aria-hidden="true"
+                    />
                     {link.label}
                   </Link>
                 )
@@ -369,7 +376,10 @@ export default function Nav() {
               <p className="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-white/30">
                 About
               </p>
-              {[...ABOUT_LINKS, { href: '/pricing', label: 'Pricing', icon: DollarSign, aria: 'Plans and pricing' }].map(link => {
+              {[
+                ...ABOUT_LINKS,
+                { href: '/pricing', label: 'Pricing', icon: DollarSign, aria: 'Plans and pricing' },
+              ].map((link) => {
                 const Icon = link.icon
                 return (
                   <Link
@@ -380,12 +390,16 @@ export default function Nav() {
                     aria-current={isActive(link.href) ? 'page' : undefined}
                     className={`flex items-center gap-3 px-3 py-3.5 rounded-xl font-medium transition-all duration-150
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
-                      ${isActive(link.href)
-                        ? 'bg-[#C9A227]/12 text-[#C9A227]'
-                        : 'text-white/75 hover:bg-white/6 hover:text-white'
+                      ${
+                        isActive(link.href)
+                          ? 'bg-[#C9A227]/12 text-[#C9A227]'
+                          : 'text-white/75 hover:bg-white/6 hover:text-white'
                       }`}
                   >
-                    <Icon className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`} aria-hidden="true" />
+                    <Icon
+                      className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`}
+                      aria-hidden="true"
+                    />
                     {link.label}
                   </Link>
                 )

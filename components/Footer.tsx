@@ -1,33 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
-
-// ── Column link lists ──────────────────────────────────────────────
-const PIONEER_LINKS = [
-  { href: '/ventures',   label: 'Browse Ventures' },
-  { href: '/compass',    label: 'Find My Path' },
-  { href: '/onboarding', label: 'Create Profile' },
-  { href: '/referral',   label: 'Refer & Earn' },
-]
-
-const ANCHOR_LINKS = [
-  { href: '/anchors/post-path',  label: 'Post a Path' },
-  { href: '/pricing',            label: 'Pricing' },
-  { href: '/anchors/dashboard',  label: 'Anchor Dashboard' },
-]
-
-const DISCOVER_LINKS = [
-  { href: '/experiences', label: 'Safari Experiences' },
-  { href: '/be/ke',       label: 'BeKenya' },
-  { href: '/charity',     label: 'UTAMADUNI' },
-  { href: '/media',       label: 'Media & Stories' },
-]
-
-const COMPANY_LINKS = [
-  { href: '/about',    label: 'About' },
-  { href: '/business', label: 'BeKenya Family Ltd' },
-  { href: '/contact',  label: 'Contact' },
-  { href: '/privacy',  label: 'Privacy Policy' },
-]
+import {
+  FOOTER_PIONEER_LINKS as PIONEER_LINKS,
+  FOOTER_ANCHOR_LINKS as ANCHOR_LINKS,
+  FOOTER_DISCOVER_LINKS as DISCOVER_LINKS,
+  FOOTER_COMPANY_LINKS as COMPANY_LINKS,
+} from '@/lib/nav-structure'
 
 // ── Component ──────────────────────────────────────────────────────
 export default function Footer() {
@@ -36,10 +14,8 @@ export default function Footer() {
   return (
     <footer className="bg-[#0A0A0F] border-t border-[#C9A227]/15">
       <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-16 3xl:py-24">
-
         {/* Top — brand + columns */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
-
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link
@@ -47,20 +23,12 @@ export default function Footer() {
               className="inline-flex items-center gap-3 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] rounded-lg"
               aria-label="Be[Country] — Home"
             >
-              <Image
-                src="/logo.svg"
-                alt="Be[Country] compass"
-                width={36}
-                height={36}
-                unoptimized
-              />
-              <span className="text-[#C9A227] font-bold text-lg tracking-wide">
-                Be[Country]
-              </span>
+              <Image src="/logo.svg" alt="Be[Country] compass" width={36} height={36} unoptimized />
+              <span className="text-[#C9A227] font-bold text-lg tracking-wide">Be[Country]</span>
             </Link>
             <p className="text-[#9D9BAA] text-sm leading-relaxed max-w-xs">
-              An identity-first compass. Find where you belong — work, live,
-              experience, and build across countries. Starting with Kenya.
+              An identity-first compass. Find where you belong — work, live, experience, and build
+              across countries. Starting with Kenya.
             </p>
             <p className="mt-4 text-xs text-[#9D9BAA]/60">
               5% of every booking supports UTAMADUNI community projects.

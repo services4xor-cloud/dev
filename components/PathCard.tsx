@@ -9,7 +9,7 @@
 import Link from 'next/link'
 import { MapPin, Clock, DollarSign, Globe, Star } from 'lucide-react'
 
-interface JobCardProps {
+interface PathCardProps {
   id: string
   title: string
   company: string
@@ -26,10 +26,22 @@ interface JobCardProps {
   tier?: string
 }
 
-export default function JobCard({
-  id, title, company, logo, location, isRemote,
-  jobType, salaryMin, salaryMax, currency, skills, posted, isFeatured, tier
-}: JobCardProps) {
+export default function PathCard({
+  id,
+  title,
+  company,
+  logo,
+  location,
+  isRemote,
+  jobType,
+  salaryMin,
+  salaryMax,
+  currency,
+  skills,
+  posted,
+  isFeatured,
+  tier,
+}: PathCardProps) {
   return (
     <Link
       href={`/ventures/${id}`}
@@ -78,14 +90,18 @@ export default function JobCard({
             {salaryMin && (
               <span className="flex items-center gap-1 text-xs text-[#C9A227] font-medium">
                 <DollarSign className="w-3 h-3" />
-                {currency} {(salaryMin / 1000).toFixed(0)}k{salaryMax ? `–${(salaryMax / 1000).toFixed(0)}k` : '+'}
+                {currency} {(salaryMin / 1000).toFixed(0)}k
+                {salaryMax ? `–${(salaryMax / 1000).toFixed(0)}k` : '+'}
               </span>
             )}
           </div>
 
           <div className="flex flex-wrap gap-1 mt-2">
-            {skills.slice(0, 4).map(skill => (
-              <span key={skill} className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">
+            {skills.slice(0, 4).map((skill) => (
+              <span
+                key={skill}
+                className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700"
+              >
                 {skill}
               </span>
             ))}

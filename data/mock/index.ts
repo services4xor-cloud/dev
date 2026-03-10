@@ -61,3 +61,5 @@ export {
   POST_PATH_STEPS,
 } from './anchors-post-path'
 export { SKILLS_SUGGESTIONS } from './profile'
+export { MEDIA_PATHS, MEDIA_FEATURED_PROJECTS, MEDIA_PLATFORMS } from './media'
+export { FASHION_PATHS, FASHION_PARTNER_ANCHORS, FASHION_PROTECTIONS } from './fashion'
