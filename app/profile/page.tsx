@@ -2,20 +2,33 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Camera, Plus, X, CheckCircle, Upload, Globe, MapPin, Phone, Mail, Briefcase } from 'lucide-react'
-
-const SKILLS_SUGGESTIONS = [
-  'JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'Java', 'AWS', 'Docker',
-  'Communication', 'Leadership', 'Sales', 'Marketing', 'Excel', 'SQL', 'Design', 'Swahili', 'English',
-]
+import {
+  Camera,
+  Plus,
+  X,
+  CheckCircle,
+  Upload,
+  Globe,
+  MapPin,
+  Phone,
+  Mail,
+  Briefcase,
+} from 'lucide-react'
+import { SKILLS_SUGGESTIONS } from '@/data/mock'
 
 export default function ProfilePage() {
   const [skills, setSkills] = useState<string[]>(['TypeScript', 'React'])
   const [skillInput, setSkillInput] = useState('')
   const [saved, setSaved] = useState(false)
   const [form, setForm] = useState({
-    name: 'John Kamau', email: 'john@example.com', phone: '0712345678',
-    country: 'Kenya', city: 'Nairobi', bio: '', jobTitle: '', linkedin: '',
+    name: 'John Kamau',
+    email: 'john@example.com',
+    phone: '0712345678',
+    country: 'Kenya',
+    city: 'Nairobi',
+    bio: '',
+    jobTitle: '',
+    linkedin: '',
   })
 
   const addSkill = (skill: string) => {
@@ -23,7 +36,7 @@ export default function ProfilePage() {
     setSkillInput('')
   }
 
-  const removeSkill = (skill: string) => setSkills(skills.filter(s => s !== skill))
+  const removeSkill = (skill: string) => setSkills(skills.filter((s) => s !== skill))
 
   const handleSave = () => {
     // TODO: PATCH /api/profile
@@ -32,7 +45,12 @@ export default function ProfilePage() {
   }
 
   const profileComplete = [
-    form.name, form.email, form.phone, form.bio, form.jobTitle, skills.length > 0
+    form.name,
+    form.email,
+    form.phone,
+    form.bio,
+    form.jobTitle,
+    skills.length > 0,
   ].filter(Boolean).length
 
   return (
@@ -44,7 +62,9 @@ export default function ProfilePage() {
             <span className="text-white">Beke</span>
             <span className="text-[#C9A227]">nya</span>
           </Link>
-          <Link href="/dashboard" className="text-gray-400 hover:text-[#C9A227] text-sm">← Dashboard</Link>
+          <Link href="/dashboard" className="text-gray-400 hover:text-[#C9A227] text-sm">
+            ← Dashboard
+          </Link>
         </div>
       </div>
 
@@ -53,7 +73,9 @@ export default function ProfilePage() {
         <div className="bg-gray-900/60 rounded-2xl p-4 shadow-sm border border-[#5C0A14]/30 mb-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-300">Profile completeness</span>
-            <span className="text-sm font-bold text-[#C9A227]">{Math.round((profileComplete / 6) * 100)}%</span>
+            <span className="text-sm font-bold text-[#C9A227]">
+              {Math.round((profileComplete / 6) * 100)}%
+            </span>
           </div>
           <div className="w-full bg-gray-800 rounded-full h-2">
             <div
@@ -61,7 +83,9 @@ export default function ProfilePage() {
               style={{ width: `${Math.round((profileComplete / 6) * 100)}%` }}
             />
           </div>
-          <p className="text-xs text-gray-500 mt-2">Complete your profile to get 5x more Anchor views</p>
+          <p className="text-xs text-gray-500 mt-2">
+            Complete your profile to get 5x more Anchor views
+          </p>
         </div>
 
         {/* Avatar */}
@@ -77,7 +101,9 @@ export default function ProfilePage() {
               </button>
             </div>
             <div>
-              <p className="text-sm text-gray-400 mb-2">Upload a professional photo to get more views</p>
+              <p className="text-sm text-gray-400 mb-2">
+                Upload a professional photo to get more views
+              </p>
               <button className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1">
                 <Upload className="w-3 h-3" /> Upload Photo
               </button>
@@ -93,44 +119,72 @@ export default function ProfilePage() {
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
                 <Briefcase className="w-3 h-3" /> Current Role
               </label>
-              <input type="text" value={form.jobTitle} onChange={e => setForm({...form, jobTitle: e.target.value})}
-                placeholder="e.g. Software Engineer" className="input w-full" />
+              <input
+                type="text"
+                value={form.jobTitle}
+                onChange={(e) => setForm({ ...form, jobTitle: e.target.value })}
+                placeholder="e.g. Software Engineer"
+                className="input w-full"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
                 <MapPin className="w-3 h-3" /> City
               </label>
-              <input type="text" value={form.city} onChange={e => setForm({...form, city: e.target.value})}
-                placeholder="Nairobi" className="input w-full" />
+              <input
+                type="text"
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                placeholder="Nairobi"
+                className="input w-full"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
                 <Mail className="w-3 h-3" /> Email
               </label>
-              <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})}
-                className="input w-full" />
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="input w-full"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
                 <Phone className="w-3 h-3" /> Phone (M-Pesa)
               </label>
-              <input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
-                placeholder="07XX XXX XXX" className="input w-full" />
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                placeholder="07XX XXX XXX"
+                className="input w-full"
+              />
             </div>
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-300 mb-1">Bio / Summary</label>
-            <textarea value={form.bio} onChange={e => setForm({...form, bio: e.target.value})}
+            <textarea
+              value={form.bio}
+              onChange={(e) => setForm({ ...form, bio: e.target.value })}
               placeholder="Briefly describe your experience and what you're looking for..."
-              className="input w-full h-24 resize-none" maxLength={500} />
+              className="input w-full h-24 resize-none"
+              maxLength={500}
+            />
             <div className="text-xs text-gray-400 text-right mt-1">{form.bio.length}/500</div>
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
               <Globe className="w-3 h-3" /> LinkedIn URL
             </label>
-            <input type="url" value={form.linkedin} onChange={e => setForm({...form, linkedin: e.target.value})}
-              placeholder="https://linkedin.com/in/yourname" className="input w-full" />
+            <input
+              type="url"
+              value={form.linkedin}
+              onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
+              placeholder="https://linkedin.com/in/yourname"
+              className="input w-full"
+            />
           </div>
         </div>
 
@@ -138,8 +192,11 @@ export default function ProfilePage() {
         <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-[#5C0A14]/30 mb-6">
           <h2 className="font-bold text-white mb-4">Skills</h2>
           <div className="flex flex-wrap gap-2 mb-3">
-            {skills.map(skill => (
-              <span key={skill} className="flex items-center gap-1 badge bg-[#5C0A14]/20 text-[#C9A227]">
+            {skills.map((skill) => (
+              <span
+                key={skill}
+                className="flex items-center gap-1 badge bg-[#5C0A14]/20 text-[#C9A227]"
+              >
                 {skill}
                 <button onClick={() => removeSkill(skill)} className="hover:opacity-70">
                   <X className="w-3 h-3" />
@@ -148,25 +205,46 @@ export default function ProfilePage() {
             ))}
           </div>
           <div className="flex gap-2">
-            <input type="text" value={skillInput} onChange={e => setSkillInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSkill(skillInput))}
-              placeholder="Add a skill..." className="input flex-1" />
+            <input
+              type="text"
+              value={skillInput}
+              onChange={(e) => setSkillInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill(skillInput))}
+              placeholder="Add a skill..."
+              className="input flex-1"
+            />
             <button onClick={() => addSkill(skillInput)} className="btn-secondary px-3">
               <Plus className="w-4 h-4" />
             </button>
           </div>
           <div className="flex flex-wrap gap-1.5 mt-3">
-            {SKILLS_SUGGESTIONS.filter(s => !skills.includes(s)).slice(0, 8).map(s => (
-              <button key={s} onClick={() => addSkill(s)} className="badge bg-gray-800 text-gray-400 text-xs hover:bg-[#5C0A14]/20 hover:text-[#C9A227] transition-colors cursor-pointer">
-                + {s}
-              </button>
-            ))}
+            {SKILLS_SUGGESTIONS.filter((s) => !skills.includes(s))
+              .slice(0, 8)
+              .map((s) => (
+                <button
+                  key={s}
+                  onClick={() => addSkill(s)}
+                  className="badge bg-gray-800 text-gray-400 text-xs hover:bg-[#5C0A14]/20 hover:text-[#C9A227] transition-colors cursor-pointer"
+                >
+                  + {s}
+                </button>
+              ))}
           </div>
         </div>
 
         {/* Save button */}
-        <button onClick={handleSave} className={`w-full py-4 text-base rounded-2xl font-semibold transition-all ${saved ? 'bg-green-500 text-white' : 'btn-primary'}`}>
-          {saved ? <><CheckCircle className="inline w-5 h-5 mr-2" />Saved!</> : 'Save Profile'}
+        <button
+          onClick={handleSave}
+          className={`w-full py-4 text-base rounded-2xl font-semibold transition-all ${saved ? 'bg-green-500 text-white' : 'btn-primary'}`}
+        >
+          {saved ? (
+            <>
+              <CheckCircle className="inline w-5 h-5 mr-2" />
+              Saved!
+            </>
+          ) : (
+            'Save Profile'
+          )}
         </button>
       </div>
     </div>

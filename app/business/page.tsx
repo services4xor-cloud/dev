@@ -13,99 +13,11 @@ import {
   Landmark,
   Lock,
 } from 'lucide-react'
-
-// ──────────────────────────────────────────────
-// Data
-// ──────────────────────────────────────────────
-
-const DIVISIONS = [
-  {
-    icon: '🦁',
-    name: 'Safari & Experiences',
-    description:
-      'Wildlife safaris, eco-lodges, cultural tours, and premium destination packages across East Africa. Partner network includes Maasai Mara, Amboseli, and Tsavo conservancies.',
-    ventures: ['Safari packages', 'Eco-lodge partnerships', 'Cultural immersion tours', 'Airport transfers & ground logistics'],
-  },
-  {
-    icon: '👗',
-    name: 'Fashion & Model Line',
-    description:
-      'Authentic African fashion, model scouting, and creative production. Bridging Kenyan designers with global markets.',
-    ventures: ['Designer showcase', 'Model scouting & management', 'Fashion editorial production', 'Cultural fashion exports'],
-  },
-  {
-    icon: '🎬',
-    name: 'Media Production',
-    description:
-      'Video content, documentary production, photography, and social media content for partners and internal brands.',
-    ventures: ['Safari documentary content', 'Pioneer success stories', 'Brand photography', 'Social media content automation'],
-  },
-  {
-    icon: '💻',
-    name: 'Digital Services',
-    description:
-      'The BeNetwork platform, API infrastructure, M-Pesa integrations, and technology services for partners and anchors.',
-    ventures: ['BeNetwork platform (bekenya.com)', 'M-Pesa payment infrastructure', 'Partner API & booking systems', 'Country config for global expansion'],
-  },
-  {
-    icon: '🤝',
-    name: 'UTAMADUNI Charity',
-    description:
-      'Community development, youth mentorship, and skills training. 10% of all platform revenue directed here. UTAMADUNI means "culture" in Swahili — preserving what matters while building what is needed.',
-    ventures: ['Youth skills training', 'Pioneer scholarship fund', 'Community infrastructure projects', 'Cultural preservation grants'],
-  },
-]
-
-const OPERATING_COUNTRIES = [
-  {
-    flag: '🇰🇪',
-    code: 'KE',
-    name: 'Kenya',
-    role: 'Headquarters',
-    details: 'Registered entity. M-Pesa payments. East Africa operations hub.',
-    color: 'bg-green-900/20 border-green-700/30',
-    badge: 'bg-green-900/40 text-green-400',
-  },
-  {
-    flag: '🇩🇪',
-    code: 'DE',
-    name: 'Germany',
-    role: 'EU Partner',
-    details: 'EU market access. SEPA payments. Anchor partnerships across DACH region.',
-    color: 'bg-blue-900/20 border-blue-700/30',
-    badge: 'bg-blue-900/40 text-blue-400',
-  },
-]
-
-// ──────────────────────────────────────────────
-// Share structure (visual only — no exact figures)
-// ──────────────────────────────────────────────
-
-const SHARE_BLOCKS = [
-  {
-    label: 'Founding Shareholders',
-    percent: 80,
-    description: 'Core founders and strategic partners. Identities privacy-protected.',
-    color: 'bg-[#5C0A14]',
-    textColor: 'text-[#C9A227]',
-  },
-  {
-    label: 'Reserved (UTAMADUNI & Growth)',
-    percent: 20,
-    description: 'Earmarked for charity arm and future expansion rounds.',
-    color: 'bg-teal-500',
-    textColor: 'text-teal-600',
-  },
-]
-
-// ──────────────────────────────────────────────
-// Component
-// ──────────────────────────────────────────────
+import { DIVISIONS, OPERATING_COUNTRIES, SHARE_BLOCKS } from '@/data/mock'
 
 export default function BusinessPage() {
   return (
     <div className="min-h-screen bg-[#0A0A0F]">
-
       {/* ── Hero ── */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
@@ -113,15 +25,11 @@ export default function BusinessPage() {
             <Landmark className="w-4 h-4 text-[#C9A227]" />
             <span>Legal Entity</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-            BeKenya Family Ltd
-          </h1>
-          <p className="text-xl text-gray-300 font-light mb-3">
-            A Family. A Mission. A Structure.
-          </p>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">BeKenya Family Ltd</h1>
+          <p className="text-xl text-gray-300 font-light mb-3">A Family. A Mission. A Structure.</p>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            The legal and operational home of the BeNetwork platform and all Be[Country]
-            ventures. Registered in Kenya. Built for the world.
+            The legal and operational home of the BeNetwork platform and all Be[Country] ventures.
+            Registered in Kenya. Built for the world.
           </p>
         </div>
       </section>
@@ -132,9 +40,9 @@ export default function BusinessPage() {
           <Globe className="w-10 h-10 text-[#C9A227] mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white mb-4">Our Mission</h2>
           <p className="text-lg text-gray-300 leading-relaxed">
-            Dignified work and opportunity for everyone, everywhere. We connect Pioneers
-            (people seeking their path) with Anchors (employers and partners) across borders,
-            currencies, and cultures — starting in Kenya, scaling globally.
+            Dignified work and opportunity for everyone, everywhere. We connect Pioneers (people
+            seeking their path) with Anchors (employers and partners) across borders, currencies,
+            and cultures — starting in Kenya, scaling globally.
           </p>
         </div>
       </section>
@@ -166,11 +74,16 @@ export default function BusinessPage() {
                 value: 'Dual-Signature Control',
                 sub: 'Finance Controller approval required',
               },
-            ].map(item => (
-              <div key={item.label} className="bg-gray-900/60 rounded-2xl p-5 border border-[#5C0A14]/30">
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="bg-gray-900/60 rounded-2xl p-5 border border-[#5C0A14]/30"
+              >
                 <div className="flex items-center gap-2 mb-2">
                   {item.icon}
-                  <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">{item.label}</span>
+                  <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+                    {item.label}
+                  </span>
                 </div>
                 <p className="font-semibold text-white">{item.value}</p>
                 <p className="text-sm text-gray-400 mt-0.5">{item.sub}</p>
@@ -193,7 +106,7 @@ export default function BusinessPage() {
 
           {/* Bar */}
           <div className="flex h-8 rounded-full overflow-hidden mb-6 border border-[#5C0A14]/30">
-            {SHARE_BLOCKS.map(block => (
+            {SHARE_BLOCKS.map((block) => (
               <div
                 key={block.label}
                 className={`${block.color} flex items-center justify-center text-white text-sm font-bold transition-all`}
@@ -206,12 +119,17 @@ export default function BusinessPage() {
 
           {/* Legend */}
           <div className="grid md:grid-cols-2 gap-4">
-            {SHARE_BLOCKS.map(block => (
-              <div key={block.label} className="flex items-start gap-3 bg-gray-900/60 rounded-xl p-4 border border-[#5C0A14]/30">
+            {SHARE_BLOCKS.map((block) => (
+              <div
+                key={block.label}
+                className="flex items-start gap-3 bg-gray-900/60 rounded-xl p-4 border border-[#5C0A14]/30"
+              >
                 <div className={`w-3 h-3 rounded-full mt-1 ${block.color} shrink-0`} />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className={`text-2xl font-bold ${block.textColor}`}>{block.percent}%</span>
+                    <span className={`text-2xl font-bold ${block.textColor}`}>
+                      {block.percent}%
+                    </span>
                     <span className="font-semibold text-gray-200 text-sm">{block.label}</span>
                   </div>
                   <p className="text-sm text-gray-400 mt-0.5">{block.description}</p>
@@ -230,8 +148,11 @@ export default function BusinessPage() {
             <h2 className="text-2xl font-bold text-white">Business Divisions</h2>
           </div>
           <div className="space-y-4">
-            {DIVISIONS.map(div => (
-              <div key={div.name} className="rounded-2xl border border-[#5C0A14]/30 overflow-hidden">
+            {DIVISIONS.map((div) => (
+              <div
+                key={div.name}
+                className="rounded-2xl border border-[#5C0A14]/30 overflow-hidden"
+              >
                 <div className="flex items-center gap-3 px-6 py-4 bg-gray-900/60 border-b border-[#5C0A14]/30">
                   <span className="text-2xl">{div.icon}</span>
                   <h3 className="font-bold text-white text-lg">{div.name}</h3>
@@ -239,7 +160,7 @@ export default function BusinessPage() {
                 <div className="px-6 py-5">
                   <p className="text-gray-300 mb-4 leading-relaxed">{div.description}</p>
                   <div className="flex flex-wrap gap-2">
-                    {div.ventures.map(v => (
+                    {div.ventures.map((v) => (
                       <span
                         key={v}
                         className="text-xs bg-[#5C0A14]/20 text-[#C9A227] border border-[#C9A227]/20 rounded-full px-3 py-1 font-medium"
@@ -263,14 +184,16 @@ export default function BusinessPage() {
             <h2 className="text-2xl font-bold text-white">Operating Countries</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            {OPERATING_COUNTRIES.map(country => (
+            {OPERATING_COUNTRIES.map((country) => (
               <div key={country.code} className={`rounded-2xl border p-6 ${country.color}`}>
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">{country.flag}</span>
                     <div>
                       <h3 className="font-bold text-white text-lg">{country.name}</h3>
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${country.badge}`}>
+                      <span
+                        className={`text-xs font-semibold px-2 py-0.5 rounded-full ${country.badge}`}
+                      >
                         {country.role}
                       </span>
                     </div>
@@ -310,8 +233,11 @@ export default function BusinessPage() {
                 title: 'Global Payment Rails',
                 body: 'Stripe (USD/EUR), Flutterwave (NGN), PayPal. Each rail enabled per country activation.',
               },
-            ].map(item => (
-              <div key={item.title} className="bg-gray-900/60 rounded-2xl border border-[#5C0A14]/30 p-5">
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="bg-gray-900/60 rounded-2xl border border-[#5C0A14]/30 p-5"
+              >
                 <div className="text-3xl mb-3">{item.icon}</div>
                 <h3 className="font-semibold text-white mb-2">{item.title}</h3>
                 <p className="text-sm text-gray-300 leading-relaxed">{item.body}</p>
@@ -322,9 +248,10 @@ export default function BusinessPage() {
             <div className="flex items-start gap-3">
               <Lock className="w-5 h-5 text-[#C9A227] mt-0.5 shrink-0" />
               <p className="text-sm text-gray-300">
-                <strong>Finance Controller Oversight:</strong> All revenue withdrawals, partner disbursements,
-                and UTAMADUNI transfers require dual approval. Platform revenue auto-routes: 10% to charity
-                reserve, 15% to operational float, remainder to growth fund.
+                <strong>Finance Controller Oversight:</strong> All revenue withdrawals, partner
+                disbursements, and UTAMADUNI transfers require dual approval. Platform revenue
+                auto-routes: 10% to charity reserve, 15% to operational float, remainder to growth
+                fund.
               </p>
             </div>
           </div>
@@ -340,11 +267,26 @@ export default function BusinessPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-4 mb-8">
             {[
-              { icon: '🦁', type: 'Safari Lodges & Conservancies', desc: 'List your packages on BeKenya Experiences. Reach global travellers directly.' },
-              { icon: '🌍', type: 'NGOs & Development Partners', desc: 'Co-fund UTAMADUNI projects. Skills training, youth employment, community builds.' },
-              { icon: '🏢', type: 'Corporate Anchors', desc: 'Hire verified Pioneers. Post paths, sponsor placements, build your East Africa team.' },
-            ].map(p => (
-              <div key={p.type} className="rounded-2xl border border-[#5C0A14]/30 p-5 hover:border-[#C9A227]/50 transition-colors">
+              {
+                icon: '🦁',
+                type: 'Safari Lodges & Conservancies',
+                desc: 'List your packages on BeKenya Experiences. Reach global travellers directly.',
+              },
+              {
+                icon: '🌍',
+                type: 'NGOs & Development Partners',
+                desc: 'Co-fund UTAMADUNI projects. Skills training, youth employment, community builds.',
+              },
+              {
+                icon: '🏢',
+                type: 'Corporate Anchors',
+                desc: 'Hire verified Pioneers. Post paths, sponsor placements, build your East Africa team.',
+              },
+            ].map((p) => (
+              <div
+                key={p.type}
+                className="rounded-2xl border border-[#5C0A14]/30 p-5 hover:border-[#C9A227]/50 transition-colors"
+              >
                 <div className="text-3xl mb-3">{p.icon}</div>
                 <h3 className="font-semibold text-white mb-2">{p.type}</h3>
                 <p className="text-sm text-gray-300">{p.desc}</p>
@@ -401,7 +343,6 @@ export default function BusinessPage() {
           </div>
         </div>
       </section>
-
     </div>
   )
 }

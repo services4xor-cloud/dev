@@ -33,3 +33,31 @@ export {
   TESTIMONIALS,
   BE_COUNTRIES,
 } from './homepage'
+export {
+  MOCK_ANCHOR,
+  MOCK_PATHS,
+  MOCK_ANCHOR_CHAPTERS,
+  MOCK_COMPASS_RECOMMENDATIONS,
+  MOCK_ACTIVITY,
+  COUNTRY_BREAKDOWN,
+  ROUTE_CORRIDORS,
+  PIONEER_TYPE_BREAKDOWN,
+  type PathStatus,
+  type ChapterStatus,
+} from './anchors-dashboard'
+export {
+  ABOUT_VALUES,
+  ABOUT_SECTORS,
+  ABOUT_PAYMENT_METHODS,
+  ABOUT_STATS,
+  ABOUT_VOCAB_ITEMS,
+} from './about'
+export { IMPACT_STATS, PILLARS, STORIES, PARTNER_TYPES } from './charity'
+export { DIVISIONS, OPERATING_COUNTRIES, SHARE_BLOCKS } from './business'
+export {
+  CURRENCIES,
+  PAYMENT_ACCEPTED,
+  SUGGESTED_SKILLS,
+  POST_PATH_STEPS,
+} from './anchors-post-path'
+export { SKILLS_SUGGESTIONS } from './profile'
