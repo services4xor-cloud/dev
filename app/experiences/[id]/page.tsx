@@ -30,7 +30,8 @@ export default function ExperiencePage() {
           </p>
           <Link
             href="/ventures"
-            className="inline-block bg-[#FF6B35] text-white font-semibold px-8 py-3 rounded-xl hover:bg-orange-600 transition-colors"
+            className="inline-block text-white font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105"
+            style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.35)' }}
           >
             ← Back to Ventures
           </Link>
@@ -133,8 +134,8 @@ export default function ExperiencePage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {pkg.highlights.map((highlight, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#FF6B35]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-[#FF6B35] text-xs font-bold">✓</span>
+                    <div className="w-6 h-6 rounded-full bg-[#C9A227]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-[#C9A227] text-xs font-bold">✓</span>
                     </div>
                     <span className="text-gray-700 text-sm leading-relaxed">{highlight}</span>
                   </div>
@@ -199,7 +200,7 @@ export default function ExperiencePage() {
                       onClick={() => setOpenDay(openDay === i ? null : i)}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#FF6B35]/10 flex items-center justify-center text-[#FF6B35] font-bold text-sm flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] font-bold text-sm flex-shrink-0">
                           {day.day}
                         </div>
                         <span className="font-semibold text-gray-900">{day.title}</span>
@@ -229,7 +230,7 @@ export default function ExperiencePage() {
                     <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
                       <span className="text-gray-800 font-medium text-sm">{activity.name}</span>
                       <div className="text-right">
-                        <div className="font-bold text-[#FF6B35] text-sm">${activity.priceUSD.toLocaleString('en-US')}</div>
+                        <div className="font-bold text-[#C9A227] text-sm">${activity.priceUSD.toLocaleString('en-US')}</div>
                         <div className="text-gray-400 text-xs">{activity.unit}</div>
                       </div>
                     </div>
@@ -288,7 +289,8 @@ export default function ExperiencePage() {
                 </div>
               )}
 
-              <button className="w-full bg-[#FF6B35] text-white font-bold py-4 rounded-xl hover:bg-orange-600 transition-colors text-base mb-3">
+              <button className="w-full text-white font-bold py-4 rounded-xl transition-all hover:scale-[1.02] text-base mb-3"
+                style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.35)' }}>
                 Book This Venture
               </button>
 
@@ -318,7 +320,8 @@ export default function ExperiencePage() {
 
               <Link
                 href="/compass"
-                className="mt-6 flex items-center justify-center gap-2 text-[#0891B2] text-sm font-medium hover:text-teal-700 transition-colors"
+                className="mt-6 flex items-center justify-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                style={{ color: '#C9A227' }}
               >
                 🧭 Use the Compass to plan your route
               </Link>
@@ -344,8 +347,8 @@ export default function ExperiencePage() {
                         {relPkg.destination}
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-[#FF6B35] text-sm">{formatPackagePrice(relPkg)}</span>
-                        <span className="text-[#FF6B35] text-xs font-semibold">{VOCAB.chapter_open} →</span>
+                        <span className="font-bold text-[#C9A227] text-sm">{formatPackagePrice(relPkg)}</span>
+                        <span className="text-[#C9A227] text-xs font-semibold">{VOCAB.chapter_open} →</span>
                       </div>
                     </div>
                   </div>

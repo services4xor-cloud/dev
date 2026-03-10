@@ -56,14 +56,16 @@ const config: Config = {
         'phi-tight': '1.272', // √φ — for headings
       },
       colors: {
-        // Bekenya brand — warm Kenyan earth tones + modern accent
+        // BeNetwork brand — maroon #5C0A14 + gold #C9A227 (Kenya earth tones)
+        // 'orange' and 'teal' are backward-compat aliases → gold. New code: use maroon/gold.
         brand: {
+          maroon: '#5C0A14',    // primary — strength, Kenya heritage
+          gold: '#C9A227',      // accent — prosperity, sun
+          orange: '#C9A227',    // → gold alias (legacy compat — DO NOT use in new code)
+          teal: '#C9A227',      // → gold alias (legacy compat — DO NOT use in new code)
           red: '#CC0000',       // Kenyan flag red
-          green: '#006600',     // Kenyan flag green
+          green: '#006600',     // Kenyan flag green (flag only)
           black: '#000000',
-          gold: '#FFD700',      // opportunity / prosperity
-          orange: '#FF6B35',    // energy / action (primary CTA)
-          teal: '#0891B2',      // trust / global
         },
         surface: {
           light: '#FAFAF8',

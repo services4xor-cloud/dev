@@ -63,7 +63,12 @@
 - Accent: `#C9A227` (gold)
 - Dark background: `#0A0A0F`
 
-**Status**: Fixed in compass, onboarding, about. Still remaining in: `app/ventures/page.tsx`, `app/jobs/`, `app/be/[country]/`, `app/business/`, `app/charity/`, components/JobCard.tsx, and others. (See R14)
+**Status**: ✅ FULLY RESOLVED (Session 6).
+- `#FF6B35` eliminated from ALL 30+ files.
+- `tailwind.config.ts`: `brand.orange` + `brand.teal` → gold aliases (backward compat).
+- `globals.css`: `btn-primary` now uses maroon gradient.
+- JobCard.tsx: rewritten as dark PathCard, links to /ventures/[id].
+- Legacy pages: redirected (see R13 below).
 
 ### R7 — BeNetwork Vocabulary Everywhere
 **Source**: CLAUDE.md section 4
@@ -191,11 +196,8 @@ xl    1280px  ← desktop
 ### Known Remaining (to address)
 | What | Where | Priority |
 |------|-------|----------|
-| Orange `#FF6B35` brand color | ventures, jobs, be/[country], business, charity, JobCard.tsx | Medium |
-| `app/jobs/` vs BeNetwork "Paths" vocab | Full rename scope needed | Medium |
-| `app/post-job/` vs `app/anchors/post-path/` | Both exist — audit needed | Low |
-| `app/dashboard/` vs `app/pioneers/dashboard/` | Potential duplicate | Low |
-| `app/employers/dashboard/` vs `app/anchors/dashboard/` | Potential duplicate | Low |
+| Light-themed pages needing dark rewrite | business, contact, login, signup, pricing, profile, referral, privacy | Medium |
+| `app/api/jobs/` route naming — should be `api/paths/` | API layer | Low |
 
 ---
 
@@ -215,6 +217,23 @@ xl    1280px  ← desktop
 ---
 
 ## 6. Session Notes
+
+### Session 6 (2026-03-10)
+- Brand sweep: #FF6B35 eliminated from all files. tailwind brand.orange/teal → gold aliases.
+- Legacy page redirects: /dashboard, /employers/dashboard, /post-job, /jobs, /jobs/[id]
+- Ventures page: removed duplicate Pioneer type filter (activePioneer state removed)
+- 404 page: full rewrite with dark theme + BeNetwork vocabulary
+- TypeScript: 0 errors ✅
+
+### R13 — Legacy Route Redirects (NEW Session 6)
+**Rule**: Legacy URL patterns must 307-redirect to modern equivalents using Next.js `redirect()`.
+| Old URL | New URL |
+|---------|---------|
+| `/dashboard` | `/pioneers/dashboard` |
+| `/employers/dashboard` | `/anchors/dashboard` |
+| `/post-job` | `/anchors/post-path` |
+| `/jobs` | `/ventures` |
+| `/jobs/[id]` | `/ventures` |
 
 ### Session 5 (2026-03-10)
 - Built `lib/country-selector.ts` — geographic source of truth with Haversine proximity

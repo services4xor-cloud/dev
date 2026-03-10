@@ -315,7 +315,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
         </div>
         <Link
           href="/anchors/post-path"
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#FF6B35] text-white rounded-xl font-medium text-sm hover:bg-orange-600 transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#C9A227] text-white rounded-xl font-medium text-sm hover:opacity-90 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Open New Path
@@ -324,7 +324,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={<Radio className="w-5 h-5" />} label="Active Paths" value={3} sub="+1 this month" color="bg-orange-500/20 text-[#FF6B35]" />
+        <StatCard icon={<Radio className="w-5 h-5" />} label="Active Paths" value={3} sub="+1 this month" color="bg-[#5C0A14]/20 text-[#C9A227]" />
         <StatCard icon={<Layout className="w-5 h-5" />} label="Total Chapters" value={47} sub="14 new this week" color="bg-blue-500/20 text-blue-400" />
         <StatCard icon={<Users className="w-5 h-5" />} label="Pioneers Matched" value={12} sub="via Compass" color="bg-teal-500/20 text-teal-400" />
         <StatCard icon={<Eye className="w-5 h-5" />} label="Path Views" value={284} sub="Last 7 days" color="bg-purple-500/20 text-purple-400" />
@@ -332,15 +332,15 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
 
       {/* Quick actions */}
       <div className="grid grid-cols-3 gap-3">
-        <Link href="/anchors/post-path" className="flex items-center gap-3 p-4 bg-gray-800 border border-gray-700 rounded-xl hover:border-[#FF6B35] hover:bg-gray-750 transition-all group">
-          <div className="w-9 h-9 rounded-lg bg-orange-500/20 flex items-center justify-center text-[#FF6B35] group-hover:bg-orange-500/30">
+        <Link href="/anchors/post-path" className="flex items-center gap-3 p-4 bg-gray-800 border border-gray-700 rounded-xl hover:border-[#C9A227] hover:bg-gray-750 transition-all group">
+          <div className="w-9 h-9 rounded-lg bg-[#5C0A14]/20 flex items-center justify-center text-[#C9A227] group-hover:bg-[#5C0A14]/30">
             <Plus className="w-5 h-5" />
           </div>
           <div>
             <div className="text-sm font-medium text-white">Open New Path</div>
             <div className="text-xs text-gray-500">Post an opportunity</div>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-gray-600 ml-auto group-hover:text-[#FF6B35]" />
+          <ArrowUpRight className="w-4 h-4 text-gray-600 ml-auto group-hover:text-[#C9A227]" />
         </Link>
         <button onClick={() => setActiveTab('chapters')} className="flex items-center gap-3 p-4 bg-gray-800 border border-gray-700 rounded-xl hover:border-teal-500 hover:bg-gray-750 transition-all group text-left">
           <div className="w-9 h-9 rounded-lg bg-teal-500/20 flex items-center justify-center text-teal-400 group-hover:bg-teal-500/30">
@@ -369,7 +369,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
         <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-white font-semibold flex items-center gap-2">
-              <Zap className="w-4 h-4 text-[#FF6B35]" />
+              <Zap className="w-4 h-4 text-[#C9A227]" />
               Recent Chapter Openings
             </h2>
             <button onClick={() => setActiveTab('chapters')} className="text-xs text-teal-400 hover:text-teal-300 flex items-center gap-1">
@@ -456,7 +456,7 @@ function PathsTab() {
         </div>
         <Link
           href="/anchors/post-path"
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#FF6B35] text-white rounded-xl font-medium text-sm hover:bg-orange-600 transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#C9A227] text-white rounded-xl font-medium text-sm hover:opacity-90 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Open New Path
@@ -563,7 +563,7 @@ function PathsTab() {
 
         <Link
           href="/anchors/post-path"
-          className="flex items-center justify-center gap-2 p-5 border-2 border-dashed border-gray-700 rounded-2xl text-gray-500 hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
+          className="flex items-center justify-center gap-2 p-5 border-2 border-dashed border-gray-700 rounded-2xl text-gray-500 hover:border-[#C9A227] hover:text-[#C9A227] transition-colors"
         >
           <Plus className="w-4 h-4" />
           Open a new Path
@@ -626,7 +626,7 @@ function ChaptersTab() {
             onClick={() => setFilter(btn.key)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors flex items-center gap-1.5 border ${
               filter === btn.key
-                ? 'bg-[#FF6B35] border-[#FF6B35] text-white'
+                ? 'bg-[#C9A227] border-[#C9A227] text-white'
                 : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-500'
             }`}
           >
@@ -747,7 +747,7 @@ function AnalyticsTab() {
         {/* Country breakdown */}
         <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5">
           <h3 className="text-white font-semibold mb-1 flex items-center gap-2">
-            <Globe className="w-4 h-4 text-[#FF6B35]" />
+            <Globe className="w-4 h-4 text-[#C9A227]" />
             Where are Pioneers coming from?
           </h3>
           <p className="text-gray-500 text-xs mb-4">By chapter origin country</p>
@@ -760,7 +760,7 @@ function AnalyticsTab() {
                 </div>
                 <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-[#FF6B35] to-orange-400 rounded-full transition-all"
+                    className="h-full bg-gradient-to-r from-[#C9A227] to-orange-400 rounded-full transition-all"
                     style={{ width: `${c.pct}%` }}
                   />
                 </div>
@@ -895,7 +895,7 @@ function SettingsTab() {
       {/* Anchor Profile */}
       <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5 space-y-4">
         <h3 className="text-white font-semibold flex items-center gap-2">
-          <Users className="w-4 h-4 text-[#FF6B35]" />
+          <Users className="w-4 h-4 text-[#C9A227]" />
           Anchor Profile
         </h3>
         <div className="grid gap-4">
@@ -911,18 +911,18 @@ function SettingsTab() {
               {field.textarea ? (
                 <textarea
                   defaultValue={field.value}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#FF6B35] min-h-[80px] resize-y"
+                  className="w-full bg-gray-700 border border-gray-600 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#C9A227] min-h-[80px] resize-y"
                 />
               ) : (
                 <input
                   defaultValue={field.value}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#FF6B35]"
+                  className="w-full bg-gray-700 border border-gray-600 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#C9A227]"
                 />
               )}
             </div>
           ))}
         </div>
-        <button className="px-4 py-2 bg-[#FF6B35] text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition-colors">
+        <button className="px-4 py-2 bg-[#C9A227] text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors">
           Save Profile
         </button>
       </div>
@@ -981,7 +981,7 @@ function SettingsTab() {
       {/* Social Media Autoposts */}
       <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5">
         <h3 className="text-white font-semibold mb-1 flex items-center gap-2">
-          <Radio className="w-4 h-4 text-[#FF6B35]" />
+          <Radio className="w-4 h-4 text-[#C9A227]" />
           Social Media Autoposts
         </h3>
         <p className="text-gray-500 text-xs mb-4">Auto-share when you open a new path</p>
@@ -1026,7 +1026,7 @@ export default function AnchorDashboardPage() {
         {/* Logo */}
         <div className="p-5 border-b border-gray-700/50">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#FF6B35] flex items-center justify-center text-white font-bold text-sm">B</div>
+            <div className="w-8 h-8 rounded-lg bg-[#C9A227] flex items-center justify-center text-white font-bold text-sm">B</div>
             <div>
               <div className="text-white font-bold text-sm leading-tight">BeKenya</div>
               <div className="text-gray-500 text-xs">Anchor Portal</div>
@@ -1060,14 +1060,14 @@ export default function AnchorDashboardPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left ${
                   activeTab === tab.key
-                    ? 'bg-[#FF6B35]/10 text-[#FF6B35] border border-[#FF6B35]/20'
+                    ? 'bg-[#C9A227]/10 text-[#C9A227] border border-[#C9A227]/20'
                     : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
                 }`}
               >
                 <Icon className="w-4 h-4" />
                 {tab.label}
                 {tab.key === 'chapters' && (
-                  <span className="ml-auto text-xs bg-[#FF6B35] text-white rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                  <span className="ml-auto text-xs bg-[#C9A227] text-white rounded-full w-5 h-5 flex items-center justify-center font-bold">
                     7
                   </span>
                 )}
@@ -1080,7 +1080,7 @@ export default function AnchorDashboardPage() {
         <div className="p-4 border-t border-gray-700/50">
           <Link
             href="/anchors/post-path"
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#FF6B35] text-white rounded-xl font-medium text-sm hover:bg-orange-600 transition-colors w-full justify-center"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#C9A227] text-white rounded-xl font-medium text-sm hover:opacity-90 transition-colors w-full justify-center"
           >
             <Plus className="w-4 h-4" />
             Open New Path
@@ -1100,7 +1100,7 @@ export default function AnchorDashboardPage() {
           <div className="flex items-center gap-3">
             <button className="relative p-2 text-gray-400 hover:text-white transition-colors">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF6B35] rounded-full" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#C9A227] rounded-full" />
             </button>
             <div className="w-8 h-8 rounded-full bg-gray-700 border border-gray-600 flex items-center justify-center text-base">
               {MOCK_ANCHOR.logo}

@@ -170,7 +170,7 @@ function CompassTab() {
               </div>
               <div className="w-full bg-[#3f0a0a] rounded-full h-2">
                 <div
-                  className="bg-gradient-to-r from-[#C9A227] to-[#FF6B35] h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-[#C9A227] to-[#C9A227] h-2 rounded-full transition-all duration-500"
                   style={{ width: `${pioneer.profileComplete}%` }}
                 />
               </div>

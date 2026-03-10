@@ -92,7 +92,7 @@ export default function MediaPage() {
             <span className="text-white">Media</span>
             {' '}<span className="text-4xl md:text-6xl">🎬</span>
           </h1>
-          <p className="text-2xl md:text-3xl font-light text-[#FF6B35] mb-6 tracking-wide">
+          <p className="text-2xl md:text-3xl font-light text-[#C9A227] mb-6 tracking-wide">
             Tell Africa's Stories. Get Paid.
           </p>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -101,7 +101,7 @@ export default function MediaPage() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=creator"
-              className="bg-[#FF6B35] text-white font-bold px-8 py-4 rounded-full hover:bg-[#E55A25] transition-colors text-lg"
+              className="bg-[#C9A227] text-white font-bold px-8 py-4 rounded-full hover:opacity-90 transition-colors text-lg"
             >
               Apply as Media Pioneer
             </Link>
@@ -159,7 +159,7 @@ export default function MediaPage() {
                   'Tech companies — product photography & video',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span className="text-[#FF6B35] mt-0.5 font-bold">→</span>
+                    <span className="text-[#C9A227] mt-0.5 font-bold">→</span>
                     <span className="text-gray-300 text-sm">{item}</span>
                   </li>
                 ))}
@@ -189,7 +189,7 @@ export default function MediaPage() {
                     <p className="text-gray-400 text-sm leading-relaxed mb-4">{path.description}</p>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {path.sectors.map(sector => (
-                        <span key={sector} className="bg-[#FF6B35]/20 text-[#FF6B35] text-xs px-2 py-0.5 rounded-full">{sector}</span>
+                        <span key={sector} className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-0.5 rounded-full">{sector}</span>
                       ))}
                     </div>
                     <div className="text-[#C9A227] font-bold text-sm">{path.earning}</div>
@@ -239,7 +239,7 @@ export default function MediaPage() {
                     <div className="text-[#C9A227] font-black text-lg text-right">{project.value}</div>
                     <Link
                       href="/onboarding?type=creator"
-                      className="bg-[#FF6B35] text-white text-sm font-bold px-5 py-2 rounded-full hover:bg-[#E55A25] transition-colors whitespace-nowrap"
+                      className="bg-[#C9A227] text-white text-sm font-bold px-5 py-2 rounded-full hover:opacity-90 transition-colors whitespace-nowrap"
                     >
                       Apply Now
                     </Link>
@@ -278,11 +278,11 @@ export default function MediaPage() {
             <div className="text-3xl mb-4">⚡</div>
             <h3 className="font-bold text-[#C9A227] text-xl mb-3">How it works</h3>
             <ol className="text-left space-y-3 text-gray-300 text-sm">
-              <li className="flex gap-3"><span className="text-[#FF6B35] font-bold">1.</span> Pioneer creates content for an Anchor (lodge, brand, NGO)</li>
-              <li className="flex gap-3"><span className="text-[#FF6B35] font-bold">2.</span> Content is approved by Anchor and marked for distribution</li>
-              <li className="flex gap-3"><span className="text-[#FF6B35] font-bold">3.</span> BeKenya auto-schedules posts across all 9 platforms</li>
-              <li className="flex gap-3"><span className="text-[#FF6B35] font-bold">4.</span> Analytics delivered to both Pioneer and Anchor</li>
-              <li className="flex gap-3"><span className="text-[#FF6B35] font-bold">5.</span> Pioneer gets paid via M-Pesa within 48 hours of delivery</li>
+              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">1.</span> Pioneer creates content for an Anchor (lodge, brand, NGO)</li>
+              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">2.</span> Content is approved by Anchor and marked for distribution</li>
+              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">3.</span> BeKenya auto-schedules posts across all 9 platforms</li>
+              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">4.</span> Analytics delivered to both Pioneer and Anchor</li>
+              <li className="flex gap-3"><span className="text-[#C9A227] font-bold">5.</span> Pioneer gets paid via M-Pesa within 48 hours of delivery</li>
             </ol>
           </div>
         </div>
@@ -317,7 +317,7 @@ export default function MediaPage() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=creator"
-              className="bg-[#FF6B35] text-white font-black px-10 py-4 rounded-full hover:bg-[#E55A25] transition-colors text-xl"
+              className="bg-[#C9A227] text-white font-black px-10 py-4 rounded-full hover:opacity-90 transition-colors text-xl"
             >
               Apply as Media Pioneer
             </Link>

@@ -92,7 +92,8 @@ export default function BeCountryPage() {
           </p>
           <Link
             href="/be/ke"
-            className="inline-block bg-[#FF6B35] hover:bg-orange-500 text-white font-bold px-8 py-4 rounded-xl transition-colors text-lg"
+            className="inline-block text-white font-bold px-8 py-4 rounded-xl transition-all hover:scale-105 text-lg"
+            style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.40)' }}
           >
             Go to BeKenya →
           </Link>
@@ -115,7 +116,7 @@ export default function BeCountryPage() {
       <section className="relative min-h-screen bg-gradient-to-br from-[#5C0A14] via-[#3d0a0f] to-[#1a0505] flex flex-col items-center justify-center text-center px-4 py-20">
         {/* Background texture */}
         <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: 'radial-gradient(circle at 25% 25%, #C9A227 0%, transparent 50%), radial-gradient(circle at 75% 75%, #FF6B35 0%, transparent 50%)'
+          backgroundImage: 'radial-gradient(circle at 25% 25%, #C9A227 0%, transparent 50%), radial-gradient(circle at 75% 75%, #C9A227 0%, transparent 50%)'
         }} />
 
         <div className="relative z-10 max-w-4xl mx-auto">
@@ -141,7 +142,8 @@ export default function BeCountryPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href={`/compass?from=${country.code}`}
-              className="bg-[#FF6B35] hover:bg-orange-500 text-white font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-orange-500/25 hover:scale-105"
+              className="text-white font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.40)', boxShadow: '0 4px 20px rgba(92,10,20,0.30)' }}
             >
               Start My Compass
             </Link>

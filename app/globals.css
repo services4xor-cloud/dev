@@ -8,15 +8,15 @@
     --font-inter: 'Inter', sans-serif;
     --font-plus-jakarta: 'Plus Jakarta Sans', sans-serif;
 
-    /* BeKenya Brand Palette */
+    /* BeNetwork Brand Palette — maroon + gold */
     --color-maroon: #5C0A14;
     --color-maroon-light: #7A1020;
     --color-gold: #C9A227;
     --color-gold-light: #D4AF37;
     --color-gold-dark: #8B6914;
-    --color-orange: #FF6B35;
+    --color-orange: #C9A227;   /* legacy alias → gold, do not use in new code */
     --color-green: #006600;
-    --color-teal: #0891B2;
+    --color-teal: #C9A227;     /* legacy alias → gold, do not use in new code */
     --color-bg: #0A0A0F;
     --color-surface: #111118;
     --color-surface-2: #1A1A25;
@@ -78,9 +78,15 @@
   }
 
   .btn-primary {
-    @apply bg-[#FF6B35] text-white font-semibold px-6 py-3 rounded-xl
-           hover:bg-orange-500 active:scale-95 transition-all duration-150
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2;
+    @apply text-white font-semibold px-6 py-3 rounded-xl
+           active:scale-95 transition-all duration-150
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2;
+    background: linear-gradient(135deg, #5C0A14, #7a0e1a);
+    border: 1px solid rgba(201, 162, 39, 0.35);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #7a0e1a, #9a1220);
+    border-color: rgba(201, 162, 39, 0.55);
   }
 
   .btn-secondary {

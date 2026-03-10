@@ -121,7 +121,7 @@ function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch
           value={form.title}
           onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
           placeholder="e.g. Senior Wildlife Guide — Big Five Specialist"
-          className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6B35] text-lg"
+          className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-lg"
         />
         <p className="text-xs text-gray-500 mt-1.5">Be specific. Pioneers scan fast — a precise title wins.</p>
       </div>
@@ -136,13 +136,13 @@ function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch
               onClick={() => setForm(f => ({ ...f, category: cat.id }))}
               className={`flex items-center gap-2.5 p-3 rounded-xl border text-left transition-all ${
                 form.category === cat.id
-                  ? 'border-[#FF6B35] bg-orange-500/10 text-white'
+                  ? 'border-[#C9A227] bg-[#5C0A14]/20 text-white'
                   : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600 hover:text-gray-200'
               }`}
             >
               <span className="text-xl">{cat.icon}</span>
               <span className="text-sm font-medium">{cat.label}</span>
-              {form.category === cat.id && <Check className="w-4 h-4 text-[#FF6B35] ml-auto" />}
+              {form.category === cat.id && <Check className="w-4 h-4 text-[#C9A227] ml-auto" />}
             </button>
           ))}
         </div>
@@ -158,7 +158,7 @@ function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch
               onClick={() => setForm(f => ({ ...f, pathType: t }))}
               className={`p-3 rounded-xl border text-sm font-medium transition-all ${
                 form.pathType === t
-                  ? 'border-[#FF6B35] bg-orange-500/10 text-[#FF6B35]'
+                  ? 'border-[#C9A227] bg-[#5C0A14]/20 text-[#C9A227]'
                   : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
               }`}
             >
@@ -179,7 +179,7 @@ function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch
             value={form.location}
             onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
             placeholder="e.g. Laikipia, Kenya"
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6B35]"
+            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227]"
           />
         </div>
         <div>
@@ -240,7 +240,7 @@ function StepDescription({ form, setForm }: { form: PathForm; setForm: React.Dis
           placeholder="Describe the opportunity. What will the Pioneer do? What does a day look like? What impact will they make? What makes your anchor unique?
 
 Don't just list tasks — tell the story of this path."
-          className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6B35] min-h-[200px] resize-y text-sm leading-relaxed"
+          className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] min-h-[200px] resize-y text-sm leading-relaxed"
         />
         <div className="flex justify-between mt-1.5">
           <p className="text-xs text-gray-500">Minimum 100 characters. Compass uses this to match Pioneers.</p>
@@ -257,7 +257,7 @@ Don't just list tasks — tell the story of this path."
             onChange={e => setReqInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addReq())}
             placeholder="e.g. Valid driver's licence, e.g. FGASA Level 2+"
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6B35] text-sm"
+            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
           />
           <button
             onClick={addReq}
@@ -325,11 +325,11 @@ function StepSkills({ form, setForm }: { form: PathForm; setForm: React.Dispatch
             onChange={e => setSkillInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSkill(skillInput))}
             placeholder="Type a skill and press Enter"
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6B35] text-sm"
+            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
           />
           <button
             onClick={() => addSkill(skillInput)}
-            className="px-4 py-2.5 bg-[#FF6B35] text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition-colors flex items-center gap-1.5"
+            className="px-4 py-2.5 bg-[#C9A227] text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
             Add
@@ -353,7 +353,7 @@ function StepSkills({ form, setForm }: { form: PathForm; setForm: React.Dispatch
       {notYetAdded.length > 0 && (
         <div>
           <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wide flex items-center gap-1.5">
-            <Zap className="w-3 h-3 text-[#FF6B35]" />
+            <Zap className="w-3 h-3 text-[#C9A227]" />
             Suggested for {PATH_CATEGORIES.find(c => c.id === form.category)?.label || 'this path'}
           </label>
           <div className="flex flex-wrap gap-2">
@@ -361,7 +361,7 @@ function StepSkills({ form, setForm }: { form: PathForm; setForm: React.Dispatch
               <button
                 key={s}
                 onClick={() => addSkill(s)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 border border-gray-700 border-dashed text-gray-400 rounded-full text-sm hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 border border-gray-700 border-dashed text-gray-400 rounded-full text-sm hover:border-[#C9A227] hover:text-[#C9A227] transition-colors"
               >
                 <Plus className="w-3 h-3" />
                 {s}
@@ -454,7 +454,7 @@ function StepPioneers({ form, setForm }: { form: PathForm; setForm: React.Dispat
                 onClick={() => toggleOrigin(c.code)}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
                   selected
-                    ? 'border-[#FF6B35] bg-orange-500/10 text-[#FF6B35]'
+                    ? 'border-[#C9A227] bg-[#5C0A14]/20 text-[#C9A227]'
                     : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
                 }`}
               >
@@ -501,7 +501,7 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
                 value={form.salaryMin}
                 onChange={e => setForm(f => ({ ...f, salaryMin: e.target.value }))}
                 placeholder="e.g. 80,000"
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6B35] text-sm"
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
               />
             </div>
           </div>
@@ -513,7 +513,7 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
                 value={form.salaryMax}
                 onChange={e => setForm(f => ({ ...f, salaryMax: e.target.value }))}
                 placeholder="e.g. 150,000"
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6B35] text-sm"
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
               />
             </div>
           </div>
@@ -522,7 +522,7 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
             <select
               value={form.currency}
               onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
-              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FF6B35] text-sm"
+              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#C9A227] text-sm"
             >
               {CURRENCIES.map(c => (
                 <option key={c.code} value={c.code}>{c.flag} {c.label}</option>
@@ -704,7 +704,7 @@ function StepPreview({ form, onSubmit, submitting }: { form: PathForm; onSubmit:
 
       {/* Publish CTA */}
       <div className="bg-gradient-to-r from-orange-900/40 to-teal-900/40 rounded-2xl border border-orange-700/30 p-6 text-center">
-        <Rocket className="w-8 h-8 text-[#FF6B35] mx-auto mb-3" />
+        <Rocket className="w-8 h-8 text-[#C9A227] mx-auto mb-3" />
         <h3 className="text-white font-bold text-lg mb-1">Ready to open this Path?</h3>
         <p className="text-gray-400 text-sm mb-5">
           Compass will immediately start matching Pioneers to your path. You&apos;ll see chapters arriving in your dashboard.
@@ -712,7 +712,7 @@ function StepPreview({ form, onSubmit, submitting }: { form: PathForm; onSubmit:
         <button
           onClick={onSubmit}
           disabled={submitting}
-          className="px-8 py-4 bg-[#FF6B35] text-white rounded-xl font-bold text-base hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
+          className="px-8 py-4 bg-[#C9A227] text-white rounded-xl font-bold text-base hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
         >
           {submitting ? (
             <>
@@ -810,7 +810,7 @@ export default function PostPathPage() {
           <div className="flex gap-3 justify-center">
             <Link
               href="/anchors/dashboard"
-              className="px-5 py-3 bg-[#FF6B35] text-white rounded-xl font-medium hover:bg-orange-600 transition-colors flex items-center gap-2"
+              className="px-5 py-3 bg-[#C9A227] text-white rounded-xl font-medium hover:opacity-90 transition-colors flex items-center gap-2"
             >
               <Users className="w-4 h-4" />
               Go to Dashboard
@@ -854,7 +854,7 @@ export default function PostPathPage() {
                     step > s.num
                       ? 'border-teal-500 bg-teal-500 text-white'
                       : step === s.num
-                        ? 'border-[#FF6B35] bg-[#FF6B35] text-white'
+                        ? 'border-[#C9A227] bg-[#C9A227] text-white'
                         : 'border-gray-600 bg-gray-800 text-gray-500'
                   }`}
                 >
@@ -903,7 +903,7 @@ export default function PostPathPage() {
             <button
               onClick={() => setStep(s => s + 1)}
               disabled={!canProceed()}
-              className="flex items-center gap-2 px-6 py-3 bg-[#FF6B35] text-white rounded-xl font-semibold hover:bg-orange-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-3 bg-[#C9A227] text-white rounded-xl font-semibold hover:opacity-90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {step === 5 ? (
                 <>

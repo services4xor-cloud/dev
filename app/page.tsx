@@ -34,8 +34,8 @@ const BENETWORK_PILLARS = [
     desc: 'Find your path. Cross a border. Become something remarkable. Your compass is ready.',
     cta: 'Start My Journey',
     href: '/compass',
-    gradient: 'from-green-900 to-green-700',
-    accent: 'text-green-300',
+    gradient: 'from-[#5C0A14] to-[#3a0710]',
+    accent: 'text-[#C9A227]',
   },
   {
     icon: '🏢',
@@ -43,9 +43,9 @@ const BENETWORK_PILLARS = [
     subtitle: '(Organizations that open doors)',
     desc: 'Find real talent. Grow with Africa. Post a Path and watch Pioneers find you.',
     cta: 'Post a Path',
-    href: '/post-job',
-    gradient: 'from-orange-900 to-orange-700',
-    accent: 'text-orange-300',
+    href: '/anchors/post-path',
+    gradient: 'from-[#5C0A14] to-[#3a0710]',
+    accent: 'text-[#C9A227]',
   },
   {
     icon: '🦁',
@@ -54,8 +54,8 @@ const BENETWORK_PILLARS = [
     desc: 'Kenya\'s wildest ventures — deep sea fishing, Maasai Mara, Tsavo. Book an experience that changes you.',
     cta: 'Browse Ventures',
     href: '/ventures',
-    gradient: 'from-teal-900 to-teal-700',
-    accent: 'text-teal-300',
+    gradient: 'from-[#5C0A14] to-[#3a0710]',
+    accent: 'text-[#C9A227]',
   },
 ]
 
@@ -91,7 +91,7 @@ const FEATURED_VENTURES = [
     cta: 'Open This Chapter',
     href: '/ventures?type=professional',
     gradient: 'from-gray-900 to-gray-800',
-    tagColor: 'bg-orange-500 text-white',
+    tagColor: 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/30',
   },
   {
     type: 'professional',
@@ -104,7 +104,7 @@ const FEATURED_VENTURES = [
     cta: 'Open This Chapter',
     href: '/ventures?type=tech',
     gradient: 'from-slate-900 to-blue-950',
-    tagColor: 'bg-teal-500 text-white',
+    tagColor: 'bg-gray-700 text-[#C9A227] border border-[#C9A227]/20',
   },
 ]
 
@@ -129,7 +129,7 @@ const TESTIMONIALS = [
     quote:
       'From Nairobi to Dubai — BeKenya matched me with a hospitality group in 3 weeks. The compass knew exactly where I belonged.',
     avatar: 'BO',
-    avatarBg: 'bg-orange-600',
+    avatarBg: 'bg-[#5C0A14]',
   },
   {
     name: 'Aisha M.',
@@ -139,7 +139,7 @@ const TESTIMONIALS = [
     quote:
       'As an NGO anchor, we found 4 healthcare pioneers in one week. BeKenya understands what real talent looks like.',
     avatar: 'AM',
-    avatarBg: 'bg-teal-600',
+    avatarBg: 'bg-gray-700',
   },
 ]
 
@@ -243,7 +243,7 @@ export default function HomePage() {
             <br />
             <span style={{ color: '#C9A227' }}>belong.</span>
             <br />
-            <span style={{ color: '#FF6B35' }}>Go there.</span>
+            <span style={{ color: '#C9A227' }}>Go there.</span>
           </h1>
 
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -255,7 +255,7 @@ export default function HomePage() {
             <Link
               href="/compass"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-white font-bold text-lg rounded-full px-10 py-4 transition-all shadow-lg"
-              style={{ background: '#FF6B35', boxShadow: '0 8px 32px rgba(255,107,53,0.30)' }}
+              style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', boxShadow: '0 8px 32px rgba(92,10,20,0.40)', border: '1px solid rgba(201,162,39,0.40)' }}
             >
               <span>Start My Compass</span>
               <span>&#8594;</span>
@@ -338,7 +338,7 @@ export default function HomePage() {
       <section className="py-24 bg-gradient-to-b from-gray-900 to-gray-950">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
-            <p className="text-teal-400 text-sm font-semibold uppercase tracking-widest mb-3">Live Compass</p>
+            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: '#C9A227' }}>Live Compass</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
               Where are you? Where do you want to be?
             </h2>
@@ -357,7 +357,7 @@ export default function HomePage() {
                 <select
                   value={compassFrom}
                   onChange={(e) => setCompassFrom(e.target.value)}
-                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors"
+                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#C9A227] transition-colors"
                 >
                   <option value="">Select country...</option>
                   {FROM_COUNTRIES.map((c) => (
@@ -374,7 +374,7 @@ export default function HomePage() {
                 <select
                   value={compassTo}
                   onChange={(e) => setCompassTo(e.target.value)}
-                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-teal-500 transition-colors"
+                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#C9A227] transition-colors"
                 >
                   <option value="">Select destination...</option>
                   {TO_COUNTRIES.map((c) => (
@@ -391,7 +391,7 @@ export default function HomePage() {
                 <select
                   value={compassType}
                   onChange={(e) => setCompassType(e.target.value)}
-                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500 transition-colors"
+                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#C9A227] transition-colors"
                 >
                   <option value="">Pioneer type...</option>
                   {PIONEER_TYPE_OPTIONS.map((o) => (
@@ -403,25 +403,26 @@ export default function HomePage() {
 
             {/* Step indicators */}
             <div className="flex items-center gap-3 mb-8 text-xs text-gray-500">
-              <span className={`flex items-center gap-1 ${compassFrom ? 'text-orange-400' : ''}`}>
-                <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassFrom ? 'bg-orange-500 border-orange-500 text-white' : 'border-gray-600'}`}>1</span>
+              <span className={`flex items-center gap-1 ${compassFrom ? 'text-[#C9A227]' : 'text-gray-500'}`}>
+                <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassFrom ? 'border-[#C9A227] text-[#C9A227]' : 'border-gray-600 text-gray-600'}`}>1</span>
                 Where you are
               </span>
               <span className="text-gray-700">&#8594;</span>
-              <span className={`flex items-center gap-1 ${compassTo ? 'text-teal-400' : ''}`}>
-                <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassTo ? 'bg-teal-500 border-teal-500 text-white' : 'border-gray-600'}`}>2</span>
+              <span className={`flex items-center gap-1 ${compassTo ? 'text-[#C9A227]' : 'text-gray-500'}`}>
+                <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassTo ? 'border-[#C9A227] text-[#C9A227]' : 'border-gray-600 text-gray-600'}`}>2</span>
                 Where you&apos;re going
               </span>
               <span className="text-gray-700">&#8594;</span>
-              <span className={`flex items-center gap-1 ${compassType ? 'text-green-400' : ''}`}>
-                <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassType ? 'bg-green-500 border-green-500 text-white' : 'border-gray-600'}`}>3</span>
+              <span className={`flex items-center gap-1 ${compassType ? 'text-[#C9A227]' : 'text-gray-500'}`}>
+                <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassType ? 'border-[#C9A227] text-[#C9A227]' : 'border-gray-600 text-gray-600'}`}>3</span>
                 Who you are
               </span>
             </div>
 
             <Link
               href={compassHref}
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-400 hover:to-yellow-400 text-white font-bold text-base rounded-full px-8 py-4 transition-all shadow-lg shadow-orange-500/20"
+              className="inline-flex items-center gap-3 text-white font-bold text-base rounded-full px-8 py-4 transition-all shadow-lg hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.40)', boxShadow: '0 8px 24px rgba(92,10,20,0.35)' }}
             >
               <span>Show My Route</span>
               <span className="text-xl">&#10148;</span>
@@ -435,14 +436,15 @@ export default function HomePage() {
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <p className="text-orange-400 text-sm font-semibold uppercase tracking-widest mb-3">Featured Ventures</p>
+              <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: '#C9A227' }}>Featured Ventures</p>
               <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
                 Open chapters waiting for you.
               </h2>
             </div>
             <Link
               href="/ventures"
-              className="hidden md:inline-flex text-sm font-semibold text-orange-400 hover:text-orange-300 transition-colors"
+              className="hidden md:inline-flex text-sm font-semibold transition-colors hover:opacity-80"
+              style={{ color: '#C9A227' }}
             >
               All Ventures &#8594;
             </Link>
@@ -464,7 +466,7 @@ export default function HomePage() {
                 <p className="text-gray-400 text-sm mb-2">{v.subtitle}</p>
                 <p className="text-xs text-gray-500 mb-4">{v.detail}</p>
                 <div className="mt-auto pt-4 border-t border-white/10 flex items-center justify-between">
-                  <span className="text-orange-400 font-bold">{v.price}</span>
+                  <span className="font-bold" style={{ color: '#C9A227' }}>{v.price}</span>
                   <Link
                     href={v.href}
                     className="text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-full px-4 py-2 transition-colors"
@@ -518,14 +520,15 @@ export default function HomePage() {
                   </p>
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-orange-400 font-bold text-lg">{formatPackagePrice(pkg)}</div>
+                      <div className="font-bold text-lg" style={{ color: '#C9A227' }}>{formatPackagePrice(pkg)}</div>
                       {pkg.priceNote && (
                         <div className="text-gray-600 text-xs">{pkg.priceNote}</div>
                       )}
                     </div>
                     <Link
                       href={`/ventures/${pkg.id}`}
-                      className="text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white rounded-full px-4 py-2 transition-colors"
+                      className="text-sm font-semibold text-white rounded-full px-4 py-2 transition-all hover:scale-105"
+                      style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.35)' }}
                     >
                       Book This Venture
                     </Link>
@@ -538,7 +541,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 6. UTAMADUNI BANNER ──────────────────────────────────────────────── */}
-      <section className="py-16 relative overflow-hidden" style={{ background: 'linear-gradient(to right, #5C0A14, #006600)' }}>
+      <section className="py-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #5C0A14 0%, #2a0a0f 50%, #0A0A0F 100%)' }}>
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,_rgba(255,255,255,0.15),transparent)]" />
         </div>
@@ -573,7 +576,7 @@ export default function HomePage() {
       {/* ── 7. BECOUNTRY EXPANSION ───────────────────────────────────────────── */}
       <section className="py-24 bg-gray-950">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <p className="text-teal-400 text-sm font-semibold uppercase tracking-widest mb-4">The BeNetwork</p>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-4" style={{ color: '#C9A227' }}>The BeNetwork</p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
             BeKenya is just the beginning.
           </h2>
@@ -587,7 +590,7 @@ export default function HomePage() {
                 key={c.name}
                 className={`flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all ${
                   c.status === 'live'
-                    ? 'bg-orange-500/10 border-orange-500/40 text-white'
+                    ? 'bg-[#5C0A14]/30 border-[#C9A227]/40 text-white'
                     : 'bg-gray-900 border-white/5 text-gray-500'
                 }`}
               >
@@ -602,7 +605,7 @@ export default function HomePage() {
                 </span>
                 <div className="text-left">
                   <div className="font-bold text-sm">{c.name}</div>
-                  <div className={`text-xs ${c.status === 'live' ? 'text-orange-400' : 'text-gray-600'}`}>
+                  <div className={`text-xs ${c.status === 'live' ? 'text-[#C9A227]' : 'text-gray-600'}`}>
                     {c.status === 'live' ? 'Live now' : 'Coming soon'}
                   </div>
                 </div>
@@ -627,7 +630,7 @@ export default function HomePage() {
       <section className="py-24 bg-gray-900">
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-14">
-            <p className="text-orange-400 text-sm font-semibold uppercase tracking-widest mb-3">Pioneer Types</p>
+            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: '#C9A227' }}>Pioneer Types</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
               Which Pioneer are you?
             </h2>
@@ -641,10 +644,10 @@ export default function HomePage() {
               <Link
                 key={key}
                 href={`/compass?type=${key}`}
-                className="group bg-gray-800/50 hover:bg-gray-800 border border-white/5 hover:border-orange-500/30 rounded-2xl p-6 transition-all"
+                className="group bg-gray-800/50 hover:bg-gray-800 border border-white/5 hover:border-[#C9A227]/30 rounded-2xl p-6 transition-all"
               >
                 <div className="text-4xl mb-3">{pt.icon}</div>
-                <h3 className="font-display font-bold text-white mb-1 group-hover:text-orange-400 transition-colors">
+                <h3 className="font-display font-bold text-white mb-1 group-hover:text-[#C9A227] transition-colors">
                   {pt.label}
                 </h3>
                 <p className="text-gray-500 text-xs leading-relaxed mb-3">{pt.description}</p>
@@ -662,7 +665,8 @@ export default function HomePage() {
           <div className="text-center">
             <Link
               href="/compass"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-400 hover:to-yellow-400 text-white font-bold rounded-full px-8 py-4 transition-all shadow-lg shadow-orange-500/20"
+              className="inline-flex items-center gap-2 text-white font-bold rounded-full px-8 py-4 transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.40)', boxShadow: '0 8px 24px rgba(92,10,20,0.35)' }}
             >
               Find My Pioneer Type &#8594;
             </Link>
@@ -686,8 +690,9 @@ export default function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/post-job"
-              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-full px-10 py-4 transition-all shadow-lg shadow-orange-500/20"
+              href="/anchors/post-path"
+              className="inline-flex items-center gap-2 text-white font-bold rounded-full px-10 py-4 transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.40)', boxShadow: '0 8px 24px rgba(92,10,20,0.35)' }}
             >
               Post a Path &#8594;
             </Link>
@@ -705,7 +710,7 @@ export default function HomePage() {
       <section className="py-24 bg-gray-900">
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-14">
-            <p className="text-green-400 text-sm font-semibold uppercase tracking-widest mb-3">Pioneer Stories</p>
+            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: '#C9A227' }}>Pioneer Stories</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
               Real journeys. Real chapters.
             </h2>
@@ -717,7 +722,7 @@ export default function HomePage() {
                 key={t.name}
                 className="bg-gray-800/40 border border-white/5 rounded-3xl p-7 flex flex-col"
               >
-                <div className="text-4xl text-orange-300 font-display mb-4">&ldquo;</div>
+                <div className="text-4xl font-display mb-4" style={{ color: '#C9A227' }}>&ldquo;</div>
                 <p className="text-gray-300 text-sm leading-relaxed flex-1 mb-6">{t.quote}</p>
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 ${t.avatarBg} rounded-full flex items-center justify-center text-white text-xs font-bold`}>

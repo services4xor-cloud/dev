@@ -142,7 +142,7 @@ export default function CharityPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <a href="#donate" className="inline-block bg-[#FF6B35] text-white font-bold px-8 py-4 rounded-xl hover:bg-orange-600 transition-colors text-center">
+            <a href="#donate" className="inline-block bg-[#C9A227] text-white font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-colors text-center">
               Support UTAMADUNI
             </a>
             <a href="#pillars" className="inline-block bg-white/10 border border-white/30 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/20 transition-colors text-center">
@@ -153,11 +153,11 @@ export default function CharityPage() {
       </div>
 
       {/* How it works banner */}
-      <div className="bg-[#FF6B35]/5 border-y border-[#FF6B35]/10 py-6">
+      <div className="bg-[#C9A227]/5 border-y border-[#C9A227]/10 py-6">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <p className="text-gray-700 text-base font-medium">
             When you book a Venture or open a Path on BeKenya,
-            <span className="text-[#FF6B35] font-bold"> a percentage flows to UTAMADUNI </span>
+            <span className="text-[#C9A227] font-bold"> a percentage flows to UTAMADUNI </span>
             — funding real programs in real communities. No middlemen. Full transparency.
           </p>
         </div>
@@ -226,7 +226,7 @@ export default function CharityPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="text-center p-6">
-            <div className="w-16 h-16 rounded-2xl bg-[#FF6B35]/10 flex items-center justify-center text-3xl mx-auto mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-[#C9A227]/10 flex items-center justify-center text-3xl mx-auto mb-4">
               🌍
             </div>
             <h3 className="font-bold text-gray-900 mb-2">Pioneers Book Ventures</h3>
@@ -291,13 +291,13 @@ export default function CharityPage() {
 
                 <button
                   onClick={() => setExpandedStory(expandedStory === i ? null : i)}
-                  className="text-[#FF6B35] text-xs font-medium mb-4 hover:text-orange-400 transition-colors text-left"
+                  className="text-[#C9A227] text-xs font-medium mb-4 hover:text-orange-400 transition-colors text-left"
                 >
                   {expandedStory === i ? 'Show less' : 'Read full story →'}
                 </button>
 
                 <div className="mt-auto pt-4 border-t border-gray-700">
-                  <div className="text-[#FF6B35] text-xs font-semibold mb-1">Today</div>
+                  <div className="text-[#C9A227] text-xs font-semibold mb-1">Today</div>
                   <div className="text-gray-200 text-sm font-medium">{story.outcome}</div>
                   <div className="mt-2">
                     <span className="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full">
@@ -412,7 +412,7 @@ export default function CharityPage() {
               </div>
             )}
 
-            <button className="w-full bg-[#FF6B35] text-white font-bold py-4 rounded-xl hover:bg-orange-600 transition-colors text-base">
+            <button className="w-full bg-[#C9A227] text-white font-bold py-4 rounded-xl hover:opacity-90 transition-colors text-base">
               Donate {donationAmount !== 'custom' ? `$${donationAmount}` : customAmount ? `$${customAmount}` : ''} to UTAMADUNI
             </button>
 

@@ -108,6 +108,17 @@ Vercel: Auto-deploys from main
 - [x] Fixed all duplicate nav/footer stacking (sticky top-16 z-40 pattern)
 - [x] About page brand audit (further rewritten in session 5)
 
+### Session 6 (2026-03-10) — Brand Consistency + UX Cleanup
+- [x] **Brand sweep** — Eliminated `#FF6B35` from ALL 30+ pages/components. Zero orange violations.
+- [x] **tailwind.config.ts** — `brand.orange` + `brand.teal` aliased → `#C9A227` (gold) for backward compat. All `text-brand-orange`, `bg-brand-orange` etc now render as gold.
+- [x] **globals.css** — `btn-primary` rewritten: maroon gradient + gold border ring. CSS var `--color-orange` → gold alias.
+- [x] **JobCard.tsx** → renamed PathCard concept: dark theme, `/ventures/[id]` links, gold badges, no more light-bg card.
+- [x] **Legacy redirects** — 5 old routes → server-side redirect (0 JS hydration): `/dashboard`→`/pioneers/dashboard`, `/employers/dashboard`→`/anchors/dashboard`, `/post-job`→`/anchors/post-path`, `/jobs`→`/ventures`, `/jobs/[id]`→`/ventures`.
+- [x] **app/ventures/page.tsx** — Removed duplicate Pioneer type filter (was appearing twice). Unified to single `FilterCategory` state + 5-item FILTER array. Dark theme, maroon/gold.
+- [x] **app/not-found.tsx** — Full rewrite: dark theme, BeNetwork vocabulary, gold 404 glow, maroon CTA, popular path chips.
+- [x] **app/page.tsx** — Full orange sweep: 25+ references → maroon buttons + gold accents. `/post-job` href → `/anchors/post-path`.
+- [x] TypeScript: 0 errors ✅
+
 ### Immediate Next (Phase 2 Queue)
 1. [ ] **Kenya Offerings pages** — `/offerings/safaris`, `/offerings/eco-tourism`, `/offerings/trade`
    - Real package cards with book-now buttons
