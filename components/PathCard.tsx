@@ -16,7 +16,7 @@ interface PathCardProps {
   logo: string
   location: string
   isRemote: boolean
-  jobType: string
+  pathType: string
   salaryMin?: number
   salaryMax?: number
   currency: string
@@ -33,7 +33,7 @@ export default function PathCard({
   logo,
   location,
   isRemote,
-  jobType,
+  pathType,
   salaryMin,
   salaryMax,
   currency,

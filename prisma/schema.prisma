@@ -1,5 +1,8 @@
-// Bekenya.com — Database Schema
-// postgresql with prisma ORM
+// Be[Country] Platform — Database Schema
+// PostgreSQL with Prisma ORM
+//
+// Vocabulary: Pioneer (person), Anchor (org), Path (opportunity),
+//             Chapter (engagement), Venture (experience + path)
 
 generator client {
   provider = "prisma-client-js"
@@ -17,23 +20,23 @@ model User {
   email         String    @unique
   name          String?
   phone         String?   // Kenyan format: 2547XXXXXXXX
-  role          UserRole  @default(JOB_SEEKER)
+  role          UserRole  @default(PIONEER)
   avatarUrl     String?
   country       String    @default("KE")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   profile       Profile?
-  postedJobs    Job[]
-  applications  Application[]
+  postedPaths   Path[]        // Anchors post Paths
+  chapters      Chapter[]     // Pioneers open Chapters
   payments      Payment[]
   referrals     Referral[]  @relation("ReferredBy")
   referred      Referral?   @relation("Referred")
 }
 
 enum UserRole {
-  JOB_SEEKER
-  EMPLOYER
+  PIONEER
+  ANCHOR
   ADMIN
 }
 
@@ -55,74 +58,75 @@ model Profile {
   updatedAt   DateTime @updatedAt
 }
 
-// ─── Jobs ─────────────────────────────────────────────────────────────────────
+// ─── Paths ───────────────────────────────────────────────────────────────────
 
-model Job {
+model Path {
   id           String      @id @default(cuid())
-  employerId   String
-  employer     User        @relation(fields: [employerId], references: [id])
+  anchorId     String
+  anchor       User        @relation(fields: [anchorId], references: [id])
   title        String
   company      String
   description  String
   location     String
   isRemote     Boolean     @default(false)
-  jobType      JobType     @default(FULL_TIME)
+  pathType     PathType    @default(FULL_PATH)
   salaryMin    Int?
   salaryMax    Int?
   currency     String      @default("KES")
   skills       String[]
   country      String      @default("KE")
-  status       JobStatus   @default(ACTIVE)
-  tier         JobTier     @default(BASIC)
+  status       PathStatus  @default(OPEN)
+  tier         PathTier    @default(BASIC)
   expiresAt    DateTime
   createdAt    DateTime    @default(now())
 
-  applications Application[]
+  chapters     Chapter[]
   payments     Payment[]
 }
 
-enum JobType {
-  FULL_TIME
-  PART_TIME
+enum PathType {
+  FULL_PATH
+  PART_PATH
+  SEASONAL
   CONTRACT
   REMOTE
-  INTERNSHIP
 }
 
-enum JobStatus {
+enum PathStatus {
   DRAFT
-  ACTIVE
+  OPEN
   PAUSED
   EXPIRED
   FILLED
 }
 
-enum JobTier {
+enum PathTier {
   BASIC
   FEATURED
   PREMIUM
 }
 
-// ─── Applications ─────────────────────────────────────────────────────────────
+// ─── Chapters ────────────────────────────────────────────────────────────────
+// A Chapter is a Pioneer's engagement with a Path.
 
-model Application {
-  id          String            @id @default(cuid())
-  jobId       String
-  job         Job               @relation(fields: [jobId], references: [id])
-  applicantId String
-  applicant   User              @relation(fields: [applicantId], references: [id])
+model Chapter {
+  id          String        @id @default(cuid())
+  pathId      String
+  path        Path          @relation(fields: [pathId], references: [id])
+  pioneerId   String
+  pioneer     User          @relation(fields: [pioneerId], references: [id])
   coverLetter String?
-  status      ApplicationStatus @default(PENDING)
-  appliedAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  status      ChapterStatus @default(PENDING)
+  openedAt    DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
-enum ApplicationStatus {
+enum ChapterStatus {
   PENDING
   REVIEWED
   SHORTLISTED
-  REJECTED
-  HIRED
+  DECLINED
+  PLACED
 }
 
 // ─── Payments ─────────────────────────────────────────────────────────────────
@@ -131,8 +135,8 @@ model Payment {
   id                 String        @id @default(cuid())
   userId             String
   user               User          @relation(fields: [userId], references: [id])
-  jobId              String?
-  job                Job?          @relation(fields: [jobId], references: [id])
+  pathId             String?
+  path               Path?         @relation(fields: [pathId], references: [id])
   amount             Int           // In smallest currency unit (KES cents or USD cents)
   currency           String        @default("KES")
   method             PaymentMethod

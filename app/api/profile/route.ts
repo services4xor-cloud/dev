@@ -5,7 +5,7 @@ const profileSchema = z.object({
   name: z.string().min(2).max(100).optional(),
   phone: z.string().min(9).max(20).optional(),
   bio: z.string().max(500).optional(),
-  jobTitle: z.string().max(100).optional(),
+  headline: z.string().max(100).optional(),
   city: z.string().max(100).optional(),
   country: z.string().max(100).optional(),
   linkedin: z.string().url().optional().or(z.literal('')),

@@ -27,7 +27,7 @@ export default function ProfilePage() {
     country: 'Kenya',
     city: 'Nairobi',
     bio: '',
-    jobTitle: '',
+    headline: '',
     linkedin: '',
   })
 
@@ -49,7 +49,7 @@ export default function ProfilePage() {
     form.email,
     form.phone,
     form.bio,
-    form.jobTitle,
+    form.headline,
     skills.length > 0,
   ].filter(Boolean).length
 
@@ -121,8 +121,8 @@ export default function ProfilePage() {
               </label>
               <input
                 type="text"
-                value={form.jobTitle}
-                onChange={(e) => setForm({ ...form, jobTitle: e.target.value })}
+                value={form.headline}
+                onChange={(e) => setForm({ ...form, headline: e.target.value })}
                 placeholder="e.g. Software Engineer"
                 className="input w-full"
               />

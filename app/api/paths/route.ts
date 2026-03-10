@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { generatePathPostCopy, type SocialPlatform } from '@/lib/social-media'
@@ -51,7 +52,10 @@ const createPathSchema = z.object({
   salaryMin: z.number().min(0).optional(),
   salaryMax: z.number().min(0).optional(),
   currency: z.string().length(3).default('KES'),
-  paymentMethods: z.array(z.enum(['mpesa', 'stripe', 'flutterwave', 'paypal', 'bank'])).min(1).default(['mpesa']),
+  paymentMethods: z
+    .array(z.enum(['mpesa', 'stripe', 'flutterwave', 'paypal', 'bank']))
+    .min(1)
+    .default(['mpesa']),
 
   // Anchor context (resolved server-side from session in production)
   anchorId: z.string().optional(),
@@ -131,7 +135,18 @@ export async function GET(req: NextRequest) {
     //   : undefined
 
     // Mock response — returns mock paths shaped like the real schema
-    const mockPaths = buildMockPaths({ type, category, location, remoteOk, pioneerType, fromCountry, toCountry, q, status, anchorId })
+    const mockPaths = buildMockPaths({
+      type,
+      category,
+      location,
+      remoteOk,
+      pioneerType,
+      fromCountry,
+      toCountry,
+      q,
+      status,
+      anchorId,
+    })
 
     const total = mockPaths.length
     const paginated = mockPaths.slice((page - 1) * limit, page * limit)
@@ -143,7 +158,18 @@ export async function GET(req: NextRequest) {
       page,
       limit,
       totalPages: Math.ceil(total / limit),
-      filters: { type, category, location, remoteOk, pioneerType, fromCountry, toCountry, q, status, anchorId },
+      filters: {
+        type,
+        category,
+        location,
+        remoteOk,
+        pioneerType,
+        fromCountry,
+        toCountry,
+        q,
+        status,
+        anchorId,
+      },
     })
   } catch (err) {
     console.error('GET /api/paths error:', err)
@@ -166,7 +192,7 @@ export async function POST(req: NextRequest) {
         {
           success: false,
           error: firstError?.message || 'Validation failed',
-          issues: parsed.error.issues.map(i => ({ path: i.path.join('.'), message: i.message })),
+          issues: parsed.error.issues.map((i) => ({ path: i.path.join('.'), message: i.message })),
         },
         { status: 400 }
       )
@@ -176,7 +202,7 @@ export async function POST(req: NextRequest) {
 
     // TODO: Auth check — ensure session is Anchor role
     // const session = await getServerSession(authOptions)
-    // if (!session || session.user.role !== 'EMPLOYER') {
+    // if (!session || session.user.role !== 'ANCHOR') {
     //   return NextResponse.json({ success: false, error: 'Unauthorized — Anchors only' }, { status: 401 })
     // }
     // const anchorId = session.user.id
@@ -241,12 +267,7 @@ async function queueSocialAutoPost(path: PathRecord): Promise<void> {
 
   if (enabledPlatforms.length === 0) return
 
-  const copy = generatePathPostCopy(
-    path.title,
-    path.anchorName,
-    path.location,
-    path.category,
-  )
+  const copy = generatePathPostCopy(path.title, path.anchorName, path.location, path.category)
 
   // TODO: for each platform, push a job to the queue with the copy
   // await Promise.all(
@@ -262,7 +283,9 @@ async function queueSocialAutoPost(path: PathRecord): Promise<void> {
 
   // Mock log for now
   for (const platform of enabledPlatforms) {
-    console.log(`[SocialAutoPost] Queued post to ${platform} for path "${path.title}": ${copy[platform].slice(0, 60)}…`)
+    console.log(
+      `[SocialAutoPost] Queued post to ${platform} for path "${path.title}": ${copy[platform].slice(0, 60)}…`
+    )
   }
 }
 
@@ -291,7 +314,8 @@ function buildMockPaths(filters: PathFilters) {
       location: 'Laikipia, Kenya',
       country: 'KE',
       isRemote: false,
-      description: 'Lead immersive Big Five safari experiences for guests at Ol Pejeta Conservancy. You will track, interpret, and protect while crafting unforgettable encounters.',
+      description:
+        'Lead immersive Big Five safari experiences for guests at Ol Pejeta Conservancy. You will track, interpret, and protect while crafting unforgettable encounters.',
       requirements: ['FGASA Level 2+', 'Valid driving licence', 'Swahili proficient'],
       skills: ['Big Five tracking', 'Bush safety', 'FGASA', 'Swahili', 'First aid'],
       targetPioneerTypes: ['explorer'],
@@ -317,9 +341,16 @@ function buildMockPaths(filters: PathFilters) {
       location: 'Maasai Mara, Kenya',
       country: 'KE',
       isRemote: false,
-      description: 'Oversee daily operations of a 20-room eco-lodge deep in the Maasai Mara ecosystem. Lead a team of 35 staff, manage inventory, P&L, and guest experience.',
+      description:
+        'Oversee daily operations of a 20-room eco-lodge deep in the Maasai Mara ecosystem. Lead a team of 35 staff, manage inventory, P&L, and guest experience.',
       requirements: ['5+ years lodge management', 'Eco-certification preferred'],
-      skills: ['Lodge management', 'P&L ownership', 'Staff training', 'Eco-certification', 'Swahili'],
+      skills: [
+        'Lodge management',
+        'P&L ownership',
+        'Staff training',
+        'Eco-certification',
+        'Swahili',
+      ],
       targetPioneerTypes: ['professional', 'guardian'],
       preferredOriginCountries: ['KE', 'TZ', 'UG'],
       salaryMin: 150000,
@@ -343,9 +374,16 @@ function buildMockPaths(filters: PathFilters) {
       location: 'Nairobi / Remote',
       country: 'KE',
       isRemote: true,
-      description: 'Create compelling wildlife content for our digital channels — Instagram Reels, TikTok, and YouTube. We have the animals; you bring the storytelling magic.',
+      description:
+        'Create compelling wildlife content for our digital channels — Instagram Reels, TikTok, and YouTube. We have the animals; you bring the storytelling magic.',
       requirements: ['Portfolio of wildlife/nature content', 'Drone licence preferred'],
-      skills: ['Wildlife photography', 'Video production', 'Instagram reels', 'Adobe Suite', 'Drone operation'],
+      skills: [
+        'Wildlife photography',
+        'Video production',
+        'Instagram reels',
+        'Adobe Suite',
+        'Drone operation',
+      ],
       targetPioneerTypes: ['creator'],
       preferredOriginCountries: ['KE', 'ZA', 'DE', 'GB'],
       salaryMin: 50000,
@@ -369,7 +407,8 @@ function buildMockPaths(filters: PathFilters) {
       location: 'Nairobi, Kenya',
       country: 'KE',
       isRemote: true,
-      description: 'Build the infrastructure for the next 10 countries in the BeNetwork ecosystem. Work with Next.js, Prisma, and M-Pesa APIs to scale a platform used by thousands of Pioneers.',
+      description:
+        'Build the infrastructure for the next 10 countries in the BeNetwork ecosystem. Work with Next.js, Prisma, and M-Pesa APIs to scale a platform used by thousands of Pioneers.',
       requirements: ['3+ years TypeScript experience', 'Familiarity with Next.js App Router'],
       skills: ['TypeScript', 'Next.js', 'Prisma', 'PostgreSQL', 'React', 'REST APIs'],
       targetPioneerTypes: ['professional'],
@@ -395,9 +434,16 @@ function buildMockPaths(filters: PathFilters) {
       location: 'Nanyuki, Kenya',
       country: 'KE',
       isRemote: false,
-      description: 'Bridge healthcare access gaps in conservancy-adjacent communities. Run mobile clinics, train community health workers, and coordinate with county health teams.',
+      description:
+        'Bridge healthcare access gaps in conservancy-adjacent communities. Run mobile clinics, train community health workers, and coordinate with county health teams.',
       requirements: ['Diploma in nursing or community health', 'Driving licence'],
-      skills: ['Community health', 'Health education', 'First aid', 'Swahili', 'Project management'],
+      skills: [
+        'Community health',
+        'Health education',
+        'First aid',
+        'Swahili',
+        'Project management',
+      ],
       targetPioneerTypes: ['healer'],
       preferredOriginCountries: ['KE', 'UG', 'TZ', 'ET'],
       salaryMin: 60000,
@@ -415,23 +461,27 @@ function buildMockPaths(filters: PathFilters) {
     },
   ]
 
-  return allPaths.filter(p => {
+  return allPaths.filter((p) => {
     if (filters.status && p.status !== filters.status) return false
     if (filters.type && p.pathType !== filters.type) return false
     if (filters.category && p.category !== filters.category) return false
     if (filters.remoteOk && !p.isRemote) return false
     if (filters.anchorId && p.anchorId !== filters.anchorId) return false
-    if (filters.location && !p.location.toLowerCase().includes(filters.location.toLowerCase())) return false
+    if (filters.location && !p.location.toLowerCase().includes(filters.location.toLowerCase()))
+      return false
     if (filters.toCountry && p.country !== filters.toCountry) return false
-    if (filters.pioneerType && !p.targetPioneerTypes.includes(filters.pioneerType as never)) return false
-    if (filters.fromCountry && !p.preferredOriginCountries.includes(filters.fromCountry)) return false
+    if (filters.pioneerType && !p.targetPioneerTypes.includes(filters.pioneerType as never))
+      return false
+    if (filters.fromCountry && !p.preferredOriginCountries.includes(filters.fromCountry))
+      return false
     if (filters.q) {
       const lower = filters.q.toLowerCase()
       if (
         !p.title.toLowerCase().includes(lower) &&
         !p.description.toLowerCase().includes(lower) &&
         !p.anchorName.toLowerCase().includes(lower)
-      ) return false
+      )
+        return false
     }
     return true
   })
