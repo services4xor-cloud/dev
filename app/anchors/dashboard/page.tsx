@@ -82,7 +82,7 @@ function PathStatusBadge({ status }: { status: PathStatus }) {
     },
     paused: {
       label: 'Paused',
-      class: 'bg-yellow-900/50 text-yellow-400 border-yellow-700/50',
+      class: 'bg-[#C9A227]/10 text-[#C9A227] border-[#C9A227]/30',
       icon: PauseCircle,
     },
     closed: {
@@ -122,7 +122,7 @@ function ChapterStatusBadge({ status }: { status: ChapterStatus }) {
 }
 
 function MatchScoreDot({ score }: { score: number }) {
-  const color = score >= 90 ? 'text-green-400' : score >= 75 ? 'text-yellow-400' : 'text-[#C9A227]'
+  const color = score >= 90 ? 'text-green-400' : score >= 75 ? 'text-[#C9A227]' : 'text-[#C9A227]'
   return <span className={`text-sm font-bold ${color}`}>{score}%</span>
 }
 
@@ -385,7 +385,7 @@ function PathsTab() {
                         {path.views} views
                       </span>
                       <span className="flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 text-yellow-400" />
+                        <Star className="w-3.5 h-3.5 text-[#C9A227]" />
                         {path.matchScoreAvg}% avg match
                       </span>
                       <span className="flex items-center gap-1">
@@ -736,7 +736,7 @@ function AnalyticsTab() {
         {/* Best performing paths */}
         <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5">
           <h3 className="text-white font-semibold mb-1 flex items-center gap-2">
-            <Star className="w-4 h-4 text-yellow-400" />
+            <Star className="w-4 h-4 text-[#C9A227]" />
             Best Performing Paths
           </h3>
           <p className="text-gray-500 text-xs mb-4">Ranked by chapters + average match score</p>
@@ -753,7 +753,7 @@ function AnalyticsTab() {
                     <div
                       className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                         i === 0
-                          ? 'bg-yellow-500/20 text-yellow-400'
+                          ? 'bg-[#C9A227]/20 text-[#C9A227]'
                           : i === 1
                             ? 'bg-gray-500/20 text-gray-300'
                             : 'bg-[#5C0A14]/30 text-[#C9A227]'

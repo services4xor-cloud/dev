@@ -38,7 +38,7 @@ function StatusBadge({ status }: { status: string }) {
     New: 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/30 animate-pulse',
     'Under Review': 'bg-blue-600 text-white',
     Shortlisted: 'bg-green-600 text-white shadow-lg shadow-green-500/30',
-    Offer: 'bg-yellow-500 text-black font-bold',
+    Offer: 'bg-[#C9A227] text-black font-bold',
     Declined: 'bg-gray-600 text-gray-300',
   }
   return (
@@ -78,7 +78,7 @@ function ProfileRing({ percent }: { percent: number }) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-yellow-400">{percent}%</span>
+          <span className="text-2xl font-bold text-[#C9A227]">{percent}%</span>
           <span className="text-xs text-gray-400">complete</span>
         </div>
       </div>
@@ -130,9 +130,7 @@ function CompassTab() {
             <div className="flex-1">
               <div className="flex justify-between mb-1">
                 <span className="text-sm text-gray-300">Completeness</span>
-                <span className="text-sm font-bold text-yellow-400">
-                  {pioneer.profileComplete}%
-                </span>
+                <span className="text-sm font-bold text-[#C9A227]">{pioneer.profileComplete}%</span>
               </div>
               <div className="w-full bg-[#3f0a0a] rounded-full h-2">
                 <div
@@ -191,7 +189,7 @@ function CompassTab() {
       <div className="flex gap-3">
         <Link
           href="/compass"
-          className="bg-[#C9A227] text-black font-bold px-6 py-3 rounded-xl hover:bg-yellow-400 transition-colors"
+          className="bg-[#C9A227] text-black font-bold px-6 py-3 rounded-xl hover:bg-[#C9A227]/80 transition-colors"
         >
           Update My Compass
         </Link>
@@ -218,7 +216,7 @@ function ChaptersTab() {
           <p className="text-lg">You haven&apos;t opened any chapters yet.</p>
           <Link
             href="/ventures"
-            className="mt-4 inline-block bg-[#C9A227] text-black px-6 py-3 rounded-xl font-bold hover:bg-yellow-400"
+            className="mt-4 inline-block bg-[#C9A227] text-black px-6 py-3 rounded-xl font-bold hover:bg-[#C9A227]/80"
           >
             Browse Ventures
           </Link>
@@ -447,7 +445,7 @@ function ReferralsTab() {
           </code>
           <button
             onClick={copyCode}
-            className="bg-[#C9A227] text-black px-4 py-2 rounded-lg font-semibold text-sm hover:bg-yellow-400 transition-colors"
+            className="bg-[#C9A227] text-black px-4 py-2 rounded-lg font-semibold text-sm hover:bg-[#C9A227]/80 transition-colors"
           >
             {copied ? '✓ Copied!' : 'Copy'}
           </button>
@@ -475,7 +473,7 @@ function ReferralsTab() {
           <p className="text-3xl font-bold text-white">{stats.hires}</p>
           <p className="text-gray-400 text-xs mt-1">Hire</p>
         </div>
-        <div className="bg-[#1a0a0f] border border-yellow-500/30 rounded-xl p-4 text-center">
+        <div className="bg-[#1a0a0f] border border-[#C9A227]/30 rounded-xl p-4 text-center">
           <p className="text-3xl font-bold text-[#C9A227]">
             KES {stats.earned.toLocaleString('en-US')}
           </p>

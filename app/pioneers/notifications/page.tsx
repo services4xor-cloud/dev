@@ -54,7 +54,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
     type: 'community',
     icon: '🎉',
     title: 'UTAMADUNI Milestone',
-    body: 'Your bookings and contributions helped fund 5 children\'s education this month. Asante sana!',
+    body: "Your bookings and contributions helped fund 5 children's education this month. Asante sana!",
     link: '/charity',
     time: '2 days ago',
     read: true,
@@ -104,7 +104,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
     type: 'compass',
     icon: '🧭',
     title: 'Compass Updated',
-    body: 'Your compass route was updated. We\'re now matching you with 24 new paths across 3 countries.',
+    body: "Your compass route was updated. We're now matching you with 24 new paths across 3 countries.",
     link: '/compass',
     time: '1 week ago',
     read: true,
@@ -149,15 +149,18 @@ function getTypeBadgeClass(type: NotificationType): string {
     chapter: 'bg-blue-900/30 text-blue-400',
     compass: 'bg-teal-900/30 text-teal-400',
     community: 'bg-green-900/30 text-green-400',
-    earnings: 'bg-yellow-900/30 text-yellow-400',
+    earnings: 'bg-[#C9A227]/10 text-[#C9A227]',
   }
   return map[type] ?? 'bg-gray-900/30 text-gray-400'
 }
 
 function getTypeLabel(type: NotificationType): string {
   const map: Record<NotificationType, string> = {
-    path: 'Path', chapter: 'Chapter', compass: 'Compass',
-    community: 'Community', earnings: 'Earnings',
+    path: 'Path',
+    chapter: 'Chapter',
+    compass: 'Compass',
+    community: 'Community',
+    earnings: 'Earnings',
   }
   return map[type] ?? type
 }
@@ -236,10 +239,12 @@ function EmptyState() {
     <div className="text-center py-20">
       <div className="text-6xl mb-4">🧭</div>
       <h3 className="text-xl font-semibold text-white mb-2">Your compass is quiet right now.</h3>
-      <p className="text-gray-400 mb-6">Check back soon — new paths and updates will appear here.</p>
+      <p className="text-gray-400 mb-6">
+        Check back soon — new paths and updates will appear here.
+      </p>
       <Link
         href="/ventures"
-        className="inline-block bg-[#C9A227] text-black font-bold px-6 py-3 rounded-xl hover:bg-yellow-400 transition-colors"
+        className="inline-block bg-[#C9A227] text-black font-bold px-6 py-3 rounded-xl hover:bg-[#C9A227]/80 transition-colors"
       >
         Browse Paths
       </Link>
@@ -253,17 +258,17 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS)
   const [activeTab, setActiveTab] = useState<TabFilter>('all')
 
-  const unreadCount = notifications.filter(n => !n.read).length
+  const unreadCount = notifications.filter((n) => !n.read).length
 
   const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
   }
 
   const markOneRead = (id: string) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
   }
 
-  const filtered = notifications.filter(n => {
+  const filtered = notifications.filter((n) => {
     if (activeTab === 'all') return true
     if (activeTab === 'unread') return !n.read
     return n.type === activeTab
@@ -275,7 +280,10 @@ export default function NotificationsPage() {
       <header className="bg-[#0d0208] border-b border-[#5C0A14]/50 sticky top-16 z-30">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/pioneers/dashboard" className="text-gray-400 hover:text-white transition-colors text-sm">
+            <Link
+              href="/pioneers/dashboard"
+              className="text-gray-400 hover:text-white transition-colors text-sm"
+            >
               ← Dashboard
             </Link>
           </div>
@@ -283,10 +291,7 @@ export default function NotificationsPage() {
             <span className="text-xl">🦁</span>
             <span className="text-lg font-bold text-[#C9A227]">BeNetwork</span>
           </Link>
-          <Link
-            href="/profile"
-            className="text-[#C9A227] text-sm hover:underline"
-          >
+          <Link href="/profile" className="text-[#C9A227] text-sm hover:underline">
             Preferences
           </Link>
         </div>
@@ -315,10 +320,13 @@ export default function NotificationsPage() {
 
         {/* Tabs */}
         <div className="flex gap-2 flex-wrap mb-6 border-b border-[#5C0A14]/30 pb-0">
-          {TABS.map(tab => {
-            const count = tab.id === 'unread' ? unreadCount
-              : tab.id === 'all' ? notifications.length
-              : notifications.filter(n => n.type === tab.id).length
+          {TABS.map((tab) => {
+            const count =
+              tab.id === 'unread'
+                ? unreadCount
+                : tab.id === 'all'
+                  ? notifications.length
+                  : notifications.filter((n) => n.type === tab.id).length
             return (
               <button
                 key={tab.id}
@@ -331,11 +339,13 @@ export default function NotificationsPage() {
               >
                 {tab.label}
                 {count > 0 && (
-                  <span className={`text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center ${
-                    activeTab === tab.id
-                      ? 'bg-[#C9A227]/20 text-[#C9A227]'
-                      : 'bg-[#5C0A14]/50 text-gray-400'
-                  }`}>
+                  <span
+                    className={`text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center ${
+                      activeTab === tab.id
+                        ? 'bg-[#C9A227]/20 text-[#C9A227]'
+                        : 'bg-[#5C0A14]/50 text-gray-400'
+                    }`}
+                  >
                     {count}
                   </span>
                 )}
@@ -350,36 +360,42 @@ export default function NotificationsPage() {
         ) : (
           <div className="space-y-3">
             {/* Group: Today */}
-            {filtered.some(n => n.time.includes('hour') || n.time === 'Just now') && (
+            {filtered.some((n) => n.time.includes('hour') || n.time === 'Just now') && (
               <>
-                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1 mt-4 mb-2">Today</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1 mt-4 mb-2">
+                  Today
+                </p>
                 {filtered
-                  .filter(n => n.time.includes('hour') || n.time === 'Just now')
-                  .map(n => (
+                  .filter((n) => n.time.includes('hour') || n.time === 'Just now')
+                  .map((n) => (
                     <NotificationCard key={n.id} notification={n} onRead={markOneRead} />
                   ))}
               </>
             )}
 
             {/* Group: This Week */}
-            {filtered.some(n => n.time.includes('day') && !n.time.includes('week')) && (
+            {filtered.some((n) => n.time.includes('day') && !n.time.includes('week')) && (
               <>
-                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1 mt-6 mb-2">This Week</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1 mt-6 mb-2">
+                  This Week
+                </p>
                 {filtered
-                  .filter(n => n.time.includes('day') && !n.time.includes('week'))
-                  .map(n => (
+                  .filter((n) => n.time.includes('day') && !n.time.includes('week'))
+                  .map((n) => (
                     <NotificationCard key={n.id} notification={n} onRead={markOneRead} />
                   ))}
               </>
             )}
 
             {/* Group: Earlier */}
-            {filtered.some(n => n.time.includes('week')) && (
+            {filtered.some((n) => n.time.includes('week')) && (
               <>
-                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1 mt-6 mb-2">Earlier</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1 mt-6 mb-2">
+                  Earlier
+                </p>
                 {filtered
-                  .filter(n => n.time.includes('week'))
-                  .map(n => (
+                  .filter((n) => n.time.includes('week'))
+                  .map((n) => (
                     <NotificationCard key={n.id} notification={n} onRead={markOneRead} />
                   ))}
               </>

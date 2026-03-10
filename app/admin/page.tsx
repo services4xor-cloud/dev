@@ -36,7 +36,7 @@ function StatusDot({ status }: { status: 'Open' | 'Closed' | 'Paused' | string }
   const colors: Record<string, string> = {
     Open: 'bg-green-500',
     Closed: 'bg-gray-500',
-    Paused: 'bg-yellow-500',
+    Paused: 'bg-[#C9A227]',
   }
   return (
     <span className="flex items-center gap-1 text-xs">
@@ -51,7 +51,7 @@ function ChapterStatusBadge({ status }: { status: string }) {
     New: 'text-[#C9A227]',
     'Under Review': 'text-blue-400',
     Shortlisted: 'text-green-400',
-    Offer: 'text-yellow-400',
+    Offer: 'text-[#C9A227]',
     Declined: 'text-gray-400',
   }
   return (
@@ -348,7 +348,7 @@ function PathsTab() {
   return (
     <div className="space-y-4">
       <div className="flex gap-3">
-        <button className="text-xs border border-yellow-500/30 text-yellow-400 px-3 py-1.5 rounded-lg hover:bg-yellow-900/20 transition-colors">
+        <button className="text-xs border border-[#C9A227]/30 text-[#C9A227] px-3 py-1.5 rounded-lg hover:bg-[#C9A227]/10 transition-colors">
           Pause All Open
         </button>
         <button className="text-xs border border-red-500/30 text-red-400 px-3 py-1.5 rounded-lg hover:bg-red-900/20 transition-colors">
@@ -485,7 +485,7 @@ function SocialTab() {
                         ? 'bg-green-900/40 text-green-400'
                         : post.status === 'failed'
                           ? 'bg-red-900/40 text-red-400'
-                          : 'bg-yellow-900/40 text-yellow-400'
+                          : 'bg-[#C9A227]/10 text-[#C9A227]'
                     }`}
                   >
                     {post.status}
@@ -641,7 +641,7 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Admin Warning Banner */}
-        <div className="bg-[#5C0A14]/30 border border-[#C9A227]/30 rounded-xl px-4 py-3 mb-6 text-sm text-yellow-300 flex items-center gap-2">
+        <div className="bg-[#5C0A14]/30 border border-[#C9A227]/30 rounded-xl px-4 py-3 mb-6 text-sm text-[#C9A227] flex items-center gap-2">
           <span>⚠️</span>
           <span>Admin dashboard — all data is mock until DATABASE_URL is configured</span>
         </div>

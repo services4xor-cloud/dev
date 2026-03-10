@@ -100,8 +100,8 @@ export const FEATURED_VENTURES = [
     detail: 'Orpul Safaris Camp · All inclusive',
     cta: 'Open This Chapter',
     href: '/ventures/maasai-mara-3day',
-    gradient: 'from-amber-950 to-yellow-900',
-    tagColor: 'bg-yellow-500 text-yellow-950',
+    gradient: 'from-[#5C0A14]/60 to-[#2a0a0f]',
+    tagColor: 'bg-[#C9A227] text-black',
   },
   {
     type: 'professional',

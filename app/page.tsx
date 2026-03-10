@@ -7,7 +7,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { VOCAB, PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
+import { PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
 import {
   COUNTRY_GREETINGS,
@@ -15,7 +15,6 @@ import {
   BENETWORK_PILLARS,
   FROM_COUNTRIES,
   TO_COUNTRIES,
-  FEATURED_VENTURES,
   TESTIMONIALS,
   BE_COUNTRIES,
 } from '@/data/mock'
@@ -379,69 +378,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 4. FEATURED VENTURES ─────────────────────────────────────────────── */}
-      <section className="py-24 bg-gray-950">
-        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <p
-                className="text-sm font-semibold uppercase tracking-widest mb-3"
-                style={{ color: '#C9A227' }}
-              >
-                Featured Ventures
-              </p>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
-                Open chapters waiting for you.
-              </h2>
-            </div>
-            <Link
-              href="/ventures"
-              className="hidden md:inline-flex text-sm font-semibold transition-colors hover:opacity-80"
-              style={{ color: '#C9A227' }}
-            >
-              All Ventures &#8594;
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {FEATURED_VENTURES.map((v) => (
-              <div
-                key={v.title}
-                className={`bg-gradient-to-br ${v.gradient} rounded-3xl p-6 border border-white/5 flex flex-col`}
-              >
-                <div className="flex items-start justify-between mb-6">
-                  <span className="text-4xl">{v.icon}</span>
-                  <span
-                    className={`text-xs font-bold uppercase tracking-widest rounded-full px-3 py-1 ${v.tagColor}`}
-                  >
-                    {v.tag}
-                  </span>
-                </div>
-                <h3 className="font-display text-xl font-bold text-white mb-1">{v.title}</h3>
-                <p className="text-gray-400 text-sm mb-2">{v.subtitle}</p>
-                <p className="text-xs text-gray-500 mb-4">{v.detail}</p>
-                <div className="mt-auto pt-4 border-t border-white/10 flex items-center justify-between">
-                  <span className="font-bold" style={{ color: '#C9A227' }}>
-                    {v.price}
-                  </span>
-                  <Link
-                    href={v.href}
-                    className="text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-full px-4 py-2 transition-colors"
-                  >
-                    {VOCAB.chapter_open}
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 5. EXPERIENCES STRIP (Safari) ────────────────────────────────────── */}
-      <section className="py-24 bg-gradient-to-b from-gray-950 to-amber-950/30">
+      {/* ── 4. EXPERIENCES STRIP (Safari) ────────────────────────────────────── */}
+      <section className="py-24 bg-gradient-to-b from-gray-950 to-[#5C0A14]/20">
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-12">
-            <p className="text-yellow-500 text-sm font-semibold uppercase tracking-widest mb-3">
+            <p className="text-[#C9A227] text-sm font-semibold uppercase tracking-widest mb-3">
               Safari Experiences
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
@@ -459,7 +400,7 @@ export default function HomePage() {
                 className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden group hover:-translate-y-1 transition-transform"
               >
                 {/* Image placeholder with gradient */}
-                <div className="h-44 bg-gradient-to-br from-amber-900 to-yellow-950 flex items-center justify-center relative">
+                <div className="h-44 bg-gradient-to-br from-[#5C0A14] to-[#2a0a0f] flex items-center justify-center relative">
                   <span className="text-6xl opacity-60">
                     {pkg.type === 'deep_sea_fishing'
                       ? '🐟'
@@ -472,7 +413,7 @@ export default function HomePage() {
 
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs font-bold uppercase tracking-widest text-yellow-400 bg-yellow-400/10 rounded-full px-3 py-1">
+                    <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227] bg-[#C9A227]/10 rounded-full px-3 py-1">
                       {pkg.duration}
                     </span>
                     <span className="text-xs text-gray-500">{pkg.destination}</span>
@@ -611,69 +552,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 8. PIONEER TYPES ─────────────────────────────────────────────────── */}
-      <section className="py-24 bg-gray-900">
-        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
-          <div className="text-center mb-14">
-            <p
-              className="text-sm font-semibold uppercase tracking-widest mb-3"
-              style={{ color: '#C9A227' }}
-            >
-              Pioneer Types
-            </p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
-              Which Pioneer are you?
-            </h2>
-            <p className="text-gray-400 max-w-xl mx-auto">
-              Six paths. One compass. Every direction leads somewhere remarkable.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-            {(
-              Object.entries(PIONEER_TYPES) as [PioneerType, (typeof PIONEER_TYPES)[PioneerType]][]
-            ).map(([key, pt]) => (
-              <Link
-                key={key}
-                href={`/compass?type=${key}`}
-                className="group bg-gray-800/50 hover:bg-gray-800 border border-white/5 hover:border-[#C9A227]/30 rounded-2xl p-6 transition-all"
-              >
-                <div className="text-4xl mb-3">{pt.icon}</div>
-                <h3 className="font-display font-bold text-white mb-1 group-hover:text-[#C9A227] transition-colors">
-                  {pt.label}
-                </h3>
-                <p className="text-gray-500 text-xs leading-relaxed mb-3">{pt.description}</p>
-                <div className="flex flex-wrap gap-1">
-                  {pt.sectors.slice(0, 2).map((s) => (
-                    <span
-                      key={s}
-                      className="text-[10px] bg-white/5 rounded-full px-2 py-0.5 text-gray-400"
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Link
-              href="/compass"
-              className="inline-flex items-center gap-2 text-white font-bold rounded-full px-8 py-4 transition-all hover:scale-105"
-              style={{
-                background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
-                border: '1px solid rgba(201,162,39,0.40)',
-                boxShadow: '0 8px 24px rgba(92,10,20,0.35)',
-              }}
-            >
-              Find My Pioneer Type &#8594;
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 9. ANCHOR SECTION ────────────────────────────────────────────────── */}
+      {/* ── 7. ANCHOR SECTION ────────────────────────────────────────────────── */}
       <section className="py-24 bg-gradient-to-b from-gray-950 to-gray-900">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="text-6xl mb-6">&#127970;</div>
