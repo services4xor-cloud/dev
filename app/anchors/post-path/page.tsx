@@ -3,11 +3,23 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import {
-  ChevronLeft, ChevronRight, Plus, X, Check,
-  MapPin, Globe, Wifi, Banknote, Eye, Rocket,
-  Users, Zap, ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  X,
+  Check,
+  MapPin,
+  Globe,
+  Wifi,
+  Banknote,
+  Eye,
+  Rocket,
+  Users,
+  Zap,
+  ArrowRight,
 } from 'lucide-react'
 import { PIONEER_TYPES, PATH_CATEGORIES, type PioneerType } from '@/lib/vocabulary'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -29,36 +41,114 @@ const PAYMENT_ACCEPTED = [
   { id: 'bank', label: 'Bank Transfer', icon: '🏦', desc: 'SWIFT / SEPA' },
 ]
 
-const ORIGIN_COUNTRIES = [
-  { code: 'KE', label: 'Kenya', flag: '🇰🇪' },
-  { code: 'TZ', label: 'Tanzania', flag: '🇹🇿' },
-  { code: 'UG', label: 'Uganda', flag: '🇺🇬' },
-  { code: 'ZA', label: 'South Africa', flag: '🇿🇦' },
-  { code: 'NG', label: 'Nigeria', flag: '🇳🇬' },
-  { code: 'GH', label: 'Ghana', flag: '🇬🇭' },
-  { code: 'ET', label: 'Ethiopia', flag: '🇪🇹' },
-  { code: 'DE', label: 'Germany', flag: '🇩🇪' },
-  { code: 'GB', label: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'US', label: 'United States', flag: '🇺🇸' },
-  { code: 'IN', label: 'India', flag: '🇮🇳' },
-  { code: 'AE', label: 'UAE', flag: '🇦🇪' },
-  { code: 'PH', label: 'Philippines', flag: '🇵🇭' },
-  { code: 'RW', label: 'Rwanda', flag: '🇷🇼' },
-]
+const ORIGIN_COUNTRIES = COUNTRY_OPTIONS.map((c) => ({
+  code: c.code,
+  label: c.name,
+  flag: c.flag,
+}))
 
 const SUGGESTED_SKILLS: Record<string, string[]> = {
-  safari: ['Wildlife guiding', 'Big Five tracking', 'FGASA certification', 'Swahili', 'Bush safety', 'Night drives', 'Birding', 'Conservation', 'German language', 'First aid'],
-  marine: ['Scuba diving', 'Snorkelling guide', 'Marine biology', 'Boat operations', 'PADI certification', 'Fish identification'],
-  tech: ['JavaScript', 'Python', 'React', 'Node.js', 'AWS', 'Data analysis', 'Product management', 'DevOps', 'Mobile development'],
-  finance: ['Financial analysis', 'CPA', 'ACCA', 'Excel', 'Risk management', 'Investment banking', 'KYC/AML'],
-  fashion: ['Fashion design', 'Pattern making', 'Illustration', 'Adobe Illustrator', 'Textile sourcing', 'Brand management'],
-  media: ['Video production', 'Photography', 'Drone operation', 'Final Cut Pro', 'Adobe Suite', 'Social media', 'Storytelling'],
-  health: ['Nursing', 'Community health', 'First aid', 'Health education', 'Epidemiology', 'Mental health'],
-  education: ['Teaching', 'Curriculum design', 'English tutoring', 'TESOL', 'Special needs', 'Lesson planning'],
-  charity: ['Community development', 'NGO management', 'Grant writing', 'Project management', 'M&E'],
-  ecotourism: ['Eco-lodge management', 'Sustainability', 'Carbon offsetting', 'Nature guiding', 'Camp logistics'],
-  hospitality: ['Hotel management', 'F&B', 'Front of house', 'Revenue management', 'Customer experience'],
-  logistics: ['Supply chain', 'Fleet management', 'Warehouse', 'Import/export', 'Last-mile delivery'],
+  safari: [
+    'Wildlife guiding',
+    'Big Five tracking',
+    'FGASA certification',
+    'Swahili',
+    'Bush safety',
+    'Night drives',
+    'Birding',
+    'Conservation',
+    'German language',
+    'First aid',
+  ],
+  marine: [
+    'Scuba diving',
+    'Snorkelling guide',
+    'Marine biology',
+    'Boat operations',
+    'PADI certification',
+    'Fish identification',
+  ],
+  tech: [
+    'JavaScript',
+    'Python',
+    'React',
+    'Node.js',
+    'AWS',
+    'Data analysis',
+    'Product management',
+    'DevOps',
+    'Mobile development',
+  ],
+  finance: [
+    'Financial analysis',
+    'CPA',
+    'ACCA',
+    'Excel',
+    'Risk management',
+    'Investment banking',
+    'KYC/AML',
+  ],
+  fashion: [
+    'Fashion design',
+    'Pattern making',
+    'Illustration',
+    'Adobe Illustrator',
+    'Textile sourcing',
+    'Brand management',
+  ],
+  media: [
+    'Video production',
+    'Photography',
+    'Drone operation',
+    'Final Cut Pro',
+    'Adobe Suite',
+    'Social media',
+    'Storytelling',
+  ],
+  health: [
+    'Nursing',
+    'Community health',
+    'First aid',
+    'Health education',
+    'Epidemiology',
+    'Mental health',
+  ],
+  education: [
+    'Teaching',
+    'Curriculum design',
+    'English tutoring',
+    'TESOL',
+    'Special needs',
+    'Lesson planning',
+  ],
+  charity: [
+    'Community development',
+    'NGO management',
+    'Grant writing',
+    'Project management',
+    'M&E',
+  ],
+  ecotourism: [
+    'Eco-lodge management',
+    'Sustainability',
+    'Carbon offsetting',
+    'Nature guiding',
+    'Camp logistics',
+  ],
+  hospitality: [
+    'Hotel management',
+    'F&B',
+    'Front of house',
+    'Revenue management',
+    'Customer experience',
+  ],
+  logistics: [
+    'Supply chain',
+    'Fleet management',
+    'Warehouse',
+    'Import/export',
+    'Last-mile delivery',
+  ],
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -106,12 +196,20 @@ function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
 
 // ─── Step 1: Path Basics ──────────────────────────────────────────────────────
 
-function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch<React.SetStateAction<PathForm>> }) {
+function StepBasics({
+  form,
+  setForm,
+}: {
+  form: PathForm
+  setForm: React.Dispatch<React.SetStateAction<PathForm>>
+}) {
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-white">Name your Path</h2>
-        <p className="text-gray-400 mt-1">Give it a title that resonates — Pioneers connect with what they feel.</p>
+        <p className="text-gray-400 mt-1">
+          Give it a title that resonates — Pioneers connect with what they feel.
+        </p>
       </div>
 
       {/* Title */}
@@ -119,21 +217,23 @@ function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch
         <label className="block text-sm font-medium text-gray-300 mb-2">Path Title *</label>
         <input
           value={form.title}
-          onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+          onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
           placeholder="e.g. Senior Wildlife Guide — Big Five Specialist"
           className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-lg"
         />
-        <p className="text-xs text-gray-500 mt-1.5">Be specific. Pioneers scan fast — a precise title wins.</p>
+        <p className="text-xs text-gray-500 mt-1.5">
+          Be specific. Pioneers scan fast — a precise title wins.
+        </p>
       </div>
 
       {/* Category */}
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-2">Path Category *</label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {PATH_CATEGORIES.map(cat => (
+          {PATH_CATEGORIES.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => setForm(f => ({ ...f, category: cat.id }))}
+              onClick={() => setForm((f) => ({ ...f, category: cat.id }))}
               className={`flex items-center gap-2.5 p-3 rounded-xl border text-left transition-all ${
                 form.category === cat.id
                   ? 'border-[#C9A227] bg-[#5C0A14]/20 text-white'
@@ -152,10 +252,10 @@ function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-2">Path Type *</label>
         <div className="grid grid-cols-3 gap-3">
-          {['Full Path', 'Part Path', 'Seasonal Path'].map(t => (
+          {['Full Path', 'Part Path', 'Seasonal Path'].map((t) => (
             <button
               key={t}
-              onClick={() => setForm(f => ({ ...f, pathType: t }))}
+              onClick={() => setForm((f) => ({ ...f, pathType: t }))}
               className={`p-3 rounded-xl border text-sm font-medium transition-all ${
                 form.pathType === t
                   ? 'border-[#C9A227] bg-[#5C0A14]/20 text-[#C9A227]'
@@ -177,7 +277,7 @@ function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch
           </label>
           <input
             value={form.location}
-            onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
+            onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
             placeholder="e.g. Laikipia, Kenya"
             className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227]"
           />
@@ -191,10 +291,10 @@ function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch
             {[
               { val: false, label: 'On-site only' },
               { val: true, label: 'Remote OK' },
-            ].map(opt => (
+            ].map((opt) => (
               <button
                 key={String(opt.val)}
-                onClick={() => setForm(f => ({ ...f, isRemote: opt.val }))}
+                onClick={() => setForm((f) => ({ ...f, isRemote: opt.val }))}
                 className={`flex-1 py-3 rounded-xl border text-sm font-medium transition-all ${
                   form.isRemote === opt.val
                     ? 'border-teal-500 bg-teal-900/30 text-teal-400'
@@ -213,13 +313,19 @@ function StepBasics({ form, setForm }: { form: PathForm; setForm: React.Dispatch
 
 // ─── Step 2: Description & Requirements ──────────────────────────────────────
 
-function StepDescription({ form, setForm }: { form: PathForm; setForm: React.Dispatch<React.SetStateAction<PathForm>> }) {
+function StepDescription({
+  form,
+  setForm,
+}: {
+  form: PathForm
+  setForm: React.Dispatch<React.SetStateAction<PathForm>>
+}) {
   const [reqInput, setReqInput] = useState('')
 
   const addReq = () => {
     const val = reqInput.trim()
     if (val && !form.requirements.includes(val)) {
-      setForm(f => ({ ...f, requirements: [...f.requirements, val] }))
+      setForm((f) => ({ ...f, requirements: [...f.requirements, val] }))
       setReqInput('')
     }
   }
@@ -228,7 +334,9 @@ function StepDescription({ form, setForm }: { form: PathForm; setForm: React.Dis
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-white">Tell Pioneers the story</h2>
-        <p className="text-gray-400 mt-1">Describe the path — what they will do, experience, and contribute.</p>
+        <p className="text-gray-400 mt-1">
+          Describe the path — what they will do, experience, and contribute.
+        </p>
       </div>
 
       {/* Description */}
@@ -236,14 +344,16 @@ function StepDescription({ form, setForm }: { form: PathForm; setForm: React.Dis
         <label className="block text-sm font-medium text-gray-300 mb-2">Path Description *</label>
         <textarea
           value={form.description}
-          onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+          onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
           placeholder="Describe the opportunity. What will the Pioneer do? What does a day look like? What impact will they make? What makes your anchor unique?
 
 Don't just list tasks — tell the story of this path."
           className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] min-h-[200px] resize-y text-sm leading-relaxed"
         />
         <div className="flex justify-between mt-1.5">
-          <p className="text-xs text-gray-500">Minimum 100 characters. Compass uses this to match Pioneers.</p>
+          <p className="text-xs text-gray-500">
+            Minimum 100 characters. Compass uses this to match Pioneers.
+          </p>
           <span className="text-xs text-gray-600">{form.description.length} chars</span>
         </div>
       </div>
@@ -254,8 +364,8 @@ Don't just list tasks — tell the story of this path."
         <div className="flex gap-2 mb-3">
           <input
             value={reqInput}
-            onChange={e => setReqInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addReq())}
+            onChange={(e) => setReqInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addReq())}
             placeholder="e.g. Valid driver's licence, e.g. FGASA Level 2+"
             className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
           />
@@ -271,11 +381,19 @@ Don't just list tasks — tell the story of this path."
         {form.requirements.length > 0 && (
           <div className="space-y-2">
             {form.requirements.map((req, i) => (
-              <div key={i} className="flex items-center gap-3 p-2.5 bg-gray-800 rounded-xl border border-gray-700">
+              <div
+                key={i}
+                className="flex items-center gap-3 p-2.5 bg-gray-800 rounded-xl border border-gray-700"
+              >
                 <Check className="w-4 h-4 text-teal-400 flex-shrink-0" />
                 <span className="text-sm text-gray-200 flex-1">{req}</span>
                 <button
-                  onClick={() => setForm(f => ({ ...f, requirements: f.requirements.filter((_, j) => j !== i) }))}
+                  onClick={() =>
+                    setForm((f) => ({
+                      ...f,
+                      requirements: f.requirements.filter((_, j) => j !== i),
+                    }))
+                  }
                   className="text-gray-500 hover:text-gray-300"
                 >
                   <X className="w-4 h-4" />
@@ -286,7 +404,9 @@ Don't just list tasks — tell the story of this path."
         )}
 
         {form.requirements.length === 0 && (
-          <p className="text-xs text-gray-600 italic">No requirements added yet. Press Enter or click Add.</p>
+          <p className="text-xs text-gray-600 italic">
+            No requirements added yet. Press Enter or click Add.
+          </p>
         )}
       </div>
     </div>
@@ -295,25 +415,33 @@ Don't just list tasks — tell the story of this path."
 
 // ─── Step 3: Skills ───────────────────────────────────────────────────────────
 
-function StepSkills({ form, setForm }: { form: PathForm; setForm: React.Dispatch<React.SetStateAction<PathForm>> }) {
+function StepSkills({
+  form,
+  setForm,
+}: {
+  form: PathForm
+  setForm: React.Dispatch<React.SetStateAction<PathForm>>
+}) {
   const [skillInput, setSkillInput] = useState('')
 
   const addSkill = (skill: string) => {
     const val = skill.trim()
     if (val && !form.skills.includes(val)) {
-      setForm(f => ({ ...f, skills: [...f.skills, val] }))
+      setForm((f) => ({ ...f, skills: [...f.skills, val] }))
     }
     setSkillInput('')
   }
 
   const suggested = SUGGESTED_SKILLS[form.category] || SUGGESTED_SKILLS.tech
-  const notYetAdded = suggested.filter(s => !form.skills.includes(s))
+  const notYetAdded = suggested.filter((s) => !form.skills.includes(s))
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-white">What does a great Pioneer bring?</h2>
-        <p className="text-gray-400 mt-1">Add skills — Compass uses these to surface the best-fit Pioneers for your path.</p>
+        <p className="text-gray-400 mt-1">
+          Add skills — Compass uses these to surface the best-fit Pioneers for your path.
+        </p>
       </div>
 
       {/* Skill input */}
@@ -322,8 +450,8 @@ function StepSkills({ form, setForm }: { form: PathForm; setForm: React.Dispatch
         <div className="flex gap-2">
           <input
             value={skillInput}
-            onChange={e => setSkillInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSkill(skillInput))}
+            onChange={(e) => setSkillInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill(skillInput))}
             placeholder="Type a skill and press Enter"
             className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
           />
@@ -340,10 +468,16 @@ function StepSkills({ form, setForm }: { form: PathForm; setForm: React.Dispatch
       {/* Added skills */}
       {form.skills.length > 0 && (
         <div>
-          <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wide">Selected Skills ({form.skills.length})</label>
+          <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wide">
+            Selected Skills ({form.skills.length})
+          </label>
           <div className="flex flex-wrap gap-2">
-            {form.skills.map(s => (
-              <Chip key={s} label={s} onRemove={() => setForm(f => ({ ...f, skills: f.skills.filter(x => x !== s) }))} />
+            {form.skills.map((s) => (
+              <Chip
+                key={s}
+                label={s}
+                onRemove={() => setForm((f) => ({ ...f, skills: f.skills.filter((x) => x !== s) }))}
+              />
             ))}
           </div>
         </div>
@@ -354,10 +488,11 @@ function StepSkills({ form, setForm }: { form: PathForm; setForm: React.Dispatch
         <div>
           <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wide flex items-center gap-1.5">
             <Zap className="w-3 h-3 text-[#C9A227]" />
-            Suggested for {PATH_CATEGORIES.find(c => c.id === form.category)?.label || 'this path'}
+            Suggested for{' '}
+            {PATH_CATEGORIES.find((c) => c.id === form.category)?.label || 'this path'}
           </label>
           <div className="flex flex-wrap gap-2">
-            {notYetAdded.map(s => (
+            {notYetAdded.map((s) => (
               <button
                 key={s}
                 onClick={() => addSkill(s)}
@@ -382,21 +517,27 @@ function StepSkills({ form, setForm }: { form: PathForm; setForm: React.Dispatch
 
 // ─── Step 4: Pioneer Targeting ────────────────────────────────────────────────
 
-function StepPioneers({ form, setForm }: { form: PathForm; setForm: React.Dispatch<React.SetStateAction<PathForm>> }) {
+function StepPioneers({
+  form,
+  setForm,
+}: {
+  form: PathForm
+  setForm: React.Dispatch<React.SetStateAction<PathForm>>
+}) {
   const togglePioneerType = (type: PioneerType) => {
-    setForm(f => ({
+    setForm((f) => ({
       ...f,
       targetPioneerTypes: f.targetPioneerTypes.includes(type)
-        ? f.targetPioneerTypes.filter(t => t !== type)
+        ? f.targetPioneerTypes.filter((t) => t !== type)
         : [...f.targetPioneerTypes, type],
     }))
   }
 
   const toggleOrigin = (code: string) => {
-    setForm(f => ({
+    setForm((f) => ({
       ...f,
       preferredOriginCountries: f.preferredOriginCountries.includes(code)
-        ? f.preferredOriginCountries.filter(c => c !== code)
+        ? f.preferredOriginCountries.filter((c) => c !== code)
         : [...f.preferredOriginCountries, code],
     }))
   }
@@ -411,9 +552,11 @@ function StepPioneers({ form, setForm }: { form: PathForm; setForm: React.Dispat
       {/* Pioneer types */}
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">Pioneer Types</label>
-        <p className="text-xs text-gray-500 mb-3">Select all types that are a good fit. Leave blank to accept all.</p>
+        <p className="text-xs text-gray-500 mb-3">
+          Select all types that are a good fit. Leave blank to accept all.
+        </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {(Object.keys(PIONEER_TYPES) as PioneerType[]).map(type => {
+          {(Object.keys(PIONEER_TYPES) as PioneerType[]).map((type) => {
             const cfg = PIONEER_TYPES[type]
             const selected = form.targetPioneerTypes.includes(type)
             return (
@@ -444,9 +587,12 @@ function StepPioneers({ form, setForm }: { form: PathForm; setForm: React.Dispat
           <Globe className="w-4 h-4" />
           Preferred Pioneer Origins
         </label>
-        <p className="text-xs text-gray-500 mb-3">Pioneers from these countries will be weighted higher in Compass routing. Leave blank for global.</p>
+        <p className="text-xs text-gray-500 mb-3">
+          Pioneers from these countries will be weighted higher in Compass routing. Leave blank for
+          global.
+        </p>
         <div className="flex flex-wrap gap-2">
-          {ORIGIN_COUNTRIES.map(c => {
+          {ORIGIN_COUNTRIES.map((c) => {
             const selected = form.preferredOriginCountries.includes(c.code)
             return (
               <button
@@ -472,12 +618,18 @@ function StepPioneers({ form, setForm }: { form: PathForm; setForm: React.Dispat
 
 // ─── Step 5: Compensation ─────────────────────────────────────────────────────
 
-function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Dispatch<React.SetStateAction<PathForm>> }) {
+function StepCompensation({
+  form,
+  setForm,
+}: {
+  form: PathForm
+  setForm: React.Dispatch<React.SetStateAction<PathForm>>
+}) {
   const togglePayment = (id: string) => {
-    setForm(f => ({
+    setForm((f) => ({
       ...f,
       paymentMethods: f.paymentMethods.includes(id)
-        ? f.paymentMethods.filter(p => p !== id)
+        ? f.paymentMethods.filter((p) => p !== id)
         : [...f.paymentMethods, id],
     }))
   }
@@ -486,7 +638,9 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-white">What does the path pay?</h2>
-        <p className="text-gray-400 mt-1">Being transparent about compensation attracts committed Pioneers.</p>
+        <p className="text-gray-400 mt-1">
+          Being transparent about compensation attracts committed Pioneers.
+        </p>
       </div>
 
       {/* Salary range */}
@@ -499,7 +653,7 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
               <Banknote className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 value={form.salaryMin}
-                onChange={e => setForm(f => ({ ...f, salaryMin: e.target.value }))}
+                onChange={(e) => setForm((f) => ({ ...f, salaryMin: e.target.value }))}
                 placeholder="e.g. 80,000"
                 className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
               />
@@ -511,7 +665,7 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
               <Banknote className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 value={form.salaryMax}
-                onChange={e => setForm(f => ({ ...f, salaryMax: e.target.value }))}
+                onChange={(e) => setForm((f) => ({ ...f, salaryMax: e.target.value }))}
                 placeholder="e.g. 150,000"
                 className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
               />
@@ -521,11 +675,13 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
             <label className="block text-xs text-gray-500 mb-1">Currency</label>
             <select
               value={form.currency}
-              onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
+              onChange={(e) => setForm((f) => ({ ...f, currency: e.target.value }))}
               className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#C9A227] text-sm"
             >
-              {CURRENCIES.map(c => (
-                <option key={c.code} value={c.code}>{c.flag} {c.label}</option>
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.flag} {c.label}
+                </option>
               ))}
             </select>
           </div>
@@ -537,10 +693,14 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
 
       {/* Payment methods */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Payment Methods Accepted</label>
-        <p className="text-xs text-gray-500 mb-3">How will this Pioneer be paid? Select all that apply.</p>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          Payment Methods Accepted
+        </label>
+        <p className="text-xs text-gray-500 mb-3">
+          How will this Pioneer be paid? Select all that apply.
+        </p>
         <div className="grid sm:grid-cols-2 gap-2">
-          {PAYMENT_ACCEPTED.map(pm => {
+          {PAYMENT_ACCEPTED.map((pm) => {
             const selected = form.paymentMethods.includes(pm.id)
             return (
               <button
@@ -554,7 +714,11 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
               >
                 <span className="text-xl">{pm.icon}</span>
                 <div className="flex-1">
-                  <div className={`text-sm font-medium ${selected ? 'text-teal-300' : 'text-gray-300'}`}>{pm.label}</div>
+                  <div
+                    className={`text-sm font-medium ${selected ? 'text-teal-300' : 'text-gray-300'}`}
+                  >
+                    {pm.label}
+                  </div>
                   <div className="text-xs text-gray-500">{pm.desc}</div>
                 </div>
                 {selected && <Check className="w-4 h-4 text-teal-400 flex-shrink-0" />}
@@ -569,12 +733,21 @@ function StepCompensation({ form, setForm }: { form: PathForm; setForm: React.Di
 
 // ─── Step 6: Preview ──────────────────────────────────────────────────────────
 
-function StepPreview({ form, onSubmit, submitting }: { form: PathForm; onSubmit: () => void; submitting: boolean }) {
-  const cat = PATH_CATEGORIES.find(c => c.id === form.category)
+function StepPreview({
+  form,
+  onSubmit,
+  submitting,
+}: {
+  form: PathForm
+  onSubmit: () => void
+  submitting: boolean
+}) {
+  const cat = PATH_CATEGORIES.find((c) => c.id === form.category)
 
   const compensationLabel = (() => {
     if (!form.salaryMin && !form.salaryMax) return 'Discussed upon offer'
-    if (form.salaryMin && form.salaryMax) return `${form.currency} ${Number(form.salaryMin).toLocaleString()} – ${Number(form.salaryMax).toLocaleString()}`
+    if (form.salaryMin && form.salaryMax)
+      return `${form.currency} ${Number(form.salaryMin).toLocaleString()} – ${Number(form.salaryMax).toLocaleString()}`
     if (form.salaryMin) return `From ${form.currency} ${Number(form.salaryMin).toLocaleString()}`
     return `Up to ${form.currency} ${Number(form.salaryMax).toLocaleString()}`
   })()
@@ -583,7 +756,9 @@ function StepPreview({ form, onSubmit, submitting }: { form: PathForm; onSubmit:
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-white">Review your Path</h2>
-        <p className="text-gray-400 mt-1">This is how it will appear to Pioneers in the BeNetwork.</p>
+        <p className="text-gray-400 mt-1">
+          This is how it will appear to Pioneers in the BeNetwork.
+        </p>
       </div>
 
       {/* Path preview card */}
@@ -659,8 +834,11 @@ function StepPreview({ form, onSubmit, submitting }: { form: PathForm; onSubmit:
           <div className="p-6 border-b border-gray-700">
             <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-3">Skills Needed</h4>
             <div className="flex flex-wrap gap-2">
-              {form.skills.map(s => (
-                <span key={s} className="px-2.5 py-1 bg-gray-700 text-gray-300 rounded-full text-xs border border-gray-600">
+              {form.skills.map((s) => (
+                <span
+                  key={s}
+                  className="px-2.5 py-1 bg-gray-700 text-gray-300 rounded-full text-xs border border-gray-600"
+                >
                   {s}
                 </span>
               ))}
@@ -673,10 +851,15 @@ function StepPreview({ form, onSubmit, submitting }: { form: PathForm; onSubmit:
           <div className="grid sm:grid-cols-2 gap-4">
             {form.targetPioneerTypes.length > 0 && (
               <div>
-                <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">Pioneer Types</h4>
+                <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">
+                  Pioneer Types
+                </h4>
                 <div className="flex flex-wrap gap-1.5">
-                  {form.targetPioneerTypes.map(t => (
-                    <span key={t} className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded-full border border-gray-600">
+                  {form.targetPioneerTypes.map((t) => (
+                    <span
+                      key={t}
+                      className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded-full border border-gray-600"
+                    >
                       {PIONEER_TYPES[t].icon} {PIONEER_TYPES[t].label}
                     </span>
                   ))}
@@ -685,12 +868,17 @@ function StepPreview({ form, onSubmit, submitting }: { form: PathForm; onSubmit:
             )}
             {form.paymentMethods.length > 0 && (
               <div>
-                <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">Payment Methods</h4>
+                <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">
+                  Payment Methods
+                </h4>
                 <div className="flex flex-wrap gap-1.5">
-                  {form.paymentMethods.map(p => {
-                    const pm = PAYMENT_ACCEPTED.find(x => x.id === p)
+                  {form.paymentMethods.map((p) => {
+                    const pm = PAYMENT_ACCEPTED.find((x) => x.id === p)
                     return pm ? (
-                      <span key={p} className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded-full border border-gray-600">
+                      <span
+                        key={p}
+                        className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded-full border border-gray-600"
+                      >
                         {pm.icon} {pm.label}
                       </span>
                     ) : null
@@ -707,7 +895,8 @@ function StepPreview({ form, onSubmit, submitting }: { form: PathForm; onSubmit:
         <Rocket className="w-8 h-8 text-[#C9A227] mx-auto mb-3" />
         <h3 className="text-white font-bold text-lg mb-1">Ready to open this Path?</h3>
         <p className="text-gray-400 text-sm mb-5">
-          Compass will immediately start matching Pioneers to your path. You&apos;ll see chapters arriving in your dashboard.
+          Compass will immediately start matching Pioneers to your path. You&apos;ll see chapters
+          arriving in your dashboard.
         </p>
         <button
           onClick={onSubmit}
@@ -816,7 +1005,11 @@ export default function PostPathPage() {
               Go to Dashboard
             </Link>
             <button
-              onClick={() => { setSubmitted(false); setStep(1); setForm(f => ({ ...f, title: '', description: '' })) }}
+              onClick={() => {
+                setSubmitted(false)
+                setStep(1)
+                setForm((f) => ({ ...f, title: '', description: '' }))
+              }}
               className="px-5 py-3 bg-gray-800 text-gray-300 rounded-xl font-medium border border-gray-700 hover:bg-gray-700 transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
@@ -833,12 +1026,17 @@ export default function PostPathPage() {
       {/* Top nav */}
       <nav className="sticky top-16 z-40 bg-gray-900/90 backdrop-blur-md border-b border-gray-700/50">
         <div className="max-w-3xl mx-auto px-4 h-16 flex items-center gap-4">
-          <Link href="/anchors/dashboard" className="p-2 hover:bg-gray-800 rounded-xl transition-colors text-gray-400 hover:text-white">
+          <Link
+            href="/anchors/dashboard"
+            className="p-2 hover:bg-gray-800 rounded-xl transition-colors text-gray-400 hover:text-white"
+          >
             <ChevronLeft className="w-5 h-5" />
           </Link>
           <div>
             <div className="text-white font-semibold text-sm">Open a New Path</div>
-            <div className="text-xs text-gray-500">Opening a Path is how Anchors build their tribe.</div>
+            <div className="text-xs text-gray-500">
+              Opening a Path is how Anchors build their tribe.
+            </div>
           </div>
         </div>
       </nav>
@@ -860,16 +1058,21 @@ export default function PostPathPage() {
                 >
                   {step > s.num ? <Check className="w-4 h-4" /> : s.num}
                 </div>
-                <div className={`text-xs mt-1 font-medium hidden sm:block ${
-                  step >= s.num ? 'text-gray-300' : 'text-gray-600'
-                }`}>
+                <div
+                  className={`text-xs mt-1 font-medium hidden sm:block ${
+                    step >= s.num ? 'text-gray-300' : 'text-gray-600'
+                  }`}
+                >
                   {s.label}
                 </div>
               </div>
               {i < STEPS.length - 1 && (
-                <div className={`h-px flex-1 mx-2 sm:mx-3 transition-colors ${
-                  step > s.num ? 'bg-teal-500' : 'bg-gray-700'
-                }`} style={{ minWidth: '20px' }} />
+                <div
+                  className={`h-px flex-1 mx-2 sm:mx-3 transition-colors ${
+                    step > s.num ? 'bg-teal-500' : 'bg-gray-700'
+                  }`}
+                  style={{ minWidth: '20px' }}
+                />
               )}
             </div>
           ))}
@@ -882,7 +1085,9 @@ export default function PostPathPage() {
           {step === 3 && <StepSkills form={form} setForm={setForm} />}
           {step === 4 && <StepPioneers form={form} setForm={setForm} />}
           {step === 5 && <StepCompensation form={form} setForm={setForm} />}
-          {step === 6 && <StepPreview form={form} onSubmit={handleSubmit} submitting={submitting} />}
+          {step === 6 && (
+            <StepPreview form={form} onSubmit={handleSubmit} submitting={submitting} />
+          )}
         </div>
 
         {/* Navigation buttons */}
@@ -890,7 +1095,7 @@ export default function PostPathPage() {
           <div className="flex items-center justify-between pt-4 border-t border-gray-700/50">
             {step > 1 ? (
               <button
-                onClick={() => setStep(s => s - 1)}
+                onClick={() => setStep((s) => s - 1)}
                 className="flex items-center gap-2 px-5 py-3 bg-gray-800 text-gray-300 border border-gray-700 rounded-xl font-medium hover:bg-gray-700 transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -901,7 +1106,7 @@ export default function PostPathPage() {
             )}
 
             <button
-              onClick={() => setStep(s => s + 1)}
+              onClick={() => setStep((s) => s + 1)}
               disabled={!canProceed()}
               className="flex items-center gap-2 px-6 py-3 bg-[#C9A227] text-white rounded-xl font-semibold hover:opacity-90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >

@@ -132,7 +132,7 @@ export default function VenturesPage() {
                   {formatPackagePrice(featuredSafari)}
                 </div>
                 <div className="text-white/60 text-xs mb-3">{featuredSafari.priceNote}</div>
-                <div className="inline-flex items-center gap-1.5 bg-white text-[#7B3F00] font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-[#C9A227] transition-colors">
+                <div className="inline-flex items-center gap-1.5 bg-[#C9A227] text-[#5C0A14] font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-[#C9A227]/80 transition-colors">
                   {VOCAB.chapter_open} <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
@@ -152,7 +152,7 @@ export default function VenturesPage() {
               </h2>
               <Link
                 href="/experiences"
-                className="text-[#C9A227] text-sm font-medium hover:text-yellow-400 flex items-center gap-1 transition-colors"
+                className="text-[#C9A227] text-sm font-medium hover:text-[#C9A227]/70 flex items-center gap-1 transition-colors"
               >
                 See all <ArrowRight className="w-3.5 h-3.5" />
               </Link>
