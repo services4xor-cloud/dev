@@ -1,7 +1,7 @@
 # Be[Country] — Live Progress Tracker
 
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 10 (2026-03-10)
+> Last updated: Session 11 (2026-03-10)
 
 ---
 
@@ -207,6 +207,16 @@ Vercel: Auto-deploys from main
 - [x] Build: ✅ 0 errors
 - [x] Tests: ✅ 25/25 pass
 - [x] TypeScript: 0 errors ✅
+
+### Session 11 (2026-03-10) — Brand Sweep: amber/yellow → gold #C9A227
+
+- [x] **be/[country]/page.tsx** — 10 amber-400/500 → `#C9A227` brand gold (stat cards, payment badges, sector cards, CTAs, links)
+- [x] **charity/page.tsx** — Cultural Preservation pillar accent: amber-\* → `#C9A227` tokens
+- [x] **ventures/page.tsx** — CTA button: `bg-white text-[#7B3F00]` → `bg-[#C9A227] text-[#5C0A14]`; hover: `yellow-400` → `#C9A227/70`
+- [x] **compass/page.tsx** — "Change" link hover: `yellow-400` → `#C9A227/70`
+- [x] **anchors/post-path/page.tsx** — Hardcoded 14-country `ORIGIN_COUNTRIES` array → derived from `COUNTRY_OPTIONS` (lib/country-selector.ts)
+- [x] Build: 0 errors, TypeScript: 0 errors
+- [x] Committed + pushed to main
 
 ### Frontend Status: COMPLETE
 
