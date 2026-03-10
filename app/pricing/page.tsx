@@ -12,13 +12,13 @@ const plans = [
     usd: 4,
     icon: Briefcase,
     color: 'gray',
-    description: 'Perfect for small businesses posting occasionally',
+    description: 'Perfect for Anchors posting occasionally',
     features: [
-      '1 active job post (30 days)',
-      'Basic listing placement',
-      'Up to 50 applicants',
+      '1 active Path post (30 days)',
+      'Standard placement',
+      'Up to 50 Chapters',
       'Email notifications',
-      'Apply via M-Pesa',
+      'Pay via M-Pesa',
     ],
     cta: 'Post for KES 500',
     popular: false,
@@ -30,14 +30,14 @@ const plans = [
     usd: 15,
     icon: Star,
     color: 'maroon',
-    description: 'Stand out and attract 3× more qualified applicants',
+    description: 'Stand out and attract 3× more qualified Pioneers',
     features: [
-      '1 featured job post (45 days)',
-      'Top of search results ⭐',
-      'Unlimited applicants',
+      '1 featured Path post (45 days)',
+      'Top of Compass results',
+      'Unlimited Chapters',
       'SMS + email notifications',
-      'Company logo displayed',
-      'Highlighted in category',
+      'Anchor logo displayed',
+      'Highlighted in sector',
       'Social media boost',
     ],
     cta: 'Post Featured — KES 2,000',
@@ -52,9 +52,9 @@ const plans = [
     color: 'gold',
     description: 'Maximum visibility for serious hiring needs',
     features: [
-      '3 premium job posts (60 days)',
+      '3 premium Path posts (60 days)',
       'Homepage banner placement',
-      'Unlimited applicants',
+      'Unlimited Chapters',
       'Dedicated support',
       'CV screening assistance',
       'WhatsApp alerts',
@@ -80,43 +80,32 @@ export default function PricingPage() {
   const [currency, setCurrency] = useState<'KES' | 'USD'>('KES')
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            <span className="text-gray-900">Beke</span>
-            <span className="text-[#C9A227]">nya</span>
-          </Link>
-          <Link href="/jobs" className="text-gray-600 hover:text-[#C9A227]">Browse Jobs</Link>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-[#0A0A0F]">
       <div className="max-w-6xl mx-auto px-4 py-16">
         {/* Hero */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-[#5C0A14]/5 text-[#C9A227] px-4 py-2 rounded-full text-sm font-medium mb-4">
+          <div className="inline-flex items-center gap-2 bg-[#5C0A14]/30 text-[#C9A227] px-4 py-2 rounded-full text-sm font-medium mb-4 border border-[#C9A227]/20">
             <Globe className="w-4 h-4" />
             Pay from anywhere — M-Pesa, card, or mobile money
           </div>
-          <h1 className="text-4xl font-black text-gray-900 mb-4">
+          <h1 className="text-4xl font-black text-white mb-4">
             Simple, transparent pricing
           </h1>
-          <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-            Post a job in minutes. Pay with M-Pesa. Reach thousands of qualified candidates across Kenya and beyond.
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Post a Path in minutes. Pay with M-Pesa. Reach thousands of qualified Pioneers across Kenya and beyond.
           </p>
 
           {/* Currency toggle */}
           <div className="flex items-center justify-center gap-2 mt-6">
             <button
               onClick={() => setCurrency('KES')}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'KES' ? 'bg-[#5C0A14] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'}`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'KES' ? 'bg-[#5C0A14] text-white border border-[#C9A227]/30' : 'bg-gray-900 text-gray-400 border border-gray-700 hover:border-gray-600'}`}
             >
               🇰🇪 KES
             </button>
             <button
               onClick={() => setCurrency('USD')}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'USD' ? 'bg-[#5C0A14] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'}`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'USD' ? 'bg-[#5C0A14] text-white border border-[#C9A227]/30' : 'bg-gray-900 text-gray-400 border border-gray-700 hover:border-gray-600'}`}
             >
               🇺🇸 USD
             </button>
@@ -130,35 +119,35 @@ export default function PricingPage() {
             return (
               <div
                 key={plan.name}
-                className={`bg-white rounded-2xl p-6 shadow-sm border-2 transition-transform hover:-translate-y-1 relative ${
-                  plan.popular ? 'border-[#5C0A14] shadow-lg' : 'border-gray-100'
+                className={`bg-gray-900/60 rounded-2xl p-6 shadow-sm border-2 transition-transform hover:-translate-y-1 relative ${
+                  plan.popular ? 'border-[#C9A227]/50 shadow-lg shadow-[#C9A227]/5' : 'border-gray-800'
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#5C0A14] text-white text-xs font-bold px-3 py-1 rounded-full">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#C9A227] text-[#0A0A0F] text-xs font-bold px-3 py-1 rounded-full">
                     MOST POPULAR
                   </div>
                 )}
 
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${
-                  plan.popular ? 'bg-[#5C0A14]/5' : 'bg-gray-50'
+                  plan.popular ? 'bg-[#5C0A14]/50' : 'bg-gray-800'
                 }`}>
-                  <Icon className={`w-6 h-6 ${plan.popular ? 'text-[#C9A227]' : 'text-gray-500'}`} />
+                  <Icon className={`w-6 h-6 ${plan.popular ? 'text-[#C9A227]' : 'text-gray-400'}`} />
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
-                <p className="text-gray-500 text-sm mt-1 mb-4">{plan.description}</p>
+                <h3 className="text-xl font-bold text-white">{plan.name}</h3>
+                <p className="text-gray-400 text-sm mt-1 mb-4">{plan.description}</p>
 
                 <div className="mb-6">
-                  <div className="text-3xl font-black text-gray-900">
+                  <div className="text-3xl font-black text-white">
                     {currency === 'KES' ? `KES ${plan.price.toLocaleString()}` : `$${plan.usd}`}
                   </div>
-                  <div className="text-gray-400 text-sm">one-time payment</div>
+                  <div className="text-gray-500 text-sm">one-time payment</div>
                 </div>
 
                 <ul className="space-y-2 mb-6">
                   {plan.features.map((f, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
                       <Check className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.popular ? 'text-[#C9A227]' : 'text-green-500'}`} />
                       {f}
                     </li>
@@ -166,11 +155,11 @@ export default function PricingPage() {
                 </ul>
 
                 <Link
-                  href={`/post-job?plan=${plan.name.toLowerCase()}`}
+                  href={`/anchors/post-path?plan=${plan.name.toLowerCase()}`}
                   className={`block w-full text-center py-3 rounded-xl font-semibold transition-colors ${
                     plan.popular
-                      ? 'bg-[#5C0A14] text-white hover:opacity-90'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-[#5C0A14] text-white hover:bg-[#7a0e1a] border border-[#C9A227]/30'
+                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                   }`}
                 >
                   {plan.cta}
@@ -181,30 +170,30 @@ export default function PricingPage() {
         </div>
 
         {/* Payment Methods */}
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 mb-16">
+        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-gray-800 mb-16">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Pay from anywhere in Africa and the world</h2>
-            <p className="text-gray-500 mt-2">We accept every major payment method so no one is excluded</p>
+            <h2 className="text-2xl font-bold text-white">Pay from anywhere in Africa and the world</h2>
+            <p className="text-gray-400 mt-2">We accept every major payment method so no one is excluded</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {paymentMethods.map(method => (
-              <div key={method.name} className="text-center p-4 bg-gray-50 rounded-xl">
+              <div key={method.name} className="text-center p-4 bg-gray-800/60 rounded-xl border border-gray-700/50">
                 <div className="text-2xl mb-1">{method.flag}</div>
-                <div className="font-semibold text-gray-900 text-sm">{method.name}</div>
-                <div className="text-xs text-gray-400 mt-0.5">{method.desc}</div>
+                <div className="font-semibold text-white text-sm">{method.name}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{method.desc}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* For Job Seekers */}
-        <div className="bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] rounded-2xl p-8 text-white text-center">
+        {/* For Pioneers */}
+        <div className="bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] rounded-2xl p-8 text-white text-center border border-[#C9A227]/20">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-80" />
-          <h2 className="text-2xl font-bold mb-2">Job seekers always free</h2>
+          <h2 className="text-2xl font-bold mb-2">Pioneers — always free</h2>
           <p className="opacity-90 max-w-lg mx-auto mb-6">
-            Creating a profile, applying to jobs, and getting hired is completely free for job seekers. Always.
+            Creating a profile, opening Chapters, and getting placed is completely free for Pioneers. Always.
           </p>
-          <Link href="/signup?role=jobseeker" className="bg-white text-[#C9A227] font-bold px-6 py-3 rounded-xl hover:bg-[#5C0A14]/5 transition-colors inline-block">
+          <Link href="/signup?role=pioneer" className="bg-white text-[#5C0A14] font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors inline-block">
             Create Free Profile →
           </Link>
         </div>

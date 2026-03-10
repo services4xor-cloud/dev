@@ -91,7 +91,7 @@ export default function ProfilePage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
-                <Briefcase className="w-3 h-3" /> Job Title
+                <Briefcase className="w-3 h-3" /> Current Role
               </label>
               <input type="text" value={form.jobTitle} onChange={e => setForm({...form, jobTitle: e.target.value})}
                 placeholder="e.g. Software Engineer" className="input w-full" />

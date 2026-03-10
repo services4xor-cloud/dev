@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { Gift, Copy, Check, Users, DollarSign, Share2, ArrowRight, Star } from 'lucide-react'
 
 const steps = [
-  { n: 1, title: 'Share your link', desc: 'Copy your unique referral link and share it with friends looking for work.' },
+  { n: 1, title: 'Share your link', desc: 'Copy your unique referral link and share it with friends seeking Paths.' },
   { n: 2, title: 'Friend signs up', desc: 'Your friend creates a free account using your referral link.' },
-  { n: 3, title: 'Friend gets hired', desc: 'When your friend gets hired through Bekenya, the countdown starts.' },
+  { n: 3, title: 'Friend gets placed', desc: 'When your friend gets placed through Bekenya, the countdown starts.' },
   { n: 4, title: 'You earn KES 5,000', desc: 'M-Pesa payment lands in your account within 7 days. 🎉' },
 ]
 
@@ -38,9 +38,9 @@ export default function ReferralPage() {
       <div className="bg-gradient-to-br from-[#5C0A14] to-[#0A0A0F] text-white py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <Gift className="w-16 h-16 mx-auto mb-4 opacity-90" />
-          <h1 className="text-4xl md:text-5xl font-black mb-4">Earn KES 5,000 per hire</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-4">Earn KES 5,000 per placement</h1>
           <p className="text-xl text-gray-300 max-w-xl mx-auto">
-            Refer a friend who gets hired through Bekenya. We pay you KES 5,000 via M-Pesa — every time.
+            Refer a friend who gets placed through Bekenya. We pay you KES 5,000 via M-Pesa — every time.
           </p>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function ReferralPage() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-6">
           {[
-            { icon: Users, value: '3,200+', label: 'People hired', color: 'text-[#C9A227] bg-[#5C0A14]/20' },
+            { icon: Users, value: '3,200+', label: 'Pioneers placed', color: 'text-[#C9A227] bg-[#5C0A14]/20' },
             { icon: DollarSign, value: 'KES 16M+', label: 'Bonuses paid out', color: 'text-green-400 bg-green-900/20' },
             { icon: Star, value: '99%', label: 'On-time payments', color: 'text-teal-400 bg-teal-900/20' },
           ].map(stat => {

@@ -39,7 +39,7 @@ const PAYMENT_METHODS = [
 const STATS = [
   { value: '12,400+', label: 'Active Paths' },
   { value: '50+',     label: 'Countries' },
-  { value: '3,200',   label: 'Pioneers Hired This Month' },
+  { value: '3,200',   label: 'Pioneers Placed This Month' },
   { value: '12',      label: 'Country Gates Open' },
 ]
 

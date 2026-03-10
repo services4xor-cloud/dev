@@ -448,8 +448,8 @@ function ReferralsTab() {
       <div className="bg-[#1a0a0f] border border-green-500/30 rounded-xl p-4 flex items-center gap-4">
         <span className="text-3xl">💰</span>
         <div>
-          <p className="text-green-400 font-bold">KES 5,000 per hire</p>
-          <p className="text-gray-400 text-sm">When a Pioneer you referred gets hired, you earn KES 5,000. No limit.</p>
+          <p className="text-green-400 font-bold">KES 5,000 per placement</p>
+          <p className="text-gray-400 text-sm">When a Pioneer you referred gets placed, you earn KES 5,000. No limit.</p>
         </div>
       </div>
 
