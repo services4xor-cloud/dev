@@ -1,7 +1,7 @@
 # Be[Country] — Live Progress Tracker
 
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 12 (2026-03-10)
+> Last updated: Session 13 (2026-03-10)
 
 ---
 
@@ -207,6 +207,20 @@ Vercel: Auto-deploys from main
 - [x] Build: ✅ 0 errors
 - [x] Tests: ✅ 25/25 pass
 - [x] TypeScript: 0 errors ✅
+
+### Session 13 (2026-03-10) — Component Cleanup + Nav Centralization
+
+- [x] **components/PathCard.tsx** — Renamed from JobCard.tsx (BeNetwork vocabulary: Path, not Job)
+- [x] **data/mock/media.ts** — Extracted 3 arrays (MEDIA_PATHS, MEDIA_FEATURED_PROJECTS, MEDIA_PLATFORMS)
+- [x] **data/mock/fashion.ts** — Extracted 3 arrays (FASHION_PATHS, FASHION_PARTNER_ANCHORS, FASHION_PROTECTIONS)
+- [x] **lib/nav-structure.ts** — Single source of truth for all Nav + Footer link arrays (primary, pioneer, anchor, about, footer columns)
+- [x] **components/Nav.tsx** — Rewired to import from lib/nav-structure (removed 4 inline link arrays)
+- [x] **components/Footer.tsx** — Rewired to import from lib/nav-structure (removed 4 inline link arrays)
+- [x] **components/SectionHeader.tsx** — Reusable section title+subtitle component
+- [x] **app/fashion/page.tsx** — Fixed legacy `/jobs` link → `/ventures`
+- [x] **data/mock/index.ts** — Barrel export updated with media + fashion modules
+- [x] Build: 0 errors, TypeScript: 0 errors, lint-staged clean
+- [x] Committed + pushed to main
 
 ### Session 12 (2026-03-10) — Inline Data Centralization
 
