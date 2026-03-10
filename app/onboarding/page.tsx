@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { PIONEER_TYPES, PioneerType } from '@/lib/vocabulary'
+import { COUNTRY_OPTIONS, CORRIDOR_BADGE } from '@/lib/country-selector'
 
 // ─── Skills per Pioneer Type ──────────────────────────────────────────────────
 const SKILLS_BY_TYPE: Record<PioneerType, string[]> = {
@@ -53,48 +54,11 @@ const SKILLS_BY_TYPE: Record<PioneerType, string[]> = {
   ],
 }
 
-// ─── Destination Countries ────────────────────────────────────────────────────
-const DESTINATIONS = [
-  { code: 'KE', flag: '🇰🇪', name: 'Kenya', sectors: ['Safari', 'Tech', 'Tourism'], strength: 'Direct' as const },
-  { code: 'DE', flag: '🇩🇪', name: 'Germany', sectors: ['Engineering', 'Healthcare', 'IT'], strength: 'Direct' as const },
-  { code: 'US', flag: '🇺🇸', name: 'United States', sectors: ['Tech', 'Finance', 'Health'], strength: 'Partner' as const },
-  { code: 'AE', flag: '🇦🇪', name: 'UAE', sectors: ['Hospitality', 'Construction', 'Finance'], strength: 'Direct' as const },
-  { code: 'GB', flag: '🇬🇧', name: 'United Kingdom', sectors: ['Healthcare', 'Finance', 'Media'], strength: 'Partner' as const },
-  { code: 'CA', flag: '🇨🇦', name: 'Canada', sectors: ['Tech', 'Healthcare', 'Agriculture'], strength: 'Partner' as const },
-  { code: 'ZA', flag: '🇿🇦', name: 'South Africa', sectors: ['Mining', 'Finance', 'Tourism'], strength: 'Emerging' as const },
-  { code: 'AU', flag: '🇦🇺', name: 'Australia', sectors: ['Agriculture', 'Mining', 'Healthcare'], strength: 'Emerging' as const },
-]
-
-const STRENGTH_COLORS: Record<string, string> = {
-  Direct: 'bg-green-100 text-green-800',
-  Partner: 'bg-blue-100 text-blue-800',
-  Emerging: 'bg-yellow-100 text-yellow-800',
-}
-
-// ─── Country list for "Where are you now?" ───────────────────────────────────
-const COUNTRY_LIST = [
-  { code: 'KE', flag: '🇰🇪', name: 'Kenya', tz: 'Africa/Nairobi' },
-  { code: 'NG', flag: '🇳🇬', name: 'Nigeria', tz: 'Africa/Lagos' },
-  { code: 'GH', flag: '🇬🇭', name: 'Ghana', tz: 'Africa/Accra' },
-  { code: 'TZ', flag: '🇹🇿', name: 'Tanzania', tz: 'Africa/Dar_es_Salaam' },
-  { code: 'UG', flag: '🇺🇬', name: 'Uganda', tz: 'Africa/Kampala' },
-  { code: 'ZA', flag: '🇿🇦', name: 'South Africa', tz: 'Africa/Johannesburg' },
-  { code: 'DE', flag: '🇩🇪', name: 'Germany', tz: 'Europe/Berlin' },
-  { code: 'US', flag: '🇺🇸', name: 'United States', tz: 'America/New_York' },
-  { code: 'GB', flag: '🇬🇧', name: 'United Kingdom', tz: 'Europe/London' },
-  { code: 'AE', flag: '🇦🇪', name: 'UAE', tz: 'Asia/Dubai' },
-  { code: 'IN', flag: '🇮🇳', name: 'India', tz: 'Asia/Kolkata' },
-  { code: 'CA', flag: '🇨🇦', name: 'Canada', tz: 'America/Toronto' },
-  { code: 'AU', flag: '🇦🇺', name: 'Australia', tz: 'Australia/Sydney' },
-  { code: 'FR', flag: '🇫🇷', name: 'France', tz: 'Europe/Paris' },
-  { code: 'NL', flag: '🇳🇱', name: 'Netherlands', tz: 'Europe/Amsterdam' },
-  { code: 'OTHER', flag: '🌍', name: 'Other', tz: '' },
-]
-
+// ─── Timezone detection (uses canonical COUNTRY_OPTIONS from lib) ─────────────
 function detectCountryFromTimezone(): string {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const match = COUNTRY_LIST.find(c => c.tz === tz || tz.startsWith(c.tz.split('/')[0]))
+    const match = COUNTRY_OPTIONS.find(c => c.tz === tz || tz.startsWith(c.tz.split('/')[0]))
     return match?.code ?? 'KE'
   } catch {
     return 'KE'
@@ -104,7 +68,7 @@ function detectCountryFromTimezone(): string {
 // ─── Confetti Component ───────────────────────────────────────────────────────
 function ConfettiBlast() {
   const pieces = Array.from({ length: 30 }, (_, i) => i)
-  const colors = ['#FF6B35', '#006600', '#0891B2', '#FFD700', '#FF69B4', '#7C3AED']
+  const colors = ['#5C0A14', '#C9A227', '#006600', '#0891B2', '#FFD700', '#7C3AED']
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
@@ -138,7 +102,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
       </div>
       <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full transition-all duration-500"
+          className="h-full bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] rounded-full transition-all duration-500"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -173,7 +137,7 @@ export default function OnboardingPage() {
     setFromCountry(code)
   }, [])
 
-  const detectedCountryInfo = COUNTRY_LIST.find(c => c.code === detectedCountry)
+  const detectedCountryInfo = COUNTRY_OPTIONS.find(c => c.code === detectedCountry)
 
   // ── Skill helpers ──
   const toggleSkill = (skill: string) => {
@@ -243,7 +207,7 @@ export default function OnboardingPage() {
   // ── Completed screen ──
   if (done) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-green-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#fff8f0] to-[#f0faf4] flex items-center justify-center px-4">
         <ConfettiBlast />
         <div className="text-center max-w-lg">
           <div className="text-7xl mb-6">🌍</div>
@@ -253,10 +217,10 @@ export default function OnboardingPage() {
           <p className="text-xl text-gray-600 mb-6">
             Your profile is ready. We&apos;re finding the best Paths for you...
           </p>
-          <div className="flex items-center justify-center gap-2 text-orange-500">
-            <div className="w-2 h-2 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-            <div className="w-2 h-2 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-            <div className="w-2 h-2 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+          <div className="flex items-center justify-center gap-2 text-[#5C0A14]">
+            <div className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce" style={{ animationDelay: '0ms' }} />
+            <div className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce" style={{ animationDelay: '150ms' }} />
+            <div className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce" style={{ animationDelay: '300ms' }} />
           </div>
           <p className="text-sm text-gray-400 mt-4">Taking you to your Ventures...</p>
         </div>
@@ -265,11 +229,11 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#fff8f0] via-white to-[#f0faf4]">
       {/* Header */}
       <div className="max-w-2xl mx-auto px-4 pt-8 pb-4">
         <div className="flex items-center gap-2 mb-6">
-          <span className="text-2xl font-bold text-orange-500">Be</span>
+          <span className="text-2xl font-bold text-[#5C0A14]">Be</span>
           <span className="text-2xl font-bold text-gray-800">Network</span>
         </div>
         <ProgressBar step={step} total={TOTAL_STEPS} />
@@ -296,13 +260,13 @@ export default function OnboardingPage() {
                     relative p-5 rounded-2xl border-2 text-left transition-all duration-200
                     hover:shadow-lg hover:-translate-y-0.5 active:scale-95
                     ${pioneerType === type
-                      ? 'border-orange-500 bg-orange-50 shadow-md ring-2 ring-orange-300 ring-offset-1'
-                      : 'border-gray-200 bg-white hover:border-orange-200'
+                      ? 'border-[#5C0A14] bg-[#5C0A14/5] shadow-md ring-2 ring-[#C9A227/40] ring-offset-1'
+                      : 'border-gray-200 bg-white hover:border-[#5C0A14/20]'
                     }
                   `}
                 >
                   {pioneerType === type && (
-                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center">
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#5C0A14] flex items-center justify-center">
                       <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -339,11 +303,12 @@ export default function OnboardingPage() {
                 value={fromCountry}
                 onChange={e => setFromCountry(e.target.value)}
                 className="w-full p-4 pr-10 rounded-2xl border-2 border-gray-200 bg-white text-gray-900 text-lg
-                  appearance-none focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100
+                  appearance-none focus:outline-none focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20]
                   transition-all cursor-pointer"
               >
                 <option value="">Select your country...</option>
-                {COUNTRY_LIST.map(c => (
+                <option value="OTHER">🌍 Other</option>
+                {COUNTRY_OPTIONS.map(c => (
                   <option key={c.code} value={c.code}>
                     {c.flag} {c.name}
                   </option>
@@ -358,7 +323,7 @@ export default function OnboardingPage() {
 
             {fromCountry && fromCountry !== detectedCountry && (
               <p className="mt-3 text-sm text-gray-500">
-                Got it — your profile will be calibrated for {COUNTRY_LIST.find(c => c.code === fromCountry)?.name}.
+                Got it — your profile will be calibrated for {COUNTRY_OPTIONS.find(c => c.code === fromCountry)?.name ?? fromCountry}.
               </p>
             )}
           </div>
@@ -374,8 +339,9 @@ export default function OnboardingPage() {
               Select one or more destinations. We&apos;ll prioritize Paths in these locations.
             </p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {DESTINATIONS.map(dest => {
-                const selected = toCountries.includes(dest.code)
+              {COUNTRY_OPTIONS.map(dest => {
+                const isSelected = toCountries.includes(dest.code)
+                const badge = CORRIDOR_BADGE[dest.corridorStrength]
                 return (
                   <button
                     key={dest.code}
@@ -383,9 +349,9 @@ export default function OnboardingPage() {
                     className={`
                       p-4 rounded-2xl border-2 text-left transition-all duration-200
                       hover:shadow-md hover:-translate-y-0.5 active:scale-95
-                      ${selected
-                        ? 'border-orange-500 bg-orange-50 shadow ring-2 ring-orange-300 ring-offset-1'
-                        : 'border-gray-200 bg-white hover:border-orange-200'
+                      ${isSelected
+                        ? 'border-[#5C0A14] bg-[#5C0A14]/5 shadow ring-2 ring-[#C9A227]/30 ring-offset-1'
+                        : 'border-gray-200 bg-white hover:border-[#5C0A14]/30'
                       }
                     `}
                   >
@@ -395,11 +361,11 @@ export default function OnboardingPage() {
                         <span className="font-semibold text-gray-900">{dest.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STRENGTH_COLORS[dest.strength]}`}>
-                          {dest.strength}
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${badge.className}`}>
+                          {badge.label}
                         </span>
-                        {selected && (
-                          <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0">
+                        {isSelected && (
+                          <div className="w-5 h-5 rounded-full bg-[#5C0A14] flex items-center justify-center flex-shrink-0">
                             <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
@@ -408,7 +374,7 @@ export default function OnboardingPage() {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      {dest.sectors.map(s => (
+                      {dest.topSectors.slice(0, 3).map(s => (
                         <span key={s} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
                           {s}
                         </span>
@@ -419,7 +385,7 @@ export default function OnboardingPage() {
               })}
             </div>
             {toCountries.length > 0 && (
-              <p className="mt-4 text-sm text-orange-600 font-medium">
+              <p className="mt-4 text-sm text-[#5C0A14] font-medium">
                 {toCountries.length} destination{toCountries.length > 1 ? 's' : ''} selected
               </p>
             )}
@@ -436,7 +402,7 @@ export default function OnboardingPage() {
               Select at least 3 skills. These power your match score.
             </p>
             {skills.length < 3 && (
-              <p className="text-sm text-orange-500 mb-4">
+              <p className="text-sm text-[#5C0A14] mb-4">
                 {3 - skills.length} more needed to continue
               </p>
             )}
@@ -457,8 +423,8 @@ export default function OnboardingPage() {
                       px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-150
                       active:scale-95
                       ${active
-                        ? 'bg-orange-500 text-white border-orange-500 shadow-sm'
-                        : 'bg-white text-gray-700 border-gray-300 hover:border-orange-400 hover:text-orange-600'
+                        ? 'bg-[#5C0A14] text-white border-[#5C0A14] shadow-sm'
+                        : 'bg-white text-gray-700 border-gray-300 hover:border-[#5C0A14/50] hover:text-[#5C0A14]'
                       }
                     `}
                   >
@@ -496,13 +462,13 @@ export default function OnboardingPage() {
                 onChange={e => setCustomSkill(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && addCustomSkill()}
                 placeholder="Add your own skill..."
-                className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-orange-400 text-sm"
+                className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-[#5C0A14] text-sm"
               />
               <button
                 onClick={addCustomSkill}
                 disabled={!customSkill.trim()}
-                className="px-4 py-2.5 rounded-xl bg-orange-500 text-white text-sm font-medium
-                  disabled:opacity-40 hover:bg-orange-600 active:scale-95 transition-all"
+                className="px-4 py-2.5 rounded-xl bg-[#5C0A14] text-white text-sm font-medium
+                  disabled:opacity-40 hover:bg-[#7a0e1a] active:scale-95 transition-all"
               >
                 Add
               </button>
@@ -531,7 +497,7 @@ export default function OnboardingPage() {
                   onChange={e => setHeadline(e.target.value)}
                   placeholder="e.g. Safari Guide with 5 years experience | Swahili & English"
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:outline-none
-                    focus:border-orange-400 focus:ring-2 focus:ring-orange-100 text-gray-900
+                    focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20] text-gray-900
                     placeholder-gray-400 transition-all"
                 />
                 <p className="text-xs text-gray-400 mt-1">{headline.length} / 120 characters</p>
@@ -547,7 +513,7 @@ export default function OnboardingPage() {
                   placeholder="A short story about your journey, your passion, what drives you..."
                   rows={4}
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:outline-none
-                    focus:border-orange-400 focus:ring-2 focus:ring-orange-100 text-gray-900
+                    focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20] text-gray-900
                     placeholder-gray-400 transition-all resize-none"
                 />
               </div>
@@ -567,7 +533,7 @@ export default function OnboardingPage() {
                     onChange={e => setPhone(e.target.value)}
                     placeholder="254712345678"
                     className="flex-1 px-4 py-3 rounded-r-2xl border-2 border-gray-200 focus:outline-none
-                      focus:border-orange-400 focus:ring-2 focus:ring-orange-100 text-gray-900
+                      focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20] text-gray-900
                       placeholder-gray-400 transition-all"
                   />
                 </div>
@@ -606,7 +572,7 @@ export default function OnboardingPage() {
               className={`
                 flex-1 py-3 rounded-2xl font-semibold text-white transition-all active:scale-95
                 ${canAdvance()
-                  ? 'bg-orange-500 hover:bg-orange-600 shadow-md hover:shadow-lg'
+                  ? 'bg-[#5C0A14] hover:bg-[#7a0e1a] shadow-md hover:shadow-lg'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }
               `}
@@ -620,7 +586,7 @@ export default function OnboardingPage() {
               className={`
                 flex-1 py-3 rounded-2xl font-semibold text-white transition-all active:scale-95
                 ${canAdvance() && !submitting
-                  ? 'bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 shadow-md hover:shadow-lg'
+                  ? 'bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] hover:from-[#7a0e1a] hover:to-[#5C0A14] shadow-md hover:shadow-lg'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }
               `}

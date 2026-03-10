@@ -1,190 +1,259 @@
 'use client'
 
-import Link from 'next/link'
-import { Heart, Globe, Shield, TrendingUp, Leaf, Users, Briefcase, DollarSign } from 'lucide-react'
+/**
+ * About — BeNetwork platform story, mission, values
+ *
+ * Dark theme. Full BeNetwork vocabulary.
+ * Global layout.tsx provides Nav + Footer — do NOT add them here.
+ */
 
-const values = [
-  {
-    icon: Heart,
-    title: 'Dignity First',
-    desc: 'Every person deserves meaningful, dignified work. We connect talent to opportunity — no matter where you start.',
-    color: 'text-red-500 bg-red-50',
-  },
-  {
-    icon: Globe,
-    title: 'Global Reach, Local Roots',
-    desc: 'Born in Kenya, built for the world. We understand African payment systems and global job markets equally.',
-    color: 'text-blue-500 bg-blue-50',
-  },
-  {
-    icon: Shield,
-    title: 'Safe & Verified',
-    desc: 'Every employer is vetted. Every job is real. We protect job seekers from scams and exploitation.',
-    color: 'text-green-500 bg-green-50',
-  },
-  {
-    icon: Leaf,
-    title: 'Sustainable Impact',
-    desc: 'We prioritize eco-tourism, conservation, and sustainable industries — because the planet is everyone\'s workplace.',
-    color: 'text-teal-500 bg-teal-50',
-  },
+import Link from 'next/link'
+import Image from 'next/image'
+import { Heart, Globe, Shield, Leaf, Users, Compass, Anchor, BookOpen } from 'lucide-react'
+
+const VALUES = [
+  { icon: Heart,  title: 'Dignity First',            desc: 'Every Pioneer deserves meaningful, dignified paths. We connect talent to opportunity — no matter where you start or where you are going.' },
+  { icon: Globe,  title: 'Global Reach, Local Roots', desc: 'Born in Kenya, built for the world. We understand African payment systems and global markets equally — M-Pesa to SEPA.' },
+  { icon: Shield, title: 'Safe & Verified',           desc: 'Every Anchor is vetted. Every Path is real. We protect Pioneers from exploitation — no gatekeepers, no hidden fees.' },
+  { icon: Leaf,   title: 'Regenerative Impact',       desc: 'We prioritize eco-tourism, conservation, and sustainable industries — because the planet is everyone\'s workplace.' },
 ]
 
-const sectors = [
-  { emoji: '💻', name: 'Technology', desc: 'Software, AI, fintech' },
-  { emoji: '🦁', name: 'Wildlife & Safaris', desc: 'Safari guides, rangers, conservationists' },
-  { emoji: '🌿', name: 'Eco-Tourism', desc: 'Lodges, guides, nature experiences' },
-  { emoji: '💰', name: 'Finance', desc: 'Banking, M-Pesa, microfinance' },
-  { emoji: '🏥', name: 'Healthcare', desc: 'Nurses, doctors, community health' },
-  { emoji: '🎓', name: 'Education', desc: 'Teachers, tutors, trainers' },
-  { emoji: '🏗️', name: 'Construction', desc: 'Engineers, artisans, builders' },
-  { emoji: '👗', name: 'Fashion & Modeling', desc: 'Professional, dignified creative work' },
-  { emoji: '🚀', name: 'Startups', desc: 'Early-stage, remote, equity-based' },
-  { emoji: '🌾', name: 'Agriculture', desc: 'Modern farming, agri-business' },
-  { emoji: '✈️', name: 'Aviation & Travel', desc: 'Pilots, cabin crew, hospitality' },
-  { emoji: '⚡', name: 'Clean Energy', desc: 'Solar, wind, green infrastructure' },
+const SECTORS = [
+  { emoji: '🦁', name: 'Safari & Wildlife' },  { emoji: '🌿', name: 'Eco-Tourism' },
+  { emoji: '💻', name: 'Technology' },          { emoji: '🏥', name: 'Healthcare' },
+  { emoji: '⚙️', name: 'Engineering' },         { emoji: '🏦', name: 'Finance & Banking' },
+  { emoji: '📚', name: 'Education' },           { emoji: '🍽️', name: 'Hospitality' },
+  { emoji: '🎨', name: 'Creative & Media' },    { emoji: '🌾', name: 'Agriculture' },
+  { emoji: '⛽', name: 'Energy' },              { emoji: '🚛', name: 'Logistics & Trade' },
+]
+
+const PAYMENT_METHODS = [
+  { name: 'M-Pesa',      desc: 'Kenya, Tanzania, Mozambique',  icon: '📱' },
+  { name: 'Flutterwave', desc: 'Pan-African payments',          icon: '🌍' },
+  { name: 'SEPA',        desc: 'Europe bank transfer',           icon: '🏦' },
+  { name: 'Stripe',      desc: 'Cards worldwide',               icon: '💳' },
+  { name: 'Wise',        desc: 'Global transfers, low fee',     icon: '🔄' },
+  { name: 'Paystack',    desc: 'Nigeria & Ghana',               icon: '🇳🇬' },
+]
+
+const STATS = [
+  { value: '12,400+', label: 'Active Paths' },
+  { value: '50+',     label: 'Countries' },
+  { value: '3,200',   label: 'Pioneers Hired This Month' },
+  { value: '12',      label: 'Country Gates Open' },
+]
+
+const VOCAB_ITEMS = [
+  { icon: Users,    label: 'Pioneers',  desc: 'People seeking paths across borders' },
+  { icon: Anchor,   label: 'Anchors',   desc: 'Organisations offering real paths' },
+  { icon: Compass,  label: 'Compass',   desc: 'Smart routing from origin to destination' },
+  { icon: BookOpen, label: 'Chapters',  desc: 'Every engagement, documented fairly' },
 ]
 
 export default function AboutPage() {
   return (
-    <div className="bg-gray-50">
+    <div className="bg-[#0A0A0F] text-white">
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="text-6xl mb-6">🌍</div>
-          <h1 className="text-5xl font-black mb-6 leading-tight">
-            Work should be for<br />
-            <span className="text-brand-orange">everyone</span>
+      <section
+        className="relative overflow-hidden py-28 px-4 text-center"
+        style={{ background: 'linear-gradient(to bottom, #5C0A14 0%, #0A0A0F 70%)' }}
+      >
+        <div
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage: 'linear-gradient(#C9A22720 1px, transparent 1px), linear-gradient(90deg, #C9A22720 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
+          }}
+        />
+        <div className="relative max-w-4xl mx-auto">
+          <div className="flex justify-center mb-8">
+            <Image src="/logo.svg" alt="BeNetwork" width={80} height={80} className="drop-shadow-2xl" />
+          </div>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C9A227]/10 border border-[#C9A227]/30 text-[#C9A227] text-sm font-medium mb-8">
+            <Compass className="w-3.5 h-3.5" />
+            Identity-first life-routing platform
+          </div>
+          <h1 className="text-5xl md:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
+            Work should be for <span style={{ color: '#C9A227' }}>everyone.</span>
           </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Bekenya exists so that anyone — a nurse in Kisumu, a developer in Nairobi,
-            a safari guide in Maasai Mara, or a model in Mombasa — can find dignified,
-            well-paying work locally and internationally.
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
+            BeNetwork reverses colonial economic flows through open trade, fair compensation,
+            and direct country-to-country connections. No intermediaries. No gatekeepers.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/compass"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid #C9A22760' }}
+            >
+              <Compass className="w-5 h-5" />
+              Start My Compass →
+            </Link>
+            <Link
+              href="/anchors/post-path"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border border-[#C9A227]/40 text-[#C9A227] hover:bg-[#C9A227]/10 transition-all"
+            >
+              <Anchor className="w-5 h-5" />
+              Post a Path
+            </Link>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-6xl mx-auto px-4 py-16 space-y-16">
-        {/* Mission */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      {/* Stats */}
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {STATS.map(stat => (
+            <div key={stat.label} className="text-center p-6 rounded-2xl bg-gray-900/60 border border-gray-800">
+              <div className="text-3xl md:text-4xl font-black text-[#C9A227] mb-2">{stat.value}</div>
+              <div className="text-sm text-gray-400">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Mission — golden ratio 61.8 / 38.2 column split */}
+      <section className="max-w-6xl mx-auto px-4 py-16">
+        <div className="grid md:grid-cols-[1.618fr_1fr] gap-12 items-center">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Mission</h2>
-            <p className="text-gray-600 leading-relaxed mb-4">
-              In Kenya and across Africa, millions of talented people are underemployed — not because they lack
-              skills, but because they lack access. Access to the right employers. Access to international
-              opportunities. Access to payment systems that work for them.
+            <div className="text-xs font-semibold uppercase tracking-widest text-[#C9A227] mb-4 flex items-center gap-2">
+              <div className="w-8 h-px bg-[#C9A227]" /> Our Mission
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+              Reverse the flow.<br />
+              <span className="text-[#C9A227]">Build the corridor.</span>
+            </h2>
+            <p className="text-gray-300 text-lg leading-relaxed mb-6">
+              For centuries, value has flowed one way — out of Africa, out of the Global South,
+              into the hands of intermediaries and gatekeepers. BeNetwork is the corridor in the
+              opposite direction.
             </p>
-            <p className="text-gray-600 leading-relaxed mb-4">
-              Bekenya bridges that gap. We built a platform that works on any phone, accepts M-Pesa, and
-              connects Kenyan talent with employers from Nairobi to New York.
-            </p>
-            <p className="text-gray-600 leading-relaxed">
-              We believe that when people have access to dignified work, everything else gets better —
-              for families, communities, and the entire economy.
+            <p className="text-gray-400 leading-relaxed">
+              We connect Pioneers directly with Anchors across 50+ countries. Payments flow
+              through M-Pesa, Flutterwave, and local rails — not through foreign banks.
+              Routes are built on real visa corridors, not wishful thinking.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-orange-50 rounded-2xl p-6 text-center">
-              <div className="text-4xl font-black text-brand-orange">50K+</div>
-              <div className="text-gray-600 mt-1">Job seekers</div>
-            </div>
-            <div className="bg-teal-50 rounded-2xl p-6 text-center">
-              <div className="text-4xl font-black text-brand-teal">120+</div>
-              <div className="text-gray-600 mt-1">Verified employers</div>
-            </div>
-            <div className="bg-green-50 rounded-2xl p-6 text-center">
-              <div className="text-4xl font-black text-green-600">35+</div>
-              <div className="text-gray-600 mt-1">Countries reached</div>
-            </div>
-            <div className="bg-blue-50 rounded-2xl p-6 text-center">
-              <div className="text-4xl font-black text-blue-600">3.2K</div>
-              <div className="text-gray-600 mt-1">Hired this month</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Values */}
-        <div>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">What we stand for</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map(v => {
-              const Icon = v.icon
-              return (
-                <div key={v.title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${v.color}`}>
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2">{v.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{v.desc}</p>
+          <div className="space-y-4">
+            {VOCAB_ITEMS.map(item => (
+              <div key={item.label} className="flex items-start gap-4 p-4 rounded-xl bg-gray-900/50 border border-gray-800">
+                <div className="w-10 h-10 rounded-lg bg-[#5C0A14]/40 border border-[#C9A227]/20 flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-5 h-5 text-[#C9A227]" />
                 </div>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Sectors */}
-        <div>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Every industry. Every skill.</h2>
-            <p className="text-gray-500 mt-2">From safari guides to software engineers — we cover all of Kenya and beyond</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {sectors.map(s => (
-              <div key={s.name} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-brand-orange transition-colors cursor-pointer">
-                <div className="text-2xl mb-2">{s.emoji}</div>
-                <div className="font-semibold text-gray-900 text-sm">{s.name}</div>
-                <div className="text-xs text-gray-400 mt-0.5">{s.desc}</div>
+                <div>
+                  <div className="font-semibold text-white">{item.label}</div>
+                  <div className="text-sm text-gray-400">{item.desc}</div>
+                </div>
               </div>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Payment Philosophy */}
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div>
-              <DollarSign className="w-12 h-12 text-brand-orange mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Built for how Africa pays</h2>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                The biggest barrier to online payments in Africa isn&apos;t willingness — it&apos;s access.
-                Most people don&apos;t have Visa cards. They have mobile phones. They have M-Pesa.
-              </p>
-              <p className="text-gray-600 leading-relaxed">
-                So we built a payment system that works for everyone: M-Pesa STK Push for Kenya,
-                Airtel Money for Uganda and Tanzania, Flutterwave for Nigeria and Ghana,
-                and Stripe for international employers. No one is left out.
-              </p>
-            </div>
-            <div className="space-y-3">
-              {['M-Pesa (Kenya, Tanzania)', 'Airtel Money (Uganda, DRC)', 'MTN Mobile Money (West Africa)', 'Flutterwave (Nigeria, Ghana)', 'Stripe (USA, UK, EU)', 'PayPal (Worldwide)'].map(method => (
-                <div key={method} className="flex items-center gap-3 bg-gray-50 rounded-xl p-3">
-                  <div className="w-2 h-2 rounded-full bg-brand-orange" />
-                  <span className="text-gray-700 text-sm">{method}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* Values */}
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <div className="text-xs font-semibold uppercase tracking-widest text-[#C9A227] mb-3">What We Stand For</div>
+          <h2 className="text-3xl md:text-4xl font-bold">Values that guide every path</h2>
         </div>
+        <div className="grid sm:grid-cols-2 gap-5">
+          {VALUES.map(v => (
+            <div key={v.title} className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-[#C9A227]/30 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-[#5C0A14]/40 border border-[#C9A227]/20 flex items-center justify-center mb-4">
+                <v.icon className="w-5 h-5 text-[#C9A227]" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">{v.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{v.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-        {/* CTA */}
-        <div className="text-center py-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Join the movement</h2>
-          <p className="text-gray-500 mb-8 max-w-xl mx-auto">
-            Whether you&apos;re looking for work or looking to hire, Bekenya is for you.
+      {/* Sectors */}
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <div className="text-center mb-10">
+          <div className="text-xs font-semibold uppercase tracking-widest text-[#C9A227] mb-3">Industries</div>
+          <h2 className="text-3xl md:text-4xl font-bold">Paths across every sector</h2>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+          {SECTORS.map(s => (
+            <div
+              key={s.name}
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-[#C9A227]/30 transition-colors text-center"
+            >
+              <span className="text-2xl">{s.emoji}</span>
+              <span className="text-xs text-gray-400 font-medium leading-tight">{s.name}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Payment Rails */}
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <div className="text-center mb-10">
+          <div className="text-xs font-semibold uppercase tracking-widest text-[#C9A227] mb-3">Payment Rails</div>
+          <h2 className="text-3xl font-bold mb-3">Money flows where you do</h2>
+          <p className="text-gray-400">We support local payment methods across every corridor — so your income arrives in your hands.</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {PAYMENT_METHODS.map(p => (
+            <div key={p.name} className="flex items-center gap-3 p-4 rounded-xl bg-gray-900/50 border border-gray-800">
+              <span className="text-2xl">{p.icon}</span>
+              <div>
+                <div className="font-semibold text-white text-sm">{p.name}</div>
+                <div className="text-xs text-gray-500">{p.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* UTAMADUNI CBO */}
+      <section className="max-w-5xl mx-auto px-4 py-12">
+        <div
+          className="rounded-2xl p-8 text-center"
+          style={{ background: 'linear-gradient(135deg, #5C0A14 0%, #0A0A0F 100%)', border: '1px solid #C9A22740' }}
+        >
+          <div className="text-3xl mb-3">🤲</div>
+          <h3 className="text-2xl font-bold mb-3">UTAMADUNI CBO</h3>
+          <p className="text-gray-300 max-w-xl mx-auto mb-6 text-sm leading-relaxed">
+            Our community arm. Supporting conservation workers, local guides, and cultural
+            educators across East Africa. Every booking through BeKenya contributes.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/signup?role=jobseeker" className="btn-primary px-8 py-4 text-lg">
-              Find Work — Free
-            </Link>
-            <Link href="/post-job" className="btn-secondary px-8 py-4 text-lg">
-              Post a Job — From KES 500
-            </Link>
-          </div>
+          <Link
+            href="/charity"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-[#C9A227] border border-[#C9A227]/40 hover:bg-[#C9A227]/10 transition-colors"
+          >
+            Learn about UTAMADUNI →
+          </Link>
         </div>
-      </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="max-w-3xl mx-auto px-4 py-20 text-center">
+        <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to find your path?</h2>
+        <p className="text-gray-400 text-lg mb-10">
+          Start your Compass. Tell us where you are and where you want to go. We&apos;ll build your route.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <Link
+            href="/compass"
+            className="inline-flex items-center gap-2 px-10 py-4 rounded-xl font-bold text-white text-lg transition-all hover:scale-105"
+            style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid #C9A22760' }}
+          >
+            <Compass className="w-5 h-5" />
+            Start My Compass →
+          </Link>
+          <Link
+            href="/anchors/post-path"
+            className="inline-flex items-center gap-2 px-10 py-4 rounded-xl font-bold border border-[#C9A227]/40 text-[#C9A227] hover:bg-[#C9A227]/10 transition-all text-lg"
+          >
+            <Anchor className="w-5 h-5" />
+            Post a Path
+          </Link>
+        </div>
+      </section>
 
     </div>
   )

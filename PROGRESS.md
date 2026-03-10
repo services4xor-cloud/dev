@@ -1,6 +1,6 @@
 # Be[Country] — Live Progress Tracker
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 4 (2026-03-09)
+> Last updated: Session 5 (2026-03-10)
 
 ---
 
@@ -89,16 +89,24 @@ Vercel: Auto-deploys from main
 
 ## 🔄 Phase 2: BeKenya Live (IN PROGRESS)
 
+### Session 5 (2026-03-10)
+- [x] **lib/country-selector.ts** — Single source of truth: geographic coords, Haversine proximity, region clusters, corridor badges. Replaces all inline country arrays.
+- [x] **components/CountryPrioritySelector.tsx** — Elegant ordered multi-select. Features: proximity glow (< 1800km), green pulse for nearby, priority badges ①②③, sticky priority rail, max 5 selections.
+- [x] **app/compass/page.tsx** — Rewritten: uses CountryPrioritySelector for Step 1, maroon/gold brand, removed DESTINATIONS array, shows multi-destination in route result.
+- [x] **app/onboarding/page.tsx** — Removed duplicate DESTINATIONS + COUNTRY_LIST, imports from lib/country-selector, brand color orange→maroon.
+- [x] **app/about/page.tsx** — Full brand-consistent rewrite: dark theme, BeNetwork vocabulary (Pioneer/Anchor/Path/Chapter), golden ratio 61.8/38.2 mission layout, maroon/gold.
+- [x] **REQUIREMENTS.md** — Created: documents all user requirements, data rules, duplicate inventory, agent context links.
+- [x] **MEMORY.md** — Updated with session 5 learnings.
+- [x] TypeScript: 0 errors.
+
 ### Session 4 (2026-03-09)
-- [x] Merge claude/keen-jemison → main
-- [x] Create CLAUDE.md (comprehensive agentic operating manual)
-- [x] Create PRD.md (product requirements)
-- [x] Create ARCHITECTURE.md (technical + conceptual)
-- [x] Update PROGRESS.md (this file)
-- [x] Update README.md
-- [x] Create .claude/settings.json (Claude Code config)
-- [ ] Push to GitHub main
-- [ ] Verify Vercel deployment
+- [x] Next.js 14.2.5 → 14.2.35 (security: CVE-2024-46982, CVE-2024-56332 patched)
+- [x] Full responsive system: xs→4K with fluid typography + TV media queries
+- [x] Golden ratio φ=1.618 token system in tailwind.config.ts
+- [x] PRD v4.0 comprehensive rewrite
+- [x] STEPS.md — conversation prompt → build output map
+- [x] Fixed all duplicate nav/footer stacking (sticky top-16 z-40 pattern)
+- [x] About page brand audit (further rewritten in session 5)
 
 ### Immediate Next (Phase 2 Queue)
 1. [ ] **Kenya Offerings pages** — `/offerings/safaris`, `/offerings/eco-tourism`, `/offerings/trade`
