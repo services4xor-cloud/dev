@@ -102,29 +102,35 @@ export default function CompassPage() {
 
       {/* Step progress bar */}
       <div className="max-w-3xl mx-auto px-4 py-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-start">
           {STEP_LABELS.map((label, i) => {
             const s = i + 1
             return (
-              <div key={s} className="flex items-center flex-1">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                  step > s
-                    ? 'bg-[#C9A227] text-[#0A0A0F]'
-                    : step === s
-                      ? 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/60'
-                      : 'bg-gray-800 text-gray-500'
-                }`}>
-                  {step > s ? '✓' : s}
+              <div key={s} className="flex items-center flex-1 last:flex-none">
+                {/* Circle + label column */}
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                    step > s
+                      ? 'bg-[#C9A227] text-[#0A0A0F]'
+                      : step === s
+                        ? 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/60'
+                        : 'bg-gray-800 text-gray-500'
+                  }`}>
+                    {step > s ? '✓' : s}
+                  </div>
+                  <span className={`text-xs whitespace-nowrap transition-colors duration-300 ${
+                    step >= s ? 'text-gray-300' : 'text-gray-600'
+                  }`}>
+                    {label}
+                  </span>
                 </div>
+                {/* Connector line */}
                 {s < 4 && (
-                  <div className={`flex-1 h-0.5 mx-2 transition-all duration-300 ${step > s ? 'bg-[#C9A227]' : 'bg-gray-800'}`} />
+                  <div className={`flex-1 h-0.5 mx-3 mt-4 -translate-y-1/2 transition-all duration-300 ${step > s ? 'bg-[#C9A227]' : 'bg-gray-800'}`} />
                 )}
               </div>
             )
           })}
-        </div>
-        <div className="flex justify-between mt-2 text-xs text-gray-500">
-          {STEP_LABELS.map(l => <span key={l}>{l}</span>)}
         </div>
       </div>
 

@@ -1,22 +1,65 @@
 /**
- * Be[Country] Platform — Country Selector Data & Proximity Engine
+ * Be[Country] Platform — Country & Language Data Engine
  *
  * SINGLE SOURCE OF TRUTH for:
  *   - All selectable countries (for compass, onboarding, route planning)
+ *   - Language registry (for collaboration matching + corridor strength)
  *   - Geographic coordinates (for proximity clustering)
  *   - Region clusters (for visual grouping in UI)
  *   - Corridor strength (direct / partner / emerging)
+ *
+ * KEY CONCEPT: Language + Location = Collaboration
+ *   A Pioneer's languages and location together determine the strongest
+ *   corridors. A Swahili-speaking Pioneer in Kenya has a direct corridor
+ *   to Tanzania/Uganda. A German-speaking Pioneer has a direct corridor
+ *   to Germany/Austria/Switzerland.
  *
  * Used by:
  *   - components/CountryPrioritySelector.tsx (compass step 1 + onboarding)
  *   - app/compass/page.tsx
  *   - app/onboarding/page.tsx
  *
- * DO NOT duplicate country lists elsewhere. Import from here.
+ * DO NOT duplicate country or language lists elsewhere. Import from here.
  */
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Types
+// Language types & registry
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type LanguageCode =
+  | 'en' | 'sw' | 'de' | 'fr' | 'ar' | 'hi' | 'pt'
+  | 'nl' | 'zu' | 'ha' | 'yo' | 'am' | 'lg' | 'rw'
+
+export interface Language {
+  code: LanguageCode
+  name: string
+  nativeName: string
+  /** Countries where this language is widely spoken (ISO codes) */
+  countries: string[]
+  /** Digital communication relevance (how common online / in tech) */
+  digitalReach: 'global' | 'regional' | 'local'
+}
+
+/** All supported languages — indexed by code for O(1) lookup */
+export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
+  en: { code: 'en', name: 'English',    nativeName: 'English',    countries: ['KE','UG','TZ','NG','GH','ZA','GB','US','CA','AU','IN','AE','RW','NL'], digitalReach: 'global' },
+  sw: { code: 'sw', name: 'Swahili',    nativeName: 'Kiswahili',  countries: ['KE','TZ','UG','RW'],             digitalReach: 'regional' },
+  de: { code: 'de', name: 'German',     nativeName: 'Deutsch',    countries: ['DE','NL'],                       digitalReach: 'regional' },
+  fr: { code: 'fr', name: 'French',     nativeName: 'Français',   countries: ['FR','CA','RW'],                  digitalReach: 'global' },
+  ar: { code: 'ar', name: 'Arabic',     nativeName: 'العربية',     countries: ['AE'],                            digitalReach: 'regional' },
+  hi: { code: 'hi', name: 'Hindi',      nativeName: 'हिन्दी',       countries: ['IN'],                            digitalReach: 'regional' },
+  pt: { code: 'pt', name: 'Portuguese', nativeName: 'Português',  countries: [],                                digitalReach: 'global' },
+  nl: { code: 'nl', name: 'Dutch',      nativeName: 'Nederlands', countries: ['NL','ZA'],                       digitalReach: 'regional' },
+  zu: { code: 'zu', name: 'Zulu',       nativeName: 'isiZulu',    countries: ['ZA'],                            digitalReach: 'local' },
+  ha: { code: 'ha', name: 'Hausa',      nativeName: 'Hausa',      countries: ['NG','GH'],                       digitalReach: 'local' },
+  yo: { code: 'yo', name: 'Yoruba',     nativeName: 'Yorùbá',     countries: ['NG'],                            digitalReach: 'local' },
+  am: { code: 'am', name: 'Amharic',    nativeName: 'አማርኛ',       countries: [],                                digitalReach: 'local' },
+  lg: { code: 'lg', name: 'Luganda',    nativeName: 'Luganda',    countries: ['UG'],                            digitalReach: 'local' },
+  rw: { code: 'rw', name: 'Kinyarwanda',nativeName: 'Ikinyarwanda', countries: ['RW'],                          digitalReach: 'local' },
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Country types
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type RegionCluster =
@@ -45,6 +88,8 @@ export interface CountryOption {
   visa: string
   approxFlightHoursFromKenya: number
   tz: string // IANA timezone
+  /** Languages spoken in this country (ordered by prevalence) */
+  languages: LanguageCode[]
 }
 
 export interface RegionClusterConfig {
@@ -89,6 +134,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Home market — no visa',
     approxFlightHoursFromKenya: 0,
     tz: 'Africa/Nairobi',
+    languages: ['en', 'sw'],
   },
   {
     code: 'UG',
@@ -104,6 +150,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EAC Free Movement',
     approxFlightHoursFromKenya: 1,
     tz: 'Africa/Kampala',
+    languages: ['en', 'sw', 'lg'],
   },
   {
     code: 'TZ',
@@ -119,6 +166,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EAC Free Movement',
     approxFlightHoursFromKenya: 1,
     tz: 'Africa/Dar_es_Salaam',
+    languages: ['sw', 'en'],
   },
   {
     code: 'RW',
@@ -134,6 +182,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EAC Free Movement',
     approxFlightHoursFromKenya: 2,
     tz: 'Africa/Kigali',
+    languages: ['rw', 'en', 'fr'],
   },
   // ── West Africa ──────────────────────────────────────────────────────────
   {
@@ -150,6 +199,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'AU passport-free movement',
     approxFlightHoursFromKenya: 5,
     tz: 'Africa/Lagos',
+    languages: ['en', 'ha', 'yo'],
   },
   {
     code: 'GH',
@@ -165,6 +215,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'AU passport-free movement',
     approxFlightHoursFromKenya: 6,
     tz: 'Africa/Accra',
+    languages: ['en', 'ha'],
   },
   // ── Southern Africa ──────────────────────────────────────────────────────
   {
@@ -181,6 +232,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'General Work Visa / Critical Skills',
     approxFlightHoursFromKenya: 4,
     tz: 'Africa/Johannesburg',
+    languages: ['en', 'zu', 'nl'],
   },
   // ── Middle East ──────────────────────────────────────────────────────────
   {
@@ -197,6 +249,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Employment visa via employer (fast)',
     approxFlightHoursFromKenya: 4,
     tz: 'Asia/Dubai',
+    languages: ['ar', 'en'],
   },
   // ── Europe ───────────────────────────────────────────────────────────────
   {
@@ -213,6 +266,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Skilled Worker Visa — EU Blue Card',
     approxFlightHoursFromKenya: 9,
     tz: 'Europe/Berlin',
+    languages: ['de', 'en'],
   },
   {
     code: 'GB',
@@ -228,6 +282,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Skilled Worker Visa (employer sponsor)',
     approxFlightHoursFromKenya: 9,
     tz: 'Europe/London',
+    languages: ['en'],
   },
   {
     code: 'NL',
@@ -243,6 +298,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EU Blue Card / Highly Skilled Migrant',
     approxFlightHoursFromKenya: 9,
     tz: 'Europe/Amsterdam',
+    languages: ['nl', 'en', 'de'],
   },
   {
     code: 'FR',
@@ -258,6 +314,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Talent Passport / Work Permit',
     approxFlightHoursFromKenya: 9,
     tz: 'Europe/Paris',
+    languages: ['fr', 'en'],
   },
   // ── Americas ─────────────────────────────────────────────────────────────
   {
@@ -274,6 +331,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'H-1B / O-1 / EB visa (sponsor required)',
     approxFlightHoursFromKenya: 16,
     tz: 'America/New_York',
+    languages: ['en'],
   },
   {
     code: 'CA',
@@ -289,6 +347,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Express Entry — fastest immigration',
     approxFlightHoursFromKenya: 17,
     tz: 'America/Toronto',
+    languages: ['en', 'fr'],
   },
   // ── South Asia ───────────────────────────────────────────────────────────
   {
@@ -305,6 +364,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Employment Visa / e-Visa',
     approxFlightHoursFromKenya: 5,
     tz: 'Asia/Kolkata',
+    languages: ['en', 'hi'],
   },
   // ── Oceania ──────────────────────────────────────────────────────────────
   {
@@ -321,6 +381,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Skilled Migration Programme (points-based)',
     approxFlightHoursFromKenya: 12,
     tz: 'Australia/Sydney',
+    languages: ['en'],
   },
 ]
 
@@ -420,3 +481,68 @@ export function priorityChar(n: number): string {
 
 /** Max countries a Pioneer can select in the priority selector */
 export const MAX_COUNTRY_SELECTIONS = 5
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Language-based collaboration matching
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Get all countries that share a language with the given country */
+export function getCountriesBySharedLanguage(
+  countryCode: string
+): { language: Language; countries: CountryOption[] }[] {
+  const country = COUNTRY_OPTIONS.find(c => c.code === countryCode)
+  if (!country) return []
+
+  return country.languages.map(langCode => {
+    const language = LANGUAGE_REGISTRY[langCode]
+    const countries = COUNTRY_OPTIONS.filter(
+      c => c.code !== countryCode && c.languages.includes(langCode)
+    )
+    return { language, countries }
+  }).filter(g => g.countries.length > 0)
+}
+
+/** Get all countries where a specific language is spoken */
+export function getCountriesForLanguage(langCode: LanguageCode): CountryOption[] {
+  return COUNTRY_OPTIONS.filter(c => c.languages.includes(langCode))
+}
+
+/** Get all unique languages across all countries — useful for filter UIs */
+export function getAllLanguages(): Language[] {
+  const seen = new Set<LanguageCode>()
+  const result: Language[] = []
+  for (const c of COUNTRY_OPTIONS) {
+    for (const l of c.languages) {
+      if (!seen.has(l)) {
+        seen.add(l)
+        result.push(LANGUAGE_REGISTRY[l])
+      }
+    }
+  }
+  return result
+}
+
+/**
+ * Language overlap score between two countries (0–1).
+ * Used by the matching engine to boost corridor strength
+ * when Pioneer and destination share languages.
+ */
+export function languageOverlap(codeA: string, codeB: string): number {
+  const a = COUNTRY_OPTIONS.find(c => c.code === codeA)
+  const b = COUNTRY_OPTIONS.find(c => c.code === codeB)
+  if (!a || !b) return 0
+  const shared = a.languages.filter(l => b.languages.includes(l))
+  const total = new Set([...a.languages, ...b.languages]).size
+  return total > 0 ? shared.length / total : 0
+}
+
+/** Get countries grouped by language — for language-first UI views */
+export function getGroupedByLanguage(): { language: Language; countries: CountryOption[] }[] {
+  return Object.values(LANGUAGE_REGISTRY)
+    .map(lang => ({
+      language: lang,
+      countries: COUNTRY_OPTIONS.filter(c => c.languages.includes(lang.code)),
+    }))
+    .filter(g => g.countries.length > 0)
+    .sort((a, b) => b.countries.length - a.countries.length)
+}

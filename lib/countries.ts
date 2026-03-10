@@ -66,7 +66,7 @@ const kenyaConfig: CountryConfig = {
   currencySymbol: 'KES',
   locale: 'en-KE',
   phonePrefix: '+254',
-  primaryColor: '#FF6B35',
+  primaryColor: '#5C0A14',
   paymentMethods: [
     { id: 'mpesa', name: 'M-Pesa', logo: 'M', description: 'Safaricom M-Pesa STK Push', currencies: ['KES'], maxAmount: 150000 },
     { id: 'airtel-money', name: 'Airtel Money', logo: 'A', description: 'Airtel Kenya', currencies: ['KES'] },
@@ -83,14 +83,14 @@ const kenyaConfig: CountryConfig = {
     { id: 'hospitality', name: 'Hospitality', emoji: '🍽️', count: 1200 },
     { id: 'creative', name: 'Creative & Media', emoji: '🎨', count: 680 },
   ],
-  popularSearches: ['Safari Guide', 'Software Engineer', 'Nurse', 'Remote', 'Nairobi', 'UK Visa Sponsored'],
-  heroTagline: 'International Jobs, Paid via M-Pesa',
-  heroSubtext: 'Find your dream job with top employers from Kenya, USA, UK, UAE and beyond. Apply fast, get hired faster.',
+  popularSearches: ['Safari Guide', 'Software Pioneer', 'Healthcare', 'Remote', 'Nairobi', 'UK Visa Path'],
+  heroTagline: 'Global Paths, Paid via M-Pesa',
+  heroSubtext: 'Find your path with Anchors from Kenya, USA, UK, UAE and beyond. Open a Chapter, begin your Venture.',
   statsBar: [
-    { label: 'Active Jobs', value: '12,400+' },
+    { label: 'Open Paths', value: '12,400+' },
     { label: 'Countries', value: '50+' },
-    { label: 'Hired This Month', value: '3,200' },
-    { label: 'Avg. Salary (KES)', value: '85K' },
+    { label: 'Pioneers Placed', value: '3,200' },
+    { label: 'Avg. (KES)', value: '85K' },
   ],
 }
 
@@ -107,7 +107,7 @@ const germanyConfig: CountryConfig = {
   currencySymbol: '€',
   locale: 'de-DE',
   phonePrefix: '+49',
-  primaryColor: '#FF6B35',
+  primaryColor: '#5C0A14',
   paymentMethods: [
     { id: 'sepa', name: 'SEPA Direct Debit', logo: 'EU', description: 'EU bank transfer', currencies: ['EUR'] },
     { id: 'stripe', name: 'Stripe / Kreditkarte', logo: 'S', description: 'Visa, Mastercard, Amex', currencies: ['EUR'] },
@@ -124,13 +124,13 @@ const germanyConfig: CountryConfig = {
     { id: 'hospitality', name: 'Gastronomie', emoji: '🍽️', count: 3800 },
   ],
   popularSearches: ['Software Engineer', 'Ausbildung', 'Krankenschwester', 'Remote', 'München', 'Berlin'],
-  heroTagline: 'Jobs in Deutschland finden',
-  heroSubtext: 'Finde deinen Traumjob bei führenden deutschen Unternehmen. Schnell bewerben, schnell eingestellt werden.',
+  heroTagline: 'Dein Weg nach Deutschland',
+  heroSubtext: 'Finde deinen Pfad bei führenden deutschen Ankern. Öffne ein Kapitel, starte dein Abenteuer.',
   statsBar: [
-    { label: 'Aktive Stellen', value: '48,000+' },
-    { label: 'Arbeitgeber', value: '2,400+' },
-    { label: 'Eingestellt diesen Monat', value: '8,200' },
-    { label: 'Ø Gehalt', value: '€58k' },
+    { label: 'Offene Pfade', value: '48,000+' },
+    { label: 'Anker', value: '2,400+' },
+    { label: 'Pioniere platziert', value: '8,200' },
+    { label: 'Ø Vergütung', value: '€58k' },
   ],
 }
 
@@ -147,7 +147,7 @@ const usaConfig: CountryConfig = {
   currencySymbol: '$',
   locale: 'en-US',
   phonePrefix: '+1',
-  primaryColor: '#FF6B35',
+  primaryColor: '#5C0A14',
   paymentMethods: [
     { id: 'stripe', name: 'Stripe', logo: 'S', description: 'Cards, ACH bank transfer', currencies: ['USD'] },
     { id: 'paypal', name: 'PayPal', logo: 'P', description: 'PayPal / Venmo', currencies: ['USD'] },
@@ -162,14 +162,14 @@ const usaConfig: CountryConfig = {
     { id: 'aviation', name: 'Aviation & Travel', emoji: '✈️', count: 8200 },
     { id: 'remote', name: 'Remote / Anywhere', emoji: '🌎', count: 48000 },
   ],
-  popularSearches: ['Software Engineer', 'Remote', 'H1B Sponsor', 'New York', 'Silicon Valley', 'Healthcare'],
-  heroTagline: 'Find Your Next American Opportunity',
-  heroSubtext: 'Top US employers hiring now. Find H1B sponsored roles, remote work, and high-paying tech jobs.',
+  popularSearches: ['Software Pioneer', 'Remote', 'H1B Path', 'New York', 'Silicon Valley', 'Healthcare'],
+  heroTagline: 'Find Your American Path',
+  heroSubtext: 'Top US Anchors with open Paths. H1B sponsored, remote, and high-value Ventures across 50 states.',
   statsBar: [
-    { label: 'Active Jobs', value: '280,000+' },
-    { label: 'Employers', value: '12,000+' },
-    { label: 'Hired This Month', value: '42,000' },
-    { label: 'Avg. Salary', value: '$95k' },
+    { label: 'Open Paths', value: '280,000+' },
+    { label: 'Anchors', value: '12,000+' },
+    { label: 'Pioneers Placed', value: '42,000' },
+    { label: 'Avg. Compensation', value: '$95k' },
   ],
 }
 
@@ -186,7 +186,7 @@ const nigeriaConfig: CountryConfig = {
   currencySymbol: '₦',
   locale: 'en-NG',
   phonePrefix: '+234',
-  primaryColor: '#FF6B35',
+  primaryColor: '#5C0A14',
   paymentMethods: [
     { id: 'flutterwave', name: 'Flutterwave', logo: 'F', description: 'Cards, bank transfer, USSD', currencies: ['NGN', 'USD'] },
     { id: 'paystack', name: 'Paystack', logo: 'PS', description: 'Cards, bank, USSD', currencies: ['NGN'] },
@@ -202,14 +202,14 @@ const nigeriaConfig: CountryConfig = {
     { id: 'health', name: 'Healthcare', emoji: '🏥', count: 5200 },
     { id: 'education', name: 'Education', emoji: '📚', count: 3800 },
   ],
-  popularSearches: ['Software Engineer', 'Lagos', 'Remote', 'Bank Job', 'Oil & Gas', 'NYSC'],
-  heroTagline: 'Find Top Jobs in Nigeria',
-  heroSubtext: 'Connect with the best employers across Nigeria. Pay with Flutterwave or Paystack. Get hired fast.',
+  popularSearches: ['Software Pioneer', 'Lagos', 'Remote', 'Finance Path', 'Oil & Gas', 'NYSC'],
+  heroTagline: 'Find Your Path in Nigeria',
+  heroSubtext: 'Connect with Anchors across Nigeria. Pay with Flutterwave or Paystack. Open your Chapter today.',
   statsBar: [
-    { label: 'Active Jobs', value: '38,000+' },
-    { label: 'Employers', value: '3,200+' },
-    { label: 'Hired This Month', value: '6,800' },
-    { label: 'Avg. Salary (₦)', value: '450k' },
+    { label: 'Open Paths', value: '38,000+' },
+    { label: 'Anchors', value: '3,200+' },
+    { label: 'Pioneers Placed', value: '6,800' },
+    { label: 'Avg. (₦)', value: '450k' },
   ],
 }
 

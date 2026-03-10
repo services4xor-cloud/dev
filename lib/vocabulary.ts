@@ -1,13 +1,23 @@
-// VOCABULARY.ts — BeKenya's own language for everything
-// "Pioneers" = people seeking their path (not "job seekers")
-// "Anchors" = organizations offering paths (not "employers")
-// "Paths" = opportunities/positions (not "jobs")
-// "Chapters" = applications/engagements (not "applications")
-// "Compass" = smart routing system (not "search")
-// "Ventures" = experiences + professional paths combined
-// "The Network" = the platform itself
-// "Gates" = entry points to a country's opportunities
-// "Routes" = country-to-country collaboration corridors
+/**
+ * VOCABULARY.ts — Be[Network] platform language
+ *
+ * Global adoption-ready vocabulary. Each term is chosen for:
+ *   - Universal comprehension across cultures
+ *   - Positive, empowering connotation
+ *   - Clean translation into major languages
+ *   - Distinctive brand identity (no generic "job" / "employer" terms)
+ *
+ * Pioneer  = person seeking their path    (de: Pionier, fr: Pionnier, sw: Painia)
+ * Anchor   = org offering paths           (de: Anker, fr: Ancre, sw: Nanga)
+ * Path     = opportunity / position       (de: Pfad, fr: Chemin, sw: Njia)
+ * Chapter  = engagement / application     (de: Kapitel, fr: Chapitre, sw: Sura)
+ * Venture  = experience + path combined   (de: Wagnis, fr: Aventure, sw: Ujasiri)
+ * Compass  = smart routing system         (de: Kompass, fr: Boussole, sw: Dira)
+ * Gate     = country entry point          (de: Tor, fr: Porte, sw: Lango)
+ * Route    = country corridor             (de: Route, fr: Route, sw: Njia)
+ *
+ * NEVER use: job, employer, candidate, application, booking, tour, search
+ */
 
 export const VOCAB = {
   pioneer: { singular: 'Pioneer', plural: 'Pioneers', verb: 'pioneering' },

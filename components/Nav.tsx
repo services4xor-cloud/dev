@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   Menu, X, ChevronDown,
-  Compass, Map, Camera, DollarSign,
+  Compass, Map, DollarSign,
   Heart, Info, Building2, Gift,
   LayoutDashboard, PlusSquare, LogIn,
 } from 'lucide-react'
@@ -19,14 +19,12 @@ const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
 const PRIMARY_LINKS = [
   { href: '/ventures',    label: 'Ventures',    icon: Map,     aria: 'Explore all paths and experiences' },
   { href: '/compass',     label: 'Compass',     icon: Compass, aria: 'Find your route across countries'  },
-  { href: '/experiences', label: 'Experiences', icon: Camera,  aria: 'Safari and cultural experiences'   },
   { href: '/pricing',     label: 'Pricing',     icon: DollarSign, aria: 'Anchor pricing plans'           },
 ]
 
 const PIONEER_LINKS = [
   { href: '/ventures',          label: 'Browse Ventures',   icon: Map,     aria: 'Explore all paths and experiences' },
   { href: '/compass',           label: 'Find My Path',      icon: Compass, aria: 'Smart route wizard'                 },
-  { href: '/experiences',       label: 'Experiences',       icon: Camera,  aria: 'Safari and cultural experiences'    },
   { href: '/charity',           label: 'Community',         icon: Heart,   aria: 'UTAMADUNI community impact'         },
 ]
 
@@ -68,7 +66,7 @@ export default function Nav() {
 
   // Shared link class helpers
   const desktopLink = (active: boolean) =>
-    `relative px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-150
+    `relative inline-flex items-center px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-150
      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0F]
      ${active
        ? 'text-[#C9A227] bg-[#C9A227]/8'
