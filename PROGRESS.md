@@ -1,6 +1,6 @@
 # Be[Country] — Live Progress Tracker
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 8 (2026-03-10)
+> Last updated: Session 9 (2026-03-10)
 
 ---
 
@@ -150,10 +150,29 @@ Vercel: Auto-deploys from main
 - [x] **app/page.tsx** — Full orange sweep: 25+ references → maroon buttons + gold accents. `/post-job` href → `/anchors/post-path`.
 - [x] TypeScript: 0 errors ✅
 
-### Immediate Next — Frontend Finalization
-1. [ ] **Remaining dark theme pages** — login, signup, pricing, contact, fashion, media
-2. [ ] **Email templates brand fix** — `lib/email.ts` still uses #FF6B35 in HTML
-3. [ ] **Old vocabulary sweep** — 9 pages still reference "job"/"employer" (see audit)
+### Session 9 (2026-03-10) — Frontend Finalization Complete
+- [x] **Email template brand fix** — `lib/email.ts`: hero gradient #e85d2a→#3a0610, stat-value/footer-brand/highlight → gold #C9A227, badge bg → maroon tints, score-fill gradient → maroon→gold, footer "Jobs"→"Paths", "employer"→"Anchor"
+- [x] **Vocabulary sweep complete** — signup (JOB_SEEKER→PIONEER, EMPLOYER→ANCHOR), pricing (job post→Path post, applicants→Chapters), privacy (job application→Chapter data, employer→Anchor), contact (Job posting help→Path posting help), referral (hired→placed), profile (Job Title→Current Role), about (Pioneers Hired→Pioneers Placed), dashboard (per hire→per placement)
+- [x] **Dark theme complete** — ALL pages now use bg-[#0A0A0F] dark theme:
+  - signup: gray-50→dark, white cards→gray-900/60, light text→white/gray
+  - pricing: gray-50→dark, plan cards dark with gold border for popular
+  - privacy: gray-50→dark, prose-invert
+  - contact: gray-50→dark, form/cards dark
+  - login: gray-50→dark, brand-orange→#C9A227/#5C0A14
+  - experiences/[id]: gray-50→dark, all cards/sidebar/itinerary/related ventures dark
+  - charity: white→dark, pillar gradients adapted (blue/purple/green/amber -950 variants)
+- [x] **Zero brand-orange references** — All `brand-orange` Tailwind classes eliminated
+- [x] **Zero light-theme page roots** — No `min-h-screen bg-gray-50/white/gray-100` anywhere
+- [x] Build: ✅ 0 errors, all pages compile
+- [x] Tests: ✅ 25/25 pass
+- [x] TypeScript: 0 errors ✅
+
+### Frontend Status: COMPLETE
+All 20+ pages now have consistent:
+- Dark theme (bg-[#0A0A0F])
+- BeNetwork vocabulary (Pioneer/Anchor/Path/Chapter/Venture/Compass)
+- Brand colors (maroon #5C0A14 + gold #C9A227, zero orange)
+- Responsive design (xs→4K with fluid typography)
 
 ### Backend Adaptation Plan (Phase 2 Core)
 
