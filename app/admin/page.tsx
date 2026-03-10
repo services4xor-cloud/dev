@@ -114,7 +114,7 @@ function StatusDot({ status }: { status: 'Open' | 'Closed' | 'Paused' | string }
 
 function ChapterStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    New: 'text-orange-400', 'Under Review': 'text-blue-400',
+    New: 'text-[#C9A227]', 'Under Review': 'text-blue-400',
     Shortlisted: 'text-green-400', Offer: 'text-yellow-400', Declined: 'text-gray-400',
   }
   return <span className={`text-xs font-semibold ${styles[status] ?? 'text-gray-400'}`}>{status}</span>
@@ -150,9 +150,9 @@ function OverviewTab() {
             KES {PLATFORM_STATS.revenueKES.toLocaleString('en-US')}
           </p>
         </div>
-        <div className="bg-[#1a0a0f] border border-orange-500/30 rounded-xl p-5">
+        <div className="bg-[#1a0a0f] border border-[#C9A227]/30 rounded-xl p-5">
           <p className="text-gray-300 text-sm">M-Pesa Transactions</p>
-          <p className="text-3xl font-bold text-orange-400 mt-1">{PLATFORM_STATS.mpesaPending} pending</p>
+          <p className="text-3xl font-bold text-[#C9A227] mt-1">{PLATFORM_STATS.mpesaPending} pending</p>
           <p className="text-gray-500 text-xs mt-1">Check M-Pesa sandbox dashboard</p>
         </div>
       </div>
@@ -492,7 +492,7 @@ function SocialTab() {
                 <p className="text-gray-500 text-xs mt-1">{post.created}</p>
               </div>
               {post.status === 'failed' && (
-                <button className="text-xs text-orange-400 hover:underline shrink-0">Retry</button>
+                <button className="text-xs text-[#C9A227] hover:underline shrink-0">Retry</button>
               )}
             </div>
           ))}

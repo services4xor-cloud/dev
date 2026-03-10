@@ -134,7 +134,7 @@ const TABS: { id: TabFilter; label: string }[] = [
 
 function getTypeAccentClass(type: NotificationType): string {
   const map: Record<NotificationType, string> = {
-    path: 'border-l-orange-500',
+    path: 'border-l-[#C9A227]',
     chapter: 'border-l-blue-500',
     compass: 'border-l-teal-500',
     community: 'border-l-green-500',
@@ -145,7 +145,7 @@ function getTypeAccentClass(type: NotificationType): string {
 
 function getTypeBadgeClass(type: NotificationType): string {
   const map: Record<NotificationType, string> = {
-    path: 'bg-orange-900/30 text-orange-400',
+    path: 'bg-[#5C0A14]/30 text-[#C9A227]',
     chapter: 'bg-blue-900/30 text-blue-400',
     compass: 'bg-teal-900/30 text-teal-400',
     community: 'bg-green-900/30 text-green-400',
@@ -183,7 +183,7 @@ function NotificationCard({
     >
       {/* Unread indicator */}
       {!notification.read && (
-        <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+        <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#C9A227] animate-pulse"></div>
       )}
 
       <div className="flex items-start gap-4">
@@ -298,7 +298,7 @@ export default function NotificationsPage() {
           <div>
             <h1 className="text-2xl font-bold text-white">Notifications</h1>
             {unreadCount > 0 && (
-              <p className="text-orange-400 text-sm mt-0.5">
+              <p className="text-[#C9A227] text-sm mt-0.5">
                 {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
               </p>
             )}

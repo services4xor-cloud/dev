@@ -372,7 +372,7 @@ function StepSkills({ form, setForm }: { form: PathForm; setForm: React.Dispatch
       )}
 
       {form.skills.length === 0 && (
-        <div className="p-4 bg-orange-900/20 border border-orange-800/30 rounded-xl text-sm text-orange-300">
+        <div className="p-4 bg-[#5C0A14]/20 border border-[#5C0A14]/30 rounded-xl text-sm text-[#C9A227]">
           Add at least 1 skill so Compass can find the right Pioneers for this path.
         </div>
       )}
@@ -703,7 +703,7 @@ function StepPreview({ form, onSubmit, submitting }: { form: PathForm; onSubmit:
       </div>
 
       {/* Publish CTA */}
-      <div className="bg-gradient-to-r from-orange-900/40 to-teal-900/40 rounded-2xl border border-orange-700/30 p-6 text-center">
+      <div className="bg-gradient-to-r from-[#5C0A14]/40 to-teal-900/40 rounded-2xl border border-[#C9A227]/30 p-6 text-center">
         <Rocket className="w-8 h-8 text-[#C9A227] mx-auto mb-3" />
         <h3 className="text-white font-bold text-lg mb-1">Ready to open this Path?</h3>
         <p className="text-gray-400 text-sm mb-5">

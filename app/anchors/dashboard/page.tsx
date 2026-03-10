@@ -267,7 +267,7 @@ function PathStatusBadge({ status }: { status: PathStatus }) {
 
 function ChapterStatusBadge({ status }: { status: ChapterStatus }) {
   const cfg = {
-    new: { label: 'New', class: 'bg-orange-900/50 text-orange-400 border-orange-700/50' },
+    new: { label: 'New', class: 'bg-[#5C0A14]/50 text-[#C9A227] border-[#C9A227]/50' },
     reviewed: { label: 'Reviewed', class: 'bg-blue-900/50 text-blue-400 border-blue-700/50' },
     shortlisted: { label: 'Shortlisted', class: 'bg-green-900/50 text-green-400 border-green-700/50' },
     declined: { label: 'Declined', class: 'bg-gray-700/50 text-gray-500 border-gray-600/50' },
@@ -280,7 +280,7 @@ function ChapterStatusBadge({ status }: { status: ChapterStatus }) {
 }
 
 function MatchScoreDot({ score }: { score: number }) {
-  const color = score >= 90 ? 'text-green-400' : score >= 75 ? 'text-yellow-400' : 'text-orange-400'
+  const color = score >= 90 ? 'text-green-400' : score >= 75 ? 'text-yellow-400' : 'text-[#C9A227]'
   return <span className={`text-sm font-bold ${color}`}>{score}%</span>
 }
 
@@ -760,7 +760,7 @@ function AnalyticsTab() {
                 </div>
                 <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-[#C9A227] to-orange-400 rounded-full transition-all"
+                    className="h-full bg-gradient-to-r from-[#C9A227] to-[#C9A227]/60 rounded-full transition-all"
                     style={{ width: `${c.pct}%` }}
                   />
                 </div>
@@ -843,7 +843,7 @@ function AnalyticsTab() {
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                       i === 0 ? 'bg-yellow-500/20 text-yellow-400' :
                       i === 1 ? 'bg-gray-500/20 text-gray-300' :
-                      'bg-orange-900/30 text-orange-500'
+                      'bg-[#5C0A14]/30 text-[#C9A227]'
                     }`}>
                       {i + 1}
                     </div>

@@ -63,8 +63,8 @@ const OPERATING_COUNTRIES = [
     name: 'Kenya',
     role: 'Headquarters',
     details: 'Registered entity. M-Pesa payments. East Africa operations hub.',
-    color: 'bg-green-50 border-green-200',
-    badge: 'bg-green-100 text-green-800',
+    color: 'bg-green-900/20 border-green-700/30',
+    badge: 'bg-green-900/40 text-green-400',
   },
   {
     flag: '🇩🇪',
@@ -72,8 +72,8 @@ const OPERATING_COUNTRIES = [
     name: 'Germany',
     role: 'EU Partner',
     details: 'EU market access. SEPA payments. Anchor partnerships across DACH region.',
-    color: 'bg-blue-50 border-blue-200',
-    badge: 'bg-blue-100 text-blue-800',
+    color: 'bg-blue-900/20 border-blue-700/30',
+    badge: 'bg-blue-900/40 text-blue-400',
   },
 ]
 
@@ -86,8 +86,8 @@ const SHARE_BLOCKS = [
     label: 'Founding Shareholders',
     percent: 80,
     description: 'Core founders and strategic partners. Identities privacy-protected.',
-    color: 'bg-brand-orange',
-    textColor: 'text-brand-orange',
+    color: 'bg-[#5C0A14]',
+    textColor: 'text-[#C9A227]',
   },
   {
     label: 'Reserved (UTAMADUNI & Growth)',
@@ -104,13 +104,13 @@ const SHARE_BLOCKS = [
 
 export default function BusinessPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#0A0A0F]">
 
       {/* ── Hero ── */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-sm font-medium mb-6 border border-white/20">
-            <Landmark className="w-4 h-4 text-brand-orange" />
+            <Landmark className="w-4 h-4 text-[#C9A227]" />
             <span>Legal Entity</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
@@ -127,11 +127,11 @@ export default function BusinessPage() {
       </section>
 
       {/* ── Mission ── */}
-      <section className="py-16 px-4 bg-orange-50 border-b border-orange-100">
+      <section className="py-16 px-4 bg-[#5C0A14]/10 border-b border-[#5C0A14]/30">
         <div className="max-w-3xl mx-auto text-center">
-          <Globe className="w-10 h-10 text-brand-orange mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Mission</h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
+          <Globe className="w-10 h-10 text-[#C9A227] mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-4">Our Mission</h2>
+          <p className="text-lg text-gray-300 leading-relaxed">
             Dignified work and opportunity for everyone, everywhere. We connect Pioneers
             (people seeking their path) with Anchors (employers and partners) across borders,
             currencies, and cultures — starting in Kenya, scaling globally.
@@ -140,40 +140,40 @@ export default function BusinessPage() {
       </section>
 
       {/* ── Legal Status ── */}
-      <section className="py-14 px-4 border-b border-gray-100">
+      <section className="py-14 px-4 border-b border-[#5C0A14]/30">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <Shield className="w-6 h-6 text-brand-orange" />
-            <h2 className="text-2xl font-bold text-gray-900">Legal Status</h2>
+            <Shield className="w-6 h-6 text-[#C9A227]" />
+            <h2 className="text-2xl font-bold text-white">Legal Status</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             {[
               {
-                icon: <Landmark className="w-5 h-5 text-brand-orange" />,
+                icon: <Landmark className="w-5 h-5 text-[#C9A227]" />,
                 label: 'Registration',
                 value: 'Kenya Companies Act',
                 sub: 'eCitizen Business Registration',
               },
               {
-                icon: <Building2 className="w-5 h-5 text-brand-orange" />,
+                icon: <Building2 className="w-5 h-5 text-[#C9A227]" />,
                 label: 'Entity Type',
                 value: 'Private Limited Company',
                 sub: 'BeKenya Family Ltd',
               },
               {
-                icon: <Lock className="w-5 h-5 text-brand-orange" />,
+                icon: <Lock className="w-5 h-5 text-[#C9A227]" />,
                 label: 'Governance',
                 value: 'Dual-Signature Control',
                 sub: 'Finance Controller approval required',
               },
             ].map(item => (
-              <div key={item.label} className="bg-gray-50 rounded-2xl p-5 border border-gray-200">
+              <div key={item.label} className="bg-gray-900/60 rounded-2xl p-5 border border-[#5C0A14]/30">
                 <div className="flex items-center gap-2 mb-2">
                   {item.icon}
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">{item.label}</span>
+                  <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">{item.label}</span>
                 </div>
-                <p className="font-semibold text-gray-900">{item.value}</p>
-                <p className="text-sm text-gray-500 mt-0.5">{item.sub}</p>
+                <p className="font-semibold text-white">{item.value}</p>
+                <p className="text-sm text-gray-400 mt-0.5">{item.sub}</p>
               </div>
             ))}
           </div>
@@ -181,18 +181,18 @@ export default function BusinessPage() {
       </section>
 
       {/* ── Share Structure ── */}
-      <section className="py-14 px-4 border-b border-gray-100">
+      <section className="py-14 px-4 border-b border-[#5C0A14]/30">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
-            <Layers className="w-6 h-6 text-brand-orange" />
-            <h2 className="text-2xl font-bold text-gray-900">Share Structure</h2>
+            <Layers className="w-6 h-6 text-[#C9A227]" />
+            <h2 className="text-2xl font-bold text-white">Share Structure</h2>
           </div>
-          <p className="text-gray-500 text-sm mb-8 ml-9">
+          <p className="text-gray-400 text-sm mb-8 ml-9">
             Shareholder identities are privacy-protected. Structure shown for transparency.
           </p>
 
           {/* Bar */}
-          <div className="flex h-8 rounded-full overflow-hidden mb-6 border border-gray-200">
+          <div className="flex h-8 rounded-full overflow-hidden mb-6 border border-[#5C0A14]/30">
             {SHARE_BLOCKS.map(block => (
               <div
                 key={block.label}
@@ -207,14 +207,14 @@ export default function BusinessPage() {
           {/* Legend */}
           <div className="grid md:grid-cols-2 gap-4">
             {SHARE_BLOCKS.map(block => (
-              <div key={block.label} className="flex items-start gap-3 bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <div key={block.label} className="flex items-start gap-3 bg-gray-900/60 rounded-xl p-4 border border-[#5C0A14]/30">
                 <div className={`w-3 h-3 rounded-full mt-1 ${block.color} shrink-0`} />
                 <div>
                   <div className="flex items-center gap-2">
                     <span className={`text-2xl font-bold ${block.textColor}`}>{block.percent}%</span>
-                    <span className="font-semibold text-gray-800 text-sm">{block.label}</span>
+                    <span className="font-semibold text-gray-200 text-sm">{block.label}</span>
                   </div>
-                  <p className="text-sm text-gray-500 mt-0.5">{block.description}</p>
+                  <p className="text-sm text-gray-400 mt-0.5">{block.description}</p>
                 </div>
               </div>
             ))}
@@ -223,26 +223,26 @@ export default function BusinessPage() {
       </section>
 
       {/* ── Business Divisions ── */}
-      <section className="py-14 px-4 border-b border-gray-100">
+      <section className="py-14 px-4 border-b border-[#5C0A14]/30">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <Building2 className="w-6 h-6 text-brand-orange" />
-            <h2 className="text-2xl font-bold text-gray-900">Business Divisions</h2>
+            <Building2 className="w-6 h-6 text-[#C9A227]" />
+            <h2 className="text-2xl font-bold text-white">Business Divisions</h2>
           </div>
           <div className="space-y-4">
             {DIVISIONS.map(div => (
-              <div key={div.name} className="rounded-2xl border border-gray-200 overflow-hidden">
-                <div className="flex items-center gap-3 px-6 py-4 bg-gray-50 border-b border-gray-200">
+              <div key={div.name} className="rounded-2xl border border-[#5C0A14]/30 overflow-hidden">
+                <div className="flex items-center gap-3 px-6 py-4 bg-gray-900/60 border-b border-[#5C0A14]/30">
                   <span className="text-2xl">{div.icon}</span>
-                  <h3 className="font-bold text-gray-900 text-lg">{div.name}</h3>
+                  <h3 className="font-bold text-white text-lg">{div.name}</h3>
                 </div>
                 <div className="px-6 py-5">
-                  <p className="text-gray-600 mb-4 leading-relaxed">{div.description}</p>
+                  <p className="text-gray-300 mb-4 leading-relaxed">{div.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {div.ventures.map(v => (
                       <span
                         key={v}
-                        className="text-xs bg-orange-50 text-brand-orange border border-orange-200 rounded-full px-3 py-1 font-medium"
+                        className="text-xs bg-[#5C0A14]/20 text-[#C9A227] border border-[#C9A227]/20 rounded-full px-3 py-1 font-medium"
                       >
                         {v}
                       </span>
@@ -256,11 +256,11 @@ export default function BusinessPage() {
       </section>
 
       {/* ── Operating Countries ── */}
-      <section className="py-14 px-4 border-b border-gray-100">
+      <section className="py-14 px-4 border-b border-[#5C0A14]/30">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <Globe className="w-6 h-6 text-brand-orange" />
-            <h2 className="text-2xl font-bold text-gray-900">Operating Countries</h2>
+            <Globe className="w-6 h-6 text-[#C9A227]" />
+            <h2 className="text-2xl font-bold text-white">Operating Countries</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             {OPERATING_COUNTRIES.map(country => (
@@ -269,14 +269,14 @@ export default function BusinessPage() {
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">{country.flag}</span>
                     <div>
-                      <h3 className="font-bold text-gray-900 text-lg">{country.name}</h3>
+                      <h3 className="font-bold text-white text-lg">{country.name}</h3>
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${country.badge}`}>
                         {country.role}
                       </span>
                     </div>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed">{country.details}</p>
+                <p className="text-sm text-gray-300 leading-relaxed">{country.details}</p>
               </div>
             ))}
           </div>
@@ -287,11 +287,11 @@ export default function BusinessPage() {
       </section>
 
       {/* ── Payment & Financial Control ── */}
-      <section className="py-14 px-4 border-b border-gray-100 bg-gray-50">
+      <section className="py-14 px-4 border-b border-[#5C0A14]/30 bg-[#0A0A0F]">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <Shield className="w-6 h-6 text-brand-orange" />
-            <h2 className="text-2xl font-bold text-gray-900">Payment & Financial Control</h2>
+            <Shield className="w-6 h-6 text-[#C9A227]" />
+            <h2 className="text-2xl font-bold text-white">Payment & Financial Control</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             {[
@@ -311,17 +311,17 @@ export default function BusinessPage() {
                 body: 'Stripe (USD/EUR), Flutterwave (NGN), PayPal. Each rail enabled per country activation.',
               },
             ].map(item => (
-              <div key={item.title} className="bg-white rounded-2xl border border-gray-200 p-5">
+              <div key={item.title} className="bg-gray-900/60 rounded-2xl border border-[#5C0A14]/30 p-5">
                 <div className="text-3xl mb-3">{item.icon}</div>
-                <h3 className="font-semibold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{item.body}</p>
+                <h3 className="font-semibold text-white mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-300 leading-relaxed">{item.body}</p>
               </div>
             ))}
           </div>
-          <div className="mt-6 bg-amber-50 border border-amber-200 rounded-2xl p-5">
+          <div className="mt-6 bg-[#5C0A14]/20 border border-[#C9A227]/20 rounded-2xl p-5">
             <div className="flex items-start gap-3">
-              <Lock className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
-              <p className="text-sm text-amber-800">
+              <Lock className="w-5 h-5 text-[#C9A227] mt-0.5 shrink-0" />
+              <p className="text-sm text-gray-300">
                 <strong>Finance Controller Oversight:</strong> All revenue withdrawals, partner disbursements,
                 and UTAMADUNI transfers require dual approval. Platform revenue auto-routes: 10% to charity
                 reserve, 15% to operational float, remainder to growth fund.
@@ -332,11 +332,11 @@ export default function BusinessPage() {
       </section>
 
       {/* ── Partnership CTA ── */}
-      <section className="py-14 px-4 border-b border-gray-100">
+      <section className="py-14 px-4 border-b border-[#5C0A14]/30">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <Users className="w-6 h-6 text-brand-orange" />
-            <h2 className="text-2xl font-bold text-gray-900">Partnership Enquiries</h2>
+            <Users className="w-6 h-6 text-[#C9A227]" />
+            <h2 className="text-2xl font-bold text-white">Partnership Enquiries</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mb-8">
             {[
@@ -344,10 +344,10 @@ export default function BusinessPage() {
               { icon: '🌍', type: 'NGOs & Development Partners', desc: 'Co-fund UTAMADUNI projects. Skills training, youth employment, community builds.' },
               { icon: '🏢', type: 'Corporate Anchors', desc: 'Hire verified Pioneers. Post paths, sponsor placements, build your East Africa team.' },
             ].map(p => (
-              <div key={p.type} className="rounded-2xl border border-gray-200 p-5 hover:border-brand-orange transition-colors">
+              <div key={p.type} className="rounded-2xl border border-[#5C0A14]/30 p-5 hover:border-[#C9A227]/50 transition-colors">
                 <div className="text-3xl mb-3">{p.icon}</div>
-                <h3 className="font-semibold text-gray-900 mb-2">{p.type}</h3>
-                <p className="text-sm text-gray-600">{p.desc}</p>
+                <h3 className="font-semibold text-white mb-2">{p.type}</h3>
+                <p className="text-sm text-gray-300">{p.desc}</p>
               </div>
             ))}
           </div>
@@ -357,14 +357,14 @@ export default function BusinessPage() {
       {/* ── Contact ── */}
       <section className="py-14 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Get in Touch</h2>
-          <p className="text-gray-500 mb-8">
+          <h2 className="text-2xl font-bold text-white mb-3">Get in Touch</h2>
+          <p className="text-gray-400 mb-8">
             For partnership proposals, legal enquiries, or press, reach us directly.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <a
               href="mailto:services4xor@gmail.com"
-              className="inline-flex items-center gap-2 bg-brand-orange text-white rounded-xl px-6 py-3 font-semibold hover:bg-orange-600 transition-colors"
+              className="inline-flex items-center gap-2 bg-[#5C0A14] text-white rounded-xl px-6 py-3 font-semibold hover:bg-[#5C0A14]/80 transition-colors"
             >
               <Mail className="w-4 h-4" />
               services4xor@gmail.com
@@ -382,19 +382,19 @@ export default function BusinessPage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/ventures"
-              className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-brand-orange transition-colors font-medium"
+              className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-[#C9A227] transition-colors font-medium"
             >
               Browse Ventures <ChevronRight className="w-4 h-4" />
             </Link>
             <Link
               href="/experiences"
-              className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-brand-orange transition-colors font-medium"
+              className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-[#C9A227] transition-colors font-medium"
             >
               Safari Experiences <ChevronRight className="w-4 h-4" />
             </Link>
             <Link
               href="/charity"
-              className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-brand-orange transition-colors font-medium"
+              className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-[#C9A227] transition-colors font-medium"
             >
               UTAMADUNI Charity <ChevronRight className="w-4 h-4" />
             </Link>

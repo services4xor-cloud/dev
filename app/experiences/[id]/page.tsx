@@ -65,18 +65,18 @@ export default function ExperiencePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-amber-900 via-amber-800 to-orange-900 text-white">
+      <div className="bg-gradient-to-br from-[#5C0A14] via-[#5C0A14]/80 to-[#0A0A0F] text-white">
         <div className="max-w-5xl mx-auto px-4 py-16">
           <Link
             href="/ventures"
-            className="inline-flex items-center gap-2 text-amber-200 hover:text-white text-sm mb-8 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-300 hover:text-white text-sm mb-8 transition-colors"
           >
             ← Back to Ventures
           </Link>
 
           <div className="flex items-center gap-3 mb-4">
             <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-              pkg.type === 'wildlife_safari' ? 'bg-amber-400 text-amber-900' :
+              pkg.type === 'wildlife_safari' ? 'bg-[#C9A227] text-[#0A0A0F]' :
               pkg.type === 'deep_sea_fishing' ? 'bg-blue-400 text-blue-900' :
               'bg-green-400 text-green-900'
             }`}>
@@ -90,33 +90,33 @@ export default function ExperiencePage() {
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">{pkg.name}</h1>
-          <p className="text-amber-200 text-lg mb-6">by {pkg.provider}</p>
+          <p className="text-gray-300 text-lg mb-6">by {pkg.provider}</p>
 
           {/* Quick stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-              <div className="flex items-center gap-2 text-amber-200 text-xs mb-1">
+              <div className="flex items-center gap-2 text-gray-300 text-xs mb-1">
                 <Clock size={14} />
                 Duration
               </div>
               <div className="text-white font-semibold">{pkg.duration}</div>
             </div>
             <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-              <div className="flex items-center gap-2 text-amber-200 text-xs mb-1">
+              <div className="flex items-center gap-2 text-gray-300 text-xs mb-1">
                 <Users size={14} />
                 Max Pioneers
               </div>
               <div className="text-white font-semibold">{pkg.maxGuests} guests</div>
             </div>
             <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-              <div className="flex items-center gap-2 text-amber-200 text-xs mb-1">
+              <div className="flex items-center gap-2 text-gray-300 text-xs mb-1">
                 <MapPin size={14} />
                 Destination
               </div>
               <div className="text-white font-semibold text-sm">{pkg.destination}</div>
             </div>
             <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-              <div className="text-amber-200 text-xs mb-1">Starting from</div>
+              <div className="text-gray-300 text-xs mb-1">Starting from</div>
               <div className="text-white font-bold text-xl">{formatPackagePrice(pkg)}</div>
             </div>
           </div>
@@ -178,8 +178,8 @@ export default function ExperiencePage() {
               </div>
 
               {hasFessyMarkup && (
-                <div className="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4">
-                  <p className="text-amber-800 text-sm">
+                <div className="mt-6 bg-[#5C0A14]/10 border border-[#C9A227]/20 rounded-xl p-4">
+                  <p className="text-gray-300 text-sm">
                     <span className="font-semibold">Transparency note:</span> This venture includes a FessyTours service fee
                     ({Math.round((pkg.markup ?? 0) * 100)}%). This fee funds platform operations and Pioneer support services.
                   </p>
@@ -337,7 +337,7 @@ export default function ExperiencePage() {
               {related.map((relPkg) => (
                 <Link key={relPkg.id} href={`/experiences/${relPkg.id}`}>
                   <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden h-full">
-                    <div className="bg-gradient-to-br from-amber-100 to-orange-100 h-28 flex items-center justify-center text-4xl">
+                    <div className="bg-gradient-to-br from-gray-800 to-[#5C0A14]/30 h-28 flex items-center justify-center text-4xl">
                       {TYPE_EMOJI[relPkg.type] ?? '🌍'}
                     </div>
                     <div className="p-4">
