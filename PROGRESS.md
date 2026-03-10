@@ -108,6 +108,24 @@ Vercel: Auto-deploys from main
 - [x] Fixed all duplicate nav/footer stacking (sticky top-16 z-40 pattern)
 - [x] About page brand audit (further rewritten in session 5)
 
+### Session 7 (2026-03-10) — Docs System + Playwright Visual Testing
+- [x] **CLAUDE.md** — Rewritten as lean master agent index (~200 lines). All doc cross-references inline.
+- [x] **PRD.md v5** — Self-resolved Q&A clash log (9 questions), acceptance criteria, revenue model
+- [x] **DESIGN_SYSTEM.md** — NEW: full brand token reference, component patterns, forbidden colors, checklist
+- [x] **ROADMAP.md** — NEW: 5-phase strategic plan, sprint breakdown, dependency map, risk register
+- [x] **TESTING.md** — NEW: Playwright strategy, 3 test layers, CI integration guide
+- [x] **Playwright installed** — `@playwright/test` v1.58.2 + Chromium
+- [x] **playwright.config.ts** — 3 projects (smoke/brand/responsive), 6 viewport presets xs→3xl
+- [x] **tests/visual/smoke.spec.ts** — 15/15 pass: all pages 200, no console errors
+- [x] **tests/visual/brand.spec.ts** — 26/26 pass + 4 known light-bg pages skipped correctly
+- [x] **tests/visual/responsive.spec.ts** — 48/48 pass: no horizontal scroll at any breakpoint
+- [x] **SVG Image fix** — `unoptimized` prop on all `<Image src="/logo.svg"...>` (was 400 error)
+- [x] **Nav breakpoint fix** — Desktop nav now shows at `xl:` (1280px+), not `md:`/`lg:` (prevented overflow at 768–1024px)
+- [x] **globals.css** — `overflow-x: hidden` on both `html` + `body`
+- [x] **Brand sweep continued** — pioneers/dashboard, charity, pricing, contact, signup: all orange-* → maroon/gold
+- [x] **.claude/launch.json** — bekenya-dev server config (npm run dev → port 3000)
+- [x] TypeScript: 0 errors ✅
+
 ### Session 6 (2026-03-10) — Brand Consistency + UX Cleanup
 - [x] **Brand sweep** — Eliminated `#FF6B35` from ALL 30+ pages/components. Zero orange violations.
 - [x] **tailwind.config.ts** — `brand.orange` + `brand.teal` aliased → `#C9A227` (gold) for backward compat. All `text-brand-orange`, `bg-brand-orange` etc now render as gold.
