@@ -1,10 +1,11 @@
 /**
  * lib/email.ts — Email automation using Resend
  *
- * All emails are styled with BeKenya brand colors:
- *   Orange:  #FF6B35
- *   Green:   #006600
- *   Teal:    #0891B2
+ * All emails are styled with Be[Country] brand colors:
+ *   Maroon:  #5C0A14  (primary — buttons, step indicators)
+ *   Gold:    #C9A227  (accent — highlights, stat values, footer brand)
+ *   Green:   #006600  (success — donation, accepted badges)
+ *   Teal:    #0891B2  (info — secondary CTAs)
  *
  * Falls back to console.log when RESEND_API_KEY is not set (development mode).
  *
@@ -51,7 +52,7 @@ function emailWrapper(content: string, previewText = ''): string {
     body { margin: 0; padding: 0; background-color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     .wrapper { max-width: 600px; margin: 0 auto; padding: 24px 16px; }
     .card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-    .hero { background: linear-gradient(135deg, #FF6B35 0%, #e85d2a 100%); padding: 40px 32px; text-align: center; }
+    .hero { background: linear-gradient(135deg, #5C0A14 0%, #3a0610 100%); padding: 40px 32px; text-align: center; }
     .hero-brand { color: #ffffff; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 4px; }
     .hero-tagline { color: rgba(255,255,255,0.9); font-size: 14px; margin: 0; }
     .body { padding: 32px; }
@@ -59,10 +60,10 @@ function emailWrapper(content: string, previewText = ''): string {
     .h2 { font-size: 18px; font-weight: 600; color: #374151; margin: 24px 0 8px; }
     .p { font-size: 15px; color: #4b5563; line-height: 1.6; margin: 0 0 16px; }
     .p-sm { font-size: 13px; color: #6b7280; line-height: 1.5; margin: 0 0 8px; }
-    .badge { display: inline-block; background: #fff7ed; color: #FF6B35; border: 1px solid #fed7aa; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+    .badge { display: inline-block; background: #fdf2f3; color: #5C0A14; border: 1px solid #e8c4c8; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
     .badge-green { display: inline-block; background: #f0fdf4; color: #006600; border: 1px solid #bbf7d0; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
     .cta-block { text-align: center; margin: 32px 0; }
-    .cta-btn { display: inline-block; background: #FF6B35; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 700; letter-spacing: 0.2px; }
+    .cta-btn { display: inline-block; background: #5C0A14; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 700; letter-spacing: 0.2px; }
     .cta-btn-teal { display: inline-block; background: #0891B2; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 700; }
     .cta-btn-green { display: inline-block; background: #006600; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 700; }
     .info-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; }
@@ -71,23 +72,23 @@ function emailWrapper(content: string, previewText = ''): string {
     .info-value { font-size: 13px; color: #111827; }
     .steps { list-style: none; padding: 0; margin: 16px 0; }
     .steps li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; font-size: 14px; color: #374151; }
-    .step-num { width: 24px; height: 24px; background: #FF6B35; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .step-num { width: 24px; height: 24px; background: #5C0A14; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
     .divider { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
     .stat-bar { display: flex; background: #f9fafb; border-radius: 8px; overflow: hidden; margin: 20px 0; }
     .stat { flex: 1; padding: 16px; text-align: center; border-right: 1px solid #e5e7eb; }
     .stat:last-child { border-right: none; }
-    .stat-value { font-size: 20px; font-weight: 800; color: #FF6B35; display: block; }
+    .stat-value { font-size: 20px; font-weight: 800; color: #C9A227; display: block; }
     .stat-label { font-size: 11px; color: #6b7280; display: block; margin-top: 2px; }
     .footer { background: #111827; padding: 24px 32px; text-align: center; }
-    .footer-brand { color: #FF6B35; font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+    .footer-brand { color: #C9A227; font-size: 16px; font-weight: 700; margin: 0 0 8px; }
     .footer-links { color: #9ca3af; font-size: 12px; margin: 0 0 8px; }
     .footer-links a { color: #9ca3af; text-decoration: none; margin: 0 8px; }
     .footer-unsub { color: #6b7280; font-size: 11px; margin: 0; }
-    .highlight { color: #FF6B35; font-weight: 700; }
+    .highlight { color: #C9A227; font-weight: 700; }
     .teal { color: #0891B2; font-weight: 700; }
     .green { color: #006600; font-weight: 700; }
     .score-bar { background: #e5e7eb; border-radius: 4px; height: 8px; margin: 4px 0 16px; overflow: hidden; }
-    .score-fill { background: linear-gradient(90deg, #FF6B35, #006600); height: 100%; border-radius: 4px; }
+    .score-fill { background: linear-gradient(90deg, #5C0A14, #C9A227); height: 100%; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -117,7 +118,7 @@ function emailFooter(unsubscribeText = 'You received this because you signed up 
     <p class="footer-brand">BeKenya</p>
     <p class="footer-links">
       <a href="https://bekenya.com">Home</a>
-      <a href="https://bekenya.com/jobs">Jobs</a>
+      <a href="https://bekenya.com/ventures">Paths</a>
       <a href="https://bekenya.com/compass">Compass</a>
       <a href="https://bekenya.com/about">About</a>
     </p>
@@ -149,8 +150,8 @@ export const EMAIL_TEMPLATES: Record<
         <div class="info-card">
           <p class="p-sm" style="margin:0 0 12px;font-weight:600;color:#374151;">Your quick stats</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <div style="flex:1;min-width:100px;text-align:center;background:#fff7ed;border-radius:8px;padding:12px;">
-              <span style="font-size:24px;font-weight:800;color:#FF6B35;">${data.matchCount || '0'}</span>
+            <div style="flex:1;min-width:100px;text-align:center;background:#fdf2f3;border-radius:8px;padding:12px;">
+              <span style="font-size:24px;font-weight:800;color:#5C0A14;">${data.matchCount || '0'}</span>
               <span style="display:block;font-size:11px;color:#9ca3af;margin-top:2px;">Path Matches</span>
             </div>
             <div style="flex:1;min-width:100px;text-align:center;background:#f0fdf4;border-radius:8px;padding:12px;">
@@ -198,7 +199,7 @@ export const EMAIL_TEMPLATES: Record<
         <hr class="divider" />
         <p class="p-sm" style="text-align:center;">
           Questions? Reply to this email or reach us at
-          <a href="mailto:hello@bekenya.com" style="color:#FF6B35;">hello@bekenya.com</a>
+          <a href="mailto:hello@bekenya.com" style="color:#5C0A14;">hello@bekenya.com</a>
         </p>
       </div>
       ${emailFooter()}`,
@@ -225,7 +226,7 @@ export const EMAIL_TEMPLATES: Record<
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;width:130px;">Path</td><td style="font-size:13px;color:#111827;font-weight:600;">${data.pathTitle || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Anchor</td><td style="font-size:13px;color:#111827;">${data.anchorName || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Location</td><td style="font-size:13px;color:#111827;">${data.location || '—'}</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Match Score</td><td style="font-size:13px;color:#FF6B35;font-weight:700;">${data.matchScore || '—'}%</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Match Score</td><td style="font-size:13px;color:#5C0A14;font-weight:700;">${data.matchScore || '—'}%</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Reference</td><td style="font-size:13px;color:#111827;">${data.chapterId || '—'}</td></tr>
           </table>
           ${data.matchScore ? `<div class="score-bar"><div class="score-fill" style="width:${Math.min(100, Number(data.matchScore))}%;"></div></div>` : ''}
@@ -340,7 +341,7 @@ export const EMAIL_TEMPLATES: Record<
 
   // ── 5. New Path Match ──────────────────────────────────────────────────────
   new_path_match: (data) => ({
-    subject: `New match: ${data.pathTitle || 'A Path'} at ${data.anchorName || 'an employer'} (${data.matchScore || '—'}% match)`,
+    subject: `New match: ${data.pathTitle || 'A Path'} at ${data.anchorName || 'an Anchor'} (${data.matchScore || '—'}% match)`,
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
@@ -355,7 +356,7 @@ export const EMAIL_TEMPLATES: Record<
           <p style="font-size:18px;font-weight:700;color:#111827;margin:0 0 8px;">
             ${data.pathTitle || 'Untitled Path'}
           </p>
-          <p style="font-size:13px;color:#FF6B35;font-weight:600;margin:0 0 16px;">
+          <p style="font-size:13px;color:#5C0A14;font-weight:600;margin:0 0 16px;">
             ${data.anchorName || 'Anchor'} &bull; ${data.location || 'Location TBC'}
           </p>
           ${data.salary ? `<p style="font-size:14px;color:#374151;margin:0 0 16px;"><strong>Compensation:</strong> ${data.salary}</p>` : ''}
@@ -365,7 +366,7 @@ export const EMAIL_TEMPLATES: Record<
             <div class="score-bar" style="flex:1;">
               <div class="score-fill" style="width:${Math.min(100, Number(data.matchScore || 0))}%;"></div>
             </div>
-            <span style="font-size:20px;font-weight:800;color:#FF6B35;">${data.matchScore || '—'}%</span>
+            <span style="font-size:20px;font-weight:800;color:#5C0A14;">${data.matchScore || '—'}%</span>
           </div>
 
           ${data.topSkill ? `<p class="p-sm" style="margin-top:8px;">Your <strong>${data.topSkill}</strong> skill is a key match for this role.</p>` : ''}
@@ -383,7 +384,7 @@ export const EMAIL_TEMPLATES: Record<
         </div>
       </div>
       ${emailFooter()}`,
-      `${data.matchScore || '—'}% match: ${data.pathTitle || 'A new path'} at ${data.anchorName || 'an employer'}`
+      `${data.matchScore || '—'}% match: ${data.pathTitle || 'A new path'} at ${data.anchorName || 'an Anchor'}`
     ),
   }),
 
@@ -406,10 +407,10 @@ export const EMAIL_TEMPLATES: Record<
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">From</td><td style="font-size:13px;color:#111827;">${data.pioneerCountry || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Type</td><td style="font-size:13px;color:#111827;">${data.pioneerType || '—'} Pioneer</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Path</td><td style="font-size:13px;color:#111827;">${data.pathTitle || '—'}</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Match Score</td><td style="font-size:13px;color:#FF6B35;font-weight:700;">${data.matchScore || '—'}%</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Match Score</td><td style="font-size:13px;color:#5C0A14;font-weight:700;">${data.matchScore || '—'}%</td></tr>
           </table>
           ${data.matchScore ? `<div class="score-bar"><div class="score-fill" style="width:${Math.min(100, Number(data.matchScore))}%;"></div></div>` : ''}
-          ${data.pioneerMessage ? `<p class="p-sm" style="margin-top:12px;font-style:italic;border-left:3px solid #FF6B35;padding-left:12px;">"${data.pioneerMessage}"</p>` : ''}
+          ${data.pioneerMessage ? `<p class="p-sm" style="margin-top:12px;font-style:italic;border-left:3px solid #5C0A14;padding-left:12px;">"${data.pioneerMessage}"</p>` : ''}
         </div>
 
         <p class="p">
@@ -456,7 +457,7 @@ export const EMAIL_TEMPLATES: Record<
         <div class="info-card">
           <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">Top Match This Week</p>
           <p style="font-size:16px;font-weight:700;color:#111827;margin:0 0 4px;">${data.topPathTitle}</p>
-          <p style="font-size:13px;color:#FF6B35;margin:0;">${data.topPathAnchor || ''} &bull; ${data.topPathScore || '—'}% match</p>
+          <p style="font-size:13px;color:#5C0A14;margin:0;">${data.topPathAnchor || ''} &bull; ${data.topPathScore || '—'}% match</p>
         </div>` : ''}
 
         ${data.platformJobCount ? `
