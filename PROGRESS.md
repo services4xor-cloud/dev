@@ -1,7 +1,7 @@
 # Be[Country] — Live Progress Tracker
 
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 13 (2026-03-10)
+> Last updated: Session 14 (2026-03-10)
 
 ---
 
@@ -65,7 +65,7 @@ Vercel: Auto-deploys from main
 - [x] /api/search — smart search with scoring
 - [x] /api/mpesa/stkpush — M-Pesa STK Push v2
 - [x] /api/mpesa/callback — Safaricom webhook
-- [x] /api/jobs, /api/applications (legacy, still works)
+- [x] /api/chapters — Pioneer opens Chapter on Path (replaced /api/applications)
 - [x] /api/auth — NextAuth handlers
 - [x] /api/profile — Profile CRUD
 
@@ -85,7 +85,7 @@ Vercel: Auto-deploys from main
 ### Tests
 
 - [x] **tests**/api/mpesa.test.ts — M-Pesa phone formatting
-- [x] **tests**/api/jobs.test.ts — Path schema validation
+- [x] **tests**/api/paths.test.ts — Path schema validation
 - [x] **tests**/lib/vocabulary.test.ts
 - [x] **tests**/lib/matching.test.ts
 - [x] **tests**/lib/safari-packages.test.ts
@@ -207,6 +207,20 @@ Vercel: Auto-deploys from main
 - [x] Build: ✅ 0 errors
 - [x] Tests: ✅ 25/25 pass
 - [x] TypeScript: 0 errors ✅
+
+### Session 14 (2026-03-10) — BeNetwork Vocabulary Migration
+
+- [x] **prisma/schema.prisma** — Full vocabulary rewrite: Job→Path, Application→Chapter, EMPLOYER→ANCHOR, JOB_SEEKER→PIONEER, ACTIVE→OPEN, REJECTED→DECLINED, HIRED→PLACED. Field renames: employerId→anchorId, applicantId→pioneerId, jobId→pathId, postedJobs→postedPaths, applications→chapters, appliedAt→openedAt
+- [x] **prisma/seed.ts** — Rewritten: employers→anchors, job seekers→pioneers, prisma.job→prisma.path, country "Kenya"→"KE", FULL_TIME→FULL_PATH
+- [x] **Deleted /api/jobs/ + /api/applications/** — Legacy stubs removed (replaced by /api/paths/ + /api/chapters/)
+- [x] **app/api/chapters/route.ts** — New: openChapterSchema (pathId, coverLetter), Pioneer opens Chapter on Path
+- [x] ****tests**/api/paths.test.ts** — Renamed from jobs.test.ts, createPathSchema with pathType enum
+- [x] **components/PathCard.tsx** — jobType→pathType prop
+- [x] **app/profile/page.tsx** — jobTitle→headline (matches Prisma Profile.headline)
+- [x] **app/api/profile/route.ts** — jobTitle→headline in schema
+- [x] **lib/types.ts** — Deleted (dead code, zero imports, replaced by types/domain.ts)
+- [x] Build: 0 errors, TypeScript: 0 errors, Tests: 25/25 pass
+- [x] Committed + pushed to main
 
 ### Session 13 (2026-03-10) — Component Cleanup + Nav Centralization
 
