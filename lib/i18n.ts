@@ -35,6 +35,8 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.browseThreads': 'Browse all threads →',
     'nav.switchIdentity': 'Click to switch identity',
     'nav.oneIdentity': 'One platform, every identity',
+    'nav.location': 'Location',
+    'nav.language': 'Language',
 
     // Hero
     'hero.greeting': "We see you're in {geoName}. {geoGreeting}",
@@ -269,6 +271,8 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.browseThreads': 'Alle Threads durchsuchen →',
     'nav.switchIdentity': 'Klicken um Identität zu wechseln',
     'nav.oneIdentity': 'Eine Plattform, jede Identität',
+    'nav.location': 'Standort',
+    'nav.language': 'Sprache',
 
     'hero.greeting': 'Wir sehen, du bist in {geoName}. {geoGreeting}',
     'hero.readyChapter': 'Bereit für dein nächstes Kapitel?',
@@ -442,6 +446,8 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.browseThreads': 'Angalia mazungumzo yote →',
     'nav.switchIdentity': 'Bonyeza kubadilisha utambulisho',
     'nav.oneIdentity': 'Jukwaa moja, kila utambulisho',
+    'nav.location': 'Mahali',
+    'nav.language': 'Lugha',
 
     'hero.greeting': 'Tunaona uko {geoName}. {geoGreeting}',
     'hero.readyChapter': 'Uko tayari kwa sura yako ijayo?',
@@ -546,6 +552,8 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.browseThreads': 'Parcourir tous les fils →',
     'nav.switchIdentity': "Cliquez pour changer d'identité",
     'nav.oneIdentity': 'Une plateforme, chaque identité',
+    'nav.location': 'Lieu',
+    'nav.language': 'Langue',
 
     'hero.readyChapter': 'Prêt pour votre prochain chapitre?',
     'hero.headline': 'Trouvez où vous',

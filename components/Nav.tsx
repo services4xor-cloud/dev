@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { Menu, X, ChevronDown, Compass, LogIn, User as UserIcon, LogOut } from 'lucide-react'
 import { COUNTRIES } from '@/lib/countries'
-import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import {
   PRIMARY_LINKS,
   PIONEER_NAV_LINKS as PIONEER_LINKS,
@@ -15,18 +15,11 @@ import {
   ABOUT_NAV_LINKS as ABOUT_LINKS,
 } from '@/lib/nav-structure'
 import { useIdentity } from '@/lib/identity-context'
-import IdentitySwitcher, { IDENTITY_TABS } from '@/components/IdentitySwitcher'
-import { useThreads } from '@/lib/hooks/use-threads'
+import IdentitySwitcher from '@/components/IdentitySwitcher'
 import { useTranslation } from '@/lib/hooks/use-translation'
 
 const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
 const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
-
-// Countries to cycle through in the logo teaser
-const TEASER_COUNTRIES = COUNTRY_OPTIONS.slice(0, 12).map((c) => ({
-  name: c.name,
-  flag: c.flag,
-}))
 
 // ─────────────────────────────────────────────────────────────────
 export default function Nav() {
@@ -37,17 +30,9 @@ export default function Nav() {
   // Auth session
   const { data: session } = useSession()
 
-  // Fetch threads from API (falls back to mock data) — for mobile tab links
-  const { threads: navThreads } = useThreads()
   const { identity, brandName: identityBrandName } = useIdentity()
   const { t } = useTranslation()
-  const [teaserIdx, setTeaserIdx] = useState(0)
-  const [teaserFade, setTeaserFade] = useState(true)
   const [identityOpen, setIdentityOpen] = useState(false)
-  const [hoveredThread, setHoveredThread] = useState<{
-    icon: string
-    brandName: string
-  } | null>(null)
   const pathname = usePathname()
   const anchorsRef = useRef<HTMLDivElement>(null)
   const aboutRef = useRef<HTMLDivElement>(null)
@@ -59,18 +44,6 @@ export default function Nav() {
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // Rotate Be[Country] teaser every 3s
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTeaserFade(false)
-      setTimeout(() => {
-        setTeaserIdx((i) => (i + 1) % TEASER_COUNTRIES.length)
-        setTeaserFade(true)
-      }, 150)
-    }, 3000)
-    return () => clearInterval(interval)
   }, [])
 
   // Close dropdowns on outside click
@@ -86,7 +59,6 @@ export default function Nav() {
       }
       if (identityRef.current && !identityRef.current.contains(e.target as Node)) {
         setIdentityOpen(false)
-        setHoveredThread(null)
       }
     }
     document.addEventListener('pointerdown', onPointer)
@@ -98,7 +70,6 @@ export default function Nav() {
     setMobileOpen(false)
     setOpenDropdown(null)
     setIdentityOpen(false)
-    setHoveredThread(null)
   }, [pathname])
 
   // Lock body scroll when mobile menu open
@@ -116,7 +87,10 @@ export default function Nav() {
   const isAnchorActive = ANCHOR_LINKS.some((l) => isActive(l.href))
   const isAboutActive = ABOUT_LINKS.some((l) => isActive(l.href))
 
-  const currentTeaser = TEASER_COUNTRIES[teaserIdx]
+  // Current country flag for the logo area
+  const currentFlag = COUNTRY_OPTIONS.find((c) => c.code === identity.country)?.flag ?? '🌍'
+  const currentLangName =
+    LANGUAGE_REGISTRY[identity.language as LanguageCode]?.nativeName ?? identity.language
 
   // ── Shared styles ────────────────────────────
   const desktopLink = (active: boolean) =>
@@ -215,15 +189,15 @@ export default function Nav() {
 
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* ── Logo with Identity Switcher Dropdown ────────── */}
+            {/* ── Logo + Current Identity ────────────────────── */}
             <div className="relative" ref={identityRef}>
               <button
                 type="button"
                 onClick={() => setIdentityOpen((v) => !v)}
                 aria-expanded={identityOpen}
                 aria-haspopup="menu"
-                aria-label={`${BRAND} — Switch identity context`}
-                className="group flex items-center gap-2.5 shrink-0 rounded-lg cursor-pointer
+                aria-label={`${identityBrandName} — ${t('nav.switchIdentity') || 'Click to switch identity'}`}
+                className="group flex items-center gap-2 shrink-0 rounded-lg cursor-pointer
                            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
                            focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
               >
@@ -242,41 +216,26 @@ export default function Nav() {
                   <Image
                     src="/logo.svg"
                     alt=""
-                    width={30}
-                    height={30}
+                    width={28}
+                    height={28}
                     priority
                     unoptimized
                     aria-hidden="true"
                     className="relative rounded-lg"
                   />
                 </Link>
-                {/* Brand name — reacts to hovered thread */}
+
+                {/* Brand name — always stable, always current */}
                 <div className="flex flex-col leading-none" aria-hidden="true">
-                  <span className="font-bold text-[15px] tracking-wide transition-all duration-200">
-                    {hoveredThread ? (
-                      <>
-                        <span className="text-lg mr-1">{hoveredThread.icon}</span>
-                        <span className="text-brand-accent">Be</span>
-                        <span className="text-white">
-                          {hoveredThread.brandName.replace(/^Be/, '')}
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-brand-accent">Be</span>
-                        <span className="text-white">{identityBrandName.replace(/^Be/, '')}</span>
-                      </>
-                    )}
+                  <span className="font-bold text-[15px] tracking-wide">
+                    <span className="text-brand-accent">Be</span>
+                    <span className="text-white">{identityBrandName.replace(/^Be/, '')}</span>
                   </span>
-                  {/* Rotating teaser: cycles through countries (hidden when hovering) */}
-                  <span
-                    className={`text-[9px] font-medium tracking-wider text-white/30 mt-0.5 transition-opacity duration-150 ${
-                      hoveredThread ? 'opacity-0' : teaserFade ? 'opacity-100' : 'opacity-0'
-                    }`}
-                  >
-                    {currentTeaser.flag} Be{currentTeaser.name}
+                  <span className="text-[9px] font-medium tracking-wider text-white/35 mt-0.5">
+                    {currentFlag} {currentLangName}
                   </span>
                 </div>
+
                 <ChevronDown
                   className={`w-3 h-3 text-white/30 transition-transform duration-200 ${identityOpen ? 'rotate-180' : ''}`}
                   aria-hidden="true"
@@ -285,15 +244,8 @@ export default function Nav() {
 
               {/* ── Identity Switcher Panel ──────────────────────── */}
               {identityOpen && (
-                <div className="absolute left-0 top-full mt-2">
-                  <IdentitySwitcher
-                    open={identityOpen}
-                    onClose={() => {
-                      setIdentityOpen(false)
-                      setHoveredThread(null)
-                    }}
-                    onHoverThread={setHoveredThread}
-                  />
+                <div className="absolute left-0 top-full mt-2 z-50">
+                  <IdentitySwitcher open={identityOpen} onClose={() => setIdentityOpen(false)} />
                 </div>
               )}
             </div>
@@ -445,44 +397,27 @@ export default function Nav() {
           <div className="px-5 py-6 space-y-1">
             {/* Identity switcher — mobile */}
             <div className="mb-4">
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-brand-primary/20 border border-brand-accent/10">
-                <span className="text-lg">{currentTeaser.flag}</span>
-                <div className="flex-1">
-                  <p className="text-[11px] font-bold text-brand-accent/80 uppercase tracking-wider">
-                    {t('nav.oneIdentity')}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileOpen(false)
+                  setIdentityOpen(true)
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-brand-primary/20 border border-brand-accent/10
+                           hover:border-brand-accent/25 transition-colors"
+              >
+                <span className="text-lg">{currentFlag}</span>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-bold text-white">
+                    <span className="text-brand-accent">Be</span>
+                    {identityBrandName.replace(/^Be/, '')}
                   </p>
-                  <p className="text-sm text-white/50 mt-0.5">
-                    Be<span className="text-white font-semibold">{currentTeaser.name}</span>
-                    {' · '}
-                    Be
-                    <span className="text-white font-semibold">
-                      {COUNTRIES[CC]?.name ?? 'Country'}
-                    </span>
-                    {' · '}
-                    Be<span className="text-white font-semibold">You</span>
+                  <p className="text-[11px] text-white/40 mt-0.5">
+                    {currentLangName} · {t('nav.switchIdentity') || 'Click to switch identity'}
                   </p>
                 </div>
-              </div>
-              {/* Quick identity tabs — mobile */}
-              <div className="flex gap-1 mt-2 overflow-x-auto scrollbar-hide px-1">
-                {IDENTITY_TABS.map((tab) => {
-                  const threads = navThreads.filter((t) => tab.types.includes(t.type) && t.active)
-                  if (threads.length === 0) return null
-                  return (
-                    <Link
-                      key={tab.label}
-                      href={`/threads?type=${tab.types[0]}`}
-                      onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap
-                                 bg-white/5 text-white/50 hover:text-brand-accent hover:bg-brand-accent/10 border border-white/5
-                                 transition-colors duration-150"
-                    >
-                      <span>{tab.icon}</span>
-                      {tab.label}
-                    </Link>
-                  )
-                })}
-              </div>
+                <ChevronDown className="w-3.5 h-3.5 text-white/30" aria-hidden="true" />
+              </button>
             </div>
 
             {/* EXPLORE section */}

@@ -1,160 +1,184 @@
 'use client'
 
 /**
- * IdentitySwitcher — Reusable identity dropdown panel
+ * IdentitySwitcher — Compact identity dropdown
  *
- * Shows threads in tabbed categories (Countries, Tribes, Languages, Faith, Paths).
- * When a thread is selected, it updates the global identity context:
- *   - Country threads → setCountry()
- *   - Language threads → setLanguage() + setCountry() via mapping
- *   - Tribe threads → setCountry() via mapping + setThread()
- *   - Other threads → setThread()
+ * Design principles:
+ *   1. CLEAR — always shows what's currently selected (country + language)
+ *   2. CURATED — max 8-10 relevant options, not a dump of everything
+ *   3. LANGUAGE-AWARE — all names shown in the user's active language
+ *   4. NO DUPLICATION — each identity appears once, sorted by relevance
+ *   5. KISS — one flat list per section, no tabs
  *
- * Used in: Nav (logo dropdown), Homepage hero (logo dropdown)
+ * Relevance algorithm:
+ *   - Same language countries first (if you speak German → DE, CH, AT)
+ *   - Same region second (if you're in KE → UG, TZ, NG)
+ *   - High-corridor countries third
+ *   - Everything else: hidden (browse /threads for full list)
  */
 
-import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import type { ThreadType, Thread } from '@/lib/threads'
-import { COUNTRY_OPTIONS } from '@/lib/country-selector'
-import { useThreads } from '@/lib/hooks/use-threads'
+import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import { useIdentity } from '@/lib/identity-context'
-
-// ─── Identity Tab Configuration ──────────────────────────────────────
-// Each tab maps to one or more ThreadType values from the data.
-// Content is dynamic — only tabs with threads are shown.
-export const IDENTITY_TABS: { types: ThreadType[]; label: string; icon: string }[] = [
-  { types: ['country'], label: 'Countries', icon: '🌍' },
-  { types: ['tribe'], label: 'Tribes', icon: '🏛️' },
-  { types: ['language'], label: 'Languages', icon: '🗣️' },
-  { types: ['religion'], label: 'Faith', icon: '🕊️' },
-  { types: ['interest', 'science', 'location'], label: 'Paths', icon: '⭐' },
-]
-
-// Language → Country mapping: selecting a language also sets the primary country
-const LANGUAGE_COUNTRY_MAP: Record<string, string> = {
-  sw: 'KE',
-  swahili: 'KE',
-  de: 'DE',
-  deutsch: 'DE',
-  german: 'DE',
-  fr: 'FR',
-  french: 'FR',
-  français: 'FR',
-  en: 'GB',
-  english: 'GB',
-  ar: 'AE',
-  arabic: 'AE',
-  hi: 'IN',
-  hindi: 'IN',
-  zu: 'ZA',
-  zulu: 'ZA',
-  ha: 'NG',
-  hausa: 'NG',
-  yo: 'NG',
-  yoruba: 'NG',
-  lg: 'UG',
-  luganda: 'UG',
-  zh: 'CN',
-  chinese: 'CN',
-  es: 'ES',
-  spanish: 'ES',
-  pt: 'BR',
-  portuguese: 'BR',
-  ru: 'RU',
-  russian: 'RU',
-  ja: 'JP',
-  japanese: 'JP',
-  ko: 'KR',
-  korean: 'KR',
-  tr: 'TR',
-  turkish: 'TR',
-  id: 'ID',
-  bahasa: 'ID',
-}
-
-// Tribe → Country mapping: selecting a tribe sets the associated country
-const TRIBE_COUNTRY_MAP: Record<string, string> = {
-  maasai: 'KE',
-  kikuyu: 'KE',
-  luo: 'KE',
-  bavarian: 'DE',
-  swabian: 'DE',
-  schwaben: 'DE',
-  berliner: 'DE',
-  romand: 'CH',
-  'alemannic-swiss': 'CH',
-  alemannisch: 'CH',
-  yoruba: 'NG',
-  igbo: 'NG',
-}
-
-/** Get the URL for a thread */
-function getThreadUrl(thread: { type: ThreadType; slug: string }): string {
-  if (thread.type === 'country') return `/be/${thread.slug}`
-  return `/threads/${thread.slug}`
-}
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Props ──────────────────────────────────────────────────────────
 interface IdentitySwitcherProps {
-  /** Whether the panel is currently open */
   open: boolean
-  /** Callback to close the panel */
   onClose: () => void
-  /** Callback when a thread is hovered (for logo preview in Nav) */
-  onHoverThread?: (thread: { icon: string; brandName: string } | null) => void
-  /** Additional CSS classes for the container */
   className?: string
-  /** Width class override */
   widthClass?: string
 }
+
+// ─── Relevance engine ───────────────────────────────────────────────
+
+function getCuratedCountries(
+  currentCountry: string,
+  currentLanguage: string,
+  localizeCountry: (code: string) => string
+): {
+  code: string
+  flag: string
+  name: string
+  reason: 'current' | 'language' | 'region' | 'corridor'
+}[] {
+  const current = COUNTRY_OPTIONS.find((c) => c.code === currentCountry)
+  if (!current) return []
+
+  // Languages spoken in current country
+  const lang = LANGUAGE_REGISTRY[currentLanguage as LanguageCode]
+  const languageCountries = lang?.countries ?? []
+
+  // Countries sharing the region
+  const regionCountries = COUNTRY_OPTIONS.filter(
+    (c) => c.region === current.region && c.code !== currentCountry
+  ).map((c) => c.code)
+
+  // Direct corridor countries
+  const corridorCountries = COUNTRY_OPTIONS.filter(
+    (c) => c.corridorStrength === 'direct' && c.code !== currentCountry
+  ).map((c) => c.code)
+
+  const seen = new Set<string>()
+  const results: {
+    code: string
+    flag: string
+    name: string
+    reason: 'current' | 'language' | 'region' | 'corridor'
+  }[] = []
+
+  // 1. Current country always first
+  results.push({
+    code: current.code,
+    flag: current.flag,
+    name: localizeCountry(current.code),
+    reason: 'current',
+  })
+  seen.add(current.code)
+
+  // 2. Countries where user's language is spoken
+  for (const cc of languageCountries) {
+    if (seen.has(cc)) continue
+    const opt = COUNTRY_OPTIONS.find((c) => c.code === cc)
+    if (!opt) continue
+    results.push({ code: cc, flag: opt.flag, name: localizeCountry(cc), reason: 'language' })
+    seen.add(cc)
+  }
+
+  // 3. Same region
+  for (const cc of regionCountries) {
+    if (seen.has(cc)) continue
+    if (results.length >= 8) break
+    const opt = COUNTRY_OPTIONS.find((c) => c.code === cc)
+    if (!opt) continue
+    results.push({ code: cc, flag: opt.flag, name: localizeCountry(cc), reason: 'region' })
+    seen.add(cc)
+  }
+
+  // 4. Direct corridors
+  for (const cc of corridorCountries) {
+    if (seen.has(cc)) continue
+    if (results.length >= 10) break
+    const opt = COUNTRY_OPTIONS.find((c) => c.code === cc)
+    if (!opt) continue
+    results.push({ code: cc, flag: opt.flag, name: localizeCountry(cc), reason: 'corridor' })
+    seen.add(cc)
+  }
+
+  return results
+}
+
+/** Get languages relevant to the user — spoken in their country or nearby */
+function getCuratedLanguages(
+  currentCountry: string,
+  currentLanguage: string
+): { code: string; nativeName: string; name: string; isCurrent: boolean }[] {
+  const results: { code: string; nativeName: string; name: string; isCurrent: boolean }[] = []
+  const seen = new Set<string>()
+
+  // Languages spoken in the user's country come first
+  for (const [code, lang] of Object.entries(LANGUAGE_REGISTRY)) {
+    if (lang.countries.includes(currentCountry)) {
+      results.push({
+        code,
+        nativeName: lang.nativeName,
+        name: lang.name,
+        isCurrent: code === currentLanguage,
+      })
+      seen.add(code)
+    }
+  }
+
+  // Then global-reach languages not yet included
+  for (const [code, lang] of Object.entries(LANGUAGE_REGISTRY)) {
+    if (seen.has(code)) continue
+    if (lang.digitalReach === 'global') {
+      results.push({
+        code,
+        nativeName: lang.nativeName,
+        name: lang.name,
+        isCurrent: code === currentLanguage,
+      })
+      seen.add(code)
+    }
+  }
+
+  // If current language isn't included yet, add it
+  if (!seen.has(currentLanguage)) {
+    const lang = LANGUAGE_REGISTRY[currentLanguage as LanguageCode]
+    if (lang) {
+      results.unshift({
+        code: currentLanguage,
+        nativeName: lang.nativeName,
+        name: lang.name,
+        isCurrent: true,
+      })
+    }
+  }
+
+  // Sort: current first, then alphabetical by nativeName
+  return results.sort((a, b) => {
+    if (a.isCurrent) return -1
+    if (b.isCurrent) return 1
+    return a.nativeName.localeCompare(b.nativeName)
+  })
+}
+
+// ─── Component ──────────────────────────────────────────────────────
 
 export default function IdentitySwitcher({
   open,
   onClose,
-  onHoverThread,
   className = '',
-  widthClass = 'w-[calc(100vw-2rem)] sm:w-96 max-w-[24rem]',
+  widthClass = 'w-[calc(100vw-2rem)] sm:w-80',
 }: IdentitySwitcherProps) {
-  const [tabIdx, setTabIdx] = useState(0)
-  const { threads: navThreads } = useThreads()
-  const { identity, setCountry, setLanguage, setThread, clearThread } = useIdentity()
+  const { identity, setCountry, setLanguage, localizeCountry } = useIdentity()
+  const { t } = useTranslation()
 
   if (!open) return null
 
-  const handleSelect = (thread: Thread) => {
-    // Every selection updates the full identity context
-    if (thread.type === 'country') {
-      // Country selection: let endonym system handle brandName
-      // e.g. selecting "Germany" → setCountry('DE') → brandName = "BeDeutschland" (in de) or "BeGermany" (in en)
-      const match = COUNTRY_OPTIONS.find(
-        (c) =>
-          c.name.toLowerCase() === thread.slug.toLowerCase() ||
-          c.code.toLowerCase() === thread.slug.toLowerCase()
-      )
-      if (match) setCountry(match.code)
-      // Clear any previous thread override so endonym-based brandName takes effect
-      clearThread()
-    } else if (thread.type === 'language') {
-      // Language → sets display language + associated country
-      // e.g. selecting "Deutsch" → sets language to 'de', country to 'DE'
-      const langCode = thread.slug.length <= 3 ? thread.slug : thread.slug.slice(0, 2)
-      setLanguage(langCode)
-      const mappedCountry = LANGUAGE_COUNTRY_MAP[thread.slug]
-      if (mappedCountry) setCountry(mappedCountry)
-      // Don't set threadBrandName for languages — let endonym system handle it
-      clearThread()
-    } else if (thread.type === 'tribe') {
-      // Tribe → sets associated country + shows tribe brand
-      const mappedCountry = TRIBE_COUNTRY_MAP[thread.slug]
-      if (mappedCountry) setCountry(mappedCountry)
-      setThread(thread.slug, thread.type, thread.brandName)
-    } else {
-      setThread(thread.slug, thread.type, thread.brandName)
-    }
-    onClose()
-    onHoverThread?.(null)
-  }
+  const countries = getCuratedCountries(identity.country, identity.language, localizeCountry)
+  const languages = getCuratedLanguages(identity.country, identity.language)
 
   return (
     <div
@@ -162,91 +186,73 @@ export default function IdentitySwitcher({
       data-testid="identity-switcher"
       className={`${widthClass} rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/60 overflow-hidden ${className}`}
     >
-      {/* Tab row */}
-      <div className="flex gap-0.5 px-2 pt-2 pb-1 overflow-x-auto scrollbar-hide border-b border-white/5">
-        {IDENTITY_TABS.map((tab, idx) => {
-          const count = navThreads.filter((t) => tab.types.includes(t.type) && t.active).length
-          if (count === 0) return null
-          return (
+      {/* ── Location section ─────────────────────────── */}
+      <div className="px-3 pt-3 pb-2">
+        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-brand-accent/60 mb-2">
+          📍 {t('nav.location') || 'Location'}
+        </p>
+        <div className="grid grid-cols-2 gap-1">
+          {countries.map((c) => (
             <button
-              key={tab.label}
+              key={c.code}
               type="button"
-              onClick={() => setTabIdx(idx)}
-              data-testid={`identity-tab-${tab.label.toLowerCase()}`}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap transition-colors duration-150 ${
-                tabIdx === idx
-                  ? 'bg-brand-accent/15 text-brand-accent'
-                  : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-              }`}
-            >
-              <span className="text-xs">{tab.icon}</span>
-              {tab.label}
-            </button>
-          )
-        })}
-      </div>
-
-      {/* Thread list — sorted by relevance to active identity */}
-      <div className="max-h-64 overflow-y-auto overscroll-contain py-1.5 px-1.5">
-        {navThreads
-          .filter((t) => IDENTITY_TABS[tabIdx]?.types.includes(t.type) && t.active)
-          .sort((a, b) => {
-            // Threads matching active country appear first
-            const aMatch = a.countries?.includes(identity.country) ? 1 : 0
-            const bMatch = b.countries?.includes(identity.country) ? 1 : 0
-            if (aMatch !== bMatch) return bMatch - aMatch
-            return b.memberCount - a.memberCount
-          })
-          .map((thread) => (
-            <Link
-              key={thread.slug}
-              href={getThreadUrl(thread)}
               role="menuitem"
-              data-testid={`identity-thread-${thread.slug}`}
-              onClick={() => handleSelect(thread)}
-              onMouseEnter={() =>
-                onHoverThread?.({ icon: thread.icon, brandName: thread.brandName })
-              }
-              onMouseLeave={() => onHoverThread?.(null)}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200
-                       hover:bg-white/8 group/item"
+              data-testid={`identity-country-${c.code.toLowerCase()}`}
+              onClick={() => {
+                setCountry(c.code)
+                onClose()
+              }}
+              className={`flex items-center gap-2 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150
+                ${
+                  c.reason === 'current'
+                    ? 'bg-brand-accent/12 text-brand-accent border border-brand-accent/20'
+                    : 'text-white/70 hover:text-white hover:bg-white/6'
+                }`}
             >
-              <span className="text-lg shrink-0">{thread.icon}</span>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-white group-hover/item:text-brand-accent transition-colors truncate">
-                    {thread.brandName}
-                  </span>
-                  {(thread.slug === identity.country.toLowerCase() ||
-                    thread.slug === identity.threadSlug) && (
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-brand-accent/20 text-brand-accent uppercase tracking-wider">
-                      Active
-                    </span>
-                  )}
-                </div>
-                <p className="text-[11px] text-white/40 truncate mt-0.5">
-                  {thread.memberCount.toLocaleString()} pioneers · {thread.tagline.slice(0, 50)}
-                </p>
-              </div>
-            </Link>
+              <span className="text-base shrink-0">{c.flag}</span>
+              <span className="truncate text-[13px]">{c.name}</span>
+            </button>
           ))}
+        </div>
       </div>
 
-      {/* Footer — Browse all + Home link */}
+      {/* ── Language section ──────────────────────────── */}
+      <div className="px-3 pt-1 pb-3 border-t border-white/5">
+        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-brand-accent/60 mb-2 mt-2">
+          🗣️ {t('nav.language') || 'Language'}
+        </p>
+        <div className="flex flex-wrap gap-1">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              type="button"
+              role="menuitem"
+              data-testid={`identity-lang-${lang.code}`}
+              onClick={() => {
+                setLanguage(lang.code)
+                onClose()
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-all duration-150
+                ${
+                  lang.isCurrent
+                    ? 'bg-brand-accent/12 text-brand-accent border border-brand-accent/20'
+                    : 'text-white/50 hover:text-white hover:bg-white/6 border border-white/5'
+                }`}
+            >
+              {lang.nativeName}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Footer ───────────────────────────────────── */}
       <div className="border-t border-white/5 px-3 py-2 flex items-center justify-between">
         <Link
           href="/threads"
           onClick={onClose}
-          className="text-[11px] font-medium text-brand-accent/70 hover:text-brand-accent transition-colors"
+          className="text-[11px] font-medium text-brand-accent/60 hover:text-brand-accent transition-colors"
         >
-          Browse all threads →
-        </Link>
-        <Link
-          href="/"
-          onClick={onClose}
-          className="text-[11px] font-medium text-white/30 hover:text-white/60 transition-colors"
-        >
-          Home
+          {t('nav.browseThreads') || 'Browse all threads →'}
         </Link>
       </div>
     </div>
