@@ -415,9 +415,10 @@ async function main() {
   ]
 
   for (const p of pathData) {
+    const { id, ...data } = p
     await prisma.path.upsert({
-      where: { id: p.id },
-      update: {},
+      where: { id },
+      update: data,
       create: p,
     })
   }
@@ -1092,9 +1093,10 @@ async function main() {
   ]
 
   for (const t of threads) {
+    const { slug, ...data } = t
     await prisma.thread.upsert({
-      where: { slug: t.slug },
-      update: { memberCount: t.memberCount },
+      where: { slug },
+      update: data,
       create: t,
     })
   }
@@ -1201,9 +1203,10 @@ async function main() {
   ]
 
   for (const e of experiences) {
+    const { slug, ...data } = e
     await prisma.experience.upsert({
-      where: { slug: e.slug },
-      update: {},
+      where: { slug },
+      update: data,
       create: e,
     })
   }
@@ -1218,7 +1221,7 @@ async function main() {
 async function upsertAnchor(email: string, name: string, country: string, bio: string) {
   return prisma.user.upsert({
     where: { email },
-    update: {},
+    update: { name, country, profile: { update: { bio, headline: name } } },
     create: {
       email,
       name,
