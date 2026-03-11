@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { COUNTRIES } from '@/lib/countries'
 import { BRAND_NAME } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 type CountryConfig = (typeof COUNTRIES)[keyof typeof COUNTRIES]
 
@@ -31,6 +32,7 @@ function PaymentBadge({ method }: { method: CountryConfig['paymentMethods'][numb
 }
 
 function SectorCard({ sector }: { sector: CountryConfig['featuredSectors'][number] }) {
+  const { t } = useTranslation()
   const emoji = sector.emoji || getSectorEmoji(sector.name)
   return (
     <Link
@@ -42,16 +44,19 @@ function SectorCard({ sector }: { sector: CountryConfig['featuredSectors'][numbe
         {sector.name}
       </h3>
       <p className="text-white/60 text-sm mt-1">
-        {sector.count.toLocaleString('en-US')} open paths
+        {sector.count.toLocaleString('en-US')} {t('beCountry.openPaths')}
       </p>
       {sector.partnerName && (
-        <p className="text-brand-accent/80 text-xs mt-2">Partner: {sector.partnerName}</p>
+        <p className="text-brand-accent/80 text-xs mt-2">
+          {t('beCountry.partner', { name: sector.partnerName })}
+        </p>
       )}
     </Link>
   )
 }
 
 export default function BeCountryPage() {
+  const { t } = useTranslation()
   const params = useParams()
   const rawCode = typeof params.country === 'string' ? params.country.toUpperCase() : ''
   const countryKey = rawCode as keyof typeof COUNTRIES
@@ -62,11 +67,10 @@ export default function BeCountryPage() {
         <div className="text-center max-w-lg">
           <div className="text-6xl mb-6">🌍</div>
           <h1 className="text-3xl font-bold text-brand-accent mb-4">
-            This Be[Country] is coming soon.
+            {t('beCountry.comingSoonTitle')}
           </h1>
           <p className="text-white/70 mb-8 text-lg">
-            We are expanding to more countries every month. In the meantime, {BRAND_NAME} is live
-            now and packed with opportunities.
+            {t('beCountry.comingSoonDesc', { brand: BRAND_NAME })}
           </p>
           <Link
             href="/be/ke"
@@ -77,14 +81,14 @@ export default function BeCountryPage() {
               border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
             }}
           >
-            Go to {BRAND_NAME} →
+            {t('beCountry.goTo', { brand: BRAND_NAME })}
           </Link>
           <div className="mt-6">
             <Link
               href="/compass"
               className="text-brand-accent hover:text-brand-accent/80 underline text-sm"
             >
-              Or use the Compass to find your path
+              {t('beCountry.compassFallback')}
             </Link>
           </div>
         </div>
@@ -138,13 +142,13 @@ export default function BeCountryPage() {
                 boxShadow: '0 4px 20px rgb(var(--color-primary-rgb) / 0.30)',
               }}
             >
-              Start My Compass
+              {t('beCountry.startCompass')}
             </Link>
             <Link
               href="/ventures"
               className="bg-white/10 hover:bg-white/20 text-white border border-white/30 hover:border-white/60 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
             >
-              Browse Ventures
+              {t('beCountry.browseVentures')}
             </Link>
           </div>
         </div>
@@ -177,9 +181,9 @@ export default function BeCountryPage() {
       <section className="py-16 px-4 bg-brand-surface-elevated">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-brand-accent font-bold text-2xl md:text-3xl mb-2">
-            Pay with what you know
+            {t('beCountry.payTitle')}
           </h2>
-          <p className="text-white/60 mb-8">We support the payment methods your country trusts.</p>
+          <p className="text-white/60 mb-8">{t('beCountry.payDesc')}</p>
           <div className="flex flex-wrap gap-3 justify-center">
             {country.paymentMethods.map((method) => (
               <PaymentBadge key={method.id} method={method} />
@@ -193,9 +197,9 @@ export default function BeCountryPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-white font-bold text-2xl md:text-3xl mb-2">
-              Featured Sectors in {country.name}
+              {t('beCountry.sectorsTitle', { country: country.name })}
             </h2>
-            <p className="text-white/60">Explore the most active hiring sectors right now.</p>
+            <p className="text-white/60">{t('beCountry.sectorsDesc')}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {country.featuredSectors.map((sector) => (
@@ -208,9 +212,11 @@ export default function BeCountryPage() {
       {/* ── POPULAR SEARCHES ─────────────────────────────────────────────── */}
       <section className="py-16 px-4 bg-[#0d0507]">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-white font-bold text-2xl md:text-3xl mb-2">Popular Searches</h2>
+          <h2 className="text-white font-bold text-2xl md:text-3xl mb-2">
+            {t('beCountry.popularTitle')}
+          </h2>
           <p className="text-white/60 mb-8">
-            What Pioneers from {country.name} are looking for right now.
+            {t('beCountry.popularDesc', { country: country.name })}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             {country.popularSearches.map((search) => (
@@ -231,31 +237,27 @@ export default function BeCountryPage() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="text-4xl mb-4">🧭</div>
           <h2 className="text-brand-accent font-bold text-2xl md:text-3xl mb-3">
-            Looking for paths beyond {country.name}?
+            {t('beCountry.crossTitle', { country: country.name })}
           </h2>
-          <p className="text-white/70 text-lg mb-8">
-            The Compass finds the best routes for you — matching your skills to opportunities across
-            borders, and helping you navigate visa requirements, payment methods, and the fastest
-            path to your next chapter.
-          </p>
+          <p className="text-white/70 text-lg mb-8">{t('beCountry.crossDesc')}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/compass"
               className="bg-brand-accent hover:bg-brand-accent/80 text-stone-900 font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 hover:scale-105"
             >
-              Open the Compass
+              {t('beCountry.openCompass')}
             </Link>
             <Link
               href="/ventures"
               className="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
             >
-              All Ventures
+              {t('beCountry.allVentures')}
             </Link>
           </div>
 
           {/* Other country links */}
           <div className="mt-12">
-            <p className="text-white/40 text-sm mb-4">Explore other Be[Country] platforms:</p>
+            <p className="text-white/40 text-sm mb-4">{t('beCountry.exploreOther')}</p>
             <div className="flex flex-wrap gap-2 justify-center">
               {Object.keys(COUNTRIES)
                 .filter((code) => code !== rawCode)

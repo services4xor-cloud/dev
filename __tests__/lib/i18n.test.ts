@@ -796,6 +796,59 @@ describe('i18n — offerings page translations', () => {
   })
 })
 
+describe('i18n — beCountry gate translations', () => {
+  const beCountryKeys = [
+    'beCountry.comingSoonTitle',
+    'beCountry.comingSoonDesc',
+    'beCountry.goTo',
+    'beCountry.compassFallback',
+    'beCountry.startCompass',
+    'beCountry.browseVentures',
+    'beCountry.payTitle',
+    'beCountry.payDesc',
+    'beCountry.sectorsTitle',
+    'beCountry.sectorsDesc',
+    'beCountry.openPaths',
+    'beCountry.partner',
+    'beCountry.popularTitle',
+    'beCountry.popularDesc',
+    'beCountry.crossTitle',
+    'beCountry.crossDesc',
+    'beCountry.openCompass',
+    'beCountry.allVentures',
+    'beCountry.exploreOther',
+  ]
+
+  it('English has all beCountry keys', () => {
+    for (const key of beCountryKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all beCountry keys', () => {
+    for (const key of beCountryKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all beCountry keys', () => {
+    for (const key of beCountryKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('interpolates country name in sectorsTitle', () => {
+    const result = translate('beCountry.sectorsTitle', 'en', { country: 'Kenya' })
+    expect(result).toBe('Featured Sectors in Kenya')
+  })
+
+  it('interpolates brand in comingSoonDesc', () => {
+    const result = translate('beCountry.comingSoonDesc', 'en', { brand: 'BeKenya' })
+    expect(result).toContain('BeKenya')
+    expect(result).toContain('live now')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

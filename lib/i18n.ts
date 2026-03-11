@@ -627,6 +627,29 @@ const CONTENT: Record<string, ContentDict> = {
       'A percentage of every venture booked through BeNetwork goes to community organizations — funding education, healthcare, and local development.',
     'offerings.learnAbout': 'Learn about {partner}',
 
+    // Be[Country] Gate
+    'beCountry.comingSoonTitle': 'This Be[Country] is coming soon.',
+    'beCountry.comingSoonDesc':
+      'We are expanding to more countries every month. In the meantime, {brand} is live now and packed with opportunities.',
+    'beCountry.goTo': 'Go to {brand} →',
+    'beCountry.compassFallback': 'Or use the Compass to find your path',
+    'beCountry.startCompass': 'Start My Compass',
+    'beCountry.browseVentures': 'Browse Ventures',
+    'beCountry.payTitle': 'Pay with what you know',
+    'beCountry.payDesc': 'We support the payment methods your country trusts.',
+    'beCountry.sectorsTitle': 'Featured Sectors in {country}',
+    'beCountry.sectorsDesc': 'Explore the most active hiring sectors right now.',
+    'beCountry.openPaths': 'open paths',
+    'beCountry.partner': 'Partner: {name}',
+    'beCountry.popularTitle': 'Popular Searches',
+    'beCountry.popularDesc': 'What Pioneers from {country} are looking for right now.',
+    'beCountry.crossTitle': 'Looking for paths beyond {country}?',
+    'beCountry.crossDesc':
+      'The Compass finds the best routes for you — matching your skills to opportunities across borders, and helping you navigate visa requirements, payment methods, and the fastest path to your next chapter.',
+    'beCountry.openCompass': 'Open the Compass',
+    'beCountry.allVentures': 'All Ventures',
+    'beCountry.exploreOther': 'Explore other Be[Country] platforms:',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -1169,6 +1192,29 @@ const CONTENT: Record<string, ContentDict> = {
       'Ein Prozentsatz jedes über BeNetwork gebuchten Ventures geht an Gemeindeorganisationen — für Bildung, Gesundheit und lokale Entwicklung.',
     'offerings.learnAbout': 'Mehr über {partner} erfahren',
 
+    // Be[Country] Gate
+    'beCountry.comingSoonTitle': 'Dieses Be[Country] kommt bald.',
+    'beCountry.comingSoonDesc':
+      'Wir expandieren jeden Monat in weitere Länder. In der Zwischenzeit ist {brand} live und voller Möglichkeiten.',
+    'beCountry.goTo': 'Zu {brand} →',
+    'beCountry.compassFallback': 'Oder nutze den Compass, um deinen Weg zu finden',
+    'beCountry.startCompass': 'Meinen Compass starten',
+    'beCountry.browseVentures': 'Ventures durchsuchen',
+    'beCountry.payTitle': 'Bezahle mit dem, was du kennst',
+    'beCountry.payDesc': 'Wir unterstützen die Zahlungsmethoden, denen dein Land vertraut.',
+    'beCountry.sectorsTitle': 'Aktuelle Sektoren in {country}',
+    'beCountry.sectorsDesc': 'Entdecke die aktivsten Branchen mit offenen Stellen.',
+    'beCountry.openPaths': 'offene Paths',
+    'beCountry.partner': 'Partner: {name}',
+    'beCountry.popularTitle': 'Beliebte Suchen',
+    'beCountry.popularDesc': 'Wonach Pioneers aus {country} gerade suchen.',
+    'beCountry.crossTitle': 'Suchst du Wege jenseits von {country}?',
+    'beCountry.crossDesc':
+      'Der Compass findet die besten Routen für dich — er gleicht deine Fähigkeiten mit Möglichkeiten über Grenzen hinweg ab und hilft dir bei Visa-Anforderungen, Zahlungsmethoden und dem schnellsten Weg zu deinem nächsten Chapter.',
+    'beCountry.openCompass': 'Compass öffnen',
+    'beCountry.allVentures': 'Alle Ventures',
+    'beCountry.exploreOther': 'Entdecke andere Be[Country]-Plattformen:',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -1640,6 +1686,29 @@ const CONTENT: Record<string, ContentDict> = {
     'offerings.impactDesc':
       'Asilimia ya kila venture inayoagizwa kupitia BeNetwork inakwenda kwa mashirika ya jamii — kufadhili elimu, afya, na maendeleo ya ndani.',
     'offerings.learnAbout': 'Jifunze kuhusu {partner}',
+
+    // Be[Country] Gate
+    'beCountry.comingSoonTitle': 'Be[Country] hii inakuja hivi karibuni.',
+    'beCountry.comingSoonDesc':
+      'Tunapanuka kwa nchi zaidi kila mwezi. Wakati huo huo, {brand} iko hai na imejaa fursa.',
+    'beCountry.goTo': 'Nenda kwa {brand} →',
+    'beCountry.compassFallback': 'Au tumia Compass kupata njia yako',
+    'beCountry.startCompass': 'Anza Compass Yangu',
+    'beCountry.browseVentures': 'Vinjari Ventures',
+    'beCountry.payTitle': 'Lipa kwa njia unayoijua',
+    'beCountry.payDesc': 'Tunasaidia njia za malipo ambazo nchi yako inaamini.',
+    'beCountry.sectorsTitle': 'Sekta Zinazoangaziwa katika {country}',
+    'beCountry.sectorsDesc': 'Gundua sekta zinazoendelea zaidi sasa hivi.',
+    'beCountry.openPaths': 'paths wazi',
+    'beCountry.partner': 'Mshirika: {name}',
+    'beCountry.popularTitle': 'Utafutaji Maarufu',
+    'beCountry.popularDesc': 'Pioneers kutoka {country} wanatafuta nini sasa hivi.',
+    'beCountry.crossTitle': 'Unatafuta njia zaidi ya {country}?',
+    'beCountry.crossDesc':
+      "Compass hupata njia bora kwako — inalinganisha ujuzi wako na fursa za ng'ambo, na kukusaidia kupitia mahitaji ya visa, njia za malipo, na njia ya haraka zaidi ya chapter yako ijayo.",
+    'beCountry.openCompass': 'Fungua Compass',
+    'beCountry.allVentures': 'Ventures Zote',
+    'beCountry.exploreOther': 'Gundua mifumo mingine ya Be[Country]:',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',
