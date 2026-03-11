@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 312/312 ✅                                                  |
+| Jest tests        | 328/328 ✅                                                  |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
@@ -67,6 +67,19 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 41 (2026-03-11) — i18n Sprint: 5 Pages Wired (threads, charity, referral, profile, forgot-password)
+
+Deep i18n expansion session. Wired 5 more pages to full en/de/sw translations, adding ~100 keys per language.
+
+- [x] **Threads page i18n**: Hero title with `{accent}` tags, filter chip labels (7 categories), search placeholder, empty state, live data indicator. 13 keys × 3 langs.
+- [x] **Charity page i18n**: Largest single-page wiring — 35 keys per language. Hero, 4 pillars header, how-it-works steps, impact stories toggle, partner section, donation CTA with amount interpolation, M-Pesa info, legal footer. Introduced `{link}...{/link}` tag pattern for inline links.
+- [x] **Referral page i18n**: Hero with bonus/brand/method interpolation, link section, share buttons, how-it-works, CTA. 11 keys × 3 langs.
+- [x] **Profile page i18n**: Form labels, placeholders, completion bar, photo section, skills, save state. 22 keys × 3 langs.
+- [x] **Forgot-password page i18n**: Already done in prior session continuation.
+- [x] **16 new i18n tests**: Validates all keys exist in en/de/sw for threads (4), charity (5), referral (4), profile (3) pages.
+- [x] Jest: 328/328 ✅ | TS: 0 errors
+- [x] **Pages with i18n**: 14 total (was 9 → now 14: + threads, charity, referral, profile, forgot-password)
 
 ### Session 40 (2026-03-11) — DB Re-seed + About/Contact i18n + Architecture Audit
 
