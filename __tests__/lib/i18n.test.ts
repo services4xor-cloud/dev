@@ -900,6 +900,74 @@ describe('i18n — pioneer dashboard translations', () => {
   })
 })
 
+describe('i18n — agent landing translations', () => {
+  const agentKeys = [
+    'agent.badge',
+    'agent.heroTitle',
+    'agent.heroTagline',
+    'agent.heroDesc',
+    'agent.applyCta',
+    'agent.viewDemo',
+    'agent.statAgents',
+    'agent.statPlacements',
+    'agent.statCountries',
+    'agent.statCommission',
+    'agent.howBadge',
+    'agent.howTitle',
+    'agent.step1Title',
+    'agent.step1Desc',
+    'agent.step2Title',
+    'agent.step2Desc',
+    'agent.step3Title',
+    'agent.step3Desc',
+    'agent.step4Title',
+    'agent.step4Desc',
+    'agent.benefitsBadge',
+    'agent.benefitsTitle',
+    'agent.benefit1Title',
+    'agent.benefit1Desc',
+    'agent.benefit2Title',
+    'agent.benefit2Desc',
+    'agent.benefit3Title',
+    'agent.benefit3Desc',
+    'agent.benefit4Title',
+    'agent.benefit4Desc',
+    'agent.whoBadge',
+    'agent.whoTitle',
+    'agent.who1',
+    'agent.who2',
+    'agent.who3',
+    'agent.who4',
+    'agent.who5',
+    'agent.who6',
+    'agent.ctaTitle',
+    'agent.ctaDesc',
+  ]
+
+  it('English has all agent keys', () => {
+    for (const key of agentKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all agent keys', () => {
+    for (const key of agentKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all agent keys', () => {
+    for (const key of agentKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('interpolates brand in heroTitle', () => {
+    const result = translate('agent.heroTitle', 'en', { brand: 'BeKenya' })
+    expect(result).toBe('Become a BeKenya Agent')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

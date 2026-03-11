@@ -20,71 +20,57 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { BRAND_NAME } from '@/data/mock'
-
-// ─── Stats ────────────────────────────────────────────────────────────────────
-
-const AGENT_STATS = [
-  { label: 'Active Agents', value: '200+', icon: Users },
-  { label: 'Placements Made', value: '1,200+', icon: TrendingUp },
-  { label: 'Countries Covered', value: '16', icon: MapPin },
-  { label: 'Avg Commission', value: 'KES 15K', icon: DollarSign },
-]
-
-const BENEFITS = [
-  {
-    icon: DollarSign,
-    title: 'Earn 10% Commission',
-    description:
-      'Every time someone you forward gets placed, you earn 10% of the placement fee. No caps, no limits.',
-  },
-  {
-    icon: Smartphone,
-    title: 'Forward via WhatsApp',
-    description:
-      'Share opportunities with your network using one tap. WhatsApp, SMS, in-person — whatever works.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Track Your Impact',
-    description:
-      'See exactly who clicked, who signed up, who got placed. Full transparency on your earnings.',
-  },
-  {
-    icon: Shield,
-    title: 'Verified Agent Status',
-    description:
-      'Get verified by our team. Verified agents get priority demand notifications and higher visibility.',
-  },
-]
-
-const HOW_IT_WORKS = [
-  {
-    step: '1',
-    title: 'Apply',
-    description:
-      'Tell us about your territory and network. We verify your identity and activate your account.',
-  },
-  {
-    step: '2',
-    title: 'Get Demand',
-    description:
-      'Receive open paths matched to your territory and sectors. Healthcare, tech, hospitality — your choice.',
-  },
-  {
-    step: '3',
-    title: 'Forward',
-    description:
-      'Share paths with workers you know. Each forward has a unique tracking code linked to you.',
-  },
-  {
-    step: '4',
-    title: 'Earn',
-    description:
-      'When your forward leads to a placement, you earn commission. Paid monthly via M-Pesa.',
-  },
-]
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 export default function AgentLandingPage() {
+  const { t } = useTranslation()
+
+  const AGENT_STATS = [
+    { label: t('agent.statAgents'), value: '200+', icon: Users },
+    { label: t('agent.statPlacements'), value: '1,200+', icon: TrendingUp },
+    { label: t('agent.statCountries'), value: '16', icon: MapPin },
+    { label: t('agent.statCommission'), value: 'KES 15K', icon: DollarSign },
+  ]
+
+  const BENEFITS = [
+    {
+      icon: DollarSign,
+      title: t('agent.benefit1Title'),
+      description: t('agent.benefit1Desc'),
+    },
+    {
+      icon: Smartphone,
+      title: t('agent.benefit2Title'),
+      description: t('agent.benefit2Desc'),
+    },
+    {
+      icon: TrendingUp,
+      title: t('agent.benefit3Title'),
+      description: t('agent.benefit3Desc'),
+    },
+    {
+      icon: Shield,
+      title: t('agent.benefit4Title'),
+      description: t('agent.benefit4Desc'),
+    },
+  ]
+
+  const HOW_IT_WORKS = [
+    { step: '1', title: t('agent.step1Title'), description: t('agent.step1Desc') },
+    { step: '2', title: t('agent.step2Title'), description: t('agent.step2Desc') },
+    { step: '3', title: t('agent.step3Title'), description: t('agent.step3Desc') },
+    { step: '4', title: t('agent.step4Title'), description: t('agent.step4Desc') },
+  ]
+
+  const WHO_ITEMS = [
+    t('agent.who1'),
+    t('agent.who2'),
+    t('agent.who3'),
+    t('agent.who4'),
+    t('agent.who5'),
+    t('agent.who6'),
+  ]
+
   return (
     <div className="min-h-screen bg-brand-bg">
       {/* Hero */}
@@ -97,32 +83,26 @@ export default function AgentLandingPage() {
         <div className="max-w-6xl mx-auto px-4 xl:px-8">
           <div className="max-w-3xl">
             <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-              Agent Programme
+              {t('agent.badge')}
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
-              Become a {BRAND_NAME} Agent
+              {t('agent.heroTitle', { brand: BRAND_NAME })}
             </h1>
-            <p className="text-lg text-gray-300 mb-2">
-              You know workers. We know companies. Together, we place people.
-            </p>
-            <p className="text-gray-400 mb-8 max-w-2xl">
-              Agents are the bridge between global employers and local talent. Forward job
-              opportunities to your community, track every placement, and earn commission for every
-              worker who gets hired through your network.
-            </p>
+            <p className="text-lg text-gray-300 mb-2">{t('agent.heroTagline')}</p>
+            <p className="text-gray-400 mb-8 max-w-2xl">{t('agent.heroDesc')}</p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/signup?role=AGENT"
                 className="flex items-center gap-2 px-6 py-3 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors"
               >
-                Apply to become an Agent
+                {t('agent.applyCta')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/agents/dashboard"
                 className="flex items-center gap-2 px-6 py-3 border border-brand-accent/40 text-brand-accent rounded-xl text-sm font-medium hover:bg-brand-accent/10 transition-colors"
               >
-                View Demo Dashboard
+                {t('agent.viewDemo')}
               </Link>
             </div>
           </div>
@@ -154,9 +134,9 @@ export default function AgentLandingPage() {
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4 xl:px-8">
           <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            How it works
+            {t('agent.howBadge')}
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Four steps to earning</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">{t('agent.howTitle')}</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {HOW_IT_WORKS.map((item) => (
@@ -179,9 +159,11 @@ export default function AgentLandingPage() {
       <section className="py-16 bg-gray-900/50">
         <div className="max-w-6xl mx-auto px-4 xl:px-8">
           <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            Benefits
+            {t('agent.benefitsBadge')}
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Why become an Agent?</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">
+            {t('agent.benefitsTitle')}
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {BENEFITS.map((benefit) => {
@@ -211,21 +193,12 @@ export default function AgentLandingPage() {
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4 xl:px-8">
           <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            Who is this for
+            {t('agent.whoBadge')}
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">
-            You might be a great Agent if you...
-          </h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">{t('agent.whoTitle')}</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {[
-              'Know workers in healthcare, tech, or hospitality',
-              'Are active in community groups or WhatsApp networks',
-              'Have connections at churches, mosques, or community centres',
-              'Work in recruitment, HR, or talent placement',
-              'Run a vocational training centre or skills programme',
-              'Are a community leader, chief, or local organizer',
-            ].map((item) => (
+            {WHO_ITEMS.map((item) => (
               <div
                 key={item}
                 className="flex items-center gap-3 p-4 bg-gray-800 rounded-xl border border-gray-700"
@@ -241,18 +214,15 @@ export default function AgentLandingPage() {
       {/* CTA */}
       <section className="py-16 bg-gray-900/50 border-t border-gray-800">
         <div className="max-w-6xl mx-auto px-4 xl:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-            Ready to start placing people?
-          </h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{t('agent.ctaTitle')}</h2>
           <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-            Join {BRAND_NAME}&apos;s Agent network. No upfront cost. Earn commission on every
-            successful placement.
+            {t('agent.ctaDesc', { brand: BRAND_NAME })}
           </p>
           <Link
             href="/signup?role=AGENT"
             className="inline-flex items-center gap-2 px-8 py-3 bg-brand-accent text-white rounded-xl font-medium hover:opacity-90 transition-colors"
           >
-            Apply to become an Agent
+            {t('agent.applyCta')}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

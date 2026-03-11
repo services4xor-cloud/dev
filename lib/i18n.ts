@@ -675,6 +675,58 @@ const CONTENT: Record<string, ContentDict> = {
     'pioneer.tabReferrals': '💰 Referrals',
     'pioneer.update': 'Update',
 
+    // Agent Landing
+    'agent.badge': 'Agent Programme',
+    'agent.heroTitle': 'Become a {brand} Agent',
+    'agent.heroTagline': 'You know workers. We know companies. Together, we place people.',
+    'agent.heroDesc':
+      'Agents are the bridge between global employers and local talent. Forward job opportunities to your community, track every placement, and earn commission for every worker who gets hired through your network.',
+    'agent.applyCta': 'Apply to become an Agent',
+    'agent.viewDemo': 'View Demo Dashboard',
+    'agent.statAgents': 'Active Agents',
+    'agent.statPlacements': 'Placements Made',
+    'agent.statCountries': 'Countries Covered',
+    'agent.statCommission': 'Avg Commission',
+    'agent.howBadge': 'How it works',
+    'agent.howTitle': 'Four steps to earning',
+    'agent.step1Title': 'Apply',
+    'agent.step1Desc':
+      'Tell us about your territory and network. We verify your identity and activate your account.',
+    'agent.step2Title': 'Get Demand',
+    'agent.step2Desc':
+      'Receive open paths matched to your territory and sectors. Healthcare, tech, hospitality — your choice.',
+    'agent.step3Title': 'Forward',
+    'agent.step3Desc':
+      'Share paths with workers you know. Each forward has a unique tracking code linked to you.',
+    'agent.step4Title': 'Earn',
+    'agent.step4Desc':
+      'When your forward leads to a placement, you earn commission. Paid monthly via M-Pesa.',
+    'agent.benefitsBadge': 'Benefits',
+    'agent.benefitsTitle': 'Why become an Agent?',
+    'agent.benefit1Title': 'Earn 10% Commission',
+    'agent.benefit1Desc':
+      'Every time someone you forward gets placed, you earn 10% of the placement fee. No caps, no limits.',
+    'agent.benefit2Title': 'Forward via WhatsApp',
+    'agent.benefit2Desc':
+      'Share opportunities with your network using one tap. WhatsApp, SMS, in-person — whatever works.',
+    'agent.benefit3Title': 'Track Your Impact',
+    'agent.benefit3Desc':
+      'See exactly who clicked, who signed up, who got placed. Full transparency on your earnings.',
+    'agent.benefit4Title': 'Verified Agent Status',
+    'agent.benefit4Desc':
+      'Get verified by our team. Verified agents get priority demand notifications and higher visibility.',
+    'agent.whoBadge': 'Who is this for',
+    'agent.whoTitle': 'You might be a great Agent if you...',
+    'agent.who1': 'Know workers in healthcare, tech, or hospitality',
+    'agent.who2': 'Are active in community groups or WhatsApp networks',
+    'agent.who3': 'Have connections at churches, mosques, or community centres',
+    'agent.who4': 'Work in recruitment, HR, or talent placement',
+    'agent.who5': 'Run a vocational training centre or skills programme',
+    'agent.who6': 'Are a community leader, chief, or local organizer',
+    'agent.ctaTitle': 'Ready to start placing people?',
+    'agent.ctaDesc':
+      "Join {brand}'s Agent network. No upfront cost. Earn commission on every successful placement.",
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -1266,6 +1318,58 @@ const CONTENT: Record<string, ContentDict> = {
     'pioneer.tabReferrals': '💰 Empfehlungen',
     'pioneer.update': 'Aktualisieren',
 
+    // Agent Landing
+    'agent.badge': 'Agent-Programm',
+    'agent.heroTitle': 'Werde ein {brand} Agent',
+    'agent.heroTagline': 'Du kennst Arbeiter. Wir kennen Unternehmen. Zusammen vermitteln wir.',
+    'agent.heroDesc':
+      'Agents sind die Brücke zwischen globalen Arbeitgebern und lokalen Talenten. Leite Stellenangebote an deine Community weiter, verfolge jede Vermittlung und verdiene Provision für jeden Arbeiter, der über dein Netzwerk eingestellt wird.',
+    'agent.applyCta': 'Als Agent bewerben',
+    'agent.viewDemo': 'Demo-Dashboard ansehen',
+    'agent.statAgents': 'Aktive Agents',
+    'agent.statPlacements': 'Erfolgte Vermittlungen',
+    'agent.statCountries': 'Abgedeckte Länder',
+    'agent.statCommission': 'Durchschn. Provision',
+    'agent.howBadge': 'So funktioniert es',
+    'agent.howTitle': 'Vier Schritte zum Verdienen',
+    'agent.step1Title': 'Bewerben',
+    'agent.step1Desc':
+      'Erzähle uns von deinem Gebiet und Netzwerk. Wir verifizieren deine Identität und aktivieren dein Konto.',
+    'agent.step2Title': 'Nachfrage erhalten',
+    'agent.step2Desc':
+      'Erhalte offene Paths passend zu deinem Gebiet und Sektoren. Gesundheit, Tech, Gastgewerbe — deine Wahl.',
+    'agent.step3Title': 'Weiterleiten',
+    'agent.step3Desc':
+      'Teile Paths mit Arbeitern, die du kennst. Jede Weiterleitung hat einen einzigartigen Tracking-Code.',
+    'agent.step4Title': 'Verdienen',
+    'agent.step4Desc':
+      'Wenn deine Weiterleitung zu einer Vermittlung führt, verdienst du Provision. Monatliche Auszahlung via M-Pesa.',
+    'agent.benefitsBadge': 'Vorteile',
+    'agent.benefitsTitle': 'Warum Agent werden?',
+    'agent.benefit1Title': '10% Provision verdienen',
+    'agent.benefit1Desc':
+      'Jedes Mal, wenn jemand, den du weitergeleitet hast, vermittelt wird, verdienst du 10% der Vermittlungsgebühr. Ohne Limit.',
+    'agent.benefit2Title': 'Weiterleiten via WhatsApp',
+    'agent.benefit2Desc':
+      'Teile Möglichkeiten mit deinem Netzwerk per Fingertipp. WhatsApp, SMS, persönlich — was funktioniert.',
+    'agent.benefit3Title': 'Deinen Impact verfolgen',
+    'agent.benefit3Desc':
+      'Sieh genau, wer geklickt hat, wer sich angemeldet hat, wer vermittelt wurde. Volle Transparenz.',
+    'agent.benefit4Title': 'Verifizierter Agent-Status',
+    'agent.benefit4Desc':
+      'Lass dich von unserem Team verifizieren. Verifizierte Agents erhalten priorisierte Benachrichtigungen.',
+    'agent.whoBadge': 'Für wen ist das',
+    'agent.whoTitle': 'Du könntest ein großartiger Agent sein, wenn du...',
+    'agent.who1': 'Arbeiter im Gesundheitswesen, Tech oder Gastgewerbe kennst',
+    'agent.who2': 'Aktiv in Community-Gruppen oder WhatsApp-Netzwerken bist',
+    'agent.who3': 'Verbindungen zu Kirchen, Moscheen oder Gemeindezentren hast',
+    'agent.who4': 'In Personalvermittlung, HR oder Talentplatzierung arbeitest',
+    'agent.who5': 'Ein Berufsbildungszentrum oder Qualifizierungsprogramm leitest',
+    'agent.who6': 'Ein Community-Leader, Chief oder lokaler Organisator bist',
+    'agent.ctaTitle': 'Bereit, Menschen zu vermitteln?',
+    'agent.ctaDesc':
+      'Tritt dem Agent-Netzwerk von {brand} bei. Keine Vorabkosten. Verdiene Provision bei jeder erfolgreichen Vermittlung.',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -1785,6 +1889,58 @@ const CONTENT: Record<string, ContentDict> = {
     'pioneer.tabChapters': '📖 Chapters',
     'pioneer.tabReferrals': '💰 Rufaa',
     'pioneer.update': 'Sasisha',
+
+    // Agent Landing
+    'agent.badge': 'Programu ya Agent',
+    'agent.heroTitle': 'Kuwa Agent wa {brand}',
+    'agent.heroTagline': 'Unajua wafanyakazi. Tunajua makampuni. Pamoja, tunaweka watu.',
+    'agent.heroDesc':
+      'Agents ni daraja kati ya waajiri wa kimataifa na talanta za ndani. Peleka fursa za kazi kwa jamii yako, fuatilia kila uwekaji, na upate kamisheni kwa kila mfanyakazi anayeajiriwa kupitia mtandao wako.',
+    'agent.applyCta': 'Omba kuwa Agent',
+    'agent.viewDemo': 'Angalia Dashboard ya Demo',
+    'agent.statAgents': 'Agents Hai',
+    'agent.statPlacements': 'Uwekaji Uliofanywa',
+    'agent.statCountries': 'Nchi Zilizofunikwa',
+    'agent.statCommission': 'Kamisheni ya Wastani',
+    'agent.howBadge': 'Jinsi inavyofanya kazi',
+    'agent.howTitle': 'Hatua nne za kupata mapato',
+    'agent.step1Title': 'Omba',
+    'agent.step1Desc':
+      'Tuambie kuhusu eneo lako na mtandao wako. Tunathibitisha utambulisho wako na kuamsha akaunti yako.',
+    'agent.step2Title': 'Pata Mahitaji',
+    'agent.step2Desc':
+      'Pokea paths wazi zinazolingana na eneo na sekta zako. Afya, teknolojia, ukarimu — chaguo lako.',
+    'agent.step3Title': 'Peleka',
+    'agent.step3Desc':
+      'Shiriki paths na wafanyakazi unaowajua. Kila upelekaji una msimbo wa kipekee unaohusiana nawe.',
+    'agent.step4Title': 'Pata Mapato',
+    'agent.step4Desc':
+      'Upelekaji wako unapoongoza uwekaji, unapata kamisheni. Malipo ya kila mwezi kupitia M-Pesa.',
+    'agent.benefitsBadge': 'Faida',
+    'agent.benefitsTitle': 'Kwa nini uwe Agent?',
+    'agent.benefit1Title': 'Pata Kamisheni ya 10%',
+    'agent.benefit1Desc':
+      'Kila mtu unayempeleka akipata kazi, unapata 10% ya ada ya uwekaji. Bila kikomo.',
+    'agent.benefit2Title': 'Peleka kupitia WhatsApp',
+    'agent.benefit2Desc':
+      'Shiriki fursa na mtandao wako kwa kugusa moja. WhatsApp, SMS, ana kwa ana — chochote kinachofanya kazi.',
+    'agent.benefit3Title': 'Fuatilia Athari Yako',
+    'agent.benefit3Desc':
+      'Ona ni nani alibofya, nani alijiandikisha, nani alipata kazi. Uwazi kamili juu ya mapato yako.',
+    'agent.benefit4Title': 'Hali ya Agent Aliyethibitishwa',
+    'agent.benefit4Desc':
+      'Thibitishwa na timu yetu. Agents waliothibitishwa hupata arifa za kipaumbele na mwonekano wa juu.',
+    'agent.whoBadge': 'Hii ni kwa nani',
+    'agent.whoTitle': 'Unaweza kuwa Agent mzuri ikiwa...',
+    'agent.who1': 'Unajua wafanyakazi katika afya, teknolojia, au ukarimu',
+    'agent.who2': 'Uko hai katika vikundi vya jamii au mitandao ya WhatsApp',
+    'agent.who3': 'Una uhusiano na makanisa, misikiti, au vituo vya jamii',
+    'agent.who4': 'Unafanya kazi katika kuajiri, HR, au uwekaji wa talanta',
+    'agent.who5': 'Unaendesha kituo cha mafunzo ya ufundi au programu ya ujuzi',
+    'agent.who6': 'Wewe ni kiongozi wa jamii, chifu, au mpangaji wa ndani',
+    'agent.ctaTitle': 'Uko tayari kuanza kuweka watu?',
+    'agent.ctaDesc':
+      'Jiunge na mtandao wa Agent wa {brand}. Hakuna gharama ya awali. Pata kamisheni kwa kila uwekaji wenye mafanikio.',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',
