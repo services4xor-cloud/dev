@@ -5,6 +5,11 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { pathService } from '@/services'
 import { generatePathPostCopy, type SocialPlatform } from '@/lib/social-media'
+import { COUNTRIES, type CountryCode } from '@/lib/countries'
+
+// ─── Deployment defaults ─────────────────────────────────────────────────────
+const DEPLOY_COUNTRY = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE') as CountryCode
+const DEPLOY_CURRENCY = COUNTRIES[DEPLOY_COUNTRY]?.currency ?? 'KES'
 
 // ─── Zod Schemas ──────────────────────────────────────────────────────────────
 
@@ -13,13 +18,13 @@ const createPathSchema = z.object({
   description: z.string().min(50, 'Description must be at least 50 characters'),
   location: z.string().min(2, 'Location is required').max(120),
   company: z.string().min(2).max(120).optional(),
-  country: z.string().length(2).default('KE'),
+  country: z.string().length(2).default(DEPLOY_COUNTRY),
   sector: z.string().max(60).optional(),
   isRemote: z.boolean().default(false),
   skills: z.array(z.string().min(1).max(60)).min(1, 'At least 1 skill required').max(30),
   salaryMin: z.number().min(0).optional(),
   salaryMax: z.number().min(0).optional(),
-  currency: z.string().length(3).default('KES'),
+  currency: z.string().length(3).default(DEPLOY_CURRENCY),
   pathType: z
     .enum(['FULL_PATH', 'PART_PATH', 'SEASONAL', 'CONTRACT', 'REMOTE'])
     .default('FULL_PATH'),

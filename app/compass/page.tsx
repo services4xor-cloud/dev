@@ -21,6 +21,7 @@ import CountryPrioritySelector from '@/components/CountryPrioritySelector'
 import { PIONEER_TYPES, PioneerType, VOCAB } from '@/lib/vocabulary'
 import { SkeletonLine, SkeletonBlock } from '@/components/Skeleton'
 import { COUNTRY_OPTIONS, CORRIDOR_BADGE, type CountryOption } from '@/lib/country-selector'
+import { useIdentity } from '@/lib/identity-context'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types & constants
@@ -41,11 +42,14 @@ const ORIGIN_COUNTRIES = COUNTRY_OPTIONS.filter((c) =>
 export default function CompassPage() {
   const searchParams = useSearchParams()
   const fromParam = searchParams.get('from') ?? ''
+  const { identity } = useIdentity()
 
-  // Pre-fill origin from URL param (passed from homepage auto-detect)
+  // Pre-fill origin: URL param → identity context → deployment default
+  const deployDefault = process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE'
   const initialOrigin =
     (fromParam && COUNTRY_OPTIONS.find((c) => c.code === fromParam.toUpperCase())) ||
-    COUNTRY_OPTIONS.find((c) => c.code === 'KE')!
+    COUNTRY_OPTIONS.find((c) => c.code === identity.country) ||
+    COUNTRY_OPTIONS.find((c) => c.code === deployDefault)!
 
   const [step, setStep] = useState<Step>(1)
   const [selectedDestinations, setSelectedDestinations] = useState<string[]>([])

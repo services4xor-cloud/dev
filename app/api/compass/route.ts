@@ -21,8 +21,10 @@ function detectCountryFromHeaders(req: NextRequest): { country: string; countryN
     return { country: code, countryName: COUNTRIES[code].name }
   }
 
-  // Fallback: default to Kenya
-  return { country: 'KE', countryName: 'Kenya' }
+  // Fallback: use deployment country (env) or Kenya
+  const fallback = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE') as CountryCode
+  const fallbackConfig = COUNTRIES[fallback]
+  return { country: fallback, countryName: fallbackConfig?.name ?? 'Kenya' }
 }
 
 // ─── Helper: Generate warm vibe message ──────────────────────────────────────
@@ -103,10 +105,7 @@ export async function GET(req: NextRequest) {
   const typeParam = searchParams.get('type') as PioneerType | null
 
   if (!fromParam || !toParam) {
-    return NextResponse.json(
-      { error: 'Missing required params: from, to' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Missing required params: from, to' }, { status: 400 })
   }
 
   const fromCode = fromParam as CountryCode
@@ -130,9 +129,9 @@ export async function GET(req: NextRequest) {
 
   // Rank all MOCK_PATHS for this pioneer — pick top 5 that match the to-country
   const allRanked = rankPathsForPioneer(pioneerProfile, MOCK_PATHS)
-  const topPaths = allRanked.slice(0, 5).map(result => ({
+  const topPaths = allRanked.slice(0, 5).map((result) => ({
     ...result,
-    path: MOCK_PATHS.find(p => p.id === result.pathId),
+    path: MOCK_PATHS.find((p) => p.id === result.pathId),
   }))
 
   // Determine route strength for vibe message

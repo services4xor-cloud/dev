@@ -18,10 +18,12 @@ import { Users, Building2, Check, AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { BRAND_NAME, MOCK_PROFILE } from '@/data/mock'
+import { useIdentity } from '@/lib/identity-context'
 
 type Role = 'PIONEER' | 'ANCHOR'
 
 export default function SignupPage() {
+  const { identity } = useIdentity()
   const [role, setRole] = useState<Role>('PIONEER')
   const [step, setStep] = useState<1 | 2>(1)
   const [form, setForm] = useState({
@@ -29,7 +31,7 @@ export default function SignupPage() {
     email: '',
     password: '',
     phone: '',
-    country: MOCK_PROFILE.country,
+    country: identity.country || MOCK_PROFILE.country,
   })
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)

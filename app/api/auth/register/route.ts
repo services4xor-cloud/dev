@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         name,
         email,
         passwordHash,
-        country: country ?? 'KE',
+        country: country ?? (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE'),
         role: role === 'ANCHOR' ? 'ANCHOR' : 'PIONEER',
         phone: phone ?? null,
       },

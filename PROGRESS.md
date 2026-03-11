@@ -67,6 +67,16 @@ Built in Sessions 1–19. Everything works with mock data.
 
 ## Session Log
 
+### Session 34 (2026-03-11) — i18n Endonym System + Identity Language Layer
+
+- [x] **Endonym system**: `lib/endonyms.ts` — country names in en/de/fr/sw with `getLocalizedCountryName()`, `searchCountries()`, `getCountrySearchTerms()`. Scalable: add row per country, column per language.
+- [x] **Identity context language**: `identity.language` dimension added. Defaults from country (KE→en, DE→de, CH→de). Persists in localStorage. Migrates old format.
+- [x] **Localized logo**: Nav logo shows "BeDeutschland" in German context, "BeKenia" for Kenya in German, "BeGermany" for Germany in English. Driven by `useIdentity()`.
+- [x] **Language thread → display language**: Selecting Swahili/German/French in identity dropdown sets global display language via `setLanguage()`.
+- [x] **Scroll containment**: `overscroll-contain` on identity dropdown prevents page scroll when hovering over scrollbar.
+- [x] **Identity dropdown conditional render**: Fixed `{identityOpen && (...)}` — zero DOM footprint when closed.
+- [x] Build: ✅ | TS: 0 errors
+
 ### Session 33 (2026-03-11) — Auth Wiring + Identity-Driven Content
 
 - [x] **Login page wired**: `signIn('google')` for OAuth, `signIn('credentials')` for email/password. Error handling with NextAuth error codes. Loading spinners.

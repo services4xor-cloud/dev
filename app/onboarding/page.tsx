@@ -7,6 +7,7 @@ import { COUNTRY_OPTIONS, CORRIDOR_BADGE } from '@/lib/country-selector'
 import { SKILLS_BY_TYPE } from '@/data/mock'
 import { detectCountryFromTimezone } from '@/lib/geo'
 import { saveIdentityFlags, getVenturesUrl } from '@/lib/identity-flags'
+import { useIdentity } from '@/lib/identity-context'
 
 // ─── Confetti Component ───────────────────────────────────────────────────────
 function ConfettiBlast() {
@@ -58,6 +59,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function OnboardingPage() {
   const router = useRouter()
+  const { identity } = useIdentity()
   const [step, setStep] = useState(1)
   const TOTAL_STEPS = 5
 
@@ -65,10 +67,10 @@ export default function OnboardingPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [step])
 
-  // Form state
+  // Form state — identity context takes priority over timezone detection
   const [pioneerType, setPioneerType] = useState<PioneerType | null>(null)
-  const [fromCountry, setFromCountry] = useState<string>('')
-  const [detectedCountry, setDetectedCountry] = useState<string>('')
+  const [fromCountry, setFromCountry] = useState<string>(identity.country || '')
+  const [detectedCountry, setDetectedCountry] = useState<string>(identity.country || '')
   const [toCountries, setToCountries] = useState<string[]>([])
   const [skills, setSkills] = useState<string[]>([])
   const [customSkill, setCustomSkill] = useState('')

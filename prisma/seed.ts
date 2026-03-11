@@ -404,7 +404,7 @@ async function main() {
 
   console.log(`✅ ${pioneers.length} Pioneers seeded`)
 
-  // ── Threads (identity communities) ──────────────────────────────────────────
+  // ── Threads (identity communities — balanced across ALL countries) ───────────
   const threads = [
     // Countries
     thread(
@@ -424,10 +424,10 @@ async function main() {
       'BeGermany',
       'COUNTRY',
       '🇩🇪',
-      'Engineering excellence meets African talent.',
+      'Engineering excellence meets global talent.',
       null,
       ['DE'],
-      3200
+      8200
     ),
     thread(
       'ch',
@@ -438,7 +438,7 @@ async function main() {
       'Precision, pharma, and Alpine opportunity.',
       null,
       ['CH'],
-      1800
+      3400
     ),
     thread(
       'ng',
@@ -460,9 +460,10 @@ async function main() {
       'Gateway to Europe.',
       null,
       ['GB'],
-      2100
+      4100
     ),
-    // Tribes
+
+    // Tribes / Cultures — KE
     thread(
       'maasai',
       'Maasai',
@@ -486,7 +487,88 @@ async function main() {
       1540
     ),
     thread('luo', 'Luo', 'BeLuo', 'TRIBE', '🎵', 'Lakeside brilliance.', 'ke', ['KE'], 980),
-    // Languages
+    // Tribes / Cultures — DE
+    thread(
+      'bavarian',
+      'Bavarian',
+      'BeBavarian',
+      'TRIBE',
+      '🏔️',
+      'Tradition meets innovation.',
+      'de',
+      ['DE'],
+      2200
+    ),
+    thread(
+      'schwaben',
+      'Swabian',
+      'BeSchwaben',
+      'TRIBE',
+      '⚙️',
+      'Tüftler und Schaffer.',
+      'de',
+      ['DE'],
+      1600
+    ),
+    thread(
+      'berliner',
+      'Berliner',
+      'BeBerliner',
+      'TRIBE',
+      '🐻',
+      'Kreativ, frei, weltoffen.',
+      'de',
+      ['DE'],
+      1800
+    ),
+    // Tribes / Cultures — CH
+    thread(
+      'romand',
+      'Romand',
+      'BeRomand',
+      'TRIBE',
+      '🏔️',
+      'French-speaking Switzerland.',
+      'ch',
+      ['CH'],
+      1100
+    ),
+    thread(
+      'alemannisch',
+      'Alemannic Swiss',
+      'BeAlemannisch',
+      'TRIBE',
+      '🇨🇭',
+      'Swiss-German heartland.',
+      'ch',
+      ['CH'],
+      1400
+    ),
+    // Tribes / Cultures — NG
+    thread(
+      'yoruba',
+      'Yoruba',
+      'BeYoruba',
+      'TRIBE',
+      '🎭',
+      'Art, commerce, spiritual depth.',
+      'ng',
+      ['NG'],
+      2400
+    ),
+    thread(
+      'igbo',
+      'Igbo',
+      'BeIgbo',
+      'TRIBE',
+      '💼',
+      'Trade, tech, entrepreneurial fire.',
+      'ng',
+      ['NG'],
+      2100
+    ),
+
+    // Languages (global)
     thread(
       'swahili',
       'Swahili',
@@ -506,10 +588,55 @@ async function main() {
       '🗣️',
       'Sprechen Sie Deutsch?',
       null,
-      ['DE', 'CH', 'AT'],
+      ['DE', 'CH'],
+      3800
+    ),
+    thread(
+      'english',
+      'English',
+      'BeEnglish',
+      'LANGUAGE',
+      '🗣️',
+      'The global bridge language.',
+      null,
+      [],
+      9500
+    ),
+    thread(
+      'french',
+      'Français',
+      'BeFrançais',
+      'LANGUAGE',
+      '🗣️',
+      'From Geneva to Dakar.',
+      null,
+      ['CH'],
+      2800
+    ),
+    thread(
+      'arabic',
+      'العربية',
+      'BeArabic',
+      'LANGUAGE',
+      '🗣️',
+      'From the Gulf to the coast.',
+      null,
+      ['AE'],
+      2200
+    ),
+    thread(
+      'hindi',
+      'हिन्दी',
+      'BeHindi',
+      'LANGUAGE',
+      '🗣️',
+      'Connecting South Asia to the world.',
+      null,
+      ['IN'],
       1800
     ),
-    // Interests
+
+    // Interests (global)
     thread('tech', 'Technology', 'BeTech', 'INTEREST', '💻', 'Code the future.', null, [], 7800),
     thread(
       'safari',
@@ -539,7 +666,7 @@ async function main() {
       'BeCreative',
       'INTEREST',
       '🎨',
-      'African creativity goes global.',
+      'Creativity without borders.',
       null,
       [],
       2900
@@ -550,9 +677,9 @@ async function main() {
       'BeFarmer',
       'INTEREST',
       '🌾',
-      'Future of African agriculture.',
+      'Feeding the world together.',
       null,
-      ['KE', 'TZ', 'UG'],
+      [],
       3100
     ),
     thread(
@@ -566,7 +693,30 @@ async function main() {
       ['KE', 'TZ'],
       1400
     ),
-    // Sciences
+    thread(
+      'finance',
+      'Finance & Banking',
+      'BeFinance',
+      'INTEREST',
+      '🏦',
+      'M-Pesa to Swiss banking.',
+      null,
+      [],
+      4500
+    ),
+    thread(
+      'hospitality',
+      'Hospitality & Tourism',
+      'BeHospitality',
+      'INTEREST',
+      '🏨',
+      'World-class service.',
+      null,
+      [],
+      3200
+    ),
+
+    // Sciences (global)
     thread(
       'medical',
       'Medical & Healthcare',
@@ -589,7 +739,19 @@ async function main() {
       [],
       2600
     ),
-    // Locations
+    thread(
+      'renewable',
+      'Renewable Energy',
+      'BeRenewable',
+      'SCIENCE',
+      '⚡',
+      'Powering the future.',
+      null,
+      [],
+      1900
+    ),
+
+    // Locations — KE
     thread(
       'nairobi',
       'Nairobi',
@@ -633,6 +795,146 @@ async function main() {
       'ke',
       ['KE'],
       650
+    ),
+    // Locations — DE
+    thread(
+      'berlin',
+      'Berlin',
+      'BeBerlin',
+      'LOCATION',
+      '🐻',
+      "Europe's creative capital.",
+      'de',
+      ['DE'],
+      4800
+    ),
+    thread(
+      'munich',
+      'Munich',
+      'BeMunich',
+      'LOCATION',
+      '🏔️',
+      'BMW, beer, and Bavaria.',
+      'de',
+      ['DE'],
+      3200
+    ),
+    thread(
+      'hamburg',
+      'Hamburg',
+      'BeHamburg',
+      'LOCATION',
+      '⚓',
+      "Europe's gateway port.",
+      'de',
+      ['DE'],
+      2100
+    ),
+    thread(
+      'stuttgart',
+      'Stuttgart',
+      'BeStuttgart',
+      'LOCATION',
+      '🚗',
+      'Engine of German industry.',
+      'de',
+      ['DE'],
+      1800
+    ),
+    // Locations — CH
+    thread(
+      'zurich',
+      'Zürich',
+      'BeZürich',
+      'LOCATION',
+      '🏦',
+      "Switzerland's powerhouse.",
+      'ch',
+      ['CH'],
+      2400
+    ),
+    thread(
+      'geneva',
+      'Geneva',
+      'BeGeneva',
+      'LOCATION',
+      '🌐',
+      'Where the world comes together.',
+      'ch',
+      ['CH'],
+      1900
+    ),
+    thread('basel', 'Basel', 'BeBasel', 'LOCATION', '💊', 'Pharma capital.', 'ch', ['CH'], 1200),
+    // Locations — NG
+    thread('lagos', 'Lagos', 'BeLagos', 'LOCATION', '🌆', "Africa's megacity.", 'ng', ['NG'], 4200),
+    // Locations — GB
+    thread(
+      'london',
+      'London',
+      'BeLondon',
+      'LOCATION',
+      '🏰',
+      'The world in one city.',
+      'gb',
+      ['GB'],
+      3800
+    ),
+
+    // Faith / Religion (global)
+    thread(
+      'christian',
+      'Christianity',
+      'BeChristian',
+      'RELIGION',
+      '✝️',
+      'Faith communities worldwide.',
+      null,
+      [],
+      8500
+    ),
+    thread(
+      'muslim',
+      'Islam',
+      'BeMuslim',
+      'RELIGION',
+      '☪️',
+      'Ummah without borders.',
+      null,
+      [],
+      6200
+    ),
+    thread(
+      'hindu',
+      'Hinduism',
+      'BeHindu',
+      'RELIGION',
+      '🕉️',
+      'Temples, dharma, cultural bridges.',
+      null,
+      [],
+      3800
+    ),
+    thread(
+      'buddhist',
+      'Buddhism',
+      'BeBuddhist',
+      'RELIGION',
+      '☸️',
+      'Mindful paths.',
+      null,
+      [],
+      1400
+    ),
+    thread(
+      'traditional',
+      'Traditional & Indigenous',
+      'BeTraditional',
+      'RELIGION',
+      '🌿',
+      'Ancestral wisdom.',
+      null,
+      [],
+      2100
     ),
   ]
 
