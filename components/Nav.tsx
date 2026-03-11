@@ -27,14 +27,14 @@ const TEASER_COUNTRIES = COUNTRY_OPTIONS.slice(0, 12).map((c) => ({
   flag: c.flag,
 }))
 
-// ─── Identity Switcher Tabs ─────────────────────────────────────────
-const IDENTITY_TABS: { type: ThreadType; label: string; icon: string }[] = [
-  { type: 'country', label: 'Countries', icon: '🌍' },
-  { type: 'language', label: 'Languages', icon: '🗣️' },
-  { type: 'tribe', label: 'Tribes', icon: '🦁' },
-  { type: 'interest', label: 'Interests', icon: '⭐' },
-  { type: 'science', label: 'Sciences', icon: '🔬' },
-  { type: 'location', label: 'Locations', icon: '📍' },
+// ─── Identity Switcher Tabs (4 focused categories) ──────────────────
+// Countries = geographic, Languages = linguistic, Faith = spiritual unifier,
+// Paths = interests + science + location (everything else)
+const IDENTITY_TABS: { types: ThreadType[]; label: string; icon: string }[] = [
+  { types: ['country'], label: 'Countries', icon: '🌍' },
+  { types: ['language'], label: 'Languages', icon: '🗣️' },
+  { types: ['religion'], label: 'Faith', icon: '🕊️' },
+  { types: ['interest', 'science', 'tribe', 'location'], label: 'Paths', icon: '⭐' },
 ]
 
 /** Get the URL for a thread */
@@ -58,7 +58,7 @@ export default function Nav() {
   const [teaserIdx, setTeaserIdx] = useState(0)
   const [teaserFade, setTeaserFade] = useState(true)
   const [identityOpen, setIdentityOpen] = useState(false)
-  const [identityTab, setIdentityTab] = useState<ThreadType>('country')
+  const [identityTabIdx, setIdentityTabIdx] = useState(0)
   const [hoveredThread, setHoveredThread] = useState<{
     icon: string
     brandName: string
@@ -302,20 +302,20 @@ export default function Nav() {
               {identityOpen && (
                 <div role="menu" className="absolute left-0 top-full mt-2">
                   <div className="w-[calc(100vw-2rem)] sm:w-96 max-w-[24rem] rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/60 overflow-hidden">
-                    {/* Tab row */}
+                    {/* Tab row — 4 focused categories */}
                     <div className="flex gap-0.5 px-2 pt-2 pb-1 overflow-x-auto scrollbar-hide border-b border-white/5">
-                      {IDENTITY_TABS.map((tab) => {
+                      {IDENTITY_TABS.map((tab, idx) => {
                         const count = navThreads.filter(
-                          (t) => t.type === tab.type && t.active
+                          (t) => tab.types.includes(t.type) && t.active
                         ).length
                         if (count === 0) return null
                         return (
                           <button
-                            key={tab.type}
+                            key={tab.label}
                             type="button"
-                            onClick={() => setIdentityTab(tab.type)}
-                            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all duration-200 ${
-                              identityTab === tab.type
+                            onClick={() => setIdentityTabIdx(idx)}
+                            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap transition-colors duration-150 ${
+                              identityTabIdx === idx
                                 ? 'bg-brand-accent/15 text-brand-accent'
                                 : 'text-white/40 hover:text-white/70 hover:bg-white/5'
                             }`}
@@ -330,7 +330,9 @@ export default function Nav() {
                     {/* Thread list */}
                     <div className="max-h-64 overflow-y-auto overscroll-contain py-1.5 px-1.5">
                       {navThreads
-                        .filter((t) => t.type === identityTab && t.active)
+                        .filter(
+                          (t) => IDENTITY_TABS[identityTabIdx]?.types.includes(t.type) && t.active
+                        )
                         .sort((a, b) => b.memberCount - a.memberCount)
                         .map((thread) => (
                           <Link
@@ -592,16 +594,16 @@ export default function Nav() {
               {/* Quick identity tabs — mobile */}
               <div className="flex gap-1 mt-2 overflow-x-auto scrollbar-hide px-1">
                 {IDENTITY_TABS.map((tab) => {
-                  const threads = navThreads.filter((t) => t.type === tab.type && t.active)
+                  const threads = navThreads.filter((t) => tab.types.includes(t.type) && t.active)
                   if (threads.length === 0) return null
                   return (
                     <Link
-                      key={tab.type}
-                      href={`/threads?type=${tab.type}`}
+                      key={tab.label}
+                      href={`/threads?type=${tab.types[0]}`}
                       onClick={() => setMobileOpen(false)}
                       className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap
                                  bg-white/5 text-white/50 hover:text-brand-accent hover:bg-brand-accent/10 border border-white/5
-                                 transition-all duration-200"
+                                 transition-colors duration-150"
                     >
                       <span>{tab.icon}</span>
                       {tab.label}
