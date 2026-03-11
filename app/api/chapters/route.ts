@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { chapterService } from '@/services'
+import { sendEmail } from '@/lib/email'
 
 const openChapterSchema = z.object({
   pathId: z.string().min(1),
@@ -35,6 +36,12 @@ export async function POST(req: NextRequest) {
       pioneerId: session.user.id,
       coverLetter: parsed.data.coverLetter,
     })
+
+    // Email the Pioneer that their Chapter was opened (fire-and-forget)
+    void sendEmail(session.user.email!, 'chapter_opened', {
+      name: session.user.name || 'Pioneer',
+      pathId: parsed.data.pathId,
+    }).catch((err) => console.error('Chapter opened email error:', err))
 
     return NextResponse.json({ success: true, data: chapter }, { status: 201 })
   } catch (err) {

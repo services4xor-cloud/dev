@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { hash } from 'bcryptjs'
 import { db } from '@/lib/db'
+import { sendEmail } from '@/lib/email'
 
 /**
  * POST /api/auth/register — Create a new account
@@ -50,6 +51,13 @@ export async function POST(req: NextRequest) {
         country: true,
       },
     })
+
+    // Send welcome email (fire-and-forget — don't block registration)
+    void sendEmail(email, 'pioneer_welcome', {
+      name: name || 'Pioneer',
+      role: user.role,
+      country: user.country,
+    }).catch((err) => console.error('Welcome email error:', err))
 
     return NextResponse.json({ success: true, user }, { status: 201 })
   } catch (err) {
