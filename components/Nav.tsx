@@ -54,7 +54,7 @@ export default function Nav() {
 
   // Fetch threads from API (falls back to mock data)
   const { threads: navThreads } = useThreads()
-  const { setCountry, setThread } = useIdentity()
+  const { countryName: identityCountryName, setCountry, setThread } = useIdentity()
   const [teaserIdx, setTeaserIdx] = useState(0)
   const [teaserFade, setTeaserFade] = useState(true)
   const [identityOpen, setIdentityOpen] = useState(false)
@@ -279,7 +279,7 @@ export default function Nav() {
                     ) : (
                       <>
                         <span className="text-brand-accent">Be</span>
-                        <span className="text-white">{COUNTRIES[CC]?.name ?? 'Country'}</span>
+                        <span className="text-white">{identityCountryName}</span>
                       </>
                     )}
                   </span>
@@ -303,111 +303,111 @@ export default function Nav() {
               </button>
 
               {/* ── Identity Switcher Panel ──────────────────────── */}
-              <div
-                role="menu"
-                className={`absolute left-0 top-full mt-2 transition-all duration-200 ${
-                  identityOpen
-                    ? 'opacity-100 translate-y-0 pointer-events-auto'
-                    : 'opacity-0 -translate-y-2 pointer-events-none'
-                }`}
-              >
-                <div className="w-[calc(100vw-2rem)] sm:w-96 max-w-[24rem] rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/60 overflow-hidden">
-                  {/* Tab row */}
-                  <div className="flex gap-0.5 px-2 pt-2 pb-1 overflow-x-auto scrollbar-hide border-b border-white/5">
-                    {IDENTITY_TABS.map((tab) => {
-                      const count = navThreads.filter((t) => t.type === tab.type && t.active).length
-                      if (count === 0) return null
-                      return (
-                        <button
-                          key={tab.type}
-                          type="button"
-                          onClick={() => setIdentityTab(tab.type)}
-                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all duration-200 ${
-                            identityTab === tab.type
-                              ? 'bg-brand-accent/15 text-brand-accent'
-                              : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-                          }`}
-                        >
-                          <span className="text-xs">{tab.icon}</span>
-                          {tab.label}
-                        </button>
-                      )
-                    })}
-                  </div>
+              {identityOpen && (
+                <div
+                  role="menu"
+                  className="absolute left-0 top-full mt-2 animate-in fade-in slide-in-from-top-1 duration-200"
+                >
+                  <div className="w-[calc(100vw-2rem)] sm:w-96 max-w-[24rem] rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/60 overflow-hidden">
+                    {/* Tab row */}
+                    <div className="flex gap-0.5 px-2 pt-2 pb-1 overflow-x-auto scrollbar-hide border-b border-white/5">
+                      {IDENTITY_TABS.map((tab) => {
+                        const count = navThreads.filter(
+                          (t) => t.type === tab.type && t.active
+                        ).length
+                        if (count === 0) return null
+                        return (
+                          <button
+                            key={tab.type}
+                            type="button"
+                            onClick={() => setIdentityTab(tab.type)}
+                            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all duration-200 ${
+                              identityTab === tab.type
+                                ? 'bg-brand-accent/15 text-brand-accent'
+                                : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+                            }`}
+                          >
+                            <span className="text-xs">{tab.icon}</span>
+                            {tab.label}
+                          </button>
+                        )
+                      })}
+                    </div>
 
-                  {/* Thread list */}
-                  <div className="max-h-64 overflow-y-auto py-1.5 px-1.5">
-                    {navThreads
-                      .filter((t) => t.type === identityTab && t.active)
-                      .sort((a, b) => b.memberCount - a.memberCount)
-                      .map((thread) => (
-                        <Link
-                          key={thread.slug}
-                          href={getThreadUrl(thread)}
-                          role="menuitem"
-                          onClick={() => {
-                            // Update identity context
-                            if (thread.type === 'country') {
-                              // Map slug to country code (e.g. 'kenya' → 'KE')
-                              const match = COUNTRY_OPTIONS.find(
-                                (c) =>
-                                  c.name.toLowerCase() === thread.slug.toLowerCase() ||
-                                  c.code.toLowerCase() === thread.slug.toLowerCase()
-                              )
-                              if (match) setCountry(match.code)
-                            } else {
-                              setThread(thread.slug, thread.type)
+                    {/* Thread list */}
+                    <div className="max-h-64 overflow-y-auto py-1.5 px-1.5">
+                      {navThreads
+                        .filter((t) => t.type === identityTab && t.active)
+                        .sort((a, b) => b.memberCount - a.memberCount)
+                        .map((thread) => (
+                          <Link
+                            key={thread.slug}
+                            href={getThreadUrl(thread)}
+                            role="menuitem"
+                            onClick={() => {
+                              // Update identity context
+                              if (thread.type === 'country') {
+                                // Map slug to country code (e.g. 'kenya' → 'KE')
+                                const match = COUNTRY_OPTIONS.find(
+                                  (c) =>
+                                    c.name.toLowerCase() === thread.slug.toLowerCase() ||
+                                    c.code.toLowerCase() === thread.slug.toLowerCase()
+                                )
+                                if (match) setCountry(match.code)
+                              } else {
+                                setThread(thread.slug, thread.type)
+                              }
+                              setIdentityOpen(false)
+                              setHoveredThread(null)
+                            }}
+                            onMouseEnter={() =>
+                              setHoveredThread({ icon: thread.icon, brandName: thread.brandName })
                             }
-                            setIdentityOpen(false)
-                            setHoveredThread(null)
-                          }}
-                          onMouseEnter={() =>
-                            setHoveredThread({ icon: thread.icon, brandName: thread.brandName })
-                          }
-                          onMouseLeave={() => setHoveredThread(null)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200
+                            onMouseLeave={() => setHoveredThread(null)}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200
                                      hover:bg-white/8 group/item"
-                        >
-                          <span className="text-lg shrink-0">{thread.icon}</span>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold text-white group-hover/item:text-brand-accent transition-colors truncate">
-                                {thread.brandName}
-                              </span>
-                              {thread.slug === CC.toLowerCase() && (
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-brand-accent/20 text-brand-accent uppercase tracking-wider">
-                                  Active
+                          >
+                            <span className="text-lg shrink-0">{thread.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold text-white group-hover/item:text-brand-accent transition-colors truncate">
+                                  {thread.brandName}
                                 </span>
-                              )}
+                                {thread.slug === CC.toLowerCase() && (
+                                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-brand-accent/20 text-brand-accent uppercase tracking-wider">
+                                    Active
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[11px] text-white/40 truncate mt-0.5">
+                                {thread.memberCount.toLocaleString()} pioneers ·{' '}
+                                {thread.tagline.slice(0, 50)}
+                              </p>
                             </div>
-                            <p className="text-[11px] text-white/40 truncate mt-0.5">
-                              {thread.memberCount.toLocaleString()} pioneers ·{' '}
-                              {thread.tagline.slice(0, 50)}
-                            </p>
-                          </div>
-                        </Link>
-                      ))}
-                  </div>
+                          </Link>
+                        ))}
+                    </div>
 
-                  {/* Footer — Browse all + Home link */}
-                  <div className="border-t border-white/5 px-3 py-2 flex items-center justify-between">
-                    <Link
-                      href="/threads"
-                      onClick={() => setIdentityOpen(false)}
-                      className="text-[11px] font-medium text-brand-accent/70 hover:text-brand-accent transition-colors"
-                    >
-                      Browse all threads →
-                    </Link>
-                    <Link
-                      href="/"
-                      onClick={() => setIdentityOpen(false)}
-                      className="text-[11px] font-medium text-white/30 hover:text-white/60 transition-colors"
-                    >
-                      Home
-                    </Link>
+                    {/* Footer — Browse all + Home link */}
+                    <div className="border-t border-white/5 px-3 py-2 flex items-center justify-between">
+                      <Link
+                        href="/threads"
+                        onClick={() => setIdentityOpen(false)}
+                        className="text-[11px] font-medium text-brand-accent/70 hover:text-brand-accent transition-colors"
+                      >
+                        Browse all threads →
+                      </Link>
+                      <Link
+                        href="/"
+                        onClick={() => setIdentityOpen(false)}
+                        className="text-[11px] font-medium text-white/30 hover:text-white/60 transition-colors"
+                      >
+                        Home
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* ── Desktop links ─────────────────────────────────── */}
