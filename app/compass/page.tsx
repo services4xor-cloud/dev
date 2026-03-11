@@ -13,7 +13,7 @@
  * Pioneer types live in lib/vocabulary.ts — do NOT redefine here.
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import CountryPrioritySelector from '@/components/CountryPrioritySelector'
@@ -42,6 +42,10 @@ export default function CompassPage() {
   const [origin, setOrigin] = useState<CountryOption>(COUNTRY_OPTIONS.find((c) => c.code === 'KE')!)
   const [pioneerType, setPioneerType] = useState<PioneerType | null>(null)
   const [showOriginPicker, setShowOriginPicker] = useState(false)
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [step])
 
   const primaryDestination = COUNTRY_OPTIONS.find((c) => c.code === selectedDestinations[0]) ?? null
 

@@ -20,50 +20,41 @@ Pioneers from anywhere can discover, connect, and build their path in Kenya (and
 
 Kenya-first. Safari lodges, eco-tourism, professional paths, community impact.
 
-- [x] 20+ pages across the full pioneer journey
+- [x] 20+ pages — all dark theme, brand consistent
 - [x] M-Pesa Daraja API v2 (STK Push + webhooks)
-- [x] Smart compass with country-to-country routing
+- [x] Smart compass with country-to-country routing (16 countries, 14 languages)
 - [x] Real safari packages (Victoria Paradise, Tsavo, Maasai Mara)
 - [x] UTAMADUNI CBO integration (% of every booking)
 - [x] 12-country config system for expansion
+- [x] Centralized type system + mock data layer
+- [x] 25 Jest + 89 Playwright tests passing
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 14 App Router (TypeScript) |
-| Styling | Tailwind CSS |
-| Database | PostgreSQL (Neon) via Prisma |
-| Auth | NextAuth.js v4 |
-| Payments | M-Pesa Daraja v2, Stripe |
-| Email | Resend |
-| Deploy | Vercel |
+| Layer      | Technology                                |
+| ---------- | ----------------------------------------- |
+| Framework  | Next.js 14 App Router (TypeScript)        |
+| Styling    | Tailwind CSS + golden ratio design system |
+| Database   | PostgreSQL (Neon) via Prisma              |
+| Auth       | NextAuth.js v4                            |
+| Payments   | M-Pesa Daraja v2, Stripe                  |
+| Email      | Resend                                    |
+| Testing    | Jest 30 + Playwright 1.58                 |
+| Formatting | Prettier + ESLint + Husky                 |
+| Deploy     | Vercel (auto-deploy on push)              |
 
 ---
 
 ## Getting Started
 
 ```bash
-# Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env.local
-# Fill in the required values (see .env.example)
-
-# Generate Prisma client
+cp .env.example .env.local    # Fill in required values
 npx prisma generate
-
-# Push schema to database
-npx prisma db push
-
-# Start development server
-npm run dev
+npm run dev                   # http://localhost:3000
 ```
-
-Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
@@ -71,32 +62,45 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```
 app/          # Next.js pages (compass, ventures, pioneers, anchors, ...)
+types/        # Domain types + API contracts
+services/     # Service interfaces (mock → DB swap)
+data/mock/    # Centralized mock data (14 modules)
 lib/          # Core platform libraries
 components/   # Shared UI components
 prisma/       # Database schema + seed
-__tests__/    # Jest test suite
+__tests__/    # Jest test suite (25/25)
+tests/visual/ # Playwright visual tests (89/89)
 public/       # Static assets (logos, OG images)
 ```
 
-Key docs:
-- `CLAUDE.md` — AI operating manual
-- `PRD.md` — Product requirements
-- `ARCHITECTURE.md` — Technical + conceptual architecture
-- `PROGRESS.md` — Live build tracker
-- `HUMAN_MANUAL.md` — Setup guide for humans
+---
+
+## Documentation
+
+| Doc                | Purpose                             |
+| ------------------ | ----------------------------------- |
+| `CLAUDE.md`        | AI operating manual (read first)    |
+| `PROGRESS.md`      | Live build tracker                  |
+| `PRD.md`           | Product requirements                |
+| `ROADMAP.md`       | Strategic phases + sprints          |
+| `DESIGN_SYSTEM.md` | Brand tokens + component patterns   |
+| `ARCHITECTURE.md`  | Technical + conceptual architecture |
+| `REQUIREMENTS.md`  | User requirements + decisions log   |
+| `TESTING.md`       | Test strategy + CI integration      |
+| `HUMAN_MANUAL.md`  | Setup guide for humans              |
 
 ---
 
 ## BeNetwork Vocabulary
 
-| Platform Term | Meaning |
-|--------------|---------|
-| Pioneer | Person exploring paths across countries |
-| Anchor | Organization offering paths and experiences |
-| Path | Work or business opportunity |
-| Chapter | A Pioneer's engagement with a Path |
-| Venture | An experience (safari, cultural, trade) |
-| Compass | Smart routing system |
+| Platform Term | Meaning                                     |
+| ------------- | ------------------------------------------- |
+| Pioneer       | Person exploring paths across countries     |
+| Anchor        | Organization offering paths and experiences |
+| Path          | Work or business opportunity                |
+| Chapter       | A Pioneer's engagement with a Path          |
+| Venture       | An experience (safari, cultural, trade)     |
+| Compass       | Smart routing system                        |
 
 ---
 

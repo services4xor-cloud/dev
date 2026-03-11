@@ -70,6 +70,10 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1)
   const TOTAL_STEPS = 5
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [step])
+
   // Form state
   const [pioneerType, setPioneerType] = useState<PioneerType | null>(null)
   const [fromCountry, setFromCountry] = useState<string>('')
