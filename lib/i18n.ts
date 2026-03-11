@@ -377,6 +377,55 @@ const CONTENT: Record<string, ContentDict> = {
     'threads.threadsCount': '{count} threads',
     'threads.empty': 'No threads match your search. Try a different term.',
 
+    // Charity
+    'charity.badge': 'Community-Based Organization · Registered in Kenya',
+    'charity.tagline': 'Swahili for "Culture & Heritage"',
+    'charity.heroDesc':
+      'The charitable arm of {brand}. Every path opened on our platform contributes to communities, conservation, and culture across Kenya.',
+    'charity.support': 'Support {partner}',
+    'charity.learnMore': 'Learn what we do →',
+    'charity.howBanner':
+      'When you book a Venture or open a Path on {brand}, {accent}a percentage flows to {partner}{/accent} — funding real programs in real communities. No middlemen. Full transparency.',
+    'charity.impactTitle': 'Our Impact So Far',
+    'charity.impactDesc': 'Aspirational targets for our first programme cycle',
+    'charity.pillarsTitle': 'Our Four Pillars',
+    'charity.pillarsDesc':
+      'Everything we do is built on these foundations — because dignified lives require education, safety, a healthy planet, and cultural pride.',
+    'charity.howTitle': 'How It Works',
+    'charity.howSubtitle': 'The {brand} circle of dignified work',
+    'charity.step1Title': 'Pioneers Book Ventures',
+    'charity.step1Desc':
+      'Every safari, eco-lodge stay, or professional path opened on {brand} generates value in the ecosystem.',
+    'charity.step2Title': 'Portion Goes to {partner}',
+    'charity.step2Desc':
+      'A transparent percentage of each transaction is allocated to {partner} programs — automatically.',
+    'charity.step3Title': 'Communities Thrive',
+    'charity.step3Desc':
+      "Funds go directly to skills training, conservation support, and women's empowerment in Kenyan communities.",
+    'charity.storiesTitle': 'Stories from the Field',
+    'charity.storiesDesc': 'Real lives. Real change. Names used with permission.',
+    'charity.readMore': 'Read full story →',
+    'charity.showLess': 'Show less',
+    'charity.today': 'Today',
+    'charity.partnerTitle': 'Partner With {partner}',
+    'charity.partnerDesc':
+      'We welcome partnerships with organisations who share our belief in dignified work, community development, and conservation.',
+    'charity.getInTouch': 'Get in Touch →',
+    'charity.donateTitle': 'Support {partner}',
+    'charity.donateDesc':
+      'Every contribution — big or small — builds skills, protects wildlife, and preserves Kenyan culture for generations to come.',
+    'charity.chooseAmount': 'Choose amount',
+    'charity.customAmount': 'Custom amount',
+    'charity.mpesaInfo':
+      "Donate via M-Pesa: Paybill {partner} CBO. You'll receive full payment instructions after clicking below.",
+    'charity.donateBtn': 'Donate {amount} to {partner}',
+    'charity.donateNote':
+      'Donations are used directly for community programs. No political affiliations.',
+    'charity.alsoContribute':
+      'You can also contribute by {link}booking a Venture{/link} on {brand} — a percentage automatically supports {partner}.',
+    'charity.legal':
+      '{partner} is registered in Kenya as a Community Based Organisation (CBO). Partnered with {company}. All programmes are administered locally with full community involvement and transparent financial reporting.',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -669,6 +718,55 @@ const CONTENT: Record<string, ContentDict> = {
     'threads.threadsCount': '{count} Threads',
     'threads.empty': 'Keine Threads gefunden. Versuche einen anderen Suchbegriff.',
 
+    // Charity
+    'charity.badge': 'Gemeinnützige Organisation · Registriert in Kenia',
+    'charity.tagline': 'Swahili für „Kultur & Erbe"',
+    'charity.heroDesc':
+      'Der gemeinnützige Arm von {brand}. Jeder auf unserer Plattform eröffnete Pfad trägt zu Gemeinschaften, Naturschutz und Kultur in Kenia bei.',
+    'charity.support': '{partner} unterstützen',
+    'charity.learnMore': 'Erfahre mehr →',
+    'charity.howBanner':
+      'Wenn du ein Abenteuer buchst oder einen Pfad auf {brand} eröffnest, {accent}fließt ein Anteil an {partner}{/accent} — direkt in echte Programme vor Ort. Keine Mittelsmänner. Volle Transparenz.',
+    'charity.impactTitle': 'Unsere Wirkung bisher',
+    'charity.impactDesc': 'Ambitionierte Ziele für unseren ersten Programmzyklus',
+    'charity.pillarsTitle': 'Unsere vier Säulen',
+    'charity.pillarsDesc':
+      'Alles, was wir tun, basiert auf diesen Grundpfeilern — denn ein würdevolles Leben erfordert Bildung, Sicherheit, einen gesunden Planeten und kulturellen Stolz.',
+    'charity.howTitle': 'So funktioniert es',
+    'charity.howSubtitle': 'Der {brand}-Kreislauf würdevoller Arbeit',
+    'charity.step1Title': 'Pioniere buchen Abenteuer',
+    'charity.step1Desc':
+      'Jede Safari, jeder Öko-Lodge-Aufenthalt oder berufliche Pfad auf {brand} schafft Wert im Ökosystem.',
+    'charity.step2Title': 'Ein Anteil geht an {partner}',
+    'charity.step2Desc':
+      'Ein transparenter Prozentsatz jeder Transaktion wird automatisch den {partner}-Programmen zugewiesen.',
+    'charity.step3Title': 'Gemeinschaften gedeihen',
+    'charity.step3Desc':
+      'Mittel fließen direkt in Berufsausbildung, Naturschutz und Frauenförderung in kenianischen Gemeinden.',
+    'charity.storiesTitle': 'Geschichten aus dem Feld',
+    'charity.storiesDesc': 'Echte Leben. Echter Wandel. Namen mit Genehmigung verwendet.',
+    'charity.readMore': 'Ganze Geschichte lesen →',
+    'charity.showLess': 'Weniger anzeigen',
+    'charity.today': 'Heute',
+    'charity.partnerTitle': 'Partner von {partner} werden',
+    'charity.partnerDesc':
+      'Wir begrüßen Partnerschaften mit Organisationen, die unseren Glauben an würdevolle Arbeit, Gemeindeentwicklung und Naturschutz teilen.',
+    'charity.getInTouch': 'Kontakt aufnehmen →',
+    'charity.donateTitle': '{partner} unterstützen',
+    'charity.donateDesc':
+      'Jeder Beitrag — groß oder klein — fördert Fähigkeiten, schützt Wildtiere und bewahrt kenianische Kultur für kommende Generationen.',
+    'charity.chooseAmount': 'Betrag wählen',
+    'charity.customAmount': 'Eigener Betrag',
+    'charity.mpesaInfo':
+      'Spende via M-Pesa: Paybill {partner} CBO. Du erhältst die vollständigen Zahlungsanweisungen nach dem Klick.',
+    'charity.donateBtn': '{amount} an {partner} spenden',
+    'charity.donateNote':
+      'Spenden werden direkt für Gemeinschaftsprogramme verwendet. Keine politischen Zugehörigkeiten.',
+    'charity.alsoContribute':
+      'Du kannst auch beitragen, indem du {link}ein Abenteuer buchst{/link} auf {brand} — ein Prozentsatz unterstützt automatisch {partner}.',
+    'charity.legal':
+      '{partner} ist in Kenia als Community Based Organisation (CBO) registriert. Partnerschaft mit {company}. Alle Programme werden lokal mit voller Beteiligung der Gemeinschaft und transparenter Finanzberichterstattung verwaltet.',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -891,6 +989,55 @@ const CONTENT: Record<string, ContentDict> = {
     'threads.liveData': 'Data halisi',
     'threads.threadsCount': 'Threads {count}',
     'threads.empty': 'Hakuna threads zinazolingana na utafutaji wako. Jaribu neno lingine.',
+
+    // Charity
+    'charity.badge': 'Shirika la Jamii · Limesajiliwa Kenya',
+    'charity.tagline': 'Kiswahili kwa "Utamaduni na Urithi"',
+    'charity.heroDesc':
+      'Mkono wa hisani wa {brand}. Kila njia inayofunguliwa kwenye jukwaa letu inachangia jamii, uhifadhi, na utamaduni kote Kenya.',
+    'charity.support': 'Unga mkono {partner}',
+    'charity.learnMore': 'Jifunze tunachofanya →',
+    'charity.howBanner':
+      'Unapopiga buking ya Matembezi au kufungua Njia kwenye {brand}, {accent}asilimia inaenda kwa {partner}{/accent} — ikifadhili programu za kweli katika jamii za kweli. Hakuna watu wa kati. Uwazi kamili.',
+    'charity.impactTitle': 'Athari Yetu Hadi Sasa',
+    'charity.impactDesc': 'Malengo ya kutamani kwa mzunguko wetu wa kwanza wa programu',
+    'charity.pillarsTitle': 'Nguzo Zetu Nne',
+    'charity.pillarsDesc':
+      'Kila tunachofanya kinajengwa juu ya misingi hii — kwa sababu maisha ya heshima yanahitaji elimu, usalama, sayari yenye afya, na kiburi cha kitamaduni.',
+    'charity.howTitle': 'Jinsi Inavyofanya Kazi',
+    'charity.howSubtitle': 'Mzunguko wa {brand} wa kazi yenye heshima',
+    'charity.step1Title': 'Waanzilishi Wanapiga Buking',
+    'charity.step1Desc':
+      'Kila safari, kukaa kwa eco-lodge, au njia ya kitaalamu iliyofunguliwa kwenye {brand} inaunda thamani katika mfumo.',
+    'charity.step2Title': 'Sehemu Inaenda kwa {partner}',
+    'charity.step2Desc':
+      'Asilimia ya uwazi ya kila shughuli inatolewa kwa programu za {partner} — kiotomatiki.',
+    'charity.step3Title': 'Jamii Zinastawi',
+    'charity.step3Desc':
+      'Fedha zinaenda moja kwa moja kwa mafunzo ya ujuzi, msaada wa uhifadhi, na uwezeshaji wa wanawake katika jamii za Kenya.',
+    'charity.storiesTitle': 'Hadithi kutoka Uwandani',
+    'charity.storiesDesc': 'Maisha ya kweli. Mabadiliko ya kweli. Majina yametumika kwa ruhusa.',
+    'charity.readMore': 'Soma hadithi kamili →',
+    'charity.showLess': 'Onyesha kidogo',
+    'charity.today': 'Leo',
+    'charity.partnerTitle': 'Shirikiana na {partner}',
+    'charity.partnerDesc':
+      'Tunakaribisha ushirikiano na mashirika yanayoshiriki imani yetu katika kazi yenye heshima, maendeleo ya jamii, na uhifadhi.',
+    'charity.getInTouch': 'Wasiliana Nasi →',
+    'charity.donateTitle': 'Unga mkono {partner}',
+    'charity.donateDesc':
+      'Kila mchango — mkubwa au mdogo — unajengea ujuzi, unalinda wanyamapori, na kuhifadhi utamaduni wa Kenya kwa vizazi vijavyo.',
+    'charity.chooseAmount': 'Chagua kiasi',
+    'charity.customAmount': 'Kiasi maalum',
+    'charity.mpesaInfo':
+      'Changia kupitia M-Pesa: Paybill {partner} CBO. Utapata maelekezo kamili ya malipo baada ya kubonyeza hapa chini.',
+    'charity.donateBtn': 'Changia {amount} kwa {partner}',
+    'charity.donateNote':
+      'Michango inatumika moja kwa moja kwa programu za jamii. Hakuna uhusiano wa kisiasa.',
+    'charity.alsoContribute':
+      'Unaweza pia kuchangia kwa {link}kupiga buking ya Matembezi{/link} kwenye {brand} — asilimia inaunga mkono {partner} kiotomatiki.',
+    'charity.legal':
+      '{partner} imesajiliwa Kenya kama Shirika la Jamii (CBO). Kushirikiana na {company}. Programu zote zinasimamiwa ndani na ushiriki kamili wa jamii na ripoti za kifedha zenye uwazi.',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',

@@ -397,6 +397,76 @@ describe('i18n — threads page translations', () => {
   })
 })
 
+describe('i18n — charity page translations', () => {
+  const charityKeys = [
+    'charity.badge',
+    'charity.tagline',
+    'charity.heroDesc',
+    'charity.support',
+    'charity.learnMore',
+    'charity.howBanner',
+    'charity.impactTitle',
+    'charity.impactDesc',
+    'charity.pillarsTitle',
+    'charity.pillarsDesc',
+    'charity.howTitle',
+    'charity.howSubtitle',
+    'charity.step1Title',
+    'charity.step1Desc',
+    'charity.step2Title',
+    'charity.step2Desc',
+    'charity.step3Title',
+    'charity.step3Desc',
+    'charity.storiesTitle',
+    'charity.storiesDesc',
+    'charity.readMore',
+    'charity.showLess',
+    'charity.today',
+    'charity.partnerTitle',
+    'charity.partnerDesc',
+    'charity.getInTouch',
+    'charity.donateTitle',
+    'charity.donateDesc',
+    'charity.chooseAmount',
+    'charity.customAmount',
+    'charity.mpesaInfo',
+    'charity.donateBtn',
+    'charity.donateNote',
+    'charity.alsoContribute',
+    'charity.legal',
+  ]
+
+  it('English has all charity keys', () => {
+    for (const key of charityKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all charity keys', () => {
+    for (const key of charityKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all charity keys', () => {
+    for (const key of charityKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('charity.heroDesc interpolates brand', () => {
+    const result = translate('charity.heroDesc', 'en', { brand: 'BeKenya' })
+    expect(result).toContain('BeKenya')
+    expect(result).not.toContain('{brand}')
+  })
+
+  it('charity.donateBtn interpolates amount and partner', () => {
+    const result = translate('charity.donateBtn', 'de', { amount: '$25', partner: 'UTAMADUNI' })
+    expect(result).toContain('$25')
+    expect(result).toContain('UTAMADUNI')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

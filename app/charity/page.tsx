@@ -11,10 +11,12 @@ import {
   LEGAL,
   IMPACT_PARTNER,
 } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 type DonationAmount = 10 | 25 | 50 | 100 | 'custom'
 
 export default function CharityPage() {
+  const { t } = useTranslation()
   const [donationAmount, setDonationAmount] = useState<DonationAmount>(25)
   const [customAmount, setCustomAmount] = useState<string>('')
   const [paymentTab, setPaymentTab] = useState<'mpesa' | 'card'>('mpesa')
@@ -29,7 +31,7 @@ export default function CharityPage() {
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 pt-20 pb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-green-200 text-sm font-medium mb-8">
             <span>🇰🇪</span>
-            <span>Community-Based Organization · Registered in Kenya</span>
+            <span>{t('charity.badge')}</span>
           </div>
 
           {/* IMPACT_PARTNER heading */}
@@ -40,14 +42,13 @@ export default function CharityPage() {
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-white/20 max-w-xs"></div>
               <span className="text-green-300 font-medium italic text-lg">
-                Swahili for &quot;Culture &amp; Heritage&quot;
+                {t('charity.tagline')}
               </span>
             </div>
           </div>
 
           <p className="text-xl text-green-100 max-w-2xl leading-relaxed mb-8">
-            The charitable arm of {BRAND_NAME}. Every path opened on our platform contributes to
-            communities, conservation, and culture across Kenya.
+            {t('charity.heroDesc', { brand: BRAND_NAME })}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
@@ -55,13 +56,13 @@ export default function CharityPage() {
               href="#donate"
               className="inline-block bg-brand-accent text-white font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-colors text-center"
             >
-              Support {IMPACT_PARTNER.name}
+              {t('charity.support', { partner: IMPACT_PARTNER.name })}
             </a>
             <a
               href="#pillars"
               className="inline-block bg-white/10 border border-white/30 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/20 transition-colors text-center"
             >
-              Learn what we do →
+              {t('charity.learnMore')}
             </a>
           </div>
         </div>
@@ -71,12 +72,18 @@ export default function CharityPage() {
       <div className="bg-brand-accent/5 border-y border-brand-accent/10 py-6">
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 text-center">
           <p className="text-gray-300 text-base font-medium">
-            When you book a Venture or open a Path on {BRAND_NAME},
-            <span className="text-brand-accent font-bold">
-              {' '}
-              a percentage flows to {IMPACT_PARTNER.name}{' '}
-            </span>
-            — funding real programs in real communities. No middlemen. Full transparency.
+            {t('charity.howBanner', { brand: BRAND_NAME, partner: IMPACT_PARTNER.name })
+              .split('{accent}')
+              .map((part, i) => {
+                if (i === 0) return <span key={i}>{part}</span>
+                const [accent, rest] = part.split('{/accent}')
+                return (
+                  <span key={i}>
+                    <span className="text-brand-accent font-bold"> {accent} </span>
+                    {rest}
+                  </span>
+                )
+              })}
           </p>
         </div>
       </div>
@@ -84,8 +91,8 @@ export default function CharityPage() {
       {/* Impact Numbers */}
       <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-white mb-2">Our Impact So Far</h2>
-          <p className="text-gray-400">Aspirational targets for our first programme cycle</p>
+          <h2 className="text-2xl font-bold text-white mb-2">{t('charity.impactTitle')}</h2>
+          <p className="text-gray-400">{t('charity.impactDesc')}</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {IMPACT_STATS.map((stat) => (
@@ -102,11 +109,8 @@ export default function CharityPage() {
       <div id="pillars" className="bg-gray-900/30 py-16">
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3">Our Four Pillars</h2>
-            <p className="text-gray-400 max-w-xl mx-auto">
-              Everything we do is built on these foundations — because dignified lives require
-              education, safety, a healthy planet, and cultural pride.
-            </p>
+            <h2 className="text-3xl font-bold text-white mb-3">{t('charity.pillarsTitle')}</h2>
+            <p className="text-gray-400 max-w-xl mx-auto">{t('charity.pillarsDesc')}</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -142,18 +146,17 @@ export default function CharityPage() {
       {/* How it works — platform connection */}
       <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-3">How It Works</h2>
-          <p className="text-gray-400">The {BRAND_NAME} circle of dignified work</p>
+          <h2 className="text-3xl font-bold text-white mb-3">{t('charity.howTitle')}</h2>
+          <p className="text-gray-400">{t('charity.howSubtitle', { brand: BRAND_NAME })}</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="text-center p-6">
             <div className="w-16 h-16 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-3xl mx-auto mb-4">
               🌍
             </div>
-            <h3 className="font-bold text-white mb-2">Pioneers Book Ventures</h3>
+            <h3 className="font-bold text-white mb-2">{t('charity.step1Title')}</h3>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Every safari, eco-lodge stay, or professional path opened on {BRAND_NAME} generates
-              value in the ecosystem.
+              {t('charity.step1Desc', { brand: BRAND_NAME })}
             </p>
           </div>
           <div className="text-center p-6 relative">
@@ -163,10 +166,11 @@ export default function CharityPage() {
             <div className="w-16 h-16 rounded-2xl bg-brand-success/10 flex items-center justify-center text-3xl mx-auto mb-4">
               💚
             </div>
-            <h3 className="font-bold text-white mb-2">Portion Goes to {IMPACT_PARTNER.name}</h3>
+            <h3 className="font-bold text-white mb-2">
+              {t('charity.step2Title', { partner: IMPACT_PARTNER.name })}
+            </h3>
             <p className="text-gray-400 text-sm leading-relaxed">
-              A transparent percentage of each transaction is allocated to {IMPACT_PARTNER.name}{' '}
-              programs — automatically.
+              {t('charity.step2Desc', { partner: IMPACT_PARTNER.name })}
             </p>
           </div>
           <div className="text-center p-6 relative">
@@ -176,11 +180,8 @@ export default function CharityPage() {
             <div className="w-16 h-16 rounded-2xl bg-[#0891B2]/10 flex items-center justify-center text-3xl mx-auto mb-4">
               🏘️
             </div>
-            <h3 className="font-bold text-white mb-2">Communities Thrive</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Funds go directly to skills training, conservation support, and women&apos;s
-              empowerment in Kenyan communities.
-            </p>
+            <h3 className="font-bold text-white mb-2">{t('charity.step3Title')}</h3>
+            <p className="text-gray-400 text-sm leading-relaxed">{t('charity.step3Desc')}</p>
           </div>
         </div>
       </div>
@@ -189,8 +190,8 @@ export default function CharityPage() {
       <div className="bg-gray-900 text-white py-16">
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-3">Stories from the Field</h2>
-            <p className="text-gray-400">Real lives. Real change. Names used with permission.</p>
+            <h2 className="text-3xl font-bold mb-3">{t('charity.storiesTitle')}</h2>
+            <p className="text-gray-400">{t('charity.storiesDesc')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {STORIES.map((story, i) => (
@@ -225,11 +226,13 @@ export default function CharityPage() {
                   onClick={() => setExpandedStory(expandedStory === i ? null : i)}
                   className="text-brand-accent text-xs font-medium mb-4 hover:text-brand-accent-light transition-colors text-left"
                 >
-                  {expandedStory === i ? 'Show less' : 'Read full story →'}
+                  {expandedStory === i ? t('charity.showLess') : t('charity.readMore')}
                 </button>
 
                 <div className="mt-auto pt-4 border-t border-gray-700">
-                  <div className="text-brand-accent text-xs font-semibold mb-1">Today</div>
+                  <div className="text-brand-accent text-xs font-semibold mb-1">
+                    {t('charity.today')}
+                  </div>
                   <div className="text-gray-200 text-sm font-medium">{story.outcome}</div>
                   <div className="mt-2">
                     <span className="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full">
@@ -246,11 +249,10 @@ export default function CharityPage() {
       {/* Partner With Us */}
       <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-3">Partner With {IMPACT_PARTNER.name}</h2>
-          <p className="text-gray-400 max-w-xl mx-auto">
-            We welcome partnerships with organisations who share our belief in dignified work,
-            community development, and conservation.
-          </p>
+          <h2 className="text-3xl font-bold text-white mb-3">
+            {t('charity.partnerTitle', { partner: IMPACT_PARTNER.name })}
+          </h2>
+          <p className="text-gray-400 max-w-xl mx-auto">{t('charity.partnerDesc')}</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {PARTNER_TYPES.map((partner) => (
@@ -269,7 +271,7 @@ export default function CharityPage() {
             href="/contact"
             className="inline-block bg-brand-success text-white font-semibold px-8 py-3 rounded-xl hover:bg-green-800 transition-colors"
           >
-            Get in Touch →
+            {t('charity.getInTouch')}
           </Link>
         </div>
       </div>
@@ -277,15 +279,16 @@ export default function CharityPage() {
       {/* Donation CTA */}
       <div id="donate" className="bg-gradient-to-br from-brand-success to-brand-success py-16">
         <div className="max-w-xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white mb-3">Support {IMPACT_PARTNER.name}</h2>
-          <p className="text-green-200 mb-8">
-            Every contribution — big or small — builds skills, protects wildlife, and preserves
-            Kenyan culture for generations to come.
-          </p>
+          <h2 className="text-3xl font-bold text-white mb-3">
+            {t('charity.donateTitle', { partner: IMPACT_PARTNER.name })}
+          </h2>
+          <p className="text-green-200 mb-8">{t('charity.donateDesc')}</p>
 
           {/* Amount selector */}
           <div className="bg-white rounded-2xl p-6 shadow-xl mb-4">
-            <div className="text-sm font-semibold text-gray-700 mb-3 text-left">Choose amount</div>
+            <div className="text-sm font-semibold text-gray-700 mb-3 text-left">
+              {t('charity.chooseAmount')}
+            </div>
             <div className="grid grid-cols-4 gap-2 mb-4">
               {PRESET_AMOUNTS.map((amount) => (
                 <button
@@ -312,7 +315,7 @@ export default function CharityPage() {
               <input
                 type="number"
                 min="1"
-                placeholder="Custom amount"
+                placeholder={t('charity.customAmount')}
                 value={customAmount}
                 onChange={(e) => {
                   setCustomAmount(e.target.value)
@@ -349,36 +352,44 @@ export default function CharityPage() {
             {paymentTab === 'mpesa' && (
               <div className="bg-green-50 border border-green-100 rounded-xl p-3 mb-4 text-left">
                 <p className="text-green-800 text-xs">
-                  Donate via M-Pesa: Paybill <strong>{IMPACT_PARTNER.name} CBO</strong>. You&apos;ll
-                  receive full payment instructions after clicking below.
+                  {t('charity.mpesaInfo', { partner: IMPACT_PARTNER.name })}
                 </p>
               </div>
             )}
 
             <button className="w-full bg-brand-accent text-white font-bold py-4 rounded-xl hover:opacity-90 transition-colors text-base">
-              Donate{' '}
-              {donationAmount !== 'custom'
-                ? `$${donationAmount}`
-                : customAmount
-                  ? `$${customAmount}`
-                  : ''}{' '}
-              to {IMPACT_PARTNER.name}
+              {t('charity.donateBtn', {
+                amount:
+                  donationAmount !== 'custom'
+                    ? `$${donationAmount}`
+                    : customAmount
+                      ? `$${customAmount}`
+                      : '',
+                partner: IMPACT_PARTNER.name,
+              })}
             </button>
 
-            <p className="text-gray-400 text-xs mt-3">
-              Donations are used directly for community programs. No political affiliations.
-            </p>
+            <p className="text-gray-400 text-xs mt-3">{t('charity.donateNote')}</p>
           </div>
 
           <p className="text-green-200 text-sm">
-            You can also contribute by{' '}
-            <Link
-              href="/ventures"
-              className="text-white underline font-medium hover:text-green-100"
-            >
-              booking a Venture
-            </Link>{' '}
-            on {BRAND_NAME} — a percentage automatically supports {IMPACT_PARTNER.name}.
+            {t('charity.alsoContribute', { brand: BRAND_NAME, partner: IMPACT_PARTNER.name })
+              .split('{link}')
+              .map((part, i) => {
+                if (i === 0) return <span key={i}>{part}</span>
+                const [linkText, rest] = part.split('{/link}')
+                return (
+                  <span key={i}>
+                    <Link
+                      href="/ventures"
+                      className="text-white underline font-medium hover:text-green-100"
+                    >
+                      {linkText}
+                    </Link>
+                    {rest}
+                  </span>
+                )
+              })}
           </p>
         </div>
       </div>
@@ -386,10 +397,7 @@ export default function CharityPage() {
       {/* Legal footer note */}
       <div className="bg-gray-900/30 py-6 text-center border-t border-brand-primary/30">
         <p className="text-gray-400 text-sm max-w-2xl mx-auto px-4">
-          {IMPACT_PARTNER.name} is registered in Kenya as a Community Based Organisation (CBO).
-          Partnered with
-          {LEGAL.companyName}. All programmes are administered locally with full community
-          involvement and transparent financial reporting.
+          {t('charity.legal', { partner: IMPACT_PARTNER.name, company: LEGAL.companyName })}
         </p>
       </div>
     </div>
