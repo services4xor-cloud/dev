@@ -30,8 +30,8 @@ export const SAFARI_PACKAGES: SafariPackage[] = [
     duration: 'Full Day',
     maxGuests: 6,
     destination: 'Lake Victoria / Indian Ocean',
-    priceEUR: 350,
-    priceNote: 'per group (max 6 people — share the cost)',
+    priceEUR: 97,
+    priceNote: '€97/person, €485 minimum (max 6 people — share the cost)',
     season: 'all',
     includes: [
       'Mako 23ft boat',
@@ -67,8 +67,8 @@ export const SAFARI_PACKAGES: SafariPackage[] = [
     duration: '2 Days / 1 Night',
     maxGuests: 8,
     destination: 'Tsavo East National Park',
-    priceEUR: 290,
-    priceNote: 'per person, all inclusive',
+    priceEUR: 260,
+    priceNote: '€260–€377 per person, all inclusive',
     season: 'all',
     includes: [
       '4x4 Safari Vehicle',
@@ -158,7 +158,7 @@ export const SAFARI_PACKAGES: SafariPackage[] = [
       { name: '🏕️ Maasai Village Visit', priceUSD: 30, unit: 'per person' },
       { name: '🚶 Nature Walk with Ranger', priceUSD: 10, unit: 'per group' },
     ],
-    markup: 0.30,
+    markup: 0.3,
     status: 'available',
     imageHint: 'Maasai Mara Kenya lion savanna sunset',
   },
@@ -336,11 +336,11 @@ export const SAFARI_PACKAGES: SafariPackage[] = [
 ]
 
 export function getPackagesByType(type: SafariPackage['type']): SafariPackage[] {
-  return SAFARI_PACKAGES.filter(p => p.type === type)
+  return SAFARI_PACKAGES.filter((p) => p.type === type)
 }
 
 export function getPackageById(id: string): SafariPackage | undefined {
-  return SAFARI_PACKAGES.find(p => p.id === id)
+  return SAFARI_PACKAGES.find((p) => p.id === id)
 }
 
 export function formatPackagePrice(pkg: SafariPackage): string {

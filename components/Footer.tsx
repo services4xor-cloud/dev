@@ -60,10 +60,30 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Social links */}
+        <div className="flex items-center gap-4 mb-6">
+          {CONTACT.socialLinks &&
+            Object.entries(CONTACT.socialLinks).map(([platform, url]) => (
+              <a
+                key={platform}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400/70 hover:text-brand-accent transition-colors text-sm capitalize"
+                aria-label={`${BRAND_NAME} on ${platform}`}
+              >
+                {platform === 'instagram' && '📸'}
+                {platform === 'facebook' && '👥'}
+                {platform === 'tiktok' && '🎵'} {platform}
+              </a>
+            ))}
+        </div>
+
         {/* Bottom bar */}
         <div className="border-t border-brand-accent/10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-gray-400/70">
           <span>
-            © {LEGAL.copyrightYear} {LEGAL.companyName}. Built for dignity, everywhere.
+            © {LEGAL.copyrightYear} {LEGAL.companyName}. Inc. {LEGAL.incorporationNumber}. Built for
+            dignity, everywhere.
           </span>
           <span className="flex items-center gap-2">
             <span>{CONTACT.location}</span>

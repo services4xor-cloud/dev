@@ -59,9 +59,9 @@ export default function BusinessPage() {
             {[
               {
                 icon: <Landmark className="w-5 h-5 text-brand-accent" />,
-                label: 'Registration',
-                value: 'Kenya Companies Act',
-                sub: 'eCitizen Business Registration',
+                label: 'Incorporation',
+                value: LEGAL.incorporationNumber,
+                sub: 'Certificate of Incorporation',
               },
               {
                 icon: <Building2 className="w-5 h-5 text-brand-accent" />,
@@ -71,9 +71,9 @@ export default function BusinessPage() {
               },
               {
                 icon: <Lock className="w-5 h-5 text-brand-accent" />,
-                label: 'Governance',
-                value: 'Dual-Signature Control',
-                sub: 'Finance Controller approval required',
+                label: 'KRA PIN',
+                value: LEGAL.kraPin,
+                sub: `Director: ${LEGAL.directorName}`,
               },
             ].map((item) => (
               <div

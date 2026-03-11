@@ -35,23 +35,32 @@ export const REFERRAL_BONUS = 'KES 5,000'
 
 // ── Contact ──────────────────────────────────────────────────────
 export const CONTACT = {
-  email: 'hello@bekenya.com',
-  emailBusiness: 'services4xor@gmail.com',
-  emailPrivacy: 'privacy@bekenya.com',
-  phone: '+254 700 000 000',
-  whatsapp: '+254700000000',
-  social: '@bekenya',
-  socialPlatforms: 'Twitter/X · LinkedIn · Instagram',
-  location: country?.name === 'Kenya' ? 'Nairobi, Kenya' : `${country?.name ?? 'Global'}`,
-  locationDetail: 'Westlands, CBD',
+  email: 'info@bekenya.com',
+  emailBusiness: 'info@bekenya.com',
+  emailPrivacy: 'info@bekenya.com',
+  phone: '+49 151 6853 0986',
+  whatsapp: '+4915168530986',
+  social: '@bekenya.family',
+  socialPlatforms: 'Instagram · Facebook · TikTok',
+  socialLinks: {
+    instagram: 'https://www.instagram.com/bekenya.family/',
+    facebook: 'https://www.facebook.com/BeKenya0403',
+    tiktok: 'https://www.tiktok.com/@_bekenya',
+  },
+  location: country?.name === 'Kenya' ? 'Kiambu, Kenya' : `${country?.name ?? 'Global'}`,
+  locationDetail: 'Kikuyu Lari District 888, Kiambu 00902',
   responseTime: '24 hours',
   businessHours: 'Monday–Friday, 8am–6pm EAT',
 } as const
 
 // ── Legal ────────────────────────────────────────────────────────
 export const LEGAL = {
-  companyName: `${BRAND_NAME} Family Ltd`,
-  privacyLastUpdated: 'March 2024',
+  companyName: 'BeKenya Family Limited',
+  incorporationNumber: 'PVT-VQ1038KZ',
+  kraPin: 'A021772648D',
+  directorName: 'Victoria Wambui Kungu',
+  registeredAddress: 'Kikuyu Lari District 888, Kiambu 00902, Kenya',
+  privacyLastUpdated: 'March 2026',
   copyrightYear: new Date().getFullYear(),
 } as const
 

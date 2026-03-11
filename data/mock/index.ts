@@ -51,7 +51,7 @@ export {
   ABOUT_STATS,
   ABOUT_VOCAB_ITEMS,
 } from './about'
-export { IMPACT_STATS, PILLARS, STORIES, PARTNER_TYPES } from './charity'
+export { IMPACT_STATS, PILLARS, STORIES, PARTNER_TYPES, ACTIVE_PROGRAMS } from './charity'
 export { DIVISIONS, OPERATING_COUNTRIES, SHARE_BLOCKS } from './business'
 export {
   CURRENCIES,

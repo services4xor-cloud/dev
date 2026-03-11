@@ -118,14 +118,39 @@ export const STORIES = [
 export const PARTNER_TYPES = [
   {
     icon: '🏫',
-    label: 'Schools & Universities',
-    desc: 'Curriculum collaboration, placement programs',
+    label: 'Schools & Children Homes',
+    desc: "Feeding programs, education support — incl. Suvia Children's Home",
   },
-  { icon: '🤝', label: 'NGOs & CBOs', desc: 'Joint programming, co-funding initiatives' },
+  {
+    icon: '🤝',
+    label: 'FessyTours & Local Partners',
+    desc: 'Joint safari programs, community feeding initiatives',
+  },
   { icon: '🏢', label: 'Corporate Sponsors', desc: 'CSR investment, skills matching' },
   {
     icon: '🌍',
     label: 'International Organizations',
     desc: 'Bilateral programs, grant partnerships',
+  },
+]
+
+/** Real charity programs operating through BeKenya Family Ltd */
+export const ACTIVE_PROGRAMS = [
+  {
+    id: 'plate-for-african-child',
+    name: 'A Plate for African Child',
+    partner: 'FessyTours × BeKenya Family',
+    location: "Suvia Children's Home, Kenya",
+    host: 'Mr. Mwanzia',
+    description:
+      'Feeding and inspiring children through community engagement — cooking, games, music, and motivational talks.',
+    activities: [
+      'Cooking with children',
+      'Games & competitions',
+      'Shared meals',
+      'Music & performances',
+      'Motivational talks',
+    ],
+    status: 'active' as const,
   },
 ]
