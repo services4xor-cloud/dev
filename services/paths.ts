@@ -249,18 +249,37 @@ function listFromMock(filters: PathFilters = {}): { paths: PathListItem[]; total
 
 export const pathService = {
   async list(filters?: PathFilters) {
-    if (hasDatabase) return listFromDB(filters)
+    if (hasDatabase) {
+      try {
+        return await listFromDB(filters)
+      } catch (err) {
+        console.warn(
+          '[pathService.list] DB unreachable, falling back to mock:',
+          (err as Error).message
+        )
+        return listFromMock(filters)
+      }
+    }
     return listFromMock(filters)
   },
 
   async getById(id: string) {
-    if (hasDatabase) return getByIdFromDB(id)
+    if (hasDatabase) {
+      try {
+        return await getByIdFromDB(id)
+      } catch (err) {
+        console.warn(
+          '[pathService.getById] DB unreachable, falling back to mock:',
+          (err as Error).message
+        )
+        return MOCK_PATHS.find((p) => p.id === id) ?? null
+      }
+    }
     return MOCK_PATHS.find((p) => p.id === id) ?? null
   },
 
   async create(data: Parameters<typeof createInDB>[0]) {
     if (!hasDatabase) {
-      // Return a mock created path
       return {
         id: `path_${Date.now()}`,
         ...data,

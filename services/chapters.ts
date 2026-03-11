@@ -119,16 +119,37 @@ export const chapterService = {
         openedAt: new Date().toISOString(),
       }
     }
-    return createInDB(data)
+    try {
+      return await createInDB(data)
+    } catch (err) {
+      console.warn('[chapterService.create] DB error:', (err as Error).message)
+      throw err // Don't silently swallow write errors
+    }
   },
 
   async listByPioneer(pioneerId: string) {
     if (!hasDatabase) return []
-    return listByPioneerFromDB(pioneerId)
+    try {
+      return await listByPioneerFromDB(pioneerId)
+    } catch (err) {
+      console.warn(
+        '[chapterService.listByPioneer] DB unreachable, returning empty:',
+        (err as Error).message
+      )
+      return []
+    }
   },
 
   async listByPath(pathId: string) {
     if (!hasDatabase) return []
-    return listByPathFromDB(pathId)
+    try {
+      return await listByPathFromDB(pathId)
+    } catch (err) {
+      console.warn(
+        '[chapterService.listByPath] DB unreachable, returning empty:',
+        (err as Error).message
+      )
+      return []
+    }
   },
 }

@@ -163,12 +163,32 @@ function getBySlugFromMock(slug: string): ThreadItem | null {
 
 export const threadService = {
   async list(filters?: ThreadFilters): Promise<ThreadItem[]> {
-    if (hasDatabase) return listFromDB(filters)
+    if (hasDatabase) {
+      try {
+        return await listFromDB(filters)
+      } catch (err) {
+        console.warn(
+          '[threadService.list] DB unreachable, falling back to mock:',
+          (err as Error).message
+        )
+        return listFromMock(filters)
+      }
+    }
     return listFromMock(filters)
   },
 
   async getBySlug(slug: string): Promise<ThreadItem | null> {
-    if (hasDatabase) return getBySlugFromDB(slug)
+    if (hasDatabase) {
+      try {
+        return await getBySlugFromDB(slug)
+      } catch (err) {
+        console.warn(
+          '[threadService.getBySlug] DB unreachable, falling back to mock:',
+          (err as Error).message
+        )
+        return getBySlugFromMock(slug)
+      }
+    }
     return getBySlugFromMock(slug)
   },
 }
