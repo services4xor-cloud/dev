@@ -43,7 +43,7 @@ export default function Error({
         {error?.message && (
           <p
             className="text-xs mt-2 mb-6 px-4 py-2 rounded-lg font-mono"
-            style={{ color: '#6B7280', backgroundColor: 'var(--color-surface-2)' }}
+            style={{ color: '#9CA3AF', backgroundColor: 'var(--color-surface-2)' }}
           >
             {error.message}
           </p>
