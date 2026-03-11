@@ -19,6 +19,10 @@ import {
   LogIn,
   Globe,
 } from 'lucide-react'
+import { COUNTRIES } from '@/lib/countries'
+
+const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
+const brandName = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
 
 export interface NavLink {
   href: string
@@ -145,14 +149,14 @@ export const FOOTER_ANCHOR_LINKS: FooterLink[] = [
 export const FOOTER_DISCOVER_LINKS: FooterLink[] = [
   { href: '/offerings', label: 'Country Offerings' },
   { href: '/experiences', label: 'Safari Experiences' },
-  { href: '/be/ke', label: 'BeKenya' },
+  { href: `/be/${CC.toLowerCase()}`, label: brandName },
   { href: '/charity', label: 'UTAMADUNI' },
   { href: '/media', label: 'Media & Stories' },
 ]
 
 export const FOOTER_COMPANY_LINKS: FooterLink[] = [
   { href: '/about', label: 'About' },
-  { href: '/business', label: 'BeKenya Family Ltd' },
+  { href: '/business', label: `${brandName} Family Ltd` },
   { href: '/contact', label: 'Contact' },
   { href: '/privacy', label: 'Privacy Policy' },
 ]

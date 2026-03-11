@@ -15,6 +15,7 @@ import {
   Briefcase,
 } from 'lucide-react'
 import { SKILLS_SUGGESTIONS, MOCK_PROFILE, BRAND_NAME } from '@/data/mock'
+import HeroSection from '@/components/HeroSection'
 
 export default function ProfilePage() {
   const [skills, setSkills] = useState<string[]>(['TypeScript', 'React'])
@@ -46,16 +47,11 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-brand-bg">
-      {/* Hero */}
-      <section className="relative bg-gradient-to-b from-brand-primary to-brand-bg py-16 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.08),transparent_70%)]" />
-        <div className="relative max-w-3xl mx-auto px-4">
-          <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">Your Profile</h1>
-          <p className="text-gray-300">
-            Complete your profile to unlock better Path matches on {BRAND_NAME}
-          </p>
-        </div>
-      </section>
+      <HeroSection
+        title="Your Profile"
+        subtitle={`Complete your profile to unlock better Path matches on ${BRAND_NAME}`}
+        size="sm"
+      />
 
       <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-8">
         {/* Completion bar */}

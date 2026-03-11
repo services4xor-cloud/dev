@@ -1,6 +1,7 @@
 # Be[Country] — Strategic Roadmap
 
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [PROGRESS.md](./PROGRESS.md)
+> Updated: Session 24 (2026-03-11)
 
 ---
 
@@ -10,25 +11,99 @@ Reverse colonial economic flows. Every Pioneer placed, every safari booked, ever
 
 **5-year vision:** 1M Pioneers routed. 50 countries. $50M+ value to African communities.
 
-**Scale path:** Be[Country] → Be[Tribe] → Be[Location]. Countries first, then identity layers.
+**Scale path:** Be[Country] → Be[Tribe] → Be[Location] → Be[Interest]. Countries first, then identity layers. Think Reddit threads but for life-routing — each thread is an identity group.
 
 ---
 
 ## Phase Overview
 
 ```
-Phase 1 ✅ Foundation    — Platform built, tested, vocabulary complete
-Phase 2 ⛔ BeKenya Live  — Real data + payments (blocked on credentials)
-Phase 3 📈 Traction      — 500 Pioneers, 50 Paths, 20 safaris/month
-Phase 4 🌍 Expansion     — BeGermany + BeNigeria
-Phase 5 🚀 Platform      — Mobile, AI, Be[Tribe], Be[Location]
+Phase 1   ✅ Foundation     — Platform built, tested, vocabulary complete
+Phase 1.5 🔧 Polish & Scale — Agent-executable quality + architecture work
+Phase 2   ⛔ BeKenya Live   — Real data + payments (blocked on credentials)
+Phase 3   📈 Traction       — 500 Pioneers, 50 Paths, 20 safaris/month
+Phase 4   🌍 Expansion      — BeGermany + BeNigeria
+Phase 5   🚀 Platform       — Mobile, AI, Be[Tribe], Be[Location], Be[Interest]
 ```
 
 ---
 
 ## Phase 1 — Foundation ✅ COMPLETE
 
-Sessions 1–19. 20+ pages, full vocabulary, type system, mock data, 127 tests passing, responsive xs→4K, WCAG AA, loading skeletons, error boundaries, mock booking flow.
+Sessions 1–23. 20+ pages, world-class nav, full vocabulary, type system, mock data, 127 tests, responsive xs→4K, WCAG AA, loading skeletons, error boundaries, mock booking flow, hero gradients, brand consistency.
+
+---
+
+## Phase 1.5 — Polish & Scale-Ready 🔧 ACTIVE
+
+**No credentials needed.** These are concrete, agent-executable tasks organized by sprint.
+
+### Sprint 1.5A — Testing Coverage (Priority: HIGH)
+
+Goal: Move from 25 Jest tests to 50+, add E2E for all wizards.
+
+| Task | Description                                       | Files                          | Agent-Ready |
+| ---- | ------------------------------------------------- | ------------------------------ | ----------- |
+| T-01 | Unit tests for `lib/matching.ts` (4-dim scoring)  | `__tests__/matching.test.ts`   | ✅          |
+| T-02 | Unit tests for `lib/compass.ts` (route corridors) | `__tests__/compass.test.ts`    | ✅          |
+| T-03 | Unit tests for `lib/offerings.ts` (country-aware) | `__tests__/offerings.test.ts`  | ✅          |
+| T-04 | Unit tests for `lib/vocabulary.ts` (term mapping) | `__tests__/vocab.test.ts`      | ✅          |
+| T-05 | Unit tests for `lib/nav-structure.ts` (link gen)  | `__tests__/nav.test.ts`        | ✅          |
+| T-06 | Component tests: PathCard, Skeleton               | `__tests__/components/`        | ✅          |
+| T-07 | API route tests: /api/paths, /api/compass         | `__tests__/api/`               | ✅          |
+| T-08 | E2E: Compass wizard complete flow                 | `tests/e2e/compass.spec.ts`    | ✅          |
+| T-09 | E2E: Onboarding wizard complete flow              | `tests/e2e/onboarding.spec.ts` | ✅          |
+| T-10 | E2E: Post-Path wizard complete flow               | `tests/e2e/post-path.spec.ts`  | ✅          |
+
+**Success:** 50+ Jest, 120+ Playwright, 0 failures.
+
+### Sprint 1.5B — Code Quality (Priority: HIGH)
+
+Goal: Extract shared patterns, eliminate duplication, add documentation.
+
+| Task | Description                                              | Files                          | Agent-Ready |
+| ---- | -------------------------------------------------------- | ------------------------------ | ----------- |
+| C-01 | Extract `<HeroSection>` shared component                 | `components/HeroSection.tsx`   | ✅          |
+| C-02 | Extract `<WizardShell>` shared component                 | `components/WizardShell.tsx`   | ✅          |
+| C-03 | Extract shared form components (Input, Select, Textarea) | `components/ui/`               | ✅          |
+| C-04 | Extract `<DashboardTabs>` shared component               | `components/DashboardTabs.tsx` | ✅          |
+| C-05 | Centralize form validation utilities                     | `lib/validation.ts`            | ✅          |
+| C-06 | Add JSDoc to all lib/ exports                            | `lib/*.ts`                     | ✅          |
+| C-07 | Remove all inline hex colors (use tokens)                | Multiple pages                 | ✅          |
+
+**Success:** Zero duplication in wizard/hero/form patterns. All lib/ functions documented.
+
+### Sprint 1.5C — Innovation & UX (Priority: MEDIUM)
+
+Goal: World-class UX that sells, builds trust, creates fans.
+
+| Task | Description                                                | Files                                  | Agent-Ready |
+| ---- | ---------------------------------------------------------- | -------------------------------------- | ----------- |
+| I-01 | Footer redesign (match nav world-class quality)            | `components/Footer.tsx`                | ✅          |
+| I-02 | Homepage "Pioneer Stories" section (trust + social proof)  | `app/page.tsx`, `data/mock/stories.ts` | ✅          |
+| I-03 | Country Gate page redesign (immersive, identity-first)     | `app/be/[country]/page.tsx`            | ✅          |
+| I-04 | Micro-animations on Compass wizard steps                   | `app/compass/page.tsx`                 | ✅          |
+| I-05 | "Impact Counter" on homepage (UTAMADUNI live stats)        | `app/page.tsx`, `data/mock/impact.ts`  | ✅          |
+| I-06 | Trust badges section (security, privacy, verified Anchors) | `components/TrustBadges.tsx`           | ✅          |
+| I-07 | Loading states with branded skeleton animations            | `components/Skeleton.tsx`              | ✅          |
+
+**Success:** Every page tells a story. Psychology: Discover → Trust → Engage → Belong → Advocate.
+
+### Sprint 1.5D — Scalability Prep (Priority: MEDIUM)
+
+Goal: Architecture ready for multi-country, multi-identity deployment.
+
+| Task | Description                                                 | Files                                    | Agent-Ready |
+| ---- | ----------------------------------------------------------- | ---------------------------------------- | ----------- |
+| S-01 | Service layer abstraction (mock → real swap)                | `services/*.ts`                          | ✅          |
+| S-02 | API client with error handling + retry                      | `lib/api-client.ts`                      | ✅          |
+| S-03 | Generic Gate page (`/be/[slug]`) for Country/Tribe/Location | `app/be/[slug]/page.tsx`                 | ✅          |
+| S-04 | Thread/identity data model + mock data                      | `lib/threads.ts`, `data/mock/threads.ts` | ✅          |
+| S-05 | SEO: metadata + OpenGraph on all pages                      | `app/*/page.tsx`                         | ✅          |
+| S-06 | PWA manifest + service worker                               | `public/manifest.json`                   | ✅          |
+| S-07 | i18n infrastructure (EN/SW/DE/FR)                           | `lib/i18n.ts`, `messages/`               | ✅          |
+
+**Success:** Deploy BeGermany with only env var change. Identity threads architecture ready.
 
 ---
 
@@ -56,8 +131,9 @@ _Month 2–3 post-launch_
 | Push notifications (Path matches) | High   | Medium |
 | Pioneer ↔ Anchor messaging        | High   | High   |
 | Review system                     | High   | Medium |
-| Referral program                  | Medium | Low    |
+| Referral program (live)           | Medium | Low    |
 | UTAMADUNI live impact counter     | Medium | Low    |
+| Community threads (like Reddit)   | High   | High   |
 
 **Targets:** 500 Pioneers, 50 Paths, 20 bookings/month, KES 120K MRR.
 
@@ -82,15 +158,20 @@ Same codebase, different Vercel projects + `NEXT_PUBLIC_COUNTRY_CODE`.
 
 _Month 7–12_
 
-| Feature                     | Why                             |
-| --------------------------- | ------------------------------- |
-| React Native / Expo         | 60%+ African internet is mobile |
-| AI Compass (LLM)            | Personalized route narratives   |
-| Be[Tribe] identity layer    | BeMaasai, BeKikuyu, BeLuo…      |
-| Be[Location] layer          | BeNairobi, BeMombasa, BeLagos…  |
-| Multi-language UI           | EN/SW/DE/FR                     |
-| UTAMADUNI live dashboard    | Public impact transparency      |
-| Community (Pioneer↔Pioneer) | Network effects                 |
+| Feature                     | Why                               |
+| --------------------------- | --------------------------------- |
+| React Native / Expo         | 60%+ African internet is mobile   |
+| AI Compass (LLM)            | Personalized route narratives     |
+| Be[Tribe] identity threads  | BeMaasai, BeKikuyu, BeLuo…        |
+| Be[Location] threads        | BeNairobi, BeMombasa, BeLagos…    |
+| Be[Interest] threads        | BeTech, BeEcoTourism, BeMedical…  |
+| Be[Language] threads        | BeSwahili, BeDeutsch, BeFrançais… |
+| Be[Religion] threads        | Respectful community spaces       |
+| Multi-language UI           | EN/SW/DE/FR                       |
+| UTAMADUNI live dashboard    | Public impact transparency        |
+| Community (Pioneer↔Pioneer) | Reddit-style threads + networking |
+
+**Thread Architecture:** Every identity group (country/tribe/location/interest/language/religion) is a "thread" — same component, same data model, different content. Generic by design. Like subreddits but for life-routing.
 
 **Targets:** 100K Pioneers, 10+ countries, $1M ARR.
 
@@ -104,7 +185,23 @@ _Month 7–12_
 | No early Anchor adopters   | High     | Direct outreach to safari operators |
 | Credentials never provided | Critical | Simplify HUMAN_MANUAL, self-service |
 | DB at scale                | High     | Neon autoscales, add Redis Phase 3  |
+| Identity thread complexity | Medium   | Generic architecture from day one   |
 
 ---
 
-_Last updated: Session 20 (2026-03-11)_
+## Agent Instructions
+
+**How to pick up work from this roadmap:**
+
+1. Find a task marked ✅ Agent-Ready in Phase 1.5
+2. Read the referenced files first
+3. Follow CLAUDE.md build rules + DESIGN_SYSTEM.md
+4. Write tests (T-\* tasks come first)
+5. Update PROGRESS.md when done
+6. Commit + push
+
+**Parallelizable:** Sprints 1.5A–D can run concurrently. Within each sprint, tasks are independent unless noted.
+
+---
+
+_Last updated: Session 24 (2026-03-11)_

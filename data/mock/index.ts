@@ -82,3 +82,4 @@ export {
   MOCK_PROFILE,
   PAYMENT_BADGES,
 } from './config'
+export { MOCK_THREADS } from './threads'

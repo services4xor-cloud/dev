@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { BRAND_NAME, CONTACT, LEGAL } from '@/data/mock/config'
+import HeroSection from '@/components/HeroSection'
 
 export const metadata = {
   title: `Privacy Policy — ${BRAND_NAME}`,
@@ -9,19 +10,15 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-brand-bg">
-      {/* Hero */}
-      <section className="relative bg-gradient-to-b from-brand-primary to-brand-bg py-20 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.08),transparent_70%)]" />
-        <div className="relative max-w-3xl mx-auto px-4">
-          <div className="w-14 h-14 bg-brand-primary/60 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-brand-accent/20">
+      <HeroSection
+        title="Privacy Policy"
+        subtitle={`Last updated: ${LEGAL.privacyLastUpdated}`}
+        icon={
+          <div className="w-14 h-14 bg-brand-primary/60 rounded-2xl flex items-center justify-center mx-auto border border-brand-accent/20">
             <span className="text-2xl">🔒</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3">
-            Privacy Policy
-          </h1>
-          <p className="text-gray-300 text-lg">Last updated: {LEGAL.privacyLastUpdated}</p>
-        </div>
-      </section>
+        }
+      />
 
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-primary/30 prose prose-invert prose-sm max-w-none">

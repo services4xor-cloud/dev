@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 21 (2026-03-11)
+> Last updated: Session 24 (2026-03-11)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -15,9 +15,9 @@
 | Deploy            | Vercel auto on push                              |
 | Pages             | 20+                                              |
 | API routes        | 12+                                              |
-| Library modules   | 13                                               |
-| Mock data modules | 16 (incl. config.ts)                             |
-| Jest tests        | 25/25 ✅                                         |
+| Library modules   | 14 (incl. threads.ts)                            |
+| Mock data modules | 17 (incl. config.ts, threads.ts)                 |
+| Jest tests        | 107/107 ✅                                       |
 | Playwright tests  | 102/102 ✅ (16 smoke + 32 brand + 54 responsive) |
 | TypeScript errors | 0                                                |
 | Countries config  | 12 (16 in selector)                              |
@@ -66,6 +66,19 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 ---
 
 ## Session Log
+
+### Session 24 (2026-03-11) — Architecture, Testing, Agent-Ready Plans
+
+- [x] **Thread system**: Created `lib/threads.ts` — identity-based community architecture (country/tribe/language/interest/religion/science/location)
+- [x] **Mock threads**: 18 threads across all 7 types (BeKenya, BeMaasai, BeSwahili, BeTech, BeMedical, BeNairobi, etc.)
+- [x] **Journey stages**: Defined 5-stage psychological progression (Discover → Trust → Engage → Belong → Advocate)
+- [x] **HeroSection component**: Extracted shared hero gradient into reusable `components/HeroSection.tsx` — used by Contact, Privacy, Profile
+- [x] **Footer dynamic**: Fixed hardcoded "BeKenya" in nav-structure.ts footer links → now uses `BRAND_NAME` from country config
+- [x] **Jest 25 → 107**: Added 4 new test suites (matching.test.ts, compass.test.ts, vocabulary.test.ts, threads.test.ts) — 82 new tests
+- [x] **PRD v8**: Added Experience Architecture section (psychology, marketing, community threading, navigation UX, security/privacy design)
+- [x] **PRD task breakdown**: 28 agent-ready tasks in 4 sprints (Testing, Code Quality, Innovation, Scalability)
+- [x] **ROADMAP rewrite**: Added Phase 1.5 with concrete sprint items, thread architecture in Phase 5, agent instructions
+- [x] Build: ✅ | Jest: 107/107 ✅ | TS: 0 errors
 
 ### Session 23 (2026-03-11) — Nav Redesign + Border/A11y Sweep
 
