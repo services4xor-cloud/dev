@@ -26,7 +26,7 @@
 | Pages            | 35    | incl. dynamic routes ([id], [slug], [country])    |
 | API routes       | 12    | paths, chapters, threads, auth, compass, search…  |
 | Components       | 10    | Nav, Footer, PathCard, WizardShell, Skeleton…     |
-| Library modules  | 19    | auth, countries, matching, compass, offerings…    |
+| Library modules  | 21    | auth, countries, matching, compass, hooks…        |
 | Service layer    | 6     | paths, threads, chapters, db, types, index        |
 | Mock data        | 17    | 15 domain modules + config + threads              |
 | Prisma models    | 12    | User, Profile, Path, Chapter, Thread, Experience… |
@@ -63,31 +63,31 @@
 ## Recent Commits
 
 ```
+86c642e feat: wire UI to DB API — ventures, threads, Nav identity switcher
+f0060f4 docs: add STATUS.md health dashboard, update PROGRESS + ROADMAP
 6eeba89 feat: DB migration — schema, auth, seed, service layer for KE/DE/CH
 e21b01b fix: identity switcher dropdown — opaque bg, dynamic logo, responsive width
 b904ab1 feat: expand BeKenya content — agriculture, marine, engineering
-957a708 feat: add payment plug system — country-aware payment abstraction
-0010e9a feat: add thread system UI — identity-based community pages
 ```
 
 ---
 
 ## Phase Progress
 
-| Phase | Name         | Status  | Notes                                 |
-| ----- | ------------ | ------- | ------------------------------------- |
-| 1     | Foundation   | ✅ 100% | All pages, mock data, tests, CI/CD    |
-| 2     | BeKenya Live | 🔧 ~60% | DB + auth + seed done. CRUD + UI next |
-| 3     | Traction     | ⏳ 0%   | Notifications, messaging, reviews     |
-| 4     | Expansion    | ⏳ 0%   | BeGermany, BeNigeria live deployments |
-| 5     | Platform     | ⏳ 0%   | Mobile, AI compass, Be[Tribe]         |
+| Phase | Name         | Status  | Notes                                         |
+| ----- | ------------ | ------- | --------------------------------------------- |
+| 1     | Foundation   | ✅ 100% | All pages, mock data, tests, CI/CD            |
+| 2     | BeKenya Live | 🔧 ~75% | DB + auth + seed + API wiring done. CRUD next |
+| 3     | Traction     | ⏳ 0%   | Notifications, messaging, reviews             |
+| 4     | Expansion    | ⏳ 0%   | BeGermany, BeNigeria live deployments         |
+| 5     | Platform     | ⏳ 0%   | Mobile, AI compass, Be[Tribe]                 |
 
 ---
 
 ## Active Priorities
 
-1. **Test locally** — verify DB features, API endpoints, auth flow
-2. **Wire Nav to DB** — identity switcher fetches threads from API
+1. ~~Test locally~~ ✅ — DB features, API endpoints, auth verified
+2. ~~Wire Nav to DB~~ ✅ — identity switcher + pages fetch from API
 3. **UI/UX optimization** — header/entry page redesign
 4. **User CRUD** — authenticated users add real data (paths, profiles)
 5. **Fix NEXTAUTH_URL** — set to production URL on Vercel

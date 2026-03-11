@@ -62,8 +62,10 @@ export function useThreads(options: UseThreadsOptions = {}): UseThreadsResult {
         if (!res.ok) throw new Error(`API ${res.status}`)
 
         const data = await res.json()
+        // API returns { success, threads, total }
+        const items = Array.isArray(data) ? data : (data.threads ?? [])
         if (!cancelled) {
-          setThreads(data.map(mapApiThread))
+          setThreads(items.map(mapApiThread))
           setFromDB(true)
           setLoading(false)
         }
