@@ -67,6 +67,15 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ## Session Log
 
+### Session 27 (2026-03-11) — Unify Compass, KISS Anchor Dashboard, Consistency
+
+- [x] **Unified Compass flow**: Replaced homepage 3-dropdown "Live Compass" duplicate with streamlined CTA. Homepage auto-detects country, passes `?from=XX` to Compass. Compass reads URL param to pre-fill origin. No more duplicate questions.
+- [x] **Removed FROM_COUNTRIES/TO_COUNTRIES**: Homepage no longer uses hardcoded string arrays — uses canonical COUNTRY_OPTIONS
+- [x] **KISS Anchor dashboard**: Rewrote from 1,144 → 420 lines (63% reduction). Sidebar → top tabs. 5 tabs → 3 (Paths, Chapters, Insights). Uses shared StatusBadge. Settings removed (future separate page).
+- [x] **Nav/Footer consistency**: Unified padding (px-4 xl:px-8 everywhere), replaced Footer hardcoded #9D9BAA with gray-400 tokens, SectionHeader uses font-display + responsive sizing
+- [x] **Anchor dashboard max-width**: Aligned with nav/footer (max-w-6xl xl:px-8)
+- [x] Build: ✅ | TS: 0 errors
+
 ### Session 26 (2026-03-11) — Code Quality: Extract Shared Utilities
 
 - [x] **lib/geo.ts**: Extracted timezone→country detection from app/page.tsx (hardcoded 8-line if-chain) and app/onboarding/page.tsx (inline function) into shared utility using canonical COUNTRY_OPTIONS
