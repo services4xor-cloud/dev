@@ -67,6 +67,20 @@ Built in Sessions 1–19. Everything works with mock data.
 
 ## Session Log
 
+### Session 35 (2026-03-11) — Unified Identity, Email Wiring, GDPR, Smart Prefill
+
+- [x] **Unified identity system**: Any selection (tribe, language, country) changes the entire experience — logo, brand name, page content. Selecting "Deutsch" → sets DE country, German language. Selecting "Maasai" → sets KE country, BeMaasai brand.
+- [x] **Tribe tab restored**: 5 identity tabs (Countries, Tribes, Languages, Faith, Paths). User reconsidered 4-tab simplification.
+- [x] **Brand follows identity**: Identity context now stores `threadBrandName`. Nav logo shows "BeMaasai" when Maasai tribe is active, "BeKenya" when country is active. Dynamic, not hardcoded.
+- [x] **Language↔Country mapping**: `LANGUAGE_COUNTRY_MAP` + `TRIBE_COUNTRY_MAP` in Nav — clicking a language or tribe auto-sets the associated country.
+- [x] **Balanced global threads**: 50+ threads across KE/DE/CH/NG/GB — tribes, languages, faith, interests, sciences, locations for all countries.
+- [x] **Cookie consent (GDPR)**: `CookieConsent.tsx` — essential-only / accept-all, localStorage persistence, 1s delayed banner, accessible role="dialog".
+- [x] **Smart form prefilling**: `usePrefill()` hook — propagates identity context (country, language, currency, phonePrefix) to forms. Signup, compass, onboarding all wired.
+- [x] **Email wiring**: Registration → `pioneer_welcome`, Chapter → `chapter_opened`, Booking → `safari_booking_confirmation`. All fire-and-forget.
+- [x] **Bookings API**: `POST /api/bookings` — Zod validation, session auth, confirmation email.
+- [x] **Deployment-aware defaults**: API routes use `NEXT_PUBLIC_COUNTRY_CODE` (no hardcoded KE). Currency derives from country config.
+- [x] Build: ✅ | TS: 0 errors
+
 ### Session 34 (2026-03-11) — i18n Endonym System + Identity Language Layer
 
 - [x] **Endonym system**: `lib/endonyms.ts` — country names in en/de/fr/sw with `getLocalizedCountryName()`, `searchCountries()`, `getCountrySearchTerms()`. Scalable: add row per country, column per language.
