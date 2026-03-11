@@ -40,8 +40,8 @@ export default function Footer() {
                 {BRAND_NAME}
               </span>
             </Link>
-            <p className="text-[#9D9BAA] text-sm leading-relaxed max-w-xs">{BRAND_TAGLINE}</p>
-            <p className="mt-4 text-xs text-[#9D9BAA]/60">
+            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">{BRAND_TAGLINE}</p>
+            <p className="mt-4 text-xs text-gray-400/60">
               {IMPACT_PARTNER.sharePercent} of every booking supports {IMPACT_PARTNER.name}{' '}
               community projects.
             </p>
@@ -61,7 +61,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-brand-accent/10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-[#9D9BAA]/70">
+        <div className="border-t border-brand-accent/10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-gray-400/70">
           <span>
             © {LEGAL.copyrightYear} {LEGAL.companyName}. Built for dignity, everywhere.
           </span>
@@ -92,7 +92,7 @@ function FooterColumn({
           <li key={href}>
             <Link
               href={href}
-              className="text-[#9D9BAA] text-sm hover:text-brand-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded"
+              className="text-gray-400 text-sm hover:text-brand-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded"
             >
               {label}
             </Link>

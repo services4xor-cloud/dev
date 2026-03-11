@@ -394,7 +394,7 @@ export default function AnchorDashboardPage() {
     <div className="min-h-screen bg-brand-bg">
       {/* Top bar */}
       <div className="bg-gray-900 border-b border-gray-700/50">
-        <div className="max-w-5xl mx-auto px-4 py-4">
+        <div className="max-w-6xl mx-auto px-4 xl:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-xl">
@@ -454,7 +454,7 @@ export default function AnchorDashboardPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 xl:px-8 py-6">
         {loading ? (
           <SkeletonDashboard />
         ) : (

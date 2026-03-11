@@ -188,7 +188,7 @@ export default function Nav() {
         {/* Subtle gold accent line at very top */}
         <div className="h-[1px] bg-gradient-to-r from-transparent via-brand-accent/30 to-transparent" />
 
-        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-6">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="flex items-center justify-between h-16">
             {/* ── Logo with rotating Be[Country] teaser ────────── */}
             <Link
