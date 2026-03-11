@@ -9,7 +9,7 @@ interface MpesaModalProps {
   amount: number
   currency?: string
   description: string
-  itemType: 'job_post' | 'premium' | 'referral'
+  itemType: 'job_post' | 'premium' | 'referral' | 'venture'
   itemId: string
   onSuccess?: (checkoutRequestId: string) => void
 }
@@ -17,7 +17,14 @@ interface MpesaModalProps {
 type Step = 'input' | 'pending' | 'success' | 'error'
 
 export default function MpesaModal({
-  isOpen, onClose, amount, currency = 'KES', description, itemType, itemId, onSuccess
+  isOpen,
+  onClose,
+  amount,
+  currency = 'KES',
+  description,
+  itemType,
+  itemId,
+  onSuccess,
 }: MpesaModalProps) {
   const [phone, setPhone] = useState('')
   const [step, setStep] = useState<Step>('input')
@@ -35,7 +42,13 @@ export default function MpesaModal({
       const res = await fetch('/api/mpesa/stkpush', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber: phone, amount, itemType, itemId }),
+        body: JSON.stringify({
+          phone,
+          amount,
+          packageId: itemType === 'venture' ? itemId : undefined,
+          pathId: itemType === 'job_post' ? itemId : undefined,
+          description: description.slice(0, 13),
+        }),
       })
       const data = await res.json()
 
@@ -74,7 +87,9 @@ export default function MpesaModal({
               <X className="w-5 h-5" />
             </button>
           </div>
-          <div className="text-3xl font-black">{currency} {amount.toLocaleString('en-US')}</div>
+          <div className="text-3xl font-black">
+            {currency} {amount.toLocaleString('en-US')}
+          </div>
           <div className="text-green-100 text-sm mt-1">{description}</div>
         </div>
 
@@ -90,7 +105,7 @@ export default function MpesaModal({
                   <input
                     type="tel"
                     value={phone}
-                    onChange={e => setPhone(e.target.value)}
+                    onChange={(e) => setPhone(e.target.value)}
                     placeholder="07XX XXX XXX"
                     className="input pl-10 w-full"
                     pattern="[0-9\+\s]{9,15}"
@@ -103,7 +118,10 @@ export default function MpesaModal({
                 </p>
               </div>
 
-              <button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition-colors">
+              <button
+                type="submit"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition-colors"
+              >
                 Send KES {amount.toLocaleString('en-US')} →
               </button>
 
@@ -118,8 +136,8 @@ export default function MpesaModal({
               <Loader2 className="w-12 h-12 text-green-500 mx-auto mb-4 animate-spin" />
               <h3 className="font-bold text-gray-900 mb-2">Check your phone</h3>
               <p className="text-gray-500 text-sm">
-                We sent a payment request to <strong>{phone}</strong>.
-                Enter your M-Pesa PIN to complete the payment.
+                We sent a payment request to <strong>{phone}</strong>. Enter your M-Pesa PIN to
+                complete the payment.
               </p>
               <p className="text-xs text-gray-400 mt-4">This may take up to 30 seconds</p>
             </div>

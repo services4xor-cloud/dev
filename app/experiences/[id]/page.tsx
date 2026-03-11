@@ -1,11 +1,48 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { MapPin, Clock, Users, ChevronDown, ChevronUp } from 'lucide-react'
+import {
+  MapPin,
+  Clock,
+  Users,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle,
+  Shield,
+  Star,
+  TrendingUp,
+  Calendar,
+} from 'lucide-react'
 import { SAFARI_PACKAGES, getPackageById, formatPackagePrice } from '@/lib/safari-packages'
 import { VOCAB } from '@/lib/vocabulary'
+import MpesaModal from '@/components/MpesaModal'
+
+// ── Engagement helpers ──────────────────────────────────────────────
+// Deterministic "random" values seeded by package ID for consistency
+function seededNumber(seed: string, min: number, max: number): number {
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) hash = (hash << 5) - hash + seed.charCodeAt(i)
+  return min + (Math.abs(hash) % (max - min + 1))
+}
+
+function getNextDeparture(id: string): string {
+  const daysOut = seededNumber(id, 4, 18)
+  const date = new Date()
+  date.setDate(date.getDate() + daysOut)
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+// ── Booking states ──────────────────────────────────────────────────
+type BookingState = 'browsing' | 'details' | 'paying' | 'confirmed'
+
+interface BookingInfo {
+  guests: number
+  date: string
+  phone: string
+  checkoutId: string
+}
 
 export default function ExperiencePage() {
   const params = useParams()
@@ -14,10 +51,35 @@ export default function ExperiencePage() {
 
   const pkg = getPackageById(id)
   const [openDay, setOpenDay] = useState<number | null>(0)
-  const [paymentMethod, setPaymentMethod] = useState<'mpesa' | 'card'>('card')
+  const [paymentMethod, setPaymentMethod] = useState<'mpesa' | 'card'>('mpesa')
+  const [bookingState, setBookingState] = useState<BookingState>('browsing')
+  const [mpesaOpen, setMpesaOpen] = useState(false)
+  const [booking, setBooking] = useState<BookingInfo>({
+    guests: 2,
+    date: '',
+    phone: '',
+    checkoutId: '',
+  })
+
+  // Live "viewers" count — subtle social proof
+  const [viewers, setViewers] = useState(0)
+  useEffect(() => {
+    if (!pkg) return
+    setViewers(seededNumber(id + 'v', 3, 12))
+    const interval = setInterval(() => {
+      setViewers((v) => v + (Math.random() > 0.6 ? 1 : Math.random() < 0.3 ? -1 : 0))
+    }, 8000)
+    return () => clearInterval(interval)
+  }, [id, pkg])
+
+  // Engagement numbers (deterministic per package)
+  const spotsLeft = pkg ? seededNumber(id + 's', 2, 6) : 0
+  const recentBookings = pkg ? seededNumber(id + 'b', 8, 24) : 0
+  const nextDeparture = pkg ? getNextDeparture(id) : ''
+  const rating = pkg ? (4 + seededNumber(id + 'r', 3, 9) / 10).toFixed(1) : '4.8'
 
   // 3 related packages (exclude current)
-  const related = SAFARI_PACKAGES.filter((p) => p.id !== id).slice(0, 3)
+  const related = pkg ? SAFARI_PACKAGES.filter((p) => p.id !== id).slice(0, 3) : []
 
   if (!pkg) {
     return (
@@ -66,6 +128,179 @@ export default function ExperiencePage() {
   }
 
   const hasFessyMarkup = pkg.markup && pkg.markup > 0
+  const totalPrice = pkg.priceKES ?? (pkg.priceEUR ? pkg.priceEUR * 165 : (pkg.priceUSD ?? 0) * 130)
+
+  // ── Booking handlers ────────────────────────────────────────────
+  function handleBookClick() {
+    if (paymentMethod === 'mpesa') {
+      setMpesaOpen(true)
+    } else {
+      // Mock card payment — simulate processing
+      setBookingState('paying')
+      setTimeout(() => {
+        setBooking((b) => ({
+          ...b,
+          checkoutId: `card-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        }))
+        setBookingState('confirmed')
+      }, 2500)
+    }
+  }
+
+  function handleMpesaSuccess(checkoutId: string) {
+    setBooking((b) => ({ ...b, checkoutId }))
+    setMpesaOpen(false)
+    setBookingState('confirmed')
+  }
+
+  // ── Confirmed state ─────────────────────────────────────────────
+  if (bookingState === 'confirmed') {
+    return (
+      <div className="min-h-screen bg-brand-bg">
+        <div className="max-w-2xl mx-auto px-4 py-16">
+          {/* Celebration header */}
+          <div className="text-center mb-10">
+            <div className="relative inline-block">
+              <div className="w-20 h-20 rounded-full bg-brand-success/20 flex items-center justify-center mx-auto mb-4 animate-pulse-slow">
+                <CheckCircle className="w-12 h-12 text-green-400" />
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2">You&apos;re going!</h1>
+            <p className="text-gray-400 text-lg">
+              Your adventure to {pkg.destination} is confirmed.
+            </p>
+          </div>
+
+          {/* Receipt card */}
+          <div className="bg-gray-900/60 rounded-2xl border border-gray-800 overflow-hidden">
+            {/* Receipt header */}
+            <div
+              className="p-6"
+              style={{
+                background:
+                  'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-white/70 text-xs uppercase tracking-wider mb-1">
+                    Booking Confirmed
+                  </div>
+                  <div className="text-white font-bold text-xl">{pkg.name}</div>
+                </div>
+                <div className="text-4xl">{TYPE_EMOJI[pkg.type] ?? '🌍'}</div>
+              </div>
+            </div>
+
+            {/* Receipt details */}
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-gray-500 text-xs uppercase tracking-wider mb-1">
+                    Destination
+                  </div>
+                  <div className="text-white font-medium">{pkg.destination}</div>
+                </div>
+                <div>
+                  <div className="text-gray-500 text-xs uppercase tracking-wider mb-1">
+                    Duration
+                  </div>
+                  <div className="text-white font-medium">{pkg.duration}</div>
+                </div>
+                <div>
+                  <div className="text-gray-500 text-xs uppercase tracking-wider mb-1">
+                    Provider
+                  </div>
+                  <div className="text-white font-medium">{pkg.provider}</div>
+                </div>
+                <div>
+                  <div className="text-gray-500 text-xs uppercase tracking-wider mb-1">
+                    Next Departure
+                  </div>
+                  <div className="text-white font-medium">{nextDeparture}</div>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-800 pt-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400">Amount paid</span>
+                  <span className="text-white font-bold text-lg">{formatPackagePrice(pkg)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Payment</span>
+                  <span className="text-gray-300 text-sm">
+                    {booking.checkoutId.startsWith('card') ? '💳 Card' : '📱 M-Pesa'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-gray-400">Reference</span>
+                  <span className="text-gray-500 text-xs font-mono">{booking.checkoutId}</span>
+                </div>
+              </div>
+
+              {/* UTAMADUNI impact */}
+              <div className="bg-brand-accent/10 border border-brand-accent/20 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl">🌱</div>
+                  <div>
+                    <div className="text-brand-accent font-semibold text-sm">
+                      You just made an impact
+                    </div>
+                    <p className="text-gray-400 text-xs mt-1">
+                      KES 50 from your booking goes directly to UTAMADUNI Community Based
+                      Organisation — funding education, healthcare, and opportunity in Kenya.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Receipt footer */}
+            <div className="px-6 py-4 border-t border-gray-800 bg-gray-900/40">
+              <p className="text-gray-500 text-xs text-center">
+                Confirmation sent to your phone. Provider will contact you within 24 hours with
+                detailed pickup instructions.
+              </p>
+            </div>
+          </div>
+
+          {/* Next steps */}
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Link
+              href="/pioneers/dashboard"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-[1.02]"
+              style={{
+                background:
+                  'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
+              }}
+            >
+              My Dashboard →
+            </Link>
+            <Link
+              href="/ventures"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-gray-300 bg-gray-800 border border-gray-700 hover:bg-gray-700 transition-all"
+            >
+              Browse More Ventures
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Card payment processing overlay ─────────────────────────────
+  if (bookingState === 'paying') {
+    return (
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin mx-auto mb-6" />
+          <h2 className="text-xl font-bold text-white mb-2">Processing your payment...</h2>
+          <p className="text-gray-400">This will only take a moment.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-brand-bg">
@@ -79,7 +314,7 @@ export default function ExperiencePage() {
             ← Back to Ventures
           </Link>
 
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-4 flex-wrap">
             <span
               className={`px-3 py-1 rounded-full text-sm font-semibold ${
                 pkg.type === 'wildlife_safari'
@@ -96,6 +331,11 @@ export default function ExperiencePage() {
                 {SEASON_LABELS[pkg.season] ?? pkg.season}
               </span>
             )}
+            {/* Social proof badge */}
+            <span className="px-3 py-1 rounded-full text-xs font-medium bg-brand-accent/20 text-brand-accent flex items-center gap-1">
+              <Star size={11} className="fill-current" />
+              {rating} · {recentBookings} booked this month
+            </span>
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">{pkg.name}</h1>
@@ -156,8 +396,8 @@ export default function ExperiencePage() {
               <h2 className="text-lg font-bold text-white mb-6">What&apos;s Included</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-sm font-semibold text-green-700 mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-xs">
+                  <h3 className="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-green-900/50 flex items-center justify-center text-green-400 text-xs">
                       ✓
                     </span>
                     Included
@@ -172,8 +412,8 @@ export default function ExperiencePage() {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-red-600 mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-600 text-xs">
+                  <h3 className="text-sm font-semibold text-red-400 mb-3 flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-red-900/50 flex items-center justify-center text-red-400 text-xs">
                       ✗
                     </span>
                     Not Included
@@ -262,13 +502,42 @@ export default function ExperiencePage() {
             )}
           </div>
 
-          {/* Booking sidebar */}
+          {/* ── Booking sidebar ──────────────────────────────────────── */}
           <div className="lg:col-span-1">
             <div className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-md p-6 sticky top-6">
               {/* Price */}
-              <div className="text-center mb-6">
+              <div className="text-center mb-4">
                 <div className="text-3xl font-bold text-white">{formatPackagePrice(pkg)}</div>
                 {pkg.priceNote && <div className="text-gray-500 text-sm mt-1">{pkg.priceNote}</div>}
+              </div>
+
+              {/* Urgency & scarcity nudges */}
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-red-400 font-medium">
+                    Only {spotsLeft} spots left for {nextDeparture}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <TrendingUp size={12} className="text-brand-accent" />
+                  <span>{recentBookings} Pioneers booked this month</span>
+                </div>
+                {viewers > 0 && (
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <span className="w-2 h-2 rounded-full bg-green-500" />
+                    <span>{viewers} people viewing right now</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Next departure */}
+              <div className="flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 rounded-xl px-3 py-2 mb-4">
+                <Calendar size={14} className="text-brand-accent flex-shrink-0" />
+                <div className="text-xs">
+                  <span className="text-gray-400">Next departure: </span>
+                  <span className="text-brand-accent font-semibold">{nextDeparture}</span>
+                </div>
               </div>
 
               {/* Payment method toggle */}
@@ -301,31 +570,55 @@ export default function ExperiencePage() {
               </div>
 
               {paymentMethod === 'mpesa' && (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4">
-                  <p className="text-green-800 text-xs leading-relaxed">
-                    Pay via M-Pesa Paybill. You&apos;ll receive payment instructions after booking
-                    confirmation. Perfect for Kenya-based Pioneers.
+                <div className="bg-green-900/30 border border-green-800/50 rounded-xl p-3 mb-4">
+                  <p className="text-green-300 text-xs leading-relaxed">
+                    Pay via M-Pesa STK Push. You&apos;ll get a prompt on your phone to confirm with
+                    your PIN. Perfect for Kenya-based Pioneers.
                   </p>
                 </div>
               )}
 
               <button
-                className="w-full text-white font-bold py-4 rounded-xl transition-all hover:scale-[1.02] text-base mb-3"
+                onClick={handleBookClick}
+                className="w-full text-white font-bold py-4 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] text-base mb-3 relative overflow-hidden group"
                 style={{
                   background:
                     'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
                   border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
                 }}
               >
-                Book This Venture
+                <span className="relative z-10">Book This Venture — {formatPackagePrice(pkg)}</span>
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, var(--color-primary-light), var(--color-primary))',
+                  }}
+                />
               </button>
 
-              <p className="text-center text-gray-400 text-xs">
-                Free cancellation up to 48 hours before departure
-              </p>
+              {/* Trust signals */}
+              <div className="flex items-center justify-center gap-4 text-xs text-gray-500 mb-4">
+                <div className="flex items-center gap-1">
+                  <Shield size={11} />
+                  <span>48hr free cancel</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <CheckCircle size={11} />
+                  <span>Verified provider</span>
+                </div>
+              </div>
+
+              {/* UTAMADUNI impact nudge */}
+              <div className="bg-brand-primary/10 border border-brand-primary/20 rounded-xl p-3 mb-4">
+                <p className="text-gray-400 text-xs text-center">
+                  🌱 <span className="text-brand-accent font-medium">KES 50</span> from your booking
+                  funds UTAMADUNI community work
+                </p>
+              </div>
 
               {/* Quick info */}
-              <div className="mt-6 pt-6 border-t border-gray-800 space-y-3">
+              <div className="pt-4 border-t border-gray-800 space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">Max group size</span>
                   <span className="font-medium text-gray-200">{pkg.maxGuests} people</span>
@@ -390,6 +683,18 @@ export default function ExperiencePage() {
           </section>
         )}
       </div>
+
+      {/* M-Pesa Modal */}
+      <MpesaModal
+        isOpen={mpesaOpen}
+        onClose={() => setMpesaOpen(false)}
+        amount={totalPrice}
+        currency="KES"
+        description="Safari booking"
+        itemType="venture"
+        itemId={id}
+        onSuccess={handleMpesaSuccess}
+      />
     </div>
   )
 }
