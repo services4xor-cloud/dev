@@ -98,6 +98,7 @@ export default function Nav() {
   // Fetch threads from API (falls back to mock data)
   const { threads: navThreads } = useThreads()
   const {
+    identity,
     brandName: identityBrandName,
     countryName: identityCountryName,
     setCountry,
@@ -376,13 +377,19 @@ export default function Nav() {
                       })}
                     </div>
 
-                    {/* Thread list */}
+                    {/* Thread list — sorted by relevance to active identity */}
                     <div className="max-h-64 overflow-y-auto overscroll-contain py-1.5 px-1.5">
                       {navThreads
                         .filter(
                           (t) => IDENTITY_TABS[identityTabIdx]?.types.includes(t.type) && t.active
                         )
-                        .sort((a, b) => b.memberCount - a.memberCount)
+                        .sort((a, b) => {
+                          // Threads matching active country appear first
+                          const aMatch = a.countries?.includes(identity.country) ? 1 : 0
+                          const bMatch = b.countries?.includes(identity.country) ? 1 : 0
+                          if (aMatch !== bMatch) return bMatch - aMatch
+                          return b.memberCount - a.memberCount
+                        })
                         .map((thread) => (
                           <Link
                             key={thread.slug}
@@ -430,7 +437,8 @@ export default function Nav() {
                                 <span className="font-semibold text-white group-hover/item:text-brand-accent transition-colors truncate">
                                   {thread.brandName}
                                 </span>
-                                {thread.slug === CC.toLowerCase() && (
+                                {(thread.slug === identity.country.toLowerCase() ||
+                                  thread.slug === identity.threadSlug) && (
                                   <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-brand-accent/20 text-brand-accent uppercase tracking-wider">
                                     Active
                                   </span>

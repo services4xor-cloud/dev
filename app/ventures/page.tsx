@@ -23,6 +23,7 @@ import { VOCAB, PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
 import { usePaths } from '@/lib/hooks/use-paths'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+import { useIdentity } from '@/lib/identity-context'
 import type { FilterCategory, PathListItem } from '@/types/domain'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -56,6 +57,7 @@ const INITIAL_DISPLAY_COUNT = 6
 
 export default function VenturesPage() {
   const searchParams = useSearchParams()
+  const { identity, brandName } = useIdentity()
 
   // ── Read Compass flags from URL ──────────────────────────────────────────
   const compassFrom = searchParams.get('from') ?? ''
@@ -83,7 +85,8 @@ export default function VenturesPage() {
 
   const filteredPaths = allPaths.filter((p) => filter === 'all' || p.category === filter)
 
-  const showSafaris = filter === 'all' || filter === 'explorer'
+  // Only show safari packages when Kenya is the active identity (they're Kenya-specific)
+  const showSafaris = (filter === 'all' || filter === 'explorer') && identity.country === 'KE'
   const visibleSafaris = SAFARI_PACKAGES.slice(0, filter === 'explorer' ? 6 : 3)
 
   const featuredPaths = filteredPaths.filter((p) => p.isFeatured)
@@ -163,8 +166,8 @@ export default function VenturesPage() {
                 Your Chapter Starts Here.
               </h1>
               <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
-                From Maasai Mara game drives to London fintech floors — every path here is a real
-                chapter waiting to be written by a Pioneer like you.
+                {brandName} brings real paths and ventures together — every one is a chapter waiting
+                to be written by a Pioneer like you.
               </p>
             </>
           )}

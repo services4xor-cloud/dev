@@ -347,80 +347,85 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 4. EXPERIENCES STRIP (Safari) ────────────────────────────────────── */}
-      <section className="py-24 bg-gradient-to-b from-brand-bg to-brand-primary/20">
-        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
-          <div className="text-center mb-12">
-            <p className="text-brand-accent text-sm font-semibold uppercase tracking-widest mb-3">
-              Safari Experiences
-            </p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
-              Kenya waits for no one. Neither should you.
-            </h2>
-            <p className="text-gray-400 max-w-xl mx-auto">
-              Three signature experiences. Deep sea. Open savanna. The world-famous Mara.
-            </p>
-          </div>
+      {/* ── 4. EXPERIENCES STRIP (identity-driven) ────────────────────────────── */}
+      {activeCountry === 'KE' && (
+        <section className="py-24 bg-gradient-to-b from-brand-bg to-brand-primary/20">
+          <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
+            <div className="text-center mb-12">
+              <p className="text-brand-accent text-sm font-semibold uppercase tracking-widest mb-3">
+                {countryConfig?.name ?? 'Safari'} Experiences
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
+                {countryName} waits for no one. Neither should you.
+              </h2>
+              <p className="text-gray-400 max-w-xl mx-auto">
+                Signature experiences curated by {brandName}.
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {EXPERIENCE_PACKAGES.map((pkg) => (
-              <div
-                key={pkg.id}
-                className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden group hover:-translate-y-1 transition-transform"
-              >
-                {/* Image placeholder with gradient */}
-                <div className="h-44 bg-gradient-to-br from-brand-primary to-[#2a0a0f] flex items-center justify-center relative">
-                  <span className="text-6xl opacity-60">
-                    {pkg.type === 'deep_sea_fishing'
-                      ? '🐟'
-                      : pkg.type === 'wildlife_safari'
-                        ? '🦁'
-                        : '🌿'}
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
-                </div>
-
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs font-bold uppercase tracking-widest text-brand-accent bg-brand-accent/10 rounded-full px-3 py-1">
-                      {pkg.duration}
+            <div className="grid md:grid-cols-3 gap-6">
+              {EXPERIENCE_PACKAGES.map((pkg) => (
+                <div
+                  key={pkg.id}
+                  className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden group hover:-translate-y-1 transition-transform"
+                >
+                  {/* Image placeholder with gradient */}
+                  <div className="h-44 bg-gradient-to-br from-brand-primary to-[#2a0a0f] flex items-center justify-center relative">
+                    <span className="text-6xl opacity-60">
+                      {pkg.type === 'deep_sea_fishing'
+                        ? '🐟'
+                        : pkg.type === 'wildlife_safari'
+                          ? '🦁'
+                          : '🌿'}
                     </span>
-                    <span className="text-xs text-gray-400">{pkg.destination}</span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
                   </div>
-                  <h3 className="font-display text-lg font-bold text-white mb-1">{pkg.name}</h3>
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                    {pkg.highlights[0]} · {pkg.highlights[1]}
-                  </p>
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <div className="font-bold text-xl" style={{ color: 'var(--color-accent)' }}>
-                          {formatPackagePrice(pkg)}
-                        </div>
-                        {pkg.priceNote && (
-                          <div className="text-gray-400 text-xs">{pkg.priceNote}</div>
-                        )}
-                      </div>
+
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs font-bold uppercase tracking-widest text-brand-accent bg-brand-accent/10 rounded-full px-3 py-1">
+                        {pkg.duration}
+                      </span>
+                      <span className="text-xs text-gray-400">{pkg.destination}</span>
                     </div>
-                    <Link
-                      href={`/experiences/${pkg.id}`}
-                      className="block w-full text-center text-sm font-bold text-white rounded-xl px-4 py-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
-                      style={{
-                        background:
-                          'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
-                        border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
-                        boxShadow: '0 4px 16px rgb(var(--color-primary-rgb) / 0.3)',
-                      }}
-                    >
-                      Book This Venture &rarr;
-                    </Link>
+                    <h3 className="font-display text-lg font-bold text-white mb-1">{pkg.name}</h3>
+                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                      {pkg.highlights[0]} · {pkg.highlights[1]}
+                    </p>
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <div
+                            className="font-bold text-xl"
+                            style={{ color: 'var(--color-accent)' }}
+                          >
+                            {formatPackagePrice(pkg)}
+                          </div>
+                          {pkg.priceNote && (
+                            <div className="text-gray-400 text-xs">{pkg.priceNote}</div>
+                          )}
+                        </div>
+                      </div>
+                      <Link
+                        href={`/experiences/${pkg.id}`}
+                        className="block w-full text-center text-sm font-bold text-white rounded-xl px-4 py-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        style={{
+                          background:
+                            'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                          border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
+                          boxShadow: '0 4px 16px rgb(var(--color-primary-rgb) / 0.3)',
+                        }}
+                      >
+                        Book This Venture &rarr;
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── 6. IMPACT PARTNER BANNER ─────────────────────────────────────────── */}
       <section
@@ -527,7 +532,11 @@ export default function HomePage() {
           </div>
 
           <p className="text-gray-400 text-sm">
-            BeGermany · BeAmerica · BeNigeria · BeUK · BeUAE · and beyond
+            {BE_COUNTRIES.filter((c) => c.status !== 'live')
+              .slice(0, 5)
+              .map((c) => c.name)
+              .join(' · ')}{' '}
+            · and beyond
           </p>
         </div>
       </section>
