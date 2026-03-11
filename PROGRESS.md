@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 25 (2026-03-11)
+> Last updated: Session 26 (2026-03-11)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -15,7 +15,7 @@
 | Deploy            | Vercel auto on push                              |
 | Pages             | 20+                                              |
 | API routes        | 12+                                              |
-| Library modules   | 14 (incl. threads.ts)                            |
+| Library modules   | 16 (incl. threads.ts, geo.ts, emoji-map.ts)      |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                 |
 | Jest tests        | 107/107 ✅                                       |
 | Playwright tests  | 102/102 ✅ (16 smoke + 32 brand + 54 responsive) |
@@ -66,6 +66,15 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 ---
 
 ## Session Log
+
+### Session 26 (2026-03-11) — Code Quality: Extract Shared Utilities
+
+- [x] **lib/geo.ts**: Extracted timezone→country detection from app/page.tsx (hardcoded 8-line if-chain) and app/onboarding/page.tsx (inline function) into shared utility using canonical COUNTRY_OPTIONS
+- [x] **lib/emoji-map.ts**: Extracted 23-line sector→emoji if-chain from app/be/[country]/page.tsx into regex-based lookup table — single source of truth
+- [x] **PIONEER_TYPE_OPTIONS**: Moved derived select-options array from app/page.tsx to lib/vocabulary.ts — shared across any dropdown that needs Pioneer types
+- [x] **CSS --gradient-experience**: Replaced hardcoded hex gradients (#3D1A00, #7B3F00) in offerings + ventures pages with CSS variable from globals.css
+- [x] **Net result**: −58 lines removed, +105 lines added (including JSDoc), 39 fewer lines of duplication across 7 files
+- [x] Build: ✅ | Jest: 107/107 ✅ | TS: 0 errors
 
 ### Session 25 (2026-03-11) — Impact Partner Abstraction, WizardShell, Component Cleanup
 
