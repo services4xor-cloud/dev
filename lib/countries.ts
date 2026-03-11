@@ -27,6 +27,7 @@ export type CountryCode =
   | 'AE'
   | 'CA'
   | 'GB'
+  | 'TH'
 
 export interface PaymentMethod {
   id: string
@@ -606,6 +607,80 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     currencySymbol: '£',
     locale: 'en-GB',
     phonePrefix: '+44',
+  },
+  TH: {
+    ...usaConfig,
+    code: 'TH',
+    name: 'Thailand',
+    brandName: 'BeThailand',
+    domain: 'bethailand.com',
+    flag: '🇹🇭',
+    currency: 'THB',
+    currencySymbol: '฿',
+    locale: 'th-TH',
+    phonePrefix: '+66',
+    impactPartner: {
+      name: 'Siam Bridges',
+      fullName: 'Siam Bridges — Foundation for Cross-Cultural Exchange',
+      tagline: 'Bridging cultures, building futures',
+      sharePercent: '5%',
+      contributionAmount: 'THB 50',
+      pillars: [
+        'Cultural Exchange',
+        'Skills Training',
+        'Community Development',
+        'Youth Empowerment',
+      ],
+      url: '/charity',
+    },
+    paymentMethods: [
+      {
+        id: 'bank-transfer',
+        name: 'Bank Transfer',
+        logo: 'BT',
+        description: 'Thai bank transfer',
+        currencies: ['THB'],
+      },
+      {
+        id: 'promptpay',
+        name: 'PromptPay',
+        logo: 'PP',
+        description: 'Thai QR payment system',
+        currencies: ['THB'],
+      },
+      {
+        id: 'stripe',
+        name: 'Stripe',
+        logo: 'S',
+        description: 'International cards',
+        currencies: ['THB', 'USD'],
+      },
+    ],
+    featuredSectors: [
+      { id: 'tourism', name: 'Tourism', emoji: '🏖️', count: 8400 },
+      { id: 'manufacturing', name: 'Manufacturing', emoji: '🏭', count: 6200 },
+      { id: 'tech', name: 'Technology', emoji: '💻', count: 5800 },
+      { id: 'agriculture', name: 'Agriculture', emoji: '🌾', count: 4200 },
+      { id: 'healthcare', name: 'Healthcare', emoji: '🏥', count: 3600 },
+      { id: 'hospitality', name: 'Hospitality', emoji: '🍽️', count: 7200 },
+    ],
+    popularSearches: [
+      'Hotel Manager',
+      'Software Pioneer',
+      'Tourism',
+      'Bangkok',
+      'Remote',
+      'Agriculture',
+    ],
+    heroTagline: 'Find Your Path in Thailand',
+    heroSubtext:
+      'Connect with Anchors across Thailand. Tourism, tech, and agriculture Paths in the Land of Smiles.',
+    statsBar: [
+      { label: 'Open Paths', value: '32,000+' },
+      { label: 'Anchors', value: '2,100+' },
+      { label: 'Pioneers Placed', value: '5,400' },
+      { label: 'Avg. (THB)', value: '85k' },
+    ],
   },
 }
 

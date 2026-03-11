@@ -3,10 +3,10 @@
  * Be[Country] — Database Seed
  * Run: npx prisma db seed
  *
- * Seeds 3 countries (KE, DE, CH) with:
- * - 9 Anchors (3 per country)
- * - 18 Paths (6 per country)
- * - 6 Pioneers (2 per country)
+ * Seeds 4 countries (KE, DE, CH, TH) with:
+ * - 11 Anchors (3 KE, 3 DE, 3 CH, 2 TH)
+ * - 22 Paths (6 KE, 6 DE, 6 CH, 4 TH)
+ * - 8 Pioneers (2 per country)
  * - 21+ Threads (identity communities)
  * - 6 Experiences (eco-tourism, Kenya)
  */
@@ -17,7 +17,7 @@ import { hash } from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('🌱 Seeding Be[Country] data for KE, DE, CH...\n')
+  console.log('🌱 Seeding Be[Country] data for KE, DE, CH, TH...\n')
 
   // ── Anchors ─────────────────────────────────────────────────────────────────
   const anchors = await Promise.all([
@@ -52,6 +52,19 @@ async function main() {
       'Swisscom AG',
       'CH',
       'Leading Swiss telecom and IT provider.'
+    ),
+    // Thailand
+    upsertAnchor(
+      'hr@agoda.test',
+      'Agoda Thailand',
+      'TH',
+      'Leading online travel platform based in Bangkok.'
+    ),
+    upsertAnchor(
+      'careers@cpgroup.test',
+      'CP Group',
+      'TH',
+      "Thailand's largest private company — agribusiness, retail, telecom."
     ),
   ])
 
@@ -316,6 +329,64 @@ async function main() {
       ['Power Electronics', 'MATLAB', 'Renewable Energy', 'English'],
       'FEATURED'
     ),
+
+    // Thailand
+    path(
+      'Full-Stack Developer',
+      'Agoda',
+      anchors[9].id,
+      'TH',
+      'Bangkok, Thailand',
+      'tech',
+      'Build travel technology for millions of users across Asia.',
+      90000,
+      150000,
+      'THB',
+      ['React', 'Node.js', 'AWS', 'TypeScript'],
+      'FEATURED'
+    ),
+    path(
+      'Hotel General Manager',
+      'Anantara Hotels',
+      anchors[10].id,
+      'TH',
+      'Koh Samui, Thailand',
+      'hospitality',
+      'Lead operations at a luxury beachfront resort.',
+      80000,
+      120000,
+      'THB',
+      ['Hospitality Management', 'Thai', 'English', 'Leadership'],
+      'PREMIUM'
+    ),
+    path(
+      'Dive Instructor — PADI',
+      'Crystal Dive Koh Tao',
+      anchors[10].id,
+      'TH',
+      'Koh Tao, Thailand',
+      'marine',
+      'Teach diving to international visitors in crystal clear waters.',
+      40000,
+      60000,
+      'THB',
+      ['PADI Certification', 'English', 'Swimming', 'Marine Biology'],
+      'BASIC'
+    ),
+    path(
+      'Agriculture Innovation Lead',
+      'CP Group',
+      anchors[9].id,
+      'TH',
+      'Nakhon Ratchasima, Thailand',
+      'agriculture',
+      'Lead precision agriculture projects using IoT and drone technology.',
+      70000,
+      100000,
+      'THB',
+      ['Agriculture', 'IoT', 'Data Analysis', 'Thai B1'],
+      'FEATURED'
+    ),
   ]
 
   for (const p of pathData) {
@@ -400,6 +471,29 @@ async function main() {
       'professional',
       ['Java', 'Cloud Architecture', 'English', 'Swahili', 'German A2']
     ),
+    // Thailand
+    upsertPioneer(
+      'somchai@test.com',
+      'Somchai Sripakdee',
+      'TH',
+      '+66891234567',
+      passwordHash,
+      'Tourism Professional',
+      'Hospitality expert with 10 years in luxury Thai resorts.',
+      'explorer',
+      ['Hospitality', 'Thai', 'English', 'Guest Relations', 'F&B']
+    ),
+    upsertPioneer(
+      'nattaya@test.com',
+      'Nattaya Wongchai',
+      'TH',
+      '+66821234567',
+      passwordHash,
+      'Software Engineer',
+      'Bangkok-based developer working in fintech.',
+      'professional',
+      ['Python', 'React', 'AWS', 'Thai', 'English']
+    ),
   ])
 
   console.log(`✅ ${pioneers.length} Pioneers seeded`)
@@ -439,6 +533,17 @@ async function main() {
       null,
       ['CH'],
       3400
+    ),
+    thread(
+      'th',
+      'Thailand',
+      'BeThailand',
+      'COUNTRY',
+      '🇹🇭',
+      'Land of Smiles meets global opportunity.',
+      null,
+      ['TH'],
+      2800
     ),
     thread(
       'ng',
@@ -865,6 +970,29 @@ async function main() {
       1900
     ),
     thread('basel', 'Basel', 'BeBasel', 'LOCATION', '💊', 'Pharma capital.', 'ch', ['CH'], 1200),
+    // Locations — TH
+    thread(
+      'bangkok',
+      'Bangkok',
+      'BeBangkok',
+      'LOCATION',
+      '🏙️',
+      "Southeast Asia's vibrant hub.",
+      'th',
+      ['TH'],
+      3200
+    ),
+    thread(
+      'kohsamui',
+      'Koh Samui',
+      'BeKohSamui',
+      'LOCATION',
+      '🏝️',
+      'Island paradise with global hospitality.',
+      'th',
+      ['TH'],
+      920
+    ),
     // Locations — NG
     thread('lagos', 'Lagos', 'BeLagos', 'LOCATION', '🌆', "Africa's megacity.", 'ng', ['NG'], 4200),
     // Locations — GB
@@ -1056,7 +1184,7 @@ async function main() {
   }
   console.log(`✅ ${experiences.length} Experiences seeded`)
 
-  console.log('\n🎉 Seed complete! 3 countries ready: KE, DE, CH')
+  console.log('\n🎉 Seed complete! 4 countries ready: KE, DE, CH, TH')
   console.log('   Visit /ventures to see listings.')
 }
 

@@ -486,6 +486,23 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     tz: 'Asia/Kolkata',
     languages: ['en', 'hi'],
   },
+  // ── South-East Asia ─────────────────────────────────────────────────────
+  {
+    code: 'TH',
+    name: 'Thailand',
+    flag: '🇹🇭',
+    lat: 13.75,
+    lng: 100.5,
+    region: 'south-asia',
+    corridorStrength: 'partner',
+    topSectors: ['Tourism', 'Manufacturing', 'Tech', 'Agriculture', 'Healthcare'],
+    currency: 'THB',
+    payment: ['Bank Transfer', 'PromptPay', 'Stripe'],
+    visa: 'Tourist visa on arrival, Work Permit required',
+    approxFlightHoursFromKenya: 9,
+    tz: 'Asia/Bangkok',
+    languages: ['en'],
+  },
   // ── Oceania ──────────────────────────────────────────────────────────────
   {
     code: 'AU',
