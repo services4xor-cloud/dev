@@ -288,21 +288,65 @@ const CONTENT: Record<string, ContentDict> = {
 
     // About page
     'about.title': 'About BeNetwork',
+    'about.badge': 'Identity-first life-routing platform',
+    'about.heroTitle': 'Work should be for {accent}everyone.{/accent}',
+    'about.heroDesc':
+      'BeNetwork reverses colonial economic flows through open trade, fair compensation, and direct country-to-country connections. No intermediaries. No gatekeepers.',
+    'about.startCompass': 'Start My Compass',
+    'about.postPath': 'Post a Path',
     'about.mission': 'Our Mission',
+    'about.missionTitle': 'Reverse the flow. {accent}Build the corridor.{/accent}',
     'about.missionDesc':
       'BeNetwork reverses colonial economic flows. People in the Global South move, work, and thrive on their own terms.',
+    'about.missionP1':
+      'For centuries, value has flowed one way — out of Africa, out of the Global South, into the hands of intermediaries and gatekeepers. BeNetwork is the corridor in the opposite direction.',
+    'about.missionP2':
+      'We connect Pioneers directly with Anchors across 50+ countries. Payments flow through M-Pesa, Flutterwave, and local rails — not through foreign banks. Routes are built on real visa corridors, not wishful thinking.',
     'about.howItWorks': 'How It Works',
     'about.values': 'Our Values',
+    'about.valuesTitle': 'Values that guide every path',
+    'about.valuesSubtitle': 'What We Stand For',
     'about.team': 'Our Team',
+    'about.sectors': 'Industries',
+    'about.sectorsTitle': 'Paths across every sector',
+    'about.payments': 'Payment Rails',
+    'about.paymentsTitle': 'Money flows where you do',
+    'about.paymentsDesc':
+      'We support local payment methods across every corridor — so your income arrives in your hands.',
+    'about.impactDesc':
+      'Our community arm. Supporting conservation workers, local guides, and cultural educators across East Africa. Every booking through {brand} contributes.',
+    'about.learnImpact': 'Learn about {name}',
+    'about.ctaTitle': 'Ready to find your path?',
+    'about.ctaDesc':
+      "Start your Compass. Tell us where you are and where you want to go. We'll build your route.",
 
     // Contact page
     'contact.title': 'Get in Touch',
-    'contact.subtitle': "Have questions? We'd love to hear from you.",
+    'contact.subtitle': 'Questions about {brand}? We respond within {time} on business days.',
     'contact.name': 'Your Name',
+    'contact.namePlaceholder': 'Your name',
     'contact.email': 'Your Email',
+    'contact.emailPlaceholder': 'you@example.com',
+    'contact.subject': 'Subject',
+    'contact.subjectPlaceholder': 'Select a topic...',
+    'contact.subjectPath': 'Path posting help',
+    'contact.subjectPayment': 'Payment issue',
+    'contact.subjectAccount': 'Account problem',
+    'contact.subjectScam': 'Report a scam',
+    'contact.subjectPartner': 'Partnership inquiry',
+    'contact.subjectOther': 'Other',
     'contact.message': 'Your Message',
+    'contact.messagePlaceholder': 'Tell us how we can help...',
     'contact.send': 'Send Message',
     'contact.sending': 'Sending...',
+    'contact.sent': 'Message sent!',
+    'contact.sentDesc': "We'll get back to you within 24 hours.",
+    'contact.error': 'Something went wrong. Please try again or email us directly.',
+    'contact.labelEmail': 'Email',
+    'contact.labelEmailSub': 'General enquiries',
+    'contact.labelWhatsApp': 'WhatsApp',
+    'contact.labelLocation': 'Location',
+    'contact.labelSocial': 'Social',
 
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
@@ -511,17 +555,61 @@ const CONTENT: Record<string, ContentDict> = {
 
     // About
     'about.title': 'Über BeNetwork',
+    'about.badge': 'Identitäts-basierte Lebensrouting-Plattform',
+    'about.heroTitle': 'Arbeit sollte für {accent}alle{/accent} sein.',
+    'about.heroDesc':
+      'BeNetwork kehrt koloniale Wirtschaftsströme um — durch offenen Handel, faire Vergütung und direkte Verbindungen zwischen Ländern.',
+    'about.startCompass': 'Meinen Kompass starten',
+    'about.postPath': 'Einen Pfad posten',
     'about.mission': 'Unsere Mission',
+    'about.missionTitle': 'Den Strom umkehren. {accent}Den Korridor bauen.{/accent}',
+    'about.missionP1':
+      'Seit Jahrhunderten fließt der Wert in eine Richtung — aus Afrika, aus dem Globalen Süden, in die Hände von Vermittlern und Torwächtern. BeNetwork ist der Korridor in die andere Richtung.',
+    'about.missionP2':
+      'Wir verbinden Pioniere direkt mit Ankern in 50+ Ländern. Zahlungen fließen über M-Pesa, Flutterwave und lokale Kanäle — nicht über ausländische Banken.',
     'about.values': 'Unsere Werte',
+    'about.valuesTitle': 'Werte, die jeden Pfad leiten',
+    'about.valuesSubtitle': 'Wofür wir stehen',
+    'about.sectors': 'Branchen',
+    'about.sectorsTitle': 'Pfade in jeder Branche',
+    'about.payments': 'Zahlungskanäle',
+    'about.paymentsTitle': 'Geld fließt dorthin, wo du bist',
+    'about.paymentsDesc':
+      'Wir unterstützen lokale Zahlungsmethoden in jedem Korridor — damit dein Einkommen in deinen Händen ankommt.',
+    'about.impactDesc':
+      'Unser Community-Arm. Unterstützt Naturschützer, lokale Guides und kulturelle Pädagogen in Ostafrika. Jede Buchung über {brand} trägt bei.',
+    'about.learnImpact': 'Mehr über {name} erfahren',
+    'about.ctaTitle': 'Bereit, deinen Pfad zu finden?',
+    'about.ctaDesc':
+      'Starte deinen Kompass. Sag uns, wo du bist und wohin du willst. Wir bauen deine Route.',
 
     // Contact
     'contact.title': 'Kontakt aufnehmen',
-    'contact.subtitle': 'Hast du Fragen? Wir freuen uns von dir zu hören.',
+    'contact.subtitle': 'Fragen zu {brand}? Wir antworten innerhalb von {time} an Werktagen.',
     'contact.name': 'Dein Name',
+    'contact.namePlaceholder': 'Dein Name',
     'contact.email': 'Deine E-Mail',
+    'contact.emailPlaceholder': 'du@beispiel.de',
+    'contact.subject': 'Betreff',
+    'contact.subjectPlaceholder': 'Thema wählen...',
+    'contact.subjectPath': 'Hilfe beim Pfad-Posting',
+    'contact.subjectPayment': 'Zahlungsproblem',
+    'contact.subjectAccount': 'Kontoproblem',
+    'contact.subjectScam': 'Betrug melden',
+    'contact.subjectPartner': 'Partnerschaftsanfrage',
+    'contact.subjectOther': 'Sonstiges',
     'contact.message': 'Deine Nachricht',
+    'contact.messagePlaceholder': 'Erzähl uns, wie wir helfen können...',
     'contact.send': 'Nachricht senden',
     'contact.sending': 'Wird gesendet...',
+    'contact.sent': 'Nachricht gesendet!',
+    'contact.sentDesc': 'Wir melden uns innerhalb von 24 Stunden bei dir.',
+    'contact.error': 'Etwas ist schiefgelaufen. Bitte versuche es erneut oder schreibe uns direkt.',
+    'contact.labelEmail': 'E-Mail',
+    'contact.labelEmailSub': 'Allgemeine Anfragen',
+    'contact.labelWhatsApp': 'WhatsApp',
+    'contact.labelLocation': 'Standort',
+    'contact.labelSocial': 'Soziale Medien',
 
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
@@ -660,17 +748,62 @@ const CONTENT: Record<string, ContentDict> = {
 
     // About
     'about.title': 'Kuhusu BeNetwork',
+    'about.badge': 'Jukwaa la kuongoza maisha kwa utambulisho',
+    'about.heroTitle': 'Kazi inapaswa kuwa ya {accent}kila mtu.{/accent}',
+    'about.heroDesc':
+      'BeNetwork inabadilisha mtiririko wa kiuchumi wa kikoloni kupitia biashara huru, malipo ya haki, na uhusiano wa moja kwa moja kati ya nchi.',
+    'about.startCompass': 'Anza Dira Yangu',
+    'about.postPath': 'Weka Njia',
     'about.mission': 'Misheni Yetu',
+    'about.missionTitle': 'Badilisha mtiririko. {accent}Jenga korrido.{/accent}',
+    'about.missionP1':
+      'Kwa karne nyingi, thamani imekuwa ikitiririka upande mmoja — kutoka Afrika, kutoka Kusini mwa Ulimwengu. BeNetwork ni korrido katika upande wa pili.',
+    'about.missionP2':
+      'Tunaunganisha Waanzilishi moja kwa moja na Nanga katika nchi 50+. Malipo yanapitia M-Pesa, Flutterwave, na njia za ndani.',
     'about.values': 'Maadili Yetu',
+    'about.valuesTitle': 'Maadili yanayoongoza kila njia',
+    'about.valuesSubtitle': 'Tunasimamia Nini',
+    'about.sectors': 'Sekta',
+    'about.sectorsTitle': 'Njia katika kila sekta',
+    'about.payments': 'Njia za Malipo',
+    'about.paymentsTitle': 'Pesa inafuata mahali ulipo',
+    'about.paymentsDesc':
+      'Tunaunga mkono njia za malipo za ndani katika kila korrido — ili mapato yako yafike mikononi mwako.',
+    'about.impactDesc':
+      'Mkono wetu wa jamii. Tunaunga mkono wahifadhi, waongoza wa ndani, na walimu wa kitamaduni kote Afrika Mashariki. Kila uhifadhi kupitia {brand} unachangia.',
+    'about.learnImpact': 'Jifunze kuhusu {name}',
+    'about.ctaTitle': 'Uko tayari kupata njia yako?',
+    'about.ctaDesc':
+      'Anza Dira yako. Tuambie uko wapi na unataka kwenda wapi. Tutajenga njia yako.',
 
     // Contact
     'contact.title': 'Wasiliana Nasi',
-    'contact.subtitle': 'Una maswali? Tungependa kusikia kutoka kwako.',
+    'contact.subtitle': 'Maswali kuhusu {brand}? Tunajibu ndani ya {time} siku za kazi.',
     'contact.name': 'Jina Lako',
+    'contact.namePlaceholder': 'Jina lako',
     'contact.email': 'Barua Pepe Yako',
+    'contact.emailPlaceholder': 'wewe@mfano.com',
+    'contact.subject': 'Mada',
+    'contact.subjectPlaceholder': 'Chagua mada...',
+    'contact.subjectPath': 'Msaada wa kuweka Njia',
+    'contact.subjectPayment': 'Tatizo la malipo',
+    'contact.subjectAccount': 'Tatizo la akaunti',
+    'contact.subjectScam': 'Ripoti ulaghai',
+    'contact.subjectPartner': 'Swali la ushirikiano',
+    'contact.subjectOther': 'Nyingine',
     'contact.message': 'Ujumbe Wako',
+    'contact.messagePlaceholder': 'Tuambie tunaweza kusaidia vipi...',
     'contact.send': 'Tuma Ujumbe',
     'contact.sending': 'Inatuma...',
+    'contact.sent': 'Ujumbe umetumwa!',
+    'contact.sentDesc': 'Tutajibu ndani ya masaa 24.',
+    'contact.error':
+      'Kitu kimekwenda vibaya. Tafadhali jaribu tena au tutumie barua pepe moja kwa moja.',
+    'contact.labelEmail': 'Barua Pepe',
+    'contact.labelEmailSub': 'Maswali ya jumla',
+    'contact.labelWhatsApp': 'WhatsApp',
+    'contact.labelLocation': 'Mahali',
+    'contact.labelSocial': 'Mitandao ya Kijamii',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',

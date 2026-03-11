@@ -3,7 +3,7 @@
 /**
  * About — BeNetwork platform story, mission, values
  *
- * Dark theme. Full BeNetwork vocabulary.
+ * Dark theme. Full BeNetwork vocabulary. i18n-wired.
  * Global layout.tsx provides Nav + Footer — do NOT add them here.
  */
 
@@ -12,6 +12,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Compass, Anchor } from 'lucide-react'
 import { useJourney } from '@/lib/hooks/use-journey'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import {
   ABOUT_VALUES as VALUES,
   ABOUT_SECTORS as SECTORS,
@@ -24,6 +25,7 @@ import {
 
 export default function AboutPage() {
   const { completeAction } = useJourney()
+  const { t } = useTranslation()
 
   // Track page visit for gamification
   useEffect(() => {
@@ -60,14 +62,24 @@ export default function AboutPage() {
           </div>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-accent text-sm font-medium mb-8">
             <Compass className="w-3.5 h-3.5" />
-            Identity-first life-routing platform
+            {t('about.badge')}
           </div>
           <h1 className="text-5xl md:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
-            Work should be for <span style={{ color: 'var(--color-accent)' }}>everyone.</span>
+            {t('about.heroTitle')
+              .replace('{accent}', '')
+              .replace('{/accent}', '')
+              .split('everyone.')
+              .map((part, i) =>
+                i === 0 ? (
+                  <span key={i}>
+                    {part}
+                    <span style={{ color: 'var(--color-accent)' }}>everyone.</span>
+                  </span>
+                ) : null
+              )}
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-            BeNetwork reverses colonial economic flows through open trade, fair compensation, and
-            direct country-to-country connections. No intermediaries. No gatekeepers.
+            {t('about.heroDesc')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
@@ -80,14 +92,14 @@ export default function AboutPage() {
               }}
             >
               <Compass className="w-5 h-5" />
-              Start My Compass →
+              {t('about.startCompass')} →
             </Link>
             <Link
               href="/anchors/post-path"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border border-brand-accent/40 text-brand-accent hover:bg-brand-accent/10 transition-all"
             >
               <Anchor className="w-5 h-5" />
-              Post a Path
+              {t('about.postPath')}
             </Link>
           </div>
         </div>
@@ -115,23 +127,24 @@ export default function AboutPage() {
         <div className="grid md:grid-cols-[1.618fr_1fr] gap-12 items-center">
           <div>
             <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-4 flex items-center gap-2">
-              <div className="w-8 h-px bg-brand-accent" /> Our Mission
+              <div className="w-8 h-px bg-brand-accent" /> {t('about.mission')}
             </div>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              Reverse the flow.
-              <br />
-              <span className="text-brand-accent">Build the corridor.</span>
+              {t('about.missionTitle')
+                .split('{accent}')
+                .map((part, i) => {
+                  if (i === 0) return <span key={i}>{part}</span>
+                  const [accent, rest] = part.split('{/accent}')
+                  return (
+                    <span key={i}>
+                      <span className="text-brand-accent">{accent}</span>
+                      {rest}
+                    </span>
+                  )
+                })}
             </h2>
-            <p className="text-gray-300 text-lg leading-relaxed mb-6">
-              For centuries, value has flowed one way — out of Africa, out of the Global South, into
-              the hands of intermediaries and gatekeepers. BeNetwork is the corridor in the opposite
-              direction.
-            </p>
-            <p className="text-gray-400 leading-relaxed">
-              We connect Pioneers directly with Anchors across 50+ countries. Payments flow through
-              M-Pesa, Flutterwave, and local rails — not through foreign banks. Routes are built on
-              real visa corridors, not wishful thinking.
-            </p>
+            <p className="text-gray-300 text-lg leading-relaxed mb-6">{t('about.missionP1')}</p>
+            <p className="text-gray-400 leading-relaxed">{t('about.missionP2')}</p>
           </div>
           <div className="space-y-4">
             {VOCAB_ITEMS.map((item) => (
@@ -156,9 +169,9 @@ export default function AboutPage() {
       <section className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            What We Stand For
+            {t('about.valuesSubtitle')}
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold">Values that guide every path</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">{t('about.valuesTitle')}</h2>
         </div>
         <div className="grid sm:grid-cols-2 gap-5">
           {VALUES.map((v) => (
@@ -180,9 +193,9 @@ export default function AboutPage() {
       <section className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-10">
           <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            Industries
+            {t('about.sectors')}
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold">Paths across every sector</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">{t('about.sectorsTitle')}</h2>
         </div>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
           {SECTORS.map((s) => (
@@ -201,13 +214,10 @@ export default function AboutPage() {
       <section className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-10">
           <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            Payment Rails
+            {t('about.payments')}
           </div>
-          <h2 className="text-3xl font-bold mb-3">Money flows where you do</h2>
-          <p className="text-gray-400">
-            We support local payment methods across every corridor — so your income arrives in your
-            hands.
-          </p>
+          <h2 className="text-3xl font-bold mb-3">{t('about.paymentsTitle')}</h2>
+          <p className="text-gray-400">{t('about.paymentsDesc')}</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {PAYMENT_METHODS.map((p) => (
@@ -237,25 +247,21 @@ export default function AboutPage() {
           <div className="text-3xl mb-3">🤲</div>
           <h3 className="text-2xl font-bold mb-3">{IMPACT_PARTNER.name}</h3>
           <p className="text-gray-300 max-w-xl mx-auto mb-6 text-sm leading-relaxed">
-            Our community arm. Supporting conservation workers, local guides, and cultural educators
-            across East Africa. Every booking through {BRAND_NAME} contributes.
+            {t('about.impactDesc', { brand: BRAND_NAME })}
           </p>
           <Link
             href="/charity"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-brand-accent border border-brand-accent/40 hover:bg-brand-accent/10 transition-colors"
           >
-            Learn about {IMPACT_PARTNER.name} →
+            {t('about.learnImpact', { name: IMPACT_PARTNER.name })} →
           </Link>
         </div>
       </section>
 
       {/* Final CTA */}
       <section className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-20 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to find your path?</h2>
-        <p className="text-gray-400 text-lg mb-10">
-          Start your Compass. Tell us where you are and where you want to go. We&apos;ll build your
-          route.
-        </p>
+        <h2 className="text-4xl md:text-5xl font-bold mb-6">{t('about.ctaTitle')}</h2>
+        <p className="text-gray-400 text-lg mb-10">{t('about.ctaDesc')}</p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/compass"
@@ -267,14 +273,14 @@ export default function AboutPage() {
             }}
           >
             <Compass className="w-5 h-5" />
-            Start My Compass →
+            {t('about.startCompass')} →
           </Link>
           <Link
             href="/anchors/post-path"
             className="inline-flex items-center gap-2 px-10 py-4 rounded-xl font-bold border border-brand-accent/40 text-brand-accent hover:bg-brand-accent/10 transition-all text-lg"
           >
             <Anchor className="w-5 h-5" />
-            Post a Path
+            {t('about.postPath')}
           </Link>
         </div>
       </section>

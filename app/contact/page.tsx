@@ -4,8 +4,10 @@ import { useState } from 'react'
 import { Mail, Phone, MapPin, MessageSquare, CheckCircle, Globe } from 'lucide-react'
 import { CONTACT, BRAND_NAME } from '@/data/mock'
 import HeroSection from '@/components/HeroSection'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 export default function ContactPage() {
+  const { t } = useTranslation()
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
@@ -30,7 +32,7 @@ export default function ContactPage() {
       if (!res.ok) throw new Error('Failed to send')
       setSent(true)
     } catch {
-      setError('Something went wrong. Please try again or email us directly.')
+      setError(t('contact.error'))
     } finally {
       setSending(false)
     }
@@ -39,8 +41,8 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-brand-bg">
       <HeroSection
-        title="Get in Touch"
-        subtitle={`Questions about ${BRAND_NAME}? We respond within ${CONTACT.responseTime} on business days.`}
+        title={t('contact.title')}
+        subtitle={t('contact.subtitle', { brand: BRAND_NAME, time: CONTACT.responseTime })}
         icon={<MessageSquare className="w-14 h-14 text-brand-accent mx-auto" />}
       />
 
@@ -49,22 +51,27 @@ export default function ContactPage() {
           {/* Contact info */}
           <div className="space-y-6">
             {[
-              { icon: Mail, label: 'Email', value: CONTACT.email, sub: 'General enquiries' },
+              {
+                icon: Mail,
+                label: t('contact.labelEmail'),
+                value: CONTACT.email,
+                sub: t('contact.labelEmailSub'),
+              },
               {
                 icon: Phone,
-                label: 'WhatsApp',
+                label: t('contact.labelWhatsApp'),
                 value: CONTACT.phone,
                 sub: CONTACT.businessHours,
               },
               {
                 icon: MapPin,
-                label: 'Location',
+                label: t('contact.labelLocation'),
                 value: CONTACT.location,
                 sub: CONTACT.locationDetail,
               },
               {
                 icon: Globe,
-                label: 'Social',
+                label: t('contact.labelSocial'),
                 value: CONTACT.social,
                 sub: CONTACT.socialPlatforms,
               },
@@ -90,58 +97,66 @@ export default function ContactPage() {
             {sent ? (
               <div className="text-center py-8">
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">Message sent!</h3>
-                <p className="text-gray-400">We&apos;ll get back to you within 24 hours.</p>
+                <h3 className="text-xl font-bold text-white mb-2">{t('contact.sent')}</h3>
+                <p className="text-gray-400">{t('contact.sentDesc')}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      {t('contact.name')}
+                    </label>
                     <input
                       type="text"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       className="input w-full"
-                      placeholder="Your name"
+                      placeholder={t('contact.namePlaceholder')}
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      {t('contact.email')}
+                    </label>
                     <input
                       type="email"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       className="input w-full"
-                      placeholder="you@example.com"
+                      placeholder={t('contact.emailPlaceholder')}
                       required
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Subject</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    {t('contact.subject')}
+                  </label>
                   <select
                     value={form.subject}
                     onChange={(e) => setForm({ ...form, subject: e.target.value })}
                     className="input w-full"
                   >
-                    <option value="">Select a topic...</option>
-                    <option>Path posting help</option>
-                    <option>Payment issue</option>
-                    <option>Account problem</option>
-                    <option>Report a scam</option>
-                    <option>Partnership inquiry</option>
-                    <option>Other</option>
+                    <option value="">{t('contact.subjectPlaceholder')}</option>
+                    <option>{t('contact.subjectPath')}</option>
+                    <option>{t('contact.subjectPayment')}</option>
+                    <option>{t('contact.subjectAccount')}</option>
+                    <option>{t('contact.subjectScam')}</option>
+                    <option>{t('contact.subjectPartner')}</option>
+                    <option>{t('contact.subjectOther')}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Message</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    {t('contact.message')}
+                  </label>
                   <textarea
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     className="input w-full h-32 resize-none"
-                    placeholder="Tell us how we can help..."
+                    placeholder={t('contact.messagePlaceholder')}
                     required
                   />
                 </div>
@@ -151,7 +166,7 @@ export default function ContactPage() {
                   disabled={sending}
                   className="btn-primary w-full py-3 disabled:opacity-50"
                 >
-                  {sending ? 'Sending...' : 'Send Message →'}
+                  {sending ? t('contact.sending') : `${t('contact.send')} →`}
                 </button>
               </form>
             )}
