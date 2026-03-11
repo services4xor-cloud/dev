@@ -557,6 +557,76 @@ describe('i18n — profile page translations', () => {
   })
 })
 
+describe('i18n — business page translations', () => {
+  const businessKeys = [
+    'business.badge',
+    'business.subtitle',
+    'business.heroDesc',
+    'business.missionTitle',
+    'business.missionDesc',
+    'business.legalTitle',
+    'business.incorporation',
+    'business.certOfInc',
+    'business.entityType',
+    'business.privateLtd',
+    'business.kraPin',
+    'business.director',
+    'business.shareTitle',
+    'business.shareDesc',
+    'business.divisionsTitle',
+    'business.countriesTitle',
+    'business.countriesNext',
+    'business.paymentTitle',
+    'business.bankTitle',
+    'business.bankDesc',
+    'business.mpesaTitle',
+    'business.mpesaDesc',
+    'business.globalTitle',
+    'business.globalDesc',
+    'business.financeNote',
+    'business.partnerTitle',
+    'business.safariPartner',
+    'business.safariPartnerDesc',
+    'business.ngoPartner',
+    'business.ngoPartnerDesc',
+    'business.corpPartner',
+    'business.corpPartnerDesc',
+    'business.contactTitle',
+    'business.contactDesc',
+    'business.browseVentures',
+    'business.safariExperiences',
+    'business.charityLink',
+  ]
+
+  it('English has all business keys', () => {
+    for (const key of businessKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all business keys', () => {
+    for (const key of businessKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all business keys', () => {
+    for (const key of businessKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('interpolates financeNote with partner', () => {
+    const result = translate('business.financeNote', 'en', { partner: 'TestPartner' })
+    expect(result).toContain('TestPartner')
+  })
+
+  it('interpolates charityLink with partner', () => {
+    const result = translate('business.charityLink', 'en', { partner: 'TestPartner' })
+    expect(result).toContain('TestPartner')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

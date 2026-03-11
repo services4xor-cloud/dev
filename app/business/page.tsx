@@ -15,8 +15,10 @@ import {
 } from 'lucide-react'
 import { CONTACT, BRAND_NAME, LEGAL, IMPACT_PARTNER } from '@/data/mock'
 import { DIVISIONS, OPERATING_COUNTRIES, SHARE_BLOCKS } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 export default function BusinessPage() {
+  const { t } = useTranslation()
   return (
     <div className="min-h-screen bg-brand-bg">
       {/* ── Hero ── */}
@@ -24,14 +26,11 @@ export default function BusinessPage() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-sm font-medium mb-6 border border-white/20">
             <Landmark className="w-4 h-4 text-brand-accent" />
-            <span>Legal Entity</span>
+            <span>{t('business.badge')}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">{LEGAL.companyName}</h1>
-          <p className="text-xl text-gray-300 font-light mb-3">A Family. A Mission. A Structure.</p>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            The legal and operational home of the BeNetwork platform and all Be[Country] ventures.
-            Registered in Kenya. Built for the world.
-          </p>
+          <p className="text-xl text-gray-300 font-light mb-3">{t('business.subtitle')}</p>
+          <p className="text-gray-400 max-w-2xl mx-auto">{t('business.heroDesc')}</p>
         </div>
       </section>
 
@@ -39,12 +38,8 @@ export default function BusinessPage() {
       <section className="py-16 px-4 bg-brand-primary/10 border-b border-brand-primary/30">
         <div className="max-w-3xl mx-auto text-center">
           <Globe className="w-10 h-10 text-brand-accent mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-4">Our Mission</h2>
-          <p className="text-lg text-gray-300 leading-relaxed">
-            Dignified work and opportunity for everyone, everywhere. We connect Pioneers (people
-            seeking their path) with Anchors (employers and partners) across borders, currencies,
-            and cultures — starting in Kenya, scaling globally.
-          </p>
+          <h2 className="text-2xl font-bold text-white mb-4">{t('business.missionTitle')}</h2>
+          <p className="text-lg text-gray-300 leading-relaxed">{t('business.missionDesc')}</p>
         </div>
       </section>
 
@@ -53,27 +48,27 @@ export default function BusinessPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
             <Shield className="w-6 h-6 text-brand-accent" />
-            <h2 className="text-2xl font-bold text-white">Legal Status</h2>
+            <h2 className="text-2xl font-bold text-white">{t('business.legalTitle')}</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             {[
               {
                 icon: <Landmark className="w-5 h-5 text-brand-accent" />,
-                label: 'Incorporation',
+                label: t('business.incorporation'),
                 value: LEGAL.incorporationNumber,
-                sub: 'Certificate of Incorporation',
+                sub: t('business.certOfInc'),
               },
               {
                 icon: <Building2 className="w-5 h-5 text-brand-accent" />,
-                label: 'Entity Type',
-                value: 'Private Limited Company',
+                label: t('business.entityType'),
+                value: t('business.privateLtd'),
                 sub: LEGAL.companyName,
               },
               {
                 icon: <Lock className="w-5 h-5 text-brand-accent" />,
-                label: 'KRA PIN',
+                label: t('business.kraPin'),
                 value: LEGAL.kraPin,
-                sub: `Director: ${LEGAL.directorName}`,
+                sub: t('business.director', { name: LEGAL.directorName }),
               },
             ].map((item) => (
               <div
@@ -99,11 +94,9 @@ export default function BusinessPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
             <Layers className="w-6 h-6 text-brand-accent" />
-            <h2 className="text-2xl font-bold text-white">Share Structure</h2>
+            <h2 className="text-2xl font-bold text-white">{t('business.shareTitle')}</h2>
           </div>
-          <p className="text-gray-400 text-sm mb-8 ml-9">
-            Shareholder identities are privacy-protected. Structure shown for transparency.
-          </p>
+          <p className="text-gray-400 text-sm mb-8 ml-9">{t('business.shareDesc')}</p>
 
           {/* Bar */}
           <div className="flex h-8 rounded-full overflow-hidden mb-6 border border-brand-primary/30">
@@ -146,7 +139,7 @@ export default function BusinessPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
             <Building2 className="w-6 h-6 text-brand-accent" />
-            <h2 className="text-2xl font-bold text-white">Business Divisions</h2>
+            <h2 className="text-2xl font-bold text-white">{t('business.divisionsTitle')}</h2>
           </div>
           <div className="space-y-4">
             {DIVISIONS.map((div) => (
@@ -182,7 +175,7 @@ export default function BusinessPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
             <Globe className="w-6 h-6 text-brand-accent" />
-            <h2 className="text-2xl font-bold text-white">Operating Countries</h2>
+            <h2 className="text-2xl font-bold text-white">{t('business.countriesTitle')}</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             {OPERATING_COUNTRIES.map((country) => (
@@ -204,9 +197,7 @@ export default function BusinessPage() {
               </div>
             ))}
           </div>
-          <p className="text-center text-sm text-gray-400 mt-6">
-            Next: BeNigeria (NGN + Flutterwave) · BeAmerica (USD + Stripe) · BeGermany full entity
-          </p>
+          <p className="text-center text-sm text-gray-400 mt-6">{t('business.countriesNext')}</p>
         </div>
       </section>
 
@@ -215,24 +206,24 @@ export default function BusinessPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
             <Shield className="w-6 h-6 text-brand-accent" />
-            <h2 className="text-2xl font-bold text-white">Payment & Financial Control</h2>
+            <h2 className="text-2xl font-bold text-white">{t('business.paymentTitle')}</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             {[
               {
                 icon: '🏦',
-                title: 'Dual Signature Bank Account',
-                body: 'KCB / Equity Bank Kenya. All withdrawals require Finance Controller approval. No single-party access.',
+                title: t('business.bankTitle'),
+                body: t('business.bankDesc'),
               },
               {
                 icon: '📱',
-                title: 'M-Pesa Business Till',
-                body: 'Chapa-powered Lipa na M-Pesa integration. Instant KES collections. Sandbox: Till 174379.',
+                title: t('business.mpesaTitle'),
+                body: t('business.mpesaDesc'),
               },
               {
                 icon: '🌐',
-                title: 'Global Payment Rails',
-                body: 'Stripe (USD/EUR), Flutterwave (NGN), PayPal. Each rail enabled per country activation.',
+                title: t('business.globalTitle'),
+                body: t('business.globalDesc'),
               },
             ].map((item) => (
               <div
@@ -249,10 +240,7 @@ export default function BusinessPage() {
             <div className="flex items-start gap-3">
               <Lock className="w-5 h-5 text-brand-accent mt-0.5 shrink-0" />
               <p className="text-sm text-gray-300">
-                <strong>Finance Controller Oversight:</strong> All revenue withdrawals, partner
-                disbursements, and {IMPACT_PARTNER.name} transfers require dual approval. Platform
-                revenue auto-routes: 10% to charity reserve, 15% to operational float, remainder to
-                growth fund.
+                {t('business.financeNote', { partner: IMPACT_PARTNER.name })}
               </p>
             </div>
           </div>
@@ -264,24 +252,24 @@ export default function BusinessPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
             <Users className="w-6 h-6 text-brand-accent" />
-            <h2 className="text-2xl font-bold text-white">Partnership Enquiries</h2>
+            <h2 className="text-2xl font-bold text-white">{t('business.partnerTitle')}</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mb-8">
             {[
               {
                 icon: '🦁',
-                type: 'Safari Lodges & Conservancies',
-                desc: `List your packages on ${BRAND_NAME} Experiences. Reach global travellers directly.`,
+                type: t('business.safariPartner'),
+                desc: t('business.safariPartnerDesc', { brand: BRAND_NAME }),
               },
               {
                 icon: '🌍',
-                type: 'NGOs & Development Partners',
-                desc: `Co-fund ${IMPACT_PARTNER.name} projects. Skills training, youth employment, community builds.`,
+                type: t('business.ngoPartner'),
+                desc: t('business.ngoPartnerDesc', { partner: IMPACT_PARTNER.name }),
               },
               {
                 icon: '🏢',
-                type: 'Corporate Anchors',
-                desc: 'Hire verified Pioneers. Post paths, sponsor placements, build your East Africa team.',
+                type: t('business.corpPartner'),
+                desc: t('business.corpPartnerDesc'),
               },
             ].map((p) => (
               <div
@@ -300,10 +288,8 @@ export default function BusinessPage() {
       {/* ── Contact ── */}
       <section className="py-14 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-3">Get in Touch</h2>
-          <p className="text-gray-400 mb-8">
-            For partnership proposals, legal enquiries, or press, reach us directly.
-          </p>
+          <h2 className="text-2xl font-bold text-white mb-3">{t('business.contactTitle')}</h2>
+          <p className="text-gray-400 mb-8">{t('business.contactDesc')}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <a
               href={`mailto:${CONTACT.emailBusiness}`}
@@ -327,19 +313,20 @@ export default function BusinessPage() {
               href="/ventures"
               className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-brand-accent transition-colors font-medium"
             >
-              Browse Ventures <ChevronRight className="w-4 h-4" />
+              {t('business.browseVentures')} <ChevronRight className="w-4 h-4" />
             </Link>
             <Link
               href="/experiences"
               className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-brand-accent transition-colors font-medium"
             >
-              Safari Experiences <ChevronRight className="w-4 h-4" />
+              {t('business.safariExperiences')} <ChevronRight className="w-4 h-4" />
             </Link>
             <Link
               href="/charity"
               className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-brand-accent transition-colors font-medium"
             >
-              {IMPACT_PARTNER.name} Charity <ChevronRight className="w-4 h-4" />
+              {t('business.charityLink', { partner: IMPACT_PARTNER.name })}{' '}
+              <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
