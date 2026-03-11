@@ -1,27 +1,27 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 28 (2026-03-11)
+> Last updated: Session 31 (2026-03-11)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
 
 ## Current State
 
-| Metric            | Value                                            |
-| ----------------- | ------------------------------------------------ |
-| Phase             | 2 (BeKenya Live) — blocked on credentials        |
-| Branch            | `main` (direct push)                             |
-| Deploy            | Vercel auto on push                              |
-| Pages             | 20+                                              |
-| API routes        | 12+                                              |
-| Library modules   | 16 (incl. threads.ts, geo.ts, emoji-map.ts)      |
-| Mock data modules | 17 (incl. config.ts, threads.ts)                 |
-| Jest tests        | 107/107 ✅                                       |
-| Playwright tests  | 102/102 ✅ (16 smoke + 32 brand + 54 responsive) |
-| TypeScript errors | 0                                                |
-| Countries config  | 12 (16 in selector)                              |
-| Languages         | 14                                               |
+| Metric            | Value                                                |
+| ----------------- | ---------------------------------------------------- |
+| Phase             | 2 (BeKenya Live) — DB connected, partially unblocked |
+| Branch            | `main` (direct push)                                 |
+| Deploy            | Vercel auto on push                                  |
+| Pages             | 20+                                                  |
+| API routes        | 12+                                                  |
+| Library modules   | 16 (incl. threads.ts, geo.ts, emoji-map.ts)          |
+| Mock data modules | 17 (incl. config.ts, threads.ts)                     |
+| Jest tests        | 160/160 ✅                                           |
+| Playwright tests  | 102/102 ✅ (16 smoke + 32 brand + 54 responsive)     |
+| TypeScript errors | 0                                                    |
+| Countries config  | 12 (16 in selector)                                  |
+| Languages         | 14                                                   |
 
 ---
 
@@ -43,17 +43,17 @@ Built in Sessions 1–19. Everything works with mock data.
 
 ---
 
-## ⛔ Phase 2: BeKenya Live (BLOCKED)
+## 🔧 Phase 2: BeKenya Live (PARTIALLY UNBLOCKED)
 
-Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
+✅ DB + Auth core ready → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md) for remaining:
 
-| Credential                | Blocks               |
-| ------------------------- | -------------------- |
-| DATABASE_URL (Neon)       | Everything with data |
-| NEXTAUTH_SECRET           | Auth security        |
-| GOOGLE_CLIENT_ID/SECRET   | Google Sign-In       |
-| RESEND_API_KEY            | Email                |
-| MPESA_CONSUMER_KEY/SECRET | M-Pesa payments      |
+| Credential                | Status                  |
+| ------------------------- | ----------------------- |
+| DATABASE_URL (Neon)       | ✅ Connected            |
+| NEXTAUTH_SECRET           | ✅ Set                  |
+| GOOGLE_CLIENT_ID/SECRET   | ✅ Set (local + Vercel) |
+| RESEND_API_KEY            | ✅ Set (local + Vercel) |
+| MPESA_CONSUMER_KEY/SECRET | ⛔ Needed for M-Pesa    |
 
 ---
 
@@ -66,6 +66,30 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 ---
 
 ## Session Log
+
+### Session 31 (2026-03-11) — Identity Switcher Visual Fix
+
+- [x] **Dropdown background**: Replaced transparent `bg-brand-surface/98 backdrop-blur-xl` with fully opaque `bg-[#16161e]` — now readable on all backgrounds and devices.
+- [x] **Dynamic logo on hover**: Logo area now reacts to hovered thread — shows thread icon + brand name (e.g. 🦁 BeMaasai, 🏙️ BeNairobi). Resets when mouse leaves.
+- [x] **Responsive dropdown width**: Changed from fixed `w-80` to `w-[calc(100vw-2rem)] sm:w-96 max-w-[24rem]` — scales properly on small screens.
+- [x] **Consistent dropdown styling**: Applied same opaque background to Anchors/About dropdowns.
+- [x] Build: ✅ | Jest: 160/160 ✅ | TS: 0 errors
+
+### Session 30 (2026-03-11) — Google OAuth, Resend, Vercel Env Vars
+
+- [x] **Google OAuth configured**: Created OAuth client "BeKenya Web" in Google Cloud Console. Redirect URIs: `dev-plum-rho.vercel.app` (production) + `localhost:3000` (dev). Client ID + Secret added to `.env.local` and Vercel.
+- [x] **Resend API key**: Added to `.env.local` and Vercel for transactional email.
+- [x] **Vercel env vars**: Added 5 vars (DATABASE_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, RESEND_API_KEY, NEXT_PUBLIC_COUNTRY_CODE). Deployment auto-triggered.
+- [x] **Credential status**: 5/6 credentials now live. Only M-Pesa sandbox remaining.
+
+### Session 29 (2026-03-11) — Database Live, Logo Identity Switcher, Docs Update
+
+- [x] **Neon database connected**: Schema pushed to Neon PostgreSQL (7 tables: User, Profile, Path, Chapter, Payment, Referral, SocialPost). `.env.local` configured with `DATABASE_URL` and `NEXTAUTH_SECRET`.
+- [x] **Logo identity switcher**: Replaced passive rotating country teaser in Nav with active dropdown. Click the logo → opens panel with tabs for Countries, Languages, Tribes, Interests, Sciences, Locations. Each tab shows threads sorted by member count. Links to thread pages or country Gates.
+- [x] **Mobile identity tabs**: Mobile menu updated with quick identity filter chips linking to thread pages.
+- [x] **ROADMAP.md updated**: Phase 2 status changed from BLOCKED to UNBLOCKED. Thread features marked as built. Session 28-29 progress documented.
+- [x] **PROGRESS.md updated**: Session 29 logged. Phase status updated.
+- [x] Build: ✅ | TS: 0 errors
 
 ### Session 28 (2026-03-11) — Venture Detail, Identity Flags, Country Gate
 

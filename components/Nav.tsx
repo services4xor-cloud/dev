@@ -13,6 +13,8 @@ import {
   ANCHOR_NAV_LINKS as ANCHOR_LINKS,
   ABOUT_NAV_LINKS as ABOUT_LINKS,
 } from '@/lib/nav-structure'
+import type { ThreadType } from '@/lib/threads'
+import { MOCK_THREADS } from '@/data/mock/threads'
 
 const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
 const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
@@ -23,6 +25,22 @@ const TEASER_COUNTRIES = COUNTRY_OPTIONS.slice(0, 12).map((c) => ({
   flag: c.flag,
 }))
 
+// ─── Identity Switcher Tabs ─────────────────────────────────────────
+const IDENTITY_TABS: { type: ThreadType; label: string; icon: string }[] = [
+  { type: 'country', label: 'Countries', icon: '🌍' },
+  { type: 'language', label: 'Languages', icon: '🗣️' },
+  { type: 'tribe', label: 'Tribes', icon: '🦁' },
+  { type: 'interest', label: 'Interests', icon: '⭐' },
+  { type: 'science', label: 'Sciences', icon: '🔬' },
+  { type: 'location', label: 'Locations', icon: '📍' },
+]
+
+/** Get the URL for a thread */
+function getThreadUrl(thread: { type: ThreadType; slug: string }): string {
+  if (thread.type === 'country') return `/be/${thread.slug}`
+  return `/threads/${thread.slug}`
+}
+
 // ─────────────────────────────────────────────────────────────────
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -30,9 +48,16 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [teaserIdx, setTeaserIdx] = useState(0)
   const [teaserFade, setTeaserFade] = useState(true)
+  const [identityOpen, setIdentityOpen] = useState(false)
+  const [identityTab, setIdentityTab] = useState<ThreadType>('country')
+  const [hoveredThread, setHoveredThread] = useState<{
+    icon: string
+    brandName: string
+  } | null>(null)
   const pathname = usePathname()
   const anchorsRef = useRef<HTMLDivElement>(null)
   const aboutRef = useRef<HTMLDivElement>(null)
+  const identityRef = useRef<HTMLDivElement>(null)
 
   // Scroll-aware background
   useEffect(() => {
@@ -65,6 +90,10 @@ export default function Nav() {
       ) {
         setOpenDropdown(null)
       }
+      if (identityRef.current && !identityRef.current.contains(e.target as Node)) {
+        setIdentityOpen(false)
+        setHoveredThread(null)
+      }
     }
     document.addEventListener('pointerdown', onPointer)
     return () => document.removeEventListener('pointerdown', onPointer)
@@ -74,6 +103,8 @@ export default function Nav() {
   useEffect(() => {
     setMobileOpen(false)
     setOpenDropdown(null)
+    setIdentityOpen(false)
+    setHoveredThread(null)
   }, [pathname])
 
   // Lock body scroll when mobile menu open
@@ -147,7 +178,7 @@ export default function Nav() {
             : 'opacity-0 -translate-y-1 pointer-events-none'
         }`}
       >
-        <div className="w-52 rounded-xl bg-brand-surface/98 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/40 py-1.5">
+        <div className="w-52 rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/40 py-1.5">
           {links.map((link) => {
             const Icon = link.icon
             return (
@@ -190,47 +221,174 @@ export default function Nav() {
 
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* ── Logo with rotating Be[Country] teaser ────────── */}
-            <Link
-              href="/"
-              className="group flex items-center gap-2.5 shrink-0 rounded-lg
-                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
-                         focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
-              aria-label={`${BRAND} — Home`}
-            >
-              <div className="relative">
-                <div
-                  className="absolute inset-0 rounded-lg blur-md opacity-50 group-hover:opacity-70 transition-opacity duration-300"
-                  style={{ background: 'var(--color-accent)' }}
-                  aria-hidden="true"
-                />
-                <Image
-                  src="/logo.svg"
-                  alt=""
-                  width={30}
-                  height={30}
-                  priority
-                  unoptimized
-                  aria-hidden="true"
-                  className="relative rounded-lg"
-                />
-              </div>
-              {/* Brand name with country teaser */}
-              <div className="flex flex-col leading-none" aria-hidden="true">
-                <span className="font-bold text-[15px] tracking-wide">
-                  <span className="text-brand-accent">Be</span>
-                  <span className="text-white">{COUNTRIES[CC]?.name ?? 'Country'}</span>
-                </span>
-                {/* Rotating teaser: cycles through countries */}
-                <span
-                  className={`text-[9px] font-medium tracking-wider text-white/30 mt-0.5 transition-all duration-300 ${
-                    teaserFade ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
-                  }`}
+            {/* ── Logo with Identity Switcher Dropdown ────────── */}
+            <div className="relative" ref={identityRef}>
+              <button
+                type="button"
+                onClick={() => setIdentityOpen((v) => !v)}
+                aria-expanded={identityOpen}
+                aria-haspopup="menu"
+                aria-label={`${BRAND} — Switch identity context`}
+                className="group flex items-center gap-2.5 shrink-0 rounded-lg cursor-pointer
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
+                           focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
+              >
+                <Link
+                  href="/"
+                  onClick={(e) => {
+                    if (identityOpen) e.preventDefault()
+                  }}
+                  className="relative"
                 >
-                  {currentTeaser.flag} Be{currentTeaser.name}
-                </span>
+                  <div
+                    className="absolute inset-0 rounded-lg blur-md opacity-50 group-hover:opacity-70 transition-opacity duration-300"
+                    style={{ background: 'var(--color-accent)' }}
+                    aria-hidden="true"
+                  />
+                  <Image
+                    src="/logo.svg"
+                    alt=""
+                    width={30}
+                    height={30}
+                    priority
+                    unoptimized
+                    aria-hidden="true"
+                    className="relative rounded-lg"
+                  />
+                </Link>
+                {/* Brand name — reacts to hovered thread */}
+                <div className="flex flex-col leading-none" aria-hidden="true">
+                  <span className="font-bold text-[15px] tracking-wide transition-all duration-200">
+                    {hoveredThread ? (
+                      <>
+                        <span className="text-lg mr-1">{hoveredThread.icon}</span>
+                        <span className="text-brand-accent">Be</span>
+                        <span className="text-white">
+                          {hoveredThread.brandName.replace(/^Be/, '')}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-brand-accent">Be</span>
+                        <span className="text-white">{COUNTRIES[CC]?.name ?? 'Country'}</span>
+                      </>
+                    )}
+                  </span>
+                  {/* Rotating teaser: cycles through countries (hidden when hovering) */}
+                  <span
+                    className={`text-[9px] font-medium tracking-wider text-white/30 mt-0.5 transition-all duration-300 ${
+                      hoveredThread
+                        ? 'opacity-0 -translate-y-1'
+                        : teaserFade
+                          ? 'opacity-100 translate-y-0'
+                          : 'opacity-0 -translate-y-1'
+                    }`}
+                  >
+                    {currentTeaser.flag} Be{currentTeaser.name}
+                  </span>
+                </div>
+                <ChevronDown
+                  className={`w-3 h-3 text-white/30 transition-transform duration-200 ${identityOpen ? 'rotate-180' : ''}`}
+                  aria-hidden="true"
+                />
+              </button>
+
+              {/* ── Identity Switcher Panel ──────────────────────── */}
+              <div
+                role="menu"
+                className={`absolute left-0 top-full mt-2 transition-all duration-200 ${
+                  identityOpen
+                    ? 'opacity-100 translate-y-0 pointer-events-auto'
+                    : 'opacity-0 -translate-y-2 pointer-events-none'
+                }`}
+              >
+                <div className="w-[calc(100vw-2rem)] sm:w-96 max-w-[24rem] rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/60 overflow-hidden">
+                  {/* Tab row */}
+                  <div className="flex gap-0.5 px-2 pt-2 pb-1 overflow-x-auto scrollbar-hide border-b border-white/5">
+                    {IDENTITY_TABS.map((tab) => {
+                      const count = MOCK_THREADS.filter(
+                        (t) => t.type === tab.type && t.active
+                      ).length
+                      if (count === 0) return null
+                      return (
+                        <button
+                          key={tab.type}
+                          type="button"
+                          onClick={() => setIdentityTab(tab.type)}
+                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all duration-200 ${
+                            identityTab === tab.type
+                              ? 'bg-brand-accent/15 text-brand-accent'
+                              : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+                          }`}
+                        >
+                          <span className="text-xs">{tab.icon}</span>
+                          {tab.label}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {/* Thread list */}
+                  <div className="max-h-64 overflow-y-auto py-1.5 px-1.5">
+                    {MOCK_THREADS.filter((t) => t.type === identityTab && t.active)
+                      .sort((a, b) => b.memberCount - a.memberCount)
+                      .map((thread) => (
+                        <Link
+                          key={thread.slug}
+                          href={getThreadUrl(thread)}
+                          role="menuitem"
+                          onClick={() => {
+                            setIdentityOpen(false)
+                            setHoveredThread(null)
+                          }}
+                          onMouseEnter={() =>
+                            setHoveredThread({ icon: thread.icon, brandName: thread.brandName })
+                          }
+                          onMouseLeave={() => setHoveredThread(null)}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200
+                                     hover:bg-white/8 group/item"
+                        >
+                          <span className="text-lg shrink-0">{thread.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-white group-hover/item:text-brand-accent transition-colors truncate">
+                                {thread.brandName}
+                              </span>
+                              {thread.slug === CC.toLowerCase() && (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-brand-accent/20 text-brand-accent uppercase tracking-wider">
+                                  Active
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-white/40 truncate mt-0.5">
+                              {thread.memberCount.toLocaleString()} pioneers ·{' '}
+                              {thread.tagline.slice(0, 50)}
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                  </div>
+
+                  {/* Footer — Browse all + Home link */}
+                  <div className="border-t border-white/5 px-3 py-2 flex items-center justify-between">
+                    <Link
+                      href="/threads"
+                      onClick={() => setIdentityOpen(false)}
+                      className="text-[11px] font-medium text-brand-accent/70 hover:text-brand-accent transition-colors"
+                    >
+                      Browse all threads →
+                    </Link>
+                    <Link
+                      href="/"
+                      onClick={() => setIdentityOpen(false)}
+                      className="text-[11px] font-medium text-white/30 hover:text-white/60 transition-colors"
+                    >
+                      Home
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </Link>
+            </div>
 
             {/* ── Desktop links ─────────────────────────────────── */}
             <ul className="hidden lg:flex items-center gap-0.5 list-none">
@@ -345,23 +503,45 @@ export default function Nav() {
         {/* Content — below nav height */}
         <div className="relative h-full pt-[68px] overflow-y-auto">
           <div className="px-5 py-6 space-y-1">
-            {/* Rotating country identity ticker */}
-            <div className="flex items-center gap-3 px-4 py-3 mb-4 rounded-xl bg-brand-primary/20 border border-brand-accent/10">
-              <span className="text-lg">{currentTeaser.flag}</span>
-              <div>
-                <p className="text-[11px] font-bold text-brand-accent/80 uppercase tracking-wider">
-                  One platform, every identity
-                </p>
-                <p className="text-sm text-white/50 mt-0.5">
-                  Be<span className="text-white font-semibold">{currentTeaser.name}</span>
-                  {' · '}
-                  Be
-                  <span className="text-white font-semibold">
-                    {COUNTRIES[CC]?.name ?? 'Country'}
-                  </span>
-                  {' · '}
-                  Be<span className="text-white font-semibold">You</span>
-                </p>
+            {/* Identity switcher — mobile */}
+            <div className="mb-4">
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-brand-primary/20 border border-brand-accent/10">
+                <span className="text-lg">{currentTeaser.flag}</span>
+                <div className="flex-1">
+                  <p className="text-[11px] font-bold text-brand-accent/80 uppercase tracking-wider">
+                    One platform, every identity
+                  </p>
+                  <p className="text-sm text-white/50 mt-0.5">
+                    Be<span className="text-white font-semibold">{currentTeaser.name}</span>
+                    {' · '}
+                    Be
+                    <span className="text-white font-semibold">
+                      {COUNTRIES[CC]?.name ?? 'Country'}
+                    </span>
+                    {' · '}
+                    Be<span className="text-white font-semibold">You</span>
+                  </p>
+                </div>
+              </div>
+              {/* Quick identity tabs — mobile */}
+              <div className="flex gap-1 mt-2 overflow-x-auto scrollbar-hide px-1">
+                {IDENTITY_TABS.map((tab) => {
+                  const threads = MOCK_THREADS.filter((t) => t.type === tab.type && t.active)
+                  if (threads.length === 0) return null
+                  return (
+                    <Link
+                      key={tab.type}
+                      href={`/threads?type=${tab.type}`}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap
+                                 bg-white/5 text-white/50 hover:text-brand-accent hover:bg-brand-accent/10 border border-white/5
+                                 transition-all duration-200"
+                    >
+                      <span>{tab.icon}</span>
+                      {tab.label}
+                    </Link>
+                  )
+                })}
               </div>
             </div>
 
