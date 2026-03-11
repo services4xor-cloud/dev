@@ -1,7 +1,7 @@
 # Be[Country] — Live Progress Tracker
 
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 18 (2026-03-11)
+> Last updated: Session 19 (2026-03-11)
 > ← Back to [CLAUDE.md](./CLAUDE.md) | Related: [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -97,7 +97,7 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 - [x] Centralized semantic color token system (session 18)
 - [x] Responsive scaling — watch to TV across all key pages (session 18)
 - [x] Ventures loading skeleton (session 18)
-- [ ] End-to-end mock booking flow (frontend → API → mock payment)
+- [x] End-to-end mock booking flow with engagement nudges (session 19)
 - [ ] Loading skeletons for remaining data-fetching pages
 - [ ] Error boundaries on all dashboard pages
 - [ ] Progressive φ token adoption in Nav, Footer, cards
@@ -182,6 +182,19 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 ---
 
 ## Session Log (Reverse Chronological)
+
+### Session 19 (2026-03-11) — End-to-End Mock Booking Flow
+
+- [x] Booking state machine: browsing → paying → confirmed (experience detail page)
+- [x] M-Pesa modal wired to "Book This Venture" button (was dead/disconnected)
+- [x] MpesaModal updated: `venture` item type, API body aligned to STK Push schema
+- [x] Mock card payment flow (2.5s simulated processing → confirmation)
+- [x] Confirmation receipt UI with booking ref, celebration CheckCircle, UTAMADUNI impact
+- [x] UX engagement nudges: scarcity ("Only X spots left"), social proof ("X Pioneers booked"), live viewers, urgency (next departure date)
+- [x] Trust signals: 48hr free cancel, verified provider badges
+- [x] Seeded deterministic randomness per package ID (no hydration flicker)
+- [x] Compass cross-sell CTA in booking sidebar
+- [x] Build: TS 0 errors, preview verified, Vercel auto-deploy
 
 ### Session 18 (2026-03-11) — Centralized Semantic Color System + Responsive
 
