@@ -153,7 +153,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
             <Link
               href="/compass"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-white font-bold text-lg rounded-full px-10 py-4 transition-all shadow-lg"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-white font-bold text-lg rounded-full px-10 py-4 transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background:
                   'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
@@ -166,11 +166,11 @@ export default function HomePage() {
             </Link>
             <Link
               href="/ventures"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 font-semibold text-lg rounded-full px-10 py-4 transition-all border"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 font-bold text-lg rounded-full px-10 py-4 transition-all border hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 color: 'var(--color-accent)',
-                borderColor: 'var(--color-accent)',
-                background: 'transparent',
+                borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
+                background: 'rgb(var(--color-accent-rgb) / 0.08)',
               }}
             >
               <span>Browse Ventures</span>
@@ -187,7 +187,7 @@ export default function HomePage() {
           />
 
           {/* Tiny trust line */}
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-400 text-sm">
             Pioneers active today ·{' '}
             <span className="font-medium" style={{ color: 'var(--color-accent)' }}>
               KES 50 from every booking
@@ -259,9 +259,15 @@ export default function HomePage() {
                 <p className="text-gray-300 text-sm leading-relaxed flex-1 mb-6">{pillar.desc}</p>
                 <Link
                   href={pillar.href}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-full px-5 py-2 transition-colors w-fit"
+                  className="flex items-center justify-center gap-2 text-sm font-bold text-white rounded-xl px-5 py-3 transition-all hover:scale-[1.02] active:scale-[0.98] w-full"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                    border: '1px solid rgb(var(--color-accent-rgb) / 0.30)',
+                    boxShadow: '0 4px 16px rgb(var(--color-primary-rgb) / 0.25)',
+                  }}
                 >
-                  {pillar.cta} &#8594;
+                  {pillar.cta} &rarr;
                 </Link>
               </div>
             ))}
@@ -383,7 +389,7 @@ export default function HomePage() {
 
             <Link
               href={compassHref}
-              className="inline-flex items-center gap-3 text-white font-bold text-base rounded-full px-8 py-4 transition-all shadow-lg hover:scale-105"
+              className="flex sm:inline-flex items-center justify-center gap-3 text-white font-bold text-base rounded-xl sm:rounded-full px-8 py-4 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
               style={{
                 background:
                   'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
@@ -442,25 +448,28 @@ export default function HomePage() {
                   <p className="text-gray-400 text-sm mb-4 line-clamp-2">
                     {pkg.highlights[0]} · {pkg.highlights[1]}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-lg" style={{ color: 'var(--color-accent)' }}>
-                        {formatPackagePrice(pkg)}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <div className="font-bold text-xl" style={{ color: 'var(--color-accent)' }}>
+                          {formatPackagePrice(pkg)}
+                        </div>
+                        {pkg.priceNote && (
+                          <div className="text-gray-400 text-xs">{pkg.priceNote}</div>
+                        )}
                       </div>
-                      {pkg.priceNote && (
-                        <div className="text-gray-600 text-xs">{pkg.priceNote}</div>
-                      )}
                     </div>
                     <Link
                       href={`/experiences/${pkg.id}`}
-                      className="text-sm font-semibold text-white rounded-full px-4 py-2 transition-all hover:scale-105"
+                      className="block w-full text-center text-sm font-bold text-white rounded-xl px-4 py-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
                       style={{
                         background:
                           'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
                         border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
+                        boxShadow: '0 4px 16px rgb(var(--color-primary-rgb) / 0.3)',
                       }}
                     >
-                      Book This Venture
+                      Book This Venture &rarr;
                     </Link>
                   </div>
                 </div>
@@ -573,7 +582,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-400 text-sm">
             BeGermany · BeAmerica · BeNigeria · BeUK · BeUAE · and beyond
           </p>
         </div>
@@ -600,7 +609,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/anchors/post-path"
-              className="inline-flex items-center gap-2 text-white font-bold rounded-full px-10 py-4 transition-all hover:scale-105"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-white font-bold rounded-full px-10 py-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background:
                   'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
@@ -612,7 +621,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/20 text-white font-semibold rounded-full px-10 py-4 transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-brand-accent/30 hover:border-brand-accent/50 text-white font-bold rounded-full px-10 py-4 transition-all"
             >
               See How It Works
             </Link>
