@@ -1,7 +1,7 @@
 # Be[Country] — Live Progress Tracker
 
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 17 (2026-03-11)
+> Last updated: Session 18 (2026-03-11)
 > ← Back to [CLAUDE.md](./CLAUDE.md) | Related: [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -55,7 +55,7 @@ Vercel: Auto-deploys from main
 
 **Pages (20+):**
 
-- All pages: dark theme (bg-[#0A0A0F]), BeNetwork vocabulary, brand colors (maroon/gold, zero orange/amber)
+- All pages: dark theme (bg-brand-bg), BeNetwork vocabulary, semantic color tokens (zero hardcoded brand hex)
 - Homepage, Compass, Ventures, Experiences, Pioneer/Anchor dashboards, Onboarding, Country Gates, Charity, Business, Admin, Fashion, Media, About, Pricing, Contact, Privacy, Profile, Referral, Login, Signup, 404
 
 **API Routes (12+):**
@@ -94,8 +94,11 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 ### Can Build Now (no credentials needed)
 
 - [x] International offerings system — country-aware, purpose-driven recommendations (R15, R16)
+- [x] Centralized semantic color token system (session 18)
+- [x] Responsive scaling — watch to TV across all key pages (session 18)
+- [x] Ventures loading skeleton (session 18)
 - [ ] End-to-end mock booking flow (frontend → API → mock payment)
-- [ ] Loading skeletons for data-fetching pages
+- [ ] Loading skeletons for remaining data-fetching pages
 - [ ] Error boundaries on all dashboard pages
 - [ ] Progressive φ token adoption in Nav, Footer, cards
 
@@ -179,6 +182,23 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 ---
 
 ## Session Log (Reverse Chronological)
+
+### Session 18 (2026-03-11) — Centralized Semantic Color System + Responsive
+
+- [x] Removed stale `KNOWN_LIGHT_BG_PAGES` brand test skip list (all 32 tests now execute)
+- [x] Ventures page loading skeleton (shimmer UI, 600ms simulated load)
+- [x] Fixed broken homepage safari links (`/ventures/` → `/experiences/`)
+- [x] Responsive scaling: watch → TV across 10 key pages (`3xl:max-w-[1600px]`, heading cascades)
+- [x] Fixed profile grid mobile breakpoint (`grid-cols-2` → `grid-cols-1 sm:grid-cols-2`)
+- [x] **Centralized color system** — CSS vars in `globals.css` :root as single source of truth
+- [x] **Semantic token naming** — `brand-primary`/`brand-accent` (not `brand-maroon`/`brand-gold`)
+- [x] Tailwind brand colors mapped to CSS vars with `<alpha-value>` opacity support
+- [x] Replaced ~830 hardcoded hex references across 53 files
+- [x] Added `surface-elevated`, `success` derivative tokens
+- [x] OG image route: JS constants with "keep in sync" comment (Satori can't use CSS vars)
+- [x] All inline `style={{}}` hex values → `var(--color-*)` references
+- [x] All `rgba(201,162,39,...)` → `rgb(var(--color-accent-rgb) / N)`
+- [x] Build: TS 0 errors, Jest 25/25, production build clean
 
 ### Session 17 (2026-03-11) — Quality Overhaul: Agents, Code, UI
 
