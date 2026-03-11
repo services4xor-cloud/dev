@@ -8,7 +8,7 @@
 
 const SECTOR_EMOJI_RULES: [RegExp, string][] = [
   [/safari|wildlife/, '🦁'],
-  [/tech|it\b|software/, '💻'],
+  [/tech|\bit\b|software/, '💻'],
   [/fashion|design/, '👗'],
   [/eco|green|renewable/, '🌿'],
   [/health|pflege|nurse/, '🏥'],
