@@ -22,14 +22,13 @@ import { PIONEER_TYPES, PioneerType, VOCAB } from '@/lib/vocabulary'
 import { SkeletonLine, SkeletonBlock } from '@/components/Skeleton'
 import { COUNTRY_OPTIONS, CORRIDOR_BADGE, type CountryOption } from '@/lib/country-selector'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types & constants
 // ─────────────────────────────────────────────────────────────────────────────
 
 type Step = 1 | 2 | 3 | 4
-
-const STEP_LABELS = ['Destinations', 'Your Origin', 'Pioneer Type', 'Your Route']
 
 const ORIGIN_COUNTRIES = COUNTRY_OPTIONS.filter((c) =>
   ['KE', 'NG', 'GH', 'UG', 'TZ', 'ZA', 'DE', 'GB', 'IN', 'US', 'AE', 'CA'].includes(c.code)
@@ -43,6 +42,14 @@ export default function CompassPage() {
   const searchParams = useSearchParams()
   const fromParam = searchParams.get('from') ?? ''
   const { identity } = useIdentity()
+  const { t } = useTranslation()
+
+  const STEP_LABELS = [
+    t('compass.stepLabel1'),
+    t('compass.stepLabel2'),
+    t('compass.stepLabel3'),
+    t('compass.stepLabel4'),
+  ]
 
   // Pre-fill origin: URL param → identity context → deployment default
   const deployDefault = process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE'
@@ -110,7 +117,7 @@ export default function CompassPage() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent" />
           </span>
-          Your Compass is active
+          {t('compass.active')}
         </div>
         <div className="flex justify-center mb-5">
           <Image
@@ -123,9 +130,9 @@ export default function CompassPage() {
           />
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-3 leading-tight">
-          Your Compass is ready.
+          {t('compass.ready')}
           <br />
-          <span className="text-brand-accent">Let&apos;s find your path.</span>
+          <span className="text-brand-accent">{t('compass.letsFind')}</span>
         </h1>
         <p className="text-gray-400 text-lg max-w-xl mx-auto">{VOCAB.tagline}</p>
       </div>
@@ -204,10 +211,10 @@ export default function CompassPage() {
                     </div>
                     <div>
                       <div className="text-xs text-gray-400 uppercase tracking-wider">
-                        Step 2 of 4
+                        {t('compass.stepOf', { step: '2', total: '4' })}
                       </div>
                       <div className="text-white font-semibold text-lg">
-                        Where are you currently based?
+                        {t('compass.whereAre')}
                       </div>
                     </div>
                   </div>
@@ -217,15 +224,17 @@ export default function CompassPage() {
                       <div className="flex items-center gap-3">
                         <span className="text-3xl">{origin.flag}</span>
                         <div>
-                          <div className="text-white font-medium">Currently in {origin.name}</div>
-                          <div className="text-gray-400 text-sm">Auto-detected · tap to change</div>
+                          <div className="text-white font-medium">
+                            {t('compass.currentlyIn', { name: origin.name })}
+                          </div>
+                          <div className="text-gray-400 text-sm">{t('compass.autoDetected')}</div>
                         </div>
                       </div>
                       <button
                         onClick={() => setShowOriginPicker(true)}
                         className="text-brand-accent text-sm font-medium hover:text-brand-accent/70 transition-colors"
                       >
-                        Change
+                        {t('compass.change')}
                       </button>
                     </div>
                   ) : (
@@ -250,19 +259,19 @@ export default function CompassPage() {
                     </div>
                   )}
 
-                  <p className="text-gray-400 text-sm">
-                    We use your location to find the strongest routes and payment corridors.
-                  </p>
+                  <p className="text-gray-400 text-sm">{t('compass.locationHint')}</p>
                 </div>
                 {/* Fixed bottom nav */}
                 <div className="fixed bottom-0 left-0 right-0 bg-brand-bg/95 backdrop-blur border-t border-brand-accent/10 z-40">
                   <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
                     <button onClick={() => setStep(1)} className="btn-ghost btn-sm">
-                      ← Back
+                      {t('compass.back')}
                     </button>
-                    <span className="text-xs text-gray-500 flex-1 text-center">Step 2 of 4</span>
+                    <span className="text-xs text-gray-500 flex-1 text-center">
+                      {t('compass.stepOf', { step: '2', total: '4' })}
+                    </span>
                     <button onClick={() => setStep(3)} className="btn-primary btn-sm">
-                      Confirmed — {origin.name} →
+                      {t('compass.confirmed', { name: origin.name })}
                     </button>
                   </div>
                 </div>
@@ -279,10 +288,10 @@ export default function CompassPage() {
                     </div>
                     <div>
                       <div className="text-xs text-gray-400 uppercase tracking-wider">
-                        Step 3 of 4
+                        {t('compass.stepOf', { step: '3', total: '4' })}
                       </div>
                       <div className="text-white font-semibold text-lg">
-                        What kind of Pioneer are you?
+                        {t('compass.whatKind')}
                       </div>
                     </div>
                   </div>
@@ -313,10 +322,11 @@ export default function CompassPage() {
                 <div className="fixed bottom-0 left-0 right-0 bg-brand-bg/95 backdrop-blur border-t border-brand-accent/10 z-40">
                   <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
                     <button onClick={() => setStep(2)} className="btn-ghost btn-sm">
-                      ← Back
+                      {t('compass.back')}
                     </button>
                     <span className="text-xs text-gray-500 flex-1 text-center">
-                      Step 3 of 4 — Select your Pioneer type
+                      {t('compass.stepOf', { step: '3', total: '4' })} —{' '}
+                      {t('compass.selectPioneerType')}
                     </span>
                   </div>
                 </div>
@@ -328,7 +338,7 @@ export default function CompassPage() {
               <div className="animate-[fadeIn_0.3s_ease] space-y-4">
                 <div className="bg-gradient-to-br from-gray-900 to-gray-900/80 border border-brand-accent/30 rounded-2xl p-phi-5">
                   <div className="text-xs text-brand-accent font-semibold uppercase tracking-widest mb-4">
-                    Your Route
+                    {t('compass.yourRoute')}
                   </div>
 
                   <div className="flex items-center gap-4 mb-5">
@@ -351,7 +361,7 @@ export default function CompassPage() {
 
                   {selectedDestinations.length > 1 && (
                     <div className="flex flex-wrap gap-2 mb-4 items-center">
-                      <span className="text-xs text-gray-400">Also exploring:</span>
+                      <span className="text-xs text-gray-400">{t('compass.alsoExploring')}</span>
                       {selectedDestinations.slice(1).map((code) => {
                         const c = COUNTRY_OPTIONS.find((x) => x.code === code)
                         return c ? (
@@ -373,14 +383,15 @@ export default function CompassPage() {
                       {CORRIDOR_BADGE[primaryDestination.corridorStrength].label}
                     </span>
                     <span className="px-3 py-1 rounded-full text-xs font-semibold bg-brand-primary/60 text-brand-accent border border-brand-accent/30">
-                      {PIONEER_TYPES[pioneerType].icon} {PIONEER_TYPES[pioneerType].label} Pioneer
+                      {PIONEER_TYPES[pioneerType].icon} {PIONEER_TYPES[pioneerType].label}{' '}
+                      {t('compass.pioneer')}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                     <div className="bg-gray-800/60 rounded-xl p-4">
                       <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">
-                        Visa Route
+                        {t('compass.visaRoute')}
                       </div>
                       <div className="text-white text-sm leading-relaxed">
                         {primaryDestination.visa}
@@ -388,7 +399,7 @@ export default function CompassPage() {
                     </div>
                     <div className="bg-gray-800/60 rounded-xl p-4">
                       <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
-                        Payments
+                        {t('compass.payments')}
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {primaryDestination.payment.map((p) => (
@@ -403,7 +414,7 @@ export default function CompassPage() {
                     </div>
                     <div className="bg-gray-800/60 rounded-xl p-4">
                       <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
-                        Top Sectors
+                        {t('compass.topSectors')}
                       </div>
                       <div className="space-y-1">
                         {displaySectors.map((sector) => (
@@ -420,7 +431,7 @@ export default function CompassPage() {
                     href={`/ventures?from=${origin.code}&to=${selectedDestinations.join(',')}&type=${pioneerType}`}
                     className="block w-full bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-4 rounded-xl transition-colors text-center text-lg border border-brand-accent/30 hover:border-brand-accent/60"
                   >
-                    {VOCAB.pioneer_join} — See Open Paths →
+                    {VOCAB.pioneer_join} — {t('compass.seeOpenPaths')}
                   </Link>
                 </div>
 
@@ -429,7 +440,7 @@ export default function CompassPage() {
                     onClick={handleReset}
                     className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
                   >
-                    ← Navigate a different route
+                    {t('compass.navigateDifferent')}
                   </button>
                 </div>
               </div>

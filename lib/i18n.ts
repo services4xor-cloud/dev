@@ -38,6 +38,7 @@ const CONTENT: Record<string, ContentDict> = {
 
     // Hero
     'hero.greeting': "We see you're in {geoName}. {geoGreeting}",
+    'hero.readyChapter': 'Ready for your next chapter?',
     'hero.headline': 'Find where you',
     'hero.belong': 'belong.',
     'hero.goThere': 'Go there.',
@@ -236,6 +237,14 @@ const CONTENT: Record<string, ContentDict> = {
     'compass.payments': 'Payments',
     'compass.topSectors': 'Top Sectors',
     'compass.navigateDifferent': '← Navigate a different route',
+    'compass.stepLabel1': 'Destinations',
+    'compass.stepLabel2': 'Your Origin',
+    'compass.stepLabel3': 'Pioneer Type',
+    'compass.stepLabel4': 'Your Route',
+    'compass.seeOpenPaths': 'See Open Paths →',
+    'compass.selectPioneerType': 'Select your Pioneer type',
+    'compass.back': '← Back',
+    'compass.pioneer': 'Pioneer',
 
     // Country-specific hero
     'hero.tagline.KE': 'Global Paths, Paid via M-Pesa',
@@ -262,6 +271,7 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.oneIdentity': 'Eine Plattform, jede Identität',
 
     'hero.greeting': 'Wir sehen, du bist in {geoName}. {geoGreeting}',
+    'hero.readyChapter': 'Bereit für dein nächstes Kapitel?',
     'hero.headline': 'Finde wo du',
     'hero.belong': 'hingehörst.',
     'hero.goThere': 'Geh dorthin.',
@@ -399,6 +409,21 @@ const CONTENT: Record<string, ContentDict> = {
     'compass.payments': 'Zahlungen',
     'compass.topSectors': 'Top Sektoren',
     'compass.navigateDifferent': '← Eine andere Route navigieren',
+    'compass.stepLabel1': 'Ziele',
+    'compass.stepLabel2': 'Herkunft',
+    'compass.stepLabel3': 'Pionier-Typ',
+    'compass.stepLabel4': 'Deine Route',
+    'compass.seeOpenPaths': 'Offene Wege ansehen →',
+    'compass.selectPioneerType': 'Wähle deinen Pionier-Typ',
+    'compass.back': '← Zurück',
+    'compass.currentlyIn': 'Aktuell in {name}',
+    'compass.autoDetected': 'Automatisch erkannt · tippe zum Ändern',
+    'compass.locationHint':
+      'Wir nutzen deinen Standort, um die besten Routen und Zahlungskorridore zu finden.',
+    'compass.confirmed': 'Bestätigt — {name} →',
+    'compass.alsoExploring': 'Erkundet auch:',
+    'compass.stepOf': 'Schritt {step} von {total}',
+    'compass.pioneer': 'Pionier',
 
     'common.pioneers': 'Pioniere',
     'common.active': 'Aktiv',
@@ -419,6 +444,7 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.oneIdentity': 'Jukwaa moja, kila utambulisho',
 
     'hero.greeting': 'Tunaona uko {geoName}. {geoGreeting}',
+    'hero.readyChapter': 'Uko tayari kwa sura yako ijayo?',
     'hero.headline': 'Pata mahali',
     'hero.belong': 'unapohusika.',
     'hero.goThere': 'Nenda huko.',
@@ -521,6 +547,7 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.switchIdentity': "Cliquez pour changer d'identité",
     'nav.oneIdentity': 'Une plateforme, chaque identité',
 
+    'hero.readyChapter': 'Prêt pour votre prochain chapitre?',
     'hero.headline': 'Trouvez où vous',
     'hero.belong': 'appartenez.',
     'hero.goThere': 'Allez-y.',

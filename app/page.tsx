@@ -179,7 +179,12 @@ export default function HomePage() {
             }}
           >
             <span className="text-xl">{geo.flag}</span>
-            <span>{t('hero.greeting', { geoName: geo.name, geoGreeting: geo.greeting })}</span>
+            <span>
+              {t('hero.greeting', {
+                geoName: geo.name,
+                geoGreeting: `${geo.greeting} ${t('hero.readyChapter')}`,
+              })}
+            </span>
           </div>
 
           {/* Main headline — driven by identity context + language */}

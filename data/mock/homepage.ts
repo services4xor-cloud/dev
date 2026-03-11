@@ -5,15 +5,18 @@
  */
 
 export const COUNTRY_GREETINGS: Record<string, { greeting: string; flag: string; name: string }> = {
-  KE: { greeting: 'Habari! Ready for your next chapter?', flag: '🇰🇪', name: 'Kenya' },
-  DE: { greeting: 'Guten Tag! Ready for your next chapter?', flag: '🇩🇪', name: 'Germany' },
-  US: { greeting: 'Hello! Ready for your next chapter?', flag: '🇺🇸', name: 'the USA' },
-  NG: { greeting: 'Ẹ káàárọ̀! Ready for your next chapter?', flag: '🇳🇬', name: 'Nigeria' },
-  GB: { greeting: 'Good day! Ready for your next chapter?', flag: '🇬🇧', name: 'the UK' },
-  AE: { greeting: 'Marhaba! Ready for your next chapter?', flag: '🇦🇪', name: 'UAE' },
-  UG: { greeting: 'Wassuwa! Ready for your next chapter?', flag: '🇺🇬', name: 'Uganda' },
-  TZ: { greeting: 'Karibu! Ready for your next chapter?', flag: '🇹🇿', name: 'Tanzania' },
-  DEFAULT: { greeting: 'Ready for your next chapter?', flag: '🌍', name: 'your country' },
+  KE: { greeting: 'Habari!', flag: '🇰🇪', name: 'Kenya' },
+  DE: { greeting: 'Guten Tag!', flag: '🇩🇪', name: 'Germany' },
+  US: { greeting: 'Hello!', flag: '🇺🇸', name: 'the USA' },
+  NG: { greeting: 'Ẹ káàárọ̀!', flag: '🇳🇬', name: 'Nigeria' },
+  GB: { greeting: 'Good day!', flag: '🇬🇧', name: 'the UK' },
+  AE: { greeting: 'Marhaba!', flag: '🇦🇪', name: 'UAE' },
+  UG: { greeting: 'Wassuwa!', flag: '🇺🇬', name: 'Uganda' },
+  TZ: { greeting: 'Karibu!', flag: '🇹🇿', name: 'Tanzania' },
+  CH: { greeting: 'Grüezi!', flag: '🇨🇭', name: 'Switzerland' },
+  FR: { greeting: 'Bonjour!', flag: '🇫🇷', name: 'France' },
+  IN: { greeting: 'Namaste!', flag: '🇮🇳', name: 'India' },
+  DEFAULT: { greeting: '👋', flag: '🌍', name: 'your country' },
 }
 
 export const ROTATING_FLAGS = [

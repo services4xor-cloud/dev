@@ -8,6 +8,7 @@ import { SKILLS_BY_TYPE } from '@/data/mock'
 import { detectCountryFromTimezone } from '@/lib/geo'
 import { saveIdentityFlags, getVenturesUrl } from '@/lib/identity-flags'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Confetti Component ───────────────────────────────────────────────────────
 function ConfettiBlast() {
@@ -36,15 +37,24 @@ function ConfettiBlast() {
 }
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────────
-function ProgressBar({ step, total }: { step: number; total: number }) {
+function ProgressBar({
+  step,
+  total,
+  t,
+}: {
+  step: number
+  total: number
+  t: (key: string, vars?: Record<string, string>) => string
+}) {
   const pct = Math.round((step / total) * 100)
   return (
     <div className="w-full mb-8">
       <div className="flex justify-between text-sm text-gray-400 mb-2">
+        <span>{t('onboarding.step', { step: String(step), total: String(total) })}</span>
         <span>
-          Step {step} of {total}
+          {pct}
+          {t('onboarding.complete')}
         </span>
-        <span>{pct}% complete</span>
       </div>
       <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
         <div
@@ -60,6 +70,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 export default function OnboardingPage() {
   const router = useRouter()
   const { identity } = useIdentity()
+  const { t } = useTranslation()
   const [step, setStep] = useState(1)
   const TOTAL_STEPS = 5
 
@@ -168,7 +179,7 @@ export default function OnboardingPage() {
       // Redirect to personalized Ventures feed
       setTimeout(() => router.push(getVenturesUrl()), 3000)
     } catch {
-      setError('Something went wrong — please try again.')
+      setError(t('onboarding.tryAgain'))
     } finally {
       setSubmitting(false)
     }
@@ -181,10 +192,8 @@ export default function OnboardingPage() {
         <ConfettiBlast />
         <div className="text-center max-w-lg">
           <div className="text-7xl mb-6">🌍</div>
-          <h1 className="text-4xl font-bold text-white mb-4">Welcome to the BeNetwork, Pioneer!</h1>
-          <p className="text-xl text-gray-400 mb-6">
-            Your profile is ready. We&apos;re finding the best Paths for you...
-          </p>
+          <h1 className="text-4xl font-bold text-white mb-4">{t('onboarding.welcome')}</h1>
+          <p className="text-xl text-gray-400 mb-6">{t('onboarding.profileReady')}</p>
           <div className="flex items-center justify-center gap-2">
             <div
               className="w-2 h-2 rounded-full bg-brand-accent animate-bounce"
@@ -199,7 +208,7 @@ export default function OnboardingPage() {
               style={{ animationDelay: '300ms' }}
             />
           </div>
-          <p className="text-sm text-gray-400 mt-4">Taking you to your Ventures...</p>
+          <p className="text-sm text-gray-400 mt-4">{t('onboarding.takingYou')}</p>
         </div>
       </div>
     )
@@ -211,9 +220,9 @@ export default function OnboardingPage() {
       <div className="max-w-2xl 3xl:max-w-4xl mx-auto px-4 pt-8 pb-4">
         <div className="flex items-center gap-2 mb-6">
           <span className="text-2xl font-bold text-brand-accent">Be</span>
-          <span className="text-2xl font-bold text-white">Network</span>
+          <span className="text-2xl font-bold text-white">{t('onboarding.network')}</span>
         </div>
-        <ProgressBar step={step} total={TOTAL_STEPS} />
+        <ProgressBar step={step} total={TOTAL_STEPS} t={t} />
       </div>
 
       {/* Step Content */}
@@ -221,10 +230,8 @@ export default function OnboardingPage() {
         {/* ── STEP 1: Pioneer Type ── */}
         {step === 1 && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">What kind of Pioneer are you?</h1>
-            <p className="text-gray-400 mb-8">
-              Pick the one that feels most like you. You can always refine later.
-            </p>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.whatKind')}</h1>
+            <p className="text-gray-400 mb-8">{t('onboarding.pickOne')}</p>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               {(
                 Object.entries(PIONEER_TYPES) as [
@@ -272,18 +279,16 @@ export default function OnboardingPage() {
         {/* ── STEP 2: Current Country ── */}
         {step === 2 && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Where are you right now?</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.whereNow')}</h1>
             {detectedCountryInfo && fromCountry === detectedCountry && (
               <div className="flex items-center gap-2 mb-4 p-3 bg-brand-primary/20 rounded-xl border border-brand-accent/30">
                 <span className="text-xl">{detectedCountryInfo.flag}</span>
                 <span className="text-sm text-brand-accent">
-                  We think you&apos;re in <strong>{detectedCountryInfo.name}</strong>. Correct?
+                  {t('onboarding.weThink', { country: detectedCountryInfo.name })}
                 </span>
               </div>
             )}
-            <p className="text-gray-400 mb-6">
-              This helps us find the best routes for your journey.
-            </p>
+            <p className="text-gray-400 mb-6">{t('onboarding.helpsRoutes')}</p>
             <div className="relative">
               <select
                 value={fromCountry}
@@ -292,8 +297,8 @@ export default function OnboardingPage() {
                   appearance-none focus:outline-none focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20
                   transition-all cursor-pointer"
               >
-                <option value="">Select your country...</option>
-                <option value="OTHER">🌍 Other</option>
+                <option value="">{t('onboarding.selectCountry')}</option>
+                <option value="OTHER">{t('onboarding.other')}</option>
                 {COUNTRY_OPTIONS.map((c) => (
                   <option key={c.code} value={c.code}>
                     {c.flag} {c.name}
@@ -319,8 +324,9 @@ export default function OnboardingPage() {
 
             {fromCountry && fromCountry !== detectedCountry && (
               <p className="mt-3 text-sm text-gray-400">
-                Got it — your profile will be calibrated for{' '}
-                {COUNTRY_OPTIONS.find((c) => c.code === fromCountry)?.name ?? fromCountry}.
+                {t('onboarding.calibrated', {
+                  country: COUNTRY_OPTIONS.find((c) => c.code === fromCountry)?.name ?? fromCountry,
+                })}
               </p>
             )}
           </div>
@@ -329,10 +335,8 @@ export default function OnboardingPage() {
         {/* ── STEP 3: Destinations ── */}
         {step === 3 && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Where do you want to go?</h1>
-            <p className="text-gray-400 mb-6">
-              Select one or more destinations. We&apos;ll prioritize Paths in these locations.
-            </p>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.whereTo')}</h1>
+            <p className="text-gray-400 mb-6">{t('onboarding.selectDestinations')}</p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {COUNTRY_OPTIONS.map((dest) => {
                 const isSelected = toCountries.includes(dest.code)
@@ -395,7 +399,10 @@ export default function OnboardingPage() {
             </div>
             {toCountries.length > 0 && (
               <p className="mt-4 text-sm text-brand-accent font-medium">
-                {toCountries.length} destination{toCountries.length > 1 ? 's' : ''} selected
+                {t('onboarding.destinationsSelected', {
+                  count: String(toCountries.length),
+                  s: toCountries.length > 1 ? 's' : '',
+                })}
               </p>
             )}
           </div>
@@ -404,18 +411,16 @@ export default function OnboardingPage() {
         {/* ── STEP 4: Skills ── */}
         {step === 4 && pioneerType && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">What skills do you bring?</h1>
-            <p className="text-gray-400 mb-2">
-              Select at least 3 skills. These power your match score.
-            </p>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.whatSkills')}</h1>
+            <p className="text-gray-400 mb-2">{t('onboarding.selectSkills')}</p>
             {skills.length < 3 && (
               <p className="text-sm text-brand-accent mb-4">
-                {3 - skills.length} more needed to continue
+                {t('onboarding.moreNeeded', { count: String(3 - skills.length) })}
               </p>
             )}
             {skills.length >= 3 && (
               <p className="text-sm text-green-400 font-medium mb-4">
-                {skills.length} skills selected — great! Add more for better matches.
+                {t('onboarding.skillsSelected', { count: String(skills.length) })}
               </p>
             )}
 
@@ -447,7 +452,7 @@ export default function OnboardingPage() {
             {skills.filter((s) => !SKILLS_BY_TYPE[pioneerType].includes(s)).length > 0 && (
               <div className="mb-4">
                 <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                  Your custom skills
+                  {t('onboarding.customSkills')}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {skills
@@ -471,7 +476,7 @@ export default function OnboardingPage() {
                 value={customSkill}
                 onChange={(e) => setCustomSkill(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addCustomSkill()}
-                placeholder="Add your own skill..."
+                placeholder={t('onboarding.addSkill')}
                 className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-700 bg-gray-900/60 text-white
                   placeholder-gray-500 focus:outline-none focus:border-brand-accent text-sm"
               />
@@ -481,7 +486,7 @@ export default function OnboardingPage() {
                 className="px-4 py-2.5 rounded-xl bg-brand-primary text-white text-sm font-medium
                   disabled:opacity-40 hover:bg-brand-primary-light active:scale-95 transition-all"
               >
-                Add
+                {t('onboarding.add')}
               </button>
             </div>
           </div>
@@ -490,36 +495,36 @@ export default function OnboardingPage() {
         {/* ── STEP 5: Headline & Contact ── */}
         {step === 5 && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Tell us your chapter title</h1>
-            <p className="text-gray-400 mb-6">
-              Your headline is the first thing Anchors see. Make it yours.
-            </p>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.chapterTitle')}</h1>
+            <p className="text-gray-400 mb-6">{t('onboarding.headlineFirst')}</p>
 
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-2">
-                  Your headline *
+                  {t('onboarding.yourHeadline')}
                 </label>
                 <input
                   type="text"
                   value={headline}
                   onChange={(e) => setHeadline(e.target.value)}
-                  placeholder="e.g. Safari Guide with 5 years experience | Swahili & English"
+                  placeholder={t('onboarding.headlinePlaceholder')}
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-700 bg-gray-900/60 text-white
                     placeholder-gray-500 focus:outline-none focus:border-brand-accent focus:ring-2
                     focus:ring-brand-accent/20 transition-all"
                 />
-                <p className="text-xs text-gray-400 mt-1">{headline.length} / 120 characters</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {headline.length} {t('onboarding.charLimit')}
+                </p>
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-2">
-                  What makes you, you? <span className="text-gray-400 font-normal">(optional)</span>
+                  {t('onboarding.whatMakesYou')}
                 </label>
                 <textarea
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  placeholder="A short story about your journey, your passion, what drives you..."
+                  placeholder={t('onboarding.shortStory')}
                   rows={4}
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-700 bg-gray-900/60 text-white
                     placeholder-gray-500 focus:outline-none focus:border-brand-accent focus:ring-2
@@ -529,9 +534,9 @@ export default function OnboardingPage() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-1">
-                  WhatsApp number{' '}
+                  {t('onboarding.whatsapp')}{' '}
                   <span className="text-gray-400 font-normal">
-                    (optional — get notified about matches)
+                    {t('onboarding.whatsappOptional')}
                   </span>
                 </label>
                 <div className="flex gap-2">
@@ -548,9 +553,7 @@ export default function OnboardingPage() {
                       focus:ring-brand-accent/20 transition-all"
                   />
                 </div>
-                <p className="text-xs text-gray-400 mt-1">
-                  Include country code. We&apos;ll send WhatsApp alerts for new Path matches.
-                </p>
+                <p className="text-xs text-gray-400 mt-1">{t('onboarding.whatsappHint')}</p>
               </div>
             </div>
 
@@ -572,7 +575,7 @@ export default function OnboardingPage() {
               className="px-6 py-3 rounded-2xl border-2 border-gray-700 text-gray-300 font-medium
                 hover:border-gray-600 active:scale-95 transition-all"
             >
-              Back
+              {t('common.back')}
             </button>
           )}
 
@@ -589,7 +592,7 @@ export default function OnboardingPage() {
                 }
               `}
             >
-              Continue →
+              {t('onboarding.continue')}
             </button>
           ) : (
             <button
@@ -604,7 +607,7 @@ export default function OnboardingPage() {
                 }
               `}
             >
-              {submitting ? 'Opening your chapter...' : 'Open My First Chapter'}
+              {submitting ? t('onboarding.openingChapter') : t('onboarding.openChapter')}
             </button>
           )}
         </div>
