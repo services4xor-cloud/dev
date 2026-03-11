@@ -467,6 +467,51 @@ describe('i18n — charity page translations', () => {
   })
 })
 
+describe('i18n — referral page translations', () => {
+  const referralKeys = [
+    'referral.heroTitle',
+    'referral.heroDesc',
+    'referral.linkTitle',
+    'referral.linkDesc',
+    'referral.copied',
+    'referral.copy',
+    'referral.shareWhatsApp',
+    'referral.shareTwitter',
+    'referral.howTitle',
+    'referral.notSignedUp',
+    'referral.ctaBtn',
+  ]
+
+  it('English has all referral keys', () => {
+    for (const key of referralKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all referral keys', () => {
+    for (const key of referralKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all referral keys', () => {
+    for (const key of referralKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('referral.heroDesc interpolates brand, bonus, and method', () => {
+    const result = translate('referral.heroDesc', 'en', {
+      brand: 'BeKenya',
+      bonus: 'KES 5,000',
+      method: 'M-Pesa',
+    })
+    expect(result).toContain('BeKenya')
+    expect(result).toContain('KES 5,000')
+    expect(result).toContain('M-Pesa')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

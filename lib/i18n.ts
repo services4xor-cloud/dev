@@ -426,6 +426,20 @@ const CONTENT: Record<string, ContentDict> = {
     'charity.legal':
       '{partner} is registered in Kenya as a Community Based Organisation (CBO). Partnered with {company}. All programmes are administered locally with full community involvement and transparent financial reporting.',
 
+    // Referral
+    'referral.heroTitle': 'Earn {bonus} per placement',
+    'referral.heroDesc':
+      'Refer a friend who gets placed through {brand}. We pay you {bonus} via {method} — every time.',
+    'referral.linkTitle': 'Your referral link',
+    'referral.linkDesc': 'Share this link — every signup counts toward your earnings',
+    'referral.copied': 'Copied!',
+    'referral.copy': 'Copy',
+    'referral.shareWhatsApp': 'Share on WhatsApp',
+    'referral.shareTwitter': 'Share on Twitter/X',
+    'referral.howTitle': 'How it works',
+    'referral.notSignedUp': 'Not signed up yet?',
+    'referral.ctaBtn': 'Create Free Account & Start Earning →',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -767,6 +781,20 @@ const CONTENT: Record<string, ContentDict> = {
     'charity.legal':
       '{partner} ist in Kenia als Community Based Organisation (CBO) registriert. Partnerschaft mit {company}. Alle Programme werden lokal mit voller Beteiligung der Gemeinschaft und transparenter Finanzberichterstattung verwaltet.',
 
+    // Referral
+    'referral.heroTitle': '{bonus} pro Vermittlung verdienen',
+    'referral.heroDesc':
+      'Empfiehl einen Freund, der über {brand} vermittelt wird. Wir zahlen dir {bonus} über {method} — jedes Mal.',
+    'referral.linkTitle': 'Dein Empfehlungslink',
+    'referral.linkDesc': 'Teile diesen Link — jede Anmeldung zählt für deine Einnahmen',
+    'referral.copied': 'Kopiert!',
+    'referral.copy': 'Kopieren',
+    'referral.shareWhatsApp': 'Auf WhatsApp teilen',
+    'referral.shareTwitter': 'Auf Twitter/X teilen',
+    'referral.howTitle': 'So funktioniert es',
+    'referral.notSignedUp': 'Noch nicht registriert?',
+    'referral.ctaBtn': 'Kostenloses Konto erstellen & verdienen →',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -1038,6 +1066,20 @@ const CONTENT: Record<string, ContentDict> = {
       'Unaweza pia kuchangia kwa {link}kupiga buking ya Matembezi{/link} kwenye {brand} — asilimia inaunga mkono {partner} kiotomatiki.',
     'charity.legal':
       '{partner} imesajiliwa Kenya kama Shirika la Jamii (CBO). Kushirikiana na {company}. Programu zote zinasimamiwa ndani na ushiriki kamili wa jamii na ripoti za kifedha zenye uwazi.',
+
+    // Referral
+    'referral.heroTitle': 'Pata {bonus} kwa kila uwekaji',
+    'referral.heroDesc':
+      'Pendekeza rafiki anayepata nafasi kupitia {brand}. Tunakupa {bonus} kupitia {method} — kila wakati.',
+    'referral.linkTitle': 'Kiungo chako cha rufaa',
+    'referral.linkDesc': 'Shiriki kiungo hiki — kila usajili unachangia mapato yako',
+    'referral.copied': 'Imenakiliwa!',
+    'referral.copy': 'Nakili',
+    'referral.shareWhatsApp': 'Shiriki kwenye WhatsApp',
+    'referral.shareTwitter': 'Shiriki kwenye Twitter/X',
+    'referral.howTitle': 'Jinsi inavyofanya kazi',
+    'referral.notSignedUp': 'Bado hujasajiliwa?',
+    'referral.ctaBtn': 'Fungua Akaunti Bure & Anza Kupata →',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',

@@ -4,8 +4,10 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Gift, Copy, Check, Users, DollarSign, Share2, ArrowRight, Star } from 'lucide-react'
 import { REFERRAL, BRAND_NAME, REFERRAL_BONUS } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 export default function ReferralPage() {
+  const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
   const mockLink = REFERRAL.mockLink
 
@@ -22,11 +24,14 @@ export default function ReferralPage() {
         <div className="max-w-3xl mx-auto text-center">
           <Gift className="w-16 h-16 mx-auto mb-4 opacity-90" />
           <h1 className="text-4xl md:text-5xl font-black mb-4">
-            Earn {REFERRAL_BONUS} per placement
+            {t('referral.heroTitle', { bonus: REFERRAL_BONUS })}
           </h1>
           <p className="text-xl text-gray-300 max-w-xl mx-auto">
-            Refer a friend who gets placed through {BRAND_NAME}. We pay you {REFERRAL_BONUS} via{' '}
-            {REFERRAL.paymentMethod} — every time.
+            {t('referral.heroDesc', {
+              brand: BRAND_NAME,
+              bonus: REFERRAL_BONUS,
+              method: REFERRAL.paymentMethod,
+            })}
           </p>
         </div>
       </div>
@@ -34,10 +39,8 @@ export default function ReferralPage() {
       <div className="max-w-4xl mx-auto px-4 py-16 space-y-16">
         {/* Referral link */}
         <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-primary/30 text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">Your referral link</h2>
-          <p className="text-gray-400 mb-6">
-            Share this link — every signup counts toward your earnings
-          </p>
+          <h2 className="text-2xl font-bold text-white mb-2">{t('referral.linkTitle')}</h2>
+          <p className="text-gray-400 mb-6">{t('referral.linkDesc')}</p>
 
           <div className="flex items-center gap-3 bg-brand-bg rounded-xl p-4 border border-brand-primary/30 mb-4">
             <span className="flex-1 text-sm text-gray-300 font-mono truncate">{mockLink}</span>
@@ -51,11 +54,11 @@ export default function ReferralPage() {
             >
               {copied ? (
                 <>
-                  <Check className="w-4 h-4" /> Copied!
+                  <Check className="w-4 h-4" /> {t('referral.copied')}
                 </>
               ) : (
                 <>
-                  <Copy className="w-4 h-4" /> Copy
+                  <Copy className="w-4 h-4" /> {t('referral.copy')}
                 </>
               )}
             </button>
@@ -64,18 +67,20 @@ export default function ReferralPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <button className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-xl text-sm font-medium hover:bg-green-600 transition-colors">
               <Share2 className="w-4 h-4" />
-              Share on WhatsApp
+              {t('referral.shareWhatsApp')}
             </button>
             <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl text-sm font-medium hover:bg-blue-600 transition-colors">
               <Share2 className="w-4 h-4" />
-              Share on Twitter/X
+              {t('referral.shareTwitter')}
             </button>
           </div>
         </div>
 
         {/* How it works */}
         <div>
-          <h2 className="text-2xl font-bold text-white text-center mb-8">How it works</h2>
+          <h2 className="text-2xl font-bold text-white text-center mb-8">
+            {t('referral.howTitle')}
+          </h2>
           <div className="grid md:grid-cols-4 gap-6">
             {REFERRAL.steps.map((step, i) => (
               <div key={step.n} className="relative">
@@ -123,9 +128,9 @@ export default function ReferralPage() {
 
         {/* CTA */}
         <div className="text-center">
-          <p className="text-gray-400 mb-4">Not signed up yet?</p>
+          <p className="text-gray-400 mb-4">{t('referral.notSignedUp')}</p>
           <Link href="/signup" className="btn-primary px-8 py-4 text-lg">
-            Create Free Account & Start Earning →
+            {t('referral.ctaBtn')}
           </Link>
         </div>
       </div>
