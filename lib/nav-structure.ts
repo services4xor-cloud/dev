@@ -18,6 +18,7 @@ import {
   PlusSquare,
   LogIn,
   Globe,
+  Users,
 } from 'lucide-react'
 import { COUNTRIES } from '@/lib/countries'
 
@@ -77,6 +78,12 @@ export const PIONEER_NAV_LINKS: NavLink[] = [
     label: 'Find My Path',
     icon: Compass,
     aria: 'Smart route wizard',
+  },
+  {
+    href: '/threads',
+    label: 'Threads',
+    icon: Users,
+    aria: 'Identity-based communities',
   },
   {
     href: '/charity',
@@ -149,6 +156,7 @@ export const FOOTER_ANCHOR_LINKS: FooterLink[] = [
 export const FOOTER_DISCOVER_LINKS: FooterLink[] = [
   { href: '/offerings', label: 'Country Offerings' },
   { href: '/experiences', label: 'Safari Experiences' },
+  { href: '/threads', label: 'Threads' },
   { href: `/be/${CC.toLowerCase()}`, label: brandName },
   { href: '/charity', label: 'UTAMADUNI' },
   { href: '/media', label: 'Media & Stories' },
