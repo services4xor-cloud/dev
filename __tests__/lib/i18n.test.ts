@@ -512,6 +512,51 @@ describe('i18n — referral page translations', () => {
   })
 })
 
+describe('i18n — profile page translations', () => {
+  const profileKeys = [
+    'profile.title',
+    'profile.subtitle',
+    'profile.completeness',
+    'profile.completeHint',
+    'profile.photo',
+    'profile.photoHint',
+    'profile.uploadPhoto',
+    'profile.basicInfo',
+    'profile.currentRole',
+    'profile.rolePlaceholder',
+    'profile.city',
+    'profile.email',
+    'profile.phone',
+    'profile.phonePlaceholder',
+    'profile.bio',
+    'profile.bioPlaceholder',
+    'profile.linkedin',
+    'profile.linkedinPlaceholder',
+    'profile.skills',
+    'profile.addSkill',
+    'profile.saved',
+    'profile.saveProfile',
+  ]
+
+  it('English has all profile keys', () => {
+    for (const key of profileKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all profile keys', () => {
+    for (const key of profileKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all profile keys', () => {
+    for (const key of profileKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

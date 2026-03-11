@@ -16,8 +16,10 @@ import {
 } from 'lucide-react'
 import { SKILLS_SUGGESTIONS, MOCK_PROFILE, BRAND_NAME } from '@/data/mock'
 import HeroSection from '@/components/HeroSection'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 export default function ProfilePage() {
+  const { t } = useTranslation()
   const [skills, setSkills] = useState<string[]>(['TypeScript', 'React'])
   const [skillInput, setSkillInput] = useState('')
   const [saved, setSaved] = useState(false)
@@ -48,8 +50,8 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-brand-bg">
       <HeroSection
-        title="Your Profile"
-        subtitle={`Complete your profile to unlock better Path matches on ${BRAND_NAME}`}
+        title={t('profile.title')}
+        subtitle={t('profile.subtitle', { brand: BRAND_NAME })}
         size="sm"
       />
 
@@ -57,7 +59,7 @@ export default function ProfilePage() {
         {/* Completion bar */}
         <div className="bg-gray-900/60 rounded-2xl p-4 shadow-sm border border-brand-primary/30 mb-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-300">Profile completeness</span>
+            <span className="text-sm font-medium text-gray-300">{t('profile.completeness')}</span>
             <span className="text-sm font-bold text-brand-accent">
               {Math.round((profileComplete / 6) * 100)}%
             </span>
@@ -68,14 +70,12 @@ export default function ProfilePage() {
               style={{ width: `${Math.round((profileComplete / 6) * 100)}%` }}
             />
           </div>
-          <p className="text-xs text-gray-400 mt-2">
-            Complete your profile to get 5x more Anchor views
-          </p>
+          <p className="text-xs text-gray-400 mt-2">{t('profile.completeHint')}</p>
         </div>
 
         {/* Avatar */}
         <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 mb-4">
-          <h2 className="font-bold text-white mb-4">Profile Photo</h2>
+          <h2 className="font-bold text-white mb-4">{t('profile.photo')}</h2>
           <div className="flex items-center gap-6">
             <div className="relative">
               <div className="w-20 h-20 bg-brand-primary rounded-full flex items-center justify-center text-white font-bold text-2xl">
@@ -89,11 +89,9 @@ export default function ProfilePage() {
               </button>
             </div>
             <div>
-              <p className="text-sm text-gray-400 mb-2">
-                Upload a professional photo to get more views
-              </p>
+              <p className="text-sm text-gray-400 mb-2">{t('profile.photoHint')}</p>
               <button className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1">
-                <Upload className="w-3 h-3" aria-hidden="true" /> Upload Photo
+                <Upload className="w-3 h-3" aria-hidden="true" /> {t('profile.uploadPhoto')}
               </button>
             </div>
           </div>
@@ -101,23 +99,23 @@ export default function ProfilePage() {
 
         {/* Basic info */}
         <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 mb-4">
-          <h2 className="font-bold text-white mb-4">Basic Information</h2>
+          <h2 className="font-bold text-white mb-4">{t('profile.basicInfo')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
-                <Briefcase className="w-3 h-3" /> Current Role
+                <Briefcase className="w-3 h-3" /> {t('profile.currentRole')}
               </label>
               <input
                 type="text"
                 value={form.headline}
                 onChange={(e) => setForm({ ...form, headline: e.target.value })}
-                placeholder="e.g. Software Engineer"
+                placeholder={t('profile.rolePlaceholder')}
                 className="input w-full"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
-                <MapPin className="w-3 h-3" /> City
+                <MapPin className="w-3 h-3" /> {t('profile.city')}
               </label>
               <input
                 type="text"
@@ -129,7 +127,7 @@ export default function ProfilePage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
-                <Mail className="w-3 h-3" /> Email
+                <Mail className="w-3 h-3" /> {t('profile.email')}
               </label>
               <input
                 type="email"
@@ -140,23 +138,25 @@ export default function ProfilePage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
-                <Phone className="w-3 h-3" /> Phone (M-Pesa)
+                <Phone className="w-3 h-3" /> {t('profile.phone')}
               </label>
               <input
                 type="tel"
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                placeholder="07XX XXX XXX"
+                placeholder={t('profile.phonePlaceholder')}
                 className="input w-full"
               />
             </div>
           </div>
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-300 mb-1">Bio / Summary</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              {t('profile.bio')}
+            </label>
             <textarea
               value={form.bio}
               onChange={(e) => setForm({ ...form, bio: e.target.value })}
-              placeholder="Briefly describe your experience and what you're looking for..."
+              placeholder={t('profile.bioPlaceholder')}
               className="input w-full h-24 resize-none"
               maxLength={500}
             />
@@ -164,13 +164,13 @@ export default function ProfilePage() {
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
-              <Globe className="w-3 h-3" /> LinkedIn URL
+              <Globe className="w-3 h-3" /> {t('profile.linkedin')}
             </label>
             <input
               type="url"
               value={form.linkedin}
               onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
-              placeholder="https://linkedin.com/in/yourname"
+              placeholder={t('profile.linkedinPlaceholder')}
               className="input w-full"
             />
           </div>
@@ -178,7 +178,7 @@ export default function ProfilePage() {
 
         {/* Skills */}
         <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 mb-6">
-          <h2 className="font-bold text-white mb-4">Skills</h2>
+          <h2 className="font-bold text-white mb-4">{t('profile.skills')}</h2>
           <div className="flex flex-wrap gap-2 mb-3">
             {skills.map((skill) => (
               <span
@@ -202,7 +202,7 @@ export default function ProfilePage() {
               value={skillInput}
               onChange={(e) => setSkillInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill(skillInput))}
-              placeholder="Add a skill..."
+              placeholder={t('profile.addSkill')}
               className="input flex-1"
             />
             <button
@@ -236,10 +236,10 @@ export default function ProfilePage() {
           {saved ? (
             <>
               <CheckCircle className="inline w-5 h-5 mr-2" />
-              Saved!
+              {t('profile.saved')}
             </>
           ) : (
-            'Save Profile'
+            t('profile.saveProfile')
           )}
         </button>
       </div>
