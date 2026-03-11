@@ -526,7 +526,7 @@ export default function PioneerDashboard() {
     <div className="min-h-screen bg-[#0a0005] text-white">
       {/* Header */}
       <header className="bg-[#0d0208] border-b border-[#5C0A14]/50 sticky top-16 z-30">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-2xl">🦁</span>
             <span className="text-xl font-bold text-[#C9A227]">BeNetwork</span>
@@ -554,7 +554,7 @@ export default function PioneerDashboard() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 py-8">
         {/* Tabs */}
         <div className="flex gap-2 flex-wrap mb-8 border-b border-[#5C0A14]/30 pb-0">
           {TABS.map((tab) => (

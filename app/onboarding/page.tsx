@@ -202,7 +202,7 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-[#0A0A0F]">
       {/* Header */}
-      <div className="max-w-2xl mx-auto px-4 pt-8 pb-4">
+      <div className="max-w-2xl 3xl:max-w-4xl mx-auto px-4 pt-8 pb-4">
         <div className="flex items-center gap-2 mb-6">
           <span className="text-2xl font-bold text-[#C9A227]">Be</span>
           <span className="text-2xl font-bold text-white">Network</span>
@@ -211,7 +211,7 @@ export default function OnboardingPage() {
       </div>
 
       {/* Step Content */}
-      <div className="max-w-2xl mx-auto px-4 pb-24">
+      <div className="max-w-2xl 3xl:max-w-4xl mx-auto px-4 pb-24">
         {/* ── STEP 1: Pioneer Type ── */}
         {step === 1 && (
           <div>
@@ -559,7 +559,7 @@ export default function OnboardingPage() {
 
       {/* ── Fixed Bottom Nav ── */}
       <div className="fixed bottom-0 left-0 right-0 bg-[#111118] border-t border-gray-800 shadow-xl px-4 py-4">
-        <div className="max-w-2xl mx-auto flex gap-3">
+        <div className="max-w-2xl 3xl:max-w-4xl mx-auto flex gap-3">
           {step > 1 && (
             <button
               onClick={back}

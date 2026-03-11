@@ -66,7 +66,7 @@ export default function OfferingsPage() {
         className="pt-16 pb-10 px-4"
         style={{ background: 'linear-gradient(to bottom, #5C0A14 0%, #0A0A0F 65%)' }}
       >
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto">
           {/* Origin indicator */}
           <div className="flex items-center gap-3 mb-6 flex-wrap">
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm">
@@ -132,7 +132,7 @@ export default function OfferingsPage() {
             </div>
           )}
 
-          <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-4 leading-tight">
             {destinationCode ? (
               <>
                 Offerings in <span style={{ color: '#C9A227' }}>{activeCountry?.name}</span>
@@ -183,7 +183,7 @@ export default function OfferingsPage() {
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto px-4 pb-20 space-y-10">
+      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 pb-20 space-y-10">
         {/* ── If no destination selected: show route recommendations ── */}
         {!destinationCode && (
           <section>

@@ -57,7 +57,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-[#0A0A0F]">
       {/* Nav */}
       <div className="bg-[#0d0208] border-b border-[#5C0A14]/50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold">
             <span className="text-white">Beke</span>
             <span className="text-[#C9A227]">nya</span>
@@ -68,7 +68,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-8">
+      <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-8">
         {/* Completion bar */}
         <div className="bg-gray-900/60 rounded-2xl p-4 shadow-sm border border-[#5C0A14]/30 mb-6">
           <div className="flex items-center justify-between mb-2">
@@ -114,7 +114,7 @@ export default function ProfilePage() {
         {/* Basic info */}
         <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-[#5C0A14]/30 mb-4">
           <h2 className="font-bold text-white mb-4">Basic Information</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-1">
                 <Briefcase className="w-3 h-3" /> Current Role

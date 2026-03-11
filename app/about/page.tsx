@@ -34,7 +34,7 @@ export default function AboutPage() {
             backgroundSize: '48px 48px',
           }}
         />
-        <div className="relative max-w-4xl mx-auto">
+        <div className="relative max-w-4xl 3xl:max-w-6xl mx-auto">
           <div className="flex justify-center mb-8">
             <Image
               src="/logo.svg"
@@ -80,7 +80,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="max-w-5xl mx-auto px-4 py-16">
+      <section className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {STATS.map((stat) => (
             <div
@@ -97,7 +97,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission — golden ratio 61.8 / 38.2 column split */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
+      <section className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="grid md:grid-cols-[1.618fr_1fr] gap-12 items-center">
           <div>
             <div className="text-xs font-semibold uppercase tracking-widest text-[#C9A227] mb-4 flex items-center gap-2">
@@ -139,7 +139,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="max-w-5xl mx-auto px-4 py-16">
+      <section className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <div className="text-xs font-semibold uppercase tracking-widest text-[#C9A227] mb-3">
             What We Stand For
@@ -163,7 +163,7 @@ export default function AboutPage() {
       </section>
 
       {/* Sectors */}
-      <section className="max-w-5xl mx-auto px-4 py-16">
+      <section className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-10">
           <div className="text-xs font-semibold uppercase tracking-widest text-[#C9A227] mb-3">
             Industries
@@ -184,7 +184,7 @@ export default function AboutPage() {
       </section>
 
       {/* Payment Rails */}
-      <section className="max-w-5xl mx-auto px-4 py-16">
+      <section className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-10">
           <div className="text-xs font-semibold uppercase tracking-widest text-[#C9A227] mb-3">
             Payment Rails
@@ -212,7 +212,7 @@ export default function AboutPage() {
       </section>
 
       {/* UTAMADUNI CBO */}
-      <section className="max-w-5xl mx-auto px-4 py-12">
+      <section className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-12">
         <div
           className="rounded-2xl p-8 text-center"
           style={{
@@ -236,7 +236,7 @@ export default function AboutPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="max-w-3xl mx-auto px-4 py-20 text-center">
+      <section className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-20 text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to find your path?</h2>
         <p className="text-gray-400 text-lg mb-10">
           Start your Compass. Tell us where you are and where you want to go. We&apos;ll build your

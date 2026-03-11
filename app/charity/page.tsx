@@ -18,7 +18,7 @@ export default function CharityPage() {
     <div className="min-h-screen bg-[#0A0A0F]">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#006600] via-[#004d00] to-gray-900 text-white">
-        <div className="max-w-5xl mx-auto px-4 pt-20 pb-16">
+        <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 pt-20 pb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-green-200 text-sm font-medium mb-8">
             <span>🇰🇪</span>
             <span>Community-Based Organization · Registered in Kenya</span>
@@ -61,7 +61,7 @@ export default function CharityPage() {
 
       {/* How it works banner */}
       <div className="bg-[#C9A227]/5 border-y border-[#C9A227]/10 py-6">
-        <div className="max-w-5xl mx-auto px-4 text-center">
+        <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 text-center">
           <p className="text-gray-300 text-base font-medium">
             When you book a Venture or open a Path on BeKenya,
             <span className="text-[#C9A227] font-bold"> a percentage flows to UTAMADUNI </span>—
@@ -71,7 +71,7 @@ export default function CharityPage() {
       </div>
 
       {/* Impact Numbers */}
-      <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-10">
           <h2 className="text-2xl font-bold text-white mb-2">Our Impact So Far</h2>
           <p className="text-gray-400">Aspirational targets for our first programme cycle</p>
@@ -89,7 +89,7 @@ export default function CharityPage() {
 
       {/* 4 Pillars */}
       <div id="pillars" className="bg-gray-900/30 py-16">
-        <div className="max-w-5xl mx-auto px-4">
+        <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-3">Our Four Pillars</h2>
             <p className="text-gray-400 max-w-xl mx-auto">
@@ -129,7 +129,7 @@ export default function CharityPage() {
       </div>
 
       {/* How it works — platform connection */}
-      <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-3">How It Works</h2>
           <p className="text-gray-400">The BeKenya circle of dignified work</p>
@@ -176,7 +176,7 @@ export default function CharityPage() {
 
       {/* Impact Stories */}
       <div className="bg-gray-900 text-white py-16">
-        <div className="max-w-5xl mx-auto px-4">
+        <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-3">Stories from the Field</h2>
             <p className="text-gray-400">Real lives. Real change. Names used with permission.</p>
@@ -233,7 +233,7 @@ export default function CharityPage() {
       </div>
 
       {/* Partner With Us */}
-      <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-3">Partner With UTAMADUNI</h2>
           <p className="text-gray-400 max-w-xl mx-auto">

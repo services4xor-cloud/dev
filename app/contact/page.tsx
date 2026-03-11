@@ -15,10 +15,12 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0F]">
-      <div className="max-w-4xl mx-auto px-4 py-16">
+      <div className="max-w-4xl 3xl:max-w-6xl mx-auto px-4 xl:px-8 py-16">
         <div className="text-center mb-12">
           <MessageSquare className="w-12 h-12 text-[#C9A227] mx-auto mb-4" />
-          <h1 className="text-3xl font-black text-white mb-2">Get in touch</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl 3xl:text-5xl font-black text-white mb-2">
+            Get in touch
+          </h1>
           <p className="text-gray-400">We respond within 24 hours on business days</p>
         </div>
 
@@ -27,10 +29,20 @@ export default function ContactPage() {
           <div className="space-y-6">
             {[
               { icon: Mail, label: 'Email', value: 'hello@bekenya.com', sub: 'General enquiries' },
-              { icon: Phone, label: 'WhatsApp', value: '+254 700 000 000', sub: 'Monday–Friday, 8am–6pm EAT' },
+              {
+                icon: Phone,
+                label: 'WhatsApp',
+                value: '+254 700 000 000',
+                sub: 'Monday–Friday, 8am–6pm EAT',
+              },
               { icon: MapPin, label: 'Location', value: 'Nairobi, Kenya', sub: 'Westlands, CBD' },
-              { icon: Globe, label: 'Social', value: '@bekenya', sub: 'Twitter/X • LinkedIn • Instagram' },
-            ].map(item => {
+              {
+                icon: Globe,
+                label: 'Social',
+                value: '@bekenya',
+                sub: 'Twitter/X • LinkedIn • Instagram',
+              },
+            ].map((item) => {
               const Icon = item.icon
               return (
                 <div key={item.label} className="flex items-start gap-3">
@@ -60,19 +72,34 @@ export default function ContactPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
-                    <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})}
-                      className="input w-full" placeholder="Your name" required />
+                    <input
+                      type="text"
+                      value={form.name}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      className="input w-full"
+                      placeholder="Your name"
+                      required
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                    <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})}
-                      className="input w-full" placeholder="you@example.com" required />
+                    <input
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      className="input w-full"
+                      placeholder="you@example.com"
+                      required
+                    />
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-1">Subject</label>
-                  <select value={form.subject} onChange={e => setForm({...form, subject: e.target.value})}
-                    className="input w-full">
+                  <select
+                    value={form.subject}
+                    onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                    className="input w-full"
+                  >
                     <option value="">Select a topic...</option>
                     <option>Path posting help</option>
                     <option>Payment issue</option>
@@ -84,9 +111,13 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-1">Message</label>
-                  <textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})}
-                    className="input w-full h-32 resize-none" placeholder="Tell us how we can help..."
-                    required />
+                  <textarea
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    className="input w-full h-32 resize-none"
+                    placeholder="Tell us how we can help..."
+                    required
+                  />
                 </div>
                 <button type="submit" className="btn-primary w-full py-3">
                   Send Message →

@@ -65,7 +65,7 @@ export default function VenturesPage() {
         className="pt-16 pb-10 px-4 text-center"
         style={{ background: 'linear-gradient(to bottom, #5C0A14 0%, #0A0A0F 65%)' }}
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl 3xl:max-w-6xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C9A227]/10 border border-[#C9A227]/20 text-[#C9A227] text-sm font-medium mb-6">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C9A227] opacity-60" />
@@ -74,7 +74,7 @@ export default function VenturesPage() {
             {MOCK_VENTURE_PATHS.length + SAFARI_PACKAGES.length}+ open ventures across 30+ countries
           </div>
 
-          <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-4 leading-tight">
             Open Paths.
             <br />
             <span style={{ color: '#C9A227' }}>Real Ventures.</span>
@@ -106,7 +106,7 @@ export default function VenturesPage() {
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto px-4 pb-20 space-y-12">
+      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 pb-20 space-y-12">
         {/* ── Loading skeleton ─────────────────────────────────────────── */}
         {loading && (
           <div className="space-y-6 animate-pulse -mt-4">

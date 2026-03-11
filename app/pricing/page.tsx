@@ -12,14 +12,16 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0F]">
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-16">
         {/* Hero */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-[#5C0A14]/30 text-[#C9A227] px-4 py-2 rounded-full text-sm font-medium mb-4 border border-[#C9A227]/20">
             <Globe className="w-4 h-4" />
             Pay from anywhere — M-Pesa, card, or mobile money
           </div>
-          <h1 className="text-4xl font-black text-white mb-4">Simple, transparent pricing</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl 3xl:text-6xl font-black text-white mb-4">
+            Simple, transparent pricing
+          </h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Post a Path in minutes. Pay with M-Pesa. Reach thousands of qualified Pioneers across
             Kenya and beyond.

@@ -100,7 +100,7 @@ export default function CompassPage() {
             unoptimized
           />
         </div>
-        <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold text-white mb-3 leading-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-3 leading-tight">
           Your Compass is ready.
           <br />
           <span className="text-[#C9A227]">Let&apos;s find your path.</span>
@@ -109,7 +109,7 @@ export default function CompassPage() {
       </div>
 
       {/* Step progress bar */}
-      <div className="max-w-3xl mx-auto px-4 py-6">
+      <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-6">
         <div className="flex items-start">
           {STEP_LABELS.map((label, i) => {
             const s = i + 1
@@ -149,7 +149,7 @@ export default function CompassPage() {
       </div>
 
       {/* Step content */}
-      <div className="max-w-3xl mx-auto px-4 pb-32">
+      <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 pb-32">
         {/* STEP 1 — Country priority selector */}
         {step === 1 && (
           <div className="animate-[fadeIn_0.3s_ease]">
