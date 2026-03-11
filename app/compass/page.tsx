@@ -14,6 +14,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import CountryPrioritySelector from '@/components/CountryPrioritySelector'
@@ -38,9 +39,17 @@ const ORIGIN_COUNTRIES = COUNTRY_OPTIONS.filter((c) =>
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function CompassPage() {
+  const searchParams = useSearchParams()
+  const fromParam = searchParams.get('from') ?? ''
+
+  // Pre-fill origin from URL param (passed from homepage auto-detect)
+  const initialOrigin =
+    (fromParam && COUNTRY_OPTIONS.find((c) => c.code === fromParam.toUpperCase())) ||
+    COUNTRY_OPTIONS.find((c) => c.code === 'KE')!
+
   const [step, setStep] = useState<Step>(1)
   const [selectedDestinations, setSelectedDestinations] = useState<string[]>([])
-  const [origin, setOrigin] = useState<CountryOption>(COUNTRY_OPTIONS.find((c) => c.code === 'KE')!)
+  const [origin, setOrigin] = useState<CountryOption>(initialOrigin)
   const [pioneerType, setPioneerType] = useState<PioneerType | null>(null)
   const [showOriginPicker, setShowOriginPicker] = useState(false)
   const [loading, setLoading] = useState(true)

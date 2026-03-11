@@ -7,15 +7,14 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { PIONEER_TYPES, PIONEER_TYPE_OPTIONS, type PioneerType } from '@/lib/vocabulary'
+import { PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
 import { detectCountryFromTimezone } from '@/lib/geo'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
 import {
   COUNTRY_GREETINGS,
   ROTATING_FLAGS,
   BENETWORK_PILLARS,
-  FROM_COUNTRIES,
-  TO_COUNTRIES,
   TESTIMONIALS,
   BE_COUNTRIES,
   BRAND_NAME,
@@ -33,9 +32,6 @@ const EXPERIENCE_PACKAGES = SAFARI_PACKAGES.slice(0, 3)
 export default function HomePage() {
   const [detectedCountry, setDetectedCountry] = useState<string>('DEFAULT')
   const [flagIndex, setFlagIndex] = useState(0)
-  const [compassFrom, setCompassFrom] = useState('')
-  const [compassTo, setCompassTo] = useState('')
-  const [compassType, setCompassType] = useState('')
 
   // Rotate background flags
   useEffect(() => {
@@ -53,12 +49,8 @@ export default function HomePage() {
   }, [])
 
   const geo = COUNTRY_GREETINGS[detectedCountry] || COUNTRY_GREETINGS.DEFAULT
-
-  const compassParams = new URLSearchParams()
-  if (compassFrom) compassParams.set('from', compassFrom)
-  if (compassTo) compassParams.set('to', compassTo)
-  if (compassType) compassParams.set('type', compassType)
-  const compassHref = `/compass${compassParams.toString() ? '?' + compassParams.toString() : ''}`
+  const detectedOption = COUNTRY_OPTIONS.find((c) => c.code === detectedCountry)
+  const compassHref = `/compass${detectedCountry !== 'DEFAULT' ? `?from=${detectedCountry}` : ''}`
 
   return (
     <div className="bg-brand-bg text-white overflow-x-hidden">
@@ -265,121 +257,63 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 3. LIVE COMPASS PREVIEW ──────────────────────────────────────────── */}
+      {/* ── 3. COMPASS CTA — Unified entry into the Compass wizard ──────────── */}
       <section className="py-24 bg-gradient-to-b from-gray-900 to-brand-bg">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <p
-              className="text-sm font-semibold uppercase tracking-widest mb-3"
-              style={{ color: 'var(--color-accent)' }}
+          <div className="bg-gray-800/50 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm text-center">
+            {/* Compass icon */}
+            <div
+              className="w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center text-3xl border"
+              style={{
+                background: 'var(--color-primary)',
+                borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
+              }}
             >
-              Live Compass
-            </p>
+              🧭
+            </div>
+
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
-              Where are you? Where do you want to be?
+              Where do you want to go?
             </h2>
-            <p className="text-gray-400">Tell us your journey. We&apos;ll show you the route.</p>
-          </div>
+            <p className="text-gray-400 mb-8 max-w-lg mx-auto">
+              Tell us your journey in 3 quick steps. We&apos;ll match you with Paths, Anchors, and
+              communities — anywhere in the world.
+            </p>
 
-          <div className="bg-gray-800/50 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm">
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              {/* FROM */}
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-                  I am in
-                </label>
-                <select
-                  value={compassFrom}
-                  onChange={(e) => setCompassFrom(e.target.value)}
-                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-accent transition-colors"
-                >
-                  <option value="">Select country...</option>
-                  {FROM_COUNTRIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* TO */}
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-                  I want to go to
-                </label>
-                <select
-                  value={compassTo}
-                  onChange={(e) => setCompassTo(e.target.value)}
-                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-accent transition-colors"
-                >
-                  <option value="">Select destination...</option>
-                  {TO_COUNTRIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* PIONEER TYPE */}
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-                  I am a
-                </label>
-                <select
-                  value={compassType}
-                  onChange={(e) => setCompassType(e.target.value)}
-                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-accent transition-colors"
-                >
-                  <option value="">Pioneer type...</option>
-                  {PIONEER_TYPE_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            {/* How it works — visual steps */}
+            <div className="flex items-center justify-center gap-2 md:gap-4 mb-10 text-xs md:text-sm">
+              {[
+                { num: 1, label: 'Choose destinations' },
+                { num: 2, label: 'Confirm origin' },
+                { num: 3, label: 'Your Pioneer type' },
+              ].map((s, i) => (
+                <div key={s.num} className="flex items-center gap-2 md:gap-3">
+                  {i > 0 && <span className="text-gray-700 hidden sm:inline">&#8594;</span>}
+                  <span
+                    className="w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-bold shrink-0"
+                    style={{
+                      borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
+                      color: 'var(--color-accent)',
+                    }}
+                  >
+                    {s.num}
+                  </span>
+                  <span className="text-gray-300">{s.label}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Step indicators */}
-            <div className="flex items-center gap-3 mb-8 text-xs text-gray-400">
-              <span
-                className={`flex items-center gap-1 ${compassFrom ? 'text-brand-accent' : 'text-gray-400'}`}
-              >
-                <span
-                  className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassFrom ? 'border-brand-accent text-brand-accent' : 'border-gray-600 text-gray-600'}`}
-                >
-                  1
-                </span>
-                Where you are
-              </span>
-              <span className="text-gray-700">&#8594;</span>
-              <span
-                className={`flex items-center gap-1 ${compassTo ? 'text-brand-accent' : 'text-gray-400'}`}
-              >
-                <span
-                  className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassTo ? 'border-brand-accent text-brand-accent' : 'border-gray-600 text-gray-600'}`}
-                >
-                  2
-                </span>
-                Where you&apos;re going
-              </span>
-              <span className="text-gray-700">&#8594;</span>
-              <span
-                className={`flex items-center gap-1 ${compassType ? 'text-brand-accent' : 'text-gray-400'}`}
-              >
-                <span
-                  className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassType ? 'border-brand-accent text-brand-accent' : 'border-gray-600 text-gray-600'}`}
-                >
-                  3
-                </span>
-                Who you are
-              </span>
-            </div>
+            {/* Auto-detected origin hint */}
+            {detectedOption && (
+              <p className="text-gray-500 text-sm mb-6">
+                <span className="text-lg mr-1">{detectedOption.flag}</span>
+                We&apos;ll start with {detectedOption.name} as your origin
+              </p>
+            )}
 
             <Link
               href={compassHref}
-              className="flex sm:inline-flex items-center justify-center gap-3 text-white font-bold text-base rounded-xl sm:rounded-full px-8 py-4 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-3 text-white font-bold text-lg rounded-full px-12 py-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background:
                   'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
@@ -387,7 +321,7 @@ export default function HomePage() {
                 boxShadow: '0 8px 24px rgb(var(--color-primary-rgb) / 0.35)',
               }}
             >
-              <span>Show My Route</span>
+              <span>Start My Compass</span>
               <span className="text-xl">&#10148;</span>
             </Link>
           </div>
