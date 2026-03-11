@@ -404,7 +404,7 @@ export default function CompassPage() {
                   </div>
 
                   <Link
-                    href="/ventures"
+                    href={`/ventures?from=${origin.code}&to=${selectedDestinations.join(',')}&type=${pioneerType}`}
                     className="block w-full bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-4 rounded-xl transition-colors text-center text-lg border border-brand-accent/30 hover:border-brand-accent/60"
                   >
                     {VOCAB.pioneer_join} — See Open Paths →

@@ -3,23 +3,26 @@
 /**
  * Ventures — Unified feed of Paths + Experiences
  *
- * Single filter system: one row of category chips controls everything.
- * Previously had TWO overlapping filter systems (activePioneer + activeTab) — now unified.
+ * Two modes:
+ *   1. **Compass mode** — URL has ?from=KE&to=DE,GB&type=professional
+ *      Shows personalized hero, pre-filters by pioneer type, highlights
+ *      matching destinations. Progressive disclosure: 6 items first.
  *
- * Filter categories map to:
- *   'all'          → all paths + all safari packages
- *   'explorer'     → safari/eco-tourism experiences only
- *   'professional' → professional & healthcare paths
- *   'creative'     → creative & media paths
- *   'community'    → community & guardian paths
+ *   2. **Browse mode** — No URL params
+ *      Generic hero, all ventures visible, category filter chips.
+ *
+ * This works for ANY country/language — the filtering is driven by
+ * COUNTRY_OPTIONS data (16 countries, 14 languages, corridor strength).
  */
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { MapPin, Clock, Star, Zap, Globe, ArrowRight } from 'lucide-react'
-import { VOCAB } from '@/lib/vocabulary'
+import { useSearchParams } from 'next/navigation'
+import { MapPin, Clock, Star, Zap, Globe, ArrowRight, Compass } from 'lucide-react'
+import { VOCAB, PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import type { FilterCategory, PathListItem } from '@/types/domain'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -34,13 +37,44 @@ const FILTERS: { id: FilterCategory; label: string; icon: string; desc: string }
   { id: 'community', label: 'Community', icon: '🤝', desc: 'Social impact & guardian' },
 ]
 
+/** Map pioneer types → filter category for auto-filtering */
+const TYPE_TO_FILTER: Partial<Record<PioneerType, FilterCategory>> = {
+  explorer: 'explorer',
+  professional: 'professional',
+  artisan: 'creative',
+  creator: 'creative',
+  guardian: 'community',
+  healer: 'community',
+}
+
+/** Progressive disclosure: show this many items before "show more" */
+const INITIAL_DISPLAY_COUNT = 6
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function VenturesPage() {
-  const [filter, setFilter] = useState<FilterCategory>('all')
+  const searchParams = useSearchParams()
+
+  // ── Read Compass flags from URL ──────────────────────────────────────────
+  const compassFrom = searchParams.get('from') ?? ''
+  const compassTo = searchParams.get('to')?.split(',').filter(Boolean) ?? []
+  const compassType = (searchParams.get('type') as PioneerType) ?? ''
+  const hasCompassFlags = compassFrom.length > 0 || compassTo.length > 0 || compassType.length > 0
+
+  // Resolve country objects
+  const originCountry = COUNTRY_OPTIONS.find((c) => c.code === compassFrom)
+  const destCountries = compassTo
+    .map((code) => COUNTRY_OPTIONS.find((c) => c.code === code))
+    .filter(Boolean)
+  const pioneerTypeInfo = compassType ? PIONEER_TYPES[compassType] : null
+
+  // ── Filter state — pre-set from Compass or default to 'all' ─────────────
+  const initialFilter: FilterCategory = compassType ? (TYPE_TO_FILTER[compassType] ?? 'all') : 'all'
+  const [filter, setFilter] = useState<FilterCategory>(initialFilter)
   const [loading, setLoading] = useState(true)
+  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 600)
@@ -56,7 +90,12 @@ export default function VenturesPage() {
   const visibleSafaris = SAFARI_PACKAGES.slice(0, filter === 'explorer' ? 6 : 3)
 
   const featuredPaths = filteredPaths.filter((p) => p.isFeatured)
-  const regularPaths = filteredPaths.filter((p) => !p.isFeatured)
+  const allRegularPaths = filteredPaths.filter((p) => !p.isFeatured)
+
+  // Progressive disclosure: limit items unless user clicks "show more"
+  const displayLimit = showAll || !hasCompassFlags ? allRegularPaths.length : INITIAL_DISPLAY_COUNT
+  const regularPaths = allRegularPaths.slice(0, displayLimit)
+  const hasMore = allRegularPaths.length > displayLimit
 
   return (
     <div className="min-h-screen bg-brand-bg">
@@ -76,17 +115,57 @@ export default function VenturesPage() {
             {MOCK_VENTURE_PATHS.length + SAFARI_PACKAGES.length}+ open ventures across 30+ countries
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-4 leading-tight">
-            Open Paths.
-            <br />
-            <span style={{ color: 'var(--color-accent)' }}>Real Ventures.</span>
-            <br />
-            Your Chapter Starts Here.
-          </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
-            From Maasai Mara game drives to London fintech floors — every path here is a real
-            chapter waiting to be written by a Pioneer like you.
-          </p>
+          {/* Personalized or generic headline */}
+          {hasCompassFlags && pioneerTypeInfo ? (
+            <>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight">
+                {pioneerTypeInfo.icon}{' '}
+                <span className="text-brand-accent">{pioneerTypeInfo.label}</span> Paths
+                {destCountries.length > 0 && (
+                  <>
+                    {' '}
+                    in{' '}
+                    {destCountries
+                      .slice(0, 2)
+                      .map((c) => c!.flag)
+                      .join(' ')}
+                  </>
+                )}
+              </h1>
+              <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-4">
+                Curated for your route
+                {originCountry ? ` from ${originCountry.flag} ${originCountry.name}` : ''}
+                {destCountries.length > 0
+                  ? ` to ${destCountries.map((c) => c!.name).join(', ')}`
+                  : ''}
+                . Showing{' '}
+                {filter !== 'all' ? FILTERS.find((f) => f.id === filter)?.label : 'all ventures'}.
+              </p>
+              <button
+                onClick={() => {
+                  setFilter('all')
+                  setShowAll(true)
+                }}
+                className="text-sm text-brand-accent/70 hover:text-brand-accent transition-colors mb-6 inline-block"
+              >
+                Show all ventures instead →
+              </button>
+            </>
+          ) : (
+            <>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-4 leading-tight">
+                Open Paths.
+                <br />
+                <span style={{ color: 'var(--color-accent)' }}>Real Ventures.</span>
+                <br />
+                Your Chapter Starts Here.
+              </h1>
+              <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
+                From Maasai Mara game drives to London fintech floors — every path here is a real
+                chapter waiting to be written by a Pioneer like you.
+              </p>
+            </>
+          )}
 
           {/* ── Unified filter — one row, no duplicates ── */}
           <div className="flex flex-wrap items-center justify-center gap-2">
@@ -313,6 +392,18 @@ export default function VenturesPage() {
               ))}
             </div>
           </section>
+        )}
+
+        {/* ── Show more (progressive disclosure) ─────────────────────── */}
+        {!loading && hasMore && (
+          <div className="text-center">
+            <button
+              onClick={() => setShowAll(true)}
+              className="px-8 py-3 rounded-xl text-sm font-semibold text-brand-accent border border-brand-accent/30 hover:bg-brand-accent/10 transition-colors"
+            >
+              Show {allRegularPaths.length - displayLimit} more paths →
+            </button>
+          </div>
         )}
 
         {/* ── Empty state ───────────────────────────────────────────────── */}
