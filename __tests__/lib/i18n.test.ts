@@ -1202,6 +1202,55 @@ describe('i18n — experience detail page', () => {
   })
 })
 
+// ─── Anchor dashboard keys ───────────────────────────────────────────────────
+
+describe('i18n — anchor dashboard', () => {
+  const anchorKeys = [
+    'anchor.activePaths',
+    'anchor.totalChapters',
+    'anchor.pioneersMatched',
+    'anchor.views7d',
+    'anchor.yourPaths',
+    'anchor.newPath',
+    'anchor.openNewPath',
+    'anchor.toggle',
+    'anchor.chapters',
+    'anchor.views',
+    'anchor.avgMatch',
+    'anchor.recentChapters',
+    'anchor.match',
+    'anchor.tabPaths',
+    'anchor.tabChapters',
+    'anchor.tabInsights',
+    'anchor.filterAll',
+    'anchor.shortlist',
+    'anchor.decline',
+    'anchor.noChapters',
+    'anchor.compassRecs',
+    'anchor.compassRecsDesc',
+    'anchor.invite',
+    'anchor.pathPerformance',
+  ]
+
+  it('English has all anchor keys', () => {
+    for (const key of anchorKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all anchor keys', () => {
+    for (const key of anchorKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all anchor keys', () => {
+    for (const key of anchorKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

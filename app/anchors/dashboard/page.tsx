@@ -12,19 +12,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import {
-  Plus,
-  Eye,
-  Users,
-  Bell,
-  BarChart3,
-  ChevronRight,
-  Clock,
-  Zap,
-  Target,
-  Radio,
-  Settings,
-} from 'lucide-react'
+import { Plus, Eye, Users, Bell, BarChart3, Radio, Target, Zap } from 'lucide-react'
 import { PIONEER_TYPES, PATH_CATEGORIES, type PioneerType } from '@/lib/vocabulary'
 import { SkeletonDashboard } from '@/components/Skeleton'
 import StatusBadge from '@/components/StatusBadge'
@@ -38,10 +26,24 @@ import {
   type PathStatus,
   type ChapterStatus,
 } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Tab = 'paths' | 'chapters' | 'insights'
+
+const TAB_KEYS: Tab[] = ['paths', 'chapters', 'insights']
+const TAB_I18N: Record<Tab, string> = {
+  paths: 'anchor.tabPaths',
+  chapters: 'anchor.tabChapters',
+  insights: 'anchor.tabInsights',
+}
+
+const TAB_ICONS: Record<Tab, React.ComponentType<{ className?: string }>> = {
+  paths: Radio,
+  chapters: Users,
+  insights: BarChart3,
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -53,6 +55,7 @@ function MatchScore({ score }: { score: number }) {
 // ─── Tab: Paths (includes overview stats) ─────────────────────────────────────
 
 function PathsTab() {
+  const { t } = useTranslation()
   const [pathStatuses, setPathStatuses] = useState<Record<string, PathStatus>>(
     Object.fromEntries(MOCK_PATHS.map((p) => [p.id, p.status]))
   )
@@ -70,10 +73,15 @@ function PathsTab() {
       {/* Quick stats row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: 'Active Paths', value: 3, icon: <Radio className="w-4 h-4" />, accent: true },
-          { label: 'Total Chapters', value: 47, icon: <Users className="w-4 h-4" /> },
-          { label: 'Pioneers Matched', value: 12, icon: <Target className="w-4 h-4" /> },
-          { label: 'Views (7d)', value: 284, icon: <Eye className="w-4 h-4" /> },
+          {
+            label: t('anchor.activePaths'),
+            value: 3,
+            icon: <Radio className="w-4 h-4" />,
+            accent: true,
+          },
+          { label: t('anchor.totalChapters'), value: 47, icon: <Users className="w-4 h-4" /> },
+          { label: t('anchor.pioneersMatched'), value: 12, icon: <Target className="w-4 h-4" /> },
+          { label: t('anchor.views7d'), value: 284, icon: <Eye className="w-4 h-4" /> },
         ].map((s) => (
           <div key={s.label} className="bg-gray-800 rounded-xl p-4 border border-gray-700">
             <div
@@ -89,13 +97,13 @@ function PathsTab() {
 
       {/* Path list */}
       <div className="flex items-center justify-between">
-        <h2 className="text-white font-bold">Your Paths</h2>
+        <h2 className="text-white font-bold">{t('anchor.yourPaths')}</h2>
         <Link
           href="/anchors/post-path"
           className="flex items-center gap-2 px-4 py-2 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors"
         >
           <Plus className="w-4 h-4" />
-          New Path
+          {t('anchor.newPath')}
         </Link>
       </div>
 
@@ -120,9 +128,13 @@ function PathsTab() {
                     <StatusBadge status={status} size="sm" />
                   </div>
                   <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
-                    <span>{path.chapters} chapters</span>
-                    <span>{path.views} views</span>
-                    <span>{path.matchScoreAvg}% avg match</span>
+                    <span>
+                      {path.chapters} {t('anchor.chapters')}
+                    </span>
+                    <span>
+                      {path.views} {t('anchor.views')}
+                    </span>
+                    <span>{t('anchor.avgMatch', { score: String(path.matchScoreAvg) })}</span>
                     <span className="hidden sm:inline">{path.posted}</span>
                   </div>
                 </div>
@@ -131,7 +143,7 @@ function PathsTab() {
                   onClick={() => cycleStatus(path.id)}
                   className="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors shrink-0"
                 >
-                  Toggle
+                  {t('anchor.toggle')}
                 </button>
               </div>
             </div>
@@ -143,7 +155,7 @@ function PathsTab() {
           className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-700 rounded-xl text-gray-400 hover:border-brand-accent hover:text-brand-accent transition-colors text-sm"
         >
           <Plus className="w-4 h-4" />
-          Open a new Path
+          {t('anchor.openNewPath')}
         </Link>
       </div>
 
@@ -151,7 +163,7 @@ function PathsTab() {
       <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-3">
           <Zap className="w-4 h-4 text-brand-accent" />
-          Recent Chapter Openings
+          {t('anchor.recentChapters')}
         </h3>
         <div className="space-y-2">
           {MOCK_ACTIVITY.slice(0, 4).map((a, i) => (
@@ -178,6 +190,7 @@ function PathsTab() {
 // ─── Tab: Chapters ────────────────────────────────────────────────────────────
 
 function ChaptersTab() {
+  const { t } = useTranslation()
   const [filter, setFilter] = useState<ChapterStatus | 'all'>('all')
   const [chapterStatuses, setChapterStatuses] = useState<Record<string, ChapterStatus>>(
     Object.fromEntries(MOCK_CHAPTERS.map((c) => [c.id, c.status]))
@@ -197,6 +210,13 @@ function ChaptersTab() {
     declined: MOCK_CHAPTERS.filter((c) => chapterStatuses[c.id] === 'declined').length,
   }
 
+  const FILTER_I18N: Record<string, string> = {
+    all: 'anchor.filterAll',
+    new: 'anchor.tabChapters',
+    shortlisted: 'anchor.shortlist',
+    declined: 'anchor.decline',
+  }
+
   return (
     <div className="space-y-5">
       {/* Filters */}
@@ -211,7 +231,11 @@ function ChaptersTab() {
                 : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-500'
             }`}
           >
-            {key === 'all' ? 'All' : key.charAt(0).toUpperCase() + key.slice(1)}{' '}
+            {key === 'all'
+              ? t('anchor.filterAll')
+              : key === 'new'
+                ? 'New'
+                : key.charAt(0).toUpperCase() + key.slice(1)}{' '}
             <span className="opacity-70">{counts[key]}</span>
           </button>
         ))}
@@ -219,7 +243,7 @@ function ChaptersTab() {
 
       {/* Chapter cards */}
       {visible.length === 0 && (
-        <div className="text-center py-12 text-gray-400">No chapters in this category yet.</div>
+        <div className="text-center py-12 text-gray-400">{t('anchor.noChapters')}</div>
       )}
       <div className="space-y-3">
         {visible.map((chapter) => {
@@ -266,7 +290,7 @@ function ChaptersTab() {
                         onClick={() => updateStatus(chapter.id, 'shortlisted')}
                         className="px-3 py-1 bg-brand-primary/30 text-brand-accent border border-brand-accent/30 rounded-lg text-xs font-medium hover:bg-brand-primary/40 transition-colors"
                       >
-                        Shortlist
+                        {t('anchor.shortlist')}
                       </button>
                     )}
                     {status !== 'declined' && (
@@ -274,7 +298,7 @@ function ChaptersTab() {
                         onClick={() => updateStatus(chapter.id, 'declined')}
                         className="px-3 py-1 bg-gray-700 text-gray-400 border border-gray-600 rounded-lg text-xs font-medium hover:bg-gray-600 transition-colors"
                       >
-                        Decline
+                        {t('anchor.decline')}
                       </button>
                     )}
                   </div>
@@ -282,7 +306,7 @@ function ChaptersTab() {
 
                 <div className="shrink-0 text-right">
                   <MatchScore score={chapter.matchScore} />
-                  <div className="text-xs text-gray-400">match</div>
+                  <div className="text-xs text-gray-400">{t('anchor.match')}</div>
                 </div>
               </div>
             </div>
@@ -296,15 +320,16 @@ function ChaptersTab() {
 // ─── Tab: Insights (replaces Analytics + Compass Recommendations) ────────────
 
 function InsightsTab() {
+  const { t } = useTranslation()
   return (
     <div className="space-y-6">
       {/* Compass recommendations */}
       <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-3">
           <Target className="w-4 h-4 text-brand-accent" />
-          Compass Recommendations
+          {t('anchor.compassRecs')}
         </h3>
-        <p className="text-gray-400 text-xs mb-4">Pioneers matching your open paths</p>
+        <p className="text-gray-400 text-xs mb-4">{t('anchor.compassRecsDesc')}</p>
         <div className="space-y-2">
           {MOCK_COMPASS_RECOMMENDATIONS.map((r) => (
             <div
@@ -323,7 +348,7 @@ function InsightsTab() {
               <div className="shrink-0 flex items-center gap-2">
                 <MatchScore score={r.score} />
                 <button className="text-xs text-brand-accent hover:text-brand-accent/80 px-2 py-1 rounded-lg bg-brand-primary/20 border border-brand-accent/30">
-                  Invite
+                  {t('anchor.invite')}
                 </button>
               </div>
             </div>
@@ -335,7 +360,7 @@ function InsightsTab() {
       <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-3">
           <BarChart3 className="w-4 h-4 text-brand-accent" />
-          Path Performance
+          {t('anchor.pathPerformance')}
         </h3>
         <div className="space-y-2">
           {[...MOCK_PATHS]
@@ -360,7 +385,7 @@ function InsightsTab() {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm text-white truncate">{p.title}</div>
                     <div className="text-xs text-gray-400">
-                      {p.chapters} chapters · {p.views} views
+                      {p.chapters} {t('anchor.chapters')} · {p.views} {t('anchor.views')}
                     </div>
                   </div>
                   <MatchScore score={p.matchScoreAvg} />
@@ -375,19 +400,14 @@ function InsightsTab() {
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
-const TABS: { key: Tab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { key: 'paths', label: 'Paths', icon: Radio },
-  { key: 'chapters', label: 'Chapters', icon: Users },
-  { key: 'insights', label: 'Insights', icon: BarChart3 },
-]
-
 export default function AnchorDashboardPage() {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<Tab>('paths')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 600)
-    return () => clearTimeout(t)
+    const timer = setTimeout(() => setLoading(false), 600)
+    return () => clearTimeout(timer)
   }, [])
 
   return (
@@ -413,7 +433,7 @@ export default function AnchorDashboardPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline">New Path</span>
+                <span className="hidden sm:inline">{t('anchor.newPath')}</span>
               </Link>
               <button
                 className="relative p-2 text-gray-400 hover:text-white"
@@ -427,21 +447,21 @@ export default function AnchorDashboardPage() {
 
           {/* Tabs */}
           <div className="flex gap-1 mt-4">
-            {TABS.map((tab) => {
-              const Icon = tab.icon
+            {TAB_KEYS.map((tabKey) => {
+              const Icon = TAB_ICONS[tabKey]
               return (
                 <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
+                  key={tabKey}
+                  onClick={() => setActiveTab(tabKey)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === tab.key
+                    activeTab === tabKey
                       ? 'bg-brand-accent/10 text-brand-accent'
                       : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  {tab.label}
-                  {tab.key === 'chapters' && (
+                  {t(TAB_I18N[tabKey])}
+                  {tabKey === 'chapters' && (
                     <span className="text-xs bg-brand-accent text-white rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       7
                     </span>
