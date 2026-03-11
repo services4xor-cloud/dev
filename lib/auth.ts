@@ -11,9 +11,16 @@ import { db } from '@/lib/db'
  * Adapter: PrismaAdapter stores Account (OAuth links) in Neon.
  * Strategy: JWT — no DB round-trip per request.
  * Providers: Google OAuth + email/password (with bcrypt).
+ *
+ * NOTE: Only use adapter when DATABASE_URL is set, otherwise Google OAuth
+ * will silently fail when trying to write Account records to a cold/missing DB.
  */
+const hasDB = !!process.env.DATABASE_URL
+
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db) as NextAuthOptions['adapter'],
+  // Only wire PrismaAdapter if we have a DB — otherwise NextAuth works in
+  // "JWT-only" mode (no Account persistence, but OAuth still works)
+  ...(hasDB ? { adapter: PrismaAdapter(db) as NextAuthOptions['adapter'] } : {}),
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
