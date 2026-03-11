@@ -7,9 +7,11 @@
  * Global layout.tsx provides Nav + Footer — do NOT add them here.
  */
 
+import { useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Compass, Anchor } from 'lucide-react'
+import { useJourney } from '@/lib/hooks/use-journey'
 import {
   ABOUT_VALUES as VALUES,
   ABOUT_SECTORS as SECTORS,
@@ -21,6 +23,13 @@ import {
 } from '@/data/mock'
 
 export default function AboutPage() {
+  const { completeAction } = useJourney()
+
+  // Track page visit for gamification
+  useEffect(() => {
+    completeAction('visit_about')
+  }, [completeAction])
+
   return (
     <div className="bg-brand-bg text-white">
       {/* Hero */}

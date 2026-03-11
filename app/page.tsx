@@ -4,7 +4,7 @@
 // "Find where you belong. Go there."
 // Autodetect country, emotional, end-user-centric, BeNetwork vocabulary
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
@@ -28,6 +28,7 @@ import {
   PAYMENT_BADGES,
 } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import { useJourney } from '@/lib/hooks/use-journey'
 
 // ─── Derived Data ─────────────────────────────────────────────────────────────
 
@@ -44,6 +45,13 @@ export default function HomePage() {
   // Identity context — drives all dynamic content on the page
   const { identity, countryName, brandName, localizeCountry } = useIdentity()
   const { t } = useTranslation()
+  const { completeAction } = useJourney()
+
+  // Track identity setup when user closes the hero identity switcher (made a selection)
+  const handleHeroIdentityClose = useCallback(() => {
+    setHeroIdentityOpen(false)
+    completeAction('set_identity')
+  }, [completeAction])
   const countryConfig = COUNTRIES[identity.country as CountryCode]
 
   // Rotate background flags
@@ -162,10 +170,7 @@ export default function HomePage() {
             {/* Identity dropdown — positioned centered below logo */}
             {heroIdentityOpen && (
               <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-50">
-                <IdentitySwitcher
-                  open={heroIdentityOpen}
-                  onClose={() => setHeroIdentityOpen(false)}
-                />
+                <IdentitySwitcher open={heroIdentityOpen} onClose={handleHeroIdentityClose} />
               </div>
             )}
           </div>

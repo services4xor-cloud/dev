@@ -13,7 +13,7 @@
  * Pioneer types live in lib/vocabulary.ts — do NOT redefine here.
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -23,6 +23,7 @@ import { SkeletonLine, SkeletonBlock } from '@/components/Skeleton'
 import { COUNTRY_OPTIONS, CORRIDOR_BADGE, type CountryOption } from '@/lib/country-selector'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import { useJourney } from '@/lib/hooks/use-journey'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types & constants
@@ -43,6 +44,8 @@ export default function CompassPage() {
   const fromParam = searchParams.get('from') ?? ''
   const { identity } = useIdentity()
   const { t } = useTranslation()
+  const { completeAction } = useJourney()
+  const compassCompletedRef = useRef(false)
 
   const STEP_LABELS = [
     t('compass.stepLabel1'),
@@ -73,6 +76,14 @@ export default function CompassPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [step])
+
+  // Track compass completion for gamification when user reaches results (step 4)
+  useEffect(() => {
+    if (step === 4 && !compassCompletedRef.current) {
+      compassCompletedRef.current = true
+      completeAction('use_compass')
+    }
+  }, [step, completeAction])
 
   const primaryDestination = COUNTRY_OPTIONS.find((c) => c.code === selectedDestinations[0]) ?? null
 

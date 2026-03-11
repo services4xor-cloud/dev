@@ -15,7 +15,7 @@
  * business context instantly (currency leverage, corridor strength).
  */
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import {
@@ -28,6 +28,7 @@ import {
   Database,
   TrendingUp,
   Users,
+  Bookmark,
 } from 'lucide-react'
 import { VOCAB, PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
@@ -35,6 +36,7 @@ import { usePaths } from '@/lib/hooks/use-paths'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import { useJourney } from '@/lib/hooks/use-journey'
 import type { FilterCategory, PathListItem } from '@/types/domain'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -68,6 +70,12 @@ export default function VenturesPage() {
   const searchParams = useSearchParams()
   const { identity, brandName, localizeCountry } = useIdentity()
   const { t } = useTranslation()
+  const { completeAction, trackPathSaved } = useJourney()
+
+  // Track page visit for gamification
+  useEffect(() => {
+    completeAction('visit_ventures')
+  }, [completeAction])
 
   // ── Read Compass flags from URL ──────────────────────────────────────────
   const compassType = (searchParams.get('type') as PioneerType) ?? ''
@@ -305,7 +313,13 @@ export default function VenturesPage() {
             </div>
             <div className="space-y-2">
               {featuredPaths.map((path) => (
-                <PathCard key={path.id} path={path} featured myCountry={identity.country} />
+                <PathCard
+                  key={path.id}
+                  path={path}
+                  featured
+                  myCountry={identity.country}
+                  onSave={trackPathSaved}
+                />
               ))}
             </div>
           </section>
@@ -324,7 +338,12 @@ export default function VenturesPage() {
             </div>
             <div className="space-y-2">
               {regularPaths.map((path) => (
-                <PathCard key={path.id} path={path} myCountry={identity.country} />
+                <PathCard
+                  key={path.id}
+                  path={path}
+                  myCountry={identity.country}
+                  onSave={trackPathSaved}
+                />
               ))}
             </div>
           </section>
@@ -378,11 +397,24 @@ function PathCard({
   path,
   featured = false,
   myCountry,
+  onSave,
 }: {
   path: PathListItem
   featured?: boolean
   myCountry: string
+  onSave?: (pathId: string) => void
 }) {
+  const [saved, setSaved] = useState(false)
+
+  const handleSave = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setSaved(true)
+      onSave?.(path.id)
+    },
+    [onSave, path.id]
+  )
   const pathCountry = COUNTRY_OPTIONS.find((c) => c.code === path.country)
   const isLocal = path.country === myCountry
   const isRemote = path.isRemote
@@ -434,6 +466,16 @@ function PathCard({
                   Local
                 </span>
               )}
+              <button
+                type="button"
+                onClick={handleSave}
+                aria-label={saved ? 'Path saved' : 'Save path'}
+                className={`p-1 rounded-md transition-colors ${
+                  saved ? 'text-brand-accent' : 'text-white/20 hover:text-white/50'
+                }`}
+              >
+                <Bookmark className={`w-3.5 h-3.5 ${saved ? 'fill-brand-accent' : ''}`} />
+              </button>
             </div>
           </div>
 

@@ -22,6 +22,7 @@ import Link from 'next/link'
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import { useJourney } from '@/lib/hooks/use-journey'
 
 // ─── Props ──────────────────────────────────────────────────────────
 interface IdentitySwitcherProps {
@@ -190,6 +191,7 @@ export default function IdentitySwitcher({
 }: IdentitySwitcherProps) {
   const { identity, setCountry, setLanguage, localizeCountry } = useIdentity()
   const { t } = useTranslation()
+  const { trackCountryExplored } = useJourney()
 
   if (!open) return null
 
@@ -234,6 +236,7 @@ export default function IdentitySwitcher({
               data-testid={`identity-country-${c.code.toLowerCase()}`}
               onClick={() => {
                 setCountry(c.code)
+                trackCountryExplored(c.code)
                 onClose()
               }}
               className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-left hover:bg-white/5 transition-all duration-150 group"
