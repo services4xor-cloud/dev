@@ -8,6 +8,7 @@
  *   2. Email/password → Credentials provider with bcrypt lookup
  *
  * Displays errors from NextAuth error query params.
+ * All text driven by useTranslation() for multi-language support.
  */
 
 import { useState, useEffect } from 'react'
@@ -16,16 +17,17 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react'
 import Image from 'next/image'
-import { BRAND_NAME } from '@/data/mock'
+import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
-// Map NextAuth error codes to user-friendly messages
-const ERROR_MESSAGES: Record<string, string> = {
-  OAuthSignin: 'Could not start Google sign-in. Please try again.',
-  OAuthCallback: 'Google sign-in failed. Try again or use email.',
-  OAuthAccountNotLinked: 'This email is already registered with a different method.',
-  CredentialsSignin: 'Invalid email or password. Please check and try again.',
-  SessionRequired: 'Please sign in to continue.',
-  Default: 'Something went wrong. Please try again.',
+// Map NextAuth error codes to i18n keys
+const ERROR_KEYS: Record<string, string> = {
+  OAuthSignin: 'auth.errorOAuth',
+  OAuthCallback: 'auth.errorOAuthCallback',
+  OAuthAccountNotLinked: 'auth.emailExists',
+  CredentialsSignin: 'auth.errorCredentials',
+  SessionRequired: 'auth.errorSession',
+  Default: 'auth.somethingWrong',
 }
 
 export default function LoginPage() {
@@ -36,6 +38,8 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const { brandName } = useIdentity()
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -43,9 +47,10 @@ export default function LoginPage() {
   useEffect(() => {
     const errCode = searchParams.get('error')
     if (errCode) {
-      setError(ERROR_MESSAGES[errCode] ?? ERROR_MESSAGES.Default)
+      const key = ERROR_KEYS[errCode] ?? ERROR_KEYS.Default
+      setError(t(key))
     }
-  }, [searchParams])
+  }, [searchParams, t])
 
   // Where to redirect after login
   const callbackUrl = searchParams.get('callbackUrl') ?? '/'
@@ -55,7 +60,6 @@ export default function LoginPage() {
     setGoogleLoading(true)
     setError(null)
     await signIn('google', { callbackUrl })
-    // signIn redirects — setGoogleLoading(false) won't be reached
   }
 
   // ── Email/Password ─────────────────────────────────────────────────
@@ -71,10 +75,9 @@ export default function LoginPage() {
     })
 
     if (result?.error) {
-      setError(ERROR_MESSAGES.CredentialsSignin)
+      setError(t('auth.errorCredentials'))
       setLoading(false)
     } else {
-      // Success — redirect manually since we used redirect: false
       router.push(callbackUrl)
       router.refresh()
     }
@@ -86,11 +89,11 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <Image src="/logo.svg" alt={BRAND_NAME} width={40} height={40} unoptimized />
-            <span className="text-2xl font-bold text-brand-accent">{BRAND_NAME}</span>
+            <Image src="/logo.svg" alt={brandName} width={40} height={40} unoptimized />
+            <span className="text-2xl font-bold text-brand-accent">{brandName}</span>
           </Link>
-          <h1 className="mt-4 text-2xl font-bold text-white">Welcome back</h1>
-          <p className="mt-1 text-gray-400">Sign in to your account</p>
+          <h1 className="mt-4 text-2xl font-bold text-white">{t('auth.welcomeBack')}</h1>
+          <p className="mt-1 text-gray-400">{t('auth.signInAccount')}</p>
         </div>
 
         {/* Card */}
@@ -132,7 +135,7 @@ export default function LoginPage() {
                 />
               </svg>
             )}
-            {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
+            {googleLoading ? t('auth.connectingGoogle') : t('auth.continueGoogle')}
           </button>
 
           <div className="relative mb-6">
@@ -140,13 +143,15 @@ export default function LoginPage() {
               <div className="w-full border-t border-brand-primary/30" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-gray-900/60 px-3 text-gray-400">or sign in with email</span>
+              <span className="bg-gray-900/60 px-3 text-gray-400">{t('auth.orSignInEmail')}</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">
+                {t('auth.email')}
+              </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
@@ -163,9 +168,11 @@ export default function LoginPage() {
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-sm font-medium text-gray-300">Password</label>
+                <label className="block text-sm font-medium text-gray-300">
+                  {t('auth.password')}
+                </label>
                 <Link href="/forgot-password" className="text-sm text-brand-accent hover:underline">
-                  Forgot password?
+                  {t('auth.forgotPassword')}
                 </Link>
               </div>
               <div className="relative">
@@ -197,19 +204,19 @@ export default function LoginPage() {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <div className="w-4 h-4 border-2 border-brand-bg/30 border-t-brand-bg rounded-full animate-spin" />
-                  Signing in...
+                  {t('auth.signingIn')}
                 </span>
               ) : (
-                'Sign In'
+                t('common.signIn')
               )}
             </button>
           </form>
         </div>
 
         <p className="text-center mt-6 text-gray-400">
-          New to {BRAND_NAME}?{' '}
+          {t('auth.newTo', { brandName })}{' '}
           <Link href="/signup" className="text-brand-accent font-semibold hover:underline">
-            Create free account →
+            {t('auth.createFreeAccount')}
           </Link>
         </p>
       </div>

@@ -6,8 +6,7 @@
  * Step 1: Choose role (Pioneer / Anchor)
  * Step 2: Google OAuth or email/password registration
  *
- * Email flow: POST /api/auth/register → signIn('credentials') → redirect
- * Google flow: signIn('google') → NextAuth creates User → redirect
+ * All text driven by useTranslation() for multi-language support.
  */
 
 import { useState, useEffect } from 'react'
@@ -17,13 +16,15 @@ import Link from 'next/link'
 import { Users, Building2, Check, AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
-import { BRAND_NAME, MOCK_PROFILE } from '@/data/mock'
+import { MOCK_PROFILE } from '@/data/mock'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 type Role = 'PIONEER' | 'ANCHOR'
 
 export default function SignupPage() {
-  const { identity } = useIdentity()
+  const { identity, brandName } = useIdentity()
+  const { t } = useTranslation()
   const [role, setRole] = useState<Role>('PIONEER')
   const [step, setStep] = useState<1 | 2>(1)
   const [form, setForm] = useState({
@@ -39,18 +40,17 @@ export default function SignupPage() {
 
   const searchParams = useSearchParams()
   const router = useRouter()
-  // New users go to onboarding to set their preferences
   const callbackUrl = searchParams.get('callbackUrl') ?? '/onboarding'
 
   // Pick up NextAuth error from redirect
   useEffect(() => {
     const errCode = searchParams.get('error')
     if (errCode === 'OAuthAccountNotLinked') {
-      setError('This email is already registered with a different method.')
+      setError(t('auth.emailExists'))
     } else if (errCode) {
-      setError('Something went wrong. Please try again.')
+      setError(t('auth.somethingWrong'))
     }
-  }, [searchParams])
+  }, [searchParams, t])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -60,9 +60,7 @@ export default function SignupPage() {
   const handleGoogle = async () => {
     setGoogleLoading(true)
     setError(null)
-    // Google OAuth creates the user via PrismaAdapter automatically
     await signIn('google', { callbackUrl })
-    // signIn redirects — setGoogleLoading(false) won't be reached
   }
 
   // ── Email/Password Registration ───────────────────────────────────
@@ -72,7 +70,6 @@ export default function SignupPage() {
     setError(null)
 
     try {
-      // 1. Register — create DB row with hashed password
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -89,12 +86,11 @@ export default function SignupPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error ?? 'Registration failed. Please try again.')
+        setError(data.error ?? t('auth.somethingWrong'))
         setLoading(false)
         return
       }
 
-      // 2. Auto-sign-in via Credentials provider
       const signInResult = await signIn('credentials', {
         email: form.email,
         password: form.password,
@@ -102,19 +98,20 @@ export default function SignupPage() {
       })
 
       if (signInResult?.error) {
-        setError('Account created but sign-in failed. Please try logging in.')
+        setError(t('auth.somethingWrong'))
         setLoading(false)
         return
       }
 
-      // 3. Redirect to callback URL (or home)
       router.push(callbackUrl)
       router.refresh()
     } catch {
-      setError('Network error. Please check your connection and try again.')
+      setError(t('auth.somethingWrong'))
       setLoading(false)
     }
   }
+
+  const roleLabel = role === 'PIONEER' ? t('nav.pioneer') : t('common.anchor')
 
   return (
     <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4 py-8">
@@ -122,11 +119,11 @@ export default function SignupPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <Image src="/logo.svg" alt={BRAND_NAME} width={40} height={40} unoptimized />
-            <span className="text-2xl font-bold text-brand-accent">{BRAND_NAME}</span>
+            <Image src="/logo.svg" alt={brandName} width={40} height={40} unoptimized />
+            <span className="text-2xl font-bold text-brand-accent">{brandName}</span>
           </Link>
-          <h1 className="mt-4 text-2xl font-bold text-white">Create your account</h1>
-          <p className="mt-1 text-gray-400">Free forever. No credit card needed.</p>
+          <h1 className="mt-4 text-2xl font-bold text-white">{t('auth.createAccount')}</h1>
+          <p className="mt-1 text-gray-400">{t('auth.freeForever')}</p>
         </div>
 
         <div className="bg-gray-900/60 rounded-2xl shadow-sm border border-brand-primary/30 p-8">
@@ -140,7 +137,7 @@ export default function SignupPage() {
 
           {step === 1 && (
             <>
-              <h2 className="text-lg font-semibold text-white mb-4">I am a...</h2>
+              <h2 className="text-lg font-semibold text-white mb-4">{t('auth.iAmA')}</h2>
               <div className="grid grid-cols-2 gap-4 mb-6">
                 {/* Pioneer */}
                 <button
@@ -157,8 +154,8 @@ export default function SignupPage() {
                     </div>
                   )}
                   <Users className="w-8 h-8 mb-2 text-brand-accent" />
-                  <div className="font-semibold text-white">Pioneer</div>
-                  <div className="text-sm text-gray-400 mt-1">Find my path</div>
+                  <div className="font-semibold text-white">{t('nav.pioneer')}</div>
+                  <div className="text-sm text-gray-400 mt-1">{t('auth.findMyPath')}</div>
                 </button>
 
                 {/* Anchor */}
@@ -176,13 +173,13 @@ export default function SignupPage() {
                     </div>
                   )}
                   <Building2 className="w-8 h-8 mb-2 text-brand-accent" />
-                  <div className="font-semibold text-white">Anchor</div>
-                  <div className="text-sm text-gray-400 mt-1">Open Paths for talent</div>
+                  <div className="font-semibold text-white">{t('common.anchor')}</div>
+                  <div className="text-sm text-gray-400 mt-1">{t('auth.openPathsTalent')}</div>
                 </button>
               </div>
 
               <button onClick={() => setStep(2)} className="btn-primary w-full py-3 text-base">
-                Continue as {role === 'PIONEER' ? 'Pioneer' : 'Anchor'} →
+                {t('auth.continueAs', { role: roleLabel })}
               </button>
             </>
           )}
@@ -193,7 +190,7 @@ export default function SignupPage() {
                 onClick={() => setStep(1)}
                 className="text-sm text-gray-400 hover:text-gray-200 mb-4 flex items-center gap-1"
               >
-                ← Back
+                {t('auth.back')}
               </button>
 
               {/* Google SSO */}
@@ -225,7 +222,7 @@ export default function SignupPage() {
                     />
                   </svg>
                 )}
-                {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
+                {googleLoading ? t('auth.connectingGoogle') : t('auth.continueGoogle')}
               </button>
 
               <div className="relative mb-6">
@@ -233,7 +230,9 @@ export default function SignupPage() {
                   <div className="w-full border-t border-brand-primary/30" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-gray-900/60 px-3 text-gray-400">or fill in your details</span>
+                  <span className="bg-gray-900/60 px-3 text-gray-400">
+                    {t('auth.orFillDetails')}
+                  </span>
                 </div>
               </div>
 
@@ -241,7 +240,7 @@ export default function SignupPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">
-                      Full Name
+                      {t('auth.fullName')}
                     </label>
                     <input
                       type="text"
@@ -254,7 +253,9 @@ export default function SignupPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Country</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      {t('auth.country')}
+                    </label>
                     <select
                       value={form.country}
                       onChange={(e) => setForm({ ...form, country: e.target.value })}
@@ -270,7 +271,9 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    {t('auth.email')}
+                  </label>
                   <input
                     type="email"
                     value={form.email}
@@ -285,7 +288,7 @@ export default function SignupPage() {
                 {form.country === MOCK_PROFILE.country && (
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">
-                      Phone (M-Pesa) <span className="text-gray-400 font-normal">— optional</span>
+                      {t('auth.phoneOptional')}
                     </label>
                     <input
                       type="tel"
@@ -299,12 +302,14 @@ export default function SignupPage() {
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Password</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    {t('auth.password')}
+                  </label>
                   <input
                     type="password"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    placeholder="Min. 8 characters"
+                    placeholder={t('auth.minChars')}
                     className="input w-full"
                     minLength={8}
                     required
@@ -320,15 +325,15 @@ export default function SignupPage() {
                   {loading ? (
                     <span className="flex items-center justify-center gap-2">
                       <div className="w-4 h-4 border-2 border-brand-bg/30 border-t-brand-bg rounded-full animate-spin" />
-                      Creating account...
+                      {t('auth.creatingAccount')}
                     </span>
                   ) : (
-                    'Create Account — Free'
+                    t('auth.createAccountFree')
                   )}
                 </button>
 
                 <p className="text-xs text-center text-gray-400">
-                  By signing up you agree to our{' '}
+                  {t('auth.agreePrivacy')}{' '}
                   <Link href="/privacy" className="underline text-gray-400">
                     Privacy Policy
                   </Link>
@@ -339,9 +344,9 @@ export default function SignupPage() {
         </div>
 
         <p className="text-center mt-6 text-gray-400">
-          Already have an account?{' '}
+          {t('auth.alreadyHaveAccount')}{' '}
           <Link href="/login" className="text-brand-accent font-semibold hover:underline">
-            Sign in →
+            {t('auth.signInLink')}
           </Link>
         </p>
       </div>

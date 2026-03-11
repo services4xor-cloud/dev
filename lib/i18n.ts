@@ -137,6 +137,10 @@ const CONTENT: Record<string, ContentDict> = {
     'auth.signInLink': 'Sign in →',
     'auth.emailExists': 'This email is already registered with a different method.',
     'auth.somethingWrong': 'Something went wrong. Please try again.',
+    'auth.errorOAuth': 'Could not start Google sign-in. Please try again.',
+    'auth.errorOAuthCallback': 'Google sign-in failed. Try again or use email.',
+    'auth.errorCredentials': 'Invalid email or password. Please check and try again.',
+    'auth.errorSession': 'Please sign in to continue.',
 
     // Ventures page
     'ventures.allVentures': 'All Ventures',
