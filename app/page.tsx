@@ -472,7 +472,7 @@ export default function HomePage() {
 
       {/* ── 6. UTAMADUNI BANNER ──────────────────────────────────────────────── */}
       <section
-        className="py-16 relative overflow-hidden"
+        className="py-phi-7 relative overflow-hidden"
         style={{
           background:
             'linear-gradient(135deg, var(--color-primary) 0%, #2a0a0f 50%, var(--color-bg) 100%)',

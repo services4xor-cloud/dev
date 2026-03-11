@@ -13,7 +13,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-brand-bg border-t border-brand-accent/15">
-      <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-16 3xl:py-24">
+      <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-phi-7 3xl:py-phi-8">
         {/* Top — brand + columns */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           {/* Brand */}

@@ -101,7 +101,7 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 - [x] WCAG AA contrast enforcement codebase-wide (session 19)
 - [x] UX audit fixes: color harmony, phi spacing, mobile sticky CTA (session 19)
 - [x] Loading skeletons: reusable component + Pioneer/Anchor dashboards + Compass (session 19)
-- [ ] Error boundaries on all dashboard pages
+- [x] Error boundaries: Pioneer/Anchor dashboards, Compass, Ventures (session 19)
 - [ ] Progressive φ token adoption in Nav, Footer, cards
 
 ### After Credentials (Claude can do)

@@ -184,7 +184,7 @@ export default function CompassPage() {
             {/* STEP 2 — Origin confirmation */}
             {step === 2 && (
               <div className="space-y-5 animate-[fadeIn_0.3s_ease]">
-                <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6">
+                <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-phi-5">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
                       🌍
@@ -259,7 +259,7 @@ export default function CompassPage() {
             {/* STEP 3 — Pioneer type */}
             {step === 3 && (
               <div className="animate-[fadeIn_0.3s_ease]">
-                <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6 mb-5">
+                <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-phi-5 mb-5">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
                       ✦
@@ -308,7 +308,7 @@ export default function CompassPage() {
             {/* STEP 4 — Route result */}
             {step === 4 && primaryDestination && pioneerType && (
               <div className="animate-[fadeIn_0.3s_ease] space-y-4">
-                <div className="bg-gradient-to-br from-gray-900 to-gray-900/80 border border-brand-accent/30 rounded-2xl p-6">
+                <div className="bg-gradient-to-br from-gray-900 to-gray-900/80 border border-brand-accent/30 rounded-2xl p-phi-5">
                   <div className="text-xs text-brand-accent font-semibold uppercase tracking-widest mb-4">
                     Your Route
                   </div>
