@@ -7,7 +7,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
+import { PIONEER_TYPES, PIONEER_TYPE_OPTIONS, type PioneerType } from '@/lib/vocabulary'
+import { detectCountryFromTimezone } from '@/lib/geo'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
 import {
   COUNTRY_GREETINGS,
@@ -24,11 +25,6 @@ import {
 } from '@/data/mock'
 
 // ─── Derived Data ─────────────────────────────────────────────────────────────
-
-const PIONEER_TYPE_OPTIONS = Object.entries(PIONEER_TYPES).map(([key, val]) => ({
-  value: key,
-  label: `${val.icon} ${val.label}`,
-}))
 
 const EXPERIENCE_PACKAGES = SAFARI_PACKAGES.slice(0, 3)
 
@@ -49,21 +45,11 @@ export default function HomePage() {
     return () => clearInterval(timer)
   }, [])
 
-  // Try to detect country via timezone heuristic (no external API needed)
+  // Detect country via timezone heuristic (uses canonical COUNTRY_OPTIONS)
   useEffect(() => {
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-      if (tz.includes('Nairobi') || tz.includes('Africa/Nairobi')) setDetectedCountry('KE')
-      else if (tz.includes('Berlin') || tz.includes('Europe/Berlin')) setDetectedCountry('DE')
-      else if (tz.includes('Lagos') || tz.includes('Africa/Lagos')) setDetectedCountry('NG')
-      else if (tz.includes('London') || tz.includes('Europe/London')) setDetectedCountry('GB')
-      else if (tz.includes('New_York') || tz.includes('America/')) setDetectedCountry('US')
-      else if (tz.includes('Dubai') || tz.includes('Asia/Dubai')) setDetectedCountry('AE')
-      else if (tz.includes('Kampala')) setDetectedCountry('UG')
-      else if (tz.includes('Dar_es_Salaam')) setDetectedCountry('TZ')
-    } catch {
-      // silent fail — DEFAULT stays
-    }
+    const code = detectCountryFromTimezone()
+    if (code !== 'KE') setDetectedCountry(code)
+    else setDetectedCountry('KE')
   }, [])
 
   const geo = COUNTRY_GREETINGS[detectedCountry] || COUNTRY_GREETINGS.DEFAULT

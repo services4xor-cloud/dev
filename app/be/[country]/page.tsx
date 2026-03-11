@@ -7,31 +7,8 @@ import { BRAND_NAME } from '@/data/mock'
 
 type CountryConfig = (typeof COUNTRIES)[keyof typeof COUNTRIES]
 
-function getSectorEmoji(sectorName: string): string {
-  const name = sectorName.toLowerCase()
-  if (name.includes('safari') || name.includes('wildlife')) return '🦁'
-  if (name.includes('tech') || name.includes('it') || name.includes('software')) return '💻'
-  if (name.includes('fashion') || name.includes('design')) return '👗'
-  if (name.includes('eco') || name.includes('green') || name.includes('renewable')) return '🌿'
-  if (name.includes('health') || name.includes('pflege') || name.includes('nurse')) return '🏥'
-  if (name.includes('finance') || name.includes('bank')) return '💰'
-  if (name.includes('education') || name.includes('teach')) return '📚'
-  if (name.includes('hospitality') || name.includes('gastro')) return '🍽️'
-  if (name.includes('media') || name.includes('content') || name.includes('nollywood')) return '🎬'
-  if (name.includes('aviation')) return '✈️'
-  if (name.includes('remote')) return '🌎'
-  if (name.includes('automotive')) return '🚗'
-  if (name.includes('logistics') || name.includes('transport')) return '🚛'
-  if (name.includes('oil') || name.includes('gas')) return '⛽'
-  if (name.includes('telecom')) return '📡'
-  if (name.includes('agri') || name.includes('farm')) return '🌾'
-  if (name.includes('construction')) return '🏗️'
-  if (name.includes('engineering')) return '⚙️'
-  if (name.includes('clean') || name.includes('energy')) return '⚡'
-  if (name.includes('security')) return '🛡️'
-  if (name.includes('creative')) return '🎨'
-  return '💼'
-}
+// Sector emoji mapping — single source of truth in lib/emoji-map.ts
+import { getSectorEmoji } from '@/lib/emoji-map'
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (

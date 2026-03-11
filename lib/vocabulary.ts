@@ -35,7 +35,13 @@ export const VOCAB = {
   tagline: 'Find where you belong. Go there.',
 } as const
 
-export type PioneerType = 'explorer' | 'professional' | 'artisan' | 'guardian' | 'creator' | 'healer'
+export type PioneerType =
+  | 'explorer'
+  | 'professional'
+  | 'artisan'
+  | 'guardian'
+  | 'creator'
+  | 'healer'
 // explorer = safari/nature guides, wildlife, eco-tourism
 // professional = tech, finance, corporate
 // artisan = fashion, craft, design
@@ -43,7 +49,10 @@ export type PioneerType = 'explorer' | 'professional' | 'artisan' | 'guardian' |
 // creator = media, content, social
 // healer = healthcare, wellness, community
 
-export const PIONEER_TYPES: Record<PioneerType, { label: string; icon: string; description: string; sectors: string[] }> = {
+export const PIONEER_TYPES: Record<
+  PioneerType,
+  { label: string; icon: string; description: string; sectors: string[] }
+> = {
   explorer: {
     label: 'Explorer',
     icon: '🌿',
@@ -81,6 +90,12 @@ export const PIONEER_TYPES: Record<PioneerType, { label: string; icon: string; d
     sectors: ['Healthcare', 'Education', 'Community Development', 'NGO & Charity'],
   },
 }
+
+/** Pre-built select-option list for Pioneer type dropdowns */
+export const PIONEER_TYPE_OPTIONS = Object.entries(PIONEER_TYPES).map(([key, val]) => ({
+  value: key,
+  label: `${val.icon} ${val.label}`,
+}))
 
 export const PATH_CATEGORIES = [
   { id: 'safari', label: 'Safari & Wilderness', icon: '🦁', venturetype: 'experience' },

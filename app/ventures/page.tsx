@@ -221,7 +221,7 @@ export default function VenturesPage() {
                     {/* Image area */}
                     <div
                       className="h-36 flex items-center justify-center text-5xl"
-                      style={{ background: 'linear-gradient(135deg, #3D1A00, #7B3F00)' }}
+                      style={{ background: 'var(--gradient-experience)' }}
                     >
                       {pkg.type === 'deep_sea_fishing'
                         ? '🎣'

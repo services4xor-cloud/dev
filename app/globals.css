@@ -41,6 +41,12 @@
     /* Status */
     --color-success-rgb: 0 102 0;
     --color-success: #006600;
+    /* Experience card gradient (earth tones) */
+    --gradient-experience: linear-gradient(
+      135deg,
+      var(--color-surface-elevated),
+      var(--color-primary)
+    );
   }
 
   * {

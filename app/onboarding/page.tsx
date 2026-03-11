@@ -5,17 +5,7 @@ import { useRouter } from 'next/navigation'
 import { PIONEER_TYPES, PioneerType } from '@/lib/vocabulary'
 import { COUNTRY_OPTIONS, CORRIDOR_BADGE } from '@/lib/country-selector'
 import { SKILLS_BY_TYPE } from '@/data/mock'
-
-// ─── Timezone detection (uses canonical COUNTRY_OPTIONS from lib) ─────────────
-function detectCountryFromTimezone(): string {
-  try {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const match = COUNTRY_OPTIONS.find((c) => c.tz === tz || tz.startsWith(c.tz.split('/')[0]))
-    return match?.code ?? 'KE'
-  } catch {
-    return 'KE'
-  }
-}
+import { detectCountryFromTimezone } from '@/lib/geo'
 
 // ─── Confetti Component ───────────────────────────────────────────────────────
 function ConfettiBlast() {

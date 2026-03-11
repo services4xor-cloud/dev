@@ -284,7 +284,7 @@ export default function OfferingsPage() {
                       <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl overflow-hidden hover:border-brand-accent/40 transition-all duration-200 h-full group">
                         <div
                           className="h-32 flex items-center justify-center text-4xl"
-                          style={{ background: 'linear-gradient(135deg, #3D1A00, #7B3F00)' }}
+                          style={{ background: 'var(--gradient-experience)' }}
                         >
                           {pkg.type === 'deep_sea_fishing'
                             ? '🎣'
