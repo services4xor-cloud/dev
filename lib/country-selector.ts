@@ -72,7 +72,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'de',
     name: 'German',
     nativeName: 'Deutsch',
-    countries: ['DE', 'NL'],
+    countries: ['DE'],
     digitalReach: 'regional',
   },
   fr: {

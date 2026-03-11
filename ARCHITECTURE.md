@@ -84,7 +84,7 @@ export const VOCAB = {
 
 ### lib/countries.ts — The Country Registry
 
-12 countries configured: KE, DE, GB, US, AE, NG, ZA, CA, AU, IN, FR, NL.
+12 deployment configs: KE, DE, GB, US, AE, NG, GH, ZA, UG, TZ, CA, IN.
 
 ### lib/country-selector.ts — Geographic Intelligence
 
@@ -326,7 +326,7 @@ Each Vercel project builds the same code with different env vars.
 
 ```
 Unit tests:  __tests__/ — lib/* functions, API schemas (25/25 ✅)
-Visual tests: tests/visual/ — Playwright smoke + brand + responsive (89/89 ✅)
+Visual tests: tests/visual/ — Playwright smoke + brand + responsive (102/102 ✅)
 ```
 
 All tests pass. Run with `npm run test` (Jest) and `npx playwright test` (Playwright).
@@ -364,4 +364,4 @@ Be[Country] Architecture (reversal):
 
 ---
 
-_Last updated: Session 15 (2026-03-11)_
+_Last updated: Session 17 (2026-03-11)_

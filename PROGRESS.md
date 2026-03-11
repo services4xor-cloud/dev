@@ -1,7 +1,7 @@
 # Be[Country] — Live Progress Tracker
 
 > Update this file after every feature. Claude reads this to know current state.
-> Last updated: Session 15 (2026-03-11)
+> Last updated: Session 17 (2026-03-11)
 > ← Back to [CLAUDE.md](./CLAUDE.md) | Related: [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -23,7 +23,7 @@ Vercel: Auto-deploys from main
 - Tailwind CSS with BeKenya brand (maroon #5C0A14 + gold #C9A227)
 - Prisma schema with full BeNetwork vocabulary (Path, Chapter, Pioneer, Anchor)
 - NextAuth.js v4 (Google + email/password)
-- Jest 30 test suite (25/25 pass) + Playwright visual tests (89/89 pass)
+- Jest 30 test suite (25/25 pass) + Playwright visual tests (102/102 pass)
 - CI/CD via GitHub Actions (lint → typecheck → test → build)
 - Dev tooling: Prettier, ESLint, Husky pre-commit hooks, .editorconfig
 
@@ -70,10 +70,10 @@ Vercel: Auto-deploys from main
 - `/api/auth` — NextAuth handlers
 - `/api/profile` — Profile CRUD
 
-**Tests (25 Jest + 89 Playwright):**
+**Tests (25 Jest + 102 Playwright):**
 
 - Jest: mpesa, paths, vocabulary, matching, safari-packages, compass, whatsapp-templates, social-media
-- Playwright: smoke (15/15), brand (26/26), responsive (48/48)
+- Playwright: smoke (16/16), brand (32/32), responsive (54/54)
 
 ---
 
@@ -93,7 +93,7 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ### Can Build Now (no credentials needed)
 
-- [ ] International offerings system — country-aware, purpose-driven recommendations (R15, R16)
+- [x] International offerings system — country-aware, purpose-driven recommendations (R15, R16)
 - [ ] End-to-end mock booking flow (frontend → API → mock payment)
 - [ ] Loading skeletons for data-fetching pages
 - [ ] Error boundaries on all dashboard pages
@@ -157,28 +157,44 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ## 📊 Current Stats
 
-| Metric                | Value                     |
-| --------------------- | ------------------------- |
-| Pages live            | 20+                       |
-| API routes            | 12+                       |
-| Library modules       | 13                        |
-| Mock data modules     | 15                        |
-| Type definition files | 3                         |
-| Jest tests            | 25/25 ✅                  |
-| Playwright tests      | 100/100 ✅                |
-| TypeScript errors     | 0                         |
-| Countries configured  | 12 (16 in selector)       |
-| Languages             | 14                        |
-| Experience packages   | 5                         |
-| Phase 1               | ✅ Complete               |
-| Phase 2               | 🔄 Blocked on credentials |
-| Branch                | main (direct)             |
-| CI                    | ✅ GitHub Actions         |
-| Deploy                | Auto via Vercel           |
+| Metric                | Value                                     |
+| --------------------- | ----------------------------------------- |
+| Pages live            | 20+                                       |
+| API routes            | 12+                                       |
+| Library modules       | 13                                        |
+| Mock data modules     | 15                                        |
+| Type definition files | 3                                         |
+| Jest tests            | 25/25 ✅                                  |
+| Playwright tests      | 102 (16 smoke + 32 brand + 54 responsive) |
+| TypeScript errors     | 0                                         |
+| Countries configured  | 12 (16 in selector)                       |
+| Languages             | 14                                        |
+| Experience packages   | 6                                         |
+| Phase 1               | ✅ Complete                               |
+| Phase 2               | 🔄 Blocked on credentials                 |
+| Branch                | main (direct)                             |
+| CI                    | ✅ GitHub Actions                         |
+| Deploy                | Auto via Vercel                           |
 
 ---
 
 ## Session Log (Reverse Chronological)
+
+### Session 17 (2026-03-11) — Quality Overhaul: Agents, Code, UI
+
+- [x] Created `OPERATIONS.md` — agent reading order, decision tree, mistake log (transparency)
+- [x] Fixed test counts across ALL docs (89/100 → 102 actual: 16 smoke + 32 brand + 54 responsive)
+- [x] Fixed ARCHITECTURE.md country list (AU/FR/NL → GH/UG/TZ to match actual countries.ts)
+- [x] Fixed `tradeCorrridors` typo (triple 'r') — 9 occurrences across offerings.ts + page
+- [x] Replaced hardcoded country list in signup with canonical `COUNTRY_OPTIONS` (rule 5.6)
+- [x] Fixed Netherlands incorrectly listed as German-speaking in language registry
+- [x] Removed dead export `FEATURED_VENTURES` (defined, barrel-exported, never imported)
+- [x] Fixed duplicate score arrays in pioneer dashboard (74 vs 78 → single source)
+- [x] Converted onboarding page to dark theme (was cream/white — massive brand violation)
+- [x] Fixed all invalid Tailwind opacity syntax (`bg-[#5C0A14/5]` → `bg-[#5C0A14]/5`)
+- [x] Replaced teal custom skills badge with gold brand tokens
+- [x] Added `OPERATIONS.md` + `/offerings` to CLAUDE.md doc index + repo map
+- [x] Updated PROGRESS.md, TESTING.md, ARCHITECTURE.md, README.md session timestamps
 
 ### Session 16 (2026-03-11) — Brand Cleanup + International Offerings
 

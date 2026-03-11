@@ -24,6 +24,7 @@
 | **`REQUIREMENTS.md`**          | User requirements, data rules, decisions log              | Before refactoring            |
 | **`TESTING.md`**               | Jest + Playwright strategy, test files, CI integration    | Before writing tests          |
 | **`HUMAN_MANUAL.md`**          | Steps only humans can do (DB, OAuth, Payments)            | When hitting env-var blockers |
+| **`OPERATIONS.md`**            | Agent reading order, decision tree, mistake log           | To debug agent behavior       |
 
 **Update `PROGRESS.md` after every completed feature. This is not optional.**
 
@@ -123,6 +124,7 @@ app/
 ├── anchors/post-path/        # Path creation wizard
 ├── onboarding/               # 5-step Pioneer identity capture
 ├── be/[country]/             # Country Gates (/be/ke, /be/de, …)
+├── offerings/                # International offerings — auto-detect country, purpose tabs
 ├── charity/                  # UTAMADUNI CBO
 ├── about, pricing, contact,  # Info pages (all dark theme ✅)
 │   business, login, signup,
@@ -142,7 +144,7 @@ data/mock/                    # Centralized mock data (single source of truth)
 ├── paths.ts, pioneers.ts, admin.ts, skills.ts, pricing.ts
 ├── homepage.ts, about.ts, charity.ts, business.ts
 ├── anchors-dashboard.ts, anchors-post-path.ts, profile.ts
-├── media.ts, fashion.ts
+├── media.ts, fashion.ts, offerings.ts
 └── index.ts                  # Barrel export
 
 lib/
@@ -152,6 +154,7 @@ lib/
 ├── compass.ts                # Route corridors
 ├── matching.ts               # 4-dimension scoring engine
 ├── safari-packages.ts        # Kenya experience packages
+├── offerings.ts              # Country-aware, purpose-driven offerings engine
 ├── nav-structure.ts          # Nav + Footer link arrays (single source)
 ├── mpesa.ts                  # M-Pesa Daraja v2
 ├── email.ts                  # Resend templates
@@ -160,7 +163,7 @@ lib/
 
 components/                   # Nav, Footer, PathCard, CountryPrioritySelector, SectionHeader…
 __tests__/                    # Jest unit tests (25/25 pass)
-tests/visual/                 # Playwright smoke + brand + responsive tests (89/89 pass)
+tests/visual/                 # Playwright smoke + brand + responsive tests (102/102 pass)
 prisma/schema.prisma          # DB schema (BeNetwork vocabulary throughout)
 ```
 

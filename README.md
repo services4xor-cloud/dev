@@ -27,7 +27,7 @@ Kenya-first. Safari lodges, eco-tourism, professional paths, community impact.
 - [x] UTAMADUNI CBO integration (% of every booking)
 - [x] 12-country config system for expansion
 - [x] Centralized type system + mock data layer
-- [x] 25 Jest + 89 Playwright tests passing
+- [x] 25 Jest + 102 Playwright tests passing
 
 ---
 
@@ -69,7 +69,7 @@ lib/          # Core platform libraries
 components/   # Shared UI components
 prisma/       # Database schema + seed
 __tests__/    # Jest test suite (25/25)
-tests/visual/ # Playwright visual tests (89/89)
+tests/visual/ # Playwright visual tests (102/102)
 public/       # Static assets (logos, OG images)
 ```
 
@@ -88,6 +88,7 @@ public/       # Static assets (logos, OG images)
 | `REQUIREMENTS.md`  | User requirements + decisions log   |
 | `TESTING.md`       | Test strategy + CI integration      |
 | `HUMAN_MANUAL.md`  | Setup guide for humans              |
+| `OPERATIONS.md`    | Agent reading order + decision tree |
 
 ---
 

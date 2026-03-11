@@ -391,16 +391,16 @@ export default function OfferingsPage() {
             )}
 
             {/* Trade Corridors */}
-            {showBusiness && offerings.tradeCorrridors.length > 0 && (
+            {showBusiness && offerings.tradeCorridors.length > 0 && (
               <section>
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
                   🌍 Trade Corridors
                   <span className="text-xs font-normal text-gray-500">
-                    {offerings.tradeCorrridors.length} active
+                    {offerings.tradeCorridors.length} active
                   </span>
                 </h2>
                 <div className="space-y-4">
-                  {offerings.tradeCorrridors.map((corridor) => (
+                  {offerings.tradeCorridors.map((corridor) => (
                     <div
                       key={corridor.id}
                       className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 hover:border-[#C9A227]/30 transition-all"
@@ -462,7 +462,7 @@ export default function OfferingsPage() {
             {offerings.experiences.length === 0 &&
               offerings.ecoTourism.length === 0 &&
               offerings.sectors.length === 0 &&
-              offerings.tradeCorrridors.length === 0 && (
+              offerings.tradeCorridors.length === 0 && (
                 <div className="text-center py-16">
                   <div className="text-5xl mb-4">🧭</div>
                   <p className="text-lg font-semibold text-white mb-2">

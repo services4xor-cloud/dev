@@ -105,7 +105,7 @@ export function getRecommendedDestinations(originCode: CountryCode): Destination
 export interface CountryOfferings {
   experiences: SafariPackage[]
   ecoTourism: EcoTourismOffering[]
-  tradeCorrridors: TradeCorridor[]
+  tradeCorridors: TradeCorridor[]
   sectors: { name: string; emoji: string; count: number }[]
 }
 
@@ -125,7 +125,7 @@ export function getCountryOfferings(countryCode: CountryCode): CountryOfferings 
     ecoTourism: countryCode === 'KE' ? ECO_TOURISM_OFFERINGS : [],
 
     // Trade corridors that involve this country (either direction)
-    tradeCorrridors: TRADE_CORRIDORS.filter(
+    tradeCorridors: TRADE_CORRIDORS.filter(
       (c) => c.id.startsWith(countryCode.toLowerCase()) || c.id.endsWith(countryCode.toLowerCase())
     ),
 
@@ -150,9 +150,9 @@ export function getOfferingsByPurpose(
 
   switch (purpose) {
     case 'travel':
-      return { ...all, tradeCorrridors: [], sectors: [] }
+      return { ...all, tradeCorridors: [], sectors: [] }
     case 'professional':
-      return { ...all, experiences: [], ecoTourism: [], tradeCorrridors: [] }
+      return { ...all, experiences: [], ecoTourism: [], tradeCorridors: [] }
     case 'business':
       return { ...all, experiences: [], ecoTourism: [] }
     default:
@@ -186,7 +186,7 @@ export function getPurposeAvailability(countryCode: CountryCode): PurposeAvailab
         count = offerings.sectors.length
         break
       case 'business':
-        count = offerings.tradeCorrridors.length + offerings.sectors.length
+        count = offerings.tradeCorridors.length + offerings.sectors.length
         break
     }
     return {

@@ -92,7 +92,7 @@ function CompassTab() {
   const pioneer = MOCK_PIONEER
   const typeInfo = PIONEER_TYPES[pioneer.pioneerType]
   const featuredPaths = MOCK_SAVED_PATHS.slice(0, 3)
-  const scores = [92, 87, 78]
+  const scores = MATCH_SCORES
 
   return (
     <div className="space-y-6">

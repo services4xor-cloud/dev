@@ -48,15 +48,15 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
   const pct = Math.round((step / total) * 100)
   return (
     <div className="w-full mb-8">
-      <div className="flex justify-between text-sm text-gray-500 mb-2">
+      <div className="flex justify-between text-sm text-gray-400 mb-2">
         <span>
           Step {step} of {total}
         </span>
         <span>{pct}% complete</span>
       </div>
-      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] rounded-full transition-all duration-500"
+          className="h-full bg-gradient-to-r from-[#5C0A14] to-[#C9A227] rounded-full transition-all duration-500"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -171,43 +171,41 @@ export default function OnboardingPage() {
   // ── Completed screen ──
   if (done) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#fff8f0] to-[#f0faf4] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
         <ConfettiBlast />
         <div className="text-center max-w-lg">
           <div className="text-7xl mb-6">🌍</div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Welcome to the BeNetwork, Pioneer!
-          </h1>
-          <p className="text-xl text-gray-600 mb-6">
+          <h1 className="text-4xl font-bold text-white mb-4">Welcome to the BeNetwork, Pioneer!</h1>
+          <p className="text-xl text-gray-400 mb-6">
             Your profile is ready. We&apos;re finding the best Paths for you...
           </p>
-          <div className="flex items-center justify-center gap-2 text-[#5C0A14]">
+          <div className="flex items-center justify-center gap-2">
             <div
-              className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce"
+              className="w-2 h-2 rounded-full bg-[#C9A227] animate-bounce"
               style={{ animationDelay: '0ms' }}
             />
             <div
-              className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce"
+              className="w-2 h-2 rounded-full bg-[#C9A227] animate-bounce"
               style={{ animationDelay: '150ms' }}
             />
             <div
-              className="w-2 h-2 rounded-full bg-[#5C0A14] animate-bounce"
+              className="w-2 h-2 rounded-full bg-[#C9A227] animate-bounce"
               style={{ animationDelay: '300ms' }}
             />
           </div>
-          <p className="text-sm text-gray-400 mt-4">Taking you to your Ventures...</p>
+          <p className="text-sm text-gray-500 mt-4">Taking you to your Ventures...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#fff8f0] via-white to-[#f0faf4]">
+    <div className="min-h-screen bg-[#0A0A0F]">
       {/* Header */}
       <div className="max-w-2xl mx-auto px-4 pt-8 pb-4">
         <div className="flex items-center gap-2 mb-6">
-          <span className="text-2xl font-bold text-[#5C0A14]">Be</span>
-          <span className="text-2xl font-bold text-gray-800">Network</span>
+          <span className="text-2xl font-bold text-[#C9A227]">Be</span>
+          <span className="text-2xl font-bold text-white">Network</span>
         </div>
         <ProgressBar step={step} total={TOTAL_STEPS} />
       </div>
@@ -217,8 +215,8 @@ export default function OnboardingPage() {
         {/* ── STEP 1: Pioneer Type ── */}
         {step === 1 && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">What kind of Pioneer are you?</h1>
-            <p className="text-gray-500 mb-8">
+            <h1 className="text-3xl font-bold text-white mb-2">What kind of Pioneer are you?</h1>
+            <p className="text-gray-400 mb-8">
               Pick the one that feels most like you. You can always refine later.
             </p>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -236,14 +234,18 @@ export default function OnboardingPage() {
                     hover:shadow-lg hover:-translate-y-0.5 active:scale-95
                     ${
                       pioneerType === type
-                        ? 'border-[#5C0A14] bg-[#5C0A14/5] shadow-md ring-2 ring-[#C9A227/40] ring-offset-1'
-                        : 'border-gray-200 bg-white hover:border-[#5C0A14/20]'
+                        ? 'border-[#C9A227] bg-[#5C0A14]/20 shadow-md ring-2 ring-[#C9A227]/30 ring-offset-1 ring-offset-[#0A0A0F]'
+                        : 'border-gray-700 bg-gray-900/60 hover:border-gray-600'
                     }
                   `}
                 >
                   {pioneerType === type && (
-                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#5C0A14] flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#C9A227] flex items-center justify-center">
+                      <svg
+                        className="w-3 h-3 text-[#0A0A0F]"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
                         <path
                           fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -253,8 +255,8 @@ export default function OnboardingPage() {
                     </div>
                   )}
                   <div className="text-4xl mb-3">{info.icon}</div>
-                  <div className="font-semibold text-gray-900 mb-1">{info.label}</div>
-                  <div className="text-xs text-gray-500 leading-snug">{info.description}</div>
+                  <div className="font-semibold text-white mb-1">{info.label}</div>
+                  <div className="text-xs text-gray-400 leading-snug">{info.description}</div>
                 </button>
               ))}
             </div>
@@ -264,24 +266,24 @@ export default function OnboardingPage() {
         {/* ── STEP 2: Current Country ── */}
         {step === 2 && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Where are you right now?</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">Where are you right now?</h1>
             {detectedCountryInfo && fromCountry === detectedCountry && (
-              <div className="flex items-center gap-2 mb-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
+              <div className="flex items-center gap-2 mb-4 p-3 bg-[#5C0A14]/20 rounded-xl border border-[#C9A227]/30">
                 <span className="text-xl">{detectedCountryInfo.flag}</span>
-                <span className="text-sm text-blue-700">
+                <span className="text-sm text-[#C9A227]">
                   We think you&apos;re in <strong>{detectedCountryInfo.name}</strong>. Correct?
                 </span>
               </div>
             )}
-            <p className="text-gray-500 mb-6">
+            <p className="text-gray-400 mb-6">
               This helps us find the best routes for your journey.
             </p>
             <div className="relative">
               <select
                 value={fromCountry}
                 onChange={(e) => setFromCountry(e.target.value)}
-                className="w-full p-4 pr-10 rounded-2xl border-2 border-gray-200 bg-white text-gray-900 text-lg
-                  appearance-none focus:outline-none focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20]
+                className="w-full p-4 pr-10 rounded-2xl border-2 border-gray-700 bg-gray-900/60 text-white text-lg
+                  appearance-none focus:outline-none focus:border-[#C9A227] focus:ring-2 focus:ring-[#C9A227]/20
                   transition-all cursor-pointer"
               >
                 <option value="">Select your country...</option>
@@ -310,7 +312,7 @@ export default function OnboardingPage() {
             </div>
 
             {fromCountry && fromCountry !== detectedCountry && (
-              <p className="mt-3 text-sm text-gray-500">
+              <p className="mt-3 text-sm text-gray-400">
                 Got it — your profile will be calibrated for{' '}
                 {COUNTRY_OPTIONS.find((c) => c.code === fromCountry)?.name ?? fromCountry}.
               </p>
@@ -321,8 +323,8 @@ export default function OnboardingPage() {
         {/* ── STEP 3: Destinations ── */}
         {step === 3 && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Where do you want to go?</h1>
-            <p className="text-gray-500 mb-6">
+            <h1 className="text-3xl font-bold text-white mb-2">Where do you want to go?</h1>
+            <p className="text-gray-400 mb-6">
               Select one or more destinations. We&apos;ll prioritize Paths in these locations.
             </p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -338,15 +340,15 @@ export default function OnboardingPage() {
                       hover:shadow-md hover:-translate-y-0.5 active:scale-95
                       ${
                         isSelected
-                          ? 'border-[#5C0A14] bg-[#5C0A14]/5 shadow ring-2 ring-[#C9A227]/30 ring-offset-1'
-                          : 'border-gray-200 bg-white hover:border-[#5C0A14]/30'
+                          ? 'border-[#C9A227] bg-[#5C0A14]/20 shadow ring-2 ring-[#C9A227]/20 ring-offset-1 ring-offset-[#0A0A0F]'
+                          : 'border-gray-700 bg-gray-900/60 hover:border-gray-600'
                       }
                     `}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className="text-2xl">{dest.flag}</span>
-                        <span className="font-semibold text-gray-900">{dest.name}</span>
+                        <span className="font-semibold text-white">{dest.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span
@@ -355,9 +357,9 @@ export default function OnboardingPage() {
                           {badge.label}
                         </span>
                         {isSelected && (
-                          <div className="w-5 h-5 rounded-full bg-[#5C0A14] flex items-center justify-center flex-shrink-0">
+                          <div className="w-5 h-5 rounded-full bg-[#C9A227] flex items-center justify-center flex-shrink-0">
                             <svg
-                              className="w-3 h-3 text-white"
+                              className="w-3 h-3 text-[#0A0A0F]"
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >
@@ -375,7 +377,7 @@ export default function OnboardingPage() {
                       {dest.topSectors.slice(0, 3).map((s) => (
                         <span
                           key={s}
-                          className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full"
+                          className="text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full"
                         >
                           {s}
                         </span>
@@ -386,7 +388,7 @@ export default function OnboardingPage() {
               })}
             </div>
             {toCountries.length > 0 && (
-              <p className="mt-4 text-sm text-[#5C0A14] font-medium">
+              <p className="mt-4 text-sm text-[#C9A227] font-medium">
                 {toCountries.length} destination{toCountries.length > 1 ? 's' : ''} selected
               </p>
             )}
@@ -396,17 +398,17 @@ export default function OnboardingPage() {
         {/* ── STEP 4: Skills ── */}
         {step === 4 && pioneerType && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">What skills do you bring?</h1>
-            <p className="text-gray-500 mb-2">
+            <h1 className="text-3xl font-bold text-white mb-2">What skills do you bring?</h1>
+            <p className="text-gray-400 mb-2">
               Select at least 3 skills. These power your match score.
             </p>
             {skills.length < 3 && (
-              <p className="text-sm text-[#5C0A14] mb-4">
+              <p className="text-sm text-[#C9A227] mb-4">
                 {3 - skills.length} more needed to continue
               </p>
             )}
             {skills.length >= 3 && (
-              <p className="text-sm text-green-600 font-medium mb-4">
+              <p className="text-sm text-green-400 font-medium mb-4">
                 {skills.length} skills selected — great! Add more for better matches.
               </p>
             )}
@@ -423,8 +425,8 @@ export default function OnboardingPage() {
                       active:scale-95
                       ${
                         active
-                          ? 'bg-[#5C0A14] text-white border-[#5C0A14] shadow-sm'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-[#5C0A14/50] hover:text-[#5C0A14]'
+                          ? 'bg-[#5C0A14] text-white border-[#C9A227] shadow-sm'
+                          : 'bg-gray-900/60 text-gray-300 border-gray-700 hover:border-[#C9A227]/50 hover:text-white'
                       }
                     `}
                   >
@@ -438,7 +440,7 @@ export default function OnboardingPage() {
             {/* Custom skills */}
             {skills.filter((s) => !SKILLS_BY_TYPE[pioneerType].includes(s)).length > 0 && (
               <div className="mb-4">
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">
                   Your custom skills
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -448,7 +450,7 @@ export default function OnboardingPage() {
                       <button
                         key={skill}
                         onClick={() => toggleSkill(skill)}
-                        className="px-3 py-1.5 rounded-full text-sm font-medium bg-teal-500 text-white border border-teal-500 shadow-sm active:scale-95"
+                        className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#C9A227]/20 text-[#C9A227] border border-[#C9A227]/40 shadow-sm active:scale-95"
                       >
                         ✓ {skill}
                       </button>
@@ -464,7 +466,8 @@ export default function OnboardingPage() {
                 onChange={(e) => setCustomSkill(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addCustomSkill()}
                 placeholder="Add your own skill..."
-                className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-[#5C0A14] text-sm"
+                className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-700 bg-gray-900/60 text-white
+                  placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
               />
               <button
                 onClick={addCustomSkill}
@@ -481,14 +484,14 @@ export default function OnboardingPage() {
         {/* ── STEP 5: Headline & Contact ── */}
         {step === 5 && (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Tell us your chapter title</h1>
-            <p className="text-gray-500 mb-6">
+            <h1 className="text-3xl font-bold text-white mb-2">Tell us your chapter title</h1>
+            <p className="text-gray-400 mb-6">
               Your headline is the first thing Anchors see. Make it yours.
             </p>
 
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
                   Your headline *
                 </label>
                 <input
@@ -496,37 +499,37 @@ export default function OnboardingPage() {
                   value={headline}
                   onChange={(e) => setHeadline(e.target.value)}
                   placeholder="e.g. Safari Guide with 5 years experience | Swahili & English"
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:outline-none
-                    focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20] text-gray-900
-                    placeholder-gray-400 transition-all"
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-700 bg-gray-900/60 text-white
+                    placeholder-gray-500 focus:outline-none focus:border-[#C9A227] focus:ring-2
+                    focus:ring-[#C9A227]/20 transition-all"
                 />
-                <p className="text-xs text-gray-400 mt-1">{headline.length} / 120 characters</p>
+                <p className="text-xs text-gray-500 mt-1">{headline.length} / 120 characters</p>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  What makes you, you? <span className="text-gray-400 font-normal">(optional)</span>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  What makes you, you? <span className="text-gray-500 font-normal">(optional)</span>
                 </label>
                 <textarea
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   placeholder="A short story about your journey, your passion, what drives you..."
                   rows={4}
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:outline-none
-                    focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20] text-gray-900
-                    placeholder-gray-400 transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-700 bg-gray-900/60 text-white
+                    placeholder-gray-500 focus:outline-none focus:border-[#C9A227] focus:ring-2
+                    focus:ring-[#C9A227]/20 transition-all resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-300 mb-1">
                   WhatsApp number{' '}
-                  <span className="text-gray-400 font-normal">
+                  <span className="text-gray-500 font-normal">
                     (optional — get notified about matches)
                   </span>
                 </label>
                 <div className="flex gap-2">
-                  <span className="flex items-center px-3 bg-gray-100 border-2 border-gray-200 rounded-l-2xl text-gray-500 text-sm border-r-0">
+                  <span className="flex items-center px-3 bg-gray-800 border-2 border-gray-700 rounded-l-2xl text-gray-400 text-sm border-r-0">
                     +
                   </span>
                   <input
@@ -534,19 +537,19 @@ export default function OnboardingPage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="254712345678"
-                    className="flex-1 px-4 py-3 rounded-r-2xl border-2 border-gray-200 focus:outline-none
-                      focus:border-[#5C0A14] focus:ring-2 focus:ring-[#C9A227/20] text-gray-900
-                      placeholder-gray-400 transition-all"
+                    className="flex-1 px-4 py-3 rounded-r-2xl border-2 border-gray-700 bg-gray-900/60 text-white
+                      placeholder-gray-500 focus:outline-none focus:border-[#C9A227] focus:ring-2
+                      focus:ring-[#C9A227]/20 transition-all"
                   />
                 </div>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   Include country code. We&apos;ll send WhatsApp alerts for new Path matches.
                 </p>
               </div>
             </div>
 
             {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+              <div className="mt-4 p-3 bg-red-900/30 border border-red-500/30 rounded-xl text-red-400 text-sm">
                 {error}
               </div>
             )}
@@ -555,13 +558,13 @@ export default function OnboardingPage() {
       </div>
 
       {/* ── Fixed Bottom Nav ── */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 shadow-xl px-4 py-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#111118] border-t border-gray-800 shadow-xl px-4 py-4">
         <div className="max-w-2xl mx-auto flex gap-3">
           {step > 1 && (
             <button
               onClick={back}
-              className="px-6 py-3 rounded-2xl border-2 border-gray-200 text-gray-600 font-medium
-                hover:border-gray-300 active:scale-95 transition-all"
+              className="px-6 py-3 rounded-2xl border-2 border-gray-700 text-gray-300 font-medium
+                hover:border-gray-600 active:scale-95 transition-all"
             >
               Back
             </button>
@@ -576,7 +579,7 @@ export default function OnboardingPage() {
                 ${
                   canAdvance()
                     ? 'bg-[#5C0A14] hover:bg-[#7a0e1a] shadow-md hover:shadow-lg'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                 }
               `}
             >
@@ -591,7 +594,7 @@ export default function OnboardingPage() {
                 ${
                   canAdvance() && !submitting
                     ? 'bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] hover:from-[#7a0e1a] hover:to-[#5C0A14] shadow-md hover:shadow-lg'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                 }
               `}
             >

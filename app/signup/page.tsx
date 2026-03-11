@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Briefcase, Users, Building2, Check } from 'lucide-react'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 
 type Role = 'PIONEER' | 'ANCHOR'
 
@@ -21,21 +22,6 @@ export default function SignupPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [step])
-
-  const countries = [
-    'Kenya',
-    'Nigeria',
-    'Ghana',
-    'South Africa',
-    'Uganda',
-    'Tanzania',
-    'United Kingdom',
-    'United States',
-    'Canada',
-    'Germany',
-    'UAE',
-    'Australia',
-  ]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -174,8 +160,10 @@ export default function SignupPage() {
                       onChange={(e) => setForm({ ...form, country: e.target.value })}
                       className="input w-full"
                     >
-                      {countries.map((c) => (
-                        <option key={c}>{c}</option>
+                      {COUNTRY_OPTIONS.map((c) => (
+                        <option key={c.code} value={c.name}>
+                          {c.flag} {c.name}
+                        </option>
                       ))}
                     </select>
                   </div>
