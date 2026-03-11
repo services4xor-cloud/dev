@@ -107,6 +107,8 @@ export interface PathListItem {
   title: string
   anchorName: string
   location: string
+  /** ISO country code (KE, DE, CH, GB, etc.) — for identity-driven filtering */
+  country?: string
   category: FilterCategory
   salary: string
   posted: string

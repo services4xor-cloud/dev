@@ -1,16 +1,22 @@
 'use client'
 
 /**
- * usePaths — Client-side hook for fetching paths from API
+ * usePaths — Bolt-style path ranking by identity context
  *
- * Transforms DB paths into UI-ready format with formatted salary,
- * time-ago strings, sector→icon mapping, and category inference.
- * Falls back to MOCK_VENTURE_PATHS when API is unavailable.
+ * NOT a job board browser. This works like a ride-hailing app:
+ *   1. Your identity (country/language) determines what you see FIRST
+ *   2. Corridor partners come next (where demand + money flow)
+ *   3. Remote paths always show (global access)
+ *   4. Everything else fills in — never empty
+ *
+ * When DB is live, fetches from /api/paths. Falls back to mock data.
+ * Ranking happens client-side using COUNTRY_OPTIONS corridor data.
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { useIdentity } from '@/lib/identity-context'
+import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import type { PathListItem } from '@/types/domain'
 
 // ─── Sector → Icon + Category mapping ────────────────────────────────────────
@@ -92,6 +98,7 @@ function mapDBPath(p: DBPath): PathListItem {
     title: p.title,
     anchorName: p.anchorName ?? p.company,
     location: p.location,
+    country: p.country,
     category: meta.category as PathListItem['category'],
     salary: formatSalary(p.salaryMin, p.salaryMax, p.currency),
     posted: timeAgo(p.createdAt),
@@ -101,6 +108,91 @@ function mapDBPath(p: DBPath): PathListItem {
     isFeatured: p.tier === 'PREMIUM' || p.tier === 'FEATURED',
     pioneersNeeded: p._count?.chapters ? undefined : 1,
   }
+}
+
+// ─── Ranking Engine ─────────────────────────────────────────────────────────
+
+/** Get corridor countries for a given country code */
+function getCorridorCountries(countryCode: string, lang: string): string[] {
+  const corridors = new Set<string>()
+
+  // Same-language countries are corridor partners
+  const langEntry = LANGUAGE_REGISTRY[lang as LanguageCode]
+  if (langEntry) {
+    langEntry.countries.forEach((c) => {
+      if (c !== countryCode) corridors.add(c)
+    })
+  }
+
+  // Same-region countries
+  const myCountry = COUNTRY_OPTIONS.find((c) => c.code === countryCode)
+  if (myCountry) {
+    COUNTRY_OPTIONS.forEach((c) => {
+      if (c.code !== countryCode && c.region === myCountry.region) {
+        corridors.add(c.code)
+      }
+    })
+  }
+
+  // Direct corridor partners (high corridor strength)
+  COUNTRY_OPTIONS.forEach((c) => {
+    if (c.code !== countryCode && c.corridorStrength === 'direct') {
+      corridors.add(c.code)
+    }
+  })
+
+  return Array.from(corridors)
+}
+
+/**
+ * Rank paths by relevance to identity — Bolt-style.
+ *
+ * Scoring:
+ *   +100  Your country (local demand — what's HERE)
+ *   +60   Corridor partner (where money flows TO/FROM you)
+ *   +40   Remote/global (accessible from anywhere)
+ *   +20   Same region (nearby opportunity)
+ *   +10   Featured (anchor paid for visibility)
+ *   +5    Has pioneersNeeded (active demand signal)
+ */
+function rankPaths(paths: PathListItem[], countryCode: string, language: string): PathListItem[] {
+  const corridorCodes = getCorridorCountries(countryCode, language)
+  const myCountry = COUNTRY_OPTIONS.find((c) => c.code === countryCode)
+  const myRegion = myCountry?.region
+
+  const scored = paths.map((path) => {
+    let score = 0
+    const pc = path.country?.toUpperCase()
+
+    // Local paths — highest priority
+    if (pc === countryCode) score += 100
+    // Corridor partners — second priority
+    else if (pc && corridorCodes.includes(pc)) score += 60
+
+    // Remote — accessible from anywhere
+    if (path.isRemote) score += 40
+
+    // Same region — nearby opportunity
+    if (pc && myRegion) {
+      const pathCountry = COUNTRY_OPTIONS.find((c) => c.code === pc)
+      if (pathCountry?.region === myRegion) score += 20
+    }
+
+    // Demand signals
+    if (path.isFeatured) score += 10
+    if (path.pioneersNeeded && path.pioneersNeeded > 1) score += 5
+
+    return { path, score }
+  })
+
+  // Sort by score descending, then by featured, then by posted recency
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score
+    if (a.path.isFeatured !== b.path.isFeatured) return a.path.isFeatured ? -1 : 1
+    return 0
+  })
+
+  return scored.map((s) => s.path)
 }
 
 // ─── Hook ────────────────────────────────────────────────────────────────────
@@ -117,17 +209,20 @@ interface UsePathsResult {
   total: number
   loading: boolean
   fromDB: boolean
+  /** How many paths are from the user's own country */
+  localCount: number
+  /** How many paths are from corridor partners */
+  corridorCount: number
 }
 
 export function usePaths(options: UsePathsOptions = {}): UsePathsResult {
   const { identity } = useIdentity()
-  const [paths, setPaths] = useState<PathListItem[]>([])
+  const [rawPaths, setRawPaths] = useState<PathListItem[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [fromDB, setFromDB] = useState(false)
 
-  // Use identity context country if no explicit country filter provided
-  const effectiveCountry = options.country ?? identity.country
+  const effectiveCountry = identity.country
 
   useEffect(() => {
     let cancelled = false
@@ -135,7 +230,7 @@ export function usePaths(options: UsePathsOptions = {}): UsePathsResult {
     async function fetchPaths() {
       try {
         const params = new URLSearchParams()
-        if (effectiveCountry) params.set('country', effectiveCountry)
+        // Don't filter by country on server — we want ALL paths, then rank client-side
         if (options.sector) params.set('sector', options.sector)
         if (options.q) params.set('q', options.q)
         if (options.limit) params.set('limit', String(options.limit))
@@ -147,7 +242,7 @@ export function usePaths(options: UsePathsOptions = {}): UsePathsResult {
 
         const data = await res.json()
         if (!cancelled) {
-          setPaths(data.paths.map(mapDBPath))
+          setRawPaths(data.paths.map(mapDBPath))
           setTotal(data.total)
           setFromDB(true)
           setLoading(false)
@@ -156,16 +251,13 @@ export function usePaths(options: UsePathsOptions = {}): UsePathsResult {
         // Graceful fallback to mock data
         if (!cancelled) {
           let mock = [...MOCK_VENTURE_PATHS]
-          if (options.country) {
-            // Mock data doesn't have country field reliably, show all
-          }
           if (options.q) {
             const q = options.q.toLowerCase()
             mock = mock.filter(
               (p) => p.title.toLowerCase().includes(q) || p.anchorName.toLowerCase().includes(q)
             )
           }
-          setPaths(mock)
+          setRawPaths(mock)
           setTotal(mock.length)
           setFromDB(false)
           setLoading(false)
@@ -177,7 +269,23 @@ export function usePaths(options: UsePathsOptions = {}): UsePathsResult {
     return () => {
       cancelled = true
     }
-  }, [effectiveCountry, options.country, options.sector, options.q, options.limit])
+  }, [options.sector, options.q, options.limit])
 
-  return { paths, total, loading, fromDB }
+  // Rank paths by identity context — recalculates when identity or raw data changes
+  const paths = useMemo(
+    () => rankPaths(rawPaths, effectiveCountry, identity.language),
+    [rawPaths, effectiveCountry, identity.language]
+  )
+
+  // Count local and corridor paths for UI display
+  const corridorCodes = useMemo(
+    () => getCorridorCountries(effectiveCountry, identity.language),
+    [effectiveCountry, identity.language]
+  )
+  const localCount = paths.filter((p) => p.country === effectiveCountry).length
+  const corridorCount = paths.filter(
+    (p) => p.country && corridorCodes.includes(p.country) && p.country !== effectiveCountry
+  ).length
+
+  return { paths, total, loading, fromDB, localCount, corridorCount }
 }
