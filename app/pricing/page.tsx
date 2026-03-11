@@ -24,6 +24,13 @@ const CURRENCY_OPTIONS = [
   { code: 'USD', flag: '🇺🇸', label: 'USD' },
 ] as const
 
+/** Map plan name to i18n CTA key */
+const PLAN_CTA_KEY: Record<string, string> = {
+  Basic: 'pricing.postFree',
+  Featured: 'pricing.goFeatured',
+  Premium: 'pricing.goPremium',
+}
+
 export default function PricingPage() {
   const { identity } = useIdentity()
   const { t } = useTranslation()
@@ -34,6 +41,8 @@ export default function PricingPage() {
 
   const [currency, setCurrency] = useState(defaultCurrency)
 
+  const agentRate = (COMMISSION_RATES.agent * 100).toFixed(0)
+
   return (
     <div className="min-h-screen bg-brand-bg">
       <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-16">
@@ -41,15 +50,12 @@ export default function PricingPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-brand-primary/30 text-brand-accent px-4 py-2 rounded-full text-sm font-medium mb-4 border border-brand-accent/20">
             <Globe className="w-4 h-4" />
-            {t('pricing.badge') || 'Pay from anywhere — M-Pesa, SEPA, card, or mobile money'}
+            {t('pricing.badge')}
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl 3xl:text-6xl font-black text-white mb-4">
-            {t('pricing.title') || 'Simple, transparent pricing'}
+            {t('pricing.title')}
           </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            {t('pricing.subtitle') ||
-              'Pioneers browse and apply for free. Anchors post Paths starting at zero cost. Scale when you need to.'}
-          </p>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">{t('pricing.subtitle')}</p>
 
           {/* Currency selector */}
           <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
@@ -87,7 +93,7 @@ export default function PricingPage() {
               >
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-accent text-brand-bg text-xs font-bold px-3 py-1 rounded-full">
-                    MOST POPULAR
+                    {t('pricing.mostPopular')}
                   </div>
                 )}
 
@@ -107,7 +113,7 @@ export default function PricingPage() {
                 <div className="mb-6">
                   <div className="text-3xl font-black text-white">{priceDisplay}</div>
                   <div className="text-gray-400 text-sm">
-                    {planKey === 'basic' ? 'forever' : 'per month'}
+                    {planKey === 'basic' ? t('pricing.forever') : t('pricing.perMonth')}
                   </div>
                 </div>
 
@@ -130,7 +136,7 @@ export default function PricingPage() {
                       : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                   }`}
                 >
-                  {plan.cta}
+                  {t(PLAN_CTA_KEY[plan.name] ?? 'pricing.postFree')}
                 </Link>
               </div>
             )
@@ -145,19 +151,15 @@ export default function PricingPage() {
             </div>
             <div className="text-center md:text-left">
               <h2 className="text-2xl font-bold text-white mb-2">
-                Agents earn {(COMMISSION_RATES.agent * 100).toFixed(0)}% commission
+                {t('pricing.agentTitle', { rate: agentRate })}
               </h2>
-              <p className="text-gray-400">
-                Forward Paths to your network via WhatsApp. When a Pioneer gets placed through your
-                referral, you earn {(COMMISSION_RATES.agent * 100).toFixed(0)}% of the placement
-                fee. No cap on earnings.
-              </p>
+              <p className="text-gray-400">{t('pricing.agentDesc', { rate: agentRate })}</p>
             </div>
             <Link
               href="/agents"
               className="bg-brand-primary text-white font-bold px-6 py-3 rounded-xl hover:bg-brand-primary-light border border-brand-accent/30 transition-colors whitespace-nowrap"
             >
-              Become an Agent →
+              {t('pricing.agentCta')}
             </Link>
           </div>
         </div>
@@ -165,13 +167,8 @@ export default function PricingPage() {
         {/* Payment Methods */}
         <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-primary/30 mb-16">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-white">
-              {t('pricing.paymentTitle') || 'Pay from anywhere in the world'}
-            </h2>
-            <p className="text-gray-400 mt-2">
-              {t('pricing.paymentSubtitle') ||
-                'We accept every major payment method so no one is excluded'}
-            </p>
+            <h2 className="text-2xl font-bold text-white">{t('pricing.paymentTitle')}</h2>
+            <p className="text-gray-400 mt-2">{t('pricing.paymentSubtitle')}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
             {PAYMENT_METHODS.map((method) => (
@@ -190,18 +187,13 @@ export default function PricingPage() {
         {/* For Pioneers */}
         <div className="bg-gradient-to-r from-brand-primary to-brand-primary-light rounded-2xl p-8 text-white text-center border border-brand-accent/20">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-80" />
-          <h2 className="text-2xl font-bold mb-2">
-            {t('pricing.pioneersTitle') || 'Pioneers — always free'}
-          </h2>
-          <p className="opacity-90 max-w-lg mx-auto mb-6">
-            {t('pricing.pioneersDesc') ||
-              `Creating a profile, opening Chapters, and getting placed is completely free for Pioneers. Always. Up to ${FREE_TIER.maxChapters} active Chapters.`}
-          </p>
+          <h2 className="text-2xl font-bold mb-2">{t('pricing.pioneersTitle')}</h2>
+          <p className="opacity-90 max-w-lg mx-auto mb-6">{t('pricing.pioneersDesc')}</p>
           <Link
             href="/signup?role=pioneer"
             className="bg-white text-brand-primary font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors inline-block"
           >
-            {t('pricing.pioneersCta') || 'Create Free Profile →'}
+            {t('pricing.pioneersCta')}
           </Link>
         </div>
       </div>

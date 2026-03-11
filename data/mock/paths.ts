@@ -57,7 +57,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   },
   {
     id: 'p4',
-    title: 'Healer Pioneer — NHS Scotland',
+    title: 'Healer Pioneer — Edinburgh Health Trust',
     anchorName: 'Edinburgh Health Trust',
     location: 'Edinburgh, UK',
     country: 'GB',

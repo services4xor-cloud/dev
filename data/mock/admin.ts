@@ -168,7 +168,7 @@ export const MOCK_SOCIAL_QUEUE = [
   {
     id: 3,
     platform: 'LinkedIn',
-    content: 'Safaricom opens Software Engineer path — remote-friendly!',
+    content: 'SafariTech Solutions opens Software Engineer path — remote-friendly!',
     status: 'posted',
     created: '2024-03-07',
   },
