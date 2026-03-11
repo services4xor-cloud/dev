@@ -11,22 +11,22 @@ export default function FashionPage() {
   return (
     <main className="min-h-screen bg-[#0A0205] text-white">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#5C0A14] via-[#3D0A0A] to-[#0A0205] py-24 px-4">
+      <section className="relative overflow-hidden bg-gradient-to-br from-brand-primary via-[#3D0A0A] to-[#0A0205] py-24 px-4">
         {/* Lion watermark */}
         <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none select-none">
           <span className="text-[20rem] leading-none">🦁</span>
         </div>
         <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-[#C9A227]/20 border border-[#C9A227]/40 rounded-full px-4 py-1.5 mb-6">
-            <span className="text-[#C9A227] text-sm font-medium">
+          <div className="inline-flex items-center gap-2 bg-brand-accent/20 border border-brand-accent/40 rounded-full px-4 py-1.5 mb-6">
+            <span className="text-brand-accent text-sm font-medium">
               BeKenya Family Ltd — Fashion Division
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-4">
-            <span className="text-[#C9A227]">BeKenya</span>{' '}
+            <span className="text-brand-accent">BeKenya</span>{' '}
             <span className="text-white">Fashion</span>
           </h1>
-          <p className="text-2xl md:text-3xl font-light text-[#C9A227] mb-6 tracking-wide">
+          <p className="text-2xl md:text-3xl font-light text-brand-accent mb-6 tracking-wide">
             Style. Dignity. Africa.
           </p>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -36,13 +36,13 @@ export default function FashionPage() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=artisan"
-              className="bg-[#C9A227] text-black font-bold px-8 py-4 rounded-full hover:bg-[#E5B93B] transition-colors text-lg"
+              className="bg-brand-accent text-black font-bold px-8 py-4 rounded-full hover:bg-[#E5B93B] transition-colors text-lg"
             >
               Apply as Fashion Pioneer
             </Link>
             <Link
               href="/anchors"
-              className="border border-[#C9A227] text-[#C9A227] font-semibold px-8 py-4 rounded-full hover:bg-[#C9A227]/10 transition-colors text-lg"
+              className="border border-brand-accent text-brand-accent font-semibold px-8 py-4 rounded-full hover:bg-brand-accent/10 transition-colors text-lg"
             >
               Hire Fashion Talent
             </Link>
@@ -51,9 +51,9 @@ export default function FashionPage() {
       </section>
 
       {/* Mission */}
-      <section className="py-16 px-4 bg-[#5C0A14]/20 border-y border-[#C9A227]/20">
+      <section className="py-16 px-4 bg-brand-primary/20 border-y border-brand-accent/20">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-[#C9A227] mb-6">Our Mission</h2>
+          <h2 className="text-3xl font-bold text-brand-accent mb-6">Our Mission</h2>
           <p className="text-xl md:text-2xl text-gray-200 leading-relaxed font-light">
             &ldquo;Fashion that empowers. Every model is a Pioneer. Every garment tells a
             story.&rdquo;
@@ -75,9 +75,9 @@ export default function FashionPage() {
             path with your name on it.
           </p>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-b from-[#5C0A14]/40 to-[#5C0A14]/10 border border-[#C9A227]/30 rounded-2xl p-8 hover:border-[#C9A227]/60 transition-colors">
+            <div className="bg-gradient-to-b from-brand-primary/40 to-brand-primary/10 border border-brand-accent/30 rounded-2xl p-8 hover:border-brand-accent/60 transition-colors">
               <div className="text-5xl mb-4">👗</div>
-              <h3 className="text-xl font-bold text-[#C9A227] mb-3">Model</h3>
+              <h3 className="text-xl font-bold text-brand-accent mb-3">Model</h3>
               <p className="text-gray-300 leading-relaxed">
                 Professional photoshoots, brand campaigns, catalog work. Safe. Paid. Professional.
                 Every engagement on your terms.
@@ -86,16 +86,16 @@ export default function FashionPage() {
                 {['Photoshoots', 'Campaigns', 'Catalog'].map((tag) => (
                   <span
                     key={tag}
-                    className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded-full"
+                    className="bg-brand-accent/20 text-brand-accent text-xs px-2 py-1 rounded-full"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
             </div>
-            <div className="bg-gradient-to-b from-[#5C0A14]/40 to-[#5C0A14]/10 border border-[#C9A227]/30 rounded-2xl p-8 hover:border-[#C9A227]/60 transition-colors">
+            <div className="bg-gradient-to-b from-brand-primary/40 to-brand-primary/10 border border-brand-accent/30 rounded-2xl p-8 hover:border-brand-accent/60 transition-colors">
               <div className="text-5xl mb-4">✂️</div>
-              <h3 className="text-xl font-bold text-[#C9A227] mb-3">Designer</h3>
+              <h3 className="text-xl font-bold text-brand-accent mb-3">Designer</h3>
               <p className="text-gray-300 leading-relaxed">
                 Sketch to stitch. Local production. African prints. Global reach. Bring Kenya&apos;s
                 textile tradition to international markets.
@@ -104,16 +104,16 @@ export default function FashionPage() {
                 {['Textiles', 'African Prints', 'Production'].map((tag) => (
                   <span
                     key={tag}
-                    className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded-full"
+                    className="bg-brand-accent/20 text-brand-accent text-xs px-2 py-1 rounded-full"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
             </div>
-            <div className="bg-gradient-to-b from-[#5C0A14]/40 to-[#5C0A14]/10 border border-[#C9A227]/30 rounded-2xl p-8 hover:border-[#C9A227]/60 transition-colors">
+            <div className="bg-gradient-to-b from-brand-primary/40 to-brand-primary/10 border border-brand-accent/30 rounded-2xl p-8 hover:border-brand-accent/60 transition-colors">
               <div className="text-5xl mb-4">📸</div>
-              <h3 className="text-xl font-bold text-[#C9A227] mb-3">Creative</h3>
+              <h3 className="text-xl font-bold text-brand-accent mb-3">Creative</h3>
               <p className="text-gray-300 leading-relaxed">
                 Photography, styling, hair and makeup, set design. The whole world behind the lens.
                 Be the vision behind the brand.
@@ -122,7 +122,7 @@ export default function FashionPage() {
                 {['Photography', 'Styling', 'Set Design'].map((tag) => (
                   <span
                     key={tag}
-                    className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded-full"
+                    className="bg-brand-accent/20 text-brand-accent text-xs px-2 py-1 rounded-full"
                   >
                     {tag}
                   </span>
@@ -134,7 +134,7 @@ export default function FashionPage() {
       </section>
 
       {/* Pioneer Protections */}
-      <section className="py-20 px-4 bg-gradient-to-br from-[#5C0A14]/30 to-transparent">
+      <section className="py-20 px-4 bg-gradient-to-br from-brand-primary/30 to-transparent">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">
             What Makes BeKenya Fashion Different
@@ -146,10 +146,10 @@ export default function FashionPage() {
             {protections.map((p) => (
               <div
                 key={p.title}
-                className="bg-[#0A0205] border border-[#C9A227]/20 rounded-xl p-6 hover:border-[#C9A227]/50 transition-colors"
+                className="bg-[#0A0205] border border-brand-accent/20 rounded-xl p-6 hover:border-brand-accent/50 transition-colors"
               >
                 <div className="text-3xl mb-3">{p.icon}</div>
-                <h3 className="font-bold text-[#C9A227] mb-2">{p.title}</h3>
+                <h3 className="font-bold text-brand-accent mb-2">{p.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{p.description}</p>
               </div>
             ))}
@@ -165,7 +165,10 @@ export default function FashionPage() {
               <h2 className="text-3xl font-bold text-white mb-2">Open Fashion Paths</h2>
               <p className="text-gray-400">Paid opportunities waiting for the right Pioneer</p>
             </div>
-            <Link href="/ventures" className="text-[#C9A227] hover:underline text-sm font-medium">
+            <Link
+              href="/ventures"
+              className="text-brand-accent hover:underline text-sm font-medium"
+            >
               View all paths →
             </Link>
           </div>
@@ -173,14 +176,14 @@ export default function FashionPage() {
             {fashionPaths.map((path) => (
               <div
                 key={path.id}
-                className="bg-gradient-to-r from-[#5C0A14]/20 to-transparent border border-[#C9A227]/20 rounded-2xl p-6 hover:border-[#C9A227]/50 transition-all hover:from-[#5C0A14]/30 group"
+                className="bg-gradient-to-r from-brand-primary/20 to-transparent border border-brand-accent/20 rounded-2xl p-6 hover:border-brand-accent/50 transition-all hover:from-brand-primary/30 group"
               >
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   <div className="text-4xl">{path.emoji}</div>
                   <div className="flex-1">
                     <div className="flex flex-wrap items-start gap-3 mb-2">
                       <h3 className="text-lg font-bold text-white">{path.title}</h3>
-                      <span className="bg-[#C9A227]/20 text-[#C9A227] text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                      <span className="bg-brand-accent/20 text-brand-accent text-xs font-semibold px-2.5 py-0.5 rounded-full">
                         {path.type}
                       </span>
                     </div>
@@ -197,10 +200,10 @@ export default function FashionPage() {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-3">
-                    <div className="text-[#C9A227] font-bold text-lg">{path.rate}</div>
+                    <div className="text-brand-accent font-bold text-lg">{path.rate}</div>
                     <Link
                       href="/onboarding?type=artisan"
-                      className="bg-[#C9A227] text-black text-sm font-bold px-5 py-2 rounded-full hover:bg-[#E5B93B] transition-colors opacity-0 group-hover:opacity-100"
+                      className="bg-brand-accent text-black text-sm font-bold px-5 py-2 rounded-full hover:bg-[#E5B93B] transition-colors opacity-0 group-hover:opacity-100"
                     >
                       Apply
                     </Link>
@@ -213,7 +216,7 @@ export default function FashionPage() {
       </section>
 
       {/* Partner Anchors */}
-      <section className="py-20 px-4 bg-[#5C0A14]/10 border-t border-[#C9A227]/10">
+      <section className="py-20 px-4 bg-brand-primary/10 border-t border-brand-accent/10">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">Partner Anchors</h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
@@ -224,10 +227,10 @@ export default function FashionPage() {
             {partnerAnchors.map((anchor) => (
               <div
                 key={anchor.name}
-                className="bg-[#0A0205] border border-[#C9A227]/20 rounded-xl p-6 text-center hover:border-[#C9A227]/50 transition-colors"
+                className="bg-[#0A0205] border border-brand-accent/20 rounded-xl p-6 text-center hover:border-brand-accent/50 transition-colors"
               >
                 <div className="text-4xl mb-4">{anchor.logo}</div>
-                <h3 className="font-bold text-[#C9A227] text-lg mb-2">{anchor.name}</h3>
+                <h3 className="font-bold text-brand-accent text-lg mb-2">{anchor.name}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{anchor.focus}</p>
               </div>
             ))}
@@ -236,7 +239,7 @@ export default function FashionPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-4 bg-gradient-to-br from-[#5C0A14] to-[#3D0A0A]">
+      <section className="py-24 px-4 bg-gradient-to-br from-brand-primary to-[#3D0A0A]">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl font-black text-white mb-4">Ready to walk your path?</h2>
           <p className="text-gray-300 text-lg mb-10 leading-relaxed">
@@ -246,7 +249,7 @@ export default function FashionPage() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=artisan"
-              className="bg-[#C9A227] text-black font-black px-10 py-4 rounded-full hover:bg-[#E5B93B] transition-colors text-xl"
+              className="bg-brand-accent text-black font-black px-10 py-4 rounded-full hover:bg-[#E5B93B] transition-colors text-xl"
             >
               Apply as Fashion Pioneer
             </Link>

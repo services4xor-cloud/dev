@@ -92,7 +92,7 @@ function StepBasics({
           value={form.title}
           onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
           placeholder="e.g. Senior Wildlife Guide — Big Five Specialist"
-          className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-lg"
+          className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent text-lg"
         />
         <p className="text-xs text-gray-500 mt-1.5">
           Be specific. Pioneers scan fast — a precise title wins.
@@ -109,13 +109,13 @@ function StepBasics({
               onClick={() => setForm((f) => ({ ...f, category: cat.id }))}
               className={`flex items-center gap-2.5 p-3 rounded-xl border text-left transition-all ${
                 form.category === cat.id
-                  ? 'border-[#C9A227] bg-[#5C0A14]/20 text-white'
+                  ? 'border-brand-accent bg-brand-primary/20 text-white'
                   : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600 hover:text-gray-200'
               }`}
             >
               <span className="text-xl">{cat.icon}</span>
               <span className="text-sm font-medium">{cat.label}</span>
-              {form.category === cat.id && <Check className="w-4 h-4 text-[#C9A227] ml-auto" />}
+              {form.category === cat.id && <Check className="w-4 h-4 text-brand-accent ml-auto" />}
             </button>
           ))}
         </div>
@@ -131,7 +131,7 @@ function StepBasics({
               onClick={() => setForm((f) => ({ ...f, pathType: t }))}
               className={`p-3 rounded-xl border text-sm font-medium transition-all ${
                 form.pathType === t
-                  ? 'border-[#C9A227] bg-[#5C0A14]/20 text-[#C9A227]'
+                  ? 'border-brand-accent bg-brand-primary/20 text-brand-accent'
                   : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
               }`}
             >
@@ -152,7 +152,7 @@ function StepBasics({
             value={form.location}
             onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
             placeholder="e.g. Laikipia, Kenya"
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227]"
+            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent"
           />
         </div>
         <div>
@@ -221,7 +221,7 @@ function StepDescription({
           placeholder="Describe the opportunity. What will the Pioneer do? What does a day look like? What impact will they make? What makes your anchor unique?
 
 Don't just list tasks — tell the story of this path."
-          className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] min-h-[200px] resize-y text-sm leading-relaxed"
+          className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent min-h-[200px] resize-y text-sm leading-relaxed"
         />
         <div className="flex justify-between mt-1.5">
           <p className="text-xs text-gray-500">
@@ -240,7 +240,7 @@ Don't just list tasks — tell the story of this path."
             onChange={(e) => setReqInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addReq())}
             placeholder="e.g. Valid driver's licence, e.g. FGASA Level 2+"
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
+            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent text-sm"
           />
           <button
             onClick={addReq}
@@ -326,11 +326,11 @@ function StepSkills({
             onChange={(e) => setSkillInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill(skillInput))}
             placeholder="Type a skill and press Enter"
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
+            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent text-sm"
           />
           <button
             onClick={() => addSkill(skillInput)}
-            className="px-4 py-2.5 bg-[#C9A227] text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors flex items-center gap-1.5"
+            className="px-4 py-2.5 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
             Add
@@ -360,7 +360,7 @@ function StepSkills({
       {notYetAdded.length > 0 && (
         <div>
           <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wide flex items-center gap-1.5">
-            <Zap className="w-3 h-3 text-[#C9A227]" />
+            <Zap className="w-3 h-3 text-brand-accent" />
             Suggested for{' '}
             {PATH_CATEGORIES.find((c) => c.id === form.category)?.label || 'this path'}
           </label>
@@ -369,7 +369,7 @@ function StepSkills({
               <button
                 key={s}
                 onClick={() => addSkill(s)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 border border-gray-700 border-dashed text-gray-400 rounded-full text-sm hover:border-[#C9A227] hover:text-[#C9A227] transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 border border-gray-700 border-dashed text-gray-400 rounded-full text-sm hover:border-brand-accent hover:text-brand-accent transition-colors"
               >
                 <Plus className="w-3 h-3" />
                 {s}
@@ -380,7 +380,7 @@ function StepSkills({
       )}
 
       {form.skills.length === 0 && (
-        <div className="p-4 bg-[#5C0A14]/20 border border-[#5C0A14]/30 rounded-xl text-sm text-[#C9A227]">
+        <div className="p-4 bg-brand-primary/20 border border-brand-primary/30 rounded-xl text-sm text-brand-accent">
           Add at least 1 skill so Compass can find the right Pioneers for this path.
         </div>
       )}
@@ -473,7 +473,7 @@ function StepPioneers({
                 onClick={() => toggleOrigin(c.code)}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
                   selected
-                    ? 'border-[#C9A227] bg-[#5C0A14]/20 text-[#C9A227]'
+                    ? 'border-brand-accent bg-brand-primary/20 text-brand-accent'
                     : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
                 }`}
               >
@@ -528,7 +528,7 @@ function StepCompensation({
                 value={form.salaryMin}
                 onChange={(e) => setForm((f) => ({ ...f, salaryMin: e.target.value }))}
                 placeholder="e.g. 80,000"
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent text-sm"
               />
             </div>
           </div>
@@ -540,7 +540,7 @@ function StepCompensation({
                 value={form.salaryMax}
                 onChange={(e) => setForm((f) => ({ ...f, salaryMax: e.target.value }))}
                 placeholder="e.g. 150,000"
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent text-sm"
               />
             </div>
           </div>
@@ -549,7 +549,7 @@ function StepCompensation({
             <select
               value={form.currency}
               onChange={(e) => setForm((f) => ({ ...f, currency: e.target.value }))}
-              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#C9A227] text-sm"
+              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-accent text-sm"
             >
               {CURRENCIES.map((c) => (
                 <option key={c.code} value={c.code}>
@@ -764,8 +764,8 @@ function StepPreview({
       </div>
 
       {/* Publish CTA */}
-      <div className="bg-gradient-to-r from-[#5C0A14]/40 to-teal-900/40 rounded-2xl border border-[#C9A227]/30 p-6 text-center">
-        <Rocket className="w-8 h-8 text-[#C9A227] mx-auto mb-3" />
+      <div className="bg-gradient-to-r from-brand-primary/40 to-teal-900/40 rounded-2xl border border-brand-accent/30 p-6 text-center">
+        <Rocket className="w-8 h-8 text-brand-accent mx-auto mb-3" />
         <h3 className="text-white font-bold text-lg mb-1">Ready to open this Path?</h3>
         <p className="text-gray-400 text-sm mb-5">
           Compass will immediately start matching Pioneers to your path. You&apos;ll see chapters
@@ -774,7 +774,7 @@ function StepPreview({
         <button
           onClick={onSubmit}
           disabled={submitting}
-          className="px-8 py-4 bg-[#C9A227] text-white rounded-xl font-bold text-base hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
+          className="px-8 py-4 bg-brand-accent text-white rounded-xl font-bold text-base hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
         >
           {submitting ? (
             <>
@@ -872,7 +872,7 @@ export default function PostPathPage() {
           <div className="flex gap-3 justify-center">
             <Link
               href="/anchors/dashboard"
-              className="px-5 py-3 bg-[#C9A227] text-white rounded-xl font-medium hover:opacity-90 transition-colors flex items-center gap-2"
+              className="px-5 py-3 bg-brand-accent text-white rounded-xl font-medium hover:opacity-90 transition-colors flex items-center gap-2"
             >
               <Users className="w-4 h-4" />
               Go to Dashboard
@@ -925,7 +925,7 @@ export default function PostPathPage() {
                     step > s.num
                       ? 'border-teal-500 bg-teal-500 text-white'
                       : step === s.num
-                        ? 'border-[#C9A227] bg-[#C9A227] text-white'
+                        ? 'border-brand-accent bg-brand-accent text-white'
                         : 'border-gray-600 bg-gray-800 text-gray-500'
                   }`}
                 >
@@ -981,7 +981,7 @@ export default function PostPathPage() {
             <button
               onClick={() => setStep((s) => s + 1)}
               disabled={!canProceed()}
-              className="flex items-center gap-2 px-6 py-3 bg-[#C9A227] text-white rounded-xl font-semibold hover:opacity-90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-3 bg-brand-accent text-white rounded-xl font-semibold hover:opacity-90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {step === 5 ? (
                 <>

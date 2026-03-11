@@ -47,12 +47,12 @@ export default function CountryPrioritySelector({
   const [selected, setSelected] = useState<string[]>([])
 
   const grouped = getGroupedCountries(originCode)
-  const originCountry = COUNTRY_OPTIONS.find(c => c.code === originCode)
+  const originCountry = COUNTRY_OPTIONS.find((c) => c.code === originCode)
 
   function toggleCountry(code: string) {
-    setSelected(prev => {
+    setSelected((prev) => {
       if (prev.includes(code)) {
-        return prev.filter(c => c !== code)
+        return prev.filter((c) => c !== code)
       }
       if (prev.length >= MAX_COUNTRY_SELECTIONS) return prev
       return [...prev, code]
@@ -60,34 +60,33 @@ export default function CountryPrioritySelector({
   }
 
   function removeFromPriority(code: string) {
-    setSelected(prev => prev.filter(c => c !== code))
+    setSelected((prev) => prev.filter((c) => c !== code))
   }
 
   const selectedCountries = selected
-    .map(code => COUNTRY_OPTIONS.find(c => c.code === code))
+    .map((code) => COUNTRY_OPTIONS.find((c) => c.code === code))
     .filter(Boolean) as CountryOption[]
 
   return (
     <div className={`space-y-6 ${className}`}>
-
       {/* Header */}
       <div className="text-center pb-2">
-        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-          Where do you want to go?
-        </h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Where do you want to go?</h2>
         <p className="text-gray-400 text-base">
-          Select up to <span className="text-[#C9A227] font-semibold">5 countries</span> in your preferred order — your first choice gets priority matches
+          Select up to <span className="text-brand-accent font-semibold">5 countries</span> in your
+          preferred order — your first choice gets priority matches
         </p>
         {originCountry && (
           <p className="text-sm text-gray-500 mt-1">
-            <span className="text-[#C9A227]">●</span> Glowing cards are nearby {originCountry.flag} {originCountry.name}
+            <span className="text-brand-accent">●</span> Glowing cards are nearby{' '}
+            {originCountry.flag} {originCountry.name}
           </p>
         )}
       </div>
 
       {/* Region cluster grid */}
       {grouped.map(({ cluster, countries }) => {
-        const hasNearby = countries.some(c => c.isNearby)
+        const hasNearby = countries.some((c) => c.isNearby)
         return (
           <div key={cluster.key}>
             {/* Cluster label */}
@@ -106,7 +105,7 @@ export default function CountryPrioritySelector({
 
             {/* Country cards */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
-              {countries.map(country => {
+              {countries.map((country) => {
                 const idx = selected.indexOf(country.code)
                 const isSelected = idx !== -1
                 const badge = CORRIDOR_BADGE[country.corridorStrength]
@@ -118,22 +117,26 @@ export default function CountryPrioritySelector({
                     key={country.code}
                     onClick={() => toggleCountry(country.code)}
                     disabled={!isSelected && selected.length >= MAX_COUNTRY_SELECTIONS}
-                    title={country.distKm > 0 ? `~${country.distKm.toLocaleString()} km from ${originCountry?.name}` : 'Your origin'}
+                    title={
+                      country.distKm > 0
+                        ? `~${country.distKm.toLocaleString()} km from ${originCountry?.name}`
+                        : 'Your origin'
+                    }
                     className={[
                       'relative flex flex-col items-center justify-center gap-1.5',
                       'rounded-xl p-3 pb-4 text-center transition-all duration-200',
-                      'border focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]',
+                      'border focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent',
                       'disabled:opacity-40 disabled:cursor-not-allowed',
                       isSelected
-                        ? 'border-[#C9A227] bg-[#5C0A14]/30 shadow-[0_0_0_1px_#C9A22760]'
+                        ? 'border-brand-accent bg-brand-primary/30 shadow-[0_0_0_1px_rgb(var(--color-accent-rgb) / 0.38)]'
                         : near
-                          ? 'border-emerald-700/50 bg-gray-900/80 shadow-[0_0_12px_2px_rgba(52,211,153,0.12)] hover:border-[#C9A227]/60 hover:shadow-[0_0_16px_4px_rgba(201,162,39,0.15)]'
-                          : 'border-gray-800 bg-gray-900/60 hover:border-[#C9A227]/40 hover:bg-gray-900',
+                          ? 'border-emerald-700/50 bg-gray-900/80 shadow-[0_0_12px_2px_rgba(52,211,153,0.12)] hover:border-brand-accent/60 hover:shadow-[0_0_16px_4px_rgb(var(--color-accent-rgb) / 0.15)]'
+                          : 'border-gray-800 bg-gray-900/60 hover:border-brand-accent/40 hover:bg-gray-900',
                     ].join(' ')}
                   >
                     {/* Priority badge */}
                     {rank !== null && (
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#C9A227] text-[#0A0A0F] text-xs font-black flex items-center justify-center shadow-md z-10">
+                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-brand-accent text-brand-bg text-xs font-black flex items-center justify-center shadow-md z-10">
                         {rank}
                       </div>
                     )}
@@ -150,12 +153,16 @@ export default function CountryPrioritySelector({
                     <span className="text-3xl leading-none">{country.flag}</span>
 
                     {/* Country name */}
-                    <span className={`text-sm font-semibold leading-tight ${isSelected ? 'text-[#C9A227]' : 'text-white'}`}>
+                    <span
+                      className={`text-sm font-semibold leading-tight ${isSelected ? 'text-brand-accent' : 'text-white'}`}
+                    >
                       {country.name}
                     </span>
 
                     {/* Corridor badge */}
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${badge.className}`}>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${badge.className}`}
+                    >
                       {badge.label}
                     </span>
                   </button>
@@ -169,19 +176,23 @@ export default function CountryPrioritySelector({
       {/* Priority rail — sticky selection summary */}
       {selected.length > 0 && (
         <div className="sticky bottom-0 pt-4">
-          <div className="bg-gray-900/95 backdrop-blur-sm border border-[#C9A227]/30 rounded-2xl p-4 shadow-2xl">
+          <div className="bg-gray-900/95 backdrop-blur-sm border border-brand-accent/30 rounded-2xl p-4 shadow-2xl">
             {/* Rail label */}
             <div className="text-xs text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
               <span>Your Route Priority</span>
-              <span className="text-[#C9A227]">({selected.length}/{MAX_COUNTRY_SELECTIONS})</span>
+              <span className="text-brand-accent">
+                ({selected.length}/{MAX_COUNTRY_SELECTIONS})
+              </span>
             </div>
 
             {/* Selected countries row */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
               {selectedCountries.map((country, i) => (
                 <div key={country.code} className="flex items-center gap-1.5 flex-shrink-0">
-                  <div className="flex items-center gap-1.5 bg-[#5C0A14]/40 border border-[#C9A227]/40 rounded-xl px-2.5 py-1.5">
-                    <span className="text-[#C9A227] text-xs font-black">{priorityChar(i + 1)}</span>
+                  <div className="flex items-center gap-1.5 bg-brand-primary/40 border border-brand-accent/40 rounded-xl px-2.5 py-1.5">
+                    <span className="text-brand-accent text-xs font-black">
+                      {priorityChar(i + 1)}
+                    </span>
                     <span className="text-base leading-none">{country.flag}</span>
                     <span className="text-white text-xs font-medium">{country.name}</span>
                     <button
@@ -202,9 +213,10 @@ export default function CountryPrioritySelector({
             {/* CTA */}
             <button
               onClick={() => onComplete(selected)}
-              className="w-full mt-3 bg-[#5C0A14] hover:bg-[#7a0e1a] text-white font-bold py-3 rounded-xl transition-colors text-base border border-[#C9A227]/30 hover:border-[#C9A227]/60"
+              className="w-full mt-3 bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-3 rounded-xl transition-colors text-base border border-brand-accent/30 hover:border-brand-accent/60"
             >
-              Set my route — {selected.length === 1 ? selectedCountries[0].name : `${selected.length} countries`} →
+              Set my route —{' '}
+              {selected.length === 1 ? selectedCountries[0].name : `${selected.length} countries`} →
             </button>
           </div>
         </div>

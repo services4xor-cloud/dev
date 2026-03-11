@@ -15,9 +15,9 @@ export default function CharityPage() {
   const PRESET_AMOUNTS: DonationAmount[] = [10, 25, 50, 100]
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-brand-bg">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#006600] via-[#004d00] to-gray-900 text-white">
+      <div className="bg-gradient-to-br from-brand-success via-brand-success to-gray-900 text-white">
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 pt-20 pb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-green-200 text-sm font-medium mb-8">
             <span>🇰🇪</span>
@@ -45,7 +45,7 @@ export default function CharityPage() {
           <div className="flex flex-col sm:flex-row gap-4">
             <a
               href="#donate"
-              className="inline-block bg-[#C9A227] text-white font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-colors text-center"
+              className="inline-block bg-brand-accent text-white font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-colors text-center"
             >
               Support UTAMADUNI
             </a>
@@ -60,11 +60,11 @@ export default function CharityPage() {
       </div>
 
       {/* How it works banner */}
-      <div className="bg-[#C9A227]/5 border-y border-[#C9A227]/10 py-6">
+      <div className="bg-brand-accent/5 border-y border-brand-accent/10 py-6">
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 text-center">
           <p className="text-gray-300 text-base font-medium">
             When you book a Venture or open a Path on BeKenya,
-            <span className="text-[#C9A227] font-bold"> a percentage flows to UTAMADUNI </span>—
+            <span className="text-brand-accent font-bold"> a percentage flows to UTAMADUNI </span>—
             funding real programs in real communities. No middlemen. Full transparency.
           </p>
         </div>
@@ -80,7 +80,7 @@ export default function CharityPage() {
           {IMPACT_STATS.map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-4xl mb-2">{stat.icon}</div>
-              <div className="text-4xl font-black text-[#006600] mb-1">{stat.number}</div>
+              <div className="text-4xl font-black text-brand-success mb-1">{stat.number}</div>
               <div className="text-gray-400 text-sm font-medium">{stat.label}</div>
             </div>
           ))}
@@ -136,7 +136,7 @@ export default function CharityPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="text-center p-6">
-            <div className="w-16 h-16 rounded-2xl bg-[#C9A227]/10 flex items-center justify-center text-3xl mx-auto mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-3xl mx-auto mb-4">
               🌍
             </div>
             <h3 className="font-bold text-white mb-2">Pioneers Book Ventures</h3>
@@ -149,7 +149,7 @@ export default function CharityPage() {
             <div className="hidden sm:block absolute top-1/2 -left-4 transform -translate-y-1/2 text-gray-300 text-2xl">
               →
             </div>
-            <div className="w-16 h-16 rounded-2xl bg-[#006600]/10 flex items-center justify-center text-3xl mx-auto mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-brand-success/10 flex items-center justify-center text-3xl mx-auto mb-4">
               💚
             </div>
             <h3 className="font-bold text-white mb-2">Portion Goes to UTAMADUNI</h3>
@@ -212,13 +212,13 @@ export default function CharityPage() {
 
                 <button
                   onClick={() => setExpandedStory(expandedStory === i ? null : i)}
-                  className="text-[#C9A227] text-xs font-medium mb-4 hover:text-[#D4AF37] transition-colors text-left"
+                  className="text-brand-accent text-xs font-medium mb-4 hover:text-brand-accent-light transition-colors text-left"
                 >
                   {expandedStory === i ? 'Show less' : 'Read full story →'}
                 </button>
 
                 <div className="mt-auto pt-4 border-t border-gray-700">
-                  <div className="text-[#C9A227] text-xs font-semibold mb-1">Today</div>
+                  <div className="text-brand-accent text-xs font-semibold mb-1">Today</div>
                   <div className="text-gray-200 text-sm font-medium">{story.outcome}</div>
                   <div className="mt-2">
                     <span className="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full">
@@ -256,7 +256,7 @@ export default function CharityPage() {
         <div className="text-center">
           <Link
             href="/contact"
-            className="inline-block bg-[#006600] text-white font-semibold px-8 py-3 rounded-xl hover:bg-green-800 transition-colors"
+            className="inline-block bg-brand-success text-white font-semibold px-8 py-3 rounded-xl hover:bg-green-800 transition-colors"
           >
             Get in Touch →
           </Link>
@@ -264,7 +264,7 @@ export default function CharityPage() {
       </div>
 
       {/* Donation CTA */}
-      <div id="donate" className="bg-gradient-to-br from-[#006600] to-[#004d00] py-16">
+      <div id="donate" className="bg-gradient-to-br from-brand-success to-brand-success py-16">
         <div className="max-w-xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-3">Support UTAMADUNI</h2>
           <p className="text-green-200 mb-8">
@@ -285,7 +285,7 @@ export default function CharityPage() {
                   }}
                   className={`py-3 rounded-xl text-sm font-bold border transition-all ${
                     donationAmount === amount
-                      ? 'bg-[#006600] text-white border-[#006600]'
+                      ? 'bg-brand-success text-white border-brand-success'
                       : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
                   }`}
                 >
@@ -307,7 +307,7 @@ export default function CharityPage() {
                   setCustomAmount(e.target.value)
                   setDonationAmount('custom')
                 }}
-                className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#006600] focus:border-transparent placeholder:text-gray-400 text-gray-900"
+                className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-success focus:border-transparent placeholder:text-gray-400 text-gray-900"
               />
             </div>
 
@@ -317,7 +317,7 @@ export default function CharityPage() {
                 onClick={() => setPaymentTab('mpesa')}
                 className={`py-3 rounded-xl text-sm font-semibold border transition-all ${
                   paymentTab === 'mpesa'
-                    ? 'bg-[#006600] text-white border-[#006600]'
+                    ? 'bg-brand-success text-white border-brand-success'
                     : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
                 }`}
               >
@@ -344,7 +344,7 @@ export default function CharityPage() {
               </div>
             )}
 
-            <button className="w-full bg-[#C9A227] text-white font-bold py-4 rounded-xl hover:opacity-90 transition-colors text-base">
+            <button className="w-full bg-brand-accent text-white font-bold py-4 rounded-xl hover:opacity-90 transition-colors text-base">
               Donate{' '}
               {donationAmount !== 'custom'
                 ? `$${donationAmount}`

@@ -12,7 +12,7 @@ export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-[#0A0A0F] border-t border-[#C9A227]/15">
+    <footer className="bg-brand-bg border-t border-brand-accent/15">
       <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-16 3xl:py-24">
         {/* Top — brand + columns */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
@@ -20,11 +20,11 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link
               href="/"
-              className="inline-flex items-center gap-3 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] rounded-lg"
+              className="inline-flex items-center gap-3 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded-lg"
               aria-label="Be[Country] — Home"
             >
               <Image src="/logo.svg" alt="Be[Country] compass" width={36} height={36} unoptimized />
-              <span className="text-[#C9A227] font-bold text-lg tracking-wide">Be[Country]</span>
+              <span className="text-brand-accent font-bold text-lg tracking-wide">Be[Country]</span>
             </Link>
             <p className="text-[#9D9BAA] text-sm leading-relaxed max-w-xs">
               An identity-first compass. Find where you belong — work, live, experience, and build
@@ -49,7 +49,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-[#C9A227]/10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-[#9D9BAA]/70">
+        <div className="border-t border-brand-accent/10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-[#9D9BAA]/70">
           <span>© {year} BeKenya Family Ltd. Built for dignity, everywhere.</span>
           <span className="flex items-center gap-2">
             <span>🇰🇪 Nairobi</span>
@@ -72,13 +72,13 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h3 className="text-[#F5F0E8] font-semibold text-sm mb-3">{title}</h3>
+      <h3 className="text-brand-text font-semibold text-sm mb-3">{title}</h3>
       <ul className="space-y-2">
         {links.map(({ href, label }) => (
           <li key={href}>
             <Link
               href={href}
-              className="text-[#9D9BAA] text-sm hover:text-[#C9A227] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] rounded"
+              className="text-[#9D9BAA] text-sm hover:text-brand-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded"
             >
               {label}
             </Link>

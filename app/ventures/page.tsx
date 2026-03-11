@@ -59,17 +59,19 @@ export default function VenturesPage() {
   const regularPaths = filteredPaths.filter((p) => !p.isFeatured)
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-brand-bg">
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
         className="pt-16 pb-10 px-4 text-center"
-        style={{ background: 'linear-gradient(to bottom, #5C0A14 0%, #0A0A0F 65%)' }}
+        style={{
+          background: 'linear-gradient(to bottom, var(--color-primary) 0%, var(--color-bg) 65%)',
+        }}
       >
         <div className="max-w-4xl 3xl:max-w-6xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C9A227]/10 border border-[#C9A227]/20 text-[#C9A227] text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-sm font-medium mb-6">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C9A227] opacity-60" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C9A227]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent" />
             </span>
             {MOCK_VENTURE_PATHS.length + SAFARI_PACKAGES.length}+ open ventures across 30+ countries
           </div>
@@ -77,7 +79,7 @@ export default function VenturesPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-4 leading-tight">
             Open Paths.
             <br />
-            <span style={{ color: '#C9A227' }}>Real Ventures.</span>
+            <span style={{ color: 'var(--color-accent)' }}>Real Ventures.</span>
             <br />
             Your Chapter Starts Here.
           </h1>
@@ -94,7 +96,7 @@ export default function VenturesPage() {
                 onClick={() => setFilter(f.id)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
                   filter === f.id
-                    ? 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/50 shadow-lg shadow-[#5C0A14]/40'
+                    ? 'bg-brand-primary text-brand-accent border border-brand-accent/50 shadow-lg shadow-brand-primary/40'
                     : 'bg-white/5 text-white/70 border border-white/10 hover:bg-white/10 hover:text-white'
                 }`}
               >
@@ -161,15 +163,15 @@ export default function VenturesPage() {
             <div
               className="rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 border hover:scale-[1.01] transition-transform duration-200 shadow-xl"
               style={{
-                background: 'linear-gradient(135deg, #7B3F00 0%, #C9A227 100%)',
-                border: '1px solid #C9A22750',
+                background: 'linear-gradient(135deg, #7B3F00 0%, var(--color-accent) 100%)',
+                border: '1px solid var(--color-accent)50',
               }}
             >
               <div className="flex items-start gap-4">
                 <div className="text-5xl">🦁</div>
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-[#C9A227] text-[#0A0A0F] text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wide">
+                    <span className="bg-brand-accent text-brand-bg text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wide">
                       Featured Venture
                     </span>
                     <span className="text-white/70 text-xs">{featuredSafari.provider}</span>
@@ -186,7 +188,7 @@ export default function VenturesPage() {
                   {formatPackagePrice(featuredSafari)}
                 </div>
                 <div className="text-white/60 text-xs mb-3">{featuredSafari.priceNote}</div>
-                <div className="inline-flex items-center gap-1.5 bg-[#C9A227] text-[#5C0A14] font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-[#C9A227]/80 transition-colors">
+                <div className="inline-flex items-center gap-1.5 bg-brand-accent text-brand-primary font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-brand-accent/80 transition-colors">
                   {VOCAB.chapter_open} <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
@@ -206,7 +208,7 @@ export default function VenturesPage() {
               </h2>
               <Link
                 href="/experiences"
-                className="text-[#C9A227] text-sm font-medium hover:text-[#C9A227]/70 flex items-center gap-1 transition-colors"
+                className="text-brand-accent text-sm font-medium hover:text-brand-accent/70 flex items-center gap-1 transition-colors"
               >
                 See all <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -215,7 +217,7 @@ export default function VenturesPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {visibleSafaris.map((pkg) => (
                 <Link key={pkg.id} href={`/experiences/${pkg.id}`}>
-                  <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden hover:border-[#C9A227]/40 hover:shadow-lg hover:shadow-[#5C0A14]/20 transition-all duration-200 h-full group">
+                  <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-primary/20 transition-all duration-200 h-full group">
                     {/* Image area */}
                     <div
                       className="h-36 flex items-center justify-center text-5xl"
@@ -231,7 +233,7 @@ export default function VenturesPage() {
                     </div>
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-[#5C0A14]/60 text-[#C9A227] border border-[#C9A227]/20">
+                        <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-brand-primary/60 text-brand-accent border border-brand-accent/20">
                           {pkg.type === 'wildlife_safari'
                             ? '🦁 Wildlife Safari'
                             : pkg.type === 'eco_lodge'
@@ -241,10 +243,10 @@ export default function VenturesPage() {
                                 : '🎭 Cultural'}
                         </span>
                         {pkg.season === 'high' && (
-                          <span className="text-xs text-[#C9A227] font-medium">High Season</span>
+                          <span className="text-xs text-brand-accent font-medium">High Season</span>
                         )}
                       </div>
-                      <h3 className="font-bold text-white text-sm leading-tight mb-1 group-hover:text-[#C9A227] transition-colors">
+                      <h3 className="font-bold text-white text-sm leading-tight mb-1 group-hover:text-brand-accent transition-colors">
                         {pkg.name}
                       </h3>
                       <p className="text-gray-400 text-xs mb-3 line-clamp-2">
@@ -274,7 +276,7 @@ export default function VenturesPage() {
         {!loading && featuredPaths.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-5">
-              <Zap className="w-4 h-4 text-[#C9A227]" />
+              <Zap className="w-4 h-4 text-brand-accent" />
               <h2 className="text-xl font-bold text-white">Featured Paths</h2>
               <span className="text-xs font-normal text-gray-500">{featuredPaths.length} open</span>
             </div>
@@ -323,7 +325,7 @@ export default function VenturesPage() {
             </p>
             <button
               onClick={() => setFilter('all')}
-              className="px-6 py-3 rounded-xl bg-[#5C0A14] text-white font-semibold border border-[#C9A227]/30 hover:bg-[#7a0e1a] transition-colors"
+              className="px-6 py-3 rounded-xl bg-brand-primary text-white font-semibold border border-brand-accent/30 hover:bg-brand-primary-light transition-colors"
             >
               Show all ventures
             </button>
@@ -335,11 +337,11 @@ export default function VenturesPage() {
           <div
             className="rounded-2xl p-8 text-center"
             style={{
-              background: 'linear-gradient(135deg, #5C0A14 0%, #0A0A0F 100%)',
-              border: '1px solid #C9A22740',
+              background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-bg) 100%)',
+              border: '1px solid rgb(var(--color-accent-rgb) / 0.25)',
             }}
           >
-            <Globe className="w-8 h-8 text-[#C9A227] mx-auto mb-4" />
+            <Globe className="w-8 h-8 text-brand-accent mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-white mb-2">Are you an Anchor?</h3>
             <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
               Post a Path and reach 12,000+ Pioneers across 50+ countries. Local payment rails
@@ -347,7 +349,7 @@ export default function VenturesPage() {
             </p>
             <Link
               href="/anchors/post-path"
-              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white border border-[#C9A227]/40 hover:bg-[#C9A227]/10 transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white border border-brand-accent/40 hover:bg-brand-accent/10 transition-colors"
             >
               Post a Path →
             </Link>
@@ -368,14 +370,14 @@ function PathCard({ path, featured = false }: { path: PathListItem; featured?: b
       <div
         className={`group flex items-start gap-4 p-5 rounded-2xl border transition-all duration-200 hover:scale-[1.005] hover:shadow-lg ${
           featured
-            ? 'bg-[#5C0A14]/20 border-[#C9A227]/30 hover:border-[#C9A227]/60 hover:shadow-[#5C0A14]/30'
-            : 'bg-gray-900/60 border-gray-800 hover:border-[#C9A227]/30 hover:shadow-[#5C0A14]/20'
+            ? 'bg-brand-primary/20 border-brand-accent/30 hover:border-brand-accent/60 hover:shadow-brand-primary/30'
+            : 'bg-gray-900/60 border-gray-800 hover:border-brand-accent/30 hover:shadow-brand-primary/20'
         }`}
       >
         {/* Icon */}
         <div
           className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 ${
-            featured ? 'bg-[#5C0A14]/60 border border-[#C9A227]/20' : 'bg-gray-800'
+            featured ? 'bg-brand-primary/60 border border-brand-accent/20' : 'bg-gray-800'
           }`}
         >
           {path.icon}
@@ -385,14 +387,14 @@ function PathCard({ path, featured = false }: { path: PathListItem; featured?: b
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3 mb-1">
             <h3
-              className={`font-bold text-base leading-tight group-hover:text-[#C9A227] transition-colors ${
-                featured ? 'text-[#C9A227]' : 'text-white'
+              className={`font-bold text-base leading-tight group-hover:text-brand-accent transition-colors ${
+                featured ? 'text-brand-accent' : 'text-white'
               }`}
             >
               {path.title}
             </h3>
             {featured && (
-              <span className="flex-shrink-0 text-[10px] font-black px-2 py-0.5 rounded-full bg-[#C9A227] text-[#0A0A0F] uppercase tracking-wide">
+              <span className="flex-shrink-0 text-[10px] font-black px-2 py-0.5 rounded-full bg-brand-accent text-brand-bg uppercase tracking-wide">
                 Featured
               </span>
             )}
@@ -403,7 +405,9 @@ function PathCard({ path, featured = false }: { path: PathListItem; featured?: b
               <MapPin className="w-3 h-3" />
               {path.location}
             </span>
-            {path.isRemote && <span className="text-[#C9A227] text-xs font-semibold">Remote</span>}
+            {path.isRemote && (
+              <span className="text-brand-accent text-xs font-semibold">Remote</span>
+            )}
           </div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap gap-1.5">
@@ -425,7 +429,7 @@ function PathCard({ path, featured = false }: { path: PathListItem; featured?: b
             </div>
           </div>
           {path.pioneersNeeded && (
-            <div className="mt-2 text-xs text-[#C9A227]/80 flex items-center gap-1">
+            <div className="mt-2 text-xs text-brand-accent/80 flex items-center gap-1">
               <Star className="w-3 h-3" />
               {path.pioneersNeeded} Pioneer{path.pioneersNeeded > 1 ? 's' : ''} needed
             </div>

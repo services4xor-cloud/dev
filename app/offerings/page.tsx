@@ -60,11 +60,13 @@ export default function OfferingsPage() {
   const showBusiness = purpose === 'all' || purpose === 'business'
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-brand-bg">
       {/* ── Hero + Country Context ────────────────────────────────── */}
       <section
         className="pt-16 pb-10 px-4"
-        style={{ background: 'linear-gradient(to bottom, #5C0A14 0%, #0A0A0F 65%)' }}
+        style={{
+          background: 'linear-gradient(to bottom, var(--color-primary) 0%, var(--color-bg) 65%)',
+        }}
       >
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto">
           {/* Origin indicator */}
@@ -73,23 +75,23 @@ export default function OfferingsPage() {
               <span className="text-gray-400">Your location:</span>
               <button
                 onClick={() => setShowCountryPicker(!showCountryPicker)}
-                className="flex items-center gap-1.5 text-white font-semibold hover:text-[#C9A227] transition-colors"
+                className="flex items-center gap-1.5 text-white font-semibold hover:text-brand-accent transition-colors"
               >
                 <span>{COUNTRIES[originCode]?.flag}</span>
                 {COUNTRIES[originCode]?.name}
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
               {detected && (
-                <span className="text-[10px] text-[#C9A227]/60 font-medium">auto-detected</span>
+                <span className="text-[10px] text-brand-accent/60 font-medium">auto-detected</span>
               )}
             </div>
 
             {destinationCode && (
               <div className="flex items-center gap-2">
-                <ArrowRight className="w-4 h-4 text-[#C9A227]" />
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#C9A227]/10 border border-[#C9A227]/20 text-sm">
+                <ArrowRight className="w-4 h-4 text-brand-accent" />
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-sm">
                   <span>{COUNTRIES[destinationCode]?.flag}</span>
-                  <span className="text-[#C9A227] font-semibold">
+                  <span className="text-brand-accent font-semibold">
                     {COUNTRIES[destinationCode]?.name}
                   </span>
                   <button
@@ -120,7 +122,7 @@ export default function OfferingsPage() {
                     }}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
                       originCode === c.code
-                        ? 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/30'
+                        ? 'bg-brand-primary text-brand-accent border border-brand-accent/30'
                         : 'bg-white/5 text-gray-300 border border-transparent hover:bg-white/10'
                     }`}
                   >
@@ -135,11 +137,12 @@ export default function OfferingsPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-4 leading-tight">
             {destinationCode ? (
               <>
-                Offerings in <span style={{ color: '#C9A227' }}>{activeCountry?.name}</span>
+                Offerings in{' '}
+                <span style={{ color: 'var(--color-accent)' }}>{activeCountry?.name}</span>
               </>
             ) : (
               <>
-                Where Do You Want <span style={{ color: '#C9A227' }}>to Go?</span>
+                Where Do You Want <span style={{ color: 'var(--color-accent)' }}>to Go?</span>
               </>
             )}
           </h1>
@@ -155,7 +158,7 @@ export default function OfferingsPage() {
               onClick={() => setPurpose('all')}
               className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                 purpose === 'all'
-                  ? 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/50 shadow-lg shadow-[#5C0A14]/40'
+                  ? 'bg-brand-primary text-brand-accent border border-brand-accent/50 shadow-lg shadow-brand-primary/40'
                   : 'bg-white/5 text-white/70 border border-white/10 hover:bg-white/10'
               }`}
             >
@@ -169,7 +172,7 @@ export default function OfferingsPage() {
                   onClick={() => setPurpose(p.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     purpose === p.id
-                      ? 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/50 shadow-lg shadow-[#5C0A14]/40'
+                      ? 'bg-brand-primary text-brand-accent border border-brand-accent/50 shadow-lg shadow-brand-primary/40'
                       : 'bg-white/5 text-white/70 border border-white/10 hover:bg-white/10'
                   }`}
                 >
@@ -188,7 +191,7 @@ export default function OfferingsPage() {
         {!destinationCode && (
           <section>
             <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
-              <Compass className="w-5 h-5 text-[#C9A227]" />
+              <Compass className="w-5 h-5 text-brand-accent" />
               Recommended Destinations from {COUNTRIES[originCode]?.name}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -204,7 +207,7 @@ export default function OfferingsPage() {
                   },
                   emerging: {
                     label: 'Emerging',
-                    cls: 'bg-[#C9A227]/10 text-[#C9A227] border-[#C9A227]/20',
+                    cls: 'bg-brand-accent/10 text-brand-accent border-brand-accent/20',
                   },
                   none: { label: 'Explore', cls: 'bg-gray-800 text-gray-400 border-gray-700' },
                 }[rec.routeStrength]
@@ -213,13 +216,13 @@ export default function OfferingsPage() {
                   <button
                     key={rec.country.code}
                     onClick={() => setDestinationCode(rec.country.code)}
-                    className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 text-left hover:border-[#C9A227]/40 hover:shadow-lg hover:shadow-[#5C0A14]/20 transition-all duration-200 group"
+                    className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 text-left hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-primary/20 transition-all duration-200 group"
                   >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <span className="text-3xl">{rec.country.flag}</span>
                         <div>
-                          <h3 className="font-bold text-white group-hover:text-[#C9A227] transition-colors">
+                          <h3 className="font-bold text-white group-hover:text-brand-accent transition-colors">
                             {rec.country.name}
                           </h3>
                           <span className="text-gray-500 text-xs">{rec.country.brandName}</span>
@@ -251,7 +254,7 @@ export default function OfferingsPage() {
                       </div>
                     )}
 
-                    <div className="mt-3 text-[#C9A227] text-xs font-semibold flex items-center gap-1">
+                    <div className="mt-3 text-brand-accent text-xs font-semibold flex items-center gap-1">
                       Explore{' '}
                       <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                     </div>
@@ -277,7 +280,7 @@ export default function OfferingsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {offerings.experiences.map((pkg) => (
                     <Link key={pkg.id} href={`/experiences/${pkg.id}`}>
-                      <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden hover:border-[#C9A227]/40 transition-all duration-200 h-full group">
+                      <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden hover:border-brand-accent/40 transition-all duration-200 h-full group">
                         <div
                           className="h-32 flex items-center justify-center text-4xl"
                           style={{ background: 'linear-gradient(135deg, #3D1A00, #7B3F00)' }}
@@ -289,7 +292,7 @@ export default function OfferingsPage() {
                               : '🏡'}
                         </div>
                         <div className="p-4">
-                          <h3 className="font-bold text-white text-sm mb-1 group-hover:text-[#C9A227] transition-colors">
+                          <h3 className="font-bold text-white text-sm mb-1 group-hover:text-brand-accent transition-colors">
                             {pkg.name}
                           </h3>
                           <p className="text-gray-400 text-xs mb-2">
@@ -325,7 +328,7 @@ export default function OfferingsPage() {
                   {offerings.ecoTourism.map((eco) => (
                     <div
                       key={eco.id}
-                      className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 hover:border-[#C9A227]/40 transition-all duration-200"
+                      className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 hover:border-brand-accent/40 transition-all duration-200"
                     >
                       <h3 className="font-bold text-white text-lg mb-1">{eco.name}</h3>
                       <div className="flex items-center gap-1 text-gray-400 text-sm mb-3">
@@ -375,10 +378,10 @@ export default function OfferingsPage() {
                     <Link
                       key={sector.name}
                       href={`/ventures?sector=${encodeURIComponent(sector.name)}`}
-                      className="bg-gray-900/60 border border-gray-800 rounded-xl p-4 hover:border-[#C9A227]/40 transition-all duration-200 group"
+                      className="bg-gray-900/60 border border-gray-800 rounded-xl p-4 hover:border-brand-accent/40 transition-all duration-200 group"
                     >
                       <div className="text-2xl mb-2">{sector.emoji}</div>
-                      <h3 className="font-semibold text-white text-sm group-hover:text-[#C9A227] transition-colors">
+                      <h3 className="font-semibold text-white text-sm group-hover:text-brand-accent transition-colors">
                         {sector.name}
                       </h3>
                       <p className="text-gray-500 text-xs mt-1">
@@ -403,12 +406,12 @@ export default function OfferingsPage() {
                   {offerings.tradeCorridors.map((corridor) => (
                     <div
                       key={corridor.id}
-                      className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 hover:border-[#C9A227]/30 transition-all"
+                      className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 hover:border-brand-accent/30 transition-all"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                         <div className="flex items-center gap-3">
                           <span className="text-2xl">{corridor.fromFlag}</span>
-                          <ArrowRight className="w-4 h-4 text-[#C9A227]" />
+                          <ArrowRight className="w-4 h-4 text-brand-accent" />
                           <span className="text-2xl">{corridor.toFlag}</span>
                           <div className="ml-2">
                             <h3 className="font-bold text-white">{corridor.name}</h3>
@@ -431,7 +434,7 @@ export default function OfferingsPage() {
                             {corridor.sectors.map((s) => (
                               <span
                                 key={s}
-                                className="text-xs px-2.5 py-1 rounded-full bg-[#5C0A14]/30 text-[#C9A227] border border-[#C9A227]/15"
+                                className="text-xs px-2.5 py-1 rounded-full bg-brand-primary/30 text-brand-accent border border-brand-accent/15"
                               >
                                 {s}
                               </span>
@@ -445,7 +448,7 @@ export default function OfferingsPage() {
                           <ul className="space-y-1">
                             {corridor.opportunities.slice(0, 2).map((o) => (
                               <li key={o} className="text-sm text-gray-300 flex items-start gap-2">
-                                <span className="text-[#C9A227] mt-0.5 flex-shrink-0">›</span>
+                                <span className="text-brand-accent mt-0.5 flex-shrink-0">›</span>
                                 {o}
                               </li>
                             ))}
@@ -476,8 +479,9 @@ export default function OfferingsPage() {
                     href="/compass"
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white"
                     style={{
-                      background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
-                      border: '1px solid rgba(201,162,39,0.35)',
+                      background:
+                        'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                      border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
                     }}
                   >
                     <Compass className="w-4 h-4" />
@@ -492,8 +496,8 @@ export default function OfferingsPage() {
         <div
           className="rounded-2xl p-8 text-center"
           style={{
-            background: 'linear-gradient(135deg, #5C0A14 0%, #0A0A0F 100%)',
-            border: '1px solid #C9A22740',
+            background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-bg) 100%)',
+            border: '1px solid rgb(var(--color-accent-rgb) / 0.25)',
           }}
         >
           <div className="text-4xl mb-3">🤝</div>
@@ -504,7 +508,7 @@ export default function OfferingsPage() {
           </p>
           <Link
             href="/charity"
-            className="inline-flex items-center gap-2 text-[#C9A227] font-semibold text-sm hover:text-[#C9A227]/70 transition-colors"
+            className="inline-flex items-center gap-2 text-brand-accent font-semibold text-sm hover:text-brand-accent/70 transition-colors"
           >
             Learn about UTAMADUNI <ArrowRight className="w-3.5 h-3.5" />
           </Link>

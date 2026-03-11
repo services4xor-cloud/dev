@@ -18,19 +18,21 @@ const plusJakarta = Plus_Jakarta_Sans({
 })
 
 // ── Site metadata (country-aware) ──────────────────────────────────
-const siteUrl     = process.env.NEXT_PUBLIC_APP_URL || 'https://bekenya.com'
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://bekenya.com'
 const countryCode = process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE'
 
 const COUNTRY_META: Record<string, { title: string; description: string; twitter: string }> = {
   KE: {
-    title:       'BeKenya — Find Where You Belong. Go There.',
-    description: 'An identity-first compass for Pioneers. Safari paths, professional ventures, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
-    twitter:     '@BeKenya',
+    title: 'BeKenya — Find Where You Belong. Go There.',
+    description:
+      'An identity-first compass for Pioneers. Safari paths, professional ventures, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
+    twitter: '@BeKenya',
   },
   DE: {
-    title:       'BeGermany — Find Your Path in Germany.',
-    description: 'Your compass for professional paths, experiences, and community in Germany. SEPA payments, skilled worker routes, European connections.',
-    twitter:     '@BeGermany',
+    title: 'BeGermany — Find Your Path in Germany.',
+    description:
+      'Your compass for professional paths, experiences, and community in Germany. SEPA payments, skilled worker routes, European connections.',
+    twitter: '@BeGermany',
   },
 }
 
@@ -40,35 +42,58 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
   title: {
-    default:  meta.title,
+    default: meta.title,
     template: `%s | Be[Country] — The BeNetwork`,
   },
   description: meta.description,
 
   keywords: [
-    'BeNetwork', 'Kenya jobs', 'safari guide jobs Kenya', 'work in Kenya',
-    'Africa opportunities', 'M-Pesa', 'Kenya careers', 'Maasai Mara safari',
-    'eco-tourism Kenya', 'work abroad Kenya', 'country routing', 'dignified work Africa',
+    'BeNetwork',
+    'Kenya jobs',
+    'safari guide jobs Kenya',
+    'work in Kenya',
+    'Africa opportunities',
+    'M-Pesa',
+    'Kenya careers',
+    'Maasai Mara safari',
+    'eco-tourism Kenya',
+    'work abroad Kenya',
+    'country routing',
+    'dignified work Africa',
   ],
 
-  authors:   [{ name: 'BeKenya Family Ltd', url: siteUrl }],
-  creator:   'BeKenya Family Ltd',
+  authors: [{ name: 'BeKenya Family Ltd', url: siteUrl }],
+  creator: 'BeKenya Family Ltd',
   publisher: 'BeKenya Family Ltd',
 
   robots: {
-    index: true, follow: true,
-    googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 
   openGraph: {
-    type: 'website', locale: 'en_US', url: siteUrl,
-    siteName: 'Be[Country]', title: meta.title, description: meta.description,
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
+    siteName: 'Be[Country]',
+    title: meta.title,
+    description: meta.description,
     images: [{ url: '/og', width: 1200, height: 630, alt: 'Be[Country] — Find where you belong.' }],
   },
 
   twitter: {
-    card: 'summary_large_image', title: meta.title, description: meta.description,
-    images: ['/og'], creator: meta.twitter,
+    card: 'summary_large_image',
+    title: meta.title,
+    description: meta.description,
+    images: ['/og'],
+    creator: meta.twitter,
   },
 
   icons: { icon: '/logo-circle.svg', shortcut: '/logo-circle.svg', apple: '/logo.svg' },
@@ -78,8 +103,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: dark)',  color: '#5C0A14' },
-    { media: '(prefers-color-scheme: light)', color: '#5C0A14' },
+    { media: '(prefers-color-scheme: dark)', color: 'var(--color-primary)' },
+    { media: '(prefers-color-scheme: light)', color: 'var(--color-primary)' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -90,7 +115,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${plusJakarta.variable}`}>
-      <body className="bg-[#0A0A0F] text-[#F5F0E8] font-sans antialiased flex flex-col min-h-screen">
+      <body className="bg-brand-bg text-brand-text font-sans antialiased flex flex-col min-h-screen">
         <Nav />
         <main id="main-content" tabIndex={-1} className="flex-1">
           {children}

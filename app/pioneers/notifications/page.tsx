@@ -134,22 +134,22 @@ const TABS: { id: TabFilter; label: string }[] = [
 
 function getTypeAccentClass(type: NotificationType): string {
   const map: Record<NotificationType, string> = {
-    path: 'border-l-[#C9A227]',
+    path: 'border-l-[var(--color-accent)]',
     chapter: 'border-l-blue-500',
     compass: 'border-l-teal-500',
     community: 'border-l-green-500',
-    earnings: 'border-l-[#C9A227]',
+    earnings: 'border-l-[var(--color-accent)]',
   }
   return map[type] ?? 'border-l-gray-500'
 }
 
 function getTypeBadgeClass(type: NotificationType): string {
   const map: Record<NotificationType, string> = {
-    path: 'bg-[#5C0A14]/30 text-[#C9A227]',
+    path: 'bg-brand-primary/30 text-brand-accent',
     chapter: 'bg-blue-900/30 text-blue-400',
     compass: 'bg-teal-900/30 text-teal-400',
     community: 'bg-green-900/30 text-green-400',
-    earnings: 'bg-[#C9A227]/10 text-[#C9A227]',
+    earnings: 'bg-brand-accent/10 text-brand-accent',
   }
   return map[type] ?? 'bg-gray-900/30 text-gray-400'
 }
@@ -180,18 +180,18 @@ function NotificationCard({
 
   return (
     <div
-      className={`relative bg-gradient-to-r from-[#1a0a0f] to-[#0d0208] border border-[#5C0A14]/40 border-l-4 ${accentBorder} rounded-xl p-5 transition-all hover:border-[#C9A227]/30 hover:shadow-lg hover:shadow-[#5C0A14]/20 ${
+      className={`relative bg-gradient-to-r from-brand-surface-elevated to-[#0d0208] border border-brand-primary/40 border-l-4 ${accentBorder} rounded-xl p-5 transition-all hover:border-brand-accent/30 hover:shadow-lg hover:shadow-brand-primary/20 ${
         !notification.read ? 'bg-[#220d15]/50' : ''
       }`}
     >
       {/* Unread indicator */}
       {!notification.read && (
-        <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#C9A227] animate-pulse"></div>
+        <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-brand-accent animate-pulse"></div>
       )}
 
       <div className="flex items-start gap-4">
         {/* Icon */}
-        <div className="w-10 h-10 rounded-full bg-[#5C0A14]/50 flex items-center justify-center text-xl shrink-0">
+        <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl shrink-0">
           {notification.icon}
         </div>
 
@@ -212,7 +212,7 @@ function NotificationCard({
             {notification.link && (
               <Link
                 href={notification.link}
-                className="text-[#C9A227] text-xs font-semibold hover:underline"
+                className="text-brand-accent text-xs font-semibold hover:underline"
               >
                 View →
               </Link>
@@ -244,7 +244,7 @@ function EmptyState() {
       </p>
       <Link
         href="/ventures"
-        className="inline-block bg-[#C9A227] text-black font-bold px-6 py-3 rounded-xl hover:bg-[#C9A227]/80 transition-colors"
+        className="inline-block bg-brand-accent text-black font-bold px-6 py-3 rounded-xl hover:bg-brand-accent/80 transition-colors"
       >
         Browse Paths
       </Link>
@@ -277,7 +277,7 @@ export default function NotificationsPage() {
   return (
     <div className="min-h-screen bg-[#0a0005] text-white">
       {/* Header */}
-      <header className="bg-[#0d0208] border-b border-[#5C0A14]/50 sticky top-16 z-30">
+      <header className="bg-[#0d0208] border-b border-brand-primary/50 sticky top-16 z-30">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
@@ -289,9 +289,9 @@ export default function NotificationsPage() {
           </div>
           <Link href="/" className="flex items-center gap-2">
             <span className="text-xl">🦁</span>
-            <span className="text-lg font-bold text-[#C9A227]">BeNetwork</span>
+            <span className="text-lg font-bold text-brand-accent">BeNetwork</span>
           </Link>
-          <Link href="/profile" className="text-[#C9A227] text-sm hover:underline">
+          <Link href="/profile" className="text-brand-accent text-sm hover:underline">
             Preferences
           </Link>
         </div>
@@ -303,7 +303,7 @@ export default function NotificationsPage() {
           <div>
             <h1 className="text-2xl font-bold text-white">Notifications</h1>
             {unreadCount > 0 && (
-              <p className="text-[#C9A227] text-sm mt-0.5">
+              <p className="text-brand-accent text-sm mt-0.5">
                 {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
               </p>
             )}
@@ -311,7 +311,7 @@ export default function NotificationsPage() {
           {unreadCount > 0 && (
             <button
               onClick={markAllRead}
-              className="text-sm text-[#C9A227] border border-[#C9A227]/30 px-3 py-1.5 rounded-lg hover:bg-[#C9A227]/10 transition-colors"
+              className="text-sm text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg hover:bg-brand-accent/10 transition-colors"
             >
               Mark all as read
             </button>
@@ -319,7 +319,7 @@ export default function NotificationsPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 flex-wrap mb-6 border-b border-[#5C0A14]/30 pb-0">
+        <div className="flex gap-2 flex-wrap mb-6 border-b border-brand-primary/30 pb-0">
           {TABS.map((tab) => {
             const count =
               tab.id === 'unread'
@@ -333,8 +333,8 @@ export default function NotificationsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2.5 text-sm font-medium rounded-t-lg transition-all border-b-2 -mb-px flex items-center gap-1.5 ${
                   activeTab === tab.id
-                    ? 'text-[#C9A227] border-[#C9A227] bg-[#1a0a0f]'
-                    : 'text-gray-400 border-transparent hover:text-gray-200 hover:border-[#5C0A14]'
+                    ? 'text-brand-accent border-brand-accent bg-brand-surface-elevated'
+                    : 'text-gray-400 border-transparent hover:text-gray-200 hover:border-brand-primary'
                 }`}
               >
                 {tab.label}
@@ -342,8 +342,8 @@ export default function NotificationsPage() {
                   <span
                     className={`text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center ${
                       activeTab === tab.id
-                        ? 'bg-[#C9A227]/20 text-[#C9A227]'
-                        : 'bg-[#5C0A14]/50 text-gray-400'
+                        ? 'bg-brand-accent/20 text-brand-accent'
+                        : 'bg-brand-primary/50 text-gray-400'
                     }`}
                   >
                     {count}
@@ -404,10 +404,10 @@ export default function NotificationsPage() {
         )}
 
         {/* Notification Preferences Footer */}
-        <div className="mt-10 pt-6 border-t border-[#5C0A14]/30 text-center">
+        <div className="mt-10 pt-6 border-t border-brand-primary/30 text-center">
           <p className="text-gray-500 text-sm">
             Notifications are sent via WhatsApp and email.{' '}
-            <Link href="/profile" className="text-[#C9A227] hover:underline">
+            <Link href="/profile" className="text-brand-accent hover:underline">
               Update preferences →
             </Link>
           </p>

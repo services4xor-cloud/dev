@@ -9,29 +9,34 @@ import { VOCAB } from '@/lib/vocabulary'
 
 export default function ExperiencePage() {
   const params = useParams()
-  const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : ''
+  const id =
+    typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : ''
 
   const pkg = getPackageById(id)
   const [openDay, setOpenDay] = useState<number | null>(0)
   const [paymentMethod, setPaymentMethod] = useState<'mpesa' | 'card'>('card')
 
   // 3 related packages (exclude current)
-  const related = SAFARI_PACKAGES.filter(p => p.id !== id).slice(0, 3)
+  const related = SAFARI_PACKAGES.filter((p) => p.id !== id).slice(0, 3)
 
   if (!pkg) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="text-6xl mb-4">🧭</div>
           <h1 className="text-2xl font-bold text-white mb-2">Venture Not Found</h1>
           <p className="text-gray-400 mb-6">
-            This path may have already been claimed, or doesn&apos;t exist yet.
-            Explore other open ventures below.
+            This path may have already been claimed, or doesn&apos;t exist yet. Explore other open
+            ventures below.
           </p>
           <Link
             href="/ventures"
             className="inline-block text-white font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105"
-            style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.35)' }}
+            style={{
+              background:
+                'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+              border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
+            }}
           >
             ← Back to Ventures
           </Link>
@@ -63,9 +68,9 @@ export default function ExperiencePage() {
   const hasFessyMarkup = pkg.markup && pkg.markup > 0
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-brand-bg">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#5C0A14] via-[#5C0A14]/80 to-[#0A0A0F] text-white">
+      <div className="bg-gradient-to-br from-brand-primary via-brand-primary/80 to-brand-bg text-white">
         <div className="max-w-5xl mx-auto px-4 py-16">
           <Link
             href="/ventures"
@@ -75,11 +80,15 @@ export default function ExperiencePage() {
           </Link>
 
           <div className="flex items-center gap-3 mb-4">
-            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-              pkg.type === 'wildlife_safari' ? 'bg-[#C9A227] text-[#0A0A0F]' :
-              pkg.type === 'deep_sea_fishing' ? 'bg-blue-400 text-blue-900' :
-              'bg-green-400 text-green-900'
-            }`}>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                pkg.type === 'wildlife_safari'
+                  ? 'bg-brand-accent text-brand-bg'
+                  : pkg.type === 'deep_sea_fishing'
+                    ? 'bg-blue-400 text-blue-900'
+                    : 'bg-green-400 text-green-900'
+              }`}
+            >
               {TYPE_LABELS[pkg.type] ?? pkg.type}
             </span>
             {pkg.season && (
@@ -127,15 +136,14 @@ export default function ExperiencePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main content */}
           <div className="lg:col-span-2 space-y-8">
-
             {/* Highlights */}
             <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-6">
               <h2 className="text-lg font-bold text-white mb-4">✦ Why This Venture</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {pkg.highlights.map((highlight, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#C9A227]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-[#C9A227] text-xs font-bold">✓</span>
+                    <div className="w-6 h-6 rounded-full bg-brand-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-brand-accent text-xs font-bold">✓</span>
                     </div>
                     <span className="text-gray-300 text-sm leading-relaxed">{highlight}</span>
                   </div>
@@ -149,7 +157,9 @@ export default function ExperiencePage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-sm font-semibold text-green-700 mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-xs">✓</span>
+                    <span className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-xs">
+                      ✓
+                    </span>
                     Included
                   </h3>
                   <ul className="space-y-2">
@@ -163,7 +173,9 @@ export default function ExperiencePage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-red-600 mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-600 text-xs">✗</span>
+                    <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-600 text-xs">
+                      ✗
+                    </span>
                     Not Included
                   </h3>
                   <ul className="space-y-2">
@@ -178,10 +190,11 @@ export default function ExperiencePage() {
               </div>
 
               {hasFessyMarkup && (
-                <div className="mt-6 bg-[#5C0A14]/10 border border-[#C9A227]/20 rounded-xl p-4">
+                <div className="mt-6 bg-brand-primary/10 border border-brand-accent/20 rounded-xl p-4">
                   <p className="text-gray-300 text-sm">
-                    <span className="font-semibold">Transparency note:</span> This venture includes a FessyTours service fee
-                    ({Math.round((pkg.markup ?? 0) * 100)}%). This fee funds platform operations and Pioneer support services.
+                    <span className="font-semibold">Transparency note:</span> This venture includes
+                    a FessyTours service fee ({Math.round((pkg.markup ?? 0) * 100)}%). This fee
+                    funds platform operations and Pioneer support services.
                   </p>
                 </div>
               )}
@@ -189,9 +202,7 @@ export default function ExperiencePage() {
 
             {/* Itinerary */}
             <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-6">
-              <h2 className="text-lg font-bold text-white mb-4">
-                Day-by-Day Itinerary
-              </h2>
+              <h2 className="text-lg font-bold text-white mb-4">Day-by-Day Itinerary</h2>
               <div className="space-y-3">
                 {pkg.days.map((day, i) => (
                   <div key={i} className="border border-gray-800 rounded-xl overflow-hidden">
@@ -200,16 +211,22 @@ export default function ExperiencePage() {
                       onClick={() => setOpenDay(openDay === i ? null : i)}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] font-bold text-sm flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-brand-accent/10 flex items-center justify-center text-brand-accent font-bold text-sm flex-shrink-0">
                           {day.day}
                         </div>
                         <span className="font-semibold text-white">{day.title}</span>
                       </div>
-                      {openDay === i ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
+                      {openDay === i ? (
+                        <ChevronUp size={18} className="text-gray-400" />
+                      ) : (
+                        <ChevronDown size={18} className="text-gray-400" />
+                      )}
                     </button>
                     {openDay === i && (
                       <div className="px-4 pb-4 border-t border-gray-800">
-                        <p className="text-gray-400 text-sm leading-relaxed mt-3 mb-3">{day.description}</p>
+                        <p className="text-gray-400 text-sm leading-relaxed mt-3 mb-3">
+                          {day.description}
+                        </p>
                         <div className="flex items-center gap-2 text-xs text-gray-500">
                           <span className="font-medium">Meals:</span>
                           <span>{day.meals}</span>
@@ -227,10 +244,15 @@ export default function ExperiencePage() {
                 <h2 className="text-lg font-bold text-white mb-4">Optional Extras</h2>
                 <div className="space-y-3">
                   {pkg.optionalActivities.map((activity, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-gray-800/60 rounded-xl">
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-3 bg-gray-800/60 rounded-xl"
+                    >
                       <span className="text-gray-200 font-medium text-sm">{activity.name}</span>
                       <div className="text-right">
-                        <div className="font-bold text-[#C9A227] text-sm">${activity.priceUSD.toLocaleString('en-US')}</div>
+                        <div className="font-bold text-brand-accent text-sm">
+                          ${activity.priceUSD.toLocaleString('en-US')}
+                        </div>
                         <div className="text-gray-400 text-xs">{activity.unit}</div>
                       </div>
                     </div>
@@ -246,9 +268,7 @@ export default function ExperiencePage() {
               {/* Price */}
               <div className="text-center mb-6">
                 <div className="text-3xl font-bold text-white">{formatPackagePrice(pkg)}</div>
-                {pkg.priceNote && (
-                  <div className="text-gray-500 text-sm mt-1">{pkg.priceNote}</div>
-                )}
+                {pkg.priceNote && <div className="text-gray-500 text-sm mt-1">{pkg.priceNote}</div>}
               </div>
 
               {/* Payment method toggle */}
@@ -261,7 +281,7 @@ export default function ExperiencePage() {
                     onClick={() => setPaymentMethod('mpesa')}
                     className={`py-3 rounded-xl text-sm font-semibold border transition-all ${
                       paymentMethod === 'mpesa'
-                        ? 'bg-[#006600] text-white border-[#006600]'
+                        ? 'bg-brand-success text-white border-brand-success'
                         : 'bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700'
                     }`}
                   >
@@ -283,14 +303,20 @@ export default function ExperiencePage() {
               {paymentMethod === 'mpesa' && (
                 <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4">
                   <p className="text-green-800 text-xs leading-relaxed">
-                    Pay via M-Pesa Paybill. You&apos;ll receive payment instructions after booking confirmation.
-                    Perfect for Kenya-based Pioneers.
+                    Pay via M-Pesa Paybill. You&apos;ll receive payment instructions after booking
+                    confirmation. Perfect for Kenya-based Pioneers.
                   </p>
                 </div>
               )}
 
-              <button className="w-full text-white font-bold py-4 rounded-xl transition-all hover:scale-[1.02] text-base mb-3"
-                style={{ background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)', border: '1px solid rgba(201,162,39,0.35)' }}>
+              <button
+                className="w-full text-white font-bold py-4 rounded-xl transition-all hover:scale-[1.02] text-base mb-3"
+                style={{
+                  background:
+                    'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                  border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
+                }}
+              >
                 Book This Venture
               </button>
 
@@ -321,7 +347,7 @@ export default function ExperiencePage() {
               <Link
                 href="/compass"
                 className="mt-6 flex items-center justify-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                style={{ color: '#C9A227' }}
+                style={{ color: 'var(--color-accent)' }}
               >
                 🧭 Use the Compass to plan your route
               </Link>
@@ -337,18 +363,24 @@ export default function ExperiencePage() {
               {related.map((relPkg) => (
                 <Link key={relPkg.id} href={`/experiences/${relPkg.id}`}>
                   <div className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md hover:border-gray-700 transition-all duration-200 overflow-hidden h-full">
-                    <div className="bg-gradient-to-br from-gray-800 to-[#5C0A14]/30 h-28 flex items-center justify-center text-4xl">
+                    <div className="bg-gradient-to-br from-gray-800 to-brand-primary/30 h-28 flex items-center justify-center text-4xl">
                       {TYPE_EMOJI[relPkg.type] ?? '🌍'}
                     </div>
                     <div className="p-4">
-                      <h3 className="font-semibold text-white text-sm mb-1 leading-tight">{relPkg.name}</h3>
+                      <h3 className="font-semibold text-white text-sm mb-1 leading-tight">
+                        {relPkg.name}
+                      </h3>
                       <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
                         <MapPin size={11} />
                         {relPkg.destination}
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-[#C9A227] text-sm">{formatPackagePrice(relPkg)}</span>
-                        <span className="text-[#C9A227] text-xs font-semibold">{VOCAB.chapter_open} →</span>
+                        <span className="font-bold text-brand-accent text-sm">
+                          {formatPackagePrice(relPkg)}
+                        </span>
+                        <span className="text-brand-accent text-xs font-semibold">
+                          {VOCAB.chapter_open} →
+                        </span>
                       </div>
                     </div>
                   </div>

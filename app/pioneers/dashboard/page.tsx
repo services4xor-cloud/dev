@@ -35,10 +35,10 @@ const MOCK_REFERRAL_STATS = {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    New: 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/30 animate-pulse',
+    New: 'bg-brand-primary text-brand-accent border border-brand-accent/30 animate-pulse',
     'Under Review': 'bg-blue-600 text-white',
     Shortlisted: 'bg-green-600 text-white shadow-lg shadow-green-500/30',
-    Offer: 'bg-[#C9A227] text-black font-bold',
+    Offer: 'bg-brand-accent text-black font-bold',
     Declined: 'bg-gray-600 text-gray-300',
   }
   return (
@@ -51,7 +51,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function MatchScoreBadge({ score }: { score: number }) {
-  const color = score >= 80 ? 'text-green-400' : 'text-[#C9A227]'
+  const color = score >= 80 ? 'text-green-400' : 'text-brand-accent'
   return <span className={`text-sm font-bold ${color}`}>{score}% match</span>
 }
 
@@ -69,7 +69,7 @@ function ProfileRing({ percent }: { percent: number }) {
             cy="60"
             r={r}
             fill="none"
-            stroke="#C9A227"
+            stroke="var(--color-accent)"
             strokeWidth="10"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
@@ -78,7 +78,7 @@ function ProfileRing({ percent }: { percent: number }) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-[#C9A227]">{percent}%</span>
+          <span className="text-2xl font-bold text-brand-accent">{percent}%</span>
           <span className="text-xs text-gray-400">complete</span>
         </div>
       </div>
@@ -97,12 +97,12 @@ function CompassTab() {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-[#5C0A14] to-[#8B1A2A] rounded-2xl p-6 border border-[#C9A227]/20">
+      <div className="bg-gradient-to-r from-brand-primary to-[#8B1A2A] rounded-2xl p-6 border border-brand-accent/20">
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-2xl font-bold text-white mb-1">Welcome back, {pioneer.name}</h2>
             <div className="flex items-center gap-2 mb-4">
-              <span className="bg-[#C9A227]/20 text-[#C9A227] border border-[#C9A227]/40 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="bg-brand-accent/20 text-brand-accent border border-brand-accent/40 px-3 py-1 rounded-full text-sm font-medium">
                 {typeInfo.icon} {typeInfo.label} Pioneer
               </span>
             </div>
@@ -115,7 +115,7 @@ function CompassTab() {
       {/* Compass Reading + Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Compass Route */}
-        <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4 col-span-1">
+        <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 col-span-1">
           <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Your Compass Route</p>
           <p className="text-lg font-bold text-white">{pioneer.route}</p>
           <span className="text-xs text-green-400 bg-green-900/30 px-2 py-0.5 rounded-full">
@@ -124,17 +124,19 @@ function CompassTab() {
         </div>
 
         {/* Profile Completeness */}
-        <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4 col-span-1">
+        <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 col-span-1">
           <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Profile Strength</p>
           <div className="flex items-center gap-3">
             <div className="flex-1">
               <div className="flex justify-between mb-1">
                 <span className="text-sm text-gray-300">Completeness</span>
-                <span className="text-sm font-bold text-[#C9A227]">{pioneer.profileComplete}%</span>
+                <span className="text-sm font-bold text-brand-accent">
+                  {pioneer.profileComplete}%
+                </span>
               </div>
               <div className="w-full bg-[#3f0a0a] rounded-full h-2">
                 <div
-                  className="bg-gradient-to-r from-[#C9A227] to-[#C9A227] h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-brand-accent to-brand-accent h-2 rounded-full transition-all duration-500"
                   style={{ width: `${pioneer.profileComplete}%` }}
                 />
               </div>
@@ -143,10 +145,10 @@ function CompassTab() {
         </div>
 
         {/* New Matches */}
-        <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4 col-span-1">
+        <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 col-span-1">
           <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">New Matches</p>
           <p className="text-3xl font-bold text-white">3</p>
-          <span className="text-xs bg-[#5C0A14]/30 text-[#C9A227] border border-[#C9A227]/30 px-2 py-0.5 rounded-full">
+          <span className="text-xs bg-brand-primary/30 text-brand-accent border border-brand-accent/30 px-2 py-0.5 rounded-full">
             🔥 New this week
           </span>
         </div>
@@ -154,19 +156,19 @@ function CompassTab() {
 
       {/* Featured Matched Paths */}
       <div>
-        <h3 className="text-lg font-semibold text-[#C9A227] mb-3">Top Paths for Your Compass</h3>
+        <h3 className="text-lg font-semibold text-brand-accent mb-3">Top Paths for Your Compass</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {featuredPaths.map((path, i) => (
             <Link
               key={path.id}
               href={`/ventures/${path.id}`}
-              className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4 hover:border-[#C9A227]/50 hover:bg-[#220d15] transition-all group"
+              className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 hover:border-brand-accent/50 hover:bg-[#220d15] transition-all group"
             >
               <div className="flex justify-between items-start mb-2">
                 <span className="text-xs text-gray-400">{path.anchorName}</span>
                 <MatchScoreBadge score={scores[i]} />
               </div>
-              <h4 className="text-white font-semibold text-sm group-hover:text-[#C9A227] transition-colors mb-1">
+              <h4 className="text-white font-semibold text-sm group-hover:text-brand-accent transition-colors mb-1">
                 {path.title}
               </h4>
               <p className="text-xs text-gray-500">{path.location}</p>
@@ -174,7 +176,7 @@ function CompassTab() {
                 {path.requiredSkills.slice(0, 2).map((skill) => (
                   <span
                     key={skill}
-                    className="text-xs bg-[#5C0A14]/40 text-[#C9A227] px-2 py-0.5 rounded"
+                    className="text-xs bg-brand-primary/40 text-brand-accent px-2 py-0.5 rounded"
                   >
                     {skill}
                   </span>
@@ -189,13 +191,13 @@ function CompassTab() {
       <div className="flex gap-3">
         <Link
           href="/compass"
-          className="bg-[#C9A227] text-black font-bold px-6 py-3 rounded-xl hover:bg-[#C9A227]/80 transition-colors"
+          className="bg-brand-accent text-black font-bold px-6 py-3 rounded-xl hover:bg-brand-accent/80 transition-colors"
         >
           Update My Compass
         </Link>
         <Link
           href="/ventures"
-          className="border border-[#C9A227]/40 text-[#C9A227] px-6 py-3 rounded-xl hover:bg-[#C9A227]/10 transition-colors"
+          className="border border-brand-accent/40 text-brand-accent px-6 py-3 rounded-xl hover:bg-brand-accent/10 transition-colors"
         >
           Browse All Paths
         </Link>
@@ -209,14 +211,14 @@ function CompassTab() {
 function ChaptersTab() {
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-[#C9A227]">My Chapters</h2>
+      <h2 className="text-xl font-bold text-brand-accent">My Chapters</h2>
       {MOCK_CHAPTERS.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <p className="text-4xl mb-3">📖</p>
           <p className="text-lg">You haven&apos;t opened any chapters yet.</p>
           <Link
             href="/ventures"
-            className="mt-4 inline-block bg-[#C9A227] text-black px-6 py-3 rounded-xl font-bold hover:bg-[#C9A227]/80"
+            className="mt-4 inline-block bg-brand-accent text-black px-6 py-3 rounded-xl font-bold hover:bg-brand-accent/80"
           >
             Browse Ventures
           </Link>
@@ -226,7 +228,7 @@ function ChaptersTab() {
           {MOCK_CHAPTERS.map((chapter) => (
             <div
               key={chapter.id}
-              className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-[#C9A227]/30 transition-all"
+              className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-brand-accent/30 transition-all"
             >
               <div className="flex-1">
                 <h4 className="text-white font-semibold">{chapter.pathTitle}</h4>
@@ -255,7 +257,7 @@ function SavedPathsTab() {
       <div className="text-center py-16 text-gray-400">
         <p className="text-4xl mb-3">♡</p>
         <p>Save a path by clicking ♡ on any venture</p>
-        <Link href="/ventures" className="mt-4 inline-block text-[#C9A227] underline">
+        <Link href="/ventures" className="mt-4 inline-block text-brand-accent underline">
           Browse Ventures
         </Link>
       </div>
@@ -264,12 +266,12 @@ function SavedPathsTab() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-[#C9A227]">Saved Paths</h2>
+      <h2 className="text-xl font-bold text-brand-accent">Saved Paths</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {saved.map((path, i) => (
           <div
             key={path.id}
-            className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4 hover:border-[#C9A227]/50 transition-all"
+            className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 hover:border-brand-accent/50 transition-all"
           >
             <div className="flex justify-between items-start mb-2">
               <span className="text-xs text-gray-400">{path.anchorName}</span>
@@ -287,7 +289,7 @@ function SavedPathsTab() {
             <div className="mt-3">
               <Link
                 href={`/ventures/${path.id}`}
-                className="block text-center bg-[#5C0A14] text-[#C9A227] text-sm font-semibold py-2 rounded-lg hover:bg-[#7a0f1e] transition-colors"
+                className="block text-center bg-brand-primary text-brand-accent text-sm font-semibold py-2 rounded-lg hover:bg-brand-primary-light transition-colors"
               >
                 Open Chapter
               </Link>
@@ -307,13 +309,13 @@ function ProfileTab() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-[#C9A227]">My Profile</h2>
+      <h2 className="text-xl font-bold text-brand-accent">My Profile</h2>
 
       {/* Profile Completeness */}
-      <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-6 flex flex-col sm:flex-row items-center gap-6">
+      <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-6 flex flex-col sm:flex-row items-center gap-6">
         <ProfileRing percent={pioneer.profileComplete} />
         <div className="flex-1">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#5C0A14] to-[#C9A227] flex items-center justify-center text-2xl font-bold text-white mb-3">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center text-2xl font-bold text-white mb-3">
             {pioneer.name
               .split(' ')
               .map((n) => n[0])
@@ -322,7 +324,7 @@ function ProfileTab() {
           <h3 className="text-xl font-bold text-white">{pioneer.name}</h3>
           <p className="text-gray-400 text-sm mt-1">{pioneer.headline}</p>
           <div className="flex items-center gap-2 mt-2">
-            <span className="bg-[#C9A227]/20 text-[#C9A227] border border-[#C9A227]/40 px-2 py-0.5 rounded-full text-xs">
+            <span className="bg-brand-accent/20 text-brand-accent border border-brand-accent/40 px-2 py-0.5 rounded-full text-xs">
               {typeInfo.icon} {typeInfo.label}
             </span>
             <span className="text-gray-500 text-xs">Joined {pioneer.joinedDate}</span>
@@ -332,7 +334,7 @@ function ProfileTab() {
 
       {/* Edit Blocks */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4">
+        <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4">
           <label className="block text-gray-400 text-xs uppercase tracking-wider mb-2">
             Pioneer Type
           </label>
@@ -342,26 +344,26 @@ function ProfileTab() {
           <p className="text-gray-500 text-xs mt-1">{typeInfo.description}</p>
           <Link
             href="/onboarding"
-            className="text-[#C9A227] text-xs mt-2 inline-block hover:underline"
+            className="text-brand-accent text-xs mt-2 inline-block hover:underline"
           >
             Change type →
           </Link>
         </div>
 
-        <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4">
+        <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4">
           <label className="block text-gray-400 text-xs uppercase tracking-wider mb-2">Route</label>
           <p className="text-white font-medium">
             {pioneer.fromCountry} → {pioneer.toCountries.join(', ')}
           </p>
           <Link
             href="/compass"
-            className="text-[#C9A227] text-xs mt-2 inline-block hover:underline"
+            className="text-brand-accent text-xs mt-2 inline-block hover:underline"
           >
             Update compass →
           </Link>
         </div>
 
-        <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4">
+        <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4">
           <label className="block text-gray-400 text-xs uppercase tracking-wider mb-2">
             Skills
           </label>
@@ -369,7 +371,7 @@ function ProfileTab() {
             {pioneer.skills.map((skill) => (
               <span
                 key={skill}
-                className="text-xs bg-[#5C0A14]/40 text-[#C9A227] px-2 py-0.5 rounded"
+                className="text-xs bg-brand-primary/40 text-brand-accent px-2 py-0.5 rounded"
               >
                 {skill}
               </span>
@@ -377,20 +379,20 @@ function ProfileTab() {
           </div>
           <Link
             href="/profile"
-            className="text-[#C9A227] text-xs mt-2 inline-block hover:underline"
+            className="text-brand-accent text-xs mt-2 inline-block hover:underline"
           >
             Edit skills →
           </Link>
         </div>
 
-        <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4">
+        <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4">
           <label className="block text-gray-400 text-xs uppercase tracking-wider mb-2">
             WhatsApp Notifications
           </label>
           <p className="text-white font-medium">{pioneer.phone}</p>
           <Link
             href="/profile"
-            className="text-[#C9A227] text-xs mt-2 inline-block hover:underline"
+            className="text-brand-accent text-xs mt-2 inline-block hover:underline"
           >
             Update →
           </Link>
@@ -398,10 +400,13 @@ function ProfileTab() {
       </div>
 
       {/* Bio */}
-      <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4">
+      <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4">
         <label className="block text-gray-400 text-xs uppercase tracking-wider mb-2">Bio</label>
         <p className="text-gray-300 text-sm">{pioneer.bio}</p>
-        <Link href="/profile" className="text-[#C9A227] text-xs mt-2 inline-block hover:underline">
+        <Link
+          href="/profile"
+          className="text-brand-accent text-xs mt-2 inline-block hover:underline"
+        >
           Edit bio →
         </Link>
       </div>
@@ -434,18 +439,18 @@ function ReferralsTab() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-[#C9A227]">Earnings & Referrals</h2>
+      <h2 className="text-xl font-bold text-brand-accent">Earnings & Referrals</h2>
 
       {/* Referral code */}
-      <div className="bg-gradient-to-r from-[#5C0A14] to-[#8B1A2A] border border-[#C9A227]/30 rounded-2xl p-6">
+      <div className="bg-gradient-to-r from-brand-primary to-[#8B1A2A] border border-brand-accent/30 rounded-2xl p-6">
         <p className="text-gray-300 text-sm mb-2">Your Referral Code</p>
         <div className="flex items-center gap-3">
-          <code className="text-2xl font-mono font-bold text-[#C9A227] bg-black/30 px-4 py-2 rounded-lg">
+          <code className="text-2xl font-mono font-bold text-brand-accent bg-black/30 px-4 py-2 rounded-lg">
             {pioneer.referralCode}
           </code>
           <button
             onClick={copyCode}
-            className="bg-[#C9A227] text-black px-4 py-2 rounded-lg font-semibold text-sm hover:bg-[#C9A227]/80 transition-colors"
+            className="bg-brand-accent text-black px-4 py-2 rounded-lg font-semibold text-sm hover:bg-brand-accent/80 transition-colors"
           >
             {copied ? '✓ Copied!' : 'Copy'}
           </button>
@@ -453,7 +458,7 @@ function ReferralsTab() {
       </div>
 
       {/* Incentive Banner */}
-      <div className="bg-[#1a0a0f] border border-green-500/30 rounded-xl p-4 flex items-center gap-4">
+      <div className="bg-brand-surface-elevated border border-green-500/30 rounded-xl p-4 flex items-center gap-4">
         <span className="text-3xl">💰</span>
         <div>
           <p className="text-green-400 font-bold">KES 5,000 per placement</p>
@@ -465,16 +470,16 @@ function ReferralsTab() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4 text-center">
+        <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 text-center">
           <p className="text-3xl font-bold text-white">{stats.referrals}</p>
           <p className="text-gray-400 text-xs mt-1">Referrals</p>
         </div>
-        <div className="bg-[#1a0a0f] border border-[#5C0A14]/50 rounded-xl p-4 text-center">
+        <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 text-center">
           <p className="text-3xl font-bold text-white">{stats.hires}</p>
           <p className="text-gray-400 text-xs mt-1">Hire</p>
         </div>
-        <div className="bg-[#1a0a0f] border border-[#C9A227]/30 rounded-xl p-4 text-center">
-          <p className="text-3xl font-bold text-[#C9A227]">
+        <div className="bg-brand-surface-elevated border border-brand-accent/30 rounded-xl p-4 text-center">
+          <p className="text-3xl font-bold text-brand-accent">
             KES {stats.earned.toLocaleString('en-US')}
           </p>
           <p className="text-gray-400 text-xs mt-1">Earned</p>
@@ -499,7 +504,7 @@ function ReferralsTab() {
           </button>
           <button
             onClick={copyCode}
-            className="flex items-center gap-2 border border-[#C9A227]/40 text-[#C9A227] px-4 py-2 rounded-xl font-semibold text-sm hover:bg-[#C9A227]/10 transition-colors"
+            className="flex items-center gap-2 border border-brand-accent/40 text-brand-accent px-4 py-2 rounded-xl font-semibold text-sm hover:bg-brand-accent/10 transition-colors"
           >
             <span>🔗</span> Copy Link
           </button>
@@ -525,11 +530,11 @@ export default function PioneerDashboard() {
   return (
     <div className="min-h-screen bg-[#0a0005] text-white">
       {/* Header */}
-      <header className="bg-[#0d0208] border-b border-[#5C0A14]/50 sticky top-16 z-30">
+      <header className="bg-[#0d0208] border-b border-brand-primary/50 sticky top-16 z-30">
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-2xl">🦁</span>
-            <span className="text-xl font-bold text-[#C9A227]">BeNetwork</span>
+            <span className="text-xl font-bold text-brand-accent">BeNetwork</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm text-gray-400">
             <Link href="/ventures" className="hover:text-white transition-colors">
@@ -543,11 +548,11 @@ export default function PioneerDashboard() {
               className="hover:text-white transition-colors relative"
             >
               Notifications
-              <span className="absolute -top-1 -right-3 w-2 h-2 bg-[#C9A227] rounded-full"></span>
+              <span className="absolute -top-1 -right-3 w-2 h-2 bg-brand-accent rounded-full"></span>
             </Link>
           </nav>
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#5C0A14] to-[#C9A227] flex items-center justify-center text-sm font-bold text-white">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center text-sm font-bold text-white">
               AO
             </div>
           </div>
@@ -556,15 +561,15 @@ export default function PioneerDashboard() {
 
       <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 py-8">
         {/* Tabs */}
-        <div className="flex gap-2 flex-wrap mb-8 border-b border-[#5C0A14]/30 pb-0">
+        <div className="flex gap-2 flex-wrap mb-8 border-b border-brand-primary/30 pb-0">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-3 text-sm font-medium rounded-t-xl transition-all border-b-2 -mb-px ${
                 activeTab === tab.id
-                  ? 'text-[#C9A227] border-[#C9A227] bg-[#1a0a0f]'
-                  : 'text-gray-400 border-transparent hover:text-gray-200 hover:border-[#5C0A14]'
+                  ? 'text-brand-accent border-brand-accent bg-brand-surface-elevated'
+                  : 'text-gray-400 border-transparent hover:text-gray-200 hover:border-brand-primary'
               }`}
             >
               {tab.label}

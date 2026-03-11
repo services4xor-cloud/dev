@@ -48,16 +48,20 @@ export default function Nav() {
   // Shared link class helpers
   const desktopLink = (active: boolean) =>
     `relative inline-flex items-center px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-150
-     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0F]
+     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]
      ${
-       active ? 'text-[#C9A227] bg-[#C9A227]/8' : 'text-white/65 hover:text-white hover:bg-white/5'
+       active
+         ? 'text-brand-accent bg-brand-accent/8'
+         : 'text-white/65 hover:text-white hover:bg-white/5'
      }`
 
   const dropdownLink = (active: boolean) =>
     `flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-150 mx-1
-     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
      ${
-       active ? 'text-[#C9A227] bg-[#C9A227]/10' : 'text-white/70 hover:text-white hover:bg-white/6'
+       active
+         ? 'text-brand-accent bg-brand-accent/10'
+         : 'text-white/70 hover:text-white hover:bg-white/6'
      }`
 
   return (
@@ -70,7 +74,7 @@ export default function Nav() {
       <nav
         role="navigation"
         aria-label="Main navigation"
-        className="bg-[#0A0A0F]/95 backdrop-blur-xl border-b border-white/8 sticky top-0 z-50"
+        className="bg-brand-bg/95 backdrop-blur-xl border-b border-white/8 sticky top-0 z-50"
       >
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-6">
           <div className="flex items-center justify-between h-15" style={{ height: '60px' }}>
@@ -78,14 +82,14 @@ export default function Nav() {
             <Link
               href="/"
               className="flex items-center gap-2 shrink-0 rounded-lg
-                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
-                         focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0F]"
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
+                         focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
               aria-label={`${BRAND} — Home`}
             >
               <div className="relative">
                 <div
                   className="absolute inset-0 rounded-lg blur-sm opacity-40"
-                  style={{ background: '#C9A227' }}
+                  style={{ background: 'var(--color-accent)' }}
                   aria-hidden="true"
                 />
                 <Image
@@ -100,7 +104,7 @@ export default function Nav() {
                 />
               </div>
               <span className="font-bold text-[15px] tracking-wide" aria-hidden="true">
-                <span className="text-[#C9A227]">Be</span>
+                <span className="text-brand-accent">Be</span>
                 <span className="text-white">{COUNTRIES[CC]?.name ?? 'Country'}</span>
               </span>
             </Link>
@@ -118,7 +122,7 @@ export default function Nav() {
                     {isActive(link.href) && (
                       <span
                         className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
-                        style={{ background: '#C9A227' }}
+                        style={{ background: 'var(--color-accent)' }}
                         aria-hidden="true"
                       />
                     )}
@@ -144,7 +148,7 @@ export default function Nav() {
                   >
                     {isAnchorActive && (
                       <span
-                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A227]"
+                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand-accent"
                         aria-hidden="true"
                       />
                     )}
@@ -174,7 +178,7 @@ export default function Nav() {
                               className={dropdownLink(isActive(link.href))}
                             >
                               <Icon
-                                className="w-4 h-4 shrink-0 text-[#C9A227]/60"
+                                className="w-4 h-4 shrink-0 text-brand-accent/60"
                                 aria-hidden="true"
                               />
                               {link.label}
@@ -204,7 +208,7 @@ export default function Nav() {
                   >
                     {isAboutActive && (
                       <span
-                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A227]"
+                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand-accent"
                         aria-hidden="true"
                       />
                     )}
@@ -234,7 +238,7 @@ export default function Nav() {
                               className={dropdownLink(isActive(link.href))}
                             >
                               <Icon
-                                className="w-4 h-4 shrink-0 text-[#C9A227]/60"
+                                className="w-4 h-4 shrink-0 text-brand-accent/60"
                                 aria-hidden="true"
                               />
                               {link.label}
@@ -256,7 +260,7 @@ export default function Nav() {
                 aria-label="Sign in to your account"
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-medium text-white/60
                            hover:text-white hover:bg-white/5 transition-all duration-150
-                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
               >
                 <LogIn className="w-4 h-4" aria-hidden="true" />
                 Sign In
@@ -264,13 +268,13 @@ export default function Nav() {
               <Link
                 href="/compass"
                 aria-label="Start My Compass — find your path across countries"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-[#0A0A0F]
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-brand-bg
                            hover:brightness-110 active:scale-[0.97] transition-all duration-150
-                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
-                           focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0F]"
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
+                           focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
                 style={{
-                  background: 'linear-gradient(135deg, #C9A227, #D4AF37)',
-                  boxShadow: '0 2px 12px rgba(201,162,39,0.3)',
+                  background: 'linear-gradient(135deg, var(--color-accent), #D4AF37)',
+                  boxShadow: '0 2px 12px rgb(var(--color-accent-rgb) / 0.3)',
                 }}
               >
                 <Compass className="w-4 h-4" aria-hidden="true" />
@@ -287,7 +291,7 @@ export default function Nav() {
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               className="xl:hidden p-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/8
                          transition-all duration-150 focus-visible:outline-none focus-visible:ring-2
-                         focus-visible:ring-[#C9A227]"
+                         focus-visible:ring-brand-accent"
             >
               {mobileOpen ? (
                 <X className="w-5 h-5" aria-hidden="true" />
@@ -320,21 +324,21 @@ export default function Nav() {
                     aria-label={link.aria}
                     aria-current={isActive(link.href) ? 'page' : undefined}
                     className={`flex items-center gap-3 px-3 py-3.5 rounded-xl font-medium transition-all duration-150
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
                       ${
                         isActive(link.href)
-                          ? 'bg-[#C9A227]/12 text-[#C9A227]'
+                          ? 'bg-brand-accent/12 text-brand-accent'
                           : 'text-white/75 hover:bg-white/6 hover:text-white'
                       }`}
                   >
                     <Icon
-                      className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`}
+                      className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-brand-accent' : 'text-white/30'}`}
                       aria-hidden="true"
                     />
                     {link.label}
                     {isActive(link.href) && (
                       <span
-                        className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C9A227]"
+                        className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-accent"
                         aria-hidden="true"
                       />
                     )}
@@ -356,15 +360,15 @@ export default function Nav() {
                     aria-label={link.aria}
                     aria-current={isActive(link.href) ? 'page' : undefined}
                     className={`flex items-center gap-3 px-3 py-3.5 rounded-xl font-medium transition-all duration-150
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
                       ${
                         isActive(link.href)
-                          ? 'bg-[#C9A227]/12 text-[#C9A227]'
+                          ? 'bg-brand-accent/12 text-brand-accent'
                           : 'text-white/75 hover:bg-white/6 hover:text-white'
                       }`}
                   >
                     <Icon
-                      className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`}
+                      className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-brand-accent' : 'text-white/30'}`}
                       aria-hidden="true"
                     />
                     {link.label}
@@ -389,15 +393,15 @@ export default function Nav() {
                     aria-label={link.aria}
                     aria-current={isActive(link.href) ? 'page' : undefined}
                     className={`flex items-center gap-3 px-3 py-3.5 rounded-xl font-medium transition-all duration-150
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
                       ${
                         isActive(link.href)
-                          ? 'bg-[#C9A227]/12 text-[#C9A227]'
+                          ? 'bg-brand-accent/12 text-brand-accent'
                           : 'text-white/75 hover:bg-white/6 hover:text-white'
                       }`}
                   >
                     <Icon
-                      className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-[#C9A227]' : 'text-white/30'}`}
+                      className={`w-5 h-5 shrink-0 ${isActive(link.href) ? 'text-brand-accent' : 'text-white/30'}`}
                       aria-hidden="true"
                     />
                     {link.label}
@@ -411,7 +415,7 @@ export default function Nav() {
                   href="/login"
                   onClick={() => setMobileOpen(false)}
                   className="flex items-center gap-3 px-3 py-3.5 rounded-xl text-white/70 hover:bg-white/6 hover:text-white
-                             font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
+                             font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                 >
                   <LogIn className="w-5 h-5 text-white/30" aria-hidden="true" />
                   Sign In
@@ -420,12 +424,12 @@ export default function Nav() {
                   href="/compass"
                   onClick={() => setMobileOpen(false)}
                   aria-label="Start My Compass"
-                  className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-[#0A0A0F]
+                  className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-brand-bg
                              active:scale-[0.98] transition-all duration-150
-                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]"
+                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                   style={{
-                    background: 'linear-gradient(135deg, #C9A227, #D4AF37)',
-                    boxShadow: '0 4px 16px rgba(201,162,39,0.25)',
+                    background: 'linear-gradient(135deg, var(--color-accent), #D4AF37)',
+                    boxShadow: '0 4px 16px rgb(var(--color-accent-rgb) / 0.25)',
                   }}
                 >
                   <Compass className="w-5 h-5" aria-hidden="true" />

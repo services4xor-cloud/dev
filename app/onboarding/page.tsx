@@ -56,7 +56,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
       </div>
       <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-[#5C0A14] to-[#C9A227] rounded-full transition-all duration-500"
+          className="h-full bg-gradient-to-r from-brand-primary to-brand-accent rounded-full transition-all duration-500"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -171,7 +171,7 @@ export default function OnboardingPage() {
   // ── Completed screen ──
   if (done) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
         <ConfettiBlast />
         <div className="text-center max-w-lg">
           <div className="text-7xl mb-6">🌍</div>
@@ -181,15 +181,15 @@ export default function OnboardingPage() {
           </p>
           <div className="flex items-center justify-center gap-2">
             <div
-              className="w-2 h-2 rounded-full bg-[#C9A227] animate-bounce"
+              className="w-2 h-2 rounded-full bg-brand-accent animate-bounce"
               style={{ animationDelay: '0ms' }}
             />
             <div
-              className="w-2 h-2 rounded-full bg-[#C9A227] animate-bounce"
+              className="w-2 h-2 rounded-full bg-brand-accent animate-bounce"
               style={{ animationDelay: '150ms' }}
             />
             <div
-              className="w-2 h-2 rounded-full bg-[#C9A227] animate-bounce"
+              className="w-2 h-2 rounded-full bg-brand-accent animate-bounce"
               style={{ animationDelay: '300ms' }}
             />
           </div>
@@ -200,11 +200,11 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-brand-bg">
       {/* Header */}
       <div className="max-w-2xl 3xl:max-w-4xl mx-auto px-4 pt-8 pb-4">
         <div className="flex items-center gap-2 mb-6">
-          <span className="text-2xl font-bold text-[#C9A227]">Be</span>
+          <span className="text-2xl font-bold text-brand-accent">Be</span>
           <span className="text-2xl font-bold text-white">Network</span>
         </div>
         <ProgressBar step={step} total={TOTAL_STEPS} />
@@ -234,15 +234,15 @@ export default function OnboardingPage() {
                     hover:shadow-lg hover:-translate-y-0.5 active:scale-95
                     ${
                       pioneerType === type
-                        ? 'border-[#C9A227] bg-[#5C0A14]/20 shadow-md ring-2 ring-[#C9A227]/30 ring-offset-1 ring-offset-[#0A0A0F]'
+                        ? 'border-brand-accent bg-brand-primary/20 shadow-md ring-2 ring-brand-accent/30 ring-offset-1 ring-offset-[var(--color-bg)]'
                         : 'border-gray-700 bg-gray-900/60 hover:border-gray-600'
                     }
                   `}
                 >
                   {pioneerType === type && (
-                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#C9A227] flex items-center justify-center">
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-brand-accent flex items-center justify-center">
                       <svg
-                        className="w-3 h-3 text-[#0A0A0F]"
+                        className="w-3 h-3 text-brand-bg"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -268,9 +268,9 @@ export default function OnboardingPage() {
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Where are you right now?</h1>
             {detectedCountryInfo && fromCountry === detectedCountry && (
-              <div className="flex items-center gap-2 mb-4 p-3 bg-[#5C0A14]/20 rounded-xl border border-[#C9A227]/30">
+              <div className="flex items-center gap-2 mb-4 p-3 bg-brand-primary/20 rounded-xl border border-brand-accent/30">
                 <span className="text-xl">{detectedCountryInfo.flag}</span>
-                <span className="text-sm text-[#C9A227]">
+                <span className="text-sm text-brand-accent">
                   We think you&apos;re in <strong>{detectedCountryInfo.name}</strong>. Correct?
                 </span>
               </div>
@@ -283,7 +283,7 @@ export default function OnboardingPage() {
                 value={fromCountry}
                 onChange={(e) => setFromCountry(e.target.value)}
                 className="w-full p-4 pr-10 rounded-2xl border-2 border-gray-700 bg-gray-900/60 text-white text-lg
-                  appearance-none focus:outline-none focus:border-[#C9A227] focus:ring-2 focus:ring-[#C9A227]/20
+                  appearance-none focus:outline-none focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20
                   transition-all cursor-pointer"
               >
                 <option value="">Select your country...</option>
@@ -340,7 +340,7 @@ export default function OnboardingPage() {
                       hover:shadow-md hover:-translate-y-0.5 active:scale-95
                       ${
                         isSelected
-                          ? 'border-[#C9A227] bg-[#5C0A14]/20 shadow ring-2 ring-[#C9A227]/20 ring-offset-1 ring-offset-[#0A0A0F]'
+                          ? 'border-brand-accent bg-brand-primary/20 shadow ring-2 ring-brand-accent/20 ring-offset-1 ring-offset-[var(--color-bg)]'
                           : 'border-gray-700 bg-gray-900/60 hover:border-gray-600'
                       }
                     `}
@@ -357,9 +357,9 @@ export default function OnboardingPage() {
                           {badge.label}
                         </span>
                         {isSelected && (
-                          <div className="w-5 h-5 rounded-full bg-[#C9A227] flex items-center justify-center flex-shrink-0">
+                          <div className="w-5 h-5 rounded-full bg-brand-accent flex items-center justify-center flex-shrink-0">
                             <svg
-                              className="w-3 h-3 text-[#0A0A0F]"
+                              className="w-3 h-3 text-brand-bg"
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >
@@ -388,7 +388,7 @@ export default function OnboardingPage() {
               })}
             </div>
             {toCountries.length > 0 && (
-              <p className="mt-4 text-sm text-[#C9A227] font-medium">
+              <p className="mt-4 text-sm text-brand-accent font-medium">
                 {toCountries.length} destination{toCountries.length > 1 ? 's' : ''} selected
               </p>
             )}
@@ -403,7 +403,7 @@ export default function OnboardingPage() {
               Select at least 3 skills. These power your match score.
             </p>
             {skills.length < 3 && (
-              <p className="text-sm text-[#C9A227] mb-4">
+              <p className="text-sm text-brand-accent mb-4">
                 {3 - skills.length} more needed to continue
               </p>
             )}
@@ -425,8 +425,8 @@ export default function OnboardingPage() {
                       active:scale-95
                       ${
                         active
-                          ? 'bg-[#5C0A14] text-white border-[#C9A227] shadow-sm'
-                          : 'bg-gray-900/60 text-gray-300 border-gray-700 hover:border-[#C9A227]/50 hover:text-white'
+                          ? 'bg-brand-primary text-white border-brand-accent shadow-sm'
+                          : 'bg-gray-900/60 text-gray-300 border-gray-700 hover:border-brand-accent/50 hover:text-white'
                       }
                     `}
                   >
@@ -450,7 +450,7 @@ export default function OnboardingPage() {
                       <button
                         key={skill}
                         onClick={() => toggleSkill(skill)}
-                        className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#C9A227]/20 text-[#C9A227] border border-[#C9A227]/40 shadow-sm active:scale-95"
+                        className="px-3 py-1.5 rounded-full text-sm font-medium bg-brand-accent/20 text-brand-accent border border-brand-accent/40 shadow-sm active:scale-95"
                       >
                         ✓ {skill}
                       </button>
@@ -467,13 +467,13 @@ export default function OnboardingPage() {
                 onKeyDown={(e) => e.key === 'Enter' && addCustomSkill()}
                 placeholder="Add your own skill..."
                 className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-700 bg-gray-900/60 text-white
-                  placeholder-gray-500 focus:outline-none focus:border-[#C9A227] text-sm"
+                  placeholder-gray-500 focus:outline-none focus:border-brand-accent text-sm"
               />
               <button
                 onClick={addCustomSkill}
                 disabled={!customSkill.trim()}
-                className="px-4 py-2.5 rounded-xl bg-[#5C0A14] text-white text-sm font-medium
-                  disabled:opacity-40 hover:bg-[#7a0e1a] active:scale-95 transition-all"
+                className="px-4 py-2.5 rounded-xl bg-brand-primary text-white text-sm font-medium
+                  disabled:opacity-40 hover:bg-brand-primary-light active:scale-95 transition-all"
               >
                 Add
               </button>
@@ -500,8 +500,8 @@ export default function OnboardingPage() {
                   onChange={(e) => setHeadline(e.target.value)}
                   placeholder="e.g. Safari Guide with 5 years experience | Swahili & English"
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-700 bg-gray-900/60 text-white
-                    placeholder-gray-500 focus:outline-none focus:border-[#C9A227] focus:ring-2
-                    focus:ring-[#C9A227]/20 transition-all"
+                    placeholder-gray-500 focus:outline-none focus:border-brand-accent focus:ring-2
+                    focus:ring-brand-accent/20 transition-all"
                 />
                 <p className="text-xs text-gray-500 mt-1">{headline.length} / 120 characters</p>
               </div>
@@ -516,8 +516,8 @@ export default function OnboardingPage() {
                   placeholder="A short story about your journey, your passion, what drives you..."
                   rows={4}
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-700 bg-gray-900/60 text-white
-                    placeholder-gray-500 focus:outline-none focus:border-[#C9A227] focus:ring-2
-                    focus:ring-[#C9A227]/20 transition-all resize-none"
+                    placeholder-gray-500 focus:outline-none focus:border-brand-accent focus:ring-2
+                    focus:ring-brand-accent/20 transition-all resize-none"
                 />
               </div>
 
@@ -538,8 +538,8 @@ export default function OnboardingPage() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="254712345678"
                     className="flex-1 px-4 py-3 rounded-r-2xl border-2 border-gray-700 bg-gray-900/60 text-white
-                      placeholder-gray-500 focus:outline-none focus:border-[#C9A227] focus:ring-2
-                      focus:ring-[#C9A227]/20 transition-all"
+                      placeholder-gray-500 focus:outline-none focus:border-brand-accent focus:ring-2
+                      focus:ring-brand-accent/20 transition-all"
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
@@ -558,7 +558,7 @@ export default function OnboardingPage() {
       </div>
 
       {/* ── Fixed Bottom Nav ── */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#111118] border-t border-gray-800 shadow-xl px-4 py-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-brand-surface border-t border-gray-800 shadow-xl px-4 py-4">
         <div className="max-w-2xl 3xl:max-w-4xl mx-auto flex gap-3">
           {step > 1 && (
             <button
@@ -578,7 +578,7 @@ export default function OnboardingPage() {
                 flex-1 py-3 rounded-2xl font-semibold text-white transition-all active:scale-95
                 ${
                   canAdvance()
-                    ? 'bg-[#5C0A14] hover:bg-[#7a0e1a] shadow-md hover:shadow-lg'
+                    ? 'bg-brand-primary hover:bg-brand-primary-light shadow-md hover:shadow-lg'
                     : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                 }
               `}
@@ -593,7 +593,7 @@ export default function OnboardingPage() {
                 flex-1 py-3 rounded-2xl font-semibold text-white transition-all active:scale-95
                 ${
                   canAdvance() && !submitting
-                    ? 'bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] hover:from-[#7a0e1a] hover:to-[#5C0A14] shadow-md hover:shadow-lg'
+                    ? 'bg-gradient-to-r from-brand-primary to-brand-primary-light hover:from-brand-primary-light hover:to-brand-primary shadow-md hover:shadow-lg'
                     : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                 }
               `}

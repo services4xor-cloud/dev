@@ -54,15 +54,15 @@ export default function ProfilePage() {
   ].filter(Boolean).length
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-brand-bg">
       {/* Nav */}
-      <div className="bg-[#0d0208] border-b border-[#5C0A14]/50">
+      <div className="bg-[#0d0208] border-b border-brand-primary/50">
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold">
             <span className="text-white">Beke</span>
-            <span className="text-[#C9A227]">nya</span>
+            <span className="text-brand-accent">nya</span>
           </Link>
-          <Link href="/dashboard" className="text-gray-400 hover:text-[#C9A227] text-sm">
+          <Link href="/dashboard" className="text-gray-400 hover:text-brand-accent text-sm">
             ← Dashboard
           </Link>
         </div>
@@ -70,16 +70,16 @@ export default function ProfilePage() {
 
       <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-8">
         {/* Completion bar */}
-        <div className="bg-gray-900/60 rounded-2xl p-4 shadow-sm border border-[#5C0A14]/30 mb-6">
+        <div className="bg-gray-900/60 rounded-2xl p-4 shadow-sm border border-brand-primary/30 mb-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-300">Profile completeness</span>
-            <span className="text-sm font-bold text-[#C9A227]">
+            <span className="text-sm font-bold text-brand-accent">
               {Math.round((profileComplete / 6) * 100)}%
             </span>
           </div>
           <div className="w-full bg-gray-800 rounded-full h-2">
             <div
-              className="bg-[#C9A227] h-2 rounded-full transition-all"
+              className="bg-brand-accent h-2 rounded-full transition-all"
               style={{ width: `${Math.round((profileComplete / 6) * 100)}%` }}
             />
           </div>
@@ -89,11 +89,11 @@ export default function ProfilePage() {
         </div>
 
         {/* Avatar */}
-        <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-[#5C0A14]/30 mb-4">
+        <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 mb-4">
           <h2 className="font-bold text-white mb-4">Profile Photo</h2>
           <div className="flex items-center gap-6">
             <div className="relative">
-              <div className="w-20 h-20 bg-[#5C0A14] rounded-full flex items-center justify-center text-white font-bold text-2xl">
+              <div className="w-20 h-20 bg-brand-primary rounded-full flex items-center justify-center text-white font-bold text-2xl">
                 {form.name.charAt(0)}
               </div>
               <button className="absolute bottom-0 right-0 w-7 h-7 bg-gray-900 rounded-full flex items-center justify-center text-white">
@@ -112,7 +112,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Basic info */}
-        <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-[#5C0A14]/30 mb-4">
+        <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 mb-4">
           <h2 className="font-bold text-white mb-4">Basic Information</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -189,13 +189,13 @@ export default function ProfilePage() {
         </div>
 
         {/* Skills */}
-        <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-[#5C0A14]/30 mb-6">
+        <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 mb-6">
           <h2 className="font-bold text-white mb-4">Skills</h2>
           <div className="flex flex-wrap gap-2 mb-3">
             {skills.map((skill) => (
               <span
                 key={skill}
-                className="flex items-center gap-1 badge bg-[#5C0A14]/20 text-[#C9A227]"
+                className="flex items-center gap-1 badge bg-brand-primary/20 text-brand-accent"
               >
                 {skill}
                 <button onClick={() => removeSkill(skill)} className="hover:opacity-70">
@@ -224,7 +224,7 @@ export default function ProfilePage() {
                 <button
                   key={s}
                   onClick={() => addSkill(s)}
-                  className="badge bg-gray-800 text-gray-400 text-xs hover:bg-[#5C0A14]/20 hover:text-[#C9A227] transition-colors cursor-pointer"
+                  className="badge bg-gray-800 text-gray-400 text-xs hover:bg-brand-primary/20 hover:text-brand-accent transition-colors cursor-pointer"
                 >
                   + {s}
                 </button>

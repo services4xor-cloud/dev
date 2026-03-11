@@ -16,17 +16,17 @@ export default function MediaPage() {
           <span className="text-[18rem] leading-none">🎬</span>
         </div>
         <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-[#C9A227]/20 border border-[#C9A227]/40 rounded-full px-4 py-1.5 mb-6">
-            <span className="text-[#C9A227] text-sm font-medium">
+          <div className="inline-flex items-center gap-2 bg-brand-accent/20 border border-brand-accent/40 rounded-full px-4 py-1.5 mb-6">
+            <span className="text-brand-accent text-sm font-medium">
               BeKenya Family Ltd — Media Division
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-4">
-            <span className="text-[#C9A227]">BeKenya</span>{' '}
+            <span className="text-brand-accent">BeKenya</span>{' '}
             <span className="text-white">Media</span>{' '}
             <span className="text-4xl md:text-6xl">🎬</span>
           </h1>
-          <p className="text-2xl md:text-3xl font-light text-[#C9A227] mb-6 tracking-wide">
+          <p className="text-2xl md:text-3xl font-light text-brand-accent mb-6 tracking-wide">
             Tell Africa&apos;s Stories. Get Paid.
           </p>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -36,13 +36,13 @@ export default function MediaPage() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=creator"
-              className="bg-[#C9A227] text-white font-bold px-8 py-4 rounded-full hover:opacity-90 transition-colors text-lg"
+              className="bg-brand-accent text-white font-bold px-8 py-4 rounded-full hover:opacity-90 transition-colors text-lg"
             >
               Apply as Media Pioneer
             </Link>
             <Link
               href="/anchors"
-              className="border border-[#C9A227] text-[#C9A227] font-semibold px-8 py-4 rounded-full hover:bg-[#C9A227]/10 transition-colors text-lg"
+              className="border border-brand-accent text-brand-accent font-semibold px-8 py-4 rounded-full hover:bg-brand-accent/10 transition-colors text-lg"
             >
               Commission Content
             </Link>
@@ -66,27 +66,27 @@ export default function MediaPage() {
                   These clients have budgets. They want genuine, locally-created content — not stock
                   footage. And they struggle to find reliable, talented creators in Kenya.
                 </p>
-                <p className="text-[#C9A227] font-semibold text-lg">
+                <p className="text-brand-accent font-semibold text-lg">
                   That is the gap BeKenya Media exists to fill.
                 </p>
               </div>
               <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-                <div className="bg-[#5C0A14]/30 border border-[#C9A227]/20 rounded-xl p-4">
-                  <div className="text-2xl font-black text-[#C9A227]">9</div>
+                <div className="bg-brand-primary/30 border border-brand-accent/20 rounded-xl p-4">
+                  <div className="text-2xl font-black text-brand-accent">9</div>
                   <div className="text-xs text-gray-400 mt-1">Platforms Reached</div>
                 </div>
-                <div className="bg-[#5C0A14]/30 border border-[#C9A227]/20 rounded-xl p-4">
-                  <div className="text-2xl font-black text-[#C9A227]">4</div>
+                <div className="bg-brand-primary/30 border border-brand-accent/20 rounded-xl p-4">
+                  <div className="text-2xl font-black text-brand-accent">4</div>
                   <div className="text-xs text-gray-400 mt-1">Media Paths</div>
                 </div>
-                <div className="bg-[#5C0A14]/30 border border-[#C9A227]/20 rounded-xl p-4">
-                  <div className="text-2xl font-black text-[#C9A227]">KES</div>
+                <div className="bg-brand-primary/30 border border-brand-accent/20 rounded-xl p-4">
+                  <div className="text-2xl font-black text-brand-accent">KES</div>
                   <div className="text-xs text-gray-400 mt-1">Local Payments</div>
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-[#5C0A14]/30 to-[#0D1F3C]/30 border border-[#C9A227]/20 rounded-2xl p-8">
-              <h3 className="font-bold text-[#C9A227] mb-4 text-lg">Who Is Hiring?</h3>
+            <div className="bg-gradient-to-br from-brand-primary/30 to-[#0D1F3C]/30 border border-brand-accent/20 rounded-2xl p-8">
+              <h3 className="font-bold text-brand-accent mb-4 text-lg">Who Is Hiring?</h3>
               <ul className="space-y-3">
                 {[
                   'Safari lodges — Instagram, TikTok, YouTube content',
@@ -97,7 +97,7 @@ export default function MediaPage() {
                   'Tech companies — product photography & video',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span className="text-[#C9A227] mt-0.5 font-bold">→</span>
+                    <span className="text-brand-accent mt-0.5 font-bold">→</span>
                     <span className="text-gray-300 text-sm">{item}</span>
                   </li>
                 ))}
@@ -108,7 +108,7 @@ export default function MediaPage() {
       </section>
 
       {/* Media Paths */}
-      <section className="py-20 px-4 bg-gradient-to-br from-[#5C0A14]/20 to-transparent">
+      <section className="py-20 px-4 bg-gradient-to-br from-brand-primary/20 to-transparent">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">Media Paths Available</h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
@@ -118,7 +118,7 @@ export default function MediaPage() {
             {mediaPaths.map((path) => (
               <div
                 key={path.title}
-                className="bg-[#0A0205] border border-[#C9A227]/20 rounded-2xl p-7 hover:border-[#C9A227]/50 transition-all group"
+                className="bg-[#0A0205] border border-brand-accent/20 rounded-2xl p-7 hover:border-brand-accent/50 transition-all group"
               >
                 <div className="flex items-start gap-4">
                   <div className="text-4xl">{path.emoji}</div>
@@ -129,13 +129,13 @@ export default function MediaPage() {
                       {path.sectors.map((sector) => (
                         <span
                           key={sector}
-                          className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-0.5 rounded-full"
+                          className="bg-brand-accent/20 text-brand-accent text-xs px-2 py-0.5 rounded-full"
                         >
                           {sector}
                         </span>
                       ))}
                     </div>
-                    <div className="text-[#C9A227] font-bold text-sm">{path.earning}</div>
+                    <div className="text-brand-accent font-bold text-sm">{path.earning}</div>
                   </div>
                 </div>
               </div>
@@ -156,7 +156,7 @@ export default function MediaPage() {
             {featuredProjects.map((project) => (
               <div
                 key={project.title}
-                className="bg-gradient-to-r from-[#0D1F3C]/50 to-[#5C0A14]/10 border border-[#C9A227]/20 rounded-2xl p-7 hover:border-[#C9A227]/50 transition-all"
+                className="bg-gradient-to-r from-[#0D1F3C]/50 to-brand-primary/10 border border-brand-accent/20 rounded-2xl p-7 hover:border-brand-accent/50 transition-all"
               >
                 <div className="flex flex-col lg:flex-row lg:items-start gap-6">
                   <div className="text-5xl">{project.flag}</div>
@@ -173,7 +173,9 @@ export default function MediaPage() {
                         {project.status}
                       </span>
                     </div>
-                    <div className="text-[#C9A227] text-sm font-medium mb-3">{project.client}</div>
+                    <div className="text-brand-accent text-sm font-medium mb-3">
+                      {project.client}
+                    </div>
                     <p className="text-gray-400 text-sm leading-relaxed mb-4">
                       {project.description}
                     </p>
@@ -189,12 +191,12 @@ export default function MediaPage() {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-3 min-w-[140px]">
-                    <div className="text-[#C9A227] font-black text-lg text-right">
+                    <div className="text-brand-accent font-black text-lg text-right">
                       {project.value}
                     </div>
                     <Link
                       href="/onboarding?type=creator"
-                      className="bg-[#C9A227] text-white text-sm font-bold px-5 py-2 rounded-full hover:opacity-90 transition-colors whitespace-nowrap"
+                      className="bg-brand-accent text-white text-sm font-bold px-5 py-2 rounded-full hover:opacity-90 transition-colors whitespace-nowrap"
                     >
                       Apply Now
                     </Link>
@@ -207,11 +209,11 @@ export default function MediaPage() {
       </section>
 
       {/* Social Media Automation */}
-      <section className="py-20 px-4 bg-gradient-to-br from-[#5C0A14]/30 via-[#0D1F3C]/30 to-transparent border-t border-[#C9A227]/10">
+      <section className="py-20 px-4 bg-gradient-to-br from-brand-primary/30 via-[#0D1F3C]/30 to-transparent border-t border-brand-accent/10">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-4">Social Media Automation</h2>
-            <p className="text-xl text-[#C9A227] font-semibold mb-4">
+            <p className="text-xl text-brand-accent font-semibold mb-4">
               Create content + we auto-distribute to 9 platforms
             </p>
             <p className="text-gray-400 max-w-2xl mx-auto">
@@ -224,35 +226,35 @@ export default function MediaPage() {
             {platforms.map((platform) => (
               <div
                 key={platform.name}
-                className="bg-[#0A0205] border border-[#C9A227]/20 rounded-xl p-3 text-center hover:border-[#C9A227]/60 transition-colors"
+                className="bg-[#0A0205] border border-brand-accent/20 rounded-xl p-3 text-center hover:border-brand-accent/60 transition-colors"
               >
                 <div className="text-2xl mb-1">{platform.emoji}</div>
                 <div className="text-xs text-gray-400 truncate">{platform.name}</div>
               </div>
             ))}
           </div>
-          <div className="bg-[#0A0205] border border-[#C9A227]/30 rounded-2xl p-8 max-w-2xl mx-auto text-center">
+          <div className="bg-[#0A0205] border border-brand-accent/30 rounded-2xl p-8 max-w-2xl mx-auto text-center">
             <div className="text-3xl mb-4">⚡</div>
-            <h3 className="font-bold text-[#C9A227] text-xl mb-3">How it works</h3>
+            <h3 className="font-bold text-brand-accent text-xl mb-3">How it works</h3>
             <ol className="text-left space-y-3 text-gray-300 text-sm">
               <li className="flex gap-3">
-                <span className="text-[#C9A227] font-bold">1.</span> Pioneer creates content for an
-                Anchor (lodge, brand, NGO)
+                <span className="text-brand-accent font-bold">1.</span> Pioneer creates content for
+                an Anchor (lodge, brand, NGO)
               </li>
               <li className="flex gap-3">
-                <span className="text-[#C9A227] font-bold">2.</span> Content is approved by Anchor
-                and marked for distribution
+                <span className="text-brand-accent font-bold">2.</span> Content is approved by
+                Anchor and marked for distribution
               </li>
               <li className="flex gap-3">
-                <span className="text-[#C9A227] font-bold">3.</span> BeKenya auto-schedules posts
+                <span className="text-brand-accent font-bold">3.</span> BeKenya auto-schedules posts
                 across all 9 platforms
               </li>
               <li className="flex gap-3">
-                <span className="text-[#C9A227] font-bold">4.</span> Analytics delivered to both
+                <span className="text-brand-accent font-bold">4.</span> Analytics delivered to both
                 Pioneer and Anchor
               </li>
               <li className="flex gap-3">
-                <span className="text-[#C9A227] font-bold">5.</span> Pioneer gets paid via M-Pesa
+                <span className="text-brand-accent font-bold">5.</span> Pioneer gets paid via M-Pesa
                 within 48 hours of delivery
               </li>
             </ol>
@@ -261,7 +263,7 @@ export default function MediaPage() {
       </section>
 
       {/* Document UTAMADUNI */}
-      <section className="py-16 px-4 bg-[#006600]/10 border-t border-[#006600]/30">
+      <section className="py-16 px-4 bg-brand-success/10 border-t border-brand-success/30">
         <div className="max-w-4xl mx-auto text-center">
           <div className="text-4xl mb-4">🌍</div>
           <h2 className="text-2xl font-bold text-white mb-4">
@@ -274,7 +276,7 @@ export default function MediaPage() {
           </p>
           <Link
             href="/charity"
-            className="inline-flex items-center gap-2 bg-[#006600] text-white font-bold px-7 py-3 rounded-full hover:bg-[#007700] transition-colors"
+            className="inline-flex items-center gap-2 bg-brand-success text-white font-bold px-7 py-3 rounded-full hover:bg-[#007700] transition-colors"
           >
             Explore UTAMADUNI →
           </Link>
@@ -294,13 +296,13 @@ export default function MediaPage() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=creator"
-              className="bg-[#C9A227] text-white font-black px-10 py-4 rounded-full hover:opacity-90 transition-colors text-xl"
+              className="bg-brand-accent text-white font-black px-10 py-4 rounded-full hover:opacity-90 transition-colors text-xl"
             >
               Apply as Media Pioneer
             </Link>
             <Link
               href="/fashion"
-              className="border border-[#C9A227] text-[#C9A227] font-semibold px-8 py-4 rounded-full hover:bg-[#C9A227]/10 transition-colors"
+              className="border border-brand-accent text-brand-accent font-semibold px-8 py-4 rounded-full hover:bg-brand-accent/10 transition-colors"
             >
               Explore Fashion Division →
             </Link>

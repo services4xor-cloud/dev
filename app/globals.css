@@ -8,20 +8,39 @@
     --font-inter: 'Inter', sans-serif;
     --font-plus-jakarta: 'Plus Jakarta Sans', sans-serif;
 
-    /* BeNetwork Brand Palette — maroon + gold */
-    --color-maroon: #5C0A14;
-    --color-maroon-light: #7A1020;
-    --color-gold: #C9A227;
-    --color-gold-light: #D4AF37;
-    --color-gold-dark: #8B6914;
-    --color-orange: #C9A227;   /* legacy alias → gold, do not use in new code */
-    --color-green: #006600;
-    --color-teal: #C9A227;     /* legacy alias → gold, do not use in new code */
-    --color-bg: #0A0A0F;
+    /* ── BeNetwork Brand Palette (Semantic Tokens) ─────────────────
+     * CHANGE COLORS HERE → propagates across entire platform.
+     * Semantic names = survive rebrands. Change value, keep every class.
+     * RGB channels enable Tailwind opacity modifiers (bg-brand-primary/20).
+     * Hex format kept for style={{}} props (var(--color-primary)).
+     * ─────────────────────────────────────────────────────────── */
+    /* Primary — currently maroon #5C0A14 */
+    --color-primary-rgb: 92 10 20;
+    --color-primary: #5c0a14;
+    --color-primary-light-rgb: 122 16 32;
+    --color-primary-light: #7a1020;
+    /* Accent — currently gold #C9A227 */
+    --color-accent-rgb: 201 162 39;
+    --color-accent: #c9a227;
+    --color-accent-light-rgb: 212 175 55;
+    --color-accent-light: #d4af37;
+    --color-accent-dark: #8b6914;
+    /* Backgrounds & surfaces */
+    --color-bg-rgb: 10 10 15;
+    --color-bg: #0a0a0f;
+    --color-surface-rgb: 17 17 24;
     --color-surface: #111118;
-    --color-surface-2: #1A1A25;
-    --color-text: #F5F0E8;
-    --color-text-muted: #9B8B72;
+    --color-surface-2-rgb: 26 26 37;
+    --color-surface-2: #1a1a25;
+    --color-surface-elevated-rgb: 26 10 15;
+    --color-surface-elevated: #1a0a0f;
+    /* Text */
+    --color-text-rgb: 245 240 232;
+    --color-text: #f5f0e8;
+    --color-text-muted: #9b8b72;
+    /* Status */
+    --color-success-rgb: 0 102 0;
+    --color-success: #006600;
   }
 
   * {
@@ -48,16 +67,16 @@
     overflow-x: hidden; /* Prevent horizontal scroll from nav/layout overflow at any breakpoint */
   }
 
-  /* Focus visible for accessibility — gold ring matches brand */
+  /* Focus visible for accessibility — accent ring matches brand */
   *:focus-visible {
-    outline: 2px solid var(--color-gold);
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
 
   /* High-contrast text selection */
   ::selection {
-    background: var(--color-gold);
-    color: var(--color-maroon);
+    background: var(--color-accent);
+    color: var(--color-primary);
   }
 }
 
@@ -67,8 +86,8 @@
     position: absolute;
     top: -40px;
     left: 0;
-    background: var(--color-gold);
-    color: var(--color-maroon);
+    background: var(--color-accent);
+    color: var(--color-primary);
     padding: 8px 16px;
     font-weight: bold;
     z-index: 9999;
@@ -82,38 +101,38 @@
   .btn-primary {
     @apply text-white font-semibold px-6 py-3 rounded-xl
            active:scale-95 transition-all duration-150
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2;
-    background: linear-gradient(135deg, #5C0A14, #7a0e1a);
-    border: 1px solid rgba(201, 162, 39, 0.35);
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    border: 1px solid rgb(var(--color-accent-rgb) / 0.35);
   }
   .btn-primary:hover {
-    background: linear-gradient(135deg, #7a0e1a, #9a1220);
-    border-color: rgba(201, 162, 39, 0.55);
+    background: linear-gradient(135deg, var(--color-primary-light), #9a1220);
+    border-color: rgb(var(--color-accent-rgb) / 0.55);
   }
 
   .btn-secondary {
     @apply font-semibold px-6 py-3 rounded-xl border transition-all duration-150 active:scale-95;
     background: var(--color-surface);
-    color: var(--color-gold);
-    border-color: rgba(201, 162, 39, 0.3);
+    color: var(--color-accent);
+    border-color: rgb(var(--color-accent-rgb) / 0.3);
   }
   .btn-secondary:hover {
     background: var(--color-surface-2);
-    border-color: rgba(201, 162, 39, 0.6);
+    border-color: rgb(var(--color-accent-rgb) / 0.6);
   }
 
   .card {
     @apply rounded-2xl border shadow-sm hover:shadow-md transition-shadow duration-200;
     background: var(--color-surface);
-    border-color: rgba(201, 162, 39, 0.12);
+    border-color: rgb(var(--color-accent-rgb) / 0.12);
   }
 
   .input {
     @apply w-full px-4 py-3 rounded-xl border
-           focus:outline-none focus:ring-2 focus:ring-[#C9A227] focus:border-transparent
+           focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent
            placeholder:opacity-50;
     background: var(--color-surface-2);
-    border-color: rgba(201, 162, 39, 0.2);
+    border-color: rgb(var(--color-accent-rgb) / 0.2);
     color: var(--color-text);
   }
 
@@ -123,19 +142,26 @@
 }
 
 /* ── Minimum tap target for button-like elements (WCAG 2.5.5) ─── */
-button, [role="button"] {
+button,
+[role='button'] {
   min-height: 44px;
 }
 
 /* ── TV / large display overrides ─────────────────────────────── */
 @media (min-width: 1920px) {
-  html { font-size: 18px; }
-  nav { min-height: 72px; }
+  html {
+    font-size: 18px;
+  }
+  nav {
+    min-height: 72px;
+  }
 }
 
 /* ── Ultra-wide / 4K ───────────────────────────────────────────── */
 @media (min-width: 2560px) {
-  html { font-size: 20px; }
+  html {
+    font-size: 20px;
+  }
 }
 
 /* Mobile-optimized scrollbar */

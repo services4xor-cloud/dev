@@ -35,7 +35,7 @@ function getSectorEmoji(sectorName: string): string {
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
-      <div className="text-2xl font-bold text-[#C9A227]">{value}</div>
+      <div className="text-2xl font-bold text-brand-accent">{value}</div>
       <div className="text-sm text-white/80 mt-1">{label}</div>
     </div>
   )
@@ -44,7 +44,7 @@ function StatCard({ label, value }: { label: string; value: string }) {
 function PaymentBadge({ method }: { method: CountryConfig['paymentMethods'][number] }) {
   return (
     <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 border border-white/20">
-      <span className="w-8 h-8 rounded-full bg-[#C9A227] flex items-center justify-center text-xs font-bold text-stone-900">
+      <span className="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-xs font-bold text-stone-900">
         {method.logo.slice(0, 2)}
       </span>
       <span className="text-white text-sm font-medium">{method.name}</span>
@@ -57,17 +57,17 @@ function SectorCard({ sector }: { sector: CountryConfig['featuredSectors'][numbe
   return (
     <Link
       href={`/ventures?sector=${sector.id}`}
-      className="group bg-white/5 hover:bg-white/15 border border-white/10 hover:border-[#C9A227]/50 rounded-xl p-5 transition-all duration-200"
+      className="group bg-white/5 hover:bg-white/15 border border-white/10 hover:border-brand-accent/50 rounded-xl p-5 transition-all duration-200"
     >
       <div className="text-3xl mb-3">{emoji}</div>
-      <h3 className="font-semibold text-white group-hover:text-[#C9A227] transition-colors">
+      <h3 className="font-semibold text-white group-hover:text-brand-accent transition-colors">
         {sector.name}
       </h3>
       <p className="text-white/60 text-sm mt-1">
         {sector.count.toLocaleString('en-US')} open paths
       </p>
       {sector.partnerName && (
-        <p className="text-[#C9A227]/80 text-xs mt-2">Partner: {sector.partnerName}</p>
+        <p className="text-brand-accent/80 text-xs mt-2">Partner: {sector.partnerName}</p>
       )}
     </Link>
   )
@@ -80,10 +80,10 @@ export default function BeCountryPage() {
 
   if (!countryKey || !(countryKey in COUNTRIES)) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#5C0A14] to-[#2d1b00] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-brand-primary to-[#2d1b00] flex items-center justify-center px-4">
         <div className="text-center max-w-lg">
           <div className="text-6xl mb-6">🌍</div>
-          <h1 className="text-3xl font-bold text-[#C9A227] mb-4">
+          <h1 className="text-3xl font-bold text-brand-accent mb-4">
             This Be[Country] is coming soon.
           </h1>
           <p className="text-white/70 mb-8 text-lg">
@@ -94,8 +94,9 @@ export default function BeCountryPage() {
             href="/be/ke"
             className="inline-block text-white font-bold px-8 py-4 rounded-xl transition-all hover:scale-105 text-lg"
             style={{
-              background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
-              border: '1px solid rgba(201,162,39,0.40)',
+              background:
+                'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+              border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
             }}
           >
             Go to BeKenya →
@@ -103,7 +104,7 @@ export default function BeCountryPage() {
           <div className="mt-6">
             <Link
               href="/compass"
-              className="text-[#C9A227] hover:text-[#C9A227]/80 underline text-sm"
+              className="text-brand-accent hover:text-brand-accent/80 underline text-sm"
             >
               Or use the Compass to find your path
             </Link>
@@ -116,15 +117,15 @@ export default function BeCountryPage() {
   const country = COUNTRIES[countryKey]
 
   return (
-    <div className="min-h-screen bg-[#1a0a0e]">
+    <div className="min-h-screen bg-brand-surface-elevated">
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen bg-gradient-to-br from-[#5C0A14] via-[#3d0a0f] to-[#1a0505] flex flex-col items-center justify-center text-center px-4 py-20">
+      <section className="relative min-h-screen bg-gradient-to-br from-brand-primary via-[#3d0a0f] to-[#1a0505] flex flex-col items-center justify-center text-center px-4 py-20">
         {/* Background texture */}
         <div
           className="absolute inset-0 opacity-5"
           style={{
             backgroundImage:
-              'radial-gradient(circle at 25% 25%, #C9A227 0%, transparent 50%), radial-gradient(circle at 75% 75%, #C9A227 0%, transparent 50%)',
+              'radial-gradient(circle at 25% 25%, var(--color-accent) 0%, transparent 50%), radial-gradient(circle at 75% 75%, var(--color-accent) 0%, transparent 50%)',
           }}
         />
 
@@ -133,7 +134,7 @@ export default function BeCountryPage() {
           <div className="mb-6">
             <span className="text-7xl">{country.flag}</span>
           </div>
-          <div className="text-[#C9A227] font-black text-5xl md:text-7xl tracking-tight mb-4">
+          <div className="text-brand-accent font-black text-5xl md:text-7xl tracking-tight mb-4">
             {country.brandName}
           </div>
 
@@ -153,9 +154,10 @@ export default function BeCountryPage() {
               href={`/compass?from=${country.code}`}
               className="text-white font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 hover:scale-105"
               style={{
-                background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
-                border: '1px solid rgba(201,162,39,0.40)',
-                boxShadow: '0 4px 20px rgba(92,10,20,0.30)',
+                background:
+                  'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
+                boxShadow: '0 4px 20px rgb(var(--color-primary-rgb) / 0.30)',
               }}
             >
               Start My Compass
@@ -194,9 +196,9 @@ export default function BeCountryPage() {
       </section>
 
       {/* ── PAYMENT METHODS ──────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-[#1a0a0e]">
+      <section className="py-16 px-4 bg-brand-surface-elevated">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-[#C9A227] font-bold text-2xl md:text-3xl mb-2">
+          <h2 className="text-brand-accent font-bold text-2xl md:text-3xl mb-2">
             Pay with what you know
           </h2>
           <p className="text-white/60 mb-8">We support the payment methods your country trusts.</p>
@@ -209,7 +211,7 @@ export default function BeCountryPage() {
       </section>
 
       {/* ── FEATURED SECTORS ─────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-gradient-to-b from-[#1a0a0e] to-[#0d0507]">
+      <section className="py-16 px-4 bg-gradient-to-b from-brand-surface-elevated to-[#0d0507]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-white font-bold text-2xl md:text-3xl mb-2">
@@ -237,7 +239,7 @@ export default function BeCountryPage() {
               <Link
                 key={search}
                 href={`/ventures?q=${encodeURIComponent(search)}`}
-                className="bg-[#5C0A14]/60 hover:bg-[#5C0A14] border border-[#C9A227]/30 hover:border-[#C9A227] text-white hover:text-[#C9A227] px-5 py-2 rounded-full text-sm font-medium transition-all duration-200"
+                className="bg-brand-primary/60 hover:bg-brand-primary border border-brand-accent/30 hover:border-brand-accent text-white hover:text-brand-accent px-5 py-2 rounded-full text-sm font-medium transition-all duration-200"
               >
                 {search}
               </Link>
@@ -247,10 +249,10 @@ export default function BeCountryPage() {
       </section>
 
       {/* ── CROSS-ROUTES SECTION ─────────────────────────────────────────── */}
-      <section className="py-20 px-4 bg-gradient-to-br from-[#5C0A14]/40 to-[#1a0505] border-t border-white/10">
+      <section className="py-20 px-4 bg-gradient-to-br from-brand-primary/40 to-[#1a0505] border-t border-white/10">
         <div className="max-w-3xl mx-auto text-center">
           <div className="text-4xl mb-4">🧭</div>
-          <h2 className="text-[#C9A227] font-bold text-2xl md:text-3xl mb-3">
+          <h2 className="text-brand-accent font-bold text-2xl md:text-3xl mb-3">
             Looking for paths beyond {country.name}?
           </h2>
           <p className="text-white/70 text-lg mb-8">
@@ -261,7 +263,7 @@ export default function BeCountryPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/compass"
-              className="bg-[#C9A227] hover:bg-[#C9A227]/80 text-stone-900 font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 hover:scale-105"
+              className="bg-brand-accent hover:bg-brand-accent/80 text-stone-900 font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 hover:scale-105"
             >
               Open the Compass
             </Link>

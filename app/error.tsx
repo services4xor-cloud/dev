@@ -15,18 +15,24 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#0A0A12' }}>
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ backgroundColor: 'var(--color-bg)' }}
+    >
       <div className="max-w-md w-full text-center">
         {/* Lion logo / emblem */}
         <div
           className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-4xl"
-          style={{ backgroundColor: '#5C0A14', border: '2px solid #C9A227' }}
+          style={{
+            backgroundColor: 'var(--color-primary)',
+            border: '2px solid var(--color-accent)',
+          }}
         >
           🦁
         </div>
 
         {/* Heading */}
-        <h1 className="text-2xl font-black mb-2" style={{ color: '#C9A227' }}>
+        <h1 className="text-2xl font-black mb-2" style={{ color: 'var(--color-accent)' }}>
           Something went wrong
         </h1>
         <p className="text-sm mb-1" style={{ color: '#9CA3AF' }}>
@@ -35,7 +41,10 @@ export default function Error({
 
         {/* Error detail */}
         {error?.message && (
-          <p className="text-xs mt-2 mb-6 px-4 py-2 rounded-lg font-mono" style={{ color: '#6B7280', backgroundColor: '#1A1A25' }}>
+          <p
+            className="text-xs mt-2 mb-6 px-4 py-2 rounded-lg font-mono"
+            style={{ color: '#6B7280', backgroundColor: 'var(--color-surface-2)' }}
+          >
             {error.message}
           </p>
         )}
@@ -46,14 +55,18 @@ export default function Error({
           <button
             onClick={reset}
             className="px-6 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 active:scale-95"
-            style={{ backgroundColor: '#C9A227', color: '#0A0A12' }}
+            style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-bg)' }}
           >
             Try Again
           </button>
           <Link
             href="/"
             className="px-6 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
-            style={{ backgroundColor: '#1A1A25', color: '#C9A227', border: '1px solid #5C0A14' }}
+            style={{
+              backgroundColor: 'var(--color-surface-2)',
+              color: 'var(--color-accent)',
+              border: '1px solid var(--color-primary)',
+            }}
           >
             Return to Compass
           </Link>

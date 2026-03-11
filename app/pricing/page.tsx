@@ -11,11 +11,11 @@ export default function PricingPage() {
   const [currency, setCurrency] = useState<'KES' | 'USD'>('KES')
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-brand-bg">
       <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-16">
         {/* Hero */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-[#5C0A14]/30 text-[#C9A227] px-4 py-2 rounded-full text-sm font-medium mb-4 border border-[#C9A227]/20">
+          <div className="inline-flex items-center gap-2 bg-brand-primary/30 text-brand-accent px-4 py-2 rounded-full text-sm font-medium mb-4 border border-brand-accent/20">
             <Globe className="w-4 h-4" />
             Pay from anywhere — M-Pesa, card, or mobile money
           </div>
@@ -31,13 +31,13 @@ export default function PricingPage() {
           <div className="flex items-center justify-center gap-2 mt-6">
             <button
               onClick={() => setCurrency('KES')}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'KES' ? 'bg-[#5C0A14] text-white border border-[#C9A227]/30' : 'bg-gray-900 text-gray-400 border border-gray-700 hover:border-gray-600'}`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'KES' ? 'bg-brand-primary text-white border border-brand-accent/30' : 'bg-gray-900 text-gray-400 border border-gray-700 hover:border-gray-600'}`}
             >
               🇰🇪 KES
             </button>
             <button
               onClick={() => setCurrency('USD')}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'USD' ? 'bg-[#5C0A14] text-white border border-[#C9A227]/30' : 'bg-gray-900 text-gray-400 border border-gray-700 hover:border-gray-600'}`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'USD' ? 'bg-brand-primary text-white border border-brand-accent/30' : 'bg-gray-900 text-gray-400 border border-gray-700 hover:border-gray-600'}`}
             >
               🇺🇸 USD
             </button>
@@ -53,23 +53,23 @@ export default function PricingPage() {
                 key={plan.name}
                 className={`bg-gray-900/60 rounded-2xl p-6 shadow-sm border-2 transition-transform hover:-translate-y-1 relative ${
                   plan.popular
-                    ? 'border-[#C9A227]/50 shadow-lg shadow-[#C9A227]/5'
+                    ? 'border-brand-accent/50 shadow-lg shadow-brand-accent/5'
                     : 'border-gray-800'
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#C9A227] text-[#0A0A0F] text-xs font-bold px-3 py-1 rounded-full">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-accent text-brand-bg text-xs font-bold px-3 py-1 rounded-full">
                     MOST POPULAR
                   </div>
                 )}
 
                 <div
                   className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${
-                    plan.popular ? 'bg-[#5C0A14]/50' : 'bg-gray-800'
+                    plan.popular ? 'bg-brand-primary/50' : 'bg-gray-800'
                   }`}
                 >
                   <Icon
-                    className={`w-6 h-6 ${plan.popular ? 'text-[#C9A227]' : 'text-gray-400'}`}
+                    className={`w-6 h-6 ${plan.popular ? 'text-brand-accent' : 'text-gray-400'}`}
                   />
                 </div>
 
@@ -87,7 +87,7 @@ export default function PricingPage() {
                   {plan.features.map((f, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
                       <Check
-                        className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.popular ? 'text-[#C9A227]' : 'text-green-500'}`}
+                        className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.popular ? 'text-brand-accent' : 'text-green-500'}`}
                       />
                       {f}
                     </li>
@@ -98,7 +98,7 @@ export default function PricingPage() {
                   href={`/anchors/post-path?plan=${plan.name.toLowerCase()}`}
                   className={`block w-full text-center py-3 rounded-xl font-semibold transition-colors ${
                     plan.popular
-                      ? 'bg-[#5C0A14] text-white hover:bg-[#7a0e1a] border border-[#C9A227]/30'
+                      ? 'bg-brand-primary text-white hover:bg-brand-primary-light border border-brand-accent/30'
                       : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                   }`}
                 >
@@ -134,7 +134,7 @@ export default function PricingPage() {
         </div>
 
         {/* For Pioneers */}
-        <div className="bg-gradient-to-r from-[#5C0A14] to-[#7a0e1a] rounded-2xl p-8 text-white text-center border border-[#C9A227]/20">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary-light rounded-2xl p-8 text-white text-center border border-brand-accent/20">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-80" />
           <h2 className="text-2xl font-bold mb-2">Pioneers — always free</h2>
           <p className="opacity-90 max-w-lg mx-auto mb-6">
@@ -143,7 +143,7 @@ export default function PricingPage() {
           </p>
           <Link
             href="/signup?role=pioneer"
-            className="bg-white text-[#5C0A14] font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors inline-block"
+            className="bg-white text-brand-primary font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors inline-block"
           >
             Create Free Profile →
           </Link>

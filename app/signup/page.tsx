@@ -30,17 +30,17 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-lg">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#5C0A14] rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center">
               <Briefcase className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold">
               <span className="text-white">Beke</span>
-              <span className="text-[#C9A227]">nya</span>
+              <span className="text-brand-accent">nya</span>
             </span>
           </Link>
           <h1 className="mt-4 text-2xl font-bold text-white">Create your account</h1>
@@ -57,16 +57,16 @@ export default function SignupPage() {
                   onClick={() => setRole('PIONEER')}
                   className={`relative p-5 rounded-2xl border-2 text-left transition-all ${
                     role === 'PIONEER'
-                      ? 'border-[#C9A227] bg-[#5C0A14]/30'
+                      ? 'border-brand-accent bg-brand-primary/30'
                       : 'border-gray-700 hover:border-gray-600'
                   }`}
                 >
                   {role === 'PIONEER' && (
-                    <div className="absolute top-3 right-3 w-5 h-5 bg-[#C9A227] rounded-full flex items-center justify-center">
-                      <Check className="w-3 h-3 text-[#0A0A0F]" />
+                    <div className="absolute top-3 right-3 w-5 h-5 bg-brand-accent rounded-full flex items-center justify-center">
+                      <Check className="w-3 h-3 text-brand-bg" />
                     </div>
                   )}
-                  <Users className="w-8 h-8 mb-2 text-[#C9A227]" />
+                  <Users className="w-8 h-8 mb-2 text-brand-accent" />
                   <div className="font-semibold text-white">Pioneer</div>
                   <div className="text-sm text-gray-400 mt-1">Find my path</div>
                 </button>
@@ -76,16 +76,16 @@ export default function SignupPage() {
                   onClick={() => setRole('ANCHOR')}
                   className={`relative p-5 rounded-2xl border-2 text-left transition-all ${
                     role === 'ANCHOR'
-                      ? 'border-[#C9A227] bg-[#5C0A14]/30'
+                      ? 'border-brand-accent bg-brand-primary/30'
                       : 'border-gray-700 hover:border-gray-600'
                   }`}
                 >
                   {role === 'ANCHOR' && (
-                    <div className="absolute top-3 right-3 w-5 h-5 bg-[#C9A227] rounded-full flex items-center justify-center">
-                      <Check className="w-3 h-3 text-[#0A0A0F]" />
+                    <div className="absolute top-3 right-3 w-5 h-5 bg-brand-accent rounded-full flex items-center justify-center">
+                      <Check className="w-3 h-3 text-brand-bg" />
                     </div>
                   )}
-                  <Building2 className="w-8 h-8 mb-2 text-[#C9A227]" />
+                  <Building2 className="w-8 h-8 mb-2 text-brand-accent" />
                   <div className="font-semibold text-white">Anchor</div>
                   <div className="text-sm text-gray-400 mt-1">Open Paths for talent</div>
                 </button>
@@ -230,7 +230,7 @@ export default function SignupPage() {
 
         <p className="text-center mt-6 text-gray-400">
           Already have an account?{' '}
-          <Link href="/login" className="text-[#C9A227] font-semibold hover:underline">
+          <Link href="/login" className="text-brand-accent font-semibold hover:underline">
             Sign in →
           </Link>
         </p>

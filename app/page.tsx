@@ -71,14 +71,15 @@ export default function HomePage() {
   const compassHref = `/compass${compassParams.toString() ? '?' + compassParams.toString() : ''}`
 
   return (
-    <div className="bg-[#0A0A0F] text-white overflow-x-hidden">
+    <div className="bg-brand-bg text-white overflow-x-hidden">
       {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden min-h-[100vh] flex items-center">
         {/* Dark gradient background: maroon → near-black */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to bottom, #5C0A14 0%, #0A0A0F 40%, #0A0A0F 100%)',
+            background:
+              'linear-gradient(to bottom, var(--color-primary) 0%, var(--color-bg) 40%, var(--color-bg) 100%)',
           }}
         />
 
@@ -97,13 +98,14 @@ export default function HomePage() {
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-64 rounded-full blur-3xl pointer-events-none"
           style={{
-            background: 'radial-gradient(ellipse, rgba(201,162,39,0.18) 0%, transparent 70%)',
+            background:
+              'radial-gradient(ellipse, rgb(var(--color-accent-rgb) / 0.18) 0%, transparent 70%)',
           }}
         />
         {/* Maroon glow sides */}
         <div
           className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full blur-3xl pointer-events-none"
-          style={{ background: 'rgba(92,10,20,0.25)' }}
+          style={{ background: 'rgb(var(--color-primary-rgb) / 0.25)' }}
         />
 
         <div className="relative max-w-5xl 3xl:max-w-7xl mx-auto px-4 py-28 3xl:py-40 text-center">
@@ -122,7 +124,10 @@ export default function HomePage() {
           {/* Geo greeting chip */}
           <div
             className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm text-gray-200 mb-8 border"
-            style={{ background: 'rgba(201,162,39,0.08)', borderColor: 'rgba(201,162,39,0.25)' }}
+            style={{
+              background: 'rgb(var(--color-accent-rgb) / 0.08)',
+              borderColor: 'rgb(var(--color-accent-rgb) / 0.25)',
+            }}
           >
             <span className="text-xl">{geo.flag}</span>
             <span>
@@ -134,9 +139,9 @@ export default function HomePage() {
           <h1 className="font-display text-5xl md:text-7xl xl:text-8xl 3xl:text-9xl font-bold leading-[1.1] mb-6">
             <span className="text-white">Find where you</span>
             <br />
-            <span style={{ color: '#C9A227' }}>belong.</span>
+            <span style={{ color: 'var(--color-accent)' }}>belong.</span>
             <br />
-            <span style={{ color: '#C9A227' }}>Go there.</span>
+            <span style={{ color: 'var(--color-accent)' }}>Go there.</span>
           </h1>
 
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -150,9 +155,10 @@ export default function HomePage() {
               href="/compass"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-white font-bold text-lg rounded-full px-10 py-4 transition-all shadow-lg"
               style={{
-                background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
-                boxShadow: '0 8px 32px rgba(92,10,20,0.40)',
-                border: '1px solid rgba(201,162,39,0.40)',
+                background:
+                  'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                boxShadow: '0 8px 32px rgb(var(--color-primary-rgb) / 0.40)',
+                border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
               }}
             >
               <span>Start My Compass</span>
@@ -161,7 +167,11 @@ export default function HomePage() {
             <Link
               href="/ventures"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 font-semibold text-lg rounded-full px-10 py-4 transition-all border"
-              style={{ color: '#C9A227', borderColor: '#C9A227', background: 'transparent' }}
+              style={{
+                color: 'var(--color-accent)',
+                borderColor: 'var(--color-accent)',
+                background: 'transparent',
+              }}
             >
               <span>Browse Ventures</span>
             </Link>
@@ -170,13 +180,16 @@ export default function HomePage() {
           {/* Thin gold decorative line */}
           <div
             className="mx-auto mb-8 h-px w-48"
-            style={{ background: 'linear-gradient(to right, transparent, #C9A227, transparent)' }}
+            style={{
+              background:
+                'linear-gradient(to right, transparent, var(--color-accent), transparent)',
+            }}
           />
 
           {/* Tiny trust line */}
           <p className="text-gray-600 text-sm">
             Pioneers active today ·{' '}
-            <span className="font-medium" style={{ color: '#C9A227' }}>
+            <span className="font-medium" style={{ color: 'var(--color-accent)' }}>
               KES 50 from every booking
             </span>{' '}
             funds UTAMADUNI community work
@@ -187,11 +200,11 @@ export default function HomePage() {
             <span className="relative flex h-3 w-3">
               <span
                 className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                style={{ background: '#C9A227' }}
+                style={{ background: 'var(--color-accent)' }}
               />
               <span
                 className="relative inline-flex rounded-full h-3 w-3"
-                style={{ background: '#C9A227' }}
+                style={{ background: 'var(--color-accent)' }}
               />
             </span>
           </div>
@@ -199,12 +212,12 @@ export default function HomePage() {
       </section>
 
       {/* ── 2. WHAT IS THE BENETWORK ─────────────────────────────────────────── */}
-      <section className="py-24" style={{ background: '#0A0A0F' }}>
+      <section className="py-24" style={{ background: 'var(--color-bg)' }}>
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-16">
             <p
               className="text-sm font-semibold uppercase tracking-widest mb-3"
-              style={{ color: '#C9A227' }}
+              style={{ color: 'var(--color-accent)' }}
             >
               The BeNetwork
             </p>
@@ -222,17 +235,23 @@ export default function HomePage() {
               <div
                 key={pillar.for}
                 className="rounded-3xl p-8 flex flex-col border"
-                style={{ background: 'rgba(92,10,20,0.20)', borderColor: 'rgba(201,162,39,0.30)' }}
+                style={{
+                  background: 'rgb(var(--color-primary-rgb) / 0.20)',
+                  borderColor: 'rgb(var(--color-accent-rgb) / 0.30)',
+                }}
               >
                 <div
                   className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-5 border"
-                  style={{ background: '#5C0A14', borderColor: 'rgba(201,162,39,0.50)' }}
+                  style={{
+                    background: 'var(--color-primary)',
+                    borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
+                  }}
                 >
                   {pillar.icon}
                 </div>
                 <div
                   className="text-xs font-bold uppercase tracking-widest mb-1"
-                  style={{ color: '#C9A227' }}
+                  style={{ color: 'var(--color-accent)' }}
                 >
                   {pillar.for}
                 </div>
@@ -251,12 +270,12 @@ export default function HomePage() {
       </section>
 
       {/* ── 3. LIVE COMPASS PREVIEW ──────────────────────────────────────────── */}
-      <section className="py-24 bg-gradient-to-b from-gray-900 to-[#0A0A0F]">
+      <section className="py-24 bg-gradient-to-b from-gray-900 to-brand-bg">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
             <p
               className="text-sm font-semibold uppercase tracking-widest mb-3"
-              style={{ color: '#C9A227' }}
+              style={{ color: 'var(--color-accent)' }}
             >
               Live Compass
             </p>
@@ -276,7 +295,7 @@ export default function HomePage() {
                 <select
                   value={compassFrom}
                   onChange={(e) => setCompassFrom(e.target.value)}
-                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#C9A227] transition-colors"
+                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-accent transition-colors"
                 >
                   <option value="">Select country...</option>
                   {FROM_COUNTRIES.map((c) => (
@@ -295,7 +314,7 @@ export default function HomePage() {
                 <select
                   value={compassTo}
                   onChange={(e) => setCompassTo(e.target.value)}
-                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#C9A227] transition-colors"
+                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-accent transition-colors"
                 >
                   <option value="">Select destination...</option>
                   {TO_COUNTRIES.map((c) => (
@@ -314,7 +333,7 @@ export default function HomePage() {
                 <select
                   value={compassType}
                   onChange={(e) => setCompassType(e.target.value)}
-                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#C9A227] transition-colors"
+                  className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-accent transition-colors"
                 >
                   <option value="">Pioneer type...</option>
                   {PIONEER_TYPE_OPTIONS.map((o) => (
@@ -329,10 +348,10 @@ export default function HomePage() {
             {/* Step indicators */}
             <div className="flex items-center gap-3 mb-8 text-xs text-gray-500">
               <span
-                className={`flex items-center gap-1 ${compassFrom ? 'text-[#C9A227]' : 'text-gray-500'}`}
+                className={`flex items-center gap-1 ${compassFrom ? 'text-brand-accent' : 'text-gray-500'}`}
               >
                 <span
-                  className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassFrom ? 'border-[#C9A227] text-[#C9A227]' : 'border-gray-600 text-gray-600'}`}
+                  className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassFrom ? 'border-brand-accent text-brand-accent' : 'border-gray-600 text-gray-600'}`}
                 >
                   1
                 </span>
@@ -340,10 +359,10 @@ export default function HomePage() {
               </span>
               <span className="text-gray-700">&#8594;</span>
               <span
-                className={`flex items-center gap-1 ${compassTo ? 'text-[#C9A227]' : 'text-gray-500'}`}
+                className={`flex items-center gap-1 ${compassTo ? 'text-brand-accent' : 'text-gray-500'}`}
               >
                 <span
-                  className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassTo ? 'border-[#C9A227] text-[#C9A227]' : 'border-gray-600 text-gray-600'}`}
+                  className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassTo ? 'border-brand-accent text-brand-accent' : 'border-gray-600 text-gray-600'}`}
                 >
                   2
                 </span>
@@ -351,10 +370,10 @@ export default function HomePage() {
               </span>
               <span className="text-gray-700">&#8594;</span>
               <span
-                className={`flex items-center gap-1 ${compassType ? 'text-[#C9A227]' : 'text-gray-500'}`}
+                className={`flex items-center gap-1 ${compassType ? 'text-brand-accent' : 'text-gray-500'}`}
               >
                 <span
-                  className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassType ? 'border-[#C9A227] text-[#C9A227]' : 'border-gray-600 text-gray-600'}`}
+                  className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassType ? 'border-brand-accent text-brand-accent' : 'border-gray-600 text-gray-600'}`}
                 >
                   3
                 </span>
@@ -366,9 +385,10 @@ export default function HomePage() {
               href={compassHref}
               className="inline-flex items-center gap-3 text-white font-bold text-base rounded-full px-8 py-4 transition-all shadow-lg hover:scale-105"
               style={{
-                background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
-                border: '1px solid rgba(201,162,39,0.40)',
-                boxShadow: '0 8px 24px rgba(92,10,20,0.35)',
+                background:
+                  'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
+                boxShadow: '0 8px 24px rgb(var(--color-primary-rgb) / 0.35)',
               }}
             >
               <span>Show My Route</span>
@@ -379,10 +399,10 @@ export default function HomePage() {
       </section>
 
       {/* ── 4. EXPERIENCES STRIP (Safari) ────────────────────────────────────── */}
-      <section className="py-24 bg-gradient-to-b from-[#0A0A0F] to-[#5C0A14]/20">
+      <section className="py-24 bg-gradient-to-b from-brand-bg to-brand-primary/20">
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-12">
-            <p className="text-[#C9A227] text-sm font-semibold uppercase tracking-widest mb-3">
+            <p className="text-brand-accent text-sm font-semibold uppercase tracking-widest mb-3">
               Safari Experiences
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
@@ -400,7 +420,7 @@ export default function HomePage() {
                 className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden group hover:-translate-y-1 transition-transform"
               >
                 {/* Image placeholder with gradient */}
-                <div className="h-44 bg-gradient-to-br from-[#5C0A14] to-[#2a0a0f] flex items-center justify-center relative">
+                <div className="h-44 bg-gradient-to-br from-brand-primary to-[#2a0a0f] flex items-center justify-center relative">
                   <span className="text-6xl opacity-60">
                     {pkg.type === 'deep_sea_fishing'
                       ? '🐟'
@@ -413,7 +433,7 @@ export default function HomePage() {
 
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227] bg-[#C9A227]/10 rounded-full px-3 py-1">
+                    <span className="text-xs font-bold uppercase tracking-widest text-brand-accent bg-brand-accent/10 rounded-full px-3 py-1">
                       {pkg.duration}
                     </span>
                     <span className="text-xs text-gray-500">{pkg.destination}</span>
@@ -424,7 +444,7 @@ export default function HomePage() {
                   </p>
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-bold text-lg" style={{ color: '#C9A227' }}>
+                      <div className="font-bold text-lg" style={{ color: 'var(--color-accent)' }}>
                         {formatPackagePrice(pkg)}
                       </div>
                       {pkg.priceNote && (
@@ -435,8 +455,9 @@ export default function HomePage() {
                       href={`/experiences/${pkg.id}`}
                       className="text-sm font-semibold text-white rounded-full px-4 py-2 transition-all hover:scale-105"
                       style={{
-                        background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
-                        border: '1px solid rgba(201,162,39,0.35)',
+                        background:
+                          'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                        border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
                       }}
                     >
                       Book This Venture
@@ -452,7 +473,10 @@ export default function HomePage() {
       {/* ── 6. UTAMADUNI BANNER ──────────────────────────────────────────────── */}
       <section
         className="py-16 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #5C0A14 0%, #2a0a0f 50%, #0A0A0F 100%)' }}
+        style={{
+          background:
+            'linear-gradient(135deg, var(--color-primary) 0%, #2a0a0f 50%, var(--color-bg) 100%)',
+        }}
       >
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,_rgba(255,255,255,0.15),transparent)]" />
@@ -461,12 +485,12 @@ export default function HomePage() {
           {/* Gold accent left border strip */}
           <div
             className="border-l-4 pl-8 mb-8 text-center md:text-left"
-            style={{ borderColor: '#C9A227' }}
+            style={{ borderColor: 'var(--color-accent)' }}
           >
             <div className="text-4xl mb-4">&#127807;</div>
             <h2
               className="font-display text-2xl md:text-4xl font-bold mb-4"
-              style={{ color: '#C9A227' }}
+              style={{ color: 'var(--color-accent)' }}
             >
               Every venture supports UTAMADUNI
             </h2>
@@ -474,7 +498,7 @@ export default function HomePage() {
               Kenya&apos;s community development CBO — education, conservation, women&apos;s
               empowerment.
             </p>
-            <p className="font-bold text-xl mb-8" style={{ color: '#C9A227' }}>
+            <p className="font-bold text-xl mb-8" style={{ color: 'var(--color-accent)' }}>
               KES 50 from every booking. Automatically. Always.
             </p>
             <div className="flex flex-wrap items-center gap-8 mb-8 text-white text-sm">
@@ -493,11 +517,11 @@ export default function HomePage() {
       </section>
 
       {/* ── 7. BECOUNTRY EXPANSION ───────────────────────────────────────────── */}
-      <section className="py-24 bg-[#0A0A0F]">
+      <section className="py-24 bg-brand-bg">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <p
             className="text-sm font-semibold uppercase tracking-widest mb-4"
-            style={{ color: '#C9A227' }}
+            style={{ color: 'var(--color-accent)' }}
           >
             The BeNetwork
           </p>
@@ -514,7 +538,7 @@ export default function HomePage() {
                 key={c.name}
                 className={`flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all ${
                   c.status === 'live'
-                    ? 'bg-[#5C0A14]/30 border-[#C9A227]/40 text-white'
+                    ? 'bg-brand-primary/30 border-brand-accent/40 text-white'
                     : 'bg-gray-900 border-white/5 text-gray-500'
                 }`}
               >
@@ -522,7 +546,10 @@ export default function HomePage() {
                 {/* Lion circle badge */}
                 <span
                   className="w-7 h-7 rounded-full flex items-center justify-center text-sm border shrink-0"
-                  style={{ background: '#5C0A14', borderColor: 'rgba(201,162,39,0.60)' }}
+                  style={{
+                    background: 'var(--color-primary)',
+                    borderColor: 'rgb(var(--color-accent-rgb) / 0.60)',
+                  }}
                   title="BeNetwork"
                 >
                   🦁
@@ -530,7 +557,7 @@ export default function HomePage() {
                 <div className="text-left">
                   <div className="font-bold text-sm">{c.name}</div>
                   <div
-                    className={`text-xs ${c.status === 'live' ? 'text-[#C9A227]' : 'text-gray-600'}`}
+                    className={`text-xs ${c.status === 'live' ? 'text-brand-accent' : 'text-gray-600'}`}
                   >
                     {c.status === 'live' ? 'Live now' : 'Coming soon'}
                   </div>
@@ -553,7 +580,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 7. ANCHOR SECTION ────────────────────────────────────────────────── */}
-      <section className="py-24 bg-gradient-to-b from-[#0A0A0F] to-gray-900">
+      <section className="py-24 bg-gradient-to-b from-brand-bg to-gray-900">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="text-6xl mb-6">&#127970;</div>
           <p className="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-3">
@@ -575,9 +602,10 @@ export default function HomePage() {
               href="/anchors/post-path"
               className="inline-flex items-center gap-2 text-white font-bold rounded-full px-10 py-4 transition-all hover:scale-105"
               style={{
-                background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
-                border: '1px solid rgba(201,162,39,0.40)',
-                boxShadow: '0 8px 24px rgba(92,10,20,0.35)',
+                background:
+                  'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
+                boxShadow: '0 8px 24px rgb(var(--color-primary-rgb) / 0.35)',
               }}
             >
               Post a Path &#8594;
@@ -598,7 +626,7 @@ export default function HomePage() {
           <div className="text-center mb-14">
             <p
               className="text-sm font-semibold uppercase tracking-widest mb-3"
-              style={{ color: '#C9A227' }}
+              style={{ color: 'var(--color-accent)' }}
             >
               Pioneer Stories
             </p>
@@ -613,7 +641,10 @@ export default function HomePage() {
                 key={t.name}
                 className="bg-gray-800/40 border border-white/5 rounded-3xl p-7 flex flex-col"
               >
-                <div className="text-4xl font-display mb-4" style={{ color: '#C9A227' }}>
+                <div
+                  className="text-4xl font-display mb-4"
+                  style={{ color: 'var(--color-accent)' }}
+                >
                   &ldquo;
                 </div>
                 <p className="text-gray-300 text-sm leading-relaxed flex-1 mb-6">{t.quote}</p>
@@ -639,7 +670,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 11. PAYMENT TRUST STRIP ──────────────────────────────────────────── */}
-      <section className="py-12 bg-[#0A0A0F] border-y border-white/5">
+      <section className="py-12 bg-brand-bg border-y border-white/5">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">
             Pay with what you know

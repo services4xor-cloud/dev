@@ -1,20 +1,20 @@
 'use client'
 
 // Reusable shimmer skeleton components using BeKenya brand colors
-// Brand: Maroon #5C0A14, Gold #C9A227, Dark bg #0A0A12 / #1A1A25
+// Brand: Maroon var(--color-primary), Gold var(--color-accent), Dark bg #0A0A12 / #1A1A25
 
 // Shimmer animation applied via inline keyframe style injected once
 function ShimmerBase({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <div
       className={`relative overflow-hidden rounded-lg ${className ?? ''}`}
-      style={{ backgroundColor: '#1A1A25', ...style }}
+      style={{ backgroundColor: 'var(--color-surface-2)', ...style }}
     >
       <div
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(90deg, transparent 0%, rgba(201,162,39,0.08) 50%, transparent 100%)',
+            'linear-gradient(90deg, transparent 0%, rgb(var(--color-accent-rgb) / 0.08) 50%, transparent 100%)',
           animation: 'shimmer 1.8s infinite',
         }}
       />
@@ -34,7 +34,7 @@ export function VentureCardSkeleton() {
   return (
     <div
       className="rounded-2xl p-5 flex flex-col gap-3"
-      style={{ backgroundColor: '#13131E', border: '1px solid #5C0A14' }}
+      style={{ backgroundColor: '#13131E', border: '1px solid var(--color-primary)' }}
     >
       {/* Image placeholder */}
       <ShimmerBase className="h-40 w-full rounded-xl" />
@@ -67,10 +67,13 @@ export function PioneerProfileSkeleton() {
   return (
     <div
       className="rounded-2xl p-5 flex gap-4"
-      style={{ backgroundColor: '#13131E', border: '1px solid #5C0A14' }}
+      style={{ backgroundColor: '#13131E', border: '1px solid var(--color-primary)' }}
     >
       {/* Avatar */}
-      <ShimmerBase className="h-14 w-14 flex-shrink-0 rounded-full" style={{ borderRadius: '9999px' }} />
+      <ShimmerBase
+        className="h-14 w-14 flex-shrink-0 rounded-full"
+        style={{ borderRadius: '9999px' }}
+      />
 
       <div className="flex-1 flex flex-col gap-2">
         {/* Name */}
@@ -97,13 +100,13 @@ export function CompassSkeleton() {
   return (
     <div
       className="rounded-2xl p-6 flex flex-col gap-4"
-      style={{ backgroundColor: '#13131E', border: '1px solid #C9A227' }}
+      style={{ backgroundColor: '#13131E', border: '1px solid var(--color-accent)' }}
     >
       {/* Header with icon */}
       <div className="flex items-center gap-3">
         <ShimmerBase
           className="w-10 h-10 flex-shrink-0"
-          style={{ borderRadius: '50%', backgroundColor: '#5C0A14' }}
+          style={{ borderRadius: '50%', backgroundColor: 'var(--color-primary)' }}
         />
         <div className="flex-1 flex flex-col gap-1.5">
           <ShimmerBase className="h-4 w-1/2 rounded-md" />
@@ -112,7 +115,10 @@ export function CompassSkeleton() {
       </div>
 
       {/* Reading meter bar */}
-      <div className="rounded-full overflow-hidden h-2" style={{ backgroundColor: '#1A1A25' }}>
+      <div
+        className="rounded-full overflow-hidden h-2"
+        style={{ backgroundColor: 'var(--color-surface-2)' }}
+      >
         <ShimmerBase className="h-2 w-3/5 rounded-full" style={{ borderRadius: '9999px' }} />
       </div>
 

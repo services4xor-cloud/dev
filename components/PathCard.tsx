@@ -47,8 +47,8 @@ export default function PathCard({
       href={`/ventures/${id}`}
       className={`block rounded-2xl p-5 border-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/30 ${
         isFeatured
-          ? 'bg-[#5C0A14]/20 border-[#C9A227]/40 hover:border-[#C9A227]/70'
-          : 'bg-gray-900/60 border-gray-800 hover:border-[#C9A227]/30'
+          ? 'bg-brand-primary/20 border-brand-accent/40 hover:border-brand-accent/70'
+          : 'bg-gray-900/60 border-gray-800 hover:border-brand-accent/30'
       }`}
     >
       <div className="flex items-start gap-4">
@@ -65,7 +65,7 @@ export default function PathCard({
               <p className="text-sm text-gray-400">{company}</p>
             </div>
             {isFeatured && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-[#C9A227]/10 text-[#C9A227] border border-[#C9A227]/20 flex-shrink-0">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-brand-accent/10 text-brand-accent border border-brand-accent/20 flex-shrink-0">
                 <Star className="w-3 h-3" fill="currentColor" />
                 Featured
               </span>
@@ -78,7 +78,7 @@ export default function PathCard({
               {location}
             </span>
             {isRemote && (
-              <span className="flex items-center gap-1 text-xs text-[#C9A227]">
+              <span className="flex items-center gap-1 text-xs text-brand-accent">
                 <Globe className="w-3 h-3" />
                 Remote
               </span>
@@ -88,7 +88,7 @@ export default function PathCard({
               {posted}
             </span>
             {salaryMin && (
-              <span className="flex items-center gap-1 text-xs text-[#C9A227] font-medium">
+              <span className="flex items-center gap-1 text-xs text-brand-accent font-medium">
                 <DollarSign className="w-3 h-3" />
                 {currency} {(salaryMin / 1000).toFixed(0)}k
                 {salaryMax ? `–${(salaryMax / 1000).toFixed(0)}k` : '+'}

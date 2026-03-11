@@ -77,16 +77,18 @@ export default function CompassPage() {
   })()
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-brand-bg">
       {/* Hero */}
       <div
         className="pt-16 pb-8 text-center px-4"
-        style={{ background: 'linear-gradient(to bottom, #5C0A14 0%, #0A0A0F 60%)' }}
+        style={{
+          background: 'linear-gradient(to bottom, var(--color-primary) 0%, var(--color-bg) 60%)',
+        }}
       >
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C9A227]/10 border border-[#C9A227]/20 text-[#C9A227] text-sm font-medium mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-sm font-medium mb-6">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C9A227] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C9A227]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent" />
           </span>
           Your Compass is active
         </div>
@@ -103,7 +105,7 @@ export default function CompassPage() {
         <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-3 leading-tight">
           Your Compass is ready.
           <br />
-          <span className="text-[#C9A227]">Let&apos;s find your path.</span>
+          <span className="text-brand-accent">Let&apos;s find your path.</span>
         </h1>
         <p className="text-gray-400 text-lg max-w-xl mx-auto">{VOCAB.tagline}</p>
       </div>
@@ -120,9 +122,9 @@ export default function CompassPage() {
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
                       step > s
-                        ? 'bg-[#C9A227] text-[#0A0A0F]'
+                        ? 'bg-brand-accent text-brand-bg'
                         : step === s
-                          ? 'bg-[#5C0A14] text-[#C9A227] border border-[#C9A227]/60'
+                          ? 'bg-brand-primary text-brand-accent border border-brand-accent/60'
                           : 'bg-gray-800 text-gray-500'
                     }`}
                   >
@@ -139,7 +141,7 @@ export default function CompassPage() {
                 {/* Connector line */}
                 {s < 4 && (
                   <div
-                    className={`flex-1 h-0.5 mx-3 mt-4 -translate-y-1/2 transition-all duration-300 ${step > s ? 'bg-[#C9A227]' : 'bg-gray-800'}`}
+                    className={`flex-1 h-0.5 mx-3 mt-4 -translate-y-1/2 transition-all duration-300 ${step > s ? 'bg-brand-accent' : 'bg-gray-800'}`}
                   />
                 )}
               </div>
@@ -165,7 +167,7 @@ export default function CompassPage() {
           <div className="space-y-5 animate-[fadeIn_0.3s_ease]">
             <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-[#5C0A14]/50 flex items-center justify-center text-xl">
+                <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
                   🌍
                 </div>
                 <div>
@@ -187,7 +189,7 @@ export default function CompassPage() {
                   </div>
                   <button
                     onClick={() => setShowOriginPicker(true)}
-                    className="text-[#C9A227] text-sm font-medium hover:text-[#C9A227]/70 transition-colors"
+                    className="text-brand-accent text-sm font-medium hover:text-brand-accent/70 transition-colors"
                   >
                     Change
                   </button>
@@ -203,8 +205,8 @@ export default function CompassPage() {
                       }}
                       className={`flex items-center gap-2 p-3 rounded-xl border text-left transition-all ${
                         origin.code === c.code
-                          ? 'border-[#C9A227] bg-[#5C0A14]/30 text-[#C9A227]'
-                          : 'border-gray-700 bg-gray-800/40 text-white hover:border-[#C9A227]/50'
+                          ? 'border-brand-accent bg-brand-primary/30 text-brand-accent'
+                          : 'border-gray-700 bg-gray-800/40 text-white hover:border-brand-accent/50'
                       }`}
                     >
                       <span className="text-xl">{c.flag}</span>
@@ -219,7 +221,7 @@ export default function CompassPage() {
               </p>
               <button
                 onClick={() => setStep(3)}
-                className="w-full bg-[#5C0A14] hover:bg-[#7a0e1a] text-white font-bold py-4 rounded-xl transition-colors text-lg border border-[#C9A227]/30"
+                className="w-full bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-4 rounded-xl transition-colors text-lg border border-brand-accent/30"
               >
                 Confirmed — I&apos;m in {origin.name} →
               </button>
@@ -238,7 +240,7 @@ export default function CompassPage() {
           <div className="animate-[fadeIn_0.3s_ease]">
             <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6 mb-5">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-[#5C0A14]/50 flex items-center justify-center text-xl">
+                <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
                   ✦
                 </div>
                 <div>
@@ -258,10 +260,10 @@ export default function CompassPage() {
                   <button
                     key={key}
                     onClick={() => handlePioneerSelect(key)}
-                    className="bg-gray-800/60 border border-gray-700 hover:border-[#C9A227]/50 hover:bg-gray-800 rounded-xl p-4 text-center transition-all duration-200 group"
+                    className="bg-gray-800/60 border border-gray-700 hover:border-brand-accent/50 hover:bg-gray-800 rounded-xl p-4 text-center transition-all duration-200 group"
                   >
                     <div className="text-3xl mb-2">{type.icon}</div>
-                    <div className="text-white font-semibold text-sm group-hover:text-[#C9A227] transition-colors mb-1">
+                    <div className="text-white font-semibold text-sm group-hover:text-brand-accent transition-colors mb-1">
                       {type.label}
                     </div>
                     <div className="text-gray-500 text-xs leading-relaxed">{type.description}</div>
@@ -281,8 +283,8 @@ export default function CompassPage() {
         {/* STEP 4 — Route result */}
         {step === 4 && primaryDestination && pioneerType && (
           <div className="animate-[fadeIn_0.3s_ease] space-y-4">
-            <div className="bg-gradient-to-br from-gray-900 to-gray-900/80 border border-[#C9A227]/30 rounded-2xl p-6">
-              <div className="text-xs text-[#C9A227] font-semibold uppercase tracking-widest mb-4">
+            <div className="bg-gradient-to-br from-gray-900 to-gray-900/80 border border-brand-accent/30 rounded-2xl p-6">
+              <div className="text-xs text-brand-accent font-semibold uppercase tracking-widest mb-4">
                 Your Route
               </div>
 
@@ -292,9 +294,9 @@ export default function CompassPage() {
                   <div className="text-white font-medium text-sm">{origin.name}</div>
                 </div>
                 <div className="flex-1 flex items-center gap-2">
-                  <div className="flex-1 h-px bg-gradient-to-r from-gray-700 to-[#C9A227]/50" />
-                  <span className="text-[#C9A227] font-bold text-lg">→</span>
-                  <div className="flex-1 h-px bg-gradient-to-r from-[#C9A227]/50 to-gray-700" />
+                  <div className="flex-1 h-px bg-gradient-to-r from-gray-700 to-brand-accent/50" />
+                  <span className="text-brand-accent font-bold text-lg">→</span>
+                  <div className="flex-1 h-px bg-gradient-to-r from-brand-accent/50 to-gray-700" />
                 </div>
                 <div className="text-center">
                   <div className="text-3xl mb-1">{primaryDestination.flag}</div>
@@ -325,7 +327,7 @@ export default function CompassPage() {
                 >
                   {CORRIDOR_BADGE[primaryDestination.corridorStrength].label}
                 </span>
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#5C0A14]/60 text-[#C9A227] border border-[#C9A227]/30">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-brand-primary/60 text-brand-accent border border-brand-accent/30">
                   {PIONEER_TYPES[pioneerType].icon} {PIONEER_TYPES[pioneerType].label} Pioneer
                 </span>
               </div>
@@ -361,7 +363,7 @@ export default function CompassPage() {
                   <div className="space-y-1">
                     {displaySectors.map((sector) => (
                       <div key={sector} className="text-white text-xs flex items-center gap-1">
-                        <span className="text-[#C9A227]">•</span>
+                        <span className="text-brand-accent">•</span>
                         {sector}
                       </div>
                     ))}
@@ -371,7 +373,7 @@ export default function CompassPage() {
 
               <Link
                 href="/ventures"
-                className="block w-full bg-[#5C0A14] hover:bg-[#7a0e1a] text-white font-bold py-4 rounded-xl transition-colors text-center text-lg border border-[#C9A227]/30 hover:border-[#C9A227]/60"
+                className="block w-full bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-4 rounded-xl transition-colors text-center text-lg border border-brand-accent/30 hover:border-brand-accent/60"
               >
                 {VOCAB.pioneer_join} — See Open Paths →
               </Link>

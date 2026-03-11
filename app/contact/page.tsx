@@ -14,10 +14,10 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-brand-bg">
       <div className="max-w-4xl 3xl:max-w-6xl mx-auto px-4 xl:px-8 py-16">
         <div className="text-center mb-12">
-          <MessageSquare className="w-12 h-12 text-[#C9A227] mx-auto mb-4" />
+          <MessageSquare className="w-12 h-12 text-brand-accent mx-auto mb-4" />
           <h1 className="text-2xl sm:text-3xl md:text-4xl 3xl:text-5xl font-black text-white mb-2">
             Get in touch
           </h1>
@@ -46,8 +46,8 @@ export default function ContactPage() {
               const Icon = item.icon
               return (
                 <div key={item.label} className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-[#5C0A14]/50 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-5 h-5 text-[#C9A227]" />
+                  <div className="w-10 h-10 bg-brand-primary/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-5 h-5 text-brand-accent" />
                   </div>
                   <div>
                     <div className="font-semibold text-white text-sm">{item.label}</div>

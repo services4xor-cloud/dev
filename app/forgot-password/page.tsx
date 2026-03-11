@@ -19,11 +19,11 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 text-[#C9A227]/60 hover:text-[#C9A227] text-sm mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-brand-accent/60 hover:text-brand-accent text-sm mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Sign In
@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <h2 className="text-xl font-bold text-white mb-2">Check your email</h2>
               <p className="text-gray-400 text-sm">
-                If an account exists for <span className="text-[#C9A227]">{email}</span>,
+                If an account exists for <span className="text-brand-accent">{email}</span>,
                 you&apos;ll receive a reset link shortly.
               </p>
             </div>
@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
                       required
-                      className="w-full bg-gray-900 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A227] transition-colors"
+                      className="w-full bg-gray-900 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent transition-colors"
                     />
                   </div>
                 </div>
@@ -71,8 +71,9 @@ export default function ForgotPasswordPage() {
                   disabled={loading}
                   className="w-full py-3 rounded-xl font-bold text-white transition-all disabled:opacity-60"
                   style={{
-                    background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
-                    border: '1px solid rgba(201,162,39,0.35)',
+                    background:
+                      'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                    border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
                   }}
                 >
                   {loading ? 'Sending…' : 'Send reset link'}
@@ -84,7 +85,10 @@ export default function ForgotPasswordPage() {
 
         <p className="text-center text-gray-600 text-sm mt-4">
           Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-[#C9A227] hover:text-[#D4AF37] transition-colors">
+          <Link
+            href="/signup"
+            className="text-brand-accent hover:text-brand-accent-light transition-colors"
+          >
             Sign up free
           </Link>
         </p>
