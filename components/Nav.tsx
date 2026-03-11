@@ -83,7 +83,7 @@ export default function Nav() {
       setTimeout(() => {
         setTeaserIdx((i) => (i + 1) % TEASER_COUNTRIES.length)
         setTeaserFade(true)
-      }, 300)
+      }, 150)
     }, 3000)
     return () => clearInterval(interval)
   }, [])
@@ -219,7 +219,7 @@ export default function Nav() {
       <nav
         role="navigation"
         aria-label="Main navigation"
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow] duration-200 ${
           scrolled
             ? 'bg-brand-bg/95 backdrop-blur-xl shadow-lg shadow-black/20'
             : 'bg-gradient-to-b from-black/40 to-transparent'
@@ -285,12 +285,8 @@ export default function Nav() {
                   </span>
                   {/* Rotating teaser: cycles through countries (hidden when hovering) */}
                   <span
-                    className={`text-[9px] font-medium tracking-wider text-white/30 mt-0.5 transition-all duration-300 ${
-                      hoveredThread
-                        ? 'opacity-0 -translate-y-1'
-                        : teaserFade
-                          ? 'opacity-100 translate-y-0'
-                          : 'opacity-0 -translate-y-1'
+                    className={`text-[9px] font-medium tracking-wider text-white/30 mt-0.5 transition-opacity duration-150 ${
+                      hoveredThread ? 'opacity-0' : teaserFade ? 'opacity-100' : 'opacity-0'
                     }`}
                   >
                     {currentTeaser.flag} Be{currentTeaser.name}
@@ -304,10 +300,7 @@ export default function Nav() {
 
               {/* ── Identity Switcher Panel ──────────────────────── */}
               {identityOpen && (
-                <div
-                  role="menu"
-                  className="absolute left-0 top-full mt-2 animate-in fade-in slide-in-from-top-1 duration-200"
-                >
+                <div role="menu" className="absolute left-0 top-full mt-2">
                   <div className="w-[calc(100vw-2rem)] sm:w-96 max-w-[24rem] rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/60 overflow-hidden">
                     {/* Tab row */}
                     <div className="flex gap-0.5 px-2 pt-2 pb-1 overflow-x-auto scrollbar-hide border-b border-white/5">

@@ -12,6 +12,8 @@ import { detectCountryFromTimezone } from '@/lib/geo'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { hasCompletedOnboarding, getVenturesUrl } from '@/lib/identity-flags'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
+import { useIdentity } from '@/lib/identity-context'
+import { COUNTRIES, type CountryCode } from '@/lib/countries'
 import {
   COUNTRY_GREETINGS,
   ROTATING_FLAGS,
@@ -34,6 +36,10 @@ export default function HomePage() {
   const [detectedCountry, setDetectedCountry] = useState<string>('DEFAULT')
   const [flagIndex, setFlagIndex] = useState(0)
 
+  // Identity context — drives all dynamic content on the page
+  const { identity, countryName, brandName, localizeCountry } = useIdentity()
+  const countryConfig = COUNTRIES[identity.country as CountryCode]
+
   // Rotate background flags
   useEffect(() => {
     const timer = setInterval(() => {
@@ -49,12 +55,17 @@ export default function HomePage() {
     else setDetectedCountry('KE')
   }, [])
 
-  const geo = COUNTRY_GREETINGS[detectedCountry] || COUNTRY_GREETINGS.DEFAULT
-  const detectedOption = COUNTRY_OPTIONS.find((c) => c.code === detectedCountry)
+  // Use identity context for country-aware content, with timezone fallback
+  const activeCountry = identity.country || detectedCountry
+  const geo = COUNTRY_GREETINGS[activeCountry] || COUNTRY_GREETINGS.DEFAULT
+  const detectedOption = COUNTRY_OPTIONS.find((c) => c.code === activeCountry)
+  const activeImpactPartner = countryConfig?.impactPartner ?? IMPACT_PARTNER
+  const activeSectors = countryConfig?.featuredSectors ?? []
+  const activeStatsBar = countryConfig?.statsBar ?? []
   const isReturning = typeof window !== 'undefined' && hasCompletedOnboarding()
   const compassHref = isReturning
     ? getVenturesUrl()
-    : `/compass${detectedCountry !== 'DEFAULT' ? `?from=${detectedCountry}` : ''}`
+    : `/compass${activeCountry !== 'DEFAULT' ? `?from=${activeCountry}` : ''}`
 
   return (
     <div className="bg-brand-bg text-white overflow-x-hidden">
@@ -121,9 +132,9 @@ export default function HomePage() {
             </span>
           </div>
 
-          {/* Main headline */}
+          {/* Main headline — driven by identity context */}
           <h1 className="font-display text-5xl md:text-7xl xl:text-8xl 3xl:text-9xl font-bold leading-[1.1] mb-6">
-            <span className="text-white">Find where you</span>
+            <span className="text-white">{countryConfig?.heroTagline || 'Find where you'}</span>
             <br />
             <span style={{ color: 'var(--color-accent)' }}>belong.</span>
             <br />
@@ -131,8 +142,12 @@ export default function HomePage() {
           </h1>
 
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            {BRAND_NAME} is not a job board. It&apos;s a compass — for Pioneers who want to move,
-            grow, and belong somewhere extraordinary.
+            {countryConfig?.heroSubtext || (
+              <>
+                {brandName} is not a job board. It&apos;s a compass — for Pioneers who want to move,
+                grow, and belong somewhere extraordinary.
+              </>
+            )}
           </p>
 
           {/* CTAs */}
@@ -172,13 +187,13 @@ export default function HomePage() {
             }}
           />
 
-          {/* Tiny trust line */}
+          {/* Tiny trust line — country-aware impact partner */}
           <p className="text-gray-400 text-sm">
             Pioneers active today ·{' '}
             <span className="font-medium" style={{ color: 'var(--color-accent)' }}>
-              {IMPACT_PARTNER.contributionAmount} from every booking
+              {activeImpactPartner.contributionAmount} from every booking
             </span>{' '}
-            funds {IMPACT_PARTNER.name} community work
+            funds {activeImpactPartner.name} community work
           </p>
 
           {/* Gold dot pulse at bottom center */}
@@ -429,25 +444,26 @@ export default function HomePage() {
               className="font-display text-2xl md:text-4xl font-bold mb-4"
               style={{ color: 'var(--color-accent)' }}
             >
-              Every venture supports {IMPACT_PARTNER.name}
+              Every venture supports {activeImpactPartner.name}
             </h2>
             <p className="text-white text-lg mb-2 max-w-2xl">
-              Kenya&apos;s community development CBO — education, conservation, women&apos;s
-              empowerment.
+              {activeImpactPartner.fullName} — {activeImpactPartner.tagline}
             </p>
             <p className="font-bold text-xl mb-8" style={{ color: 'var(--color-accent)' }}>
-              {IMPACT_PARTNER.contributionAmount} from every booking. Automatically. Always.
+              {activeImpactPartner.contributionAmount} from every booking. Automatically. Always.
             </p>
             <div className="flex flex-wrap items-center gap-8 mb-8 text-white text-sm">
-              <span>&#127979; Education for rural children</span>
-              <span>&#127807; Wildlife conservation</span>
-              <span>&#128101; Women&apos;s empowerment cooperatives</span>
+              {activeImpactPartner.pillars.map((pillar, i) => (
+                <span key={pillar}>
+                  {['🏫', '🌿', '👥', '🎭'][i % 4]} {pillar}
+                </span>
+              ))}
             </div>
             <Link
-              href="/charity"
+              href={activeImpactPartner.url || '/charity'}
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold rounded-full px-8 py-3 transition-colors"
             >
-              Learn about {IMPACT_PARTNER.name} &#8594;
+              Learn about {activeImpactPartner.name} &#8594;
             </Link>
           </div>
         </div>
@@ -463,7 +479,7 @@ export default function HomePage() {
             The BeNetwork
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
-            {BRAND_NAME} is just the beginning.
+            {brandName} is just the beginning.
           </h2>
           <p className="text-gray-400 text-lg mb-12 max-w-xl mx-auto">
             Same mission. Every country. Every community.
@@ -531,8 +547,16 @@ export default function HomePage() {
             hospitals — any Anchor that believes real talent changes everything.
           </p>
           <p className="text-gray-400 mb-10">
-            Post a Path. Find Pioneers. Pay with M-Pesa, Stripe, or Flutterwave.{' '}
-            <strong className="text-white">From KES 500.</strong>
+            Post a Path. Find Pioneers. Pay with{' '}
+            {countryConfig?.paymentMethods
+              .slice(0, 2)
+              .map((p) => p.name)
+              .join(', ') || 'M-Pesa, Stripe'}
+            .{' '}
+            <strong className="text-white">
+              From {countryConfig?.currencySymbol ?? 'KES'}{' '}
+              {identity.country === 'DE' || identity.country === 'CH' ? '25' : '500'}.
+            </strong>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
