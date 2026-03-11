@@ -99,6 +99,152 @@ describe('i18n — translate()', () => {
   })
 })
 
+describe('i18n — pricing translations', () => {
+  const pricingKeys = [
+    'pricing.badge',
+    'pricing.title',
+    'pricing.subtitle',
+    'pricing.paymentTitle',
+    'pricing.paymentSubtitle',
+    'pricing.pioneersTitle',
+    'pricing.pioneersDesc',
+    'pricing.pioneersCta',
+    'pricing.agentTitle',
+    'pricing.agentCta',
+    'pricing.postFree',
+    'pricing.goFeatured',
+    'pricing.goPremium',
+    'pricing.forever',
+    'pricing.perMonth',
+    'pricing.mostPopular',
+  ]
+
+  it('English has all pricing keys', () => {
+    for (const key of pricingKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all pricing keys', () => {
+    for (const key of pricingKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all pricing keys', () => {
+    for (const key of pricingKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('pricing.agentTitle interpolates rate correctly', () => {
+    const result = translate('pricing.agentTitle', 'en', { rate: '10' })
+    expect(result).toContain('10')
+    expect(result).not.toContain('{rate}')
+  })
+
+  it('German pricing.agentTitle interpolates rate', () => {
+    const result = translate('pricing.agentTitle', 'de', { rate: '10' })
+    expect(result).toContain('10')
+    expect(result).toContain('Provision')
+  })
+
+  it('Swahili pricing.agentTitle interpolates rate', () => {
+    const result = translate('pricing.agentTitle', 'sw', { rate: '10' })
+    expect(result).toContain('10')
+    expect(result).toContain('kamisheni')
+  })
+})
+
+describe('i18n — footer + contact translations', () => {
+  const footerKeys = ['footer.builtWith', 'footer.rights', 'footer.privacy', 'footer.terms']
+  const contactKeys = [
+    'contact.title',
+    'contact.subtitle',
+    'contact.name',
+    'contact.email',
+    'contact.message',
+    'contact.send',
+  ]
+
+  it('English has all footer keys', () => {
+    for (const key of footerKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all footer keys', () => {
+    for (const key of footerKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all footer keys', () => {
+    for (const key of footerKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('English has all contact keys', () => {
+    for (const key of contactKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+})
+
+describe('i18n — Swahili completeness', () => {
+  it('Swahili has auth keys', () => {
+    const authKeys = [
+      'auth.welcomeBack',
+      'auth.signInAccount',
+      'auth.continueGoogle',
+      'auth.email',
+      'auth.password',
+      'auth.createAccount',
+      'auth.fullName',
+      'auth.country',
+    ]
+    for (const key of authKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('Swahili has onboarding keys', () => {
+    const keys = [
+      'onboarding.welcome',
+      'onboarding.whatKind',
+      'onboarding.whereNow',
+      'onboarding.whereTo',
+      'onboarding.whatSkills',
+      'onboarding.continue',
+      'onboarding.openChapter',
+    ]
+    for (const key of keys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('Swahili has compass keys', () => {
+    const keys = [
+      'compass.active',
+      'compass.ready',
+      'compass.whereAre',
+      'compass.whatKind',
+      'compass.yourRoute',
+      'compass.seeOpenPaths',
+    ]
+    for (const key of keys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('Swahili has country hero taglines', () => {
+    expect(hasTranslation('hero.tagline.KE', 'sw')).toBe(true)
+    expect(hasTranslation('hero.tagline.DE', 'sw')).toBe(true)
+    expect(hasTranslation('hero.tagline.CH', 'sw')).toBe(true)
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()
