@@ -118,28 +118,34 @@ export default function IdentitySwitcher({
 }: IdentitySwitcherProps) {
   const [tabIdx, setTabIdx] = useState(0)
   const { threads: navThreads } = useThreads()
-  const { identity, setCountry, setLanguage, setThread } = useIdentity()
+  const { identity, setCountry, setLanguage, setThread, clearThread } = useIdentity()
 
   if (!open) return null
 
   const handleSelect = (thread: Thread) => {
     // Every selection updates the full identity context
     if (thread.type === 'country') {
+      // Country selection: let endonym system handle brandName
+      // e.g. selecting "Germany" → setCountry('DE') → brandName = "BeDeutschland" (in de) or "BeGermany" (in en)
       const match = COUNTRY_OPTIONS.find(
         (c) =>
           c.name.toLowerCase() === thread.slug.toLowerCase() ||
           c.code.toLowerCase() === thread.slug.toLowerCase()
       )
       if (match) setCountry(match.code)
+      // Clear any previous thread override so endonym-based brandName takes effect
+      clearThread()
     } else if (thread.type === 'language') {
-      // Language = Country: selecting Deutsch → sets DE
+      // Language → sets display language + associated country
+      // e.g. selecting "Deutsch" → sets language to 'de', country to 'DE'
       const langCode = thread.slug.length <= 3 ? thread.slug : thread.slug.slice(0, 2)
       setLanguage(langCode)
       const mappedCountry = LANGUAGE_COUNTRY_MAP[thread.slug]
       if (mappedCountry) setCountry(mappedCountry)
-      setThread(thread.slug, thread.type, thread.brandName)
+      // Don't set threadBrandName for languages — let endonym system handle it
+      clearThread()
     } else if (thread.type === 'tribe') {
-      // Tribe → sets associated country too
+      // Tribe → sets associated country + shows tribe brand
       const mappedCountry = TRIBE_COUNTRY_MAP[thread.slug]
       if (mappedCountry) setCountry(mappedCountry)
       setThread(thread.slug, thread.type, thread.brandName)

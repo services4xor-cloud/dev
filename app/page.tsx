@@ -124,7 +124,7 @@ export default function HomePage() {
 
         <div className="relative max-w-5xl 3xl:max-w-7xl mx-auto px-4 py-28 3xl:py-40 text-center">
           {/* Compass rose logo — clickable identity switcher */}
-          <div className="relative inline-block mb-6" ref={heroIdentityRef}>
+          <div className="relative inline-block mb-8" ref={heroIdentityRef}>
             <button
               type="button"
               onClick={() => setHeroIdentityOpen((v) => !v)}
@@ -133,33 +133,30 @@ export default function HomePage() {
               aria-label={`${brandName} — Choose your identity`}
               data-testid="hero-identity-trigger"
               className="group relative cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
-                         focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg rounded-2xl"
+                         focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg rounded-2xl
+                         px-6 py-4 hover:bg-white/5 transition-all duration-200 rounded-xl"
             >
               <Image
                 src="/logo.svg"
-                width={100}
-                height={100}
+                width={80}
+                height={80}
                 alt=""
                 priority
                 unoptimized
                 aria-hidden="true"
                 className="mx-auto drop-shadow-2xl group-hover:scale-105 transition-transform duration-300"
               />
-              {/* Brand name + chevron below logo */}
-              <div className="flex items-center justify-center gap-1.5 mt-2">
-                <span className="text-lg font-bold">
+              {/* Brand name + chevron */}
+              <div className="flex items-center justify-center gap-2 mt-3">
+                <span className="text-2xl md:text-3xl font-bold tracking-tight">
                   <span style={{ color: 'var(--color-accent)' }}>Be</span>
                   <span className="text-white">{brandName.replace(/^Be/, '')}</span>
                 </span>
                 <ChevronDown
-                  className={`w-4 h-4 text-white/40 transition-transform duration-200 ${heroIdentityOpen ? 'rotate-180' : ''}`}
+                  className={`w-5 h-5 text-brand-accent/50 transition-transform duration-200 ${heroIdentityOpen ? 'rotate-180' : ''}`}
                   aria-hidden="true"
                 />
               </div>
-              {/* Subtle hint text */}
-              <p className="text-[10px] text-white/30 mt-1 tracking-wider uppercase">
-                Click to switch identity
-              </p>
             </button>
 
             {/* Identity dropdown — positioned centered below logo */}
@@ -187,7 +184,11 @@ export default function HomePage() {
 
           {/* Main headline — driven by identity context + language */}
           <h1 className="font-display text-5xl md:text-7xl xl:text-8xl 3xl:text-9xl font-bold leading-[1.1] mb-6">
-            <span className="text-white">{countryConfig?.heroTagline || t('hero.headline')}</span>
+            <span className="text-white">
+              {t(`hero.tagline.${identity.country}`) !== `hero.tagline.${identity.country}`
+                ? t(`hero.tagline.${identity.country}`)
+                : t('hero.headline')}
+            </span>
             <br />
             <span style={{ color: 'var(--color-accent)' }}>{t('hero.belong')}</span>
             <br />
@@ -195,7 +196,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            {countryConfig?.heroSubtext || t('hero.subtitle', { brandName })}
+            {t('hero.subtitle', { brandName })}
           </p>
 
           {/* CTAs */}

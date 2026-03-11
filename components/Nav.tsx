@@ -17,6 +17,7 @@ import {
 import { useIdentity } from '@/lib/identity-context'
 import IdentitySwitcher, { IDENTITY_TABS } from '@/components/IdentitySwitcher'
 import { useThreads } from '@/lib/hooks/use-threads'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
 const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
@@ -39,6 +40,7 @@ export default function Nav() {
   // Fetch threads from API (falls back to mock data) — for mobile tab links
   const { threads: navThreads } = useThreads()
   const { identity, brandName: identityBrandName } = useIdentity()
+  const { t } = useTranslation()
   const [teaserIdx, setTeaserIdx] = useState(0)
   const [teaserFade, setTeaserFade] = useState(true)
   const [identityOpen, setIdentityOpen] = useState(false)
@@ -319,7 +321,7 @@ export default function Nav() {
               <li>
                 <DropdownMenu
                   id="anchors"
-                  label="For Anchors"
+                  label={t('nav.forAnchors')}
                   links={ANCHOR_LINKS}
                   isGroupActive={isAnchorActive}
                   dropdownRef={anchorsRef}
@@ -328,7 +330,7 @@ export default function Nav() {
               <li>
                 <DropdownMenu
                   id="about"
-                  label="About"
+                  label={t('nav.about')}
                   links={ABOUT_LINKS}
                   isGroupActive={isAboutActive}
                   dropdownRef={aboutRef}
@@ -358,7 +360,7 @@ export default function Nav() {
                       <UserIcon className="w-4 h-4" aria-hidden="true" />
                     )}
                     <span className="max-w-[100px] truncate">
-                      {session.user.name?.split(' ')[0] ?? 'Pioneer'}
+                      {session.user.name?.split(' ')[0] ?? t('nav.pioneer')}
                     </span>
                   </Link>
                   <button
@@ -366,7 +368,7 @@ export default function Nav() {
                     onClick={() => signOut({ callbackUrl: '/' })}
                     className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[12px] font-medium text-white/30
                                hover:text-white/60 transition-all duration-200"
-                    aria-label="Sign out"
+                    aria-label={t('common.signOut')}
                   >
                     <LogOut className="w-3 h-3" aria-hidden="true" />
                   </button>
@@ -380,7 +382,7 @@ export default function Nav() {
                              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                 >
                   <LogIn className="w-3.5 h-3.5" aria-hidden="true" />
-                  Sign In
+                  {t('common.signIn')}
                 </Link>
               )}
               <Link
@@ -403,7 +405,7 @@ export default function Nav() {
                   aria-hidden="true"
                 />
                 <Compass className="w-3.5 h-3.5 relative" aria-hidden="true" />
-                <span className="relative">Start Compass</span>
+                <span className="relative">{t('nav.startCompass')}</span>
               </Link>
             </div>
 
@@ -447,7 +449,7 @@ export default function Nav() {
                 <span className="text-lg">{currentTeaser.flag}</span>
                 <div className="flex-1">
                   <p className="text-[11px] font-bold text-brand-accent/80 uppercase tracking-wider">
-                    One platform, every identity
+                    {t('nav.oneIdentity')}
                   </p>
                   <p className="text-sm text-white/50 mt-0.5">
                     Be<span className="text-white font-semibold">{currentTeaser.name}</span>
@@ -485,7 +487,7 @@ export default function Nav() {
 
             {/* EXPLORE section */}
             <p className="px-4 pt-2 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-accent/50">
-              Explore
+              {t('nav.explore')}
             </p>
             {PIONEER_LINKS.map((link) => {
               const Icon = link.icon
@@ -517,7 +519,7 @@ export default function Nav() {
 
             {/* FOR ANCHORS section */}
             <p className="px-4 pt-2 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-accent/50">
-              For Anchors
+              {t('nav.forAnchors')}
             </p>
             {ANCHOR_LINKS.map((link) => {
               const Icon = link.icon
@@ -543,7 +545,7 @@ export default function Nav() {
 
             {/* ABOUT section */}
             <p className="px-4 pt-2 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-accent/50">
-              About
+              {t('nav.about')}
             </p>
             {ABOUT_LINKS.map((link) => {
               const Icon = link.icon
@@ -586,7 +588,7 @@ export default function Nav() {
                     ) : (
                       <UserIcon className="w-4 h-4" />
                     )}
-                    {session.user.name?.split(' ')[0] ?? 'Pioneer'}
+                    {session.user.name?.split(' ')[0] ?? t('nav.pioneer')}
                   </Link>
                   <button
                     type="button"
@@ -608,13 +610,13 @@ export default function Nav() {
                              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                 >
                   <LogIn className="w-4 h-4" aria-hidden="true" />
-                  Sign In
+                  {t('common.signIn')}
                 </Link>
               )}
               <Link
                 href="/compass"
                 onClick={() => setMobileOpen(false)}
-                aria-label="Start My Compass"
+                aria-label={t('nav.startMyCompass')}
                 className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-brand-bg
                            active:scale-[0.98] transition-all duration-200
                            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
@@ -625,7 +627,7 @@ export default function Nav() {
                 }}
               >
                 <Compass className="w-5 h-5" aria-hidden="true" />
-                Start My Compass
+                {t('nav.startMyCompass')}
               </Link>
             </div>
           </div>
