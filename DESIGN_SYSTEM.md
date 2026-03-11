@@ -37,6 +37,30 @@ text-[#C9A227]        → gold accent text
 bg-[#5C0A14]          → maroon background element
 ```
 
+### WCAG Contrast Minimums (enforce always)
+
+| Text class          | Hex       | Ratio on `#0A0A0F` | Verdict                                   |
+| ------------------- | --------- | ------------------ | ----------------------------------------- |
+| `text-white`        | `#FFFFFF` | 19.6:1             | ✅ AAA                                    |
+| `text-brand-text`   | `#F5F0E8` | 14.3:1             | ✅ AAA                                    |
+| `text-brand-accent` | `#C9A227` | 8.9:1              | ✅ AAA                                    |
+| `text-gray-300`     | `#d1d5db` | 11.1:1             | ✅ AAA                                    |
+| `text-gray-400`     | `#9ca3af` | 7.9:1              | ✅ AAA — secondary text minimum           |
+| `text-gray-500`     | `#6b7280` | 3.8:1              | ❌ FAILS AA — **NEVER for readable text** |
+
+**Rule:** All readable text ≥ `text-gray-400`. Use `text-gray-500` ONLY for decorative/non-essential elements (dividers, disabled placeholders). When in doubt, go lighter.
+
+### Approved Functional Colors (non-brand exceptions)
+
+| Use case        | Color         | Class                    | Notes                      |
+| --------------- | ------------- | ------------------------ | -------------------------- |
+| Success / ✓     | Green 400/500 | `text-green-400`         | Checkmarks, included lists |
+| Error / ✗       | Red 400       | `text-red-400`           | Not-included, error states |
+| M-Pesa branding | Green 600     | `bg-green-600`           | M-Pesa is green by brand   |
+| Card payment    | Brand primary | `bg-brand-primary-light` | NOT teal/cyan/blue         |
+
+Never introduce Tailwind colors outside this list (no teal, cyan, indigo, etc.).
+
 ### Colors NEVER to use
 
 ```
@@ -44,7 +68,9 @@ bg-[#5C0A14]          → maroon background element
 ❌ text-orange-*     → Tailwind orange (brand.orange is now gold alias)
 ❌ bg-orange-*       → Tailwind orange
 ❌ text-teal-*       → Tailwind teal (brand.teal is now gold alias)
+❌ bg-[#0891B2]      → off-brand teal (use brand-primary-light for card buttons)
 ❌ amber-*/yellow-*  → replaced with #C9A227 gold (session 11)
+❌ text-gray-500     → fails WCAG AA for readable text (exception: decorative only)
 ❌ text-green-*      → Not brand (exception: ✓ checkmarks for inclusion lists)
 ```
 
@@ -104,7 +130,12 @@ html {
 | `p-phi-8` | 110 | Large section padding        |
 | `p-phi-9` | 178 | Hero vertical padding        |
 
-In practice: `py-16` ≈ phi-4 · `py-24` ≈ phi-7 · `py-28` ≈ phi-7–8 range. ✓
+**When to use phi vs standard Tailwind:**
+
+- Use phi tokens when a close match exists (±4px): `p-phi-5` (26px) for card padding instead of `p-6` (24px)
+- Standard Tailwind is fine where phi tokens don't have a close match (e.g., `gap-3` = 12px has no phi equivalent)
+- Never mix phi and standard spacing in the same visual group (e.g., don't have `p-phi-5` on one card and `p-6` on the next)
+- Hero: `py-phi-7` (68px) · Content: `py-phi-6` (42px) · Cards: `p-phi-5` (26px)
 
 ---
 
@@ -300,4 +331,4 @@ z-10 → Cards, content
 
 ---
 
-_Last updated: Session 15 (2026-03-11)_
+_Last updated: Session 19 (2026-03-11) — added WCAG contrast rules, approved functional colors, phi spacing guidance_
