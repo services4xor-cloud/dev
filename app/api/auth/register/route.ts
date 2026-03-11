@@ -1,7 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { hash } from 'bcryptjs'
+import { z } from 'zod'
 import { db } from '@/lib/db'
 import { sendEmail } from '@/lib/email'
+
+const registerSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(200),
+  email: z.string().email('Invalid email address').max(320),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(128, 'Password must be at most 128 characters'),
+  country: z.string().max(10).optional(),
+  role: z.enum(['PIONEER', 'ANCHOR']).optional(),
+  phone: z.string().max(20).optional(),
+})
 
 /**
  * POST /api/auth/register — Create a new account
@@ -9,18 +22,24 @@ import { sendEmail } from '@/lib/email'
  * Creates user with hashed password, then client signs in via NextAuth.
  */
 export async function POST(req: NextRequest) {
+  let body: unknown
   try {
-    const body = await req.json()
-    const { name, email, password, country, role, phone } = body
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
 
-    if (!name || !email || !password) {
-      return NextResponse.json({ error: 'Name, email, and password are required' }, { status: 400 })
-    }
+  const parsed = registerSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? 'Validation failed' },
+      { status: 400 }
+    )
+  }
 
-    if (password.length < 8) {
-      return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 })
-    }
+  const { name, email, password, country, role, phone } = parsed.data
 
+  try {
     // Check if user already exists
     const existing = await db.user.findUnique({ where: { email } })
     if (existing) {

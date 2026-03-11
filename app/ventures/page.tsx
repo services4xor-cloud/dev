@@ -41,12 +41,13 @@ import type { FilterCategory, PathListItem } from '@/types/domain'
 // Filter config
 // ─────────────────────────────────────────────────────────────────────────────
 
-const FILTERS: { id: FilterCategory; label: string; icon: string }[] = [
-  { id: 'all', label: 'All', icon: '🌍' },
-  { id: 'explorer', label: 'Explorer', icon: '🌿' },
-  { id: 'professional', label: 'Professional', icon: '💼' },
-  { id: 'creative', label: 'Creative', icon: '🎬' },
-  { id: 'community', label: 'Community', icon: '🤝' },
+// Filter labels are resolved at render time via useTranslation
+const FILTER_DEFS: { id: FilterCategory; labelKey: string; icon: string }[] = [
+  { id: 'all', labelKey: 'ventures.allVentures', icon: '🌍' },
+  { id: 'explorer', labelKey: 'ventures.explorer', icon: '🌿' },
+  { id: 'professional', labelKey: 'ventures.professional', icon: '💼' },
+  { id: 'creative', labelKey: 'ventures.creative', icon: '🎬' },
+  { id: 'community', labelKey: 'ventures.community', icon: '🤝' },
 ]
 
 /** Map pioneer types → filter category for auto-filtering */
@@ -165,7 +166,7 @@ export default function VenturesPage() {
 
           {/* ── Filter chips — compact ── */}
           <div className="flex flex-wrap items-center gap-1.5">
-            {FILTERS.map((f) => (
+            {FILTER_DEFS.map((f) => (
               <button
                 key={f.id}
                 onClick={() => setFilter(f.id)}
@@ -176,7 +177,7 @@ export default function VenturesPage() {
                 }`}
               >
                 <span>{f.icon}</span>
-                {f.label}
+                {t(f.labelKey)}
               </button>
             ))}
           </div>
@@ -316,8 +317,8 @@ export default function VenturesPage() {
             <div className="flex items-center gap-2 mb-3">
               <h2 className="text-lg font-bold text-white">
                 {filter !== 'all'
-                  ? `${FILTERS.find((f) => f.id === filter)?.icon} ${FILTERS.find((f) => f.id === filter)?.label} Paths`
-                  : '💼 All Paths'}
+                  ? `${FILTER_DEFS.find((f) => f.id === filter)?.icon} ${t(FILTER_DEFS.find((f) => f.id === filter)?.labelKey ?? 'ventures.allVentures')} Paths`
+                  : `💼 ${t('ventures.allVentures')}`}
               </h2>
               <span className="text-[10px] text-gray-500">{regularPaths.length} open</span>
             </div>

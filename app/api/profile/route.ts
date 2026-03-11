@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 const profileSchema = z.object({
   name: z.string().min(2).max(100).optional(),
@@ -15,7 +17,12 @@ const profileSchema = z.object({
 // GET /api/profile — get current user's profile
 export async function GET(_req: NextRequest) {
   try {
-    // TODO: getServerSession(authOptions) + prisma.user.findUnique
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ success: false, error: 'Login required' }, { status: 401 })
+    }
+
+    // TODO: prisma.user.findUnique({ where: { id: session.user.id } })
     return NextResponse.json({ success: true, data: null })
   } catch (err) {
     console.error('GET /api/profile error:', err)
@@ -26,7 +33,18 @@ export async function GET(_req: NextRequest) {
 // PATCH /api/profile — update current user's profile
 export async function PATCH(req: NextRequest) {
   try {
-    const body = await req.json()
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ success: false, error: 'Login required' }, { status: 401 })
+    }
+
+    let body: unknown
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ success: false, error: 'Invalid JSON body' }, { status: 400 })
+    }
+
     const parsed = profileSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json(
@@ -35,7 +53,7 @@ export async function PATCH(req: NextRequest) {
       )
     }
 
-    // TODO: session check + prisma.user.update
+    // TODO: prisma.user.update({ where: { id: session.user.id }, data: parsed.data })
 
     return NextResponse.json({
       success: true,

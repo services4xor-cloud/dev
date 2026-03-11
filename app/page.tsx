@@ -401,13 +401,13 @@ export default function HomePage() {
           <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
             <div className="text-center mb-12">
               <p className="text-brand-accent text-sm font-semibold uppercase tracking-widest mb-3">
-                {countryConfig?.name ?? 'Safari'} Experiences
+                {t('experiences.label', { country: countryConfig?.name ?? 'Safari' })}
               </p>
               <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
-                {countryName} waits for no one. Neither should you.
+                {t('experiences.headline', { country: countryName })}
               </h2>
               <p className="text-gray-400 max-w-xl mx-auto">
-                Signature experiences curated by {brandName}.
+                {t('experiences.subtitle', { brandName })}
               </p>
             </div>
 
@@ -464,7 +464,7 @@ export default function HomePage() {
                           boxShadow: '0 4px 16px rgb(var(--color-primary-rgb) / 0.3)',
                         }}
                       >
-                        Book This Venture &rarr;
+                        {t('experiences.book')}
                       </Link>
                     </div>
                   </div>
@@ -497,13 +497,13 @@ export default function HomePage() {
               className="font-display text-2xl md:text-4xl font-bold mb-4"
               style={{ color: 'var(--color-accent)' }}
             >
-              Every venture supports {activeImpactPartner.name}
+              {t('impact.headline', { partner: activeImpactPartner.name })}
             </h2>
             <p className="text-white text-lg mb-2 max-w-2xl">
               {activeImpactPartner.fullName} — {activeImpactPartner.tagline}
             </p>
             <p className="font-bold text-xl mb-8" style={{ color: 'var(--color-accent)' }}>
-              {activeImpactPartner.contributionAmount} from every booking. Automatically. Always.
+              {t('impact.contribution', { amount: activeImpactPartner.contributionAmount })}
             </p>
             <div className="flex flex-wrap items-center gap-8 mb-8 text-white text-sm">
               {activeImpactPartner.pillars.map((pillar, i) => (
@@ -516,7 +516,7 @@ export default function HomePage() {
               href={activeImpactPartner.url || '/charity'}
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold rounded-full px-8 py-3 transition-colors"
             >
-              Learn about {activeImpactPartner.name} &#8594;
+              {t('impact.learnMore', { partner: activeImpactPartner.name })}
             </Link>
           </div>
         </div>
@@ -529,7 +529,7 @@ export default function HomePage() {
             className="text-sm font-semibold uppercase tracking-widest mb-4"
             style={{ color: 'var(--color-accent)' }}
           >
-            The BeNetwork
+            {t('network.label')}
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
             {t('expansion.headline', { brandName })}

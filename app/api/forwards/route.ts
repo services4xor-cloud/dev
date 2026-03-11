@@ -8,6 +8,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -79,18 +82,43 @@ const forwards: Forward[] = [
   },
 ]
 
+// ─── Zod Schema ──────────────────────────────────────────────────────────────
+
+const createForwardSchema = z.object({
+  agentId: z.string().min(1, 'agentId is required').max(200),
+  pathId: z.string().min(1, 'pathId is required').max(200),
+  workerName: z.string().max(200).optional(),
+  workerPhone: z.string().max(20).optional(),
+  workerEmail: z.string().email().max(320).optional(),
+  channel: z.enum(['WHATSAPP', 'SMS', 'EMAIL', 'IN_PERSON', 'SOCIAL_MEDIA']).default('WHATSAPP'),
+})
+
 // ─── POST /api/forwards ───────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
+  // Auth check — agents must be logged in
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Login required' }, { status: 401 })
+  }
+
+  let body: unknown
   try {
-    const body = await request.json()
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
 
-    const { agentId, pathId, workerName, workerPhone, workerEmail, channel } = body
+  const parsed = createForwardSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? 'Validation failed' },
+      { status: 400 }
+    )
+  }
 
-    // Validate required fields
-    if (!agentId || !pathId) {
-      return NextResponse.json({ error: 'agentId and pathId are required' }, { status: 400 })
-    }
+  try {
+    const { agentId, pathId, workerName, workerPhone, workerEmail, channel } = parsed.data
 
     // Generate unique tracking code
     const trackingCode = `trk_${generateTrackingCode()}`
@@ -133,14 +161,21 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     )
-  } catch {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  } catch (err) {
+    console.error('POST /api/forwards error:', err)
+    return NextResponse.json({ error: 'Failed to create forward' }, { status: 500 })
   }
 }
 
 // ─── GET /api/forwards?agentId=xxx ────────────────────────────────────────────
 
 export async function GET(request: NextRequest) {
+  // Auth check — agents must be logged in
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Login required' }, { status: 401 })
+  }
+
   const { searchParams } = new URL(request.url)
   const agentId = searchParams.get('agentId')
 

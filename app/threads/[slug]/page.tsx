@@ -19,7 +19,7 @@ import { usePaths } from '@/lib/hooks/use-paths'
 
 const TYPE_COLORS: Record<string, string> = {
   country: 'from-brand-primary to-green-900/80',
-  tribe: 'from-amber-900/80 to-brand-primary',
+  tribe: 'from-brand-primary to-brand-primary-light',
   language: 'from-blue-900/80 to-brand-primary',
   interest: 'from-purple-900/80 to-brand-primary',
   religion: 'from-brand-primary to-indigo-900/80',

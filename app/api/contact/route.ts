@@ -1,18 +1,53 @@
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 
+const contactSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(200),
+  email: z.string().email('Invalid email address').max(320),
+  subject: z.string().max(200).optional(),
+  message: z.string().min(1, 'Message is required').max(5000),
+  country: z.string().max(10).optional(),
+})
+
+/** Escape HTML special characters to prevent XSS in email templates */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 export async function POST(request: Request) {
+  let body: unknown
   try {
-    const body = await request.json()
-    const { name, email, subject, message, country } = body
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
 
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
-    }
+  const parsed = contactSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? 'Validation failed' },
+      { status: 400 }
+    )
+  }
 
+  const { name, email, subject, message, country } = parsed.data
+
+  try {
     // If Resend is configured, send email
     if (RESEND_API_KEY) {
+      const safeName = escapeHtml(name)
+      const safeEmail = escapeHtml(email)
+      const safeCountry = escapeHtml(country || 'Not specified')
+      const safeSubject = escapeHtml(subject || 'General inquiry')
+      const safeMessage = escapeHtml(message).replace(/\n/g, '<br/>')
+
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -26,12 +61,12 @@ export async function POST(request: Request) {
           subject: `[${country || 'Contact'}] ${subject || 'New message'} from ${name}`,
           html: `
             <h2>New Contact Form Submission</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Country:</strong> ${country || 'Not specified'}</p>
-            <p><strong>Subject:</strong> ${subject || 'General inquiry'}</p>
+            <p><strong>Name:</strong> ${safeName}</p>
+            <p><strong>Email:</strong> ${safeEmail}</p>
+            <p><strong>Country:</strong> ${safeCountry}</p>
+            <p><strong>Subject:</strong> ${safeSubject}</p>
             <hr/>
-            <p>${message.replace(/\n/g, '<br/>')}</p>
+            <p>${safeMessage}</p>
           `,
         }),
       })

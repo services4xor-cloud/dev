@@ -91,7 +91,7 @@ export default function AgentLandingPage() {
       <section
         className="relative py-20 lg:py-28"
         style={{
-          background: 'linear-gradient(to bottom, #5C0A14 0%, #0A0A0F 40%)',
+          background: 'linear-gradient(to bottom, var(--color-primary) 0%, var(--color-bg) 40%)',
         }}
       >
         <div className="max-w-6xl mx-auto px-4 xl:px-8">

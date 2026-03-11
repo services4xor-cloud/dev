@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // app/api/social/route.ts
 // Social media automation API
 //
@@ -13,6 +14,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import {
   SocialPost,
   SocialPlatform,
@@ -63,9 +66,7 @@ const CreatePostSchema = z.object({
   imageUrl: z.string().url().optional(),
   link: z.string().url().optional(),
   /** Which platforms to publish on */
-  platforms: z
-    .array(z.enum(SOCIAL_PLATFORMS))
-    .min(1, 'At least one platform is required'),
+  platforms: z.array(z.enum(SOCIAL_PLATFORMS)).min(1, 'At least one platform is required'),
   /** ISO-8601 datetime string — omit to post immediately */
   scheduledFor: z.string().datetime().optional(),
   /** ISO2 country code */
@@ -109,7 +110,7 @@ const GetQuerySchema = z.object({
 async function dispatchToPlatform(
   post: SocialPost,
   platform: SocialPlatform,
-  copyOverride?: string,
+  copyOverride?: string
 ): Promise<{ success: boolean; postId?: string; error?: string }> {
   const body = copyOverride ?? post.body
 
@@ -184,7 +185,11 @@ async function dispatchToPlatform(
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chat_id: chatId, text: body, parse_mode: 'Markdown' }),
         })
-        const data = await res.json() as { ok: boolean; result?: { message_id: number }; description?: string }
+        const data = (await res.json()) as {
+          ok: boolean
+          result?: { message_id: number }
+          description?: string
+        }
         if (data.ok && data.result) {
           return { success: true, postId: String(data.result.message_id) }
         }
@@ -213,22 +218,22 @@ async function dispatchToPlatform(
  */
 async function dispatchPost(
   post: SocialPost,
-  copyMap?: Partial<Record<SocialPlatform, string>>,
+  copyMap?: Partial<Record<SocialPlatform, string>>
 ): Promise<SocialPost> {
   const results: SocialPost['results'] = {}
 
   await Promise.allSettled(
-    post.platforms.map(async platform => {
+    post.platforms.map(async (platform) => {
       try {
         results[platform] = await dispatchToPlatform(post, platform, copyMap?.[platform])
       } catch (err) {
         results[platform] = { success: false, error: String(err) }
       }
-    }),
+    })
   )
 
-  const allFailed = Object.values(results).every(r => !r?.success)
-  const anyFailed = Object.values(results).some(r => !r?.success)
+  const allFailed = Object.values(results).every((r) => !r?.success)
+  const anyFailed = Object.values(results).some((r) => !r?.success)
 
   return {
     ...post,
@@ -243,13 +248,19 @@ async function dispatchPost(
 // ──────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
+  // Auth check — only authenticated users can view social post queue
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Login required' }, { status: 401 })
+  }
+
   const { searchParams } = req.nextUrl
   const parsed = GetQuerySchema.safeParse(Object.fromEntries(searchParams.entries()))
 
   if (!parsed.success) {
     return NextResponse.json(
       { error: 'Invalid query parameters', details: parsed.error.flatten() },
-      { status: 400 },
+      { status: 400 }
     )
   }
 
@@ -258,13 +269,13 @@ export async function GET(req: NextRequest) {
   let filtered = store
 
   if (status) {
-    filtered = filtered.filter(p => p.status === (status as PostStatus))
+    filtered = filtered.filter((p) => p.status === (status as PostStatus))
   }
   if (countryCode) {
-    filtered = filtered.filter(p => p.countryCode === countryCode.toUpperCase())
+    filtered = filtered.filter((p) => p.countryCode === countryCode.toUpperCase())
   }
   if (platform) {
-    filtered = filtered.filter(p => p.platforms.includes(platform as SocialPlatform))
+    filtered = filtered.filter((p) => p.platforms.includes(platform as SocialPlatform))
   }
 
   const total = filtered.length
@@ -274,6 +285,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  // Auth check — only authenticated users (admins/anchors) can create social posts
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Login required' }, { status: 401 })
+  }
+
   let body: unknown
   try {
     body = await req.json()
@@ -285,7 +302,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: 'Validation failed', details: parsed.error.flatten() },
-      { status: 422 },
+      { status: 422 }
     )
   }
 
@@ -325,7 +342,7 @@ export async function POST(req: NextRequest) {
   if (!input.scheduledFor) {
     const dispatched = await dispatchPost(post, copyMap)
     // Update in store
-    const idx = store.findIndex(p => p.id === dispatched.id)
+    const idx = store.findIndex((p) => p.id === dispatched.id)
     if (idx !== -1) store[idx] = dispatched
 
     return NextResponse.json({ post: dispatched }, { status: 201 })

@@ -38,7 +38,7 @@ describe('MOCK_VENTURE_PATHS country coverage', () => {
       expect(path.title.trim()).not.toBe('')
       expect(path.anchorName.trim()).not.toBe('')
       expect(path.location.trim()).not.toBe('')
-      expect(path.country.trim()).not.toBe('')
+      expect(path.country?.trim()).not.toBe('')
     })
   })
 })
