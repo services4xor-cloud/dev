@@ -595,6 +595,38 @@ const CONTENT: Record<string, ContentDict> = {
       'Join {brand} Media as a Pioneer. Shoot. Write. Create. Earn. Distribute to 9 platforms. Paid via M-Pesa.',
     'media.exploreFashion': 'Explore Fashion Division →',
 
+    // Offerings
+    'offerings.yourLocation': 'Your location:',
+    'offerings.autoDetected': 'auto-detected',
+    'offerings.changeOrigin': 'Change your origin country',
+    'offerings.titleDefault': 'Where Do You Want {accent}to Go?{/accent}',
+    'offerings.titleDest': 'Offerings in {accent}{country}{/accent}',
+    'offerings.descDefault':
+      'Select a destination below, or browse recommended routes based on your location. Travel, work, or build — your path starts here.',
+    'offerings.descDest':
+      'Explore what {country} has to offer — experiences, professional paths, and business opportunities tailored to your route.',
+    'offerings.all': 'All',
+    'offerings.recommended': 'Recommended Destinations from {country}',
+    'offerings.explore': 'Explore',
+    'offerings.safariExperiences': 'Safari Experiences',
+    'offerings.available': '{count} available',
+    'offerings.ecoTourism': 'Eco-Tourism',
+    'offerings.professionalSectors': 'Professional Sectors in {country}',
+    'offerings.sectors': '{count} sectors',
+    'offerings.paths': '{count}+ paths',
+    'offerings.tradeCorridors': 'Trade Corridors',
+    'offerings.active': '{count} active',
+    'offerings.keySectors': 'Key Sectors',
+    'offerings.opportunities': 'Opportunities',
+    'offerings.comingSoon': 'Offerings for {country} are coming soon',
+    'offerings.comingSoonDesc':
+      "We're expanding to new countries. Use the Compass to explore available routes.",
+    'offerings.openCompass': 'Open the Compass',
+    'offerings.impactTitle': 'Every Venture Has Impact',
+    'offerings.impactDesc':
+      'A percentage of every venture booked through BeNetwork goes to community organizations — funding education, healthcare, and local development.',
+    'offerings.learnAbout': 'Learn about {partner}',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -1105,6 +1137,38 @@ const CONTENT: Record<string, ContentDict> = {
       'Werde {brand} Media Pionier. Filme. Schreibe. Kreiere. Verdiene. Verteile auf 9 Plattformen. Bezahlt via M-Pesa.',
     'media.exploreFashion': 'Fashion-Division erkunden →',
 
+    // Offerings
+    'offerings.yourLocation': 'Dein Standort:',
+    'offerings.autoDetected': 'automatisch erkannt',
+    'offerings.changeOrigin': 'Herkunftsland ändern',
+    'offerings.titleDefault': 'Wohin möchtest du {accent}gehen?{/accent}',
+    'offerings.titleDest': 'Angebote in {accent}{country}{/accent}',
+    'offerings.descDefault':
+      'Wähle unten ein Ziel aus oder durchstöbere empfohlene Routen basierend auf deinem Standort. Reisen, arbeiten oder aufbauen — dein Weg beginnt hier.',
+    'offerings.descDest':
+      'Entdecke, was {country} zu bieten hat — Erlebnisse, berufliche Pfade und Geschäftsmöglichkeiten für deine Route.',
+    'offerings.all': 'Alle',
+    'offerings.recommended': 'Empfohlene Ziele ab {country}',
+    'offerings.explore': 'Erkunden',
+    'offerings.safariExperiences': 'Safari-Erlebnisse',
+    'offerings.available': '{count} verfügbar',
+    'offerings.ecoTourism': 'Ökotourismus',
+    'offerings.professionalSectors': 'Berufliche Sektoren in {country}',
+    'offerings.sectors': '{count} Sektoren',
+    'offerings.paths': '{count}+ Pfade',
+    'offerings.tradeCorridors': 'Handelskorridore',
+    'offerings.active': '{count} aktiv',
+    'offerings.keySectors': 'Schlüsselsektoren',
+    'offerings.opportunities': 'Möglichkeiten',
+    'offerings.comingSoon': 'Angebote für {country} kommen bald',
+    'offerings.comingSoonDesc':
+      'Wir expandieren in neue Länder. Nutze den Kompass, um verfügbare Routen zu erkunden.',
+    'offerings.openCompass': 'Kompass öffnen',
+    'offerings.impactTitle': 'Jedes Venture hat Impact',
+    'offerings.impactDesc':
+      'Ein Prozentsatz jedes über BeNetwork gebuchten Ventures geht an Gemeindeorganisationen — für Bildung, Gesundheit und lokale Entwicklung.',
+    'offerings.learnAbout': 'Mehr über {partner} erfahren',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -1544,6 +1608,38 @@ const CONTENT: Record<string, ContentDict> = {
     'media.ctaDesc':
       'Jiunge na {brand} Media kama Mwanzilishi. Piga picha. Andika. Unda. Pata mapato. Sambaza kwenye majukwaa 9. Lipwa kupitia M-Pesa.',
     'media.exploreFashion': 'Chunguza Divisheni ya Mitindo →',
+
+    // Offerings
+    'offerings.yourLocation': 'Mahali pako:',
+    'offerings.autoDetected': 'imetambuliwa kiotomatiki',
+    'offerings.changeOrigin': 'Badilisha nchi yako ya asili',
+    'offerings.titleDefault': 'Unataka Kwenda {accent}Wapi?{/accent}',
+    'offerings.titleDest': 'Matoleo katika {accent}{country}{/accent}',
+    'offerings.descDefault':
+      'Chagua marudio hapa chini, au vinjari njia zinazopendekezwa kulingana na mahali pako. Safiri, fanya kazi, au jenga — njia yako inaanza hapa.',
+    'offerings.descDest':
+      'Chunguza {country} ina nini cha kutoa — matembezi, njia za kitaalamu, na fursa za biashara zinazofaa njia yako.',
+    'offerings.all': 'Zote',
+    'offerings.recommended': 'Maeneo Yanayopendekezwa kutoka {country}',
+    'offerings.explore': 'Chunguza',
+    'offerings.safariExperiences': 'Matembezi ya Safari',
+    'offerings.available': '{count} zinapatikana',
+    'offerings.ecoTourism': 'Utalii wa Kiikolojia',
+    'offerings.professionalSectors': 'Sekta za Kitaalamu katika {country}',
+    'offerings.sectors': 'sekta {count}',
+    'offerings.paths': 'njia {count}+',
+    'offerings.tradeCorridors': 'Korido za Biashara',
+    'offerings.active': '{count} hai',
+    'offerings.keySectors': 'Sekta Kuu',
+    'offerings.opportunities': 'Fursa',
+    'offerings.comingSoon': 'Matoleo ya {country} yanakuja hivi karibuni',
+    'offerings.comingSoonDesc':
+      'Tunajipanua kwenye nchi mpya. Tumia Dira kuchunguza njia zinazopatikana.',
+    'offerings.openCompass': 'Fungua Dira',
+    'offerings.impactTitle': 'Kila Venture Ina Athari',
+    'offerings.impactDesc':
+      'Asilimia ya kila venture inayoagizwa kupitia BeNetwork inakwenda kwa mashirika ya jamii — kufadhili elimu, afya, na maendeleo ya ndani.',
+    'offerings.learnAbout': 'Jifunze kuhusu {partner}',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',

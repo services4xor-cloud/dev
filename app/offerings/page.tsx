@@ -25,6 +25,7 @@ import {
   type OfferingPurpose,
 } from '@/lib/offerings'
 import { IMPACT_PARTNER } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 const ALL_COUNTRIES = Object.values(COUNTRIES)
 
@@ -36,6 +37,7 @@ export default function OfferingsPage() {
   const [purpose, setPurpose] = useState<OfferingPurpose | 'all'>('all')
   const [showCountryPicker, setShowCountryPicker] = useState(false)
   const [detected, setDetected] = useState(false)
+  const { t } = useTranslation()
 
   // Auto-detect origin country on mount
   useEffect(() => {
@@ -73,7 +75,7 @@ export default function OfferingsPage() {
           {/* Origin indicator */}
           <div className="flex items-center gap-3 mb-6 flex-wrap">
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm">
-              <span className="text-gray-400">Your location:</span>
+              <span className="text-gray-400">{t('offerings.yourLocation')}</span>
               <button
                 onClick={() => setShowCountryPicker(!showCountryPicker)}
                 className="flex items-center gap-1.5 text-white font-semibold hover:text-brand-accent transition-colors"
@@ -83,7 +85,9 @@ export default function OfferingsPage() {
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
               {detected && (
-                <span className="text-[10px] text-brand-accent/60 font-medium">auto-detected</span>
+                <span className="text-[10px] text-brand-accent/60 font-medium">
+                  {t('offerings.autoDetected')}
+                </span>
               )}
             </div>
 
@@ -110,7 +114,7 @@ export default function OfferingsPage() {
           {showCountryPicker && (
             <div className="mb-6 bg-gray-900/90 border border-gray-700 rounded-xl p-4 max-w-lg">
               <p className="text-gray-400 text-xs mb-3 font-semibold uppercase tracking-wider">
-                Change your origin country
+                {t('offerings.changeOrigin')}
               </p>
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {ALL_COUNTRIES.map((c) => (
@@ -136,21 +140,36 @@ export default function OfferingsPage() {
           )}
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-4 leading-tight">
-            {destinationCode ? (
-              <>
-                Offerings in{' '}
-                <span style={{ color: 'var(--color-accent)' }}>{activeCountry?.name}</span>
-              </>
-            ) : (
-              <>
-                Where Do You Want <span style={{ color: 'var(--color-accent)' }}>to Go?</span>
-              </>
-            )}
+            {destinationCode
+              ? t('offerings.titleDest', { country: activeCountry?.name ?? '' })
+                  .split('{accent}')
+                  .map((part, i) => {
+                    if (i === 0) return <span key={i}>{part}</span>
+                    const [accent, rest] = part.split('{/accent}')
+                    return (
+                      <span key={i}>
+                        <span style={{ color: 'var(--color-accent)' }}>{accent}</span>
+                        {rest}
+                      </span>
+                    )
+                  })
+              : t('offerings.titleDefault')
+                  .split('{accent}')
+                  .map((part, i) => {
+                    if (i === 0) return <span key={i}>{part}</span>
+                    const [accent, rest] = part.split('{/accent}')
+                    return (
+                      <span key={i}>
+                        <span style={{ color: 'var(--color-accent)' }}>{accent}</span>
+                        {rest}
+                      </span>
+                    )
+                  })}
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mb-8">
             {destinationCode
-              ? `Explore what ${activeCountry?.name} has to offer — experiences, professional paths, and business opportunities tailored to your route.`
-              : 'Select a destination below, or browse recommended routes based on your location. Travel, work, or build — your path starts here.'}
+              ? t('offerings.descDest', { country: activeCountry?.name ?? '' })
+              : t('offerings.descDefault')}
           </p>
 
           {/* Purpose tabs */}
@@ -163,7 +182,7 @@ export default function OfferingsPage() {
                   : 'bg-white/5 text-white/70 border border-white/10 hover:bg-white/10'
               }`}
             >
-              🌍 All
+              🌍 {t('offerings.all')}
             </button>
             {OFFERING_PURPOSES.map((p) => {
               const avail = purposeAvailability.find((a) => a.purpose === p.id)
@@ -193,7 +212,7 @@ export default function OfferingsPage() {
           <section>
             <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
               <Compass className="w-5 h-5 text-brand-accent" />
-              Recommended Destinations from {COUNTRIES[originCode]?.name}
+              {t('offerings.recommended', { country: COUNTRIES[originCode]?.name ?? '' })}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {recommendations.slice(0, 6).map((rec) => {
@@ -256,7 +275,7 @@ export default function OfferingsPage() {
                     )}
 
                     <div className="mt-3 text-brand-accent text-xs font-semibold flex items-center gap-1">
-                      Explore{' '}
+                      {t('offerings.explore')}{' '}
                       <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </button>
@@ -273,9 +292,9 @@ export default function OfferingsPage() {
             {showTravel && offerings.experiences.length > 0 && (
               <section>
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
-                  🦁 Safari Experiences
+                  🦁 {t('offerings.safariExperiences')}
                   <span className="text-xs font-normal text-gray-400">
-                    {offerings.experiences.length} available
+                    {t('offerings.available', { count: String(offerings.experiences.length) })}
                   </span>
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -320,9 +339,9 @@ export default function OfferingsPage() {
             {showTravel && offerings.ecoTourism.length > 0 && (
               <section>
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
-                  🌿 Eco-Tourism
+                  🌿 {t('offerings.ecoTourism')}
                   <span className="text-xs font-normal text-gray-400">
-                    {offerings.ecoTourism.length} available
+                    {t('offerings.available', { count: String(offerings.ecoTourism.length) })}
                   </span>
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -369,9 +388,9 @@ export default function OfferingsPage() {
             {showProfessional && offerings.sectors.length > 0 && (
               <section>
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
-                  💼 Professional Sectors in {activeCountry?.name}
+                  💼 {t('offerings.professionalSectors', { country: activeCountry?.name ?? '' })}
                   <span className="text-xs font-normal text-gray-400">
-                    {offerings.sectors.length} sectors
+                    {t('offerings.sectors', { count: String(offerings.sectors.length) })}
                   </span>
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -386,7 +405,7 @@ export default function OfferingsPage() {
                         {sector.name}
                       </h3>
                       <p className="text-gray-400 text-xs mt-1">
-                        {sector.count.toLocaleString()}+ paths
+                        {t('offerings.paths', { count: sector.count.toLocaleString() })}
                       </p>
                     </Link>
                   ))}
@@ -398,9 +417,9 @@ export default function OfferingsPage() {
             {showBusiness && offerings.tradeCorridors.length > 0 && (
               <section>
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
-                  🌍 Trade Corridors
+                  🌍 {t('offerings.tradeCorridors')}
                   <span className="text-xs font-normal text-gray-400">
-                    {offerings.tradeCorridors.length} active
+                    {t('offerings.active', { count: String(offerings.tradeCorridors.length) })}
                   </span>
                 </h2>
                 <div className="space-y-4">
@@ -429,7 +448,7 @@ export default function OfferingsPage() {
                         <div>
                           <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                             <Globe className="w-3.5 h-3.5" />
-                            Key Sectors
+                            {t('offerings.keySectors')}
                           </h4>
                           <div className="flex flex-wrap gap-1.5">
                             {corridor.sectors.map((s) => (
@@ -444,7 +463,7 @@ export default function OfferingsPage() {
                         </div>
                         <div>
                           <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                            Opportunities
+                            {t('offerings.opportunities')}
                           </h4>
                           <ul className="space-y-1">
                             {corridor.opportunities.slice(0, 2).map((o) => (
@@ -470,12 +489,9 @@ export default function OfferingsPage() {
                 <div className="text-center py-16">
                   <div className="text-5xl mb-4">🧭</div>
                   <p className="text-lg font-semibold text-white mb-2">
-                    Offerings for {activeCountry?.name} are coming soon
+                    {t('offerings.comingSoon', { country: activeCountry?.name ?? '' })}
                   </p>
-                  <p className="text-gray-400 text-sm mb-6">
-                    We&apos;re expanding to new countries. Use the Compass to explore available
-                    routes.
-                  </p>
+                  <p className="text-gray-400 text-sm mb-6">{t('offerings.comingSoonDesc')}</p>
                   <Link
                     href="/compass"
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white"
@@ -486,7 +502,7 @@ export default function OfferingsPage() {
                     }}
                   >
                     <Compass className="w-4 h-4" />
-                    Open the Compass
+                    {t('offerings.openCompass')}
                   </Link>
                 </div>
               )}
@@ -502,16 +518,14 @@ export default function OfferingsPage() {
           }}
         >
           <div className="text-4xl mb-3">🤝</div>
-          <h3 className="text-2xl font-bold text-white mb-2">Every Venture Has Impact</h3>
-          <p className="text-gray-400 text-sm max-w-lg mx-auto mb-6">
-            A percentage of every venture booked through BeNetwork goes to community organizations —
-            funding education, healthcare, and local development.
-          </p>
+          <h3 className="text-2xl font-bold text-white mb-2">{t('offerings.impactTitle')}</h3>
+          <p className="text-gray-400 text-sm max-w-lg mx-auto mb-6">{t('offerings.impactDesc')}</p>
           <Link
             href="/charity"
             className="inline-flex items-center gap-2 text-brand-accent font-semibold text-sm hover:text-brand-accent/70 transition-colors"
           >
-            Learn about {IMPACT_PARTNER.name} <ArrowRight className="w-3.5 h-3.5" />
+            {t('offerings.learnAbout', { partner: IMPACT_PARTNER.name })}{' '}
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>

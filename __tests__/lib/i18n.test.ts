@@ -747,6 +747,55 @@ describe('i18n — media page translations', () => {
   })
 })
 
+describe('i18n — offerings page translations', () => {
+  const offeringsKeys = [
+    'offerings.yourLocation',
+    'offerings.autoDetected',
+    'offerings.changeOrigin',
+    'offerings.titleDefault',
+    'offerings.titleDest',
+    'offerings.descDefault',
+    'offerings.descDest',
+    'offerings.all',
+    'offerings.recommended',
+    'offerings.explore',
+    'offerings.safariExperiences',
+    'offerings.available',
+    'offerings.ecoTourism',
+    'offerings.professionalSectors',
+    'offerings.sectors',
+    'offerings.paths',
+    'offerings.tradeCorridors',
+    'offerings.active',
+    'offerings.keySectors',
+    'offerings.opportunities',
+    'offerings.comingSoon',
+    'offerings.comingSoonDesc',
+    'offerings.openCompass',
+    'offerings.impactTitle',
+    'offerings.impactDesc',
+    'offerings.learnAbout',
+  ]
+
+  it('English has all offerings keys', () => {
+    for (const key of offeringsKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all offerings keys', () => {
+    for (const key of offeringsKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all offerings keys', () => {
+    for (const key of offeringsKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()
