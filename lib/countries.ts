@@ -13,7 +13,19 @@
  * - Payment methods, currency, sectors, partners all per-country
  */
 
-export type CountryCode = 'KE' | 'DE' | 'US' | 'NG' | 'GH' | 'ZA' | 'UG' | 'TZ' | 'IN' | 'AE' | 'CA' | 'GB'
+export type CountryCode =
+  | 'KE'
+  | 'DE'
+  | 'US'
+  | 'NG'
+  | 'GH'
+  | 'ZA'
+  | 'UG'
+  | 'TZ'
+  | 'IN'
+  | 'AE'
+  | 'CA'
+  | 'GB'
 
 export interface PaymentMethod {
   id: string
@@ -34,17 +46,29 @@ export interface JobSector {
   partnerName?: string
 }
 
+/** Social impact partner — each country deployment has its own */
+export interface ImpactPartner {
+  name: string // "UTAMADUNI" | "Brücken e.V." | "Ọmọ Foundation"
+  fullName: string // "UTAMADUNI Community-Based Organisation"
+  tagline: string // "Every path plants a seed"
+  sharePercent: string // "5%"
+  contributionAmount: string // "KES 50" | "€2" | "₦500"
+  pillars: string[] // ["Education", "Women's Empowerment", "Conservation", "Cultural Preservation"]
+  url?: string // public page slug: "/charity"
+}
+
 export interface CountryConfig {
   code: CountryCode
   name: string
-  brandName: string     // "Bekenya" | "BeGermany" | "BeAmerica"
-  domain: string        // "bekenya.com" | "begermany.com"
-  flag: string          // emoji
-  currency: string      // "KES" | "EUR" | "USD"
+  brandName: string // "Bekenya" | "BeGermany" | "BeAmerica"
+  domain: string // "bekenya.com" | "begermany.com"
+  flag: string // emoji
+  currency: string // "KES" | "EUR" | "USD"
   currencySymbol: string
-  locale: string        // "en-KE" | "de-DE" | "en-US"
-  phonePrefix: string   // "+254" | "+49" | "+1"
-  primaryColor: string  // hex — can customize per country
+  locale: string // "en-KE" | "de-DE" | "en-US"
+  phonePrefix: string // "+254" | "+49" | "+1"
+  primaryColor: string // hex — can customize per country
+  impactPartner: ImpactPartner
   paymentMethods: PaymentMethod[]
   featuredSectors: JobSector[]
   popularSearches: string[]
@@ -67,25 +91,81 @@ const kenyaConfig: CountryConfig = {
   locale: 'en-KE',
   phonePrefix: '+254',
   primaryColor: '#5C0A14',
+  impactPartner: {
+    name: 'UTAMADUNI',
+    fullName: 'UTAMADUNI Community-Based Organisation',
+    tagline: 'Every path plants a seed',
+    sharePercent: '5%',
+    contributionAmount: 'KES 50',
+    pillars: ['Education', "Women's Empowerment", 'Conservation', 'Cultural Preservation'],
+    url: '/charity',
+  },
   paymentMethods: [
-    { id: 'mpesa', name: 'M-Pesa', logo: 'M', description: 'Safaricom M-Pesa STK Push', currencies: ['KES'], maxAmount: 150000 },
-    { id: 'airtel-money', name: 'Airtel Money', logo: 'A', description: 'Airtel Kenya', currencies: ['KES'] },
-    { id: 'stripe', name: 'Stripe', logo: 'S', description: 'Cards (international employers)', currencies: ['USD', 'EUR', 'GBP'] },
-    { id: 'flutterwave', name: 'Flutterwave', logo: 'F', description: 'Pan-African payments', currencies: ['KES', 'NGN', 'GHS'] },
+    {
+      id: 'mpesa',
+      name: 'M-Pesa',
+      logo: 'M',
+      description: 'Safaricom M-Pesa STK Push',
+      currencies: ['KES'],
+      maxAmount: 150000,
+    },
+    {
+      id: 'airtel-money',
+      name: 'Airtel Money',
+      logo: 'A',
+      description: 'Airtel Kenya',
+      currencies: ['KES'],
+    },
+    {
+      id: 'stripe',
+      name: 'Stripe',
+      logo: 'S',
+      description: 'Cards (international employers)',
+      currencies: ['USD', 'EUR', 'GBP'],
+    },
+    {
+      id: 'flutterwave',
+      name: 'Flutterwave',
+      logo: 'F',
+      description: 'Pan-African payments',
+      currencies: ['KES', 'NGN', 'GHS'],
+    },
   ],
   featuredSectors: [
     { id: 'tech', name: 'Tech & Engineering', emoji: '💻', count: 4200 },
-    { id: 'safari', name: 'Wildlife & Safaris', emoji: '🦁', count: 850, partnerName: 'African Wildlife Foundation', partnerUrl: 'https://www.awf.org' },
-    { id: 'eco-tourism', name: 'Eco-Tourism', emoji: '🌿', count: 620, partnerName: 'Basecamp Explorer', partnerUrl: 'https://basecampexplorer.com' },
+    {
+      id: 'safari',
+      name: 'Wildlife & Safaris',
+      emoji: '🦁',
+      count: 850,
+      partnerName: 'African Wildlife Foundation',
+      partnerUrl: 'https://www.awf.org',
+    },
+    {
+      id: 'eco-tourism',
+      name: 'Eco-Tourism',
+      emoji: '🌿',
+      count: 620,
+      partnerName: 'Basecamp Explorer',
+      partnerUrl: 'https://basecampexplorer.com',
+    },
     { id: 'finance', name: 'Finance & Banking', emoji: '💰', count: 1800 },
     { id: 'health', name: 'Healthcare', emoji: '🏥', count: 2100 },
     { id: 'education', name: 'Teaching & Education', emoji: '📚', count: 1500 },
     { id: 'hospitality', name: 'Hospitality', emoji: '🍽️', count: 1200 },
     { id: 'creative', name: 'Creative & Media', emoji: '🎨', count: 680 },
   ],
-  popularSearches: ['Safari Guide', 'Software Pioneer', 'Healthcare', 'Remote', 'Nairobi', 'UK Visa Path'],
+  popularSearches: [
+    'Safari Guide',
+    'Software Pioneer',
+    'Healthcare',
+    'Remote',
+    'Nairobi',
+    'UK Visa Path',
+  ],
   heroTagline: 'Global Paths, Paid via M-Pesa',
-  heroSubtext: 'Find your path with Anchors from Kenya, USA, UK, UAE and beyond. Open a Chapter, begin your Venture.',
+  heroSubtext:
+    'Find your path with Anchors from Kenya, USA, UK, UAE and beyond. Open a Chapter, begin your Venture.',
   statsBar: [
     { label: 'Open Paths', value: '12,400+' },
     { label: 'Countries', value: '50+' },
@@ -108,24 +188,80 @@ const germanyConfig: CountryConfig = {
   locale: 'de-DE',
   phonePrefix: '+49',
   primaryColor: '#5C0A14',
+  impactPartner: {
+    name: 'Brücken e.V.',
+    fullName: 'Brücken — Verein für Integration und Austausch',
+    tagline: 'Brücken bauen, Zukunft gestalten',
+    sharePercent: '5%',
+    contributionAmount: '€2',
+    pillars: ['Integration', 'Language Training', 'Professional Mentorship', 'Cultural Exchange'],
+    url: '/charity',
+  },
   paymentMethods: [
-    { id: 'sepa', name: 'SEPA Direct Debit', logo: 'EU', description: 'EU bank transfer', currencies: ['EUR'] },
-    { id: 'stripe', name: 'Stripe / Kreditkarte', logo: 'S', description: 'Visa, Mastercard, Amex', currencies: ['EUR'] },
-    { id: 'paypal', name: 'PayPal', logo: 'P', description: 'PayPal international', currencies: ['EUR', 'USD'] },
+    {
+      id: 'sepa',
+      name: 'SEPA Direct Debit',
+      logo: 'EU',
+      description: 'EU bank transfer',
+      currencies: ['EUR'],
+    },
+    {
+      id: 'stripe',
+      name: 'Stripe / Kreditkarte',
+      logo: 'S',
+      description: 'Visa, Mastercard, Amex',
+      currencies: ['EUR'],
+    },
+    {
+      id: 'paypal',
+      name: 'PayPal',
+      logo: 'P',
+      description: 'PayPal international',
+      currencies: ['EUR', 'USD'],
+    },
   ],
   featuredSectors: [
-    { id: 'engineering', name: 'Engineering', emoji: '⚙️', count: 8200, partnerName: 'VDMA', partnerUrl: 'https://www.vdma.org' },
+    {
+      id: 'engineering',
+      name: 'Engineering',
+      emoji: '⚙️',
+      count: 8200,
+      partnerName: 'VDMA',
+      partnerUrl: 'https://www.vdma.org',
+    },
     { id: 'it', name: 'IT & Software', emoji: '💻', count: 12400 },
-    { id: 'healthcare', name: 'Pflege & Gesundheit', emoji: '🏥', count: 6800, partnerName: 'DBfK', partnerUrl: 'https://www.dbfk.de' },
-    { id: 'automotive', name: 'Automotive', emoji: '🚗', count: 4200, partnerName: 'VDA', partnerUrl: 'https://www.vda.de' },
+    {
+      id: 'healthcare',
+      name: 'Pflege & Gesundheit',
+      emoji: '🏥',
+      count: 6800,
+      partnerName: 'DBfK',
+      partnerUrl: 'https://www.dbfk.de',
+    },
+    {
+      id: 'automotive',
+      name: 'Automotive',
+      emoji: '🚗',
+      count: 4200,
+      partnerName: 'VDA',
+      partnerUrl: 'https://www.vda.de',
+    },
     { id: 'renewable', name: 'Renewable Energy', emoji: '⚡', count: 2800 },
     { id: 'logistics', name: 'Logistik & Transport', emoji: '🚛', count: 5400 },
     { id: 'finance', name: 'Finance & Banking', emoji: '🏦', count: 3200 },
     { id: 'hospitality', name: 'Gastronomie', emoji: '🍽️', count: 3800 },
   ],
-  popularSearches: ['Software Engineer', 'Ausbildung', 'Krankenschwester', 'Remote', 'München', 'Berlin'],
+  popularSearches: [
+    'Software Engineer',
+    'Ausbildung',
+    'Krankenschwester',
+    'Remote',
+    'München',
+    'Berlin',
+  ],
   heroTagline: 'Dein Weg nach Deutschland',
-  heroSubtext: 'Finde deinen Pfad bei führenden deutschen Ankern. Öffne ein Kapitel, starte dein Abenteuer.',
+  heroSubtext:
+    'Finde deinen Pfad bei führenden deutschen Ankern. Öffne ein Kapitel, starte dein Abenteuer.',
   statsBar: [
     { label: 'Offene Pfade', value: '48,000+' },
     { label: 'Anker', value: '2,400+' },
@@ -148,8 +284,23 @@ const usaConfig: CountryConfig = {
   locale: 'en-US',
   phonePrefix: '+1',
   primaryColor: '#5C0A14',
+  impactPartner: {
+    name: 'Pathways Foundation',
+    fullName: 'Pathways — Foundation for Global Mobility',
+    tagline: 'Opening doors, building futures',
+    sharePercent: '5%',
+    contributionAmount: '$1',
+    pillars: ['Visa Support', 'Skills Training', 'Community Integration', 'Career Mentorship'],
+    url: '/charity',
+  },
   paymentMethods: [
-    { id: 'stripe', name: 'Stripe', logo: 'S', description: 'Cards, ACH bank transfer', currencies: ['USD'] },
+    {
+      id: 'stripe',
+      name: 'Stripe',
+      logo: 'S',
+      description: 'Cards, ACH bank transfer',
+      currencies: ['USD'],
+    },
     { id: 'paypal', name: 'PayPal', logo: 'P', description: 'PayPal / Venmo', currencies: ['USD'] },
   ],
   featuredSectors: [
@@ -162,9 +313,17 @@ const usaConfig: CountryConfig = {
     { id: 'aviation', name: 'Aviation & Travel', emoji: '✈️', count: 8200 },
     { id: 'remote', name: 'Remote / Anywhere', emoji: '🌎', count: 48000 },
   ],
-  popularSearches: ['Software Pioneer', 'Remote', 'H1B Path', 'New York', 'Silicon Valley', 'Healthcare'],
+  popularSearches: [
+    'Software Pioneer',
+    'Remote',
+    'H1B Path',
+    'New York',
+    'Silicon Valley',
+    'Healthcare',
+  ],
   heroTagline: 'Find Your American Path',
-  heroSubtext: 'Top US Anchors with open Paths. H1B sponsored, remote, and high-value Ventures across 50 states.',
+  heroSubtext:
+    'Top US Anchors with open Paths. H1B sponsored, remote, and high-value Ventures across 50 states.',
   statsBar: [
     { label: 'Open Paths', value: '280,000+' },
     { label: 'Anchors', value: '12,000+' },
@@ -187,10 +346,37 @@ const nigeriaConfig: CountryConfig = {
   locale: 'en-NG',
   phonePrefix: '+234',
   primaryColor: '#5C0A14',
+  impactPartner: {
+    name: 'Ọmọ Foundation',
+    fullName: 'Ọmọ — Foundation for Youth & Enterprise',
+    tagline: 'Our children, our future',
+    sharePercent: '5%',
+    contributionAmount: '₦500',
+    pillars: ['Youth Enterprise', 'Digital Skills', 'Mentorship', 'Community Development'],
+    url: '/charity',
+  },
   paymentMethods: [
-    { id: 'flutterwave', name: 'Flutterwave', logo: 'F', description: 'Cards, bank transfer, USSD', currencies: ['NGN', 'USD'] },
-    { id: 'paystack', name: 'Paystack', logo: 'PS', description: 'Cards, bank, USSD', currencies: ['NGN'] },
-    { id: 'stripe', name: 'Stripe', logo: 'S', description: 'International cards', currencies: ['USD'] },
+    {
+      id: 'flutterwave',
+      name: 'Flutterwave',
+      logo: 'F',
+      description: 'Cards, bank transfer, USSD',
+      currencies: ['NGN', 'USD'],
+    },
+    {
+      id: 'paystack',
+      name: 'Paystack',
+      logo: 'PS',
+      description: 'Cards, bank, USSD',
+      currencies: ['NGN'],
+    },
+    {
+      id: 'stripe',
+      name: 'Stripe',
+      logo: 'S',
+      description: 'International cards',
+      currencies: ['USD'],
+    },
   ],
   featuredSectors: [
     { id: 'tech', name: 'Tech & Fintech', emoji: '💻', count: 12400 },
@@ -204,7 +390,8 @@ const nigeriaConfig: CountryConfig = {
   ],
   popularSearches: ['Software Pioneer', 'Lagos', 'Remote', 'Finance Path', 'Oil & Gas', 'NYSC'],
   heroTagline: 'Find Your Path in Nigeria',
-  heroSubtext: 'Connect with Anchors across Nigeria. Pay with Flutterwave or Paystack. Open your Chapter today.',
+  heroSubtext:
+    'Connect with Anchors across Nigeria. Pay with Flutterwave or Paystack. Open your Chapter today.',
   statsBar: [
     { label: 'Open Paths', value: '38,000+' },
     { label: 'Anchors', value: '3,200+' },
@@ -222,14 +409,102 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
   US: usaConfig,
   NG: nigeriaConfig,
   // Placeholders — configs to be built out:
-  GH: { ...nigeriaConfig, code: 'GH', name: 'Ghana', brandName: 'BeGhana', domain: 'beghana.com', flag: '🇬🇭', currency: 'GHS', currencySymbol: '₵', locale: 'en-GH', phonePrefix: '+233' },
-  ZA: { ...kenyaConfig, code: 'ZA', name: 'South Africa', brandName: 'BeSouthAfrica', domain: 'besouthafrica.com', flag: '🇿🇦', currency: 'ZAR', currencySymbol: 'R', locale: 'en-ZA', phonePrefix: '+27' },
-  UG: { ...kenyaConfig, code: 'UG', name: 'Uganda', brandName: 'BeUganda', domain: 'beuganda.com', flag: '🇺🇬', currency: 'UGX', currencySymbol: 'USh', locale: 'en-UG', phonePrefix: '+256' },
-  TZ: { ...kenyaConfig, code: 'TZ', name: 'Tanzania', brandName: 'BeTanzania', domain: 'betanzania.com', flag: '🇹🇿', currency: 'TZS', currencySymbol: 'TSh', locale: 'en-TZ', phonePrefix: '+255' },
-  IN: { ...usaConfig, code: 'IN', name: 'India', brandName: 'BeIndia', domain: 'beindia.com', flag: '🇮🇳', currency: 'INR', currencySymbol: '₹', locale: 'en-IN', phonePrefix: '+91' },
-  AE: { ...usaConfig, code: 'AE', name: 'UAE', brandName: 'BeUAE', domain: 'beuae.com', flag: '🇦🇪', currency: 'AED', currencySymbol: 'د.إ', locale: 'en-AE', phonePrefix: '+971' },
-  CA: { ...usaConfig, code: 'CA', name: 'Canada', brandName: 'BeCanada', domain: 'becanada.com', flag: '🇨🇦', currency: 'CAD', currencySymbol: 'CA$', locale: 'en-CA', phonePrefix: '+1' },
-  GB: { ...usaConfig, code: 'GB', name: 'United Kingdom', brandName: 'BeUK', domain: 'beuk.com', flag: '🇬🇧', currency: 'GBP', currencySymbol: '£', locale: 'en-GB', phonePrefix: '+44' },
+  GH: {
+    ...nigeriaConfig,
+    code: 'GH',
+    name: 'Ghana',
+    brandName: 'BeGhana',
+    domain: 'beghana.com',
+    flag: '🇬🇭',
+    currency: 'GHS',
+    currencySymbol: '₵',
+    locale: 'en-GH',
+    phonePrefix: '+233',
+  },
+  ZA: {
+    ...kenyaConfig,
+    code: 'ZA',
+    name: 'South Africa',
+    brandName: 'BeSouthAfrica',
+    domain: 'besouthafrica.com',
+    flag: '🇿🇦',
+    currency: 'ZAR',
+    currencySymbol: 'R',
+    locale: 'en-ZA',
+    phonePrefix: '+27',
+  },
+  UG: {
+    ...kenyaConfig,
+    code: 'UG',
+    name: 'Uganda',
+    brandName: 'BeUganda',
+    domain: 'beuganda.com',
+    flag: '🇺🇬',
+    currency: 'UGX',
+    currencySymbol: 'USh',
+    locale: 'en-UG',
+    phonePrefix: '+256',
+  },
+  TZ: {
+    ...kenyaConfig,
+    code: 'TZ',
+    name: 'Tanzania',
+    brandName: 'BeTanzania',
+    domain: 'betanzania.com',
+    flag: '🇹🇿',
+    currency: 'TZS',
+    currencySymbol: 'TSh',
+    locale: 'en-TZ',
+    phonePrefix: '+255',
+  },
+  IN: {
+    ...usaConfig,
+    code: 'IN',
+    name: 'India',
+    brandName: 'BeIndia',
+    domain: 'beindia.com',
+    flag: '🇮🇳',
+    currency: 'INR',
+    currencySymbol: '₹',
+    locale: 'en-IN',
+    phonePrefix: '+91',
+  },
+  AE: {
+    ...usaConfig,
+    code: 'AE',
+    name: 'UAE',
+    brandName: 'BeUAE',
+    domain: 'beuae.com',
+    flag: '🇦🇪',
+    currency: 'AED',
+    currencySymbol: 'د.إ',
+    locale: 'en-AE',
+    phonePrefix: '+971',
+  },
+  CA: {
+    ...usaConfig,
+    code: 'CA',
+    name: 'Canada',
+    brandName: 'BeCanada',
+    domain: 'becanada.com',
+    flag: '🇨🇦',
+    currency: 'CAD',
+    currencySymbol: 'CA$',
+    locale: 'en-CA',
+    phonePrefix: '+1',
+  },
+  GB: {
+    ...usaConfig,
+    code: 'GB',
+    name: 'United Kingdom',
+    brandName: 'BeUK',
+    domain: 'beuk.com',
+    flag: '🇬🇧',
+    currency: 'GBP',
+    currencySymbol: '£',
+    locale: 'en-GB',
+    phonePrefix: '+44',
+  },
 }
 
 /** Get active country config (from env var or default to Kenya) */

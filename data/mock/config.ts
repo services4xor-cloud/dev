@@ -13,8 +13,24 @@ export const BRAND_NAME = `Be${country?.name ?? 'Country'}`
 export const BRAND_TAGLINE = 'Find where you belong. Go there.'
 export const BRAND_MISSION =
   'An identity-first compass. Connect internationally — lever languages, cultures, and potentials across borders.'
-export const UTAMADUNI_SHARE = '5%'
-export const UTAMADUNI_AMOUNT = 'KES 50'
+
+// ── Impact Partner (generic — resolves per country) ──────────────
+/** @deprecated Use IMPACT_PARTNER.sharePercent instead */
+export const UTAMADUNI_SHARE = country?.impactPartner?.sharePercent ?? '5%'
+/** @deprecated Use IMPACT_PARTNER.contributionAmount instead */
+export const UTAMADUNI_AMOUNT = country?.impactPartner?.contributionAmount ?? 'KES 50'
+
+/** Generic impact partner — use this in all new code */
+export const IMPACT_PARTNER = country?.impactPartner ?? {
+  name: 'Community Partner',
+  fullName: 'Community Partner Organisation',
+  tagline: 'Every path plants a seed',
+  sharePercent: '5%',
+  contributionAmount: 'KES 50',
+  pillars: ['Education', 'Empowerment', 'Conservation', 'Culture'],
+  url: '/charity',
+}
+
 export const REFERRAL_BONUS = 'KES 5,000'
 
 // ── Contact ──────────────────────────────────────────────────────

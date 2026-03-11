@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 24 (2026-03-11)
+> Last updated: Session 25 (2026-03-11)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -66,6 +66,17 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 ---
 
 ## Session Log
+
+### Session 25 (2026-03-11) — Impact Partner Abstraction, WizardShell, Component Cleanup
+
+- [x] **Impact Partner generic**: Added `ImpactPartner` interface to `CountryConfig` — UTAMADUNI is now Kenya-specific, each country has its own social impact org (Brücken e.V. for Germany, Ọmọ Foundation for Nigeria, Pathways Foundation for USA)
+- [x] **IMPACT_PARTNER export**: `data/mock/config.ts` now exports generic `IMPACT_PARTNER` from country config. Old `UTAMADUNI_SHARE`/`UTAMADUNI_AMOUNT` deprecated but still work
+- [x] **WizardShell component**: Created `components/WizardShell.tsx` — shared step progress indicator (circles + connectors), percentage bar, fixed nav footer with back/continue, scroll-to-top, submitting state. Used by Compass (4), Onboarding (5), Post-Path (6)
+- [x] **WizardProgressBar**: Standalone progress bar export for pages wanting bar-only (Onboarding backward compat)
+- [x] **globals.css**: Added btn-outline, btn-ghost, btn-accent, btn-sm, btn-lg, badge-success, badge-warning, badge-accent
+- [x] **Dead code**: Deleted LoadingSkeleton.tsx (unused, replaced by Skeleton.tsx)
+- [x] **COMPONENTS.md**: Updated WizardShell status from TODO to Done
+- [x] Build: ✅ | Jest: 107/107 ✅ | TS: 0 errors
 
 ### Session 24 (2026-03-11) — Architecture, Testing, Agent-Ready Plans
 
