@@ -8,8 +8,10 @@ import {
   BRAND_NAME,
   LEGAL,
 } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 export default function FashionPage() {
+  const { t } = useTranslation()
   return (
     <main className="min-h-screen bg-[#0A0205] text-white">
       {/* Hero */}
@@ -21,7 +23,7 @@ export default function FashionPage() {
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-brand-accent/20 border border-brand-accent/40 rounded-full px-4 py-1.5 mb-6">
             <span className="text-brand-accent text-sm font-medium">
-              {LEGAL.companyName} — Fashion Division
+              {t('fashion.badge', { company: LEGAL.companyName })}
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-4">
@@ -29,24 +31,23 @@ export default function FashionPage() {
             <span className="text-white">Fashion</span>
           </h1>
           <p className="text-2xl md:text-3xl font-light text-brand-accent mb-6 tracking-wide">
-            Style. Dignity. Africa.
+            {t('fashion.tagline')}
           </p>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-            From Nairobi to the World — African fashion that tells a story. Models, designers, and
-            creatives building careers with dignity.
+            {t('fashion.heroDesc')}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=artisan"
               className="bg-brand-accent text-black font-bold px-8 py-4 rounded-full hover:bg-[#E5B93B] transition-colors text-lg"
             >
-              Apply as Fashion Pioneer
+              {t('fashion.applyPioneer')}
             </Link>
             <Link
               href="/anchors"
               className="border border-brand-accent text-brand-accent font-semibold px-8 py-4 rounded-full hover:bg-brand-accent/10 transition-colors text-lg"
             >
-              Hire Fashion Talent
+              {t('fashion.hireTalent')}
             </Link>
           </div>
         </div>
@@ -55,15 +56,12 @@ export default function FashionPage() {
       {/* Mission */}
       <section className="py-16 px-4 bg-brand-primary/20 border-y border-brand-accent/20">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-brand-accent mb-6">Our Mission</h2>
+          <h2 className="text-3xl font-bold text-brand-accent mb-6">{t('fashion.missionTitle')}</h2>
           <p className="text-xl md:text-2xl text-gray-200 leading-relaxed font-light">
-            &ldquo;Fashion that empowers. Every model is a Pioneer. Every garment tells a
-            story.&rdquo;
+            &ldquo;{t('fashion.missionQuote')}&rdquo;
           </p>
           <p className="mt-6 text-gray-400 max-w-2xl mx-auto">
-            {BRAND_NAME} Fashion exists because Africa&apos;s creative talent deserves global
-            opportunity — without the exploitation, without the gatekeepers. We build safe, paid,
-            professional pathways from Kenya to the world.
+            {t('fashion.missionDesc', { brand: BRAND_NAME })}
           </p>
         </div>
       </section>
@@ -71,19 +69,19 @@ export default function FashionPage() {
       {/* Three Paths */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-white text-center mb-4">Three Paths in Fashion</h2>
+          <h2 className="text-3xl font-bold text-white text-center mb-4">
+            {t('fashion.pathsTitle')}
+          </h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-            Whether you walk the runway, sketch the collection, or capture the image — there is a
-            path with your name on it.
+            {t('fashion.pathsDesc')}
           </p>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-gradient-to-b from-brand-primary/40 to-brand-primary/10 border border-brand-accent/30 rounded-2xl p-8 hover:border-brand-accent/60 transition-colors">
               <div className="text-5xl mb-4">👗</div>
-              <h3 className="text-xl font-bold text-brand-accent mb-3">Model</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Professional photoshoots, brand campaigns, catalog work. Safe. Paid. Professional.
-                Every engagement on your terms.
-              </p>
+              <h3 className="text-xl font-bold text-brand-accent mb-3">
+                {t('fashion.modelTitle')}
+              </h3>
+              <p className="text-gray-300 leading-relaxed">{t('fashion.modelDesc')}</p>
               <div className="mt-6 flex flex-wrap gap-2">
                 {['Photoshoots', 'Campaigns', 'Catalog'].map((tag) => (
                   <span
@@ -97,11 +95,10 @@ export default function FashionPage() {
             </div>
             <div className="bg-gradient-to-b from-brand-primary/40 to-brand-primary/10 border border-brand-accent/30 rounded-2xl p-8 hover:border-brand-accent/60 transition-colors">
               <div className="text-5xl mb-4">✂️</div>
-              <h3 className="text-xl font-bold text-brand-accent mb-3">Designer</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Sketch to stitch. Local production. African prints. Global reach. Bring Kenya&apos;s
-                textile tradition to international markets.
-              </p>
+              <h3 className="text-xl font-bold text-brand-accent mb-3">
+                {t('fashion.designerTitle')}
+              </h3>
+              <p className="text-gray-300 leading-relaxed">{t('fashion.designerDesc')}</p>
               <div className="mt-6 flex flex-wrap gap-2">
                 {['Textiles', 'African Prints', 'Production'].map((tag) => (
                   <span
@@ -115,11 +112,10 @@ export default function FashionPage() {
             </div>
             <div className="bg-gradient-to-b from-brand-primary/40 to-brand-primary/10 border border-brand-accent/30 rounded-2xl p-8 hover:border-brand-accent/60 transition-colors">
               <div className="text-5xl mb-4">📸</div>
-              <h3 className="text-xl font-bold text-brand-accent mb-3">Creative</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Photography, styling, hair and makeup, set design. The whole world behind the lens.
-                Be the vision behind the brand.
-              </p>
+              <h3 className="text-xl font-bold text-brand-accent mb-3">
+                {t('fashion.creativeTitle')}
+              </h3>
+              <p className="text-gray-300 leading-relaxed">{t('fashion.creativeDesc')}</p>
               <div className="mt-6 flex flex-wrap gap-2">
                 {['Photography', 'Styling', 'Set Design'].map((tag) => (
                   <span
@@ -139,10 +135,10 @@ export default function FashionPage() {
       <section className="py-20 px-4 bg-gradient-to-br from-brand-primary/30 to-transparent">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">
-            What Makes {BRAND_NAME} Fashion Different
+            {t('fashion.protectionsTitle', { brand: BRAND_NAME })}
           </h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-            Every Pioneer is protected. Full stop.
+            {t('fashion.protectionsDesc')}
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {protections.map((p) => (
@@ -164,14 +160,14 @@ export default function FashionPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h2 className="text-3xl font-bold text-white mb-2">Open Fashion Paths</h2>
-              <p className="text-gray-400">Paid opportunities waiting for the right Pioneer</p>
+              <h2 className="text-3xl font-bold text-white mb-2">{t('fashion.openPaths')}</h2>
+              <p className="text-gray-400">{t('fashion.openPathsDesc')}</p>
             </div>
             <Link
               href="/ventures"
               className="text-brand-accent hover:underline text-sm font-medium"
             >
-              View all paths →
+              {t('fashion.viewAll')}
             </Link>
           </div>
           <div className="space-y-4">
@@ -207,7 +203,7 @@ export default function FashionPage() {
                       href="/onboarding?type=artisan"
                       className="bg-brand-accent text-black text-sm font-bold px-5 py-2 rounded-full hover:bg-[#E5B93B] transition-colors opacity-0 group-hover:opacity-100"
                     >
-                      Apply
+                      {t('fashion.apply')}
                     </Link>
                   </div>
                 </div>
@@ -220,10 +216,11 @@ export default function FashionPage() {
       {/* Partner Anchors */}
       <section className="py-20 px-4 bg-brand-primary/10 border-t border-brand-accent/10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-white text-center mb-4">Partner Anchors</h2>
+          <h2 className="text-3xl font-bold text-white text-center mb-4">
+            {t('fashion.partnersTitle')}
+          </h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-            Organisations that trust {BRAND_NAME} Fashion to connect them with verified, talented
-            Pioneers
+            {t('fashion.partnersDesc', { brand: BRAND_NAME })}
           </p>
           <div className="grid md:grid-cols-3 gap-6">
             {partnerAnchors.map((anchor) => (
@@ -243,23 +240,22 @@ export default function FashionPage() {
       {/* CTA */}
       <section className="py-24 px-4 bg-gradient-to-br from-brand-primary to-[#3D0A0A]">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl font-black text-white mb-4">Ready to walk your path?</h2>
+          <h2 className="text-4xl font-black text-white mb-4">{t('fashion.ctaTitle')}</h2>
           <p className="text-gray-300 text-lg mb-10 leading-relaxed">
-            Join {BRAND_NAME} Fashion as a Pioneer. Set your rates. Choose your shoots. Build your
-            career with dignity.
+            {t('fashion.ctaDesc', { brand: BRAND_NAME })}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=artisan"
               className="bg-brand-accent text-black font-black px-10 py-4 rounded-full hover:bg-[#E5B93B] transition-colors text-xl"
             >
-              Apply as Fashion Pioneer
+              {t('fashion.applyPioneer')}
             </Link>
             <Link
               href="/media"
               className="border border-white/30 text-white font-semibold px-8 py-4 rounded-full hover:bg-white/10 transition-colors"
             >
-              Explore Media Division →
+              {t('fashion.exploreMedia')}
             </Link>
           </div>
         </div>

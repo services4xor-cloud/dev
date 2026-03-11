@@ -464,6 +464,95 @@ const CONTENT: Record<string, ContentDict> = {
     'profile.saved': 'Saved!',
     'profile.saveProfile': 'Save Profile',
 
+    // Business
+    'business.badge': 'Legal Entity',
+    'business.subtitle': 'A Family. A Mission. A Structure.',
+    'business.heroDesc':
+      'The legal and operational home of the BeNetwork platform and all Be[Country] ventures. Registered in Kenya. Built for the world.',
+    'business.missionTitle': 'Our Mission',
+    'business.missionDesc':
+      'Dignified work and opportunity for everyone, everywhere. We connect Pioneers (people seeking their path) with Anchors (employers and partners) across borders, currencies, and cultures — starting in Kenya, scaling globally.',
+    'business.legalTitle': 'Legal Status',
+    'business.incorporation': 'Incorporation',
+    'business.certOfInc': 'Certificate of Incorporation',
+    'business.entityType': 'Entity Type',
+    'business.privateLtd': 'Private Limited Company',
+    'business.kraPin': 'KRA PIN',
+    'business.director': 'Director: {name}',
+    'business.shareTitle': 'Share Structure',
+    'business.shareDesc':
+      'Shareholder identities are privacy-protected. Structure shown for transparency.',
+    'business.divisionsTitle': 'Business Divisions',
+    'business.countriesTitle': 'Operating Countries',
+    'business.countriesNext':
+      'Next: BeNigeria (NGN + Flutterwave) · BeAmerica (USD + Stripe) · BeGermany full entity',
+    'business.paymentTitle': 'Payment & Financial Control',
+    'business.bankTitle': 'Dual Signature Bank Account',
+    'business.bankDesc':
+      'KCB / Equity Bank Kenya. All withdrawals require Finance Controller approval. No single-party access.',
+    'business.mpesaTitle': 'M-Pesa Business Till',
+    'business.mpesaDesc':
+      'Chapa-powered Lipa na M-Pesa integration. Instant KES collections. Sandbox: Till 174379.',
+    'business.globalTitle': 'Global Payment Rails',
+    'business.globalDesc':
+      'Stripe (USD/EUR), Flutterwave (NGN), PayPal. Each rail enabled per country activation.',
+    'business.financeNote':
+      'Finance Controller Oversight: All revenue withdrawals, partner disbursements, and {partner} transfers require dual approval. Platform revenue auto-routes: 10% to charity reserve, 15% to operational float, remainder to growth fund.',
+    'business.partnerTitle': 'Partnership Enquiries',
+    'business.safariPartner': 'Safari Lodges & Conservancies',
+    'business.safariPartnerDesc':
+      'List your packages on {brand} Experiences. Reach global travellers directly.',
+    'business.ngoPartner': 'NGOs & Development Partners',
+    'business.ngoPartnerDesc':
+      'Co-fund {partner} projects. Skills training, youth employment, community builds.',
+    'business.corpPartner': 'Corporate Anchors',
+    'business.corpPartnerDesc':
+      'Hire verified Pioneers. Post paths, sponsor placements, build your East Africa team.',
+    'business.contactTitle': 'Get in Touch',
+    'business.contactDesc':
+      'For partnership proposals, legal enquiries, or press, reach us directly.',
+    'business.browseVentures': 'Browse Ventures',
+    'business.safariExperiences': 'Safari Experiences',
+    'business.charityLink': '{partner} Charity',
+
+    // Fashion
+    'fashion.badge': '{company} — Fashion Division',
+    'fashion.tagline': 'Style. Dignity. Africa.',
+    'fashion.heroDesc':
+      'From Nairobi to the World — African fashion that tells a story. Models, designers, and creatives building careers with dignity.',
+    'fashion.applyPioneer': 'Apply as Fashion Pioneer',
+    'fashion.hireTalent': 'Hire Fashion Talent',
+    'fashion.missionTitle': 'Our Mission',
+    'fashion.missionQuote':
+      'Fashion that empowers. Every model is a Pioneer. Every garment tells a story.',
+    'fashion.missionDesc':
+      "{brand} Fashion exists because Africa's creative talent deserves global opportunity — without the exploitation, without the gatekeepers. We build safe, paid, professional pathways from Kenya to the world.",
+    'fashion.pathsTitle': 'Three Paths in Fashion',
+    'fashion.pathsDesc':
+      'Whether you walk the runway, sketch the collection, or capture the image — there is a path with your name on it.',
+    'fashion.modelTitle': 'Model',
+    'fashion.modelDesc':
+      'Professional photoshoots, brand campaigns, catalog work. Safe. Paid. Professional. Every engagement on your terms.',
+    'fashion.designerTitle': 'Designer',
+    'fashion.designerDesc':
+      "Sketch to stitch. Local production. African prints. Global reach. Bring Kenya's textile tradition to international markets.",
+    'fashion.creativeTitle': 'Creative',
+    'fashion.creativeDesc':
+      'Photography, styling, hair and makeup, set design. The whole world behind the lens. Be the vision behind the brand.',
+    'fashion.protectionsTitle': 'What Makes {brand} Fashion Different',
+    'fashion.protectionsDesc': 'Every Pioneer is protected. Full stop.',
+    'fashion.openPaths': 'Open Fashion Paths',
+    'fashion.openPathsDesc': 'Paid opportunities waiting for the right Pioneer',
+    'fashion.viewAll': 'View all paths →',
+    'fashion.apply': 'Apply',
+    'fashion.partnersTitle': 'Partner Anchors',
+    'fashion.partnersDesc':
+      'Organisations that trust {brand} Fashion to connect them with verified, talented Pioneers',
+    'fashion.ctaTitle': 'Ready to walk your path?',
+    'fashion.ctaDesc':
+      'Join {brand} Fashion as a Pioneer. Set your rates. Choose your shoots. Build your career with dignity.',
+    'fashion.exploreMedia': 'Explore Media Division →',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -843,6 +932,95 @@ const CONTENT: Record<string, ContentDict> = {
     'profile.saved': 'Gespeichert!',
     'profile.saveProfile': 'Profil speichern',
 
+    // Business
+    'business.badge': 'Rechtsform',
+    'business.subtitle': 'Eine Familie. Eine Mission. Eine Struktur.',
+    'business.heroDesc':
+      'Das rechtliche und operative Zuhause der BeNetwork-Plattform und aller Be[Country]-Vorhaben. Registriert in Kenia. Gebaut für die Welt.',
+    'business.missionTitle': 'Unsere Mission',
+    'business.missionDesc':
+      'Würdevolle Arbeit und Chancen für alle, überall. Wir verbinden Pioniere (Menschen, die ihren Weg suchen) mit Ankern (Arbeitgeber und Partner) über Grenzen, Währungen und Kulturen hinweg — beginnend in Kenia, weltweit skalierend.',
+    'business.legalTitle': 'Rechtsstatus',
+    'business.incorporation': 'Gründung',
+    'business.certOfInc': 'Gründungsurkunde',
+    'business.entityType': 'Rechtsform',
+    'business.privateLtd': 'Gesellschaft mit beschränkter Haftung',
+    'business.kraPin': 'KRA PIN',
+    'business.director': 'Geschäftsführer: {name}',
+    'business.shareTitle': 'Beteiligungsstruktur',
+    'business.shareDesc':
+      'Gesellschafteridentitäten sind datenschutzgeschützt. Struktur aus Transparenzgründen dargestellt.',
+    'business.divisionsTitle': 'Geschäftsbereiche',
+    'business.countriesTitle': 'Aktive Länder',
+    'business.countriesNext':
+      'Nächste: BeNigeria (NGN + Flutterwave) · BeAmerica (USD + Stripe) · BeGermany vollständige Entität',
+    'business.paymentTitle': 'Zahlungs- & Finanzkontrolle',
+    'business.bankTitle': 'Bankkonto mit Doppelunterschrift',
+    'business.bankDesc':
+      'KCB / Equity Bank Kenia. Alle Abhebungen erfordern die Genehmigung des Finanzkontrolleurs. Kein Einzelzugriff.',
+    'business.mpesaTitle': 'M-Pesa Business Till',
+    'business.mpesaDesc':
+      'Chapa-gestützte Lipa na M-Pesa-Integration. Sofortige KES-Einzüge. Sandbox: Till 174379.',
+    'business.globalTitle': 'Globale Zahlungswege',
+    'business.globalDesc':
+      'Stripe (USD/EUR), Flutterwave (NGN), PayPal. Jeder Kanal wird pro Länderaktivierung freigeschaltet.',
+    'business.financeNote':
+      'Finanzkontrolleur-Aufsicht: Alle Umsatzabhebungen, Partnerauszahlungen und {partner}-Überweisungen erfordern doppelte Genehmigung. Plattformumsatz wird automatisch verteilt: 10% an Wohltätigkeitsrücklage, 15% an operativen Float, Rest an Wachstumsfonds.',
+    'business.partnerTitle': 'Partnerschaftsanfragen',
+    'business.safariPartner': 'Safari-Lodges & Naturschutzgebiete',
+    'business.safariPartnerDesc':
+      'Listen Sie Ihre Pakete auf {brand} Experiences. Erreichen Sie globale Reisende direkt.',
+    'business.ngoPartner': 'NGOs & Entwicklungspartner',
+    'business.ngoPartnerDesc':
+      'Finanzieren Sie {partner}-Projekte mit. Berufsausbildung, Jugendbeschäftigung, Gemeindeaufbau.',
+    'business.corpPartner': 'Unternehmens-Anker',
+    'business.corpPartnerDesc':
+      'Stellen Sie verifizierte Pioniere ein. Pfade veröffentlichen, Platzierungen sponsern, Ihr Ostafrika-Team aufbauen.',
+    'business.contactTitle': 'Kontakt aufnehmen',
+    'business.contactDesc':
+      'Für Partnerschaftsvorschläge, rechtliche Anfragen oder Presse erreichen Sie uns direkt.',
+    'business.browseVentures': 'Ventures durchstöbern',
+    'business.safariExperiences': 'Safari-Erlebnisse',
+    'business.charityLink': '{partner} Wohltätigkeit',
+
+    // Fashion
+    'fashion.badge': '{company} — Mode-Division',
+    'fashion.tagline': 'Stil. Würde. Afrika.',
+    'fashion.heroDesc':
+      'Von Nairobi in die Welt — Afrikanische Mode, die eine Geschichte erzählt. Models, Designer und Kreative, die Karrieren mit Würde aufbauen.',
+    'fashion.applyPioneer': 'Als Fashion-Pionier bewerben',
+    'fashion.hireTalent': 'Fashion-Talente einstellen',
+    'fashion.missionTitle': 'Unsere Mission',
+    'fashion.missionQuote':
+      'Mode, die stärkt. Jedes Model ist ein Pionier. Jedes Kleidungsstück erzählt eine Geschichte.',
+    'fashion.missionDesc':
+      '{brand} Fashion existiert, weil Afrikas kreatives Talent globale Chancen verdient — ohne Ausbeutung, ohne Türsteher. Wir bauen sichere, bezahlte, professionelle Wege von Kenia in die Welt.',
+    'fashion.pathsTitle': 'Drei Wege in der Mode',
+    'fashion.pathsDesc':
+      'Ob du über den Laufsteg gehst, die Kollektion entwirfst oder das Bild einfängst — es gibt einen Weg mit deinem Namen.',
+    'fashion.modelTitle': 'Model',
+    'fashion.modelDesc':
+      'Professionelle Fotoshootings, Markenkampagnen, Katalogarbeit. Sicher. Bezahlt. Professionell. Jedes Engagement zu deinen Bedingungen.',
+    'fashion.designerTitle': 'Designer',
+    'fashion.designerDesc':
+      'Vom Entwurf bis zur Naht. Lokale Produktion. Afrikanische Drucke. Globale Reichweite. Bringe Kenias Textiltradition auf internationale Märkte.',
+    'fashion.creativeTitle': 'Kreativ',
+    'fashion.creativeDesc':
+      'Fotografie, Styling, Haare und Make-up, Bühnenbild. Die ganze Welt hinter der Linse. Sei die Vision hinter der Marke.',
+    'fashion.protectionsTitle': 'Was {brand} Fashion anders macht',
+    'fashion.protectionsDesc': 'Jeder Pionier ist geschützt. Punkt.',
+    'fashion.openPaths': 'Offene Fashion-Pfade',
+    'fashion.openPathsDesc': 'Bezahlte Möglichkeiten, die auf den richtigen Pionier warten',
+    'fashion.viewAll': 'Alle Pfade anzeigen →',
+    'fashion.apply': 'Bewerben',
+    'fashion.partnersTitle': 'Partner-Anker',
+    'fashion.partnersDesc':
+      'Organisationen, die {brand} Fashion vertrauen, um sie mit verifizierten, talentierten Pionieren zu verbinden',
+    'fashion.ctaTitle': 'Bereit, deinen Weg zu gehen?',
+    'fashion.ctaDesc':
+      'Werde {brand} Fashion Pionier. Setze deine Preise. Wähle deine Shoots. Baue deine Karriere mit Würde auf.',
+    'fashion.exploreMedia': 'Media-Division erkunden →',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -1152,6 +1330,94 @@ const CONTENT: Record<string, ContentDict> = {
     'profile.addSkill': 'Ongeza ujuzi...',
     'profile.saved': 'Imehifadhiwa!',
     'profile.saveProfile': 'Hifadhi Wasifu',
+
+    // Business
+    'business.badge': 'Chombo cha Kisheria',
+    'business.subtitle': 'Familia. Dhamira. Muundo.',
+    'business.heroDesc':
+      'Makao ya kisheria na kiutendaji ya jukwaa la BeNetwork na miradi yote ya Be[Country]. Imesajiliwa Kenya. Imejengwa kwa ulimwengu.',
+    'business.missionTitle': 'Dhamira Yetu',
+    'business.missionDesc':
+      'Kazi yenye heshima na fursa kwa kila mtu, kila mahali. Tunaunganisha Waanzilishi (watu wanaotafuta njia yao) na Ankeri (waajiri na washirika) kupitia mipaka, sarafu, na tamaduni — kuanzia Kenya, kupanuka kimataifa.',
+    'business.legalTitle': 'Hali ya Kisheria',
+    'business.incorporation': 'Usajili',
+    'business.certOfInc': 'Hati ya Usajili',
+    'business.entityType': 'Aina ya Chombo',
+    'business.privateLtd': 'Kampuni ya Kibinafsi Yenye Dhima Ndogo',
+    'business.kraPin': 'KRA PIN',
+    'business.director': 'Mkurugenzi: {name}',
+    'business.shareTitle': 'Muundo wa Hisa',
+    'business.shareDesc': 'Utambulisho wa wenye hisa umehifadhiwa. Muundo umeonyeshwa kwa uwazi.',
+    'business.divisionsTitle': 'Vitengo vya Biashara',
+    'business.countriesTitle': 'Nchi za Uendeshaji',
+    'business.countriesNext':
+      'Ijayo: BeNigeria (NGN + Flutterwave) · BeAmerica (USD + Stripe) · BeGermany chombo kamili',
+    'business.paymentTitle': 'Malipo & Udhibiti wa Fedha',
+    'business.bankTitle': 'Akaunti ya Benki ya Sahihi Mbili',
+    'business.bankDesc':
+      'KCB / Equity Bank Kenya. Uondoaji wote unahitaji idhini ya Mdhibiti wa Fedha. Hakuna ufikiaji wa upande mmoja.',
+    'business.mpesaTitle': 'M-Pesa Business Till',
+    'business.mpesaDesc':
+      'Muunganisho wa Chapa Lipa na M-Pesa. Makusanyo ya papo hapo ya KES. Sandbox: Till 174379.',
+    'business.globalTitle': 'Njia za Malipo za Kimataifa',
+    'business.globalDesc':
+      'Stripe (USD/EUR), Flutterwave (NGN), PayPal. Kila njia inawezeshwa kwa kila uanzishaji wa nchi.',
+    'business.financeNote':
+      'Usimamizi wa Mdhibiti wa Fedha: Uondoaji wote wa mapato, malipo ya washirika, na uhamisho wa {partner} unahitaji idhini mbili. Mapato ya jukwaa yanagawanywa kiotomatiki: 10% kwa akiba ya hisani, 15% kwa fedha za uendeshaji, iliyobaki kwa mfuko wa ukuaji.',
+    'business.partnerTitle': 'Maswali ya Ushirikiano',
+    'business.safariPartner': 'Lodges za Safari & Hifadhi',
+    'business.safariPartnerDesc':
+      'Orodhesha vifurushi vyako kwenye {brand} Experiences. Fikia wasafiri wa kimataifa moja kwa moja.',
+    'business.ngoPartner': 'NGOs & Washirika wa Maendeleo',
+    'business.ngoPartnerDesc':
+      'Fadhili pamoja miradi ya {partner}. Mafunzo ya ujuzi, ajira ya vijana, ujenzi wa jamii.',
+    'business.corpPartner': 'Ankeri za Makampuni',
+    'business.corpPartnerDesc':
+      'Ajiri Waanzilishi waliothibitishwa. Chapisha njia, fadhili uwekaji, jenge timu yako ya Afrika Mashariki.',
+    'business.contactTitle': 'Wasiliana Nasi',
+    'business.contactDesc':
+      'Kwa mapendekezo ya ushirikiano, maswali ya kisheria, au vyombo vya habari, tufikie moja kwa moja.',
+    'business.browseVentures': 'Vinjari Ventures',
+    'business.safariExperiences': 'Matembezi ya Safari',
+    'business.charityLink': '{partner} Hisani',
+
+    // Fashion
+    'fashion.badge': '{company} — Divisheni ya Mitindo',
+    'fashion.tagline': 'Mtindo. Heshima. Afrika.',
+    'fashion.heroDesc':
+      'Kutoka Nairobi hadi Ulimwenguni — Mitindo ya Kiafrika inayosimulia hadithi. Modeli, wabunifu, na wabunifu wanaojenga kazi kwa heshima.',
+    'fashion.applyPioneer': 'Omba kama Mwanzilishi wa Mitindo',
+    'fashion.hireTalent': 'Ajiri Talanta za Mitindo',
+    'fashion.missionTitle': 'Dhamira Yetu',
+    'fashion.missionQuote':
+      'Mitindo inayowezesha. Kila modeli ni Mwanzilishi. Kila vazi linasimulia hadithi.',
+    'fashion.missionDesc':
+      '{brand} Fashion ipo kwa sababu talanta ya ubunifu ya Afrika inastahili fursa za kimataifa — bila unyonyaji, bila walinzi wa lango. Tunaujenga njia salama, za malipo, za kitaalamu kutoka Kenya hadi ulimwenguni.',
+    'fashion.pathsTitle': 'Njia Tatu katika Mitindo',
+    'fashion.pathsDesc':
+      'Iwe unatembea kwenye jukwaa, unachora mkusanyo, au unakamata picha — kuna njia yenye jina lako.',
+    'fashion.modelTitle': 'Modeli',
+    'fashion.modelDesc':
+      'Picha za kitaalamu, kampeni za chapa, kazi ya orodha. Salama. Malipo. Kitaalamu. Kila ushiriki kwa masharti yako.',
+    'fashion.designerTitle': 'Mbunifu',
+    'fashion.designerDesc':
+      'Kutoka mchoro hadi kushona. Uzalishaji wa ndani. Vitambaa vya Kiafrika. Kufikia kimataifa. Peleka mila ya nguo ya Kenya kwenye masoko ya kimataifa.',
+    'fashion.creativeTitle': 'Mbunifu',
+    'fashion.creativeDesc':
+      'Upigaji picha, upambaji, nywele na vipodozi, muundo wa jukwaa. Ulimwengu wote nyuma ya lenzi. Kuwa maono nyuma ya chapa.',
+    'fashion.protectionsTitle': 'Kinachofanya {brand} Fashion Tofauti',
+    'fashion.protectionsDesc': 'Kila Mwanzilishi analindwa. Kipindi.',
+    'fashion.openPaths': 'Njia za Mitindo Zilizo Wazi',
+    'fashion.openPathsDesc': 'Fursa za malipo zinazomngoja Mwanzilishi sahihi',
+    'fashion.viewAll': 'Tazama njia zote →',
+    'fashion.apply': 'Omba',
+    'fashion.partnersTitle': 'Ankeri Washirika',
+    'fashion.partnersDesc':
+      'Mashirika yanayoamini {brand} Fashion kuwaunganisha na Waanzilishi waliothibitishwa, wenye talanta',
+    'fashion.ctaTitle': 'Uko tayari kutembea njia yako?',
+    'fashion.ctaDesc':
+      'Jiunge na {brand} Fashion kama Mwanzilishi. Weka bei zako. Chagua picha zako. Jenga kazi yako kwa heshima.',
+    'fashion.exploreMedia': 'Chunguza Divisheni ya Media →',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',

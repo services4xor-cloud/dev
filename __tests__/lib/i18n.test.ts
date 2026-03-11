@@ -627,6 +627,61 @@ describe('i18n — business page translations', () => {
   })
 })
 
+describe('i18n — fashion page translations', () => {
+  const fashionKeys = [
+    'fashion.badge',
+    'fashion.tagline',
+    'fashion.heroDesc',
+    'fashion.applyPioneer',
+    'fashion.hireTalent',
+    'fashion.missionTitle',
+    'fashion.missionQuote',
+    'fashion.missionDesc',
+    'fashion.pathsTitle',
+    'fashion.pathsDesc',
+    'fashion.modelTitle',
+    'fashion.modelDesc',
+    'fashion.designerTitle',
+    'fashion.designerDesc',
+    'fashion.creativeTitle',
+    'fashion.creativeDesc',
+    'fashion.protectionsTitle',
+    'fashion.protectionsDesc',
+    'fashion.openPaths',
+    'fashion.openPathsDesc',
+    'fashion.viewAll',
+    'fashion.apply',
+    'fashion.partnersTitle',
+    'fashion.partnersDesc',
+    'fashion.ctaTitle',
+    'fashion.ctaDesc',
+    'fashion.exploreMedia',
+  ]
+
+  it('English has all fashion keys', () => {
+    for (const key of fashionKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all fashion keys', () => {
+    for (const key of fashionKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all fashion keys', () => {
+    for (const key of fashionKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('interpolates missionDesc with brand', () => {
+    const result = translate('fashion.missionDesc', 'en', { brand: 'TestBrand' })
+    expect(result).toContain('TestBrand')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()
