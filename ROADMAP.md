@@ -1,7 +1,7 @@
 # Be[Country] — Strategic Roadmap
 
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [PROGRESS.md](./PROGRESS.md)
-> Updated: Session 24 (2026-03-11)
+> Updated: Session 29 (2026-03-11)
 
 ---
 
@@ -107,16 +107,28 @@ Goal: Architecture ready for multi-country, multi-identity deployment.
 
 ---
 
-## Phase 2 — BeKenya Live ⛔ BLOCKED
+## Phase 2 — BeKenya Live 🔧 UNBLOCKED
 
-**Blocker:** Human must provide credentials ([HUMAN_MANUAL.md](./HUMAN_MANUAL.md))
+**Database + Auth:** ✅ Neon DB connected, schema pushed, NEXTAUTH_SECRET set.
+**Remaining:** Google OAuth, Resend, M-Pesa sandbox, Stripe test keys.
 
-| Sprint | Task                  | Status       |
-| ------ | --------------------- | ------------ |
-| 2A     | DB + Auth credentials | ⛔ Human     |
-| 2B     | Prisma migrate + seed | Waiting on A |
-| 2C     | Real auth flow        | Waiting on A |
-| 2D     | Real booking + M-Pesa | Waiting on A |
+| Sprint | Task                  | Status                    |
+| ------ | --------------------- | ------------------------- |
+| 2A     | DB + Auth credentials | ✅ DB live, NEXTAUTH set  |
+| 2B     | Prisma seed data      | Ready to go               |
+| 2C     | Real auth flow        | Waiting on Google OAuth   |
+| 2D     | Real booking + M-Pesa | Waiting on M-Pesa sandbox |
+
+**Session 28-29 Progress (Phase 1.5):**
+
+- ✅ S-04: Thread/identity data model + 22 mock threads (countries/tribes/languages/interests/sciences/locations)
+- ✅ Venture detail page (`/ventures/[id]`) — core conversion page
+- ✅ Identity flags system (localStorage bridge for Pioneer identity)
+- ✅ Onboarding → Ventures personalized flow
+- ✅ PaymentPlug abstraction (M-Pesa, Stripe, SEPA, Flutterwave)
+- ✅ Logo identity switcher dropdown (Countries/Languages/Tribes/Interests/Sciences/Locations)
+- ✅ BeKenya content expansion (agriculture, marine, engineering — 16 paths, 22 threads)
+- ✅ Pluggability audit completed
 
 **Success:** 5 real Anchors, 50 real Pioneers, 1 real M-Pesa booking.
 
@@ -158,18 +170,18 @@ Same codebase, different Vercel projects + `NEXT_PUBLIC_COUNTRY_CODE`.
 
 _Month 7–12_
 
-| Feature                     | Why                               |
-| --------------------------- | --------------------------------- |
-| React Native / Expo         | 60%+ African internet is mobile   |
-| AI Compass (LLM)            | Personalized route narratives     |
-| Be[Tribe] identity threads  | BeMaasai, BeKikuyu, BeLuo…        |
-| Be[Location] threads        | BeNairobi, BeMombasa, BeLagos…    |
-| Be[Interest] threads        | BeTech, BeEcoTourism, BeMedical…  |
-| Be[Language] threads        | BeSwahili, BeDeutsch, BeFrançais… |
-| Be[Religion] threads        | Respectful community spaces       |
-| Multi-language UI           | EN/SW/DE/FR                       |
-| UTAMADUNI live dashboard    | Public impact transparency        |
-| Community (Pioneer↔Pioneer) | Reddit-style threads + networking |
+| Feature                    | Why                               | Status     |
+| -------------------------- | --------------------------------- | ---------- |
+| React Native / Expo        | 60%+ African internet is mobile   | Phase 5    |
+| AI Compass (LLM)           | Personalized route narratives     | Phase 5    |
+| Be[Tribe] identity threads | BeMaasai, BeKikuyu, BeLuo…        | ✅ Built   |
+| Be[Location] threads       | BeNairobi, BeMombasa, BeLagos…    | ✅ Built   |
+| Be[Interest] threads       | BeTech, BeEcoTourism, BeMedical…  | ✅ Built   |
+| Be[Language] threads       | BeSwahili, BeDeutsch, BeFrançais… | ✅ Built   |
+| Be[Religion] threads       | Respectful community spaces       | Data-ready |
+| Multi-language UI          | EN/SW/DE/FR                       | Phase 5    |
+| UTAMADUNI live dashboard   | Public impact transparency        | Phase 5    |
+| Logo identity switcher     | Nav dropdown for all threads      | ✅ Built   |
 
 **Thread Architecture:** Every identity group (country/tribe/location/interest/language/religion) is a "thread" — same component, same data model, different content. Generic by design. Like subreddits but for life-routing.
 
@@ -204,4 +216,4 @@ _Month 7–12_
 
 ---
 
-_Last updated: Session 24 (2026-03-11)_
+_Last updated: Session 29 (2026-03-11)_

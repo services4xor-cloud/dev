@@ -1,7 +1,32 @@
 # ASK.md — Agent Questions for Owner
 
 > Questions the agent needs answered. Owner reviews async. Don't interrupt sessions.
-> Updated: Session 20 (2026-03-11)
+> Updated: Session 28 (2026-03-11)
+
+---
+
+## Pluggability Audit — Status (Session 28)
+
+| System                                | Pluggable? | How                                                                                       | What's Needed                                                     |
+| ------------------------------------- | ---------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Payments**                          | ✅ Yes     | `lib/payments.ts` — `getPaymentPlug('KE')` → M-Pesa, `getPaymentPlug('DE')` → SEPA/Stripe | Add new plug per country (PayPal for CH, etc.)                    |
+| **Country content**                   | ✅ Yes     | `lib/countries.ts` — `CountryConfig` per country with sectors, payments, stats, hero      | Add config entry per country                                      |
+| **Experiences**                       | ⚠️ Partial | `lib/safari-packages.ts` — hardcoded to Kenya packages                                    | Need per-country experience modules (skiing for CH, etc.)         |
+| **Identity threads**                  | ✅ Yes     | `data/mock/threads.ts` — data-driven, zero code changes to add                            | Add entries per country                                           |
+| **Vocabulary**                        | ✅ Yes     | `lib/vocabulary.ts` — language-agnostic terms                                             | Needs i18n layer for Swahili/German/etc. translations             |
+| **Nav/Footer**                        | ✅ Yes     | `lib/nav-structure.ts` — reads country from env                                           | Works per deployment                                              |
+| **Matching engine**                   | ✅ Yes     | `lib/matching.ts` — country-agnostic scoring                                              | Works globally                                                    |
+| **Mock paths**                        | ⚠️ Partial | `data/mock/paths.ts` — mixed Kenya + international                                        | Need per-country path modules                                     |
+| **Currency formatting**               | ✅ Yes     | `PaymentPlug.formatAmount()` per country                                                  | Works via plug system                                             |
+| **Logo/Identity switch**              | ❌ Missing | Logo is static                                                                            | Need logo dropdown with country/thread switcher (new requirement) |
+| **Offerings/Experiences per country** | ⚠️ Partial | `lib/offerings.ts` exists but safari data is Kenya-only                                   | Need modular experience loading per country                       |
+
+### To make fully pluggable:
+
+1. **Experience modules**: Refactor `lib/safari-packages.ts` → `lib/experiences/kenya.ts`, `lib/experiences/switzerland.ts` etc. with a registry
+2. **Path modules**: Split `data/mock/paths.ts` → per-country files with a loader
+3. **i18n layer**: Add translation keys so UI text can be Swahili/English/German per deployment
+4. **Logo dropdown**: Nav logo becomes thread/country switcher (new requirement from owner)
 
 ---
 

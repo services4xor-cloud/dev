@@ -1,27 +1,27 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 31 (2026-03-11)
+> Last updated: Session 32 (2026-03-11)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
 
 ## Current State
 
-| Metric            | Value                                                |
-| ----------------- | ---------------------------------------------------- |
-| Phase             | 2 (BeKenya Live) — DB connected, partially unblocked |
-| Branch            | `main` (direct push)                                 |
-| Deploy            | Vercel auto on push                                  |
-| Pages             | 20+                                                  |
-| API routes        | 12+                                                  |
-| Library modules   | 16 (incl. threads.ts, geo.ts, emoji-map.ts)          |
-| Mock data modules | 17 (incl. config.ts, threads.ts)                     |
-| Jest tests        | 160/160 ✅                                           |
-| Playwright tests  | 102/102 ✅ (16 smoke + 32 brand + 54 responsive)     |
-| TypeScript errors | 0                                                    |
-| Countries config  | 12 (16 in selector)                                  |
-| Languages         | 14                                                   |
+| Metric            | Value                                            |
+| ----------------- | ------------------------------------------------ |
+| Phase             | 2 (BeKenya Live) — DB live, KE/DE/CH seeded      |
+| Branch            | `main` (direct push)                             |
+| Deploy            | Vercel auto on push                              |
+| Pages             | 20+                                              |
+| API routes        | 12+                                              |
+| Library modules   | 16 (incl. threads.ts, geo.ts, emoji-map.ts)      |
+| Mock data modules | 17 (incl. config.ts, threads.ts)                 |
+| Jest tests        | 160/160 ✅                                       |
+| Playwright tests  | 102/102 ✅ (16 smoke + 32 brand + 54 responsive) |
+| TypeScript errors | 0                                                |
+| Countries config  | 13 (16 in selector, +CH)                         |
+| Languages         | 14                                               |
 
 ---
 
@@ -66,6 +66,16 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 32 (2026-03-11) — DB Migration: KE/DE/CH Live
+
+- [x] **Schema extended**: 5 new models (Account, Thread, ThreadMembership, Experience, SavedPath) + ThreadType enum. 12 models total.
+- [x] **Switzerland (CH) added**: Full country config in `lib/countries.ts` (CHF, TWINT, 8 sectors), country-selector (Zurich coords, L/B permit), thread (BeSwitzerland).
+- [x] **Auth wired**: NextAuth with PrismaAdapter, Google OAuth, bcrypt Credentials. JWT propagates role + country. `lib/auth.ts` extracted.
+- [x] **Seed data live**: 9 anchors (3/country), 18 paths (6/country), 6 pioneers (2/country), 22 threads, 6 experiences — all in Neon.
+- [x] **Service layer built**: `services/` with DB-first + mock fallback. `pathService`, `threadService`, `chapterService`.
+- [x] **API routes updated**: `/api/paths` and `/api/chapters` now use service layer + real auth. `/api/threads` and `/api/threads/[slug]` created.
+- [x] Build: ✅ | Jest: 160/160 ✅ | TS: 0 errors
 
 ### Session 31 (2026-03-11) — Identity Switcher Visual Fix
 
