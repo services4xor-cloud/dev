@@ -27,15 +27,58 @@ const TEASER_COUNTRIES = COUNTRY_OPTIONS.slice(0, 12).map((c) => ({
   flag: c.flag,
 }))
 
-// ─── Identity Switcher Tabs (4 focused categories) ──────────────────
-// Countries = geographic, Languages = linguistic, Faith = spiritual unifier,
-// Paths = interests + science + location (everything else)
+// ─── Identity Switcher Tabs (5 categories — scalable) ───────────────
+// Each tab maps to one or more ThreadType values from the data.
+// Content is dynamic — only tabs with threads are shown.
 const IDENTITY_TABS: { types: ThreadType[]; label: string; icon: string }[] = [
   { types: ['country'], label: 'Countries', icon: '🌍' },
+  { types: ['tribe'], label: 'Tribes', icon: '🏛️' },
   { types: ['language'], label: 'Languages', icon: '🗣️' },
   { types: ['religion'], label: 'Faith', icon: '🕊️' },
-  { types: ['interest', 'science', 'tribe', 'location'], label: 'Paths', icon: '⭐' },
+  { types: ['interest', 'science', 'location'], label: 'Paths', icon: '⭐' },
 ]
+
+// Language → Country mapping: selecting a language also sets the primary country
+const LANGUAGE_COUNTRY_MAP: Record<string, string> = {
+  sw: 'KE',
+  swahili: 'KE',
+  de: 'DE',
+  deutsch: 'DE',
+  german: 'DE',
+  fr: 'FR',
+  french: 'FR',
+  français: 'FR',
+  en: 'GB',
+  english: 'GB',
+  ar: 'AE',
+  arabic: 'AE',
+  hi: 'IN',
+  hindi: 'IN',
+  zu: 'ZA',
+  zulu: 'ZA',
+  ha: 'NG',
+  hausa: 'NG',
+  yo: 'NG',
+  yoruba: 'NG',
+  lg: 'UG',
+  luganda: 'UG',
+}
+
+// Tribe → Country mapping: selecting a tribe sets the associated country
+const TRIBE_COUNTRY_MAP: Record<string, string> = {
+  maasai: 'KE',
+  kikuyu: 'KE',
+  luo: 'KE',
+  bavarian: 'DE',
+  swabian: 'DE',
+  schwaben: 'DE',
+  berliner: 'DE',
+  romand: 'CH',
+  'alemannic-swiss': 'CH',
+  alemannic: 'CH',
+  yoruba: 'NG',
+  igbo: 'NG',
+}
 
 /** Get the URL for a thread */
 function getThreadUrl(thread: { type: ThreadType; slug: string }): string {
@@ -54,7 +97,13 @@ export default function Nav() {
 
   // Fetch threads from API (falls back to mock data)
   const { threads: navThreads } = useThreads()
-  const { countryName: identityCountryName, setCountry, setLanguage, setThread } = useIdentity()
+  const {
+    brandName: identityBrandName,
+    countryName: identityCountryName,
+    setCountry,
+    setLanguage,
+    setThread,
+  } = useIdentity()
   const [teaserIdx, setTeaserIdx] = useState(0)
   const [teaserFade, setTeaserFade] = useState(true)
   const [identityOpen, setIdentityOpen] = useState(false)
@@ -279,7 +328,7 @@ export default function Nav() {
                     ) : (
                       <>
                         <span className="text-brand-accent">Be</span>
-                        <span className="text-white">{identityCountryName}</span>
+                        <span className="text-white">{identityBrandName.replace(/^Be/, '')}</span>
                       </>
                     )}
                   </span>
@@ -340,7 +389,8 @@ export default function Nav() {
                             href={getThreadUrl(thread)}
                             role="menuitem"
                             onClick={() => {
-                              // Update identity context based on thread type
+                              // Every selection updates the full identity context
+                              // — whatever is clicked becomes the "main interest"
                               if (thread.type === 'country') {
                                 const match = COUNTRY_OPTIONS.find(
                                   (c) =>
@@ -349,26 +399,20 @@ export default function Nav() {
                                 )
                                 if (match) setCountry(match.code)
                               } else if (thread.type === 'language') {
-                                // Language threads set the display language
-                                // Map thread slug to language code (e.g. 'swahili' → 'sw', 'german' → 'de')
-                                const LANG_MAP: Record<string, string> = {
-                                  swahili: 'sw',
-                                  german: 'de',
-                                  deutsch: 'de',
-                                  french: 'fr',
-                                  english: 'en',
-                                  arabic: 'ar',
-                                  hindi: 'hi',
-                                  zulu: 'zu',
-                                  hausa: 'ha',
-                                  yoruba: 'yo',
-                                  luganda: 'lg',
-                                }
-                                const langCode = LANG_MAP[thread.slug] ?? thread.slug
+                                // Language = Country: selecting Deutsch → sets DE
+                                const langCode =
+                                  thread.slug.length <= 3 ? thread.slug : thread.slug.slice(0, 2)
                                 setLanguage(langCode)
-                                setThread(thread.slug, thread.type)
+                                const mappedCountry = LANGUAGE_COUNTRY_MAP[thread.slug]
+                                if (mappedCountry) setCountry(mappedCountry)
+                                setThread(thread.slug, thread.type, thread.brandName)
+                              } else if (thread.type === 'tribe') {
+                                // Tribe → sets associated country too
+                                const mappedCountry = TRIBE_COUNTRY_MAP[thread.slug]
+                                if (mappedCountry) setCountry(mappedCountry)
+                                setThread(thread.slug, thread.type, thread.brandName)
                               } else {
-                                setThread(thread.slug, thread.type)
+                                setThread(thread.slug, thread.type, thread.brandName)
                               }
                               setIdentityOpen(false)
                               setHoveredThread(null)

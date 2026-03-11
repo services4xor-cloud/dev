@@ -27,6 +27,8 @@ interface Identity {
   threadSlug?: string
   /** Thread type if viewing a specific thread (e.g. 'tribe') */
   threadType?: string
+  /** Thread brand name override (e.g. 'BeMaasai' when a tribe is active) */
+  threadBrandName?: string
 }
 
 interface IdentityContextValue {
@@ -40,8 +42,8 @@ interface IdentityContextValue {
   setCountry: (code: string) => void
   /** Set the display language */
   setLanguage: (code: string) => void
-  /** Set the active thread */
-  setThread: (slug: string, type: string) => void
+  /** Set the active thread (with optional brand name for logo) */
+  setThread: (slug: string, type: string, brandName?: string) => void
   /** Clear thread selection (back to country-level) */
   clearThread: () => void
   /** Reset to default country + language */
@@ -111,8 +113,13 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     setIdentity((prev) => ({ ...prev, language: code.toLowerCase() }))
   }, [])
 
-  const setThread = useCallback((slug: string, type: string) => {
-    setIdentity((prev) => ({ ...prev, threadSlug: slug, threadType: type }))
+  const setThread = useCallback((slug: string, type: string, threadBrand?: string) => {
+    setIdentity((prev) => ({
+      ...prev,
+      threadSlug: slug,
+      threadType: type,
+      threadBrandName: threadBrand,
+    }))
   }, [])
 
   const clearThread = useCallback(() => {
@@ -123,9 +130,9 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     setIdentity({ country: DEFAULT_COUNTRY, language: DEFAULT_LANGUAGE })
   }, [])
 
-  // Localized names based on the user's language
+  // Localized names — thread brand overrides country brand when active
   const countryName = getLocalizedCountryName(identity.country, identity.language)
-  const brandName = `Be${countryName}`
+  const brandName = identity.threadBrandName || `Be${countryName}`
 
   // Helper to localize any country code in the user's current language
   const localizeCountry = useCallback(
