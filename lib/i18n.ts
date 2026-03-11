@@ -37,6 +37,7 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.oneIdentity': 'One platform, every identity',
     'nav.location': 'Location',
     'nav.language': 'Language',
+    'nav.nearby': 'Relevant',
 
     // Hero
     'hero.greeting': "We see you're in {geoName}. {geoGreeting}",
@@ -273,6 +274,7 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.oneIdentity': 'Eine Plattform, jede Identität',
     'nav.location': 'Standort',
     'nav.language': 'Sprache',
+    'nav.nearby': 'Relevant',
 
     'hero.greeting': 'Wir sehen, du bist in {geoName}. {geoGreeting}',
     'hero.readyChapter': 'Bereit für dein nächstes Kapitel?',
@@ -448,6 +450,7 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.oneIdentity': 'Jukwaa moja, kila utambulisho',
     'nav.location': 'Mahali',
     'nav.language': 'Lugha',
+    'nav.nearby': 'Husika',
 
     'hero.greeting': 'Tunaona uko {geoName}. {geoGreeting}',
     'hero.readyChapter': 'Uko tayari kwa sura yako ijayo?',
@@ -554,6 +557,7 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.oneIdentity': 'Une plateforme, chaque identité',
     'nav.location': 'Lieu',
     'nav.language': 'Langue',
+    'nav.nearby': 'Pertinent',
 
     'hero.readyChapter': 'Prêt pour votre prochain chapitre?',
     'hero.headline': 'Trouvez où vous',

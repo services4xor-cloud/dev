@@ -1,20 +1,21 @@
 'use client'
 
 /**
- * IdentitySwitcher — Compact identity dropdown
+ * IdentitySwitcher — Smart identity dropdown
  *
  * Design principles:
  *   1. CLEAR — always shows what's currently selected (country + language)
- *   2. CURATED — max 8-10 relevant options, not a dump of everything
+ *   2. CURATED — max 8 relevant options, ranked by algorithm
  *   3. LANGUAGE-AWARE — all names shown in the user's active language
- *   4. NO DUPLICATION — each identity appears once, sorted by relevance
- *   5. KISS — one flat list per section, no tabs
+ *   4. NO DUPLICATION — each identity appears once
+ *   5. VALUE-DRIVEN — shows currency, distance, corridor strength
  *
- * Relevance algorithm:
- *   - Same language countries first (if you speak German → DE, CH, AT)
- *   - Same region second (if you're in KE → UG, TZ, NG)
- *   - High-corridor countries third
- *   - Everything else: hidden (browse /threads for full list)
+ * Ranking algorithm (composite score):
+ *   - Same language: +40 (journey collaboration)
+ *   - Same region: +20 (proximity)
+ *   - Direct corridor: +30 (trade strength)
+ *   - Same currency: +15 (zero exchange risk)
+ *   - Geographic proximity: +0–25 (inverse of flight hours)
  */
 
 import Link from 'next/link'
@@ -32,77 +33,99 @@ interface IdentitySwitcherProps {
 
 // ─── Relevance engine ───────────────────────────────────────────────
 
-interface CuratedCountry {
+interface RankedCountry {
   code: string
   flag: string
   name: string
   currency: string
-  corridor: string // 'direct' | 'partner' | 'emerging'
-  reason: 'current' | 'language' | 'region' | 'corridor'
+  corridor: string
+  flightHours: number
+  score: number
+  isCurrent: boolean
+  tags: string[] // e.g. ['Same language', 'Direct corridor']
 }
 
-function getCuratedCountries(
+/** Haversine distance between two lat/lng points in km */
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371
+  const dLat = ((lat2 - lat1) * Math.PI) / 180
+  const dLng = ((lng2 - lng1) * Math.PI) / 180
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+/** Approx flight hours from km (800km/h average) */
+function kmToFlightHours(km: number): number {
+  return Math.round((km / 800) * 10) / 10
+}
+
+function getRankedCountries(
   currentCountry: string,
   currentLanguage: string,
   localizeCountry: (code: string) => string
-): CuratedCountry[] {
+): RankedCountry[] {
   const current = COUNTRY_OPTIONS.find((c) => c.code === currentCountry)
   if (!current) return []
 
-  // Languages spoken in current country
   const lang = LANGUAGE_REGISTRY[currentLanguage as LanguageCode]
-  const languageCountries = lang?.countries ?? []
+  const languageCountries = new Set(lang?.countries ?? [])
 
-  // Countries sharing the region
-  const regionCountries = COUNTRY_OPTIONS.filter(
-    (c) => c.region === current.region && c.code !== currentCountry
-  ).map((c) => c.code)
+  return COUNTRY_OPTIONS.filter((c) => c.code !== currentCountry)
+    .map((c) => {
+      let score = 0
+      const tags: string[] = []
 
-  // Direct corridor countries
-  const corridorCountries = COUNTRY_OPTIONS.filter(
-    (c) => c.corridorStrength === 'direct' && c.code !== currentCountry
-  ).map((c) => c.code)
+      // Same language countries (journey collaboration)
+      if (languageCountries.has(c.code)) {
+        score += 40
+        tags.push(lang?.nativeName ?? currentLanguage)
+      }
 
-  const seen = new Set<string>()
-  const results: CuratedCountry[] = []
+      // Direct corridor (strong trade route)
+      if (c.corridorStrength === 'direct') {
+        score += 30
+        tags.push('Direct')
+      } else if (c.corridorStrength === 'partner') {
+        score += 15
+      }
 
-  const addCountry = (cc: string, reason: CuratedCountry['reason']) => {
-    if (seen.has(cc)) return
-    const opt = COUNTRY_OPTIONS.find((c) => c.code === cc)
-    if (!opt) return
-    results.push({
-      code: cc,
-      flag: opt.flag,
-      name: localizeCountry(cc),
-      currency: opt.currency,
-      corridor: opt.corridorStrength,
-      reason,
+      // Same region (nearby)
+      if (c.region === current.region) {
+        score += 20
+        if (!tags.length) tags.push('Nearby')
+      }
+
+      // Same currency (zero exchange risk)
+      if (c.currency === current.currency) {
+        score += 15
+        tags.push(c.currency)
+      }
+
+      // Geographic proximity bonus (max 25 for adjacent countries)
+      const dist = haversineKm(current.lat, current.lng, c.lat, c.lng)
+      const flightHrs = kmToFlightHours(dist)
+      const proximityScore = Math.max(0, 25 - flightHrs * 2)
+      score += proximityScore
+
+      return {
+        code: c.code,
+        flag: c.flag,
+        name: localizeCountry(c.code),
+        currency: c.currency,
+        corridor: c.corridorStrength,
+        flightHours: flightHrs,
+        score,
+        isCurrent: false,
+        tags: tags.slice(0, 2), // Max 2 tags shown
+      }
     })
-    seen.add(cc)
-  }
-
-  // 1. Current country always first
-  addCountry(current.code, 'current')
-
-  // 2. Countries where user's language is spoken
-  for (const cc of languageCountries) addCountry(cc, 'language')
-
-  // 3. Same region (cap at 8 total)
-  for (const cc of regionCountries) {
-    if (results.length >= 8) break
-    addCountry(cc, 'region')
-  }
-
-  // 4. Direct corridors (cap at 10 total)
-  for (const cc of corridorCountries) {
-    if (results.length >= 10) break
-    addCountry(cc, 'corridor')
-  }
-
-  return results
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 7) // Top 7 most relevant (+ current = 8 total)
 }
 
-/** Get languages relevant to the user — spoken in their country or nearby */
+/** Get languages relevant to the user — spoken in their country first */
 function getCuratedLanguages(
   currentCountry: string,
   currentLanguage: string
@@ -150,7 +173,6 @@ function getCuratedLanguages(
     }
   }
 
-  // Sort: current first, then alphabetical by nativeName
   return results.sort((a, b) => {
     if (a.isCurrent) return -1
     if (b.isCurrent) return 1
@@ -171,7 +193,8 @@ export default function IdentitySwitcher({
 
   if (!open) return null
 
-  const countries = getCuratedCountries(identity.country, identity.language, localizeCountry)
+  const currentOpt = COUNTRY_OPTIONS.find((c) => c.code === identity.country)
+  const ranked = getRankedCountries(identity.country, identity.language, localizeCountry)
   const languages = getCuratedLanguages(identity.country, identity.language)
 
   return (
@@ -180,68 +203,71 @@ export default function IdentitySwitcher({
       data-testid="identity-switcher"
       className={`${widthClass} rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/60 overflow-hidden ${className}`}
     >
-      {/* ── Location section ─────────────────────────── */}
-      <div className="px-3 pt-3 pb-2">
-        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-brand-accent/60 mb-2">
-          📍 {t('nav.location') || 'Location'}
+      {/* ── Current (always visible, highlighted) ────── */}
+      {currentOpt && (
+        <div className="px-3 pt-3 pb-2">
+          <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20">
+            <span className="text-lg shrink-0">{currentOpt.flag}</span>
+            <div className="flex-1 min-w-0">
+              <span className="text-[13px] font-semibold text-brand-accent">
+                {localizeCountry(identity.country)}
+              </span>
+            </div>
+            <span className="text-[10px] font-mono text-brand-accent/60">
+              {currentOpt.currency}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* ── Ranked countries ──────────────────────────── */}
+      <div className="px-3 pb-2">
+        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/30 mb-1.5 px-1">
+          {t('nav.nearby') || 'Relevant'}
         </p>
         <div className="space-y-0.5">
-          {countries.map((c) => {
-            const isCurrent = c.reason === 'current'
-            const sameCurrency = c.currency === countries[0]?.currency && !isCurrent
-            return (
-              <button
-                key={c.code}
-                type="button"
-                role="menuitem"
-                data-testid={`identity-country-${c.code.toLowerCase()}`}
-                onClick={() => {
-                  setCountry(c.code)
-                  onClose()
-                }}
-                className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left transition-all duration-150
-                  ${
-                    isCurrent
-                      ? 'bg-brand-accent/10 border border-brand-accent/20'
-                      : 'hover:bg-white/5'
-                  }`}
-              >
-                <span className="text-base shrink-0">{c.flag}</span>
-                <div className="flex-1 min-w-0">
-                  <span
-                    className={`text-[13px] font-medium ${isCurrent ? 'text-brand-accent' : 'text-white/80'}`}
-                  >
-                    {c.name}
-                  </span>
-                </div>
-                {/* Currency badge — shows leverage context */}
-                <span
-                  className={`text-[10px] font-mono shrink-0 ${
-                    isCurrent
-                      ? 'text-brand-accent/70'
-                      : sameCurrency
-                        ? 'text-green-400/60'
-                        : 'text-white/30'
-                  }`}
-                >
-                  {c.currency}
+          {ranked.map((c) => (
+            <button
+              key={c.code}
+              type="button"
+              role="menuitem"
+              data-testid={`identity-country-${c.code.toLowerCase()}`}
+              onClick={() => {
+                setCountry(c.code)
+                onClose()
+              }}
+              className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-left hover:bg-white/5 transition-all duration-150 group"
+            >
+              <span className="text-base shrink-0">{c.flag}</span>
+              <div className="flex-1 min-w-0">
+                <span className="text-[13px] font-medium text-white/80 group-hover:text-white transition-colors">
+                  {c.name}
                 </span>
-                {/* Corridor strength indicator */}
-                {!isCurrent && c.corridor === 'direct' && (
-                  <span
-                    className="w-1.5 h-1.5 rounded-full bg-green-400/60 shrink-0"
-                    title="Direct corridor"
-                  />
+                {/* Tags — why this country is relevant */}
+                {c.tags.length > 0 && (
+                  <span className="ml-1.5 text-[9px] text-white/25">{c.tags.join(' · ')}</span>
                 )}
-              </button>
-            )
-          })}
+              </div>
+              {/* Flight hours — distance context */}
+              <span className="text-[9px] text-white/20 shrink-0 tabular-nums">
+                {c.flightHours}h
+              </span>
+              {/* Currency */}
+              <span
+                className={`text-[10px] font-mono shrink-0 ${
+                  c.currency === currentOpt?.currency ? 'text-green-400/50' : 'text-white/25'
+                }`}
+              >
+                {c.currency}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
       {/* ── Language section ──────────────────────────── */}
       <div className="px-3 pt-1 pb-3 border-t border-white/5">
-        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-brand-accent/60 mb-2 mt-2">
+        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/30 mb-2 mt-2 px-1">
           🗣️ {t('nav.language') || 'Language'}
         </p>
         <div className="flex flex-wrap gap-1">
@@ -269,11 +295,11 @@ export default function IdentitySwitcher({
       </div>
 
       {/* ── Footer ───────────────────────────────────── */}
-      <div className="border-t border-white/5 px-3 py-2 flex items-center justify-between">
+      <div className="border-t border-white/5 px-3 py-2">
         <Link
           href="/threads"
           onClick={onClose}
-          className="text-[11px] font-medium text-brand-accent/60 hover:text-brand-accent transition-colors"
+          className="text-[11px] font-medium text-brand-accent/50 hover:text-brand-accent transition-colors"
         >
           {t('nav.browseThreads') || 'Browse all threads →'}
         </Link>
