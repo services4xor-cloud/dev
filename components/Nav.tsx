@@ -14,7 +14,7 @@ import {
   ABOUT_NAV_LINKS as ABOUT_LINKS,
 } from '@/lib/nav-structure'
 import type { ThreadType } from '@/lib/threads'
-import { MOCK_THREADS } from '@/data/mock/threads'
+import { useThreads } from '@/lib/hooks/use-threads'
 
 const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
 const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
@@ -46,6 +46,9 @@ export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<'anchors' | 'about' | null>(null)
   const [scrolled, setScrolled] = useState(false)
+
+  // Fetch threads from API (falls back to mock data)
+  const { threads: navThreads } = useThreads()
   const [teaserIdx, setTeaserIdx] = useState(0)
   const [teaserFade, setTeaserFade] = useState(true)
   const [identityOpen, setIdentityOpen] = useState(false)
@@ -306,9 +309,7 @@ export default function Nav() {
                   {/* Tab row */}
                   <div className="flex gap-0.5 px-2 pt-2 pb-1 overflow-x-auto scrollbar-hide border-b border-white/5">
                     {IDENTITY_TABS.map((tab) => {
-                      const count = MOCK_THREADS.filter(
-                        (t) => t.type === tab.type && t.active
-                      ).length
+                      const count = navThreads.filter((t) => t.type === tab.type && t.active).length
                       if (count === 0) return null
                       return (
                         <button
@@ -330,7 +331,8 @@ export default function Nav() {
 
                   {/* Thread list */}
                   <div className="max-h-64 overflow-y-auto py-1.5 px-1.5">
-                    {MOCK_THREADS.filter((t) => t.type === identityTab && t.active)
+                    {navThreads
+                      .filter((t) => t.type === identityTab && t.active)
                       .sort((a, b) => b.memberCount - a.memberCount)
                       .map((thread) => (
                         <Link
@@ -526,7 +528,7 @@ export default function Nav() {
               {/* Quick identity tabs — mobile */}
               <div className="flex gap-1 mt-2 overflow-x-auto scrollbar-hide px-1">
                 {IDENTITY_TABS.map((tab) => {
-                  const threads = MOCK_THREADS.filter((t) => t.type === tab.type && t.active)
+                  const threads = navThreads.filter((t) => t.type === tab.type && t.active)
                   if (threads.length === 0) return null
                   return (
                     <Link

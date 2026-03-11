@@ -12,8 +12,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Users, Search } from 'lucide-react'
-import { MOCK_THREADS } from '@/data/mock'
+import { Users, Search, Database } from 'lucide-react'
+import { useThreads } from '@/lib/hooks/use-threads'
 import type { ThreadType } from '@/lib/threads'
 
 // ─── Filter config ───────────────────────────────────────────────────────────
@@ -34,9 +34,10 @@ export default function ThreadsPage() {
   const [filter, setFilter] = useState<ThreadType | 'all'>('all')
   const [search, setSearch] = useState('')
 
-  const activeThreads = MOCK_THREADS.filter((t) => t.active)
+  // Fetch from API with mock fallback
+  const { threads: allThreads, loading: threadsLoading, fromDB } = useThreads()
 
-  const filtered = activeThreads.filter((t) => {
+  const filtered = allThreads.filter((t) => {
     if (filter !== 'all' && t.type !== filter) return false
     if (search.trim()) {
       const q = search.toLowerCase()
@@ -101,12 +102,33 @@ export default function ThreadsPage() {
 
       {/* Thread grid */}
       <div className="max-w-6xl mx-auto px-4 xl:px-8 pb-20">
-        {filtered.length === 0 ? (
+        {/* Data source indicator */}
+        {fromDB && !threadsLoading && (
+          <div className="flex items-center gap-1.5 text-[10px] text-green-400/60 mb-4">
+            <Database className="w-3 h-3" /> Live data · {allThreads.length} threads
+          </div>
+        )}
+
+        {/* Loading skeleton */}
+        {threadsLoading && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-5 h-32"
+              />
+            ))}
+          </div>
+        )}
+
+        {!threadsLoading && filtered.length === 0 && (
           <div className="text-center py-16 text-gray-400">
             <div className="text-4xl mb-3">🔍</div>
             <p>No threads match your search. Try a different term.</p>
           </div>
-        ) : (
+        )}
+
+        {!threadsLoading && filtered.length > 0 && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((thread) => (
               <Link
@@ -130,10 +152,10 @@ export default function ThreadsPage() {
                   </div>
                 </div>
                 <p className="text-sm text-gray-400 line-clamp-2">{thread.tagline}</p>
-                {thread.relatedThreads.length > 0 && (
+                {thread.relatedThreads && thread.relatedThreads.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-3">
                     {thread.relatedThreads.slice(0, 3).map((slug) => {
-                      const related = MOCK_THREADS.find((t) => t.slug === slug)
+                      const related = allThreads.find((t) => t.slug === slug)
                       return related ? (
                         <span
                           key={slug}

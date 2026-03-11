@@ -18,10 +18,10 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { MapPin, Clock, Star, Zap, Globe, ArrowRight, Compass } from 'lucide-react'
+import { MapPin, Clock, Star, Zap, Globe, ArrowRight, Compass, Database } from 'lucide-react'
 import { VOCAB, PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
-import { MOCK_VENTURE_PATHS } from '@/data/mock'
+import { usePaths } from '@/lib/hooks/use-paths'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import type { FilterCategory, PathListItem } from '@/types/domain'
 
@@ -73,18 +73,15 @@ export default function VenturesPage() {
   // ── Filter state — pre-set from Compass or default to 'all' ─────────────
   const initialFilter: FilterCategory = compassType ? (TYPE_TO_FILTER[compassType] ?? 'all') : 'all'
   const [filter, setFilter] = useState<FilterCategory>(initialFilter)
-  const [loading, setLoading] = useState(true)
   const [showAll, setShowAll] = useState(false)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 600)
-    return () => clearTimeout(timer)
-  }, [])
+  // Fetch paths from API (falls back to mock data if API unavailable)
+  const { paths: allPaths, total, loading, fromDB } = usePaths({ limit: 50 })
 
   const featuredSafari =
     SAFARI_PACKAGES.find((p) => p.id === 'maasai-mara-3day') ?? SAFARI_PACKAGES[0]
 
-  const filteredPaths = MOCK_VENTURE_PATHS.filter((p) => filter === 'all' || p.category === filter)
+  const filteredPaths = allPaths.filter((p) => filter === 'all' || p.category === filter)
 
   const showSafaris = filter === 'all' || filter === 'explorer'
   const visibleSafaris = SAFARI_PACKAGES.slice(0, filter === 'explorer' ? 6 : 3)
@@ -112,7 +109,12 @@ export default function VenturesPage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-60" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent" />
             </span>
-            {MOCK_VENTURE_PATHS.length + SAFARI_PACKAGES.length}+ open ventures across 30+ countries
+            {total + SAFARI_PACKAGES.length}+ open ventures across 30+ countries
+            {fromDB && (
+              <span className="ml-2 flex items-center gap-1 text-green-400 text-[10px]">
+                <Database className="w-2.5 h-2.5" /> Live
+              </span>
+            )}
           </div>
 
           {/* Personalized or generic headline */}

@@ -11,9 +11,9 @@
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Users, Compass, ArrowRight } from 'lucide-react'
-import { MOCK_THREADS, MOCK_VENTURE_PATHS } from '@/data/mock'
-import { getRelatedThreads, getChildThreads } from '@/lib/threads'
+import { ArrowLeft, Users, Compass, ArrowRight, Database } from 'lucide-react'
+import { useThread, useThreads } from '@/lib/hooks/use-threads'
+import { usePaths } from '@/lib/hooks/use-paths'
 
 // ─── Thread type → color mapping ─────────────────────────────────────────────
 
@@ -32,7 +32,23 @@ export default function ThreadDetailPage() {
   const slug = params.slug as string
   const [joined, setJoined] = useState(false)
 
-  const thread = MOCK_THREADS.find((t) => t.slug === slug && t.active)
+  // Fetch from API with mock fallback
+  const { thread, loading: threadLoading, fromDB } = useThread(slug)
+  const { threads: allThreads } = useThreads()
+  const { paths: communityPaths } = usePaths({ limit: 3 })
+
+  if (threadLoading) {
+    return (
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="animate-pulse space-y-4 w-full max-w-2xl px-4">
+          <div className="h-48 bg-gray-800/60 rounded-2xl" />
+          <div className="h-6 w-48 bg-gray-800/40 rounded" />
+          <div className="h-4 w-full bg-gray-800/30 rounded" />
+          <div className="h-4 w-2/3 bg-gray-800/20 rounded" />
+        </div>
+      </div>
+    )
+  }
 
   if (!thread) {
     return (
@@ -53,12 +69,12 @@ export default function ThreadDetailPage() {
     )
   }
 
-  const relatedThreads = getRelatedThreads(slug, MOCK_THREADS)
-  const childThreads = getChildThreads(slug, MOCK_THREADS)
+  // Derive related + child threads from allThreads
+  const relatedThreads = (thread.relatedThreads ?? [])
+    .map((s) => allThreads.find((t) => t.slug === s))
+    .filter(Boolean) as typeof allThreads
+  const childThreads = allThreads.filter((t) => t.parentThread === slug && t.active)
   const gradientClass = TYPE_COLORS[thread.type] ?? 'from-brand-primary to-brand-bg'
-
-  // Mock: show some paths as "community picks"
-  const communityPaths = MOCK_VENTURE_PATHS.slice(0, 3)
 
   return (
     <div className="min-h-screen bg-brand-bg">
@@ -239,7 +255,7 @@ export default function ThreadDetailPage() {
                       href={`/threads/${thread.parentThread}`}
                       className="text-brand-accent hover:underline"
                     >
-                      {MOCK_THREADS.find((t) => t.slug === thread.parentThread)?.brandName ??
+                      {allThreads.find((t) => t.slug === thread.parentThread)?.brandName ??
                         thread.parentThread}
                     </Link>
                   </div>
