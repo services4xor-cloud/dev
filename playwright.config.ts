@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 /**
  * BeNetwork Playwright Configuration
- * Three test suites: smoke, brand validation, responsive screenshots
+ * Six test suites: smoke, brand, responsive, agents, journey, consistency
  * See: TESTING.md for full strategy
  */
 
@@ -24,6 +24,8 @@ export const PAGES = [
   '/about',
   '/pioneers/dashboard',
   '/anchors/dashboard',
+  '/agents',
+  '/agents/dashboard',
   '/onboarding',
   '/be/ke',
   '/charity',
@@ -69,6 +71,30 @@ export default defineConfig({
       name: 'responsive',
       testMatch: '**/responsive.spec.ts',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'agents',
+      testMatch: '**/agents.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEWPORTS.desktop,
+      },
+    },
+    {
+      name: 'journey',
+      testMatch: '**/journey.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEWPORTS.desktop,
+      },
+    },
+    {
+      name: 'consistency',
+      testMatch: '**/consistency.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEWPORTS.desktop,
+      },
     },
   ],
 })
