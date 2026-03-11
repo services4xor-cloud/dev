@@ -263,6 +263,52 @@ const CONTENT: Record<string, ContentDict> = {
     'common.signIn': 'Sign In',
     'common.signOut': 'Sign Out',
     'common.anchor': 'Anchor',
+
+    // Pricing page
+    'pricing.badge': 'Pay from anywhere — M-Pesa, SEPA, card, or mobile money',
+    'pricing.title': 'Simple, transparent pricing',
+    'pricing.subtitle':
+      'Pioneers browse and apply for free. Anchors post Paths starting at zero cost. Scale when you need to.',
+    'pricing.paymentTitle': 'Pay from anywhere in the world',
+    'pricing.paymentSubtitle': 'We accept every major payment method so no one is excluded',
+    'pricing.pioneersTitle': 'Pioneers — always free',
+    'pricing.pioneersDesc':
+      'Creating a profile, opening Chapters, and getting placed is completely free for Pioneers. Always.',
+    'pricing.pioneersCta': 'Create Free Profile →',
+    'pricing.agentTitle': 'Agents earn {rate}% commission',
+    'pricing.agentDesc':
+      'Forward Paths to your network via WhatsApp. When a Pioneer gets placed through your referral, you earn {rate}% of the placement fee. No cap on earnings.',
+    'pricing.agentCta': 'Become an Agent →',
+    'pricing.postFree': 'Post for Free',
+    'pricing.goFeatured': 'Go Featured',
+    'pricing.goPremium': 'Go Premium',
+    'pricing.forever': 'forever',
+    'pricing.perMonth': 'per month',
+    'pricing.mostPopular': 'MOST POPULAR',
+
+    // About page
+    'about.title': 'About BeNetwork',
+    'about.mission': 'Our Mission',
+    'about.missionDesc':
+      'BeNetwork reverses colonial economic flows. People in the Global South move, work, and thrive on their own terms.',
+    'about.howItWorks': 'How It Works',
+    'about.values': 'Our Values',
+    'about.team': 'Our Team',
+
+    // Contact page
+    'contact.title': 'Get in Touch',
+    'contact.subtitle': "Have questions? We'd love to hear from you.",
+    'contact.name': 'Your Name',
+    'contact.email': 'Your Email',
+    'contact.message': 'Your Message',
+    'contact.send': 'Send Message',
+    'contact.sending': 'Sending...',
+
+    // Footer
+    'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
+    'footer.rights': 'All rights reserved',
+    'footer.privacy': 'Privacy Policy',
+    'footer.terms': 'Terms of Service',
   },
 
   // ─── German (Deutsch) ────────────────────────────────────────
@@ -439,6 +485,49 @@ const CONTENT: Record<string, ContentDict> = {
     'common.signIn': 'Anmelden',
     'common.signOut': 'Abmelden',
     'common.anchor': 'Anker',
+
+    // Pricing page
+    'pricing.badge': 'Zahle von überall — M-Pesa, SEPA, Karte oder Mobile Money',
+    'pricing.title': 'Einfache, transparente Preise',
+    'pricing.subtitle':
+      'Pioniere suchen und bewerben sich kostenlos. Anker veröffentlichen Pfade ab null Kosten. Skaliere, wenn du es brauchst.',
+    'pricing.paymentTitle': 'Bezahle von überall auf der Welt',
+    'pricing.paymentSubtitle':
+      'Wir akzeptieren jede gängige Zahlungsmethode — niemand wird ausgeschlossen',
+    'pricing.pioneersTitle': 'Pioniere — immer kostenlos',
+    'pricing.pioneersDesc':
+      'Profil erstellen, Kapitel öffnen und vermittelt werden ist für Pioniere komplett kostenlos. Immer.',
+    'pricing.pioneersCta': 'Kostenloses Profil erstellen →',
+    'pricing.agentTitle': 'Agenten verdienen {rate}% Provision',
+    'pricing.agentDesc':
+      'Leite Pfade über WhatsApp an dein Netzwerk weiter. Wenn ein Pionier durch deine Empfehlung vermittelt wird, erhältst du {rate}% der Vermittlungsgebühr. Ohne Obergrenze.',
+    'pricing.agentCta': 'Agent werden →',
+    'pricing.postFree': 'Kostenlos posten',
+    'pricing.goFeatured': 'Featured werden',
+    'pricing.goPremium': 'Premium werden',
+    'pricing.forever': 'für immer',
+    'pricing.perMonth': 'pro Monat',
+    'pricing.mostPopular': 'BELIEBTESTE',
+
+    // About
+    'about.title': 'Über BeNetwork',
+    'about.mission': 'Unsere Mission',
+    'about.values': 'Unsere Werte',
+
+    // Contact
+    'contact.title': 'Kontakt aufnehmen',
+    'contact.subtitle': 'Hast du Fragen? Wir freuen uns von dir zu hören.',
+    'contact.name': 'Dein Name',
+    'contact.email': 'Deine E-Mail',
+    'contact.message': 'Deine Nachricht',
+    'contact.send': 'Nachricht senden',
+    'contact.sending': 'Wird gesendet...',
+
+    // Footer
+    'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
+    'footer.rights': 'Alle Rechte vorbehalten',
+    'footer.privacy': 'Datenschutzrichtlinie',
+    'footer.terms': 'Nutzungsbedingungen',
   },
 
   // ─── Swahili (Kiswahili) ─────────────────────────────────────
@@ -546,6 +635,130 @@ const CONTENT: Record<string, ContentDict> = {
     'common.signIn': 'Ingia',
     'common.signOut': 'Toka',
     'common.anchor': 'Nanga',
+
+    // Pricing page
+    'pricing.badge': 'Lipa kutoka popote — M-Pesa, SEPA, kadi, au pesa ya simu',
+    'pricing.title': 'Bei rahisi na wazi',
+    'pricing.subtitle':
+      'Waanzilishi wanavinjari na kuomba bure. Nanga waweke Njia kuanzia gharama sifuri. Panua unapohitaji.',
+    'pricing.paymentTitle': 'Lipa kutoka popote ulimwenguni',
+    'pricing.paymentSubtitle': 'Tunakubali kila njia kuu ya malipo — hakuna mtu anayeachwa nyuma',
+    'pricing.pioneersTitle': 'Waanzilishi — bure milele',
+    'pricing.pioneersDesc':
+      'Kuunda wasifu, kufungua Sura, na kupata nafasi ni bure kabisa kwa Waanzilishi. Daima.',
+    'pricing.pioneersCta': 'Unda Wasifu Bure →',
+    'pricing.agentTitle': 'Mawakala wanapata {rate}% kamisheni',
+    'pricing.agentDesc':
+      'Sambaza Njia kwa mtandao wako kupitia WhatsApp. Mwanzilishi anapopata kazi kupitia rufaa yako, unapata {rate}% ya ada ya uwekaji. Hakuna kikomo.',
+    'pricing.agentCta': 'Kuwa Wakala →',
+    'pricing.postFree': 'Weka Bure',
+    'pricing.goFeatured': 'Kuwa Bora',
+    'pricing.goPremium': 'Kuwa Premium',
+    'pricing.forever': 'milele',
+    'pricing.perMonth': 'kwa mwezi',
+    'pricing.mostPopular': 'MAARUFU ZAIDI',
+
+    // About
+    'about.title': 'Kuhusu BeNetwork',
+    'about.mission': 'Misheni Yetu',
+    'about.values': 'Maadili Yetu',
+
+    // Contact
+    'contact.title': 'Wasiliana Nasi',
+    'contact.subtitle': 'Una maswali? Tungependa kusikia kutoka kwako.',
+    'contact.name': 'Jina Lako',
+    'contact.email': 'Barua Pepe Yako',
+    'contact.message': 'Ujumbe Wako',
+    'contact.send': 'Tuma Ujumbe',
+    'contact.sending': 'Inatuma...',
+
+    // Footer
+    'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',
+    'footer.rights': 'Haki zote zimehifadhiwa',
+    'footer.privacy': 'Sera ya Faragha',
+    'footer.terms': 'Masharti ya Huduma',
+
+    // Auth (completing missing Swahili auth keys)
+    'auth.forgotPassword': 'Umesahau nenosiri?',
+    'auth.signingIn': 'Inaingia...',
+    'auth.newTo': 'Mpya kwa {brandName}?',
+    'auth.createFreeAccount': 'Unda akaunti bure →',
+    'auth.continueAs': 'Endelea kama {role} →',
+    'auth.back': '← Rudi',
+    'auth.orFillDetails': 'au jaza maelezo yako',
+    'auth.phoneOptional': 'Simu (M-Pesa) — si lazima',
+    'auth.minChars': 'Angalau herufi 8',
+    'auth.creatingAccount': 'Inaunda akaunti...',
+    'auth.createAccountFree': 'Unda Akaunti — Bure',
+    'auth.agreePrivacy': 'Kwa kusajiliwa unakubali Sera yetu ya Faragha',
+    'auth.alreadyHaveAccount': 'Una akaunti tayari?',
+    'auth.signInLink': 'Ingia →',
+
+    // Ventures (completing missing keys)
+    'ventures.explorer': 'Mvumbuzi',
+    'ventures.professional': 'Mtaalamu',
+    'ventures.creative': 'Mbunifu',
+    'ventures.community': 'Jamii',
+    'ventures.explorerDesc': 'Safari na utalii wa kiikolojia',
+    'ventures.professionalDesc': 'Teknolojia, fedha, afya',
+    'ventures.creativeDesc': 'Sanaa, vyombo vya habari, mitindo',
+    'ventures.communityDesc': 'NGOs, ufundishaji, kujitolea',
+    'ventures.curatedForRoute': 'Imeandaliwa kwa njia yako',
+    'ventures.showAll': 'Onyesha ventures zote',
+    'ventures.seeAll': 'Ona zote',
+    'ventures.noMatch': 'Hakuna Njia zinazolingana na chujio hili',
+    'ventures.featured': 'Iliyoangaziwa',
+    'ventures.remote': 'Kwa mbali',
+    'ventures.perPerson': '/ mtu',
+
+    // Onboarding (completing missing keys)
+    'onboarding.step': 'Hatua {step} ya {total}',
+    'onboarding.complete': '% imekamilika',
+    'onboarding.profileReady': 'Wasifu wako uko tayari. Tunapata Njia bora kwako...',
+    'onboarding.takingYou': 'Tunakupeleka kwenye Ventures zako...',
+    'onboarding.pickOne': 'Chagua inayokufaa zaidi. Unaweza kubadilisha baadaye.',
+    'onboarding.weThink': 'Tunafikiri uko {country}. Sahihi?',
+    'onboarding.helpsRoutes': 'Hii inatusaidia kupata njia bora za safari yako.',
+    'onboarding.selectCountry': 'Chagua nchi yako...',
+    'onboarding.other': '🌍 Nyingine',
+    'onboarding.calibrated': 'Sawa — wasifu wako utarekebishwa kwa {country}.',
+    'onboarding.selectDestinations':
+      'Chagua marudio moja au zaidi. Tutaweka kipaumbele Njia katika maeneo haya.',
+    'onboarding.selectSkills':
+      'Chagua angalau ujuzi 3. Hizi zinaimarisha alama yako ya kulinganisha.',
+    'onboarding.chapterTitle': 'Tuambie kichwa cha sura yako',
+    'onboarding.headlineFirst': 'Kichwa chako ni kitu cha kwanza Nanga wanaona. Kifanye chako.',
+    'onboarding.yourHeadline': 'Kichwa chako *',
+    'onboarding.whatMakesYou': 'Nini kinakufanya wewe? (si lazima)',
+    'onboarding.whatsapp': 'Nambari ya WhatsApp',
+    'onboarding.openingChapter': 'Inafungua sura yako...',
+
+    // Compass (completing missing keys)
+    'compass.letsFind': 'Hebu tupate njia yako.',
+    'compass.stepOf': 'Hatua {step} ya {total}',
+    'compass.currentlyIn': 'Sasa hivi {name}',
+    'compass.autoDetected': 'Imegunduliwa moja kwa moja · gonga kubadilisha',
+    'compass.change': 'Badilisha',
+    'compass.locationHint': 'Tunatumia eneo lako kupata njia na korido bora za malipo.',
+    'compass.confirmed': 'Imethibitishwa — {name} →',
+    'compass.alsoExploring': 'Pia inachunguza:',
+    'compass.visaRoute': 'Njia ya Visa',
+    'compass.payments': 'Malipo',
+    'compass.topSectors': 'Sekta Bora',
+    'compass.navigateDifferent': '← Pitia njia tofauti',
+    'compass.stepLabel1': 'Malengo',
+    'compass.stepLabel2': 'Asili',
+    'compass.stepLabel3': 'Aina ya Mwanzilishi',
+    'compass.stepLabel4': 'Njia Yako',
+    'compass.seeOpenPaths': 'Ona Njia Wazi →',
+    'compass.selectPioneerType': 'Chagua aina yako ya mwanzilishi',
+    'compass.back': '← Rudi',
+    'compass.pioneer': 'Mwanzilishi',
+
+    // Country hero taglines
+    'hero.tagline.KE': 'Njia za Kimataifa, Malipo kupitia M-Pesa',
+    'hero.tagline.DE': 'Njia Yako kwenda Ujerumani',
+    'hero.tagline.CH': 'Njia Yako kwenda Uswisi',
   },
 
   // ─── French (Français) ────────────────────────────────────────
