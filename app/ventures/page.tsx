@@ -14,7 +14,7 @@
  *   'community'    → community & guardian paths
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { MapPin, Clock, Star, Zap, Globe, ArrowRight } from 'lucide-react'
 import { VOCAB } from '@/lib/vocabulary'
@@ -40,6 +40,12 @@ const FILTERS: { id: FilterCategory; label: string; icon: string; desc: string }
 
 export default function VenturesPage() {
   const [filter, setFilter] = useState<FilterCategory>('all')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 600)
+    return () => clearTimeout(timer)
+  }, [])
 
   const featuredSafari =
     SAFARI_PACKAGES.find((p) => p.id === 'maasai-mara-3day') ?? SAFARI_PACKAGES[0]
@@ -101,8 +107,56 @@ export default function VenturesPage() {
       </section>
 
       <div className="max-w-5xl mx-auto px-4 pb-20 space-y-12">
+        {/* ── Loading skeleton ─────────────────────────────────────────── */}
+        {loading && (
+          <div className="space-y-6 animate-pulse -mt-4">
+            {/* Featured card skeleton */}
+            <div className="rounded-2xl h-32 bg-gray-800/60 border border-gray-700/50" />
+            {/* Section header skeleton */}
+            <div className="h-6 w-48 bg-gray-800/60 rounded-lg" />
+            {/* Card grid skeleton */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden"
+                >
+                  <div className="h-36 bg-gray-800/40" />
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 w-20 bg-gray-800/60 rounded-full" />
+                    <div className="h-4 w-full bg-gray-800/60 rounded" />
+                    <div className="h-3 w-2/3 bg-gray-800/40 rounded" />
+                    <div className="flex justify-between">
+                      <div className="h-5 w-24 bg-gray-800/60 rounded" />
+                      <div className="h-4 w-16 bg-gray-800/40 rounded" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Path list skeleton */}
+            <div className="h-6 w-36 bg-gray-800/60 rounded-lg" />
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="flex items-start gap-4 p-5 rounded-2xl bg-gray-900/60 border border-gray-800"
+              >
+                <div className="w-12 h-12 rounded-xl bg-gray-800/60 flex-shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-3/4 bg-gray-800/60 rounded" />
+                  <div className="h-3 w-1/2 bg-gray-800/40 rounded" />
+                  <div className="flex gap-2">
+                    <div className="h-5 w-16 bg-gray-800/40 rounded-full" />
+                    <div className="h-5 w-20 bg-gray-800/40 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* ── Featured Maasai Mara card ─────────────────────────────────── */}
-        {showSafaris && (
+        {!loading && showSafaris && (
           <Link href={`/experiences/${featuredSafari.id}`} className="block -mt-4">
             <div
               className="rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 border hover:scale-[1.01] transition-transform duration-200 shadow-xl"
@@ -141,7 +195,7 @@ export default function VenturesPage() {
         )}
 
         {/* ── Explorer Ventures (safari packages) ──────────────────────── */}
-        {showSafaris && visibleSafaris.length > 0 && (
+        {!loading && showSafaris && visibleSafaris.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -217,7 +271,7 @@ export default function VenturesPage() {
         )}
 
         {/* ── Featured Paths (highlighted) ─────────────────────────────── */}
-        {featuredPaths.length > 0 && (
+        {!loading && featuredPaths.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-5">
               <Zap className="w-4 h-4 text-[#C9A227]" />
@@ -233,7 +287,7 @@ export default function VenturesPage() {
         )}
 
         {/* ── All / Regular Paths ───────────────────────────────────────── */}
-        {regularPaths.length > 0 && (
+        {!loading && regularPaths.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -260,7 +314,7 @@ export default function VenturesPage() {
         )}
 
         {/* ── Empty state ───────────────────────────────────────────────── */}
-        {filteredPaths.length === 0 && !showSafaris && (
+        {!loading && filteredPaths.length === 0 && !showSafaris && (
           <div className="text-center py-20">
             <div className="text-5xl mb-4">🧭</div>
             <p className="text-xl font-semibold text-white mb-2">No Paths match this filter yet</p>
@@ -277,26 +331,28 @@ export default function VenturesPage() {
         )}
 
         {/* ── CTA strip ─────────────────────────────────────────────────── */}
-        <div
-          className="rounded-2xl p-8 text-center"
-          style={{
-            background: 'linear-gradient(135deg, #5C0A14 0%, #0A0A0F 100%)',
-            border: '1px solid #C9A22740',
-          }}
-        >
-          <Globe className="w-8 h-8 text-[#C9A227] mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-white mb-2">Are you an Anchor?</h3>
-          <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
-            Post a Path and reach 12,000+ Pioneers across 50+ countries. Local payment rails
-            included.
-          </p>
-          <Link
-            href="/anchors/post-path"
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white border border-[#C9A227]/40 hover:bg-[#C9A227]/10 transition-colors"
+        {!loading && (
+          <div
+            className="rounded-2xl p-8 text-center"
+            style={{
+              background: 'linear-gradient(135deg, #5C0A14 0%, #0A0A0F 100%)',
+              border: '1px solid #C9A22740',
+            }}
           >
-            Post a Path →
-          </Link>
-        </div>
+            <Globe className="w-8 h-8 text-[#C9A227] mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-white mb-2">Are you an Anchor?</h3>
+            <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
+              Post a Path and reach 12,000+ Pioneers across 50+ countries. Local payment rails
+              included.
+            </p>
+            <Link
+              href="/anchors/post-path"
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white border border-[#C9A227]/40 hover:bg-[#C9A227]/10 transition-colors"
+            >
+              Post a Path →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   )

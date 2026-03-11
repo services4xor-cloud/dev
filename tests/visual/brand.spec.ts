@@ -10,17 +10,6 @@ import { PAGES } from '../../playwright.config'
 const BANNED_HEX = '#FF6B35'
 const BANNED_HEX_LOWER = '#ff6b35'
 
-// Pages expected to still have light backgrounds (tech debt — track here)
-const KNOWN_LIGHT_BG_PAGES = [
-  '/login',
-  '/signup',
-  '/pricing',
-  '/contact',
-  '/profile',
-  '/referral',
-  '/business',
-]
-
 /**
  * Scans all text nodes and computed styles for a hex color string.
  * Returns matching element count.
@@ -40,7 +29,7 @@ async function countColorInPage(pw: any, hex: string): Promise<number> {
         el.getAttribute('style') || '',
         el.getAttribute('class') || '',
       ]
-      if (attrs.some(a => a.toLowerCase().includes(targetHex.toLowerCase()))) {
+      if (attrs.some((a) => a.toLowerCase().includes(targetHex.toLowerCase()))) {
         count++
       }
     })
@@ -67,21 +56,12 @@ for (const page of PAGES) {
       return found.slice(0, 5) // Return first 5 violations only
     }, BANNED_HEX)
 
-    expect(
-      violations,
-      `Found banned orange on ${page}: ${violations.join('\n')}`
-    ).toHaveLength(0)
+    expect(violations, `Found banned orange on ${page}: ${violations.join('\n')}`).toHaveLength(0)
   })
 }
 
 for (const page of PAGES) {
-  const isKnownLight = KNOWN_LIGHT_BG_PAGES.includes(page)
-
-  test(`[brand] ${page} — ${isKnownLight ? '⚠️ KNOWN light bg (tech debt)' : 'dark background'}`, async ({ page: pw }) => {
-    if (isKnownLight) {
-      test.skip(true, `${page} is a known light-theme page — scheduled for conversion in Phase 2`)
-    }
-
+  test(`[brand] ${page} — dark background`, async ({ page: pw }) => {
     await pw.goto(page, { waitUntil: 'domcontentloaded' })
     await pw.waitForTimeout(300)
 

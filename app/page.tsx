@@ -71,7 +71,7 @@ export default function HomePage() {
   const compassHref = `/compass${compassParams.toString() ? '?' + compassParams.toString() : ''}`
 
   return (
-    <div className="bg-gray-950 text-white overflow-x-hidden">
+    <div className="bg-[#0A0A0F] text-white overflow-x-hidden">
       {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden min-h-[100vh] flex items-center">
         {/* Dark gradient background: maroon → near-black */}
@@ -251,7 +251,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 3. LIVE COMPASS PREVIEW ──────────────────────────────────────────── */}
-      <section className="py-24 bg-gradient-to-b from-gray-900 to-gray-950">
+      <section className="py-24 bg-gradient-to-b from-gray-900 to-[#0A0A0F]">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
             <p
@@ -379,7 +379,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 4. EXPERIENCES STRIP (Safari) ────────────────────────────────────── */}
-      <section className="py-24 bg-gradient-to-b from-gray-950 to-[#5C0A14]/20">
+      <section className="py-24 bg-gradient-to-b from-[#0A0A0F] to-[#5C0A14]/20">
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="text-center mb-12">
             <p className="text-[#C9A227] text-sm font-semibold uppercase tracking-widest mb-3">
@@ -432,7 +432,7 @@ export default function HomePage() {
                       )}
                     </div>
                     <Link
-                      href={`/ventures/${pkg.id}`}
+                      href={`/experiences/${pkg.id}`}
                       className="text-sm font-semibold text-white rounded-full px-4 py-2 transition-all hover:scale-105"
                       style={{
                         background: 'linear-gradient(135deg, #5C0A14, #7a0e1a)',
@@ -493,7 +493,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 7. BECOUNTRY EXPANSION ───────────────────────────────────────────── */}
-      <section className="py-24 bg-gray-950">
+      <section className="py-24 bg-[#0A0A0F]">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <p
             className="text-sm font-semibold uppercase tracking-widest mb-4"
@@ -553,7 +553,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 7. ANCHOR SECTION ────────────────────────────────────────────────── */}
-      <section className="py-24 bg-gradient-to-b from-gray-950 to-gray-900">
+      <section className="py-24 bg-gradient-to-b from-[#0A0A0F] to-gray-900">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="text-6xl mb-6">&#127970;</div>
           <p className="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-3">
@@ -639,7 +639,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 11. PAYMENT TRUST STRIP ──────────────────────────────────────────── */}
-      <section className="py-12 bg-gray-950 border-y border-white/5">
+      <section className="py-12 bg-[#0A0A0F] border-y border-white/5">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">
             Pay with what you know
