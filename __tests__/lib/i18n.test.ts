@@ -1062,6 +1062,64 @@ describe('i18n — venture detail translations', () => {
   })
 })
 
+// ─── Notifications page keys ─────────────────────────────────────────────────
+
+describe('i18n — notifications page', () => {
+  const notifKeys = [
+    'notif.title',
+    'notif.unread',
+    'notif.unreads',
+    'notif.markAllRead',
+    'notif.markAsRead',
+    'notif.view',
+    'notif.dashboard',
+    'notif.preferences',
+    'notif.tabAll',
+    'notif.tabUnread',
+    'notif.tabPaths',
+    'notif.tabChapters',
+    'notif.tabCompass',
+    'notif.tabCommunity',
+    'notif.typePath',
+    'notif.typeChapter',
+    'notif.typeCompass',
+    'notif.typeCommunity',
+    'notif.typeEarnings',
+    'notif.today',
+    'notif.thisWeek',
+    'notif.earlier',
+    'notif.emptyTitle',
+    'notif.emptyDesc',
+    'notif.browsePaths',
+    'notif.prefFooter',
+    'notif.updatePrefs',
+  ]
+
+  it('English has all notification keys', () => {
+    for (const key of notifKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all notification keys', () => {
+    for (const key of notifKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all notification keys', () => {
+    for (const key of notifKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('interpolates count in unread notification', () => {
+    const result = translate('notif.unreads', 'en', { count: '5' })
+    expect(result).toContain('5')
+    expect(result).toContain('unread')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

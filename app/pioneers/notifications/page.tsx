@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { IMPACT_PARTNER } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Notification Types & Mock Data ──────────────────────────────────────────
 
@@ -124,14 +125,15 @@ const MOCK_NOTIFICATIONS: Notification[] = [
 
 type TabFilter = 'all' | 'unread' | 'path' | 'chapter' | 'compass' | 'community'
 
-const TABS: { id: TabFilter; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'unread', label: 'Unread' },
-  { id: 'path', label: 'Paths' },
-  { id: 'chapter', label: 'Chapters' },
-  { id: 'compass', label: 'Compass' },
-  { id: 'community', label: 'Community' },
-]
+const TAB_KEYS: TabFilter[] = ['all', 'unread', 'path', 'chapter', 'compass', 'community']
+const TAB_I18N: Record<TabFilter, string> = {
+  all: 'notif.tabAll',
+  unread: 'notif.tabUnread',
+  path: 'notif.tabPaths',
+  chapter: 'notif.tabChapters',
+  compass: 'notif.tabCompass',
+  community: 'notif.tabCommunity',
+}
 
 function getTypeAccentClass(type: NotificationType): string {
   const map: Record<NotificationType, string> = {
@@ -155,17 +157,6 @@ function getTypeBadgeClass(type: NotificationType): string {
   return map[type] ?? 'bg-gray-900/30 text-gray-400'
 }
 
-function getTypeLabel(type: NotificationType): string {
-  const map: Record<NotificationType, string> = {
-    path: 'Path',
-    chapter: 'Chapter',
-    compass: 'Compass',
-    community: 'Community',
-    earnings: 'Earnings',
-  }
-  return map[type] ?? type
-}
-
 // ─── Notification Card ────────────────────────────────────────────────────────
 
 function NotificationCard({
@@ -175,9 +166,18 @@ function NotificationCard({
   notification: Notification
   onRead: (id: string) => void
 }) {
+  const { t } = useTranslation()
   const accentBorder = getTypeAccentClass(notification.type)
   const badgeClass = getTypeBadgeClass(notification.type)
-  const typeLabel = getTypeLabel(notification.type)
+
+  const TYPE_LABEL_I18N: Record<NotificationType, string> = {
+    path: 'notif.typePath',
+    chapter: 'notif.typeChapter',
+    compass: 'notif.typeCompass',
+    community: 'notif.typeCommunity',
+    earnings: 'notif.typeEarnings',
+  }
+  const typeLabel = t(TYPE_LABEL_I18N[notification.type] ?? 'notif.typePath')
 
   return (
     <div
@@ -215,7 +215,7 @@ function NotificationCard({
                 href={notification.link}
                 className="text-brand-accent text-xs font-semibold hover:underline"
               >
-                View →
+                {t('notif.view')}
               </Link>
             )}
             {!notification.read && (
@@ -223,7 +223,7 @@ function NotificationCard({
                 onClick={() => onRead(notification.id)}
                 className="text-gray-400 text-xs hover:text-gray-300 transition-colors"
               >
-                Mark as read
+                {t('notif.markAsRead')}
               </button>
             )}
           </div>
@@ -236,18 +236,17 @@ function NotificationCard({
 // ─── Empty State ──────────────────────────────────────────────────────────────
 
 function EmptyState() {
+  const { t } = useTranslation()
   return (
     <div className="text-center py-20">
       <div className="text-6xl mb-4">🧭</div>
-      <h3 className="text-xl font-semibold text-white mb-2">Your compass is quiet right now.</h3>
-      <p className="text-gray-400 mb-6">
-        Check back soon — new paths and updates will appear here.
-      </p>
+      <h3 className="text-xl font-semibold text-white mb-2">{t('notif.emptyTitle')}</h3>
+      <p className="text-gray-400 mb-6">{t('notif.emptyDesc')}</p>
       <Link
         href="/ventures"
         className="inline-block bg-brand-accent text-black font-bold px-6 py-3 rounded-xl hover:bg-brand-accent/80 transition-colors"
       >
-        Browse Paths
+        {t('notif.browsePaths')}
       </Link>
     </div>
   )
@@ -256,6 +255,7 @@ function EmptyState() {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function NotificationsPage() {
+  const { t } = useTranslation()
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS)
   const [activeTab, setActiveTab] = useState<TabFilter>('all')
 
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
               href="/pioneers/dashboard"
               className="text-gray-400 hover:text-white transition-colors text-sm"
             >
-              ← Dashboard
+              {t('notif.dashboard')}
             </Link>
           </div>
           <Link href="/" className="flex items-center gap-2">
@@ -293,7 +293,7 @@ export default function NotificationsPage() {
             <span className="text-lg font-bold text-brand-accent">BeNetwork</span>
           </Link>
           <Link href="/profile" className="text-brand-accent text-sm hover:underline">
-            Preferences
+            {t('notif.preferences')}
           </Link>
         </div>
       </header>
@@ -302,10 +302,12 @@ export default function NotificationsPage() {
         {/* Title Row */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-white">Notifications</h1>
+            <h1 className="text-2xl font-bold text-white">{t('notif.title')}</h1>
             {unreadCount > 0 && (
               <p className="text-brand-accent text-sm mt-0.5">
-                {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+                {t(unreadCount !== 1 ? 'notif.unreads' : 'notif.unread', {
+                  count: String(unreadCount),
+                })}
               </p>
             )}
           </div>
@@ -314,35 +316,35 @@ export default function NotificationsPage() {
               onClick={markAllRead}
               className="text-sm text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg hover:bg-brand-accent/10 transition-colors"
             >
-              Mark all as read
+              {t('notif.markAllRead')}
             </button>
           )}
         </div>
 
         {/* Tabs */}
         <div className="flex gap-2 flex-wrap mb-6 border-b border-brand-primary/30 pb-0">
-          {TABS.map((tab) => {
+          {TAB_KEYS.map((tabKey) => {
             const count =
-              tab.id === 'unread'
+              tabKey === 'unread'
                 ? unreadCount
-                : tab.id === 'all'
+                : tabKey === 'all'
                   ? notifications.length
-                  : notifications.filter((n) => n.type === tab.id).length
+                  : notifications.filter((n) => n.type === tabKey).length
             return (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                key={tabKey}
+                onClick={() => setActiveTab(tabKey)}
                 className={`px-4 py-2.5 text-sm font-medium rounded-t-lg transition-all border-b-2 -mb-px flex items-center gap-1.5 ${
-                  activeTab === tab.id
+                  activeTab === tabKey
                     ? 'text-brand-accent border-brand-accent bg-brand-surface-elevated'
                     : 'text-gray-400 border-transparent hover:text-gray-200 hover:border-brand-primary'
                 }`}
               >
-                {tab.label}
+                {t(TAB_I18N[tabKey])}
                 {count > 0 && (
                   <span
                     className={`text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center ${
-                      activeTab === tab.id
+                      activeTab === tabKey
                         ? 'bg-brand-accent/20 text-brand-accent'
                         : 'bg-brand-primary/50 text-gray-400'
                     }`}
@@ -364,7 +366,7 @@ export default function NotificationsPage() {
             {filtered.some((n) => n.time.includes('hour') || n.time === 'Just now') && (
               <>
                 <p className="text-xs text-gray-400 uppercase tracking-wider font-medium px-1 mt-4 mb-2">
-                  Today
+                  {t('notif.today')}
                 </p>
                 {filtered
                   .filter((n) => n.time.includes('hour') || n.time === 'Just now')
@@ -378,7 +380,7 @@ export default function NotificationsPage() {
             {filtered.some((n) => n.time.includes('day') && !n.time.includes('week')) && (
               <>
                 <p className="text-xs text-gray-400 uppercase tracking-wider font-medium px-1 mt-6 mb-2">
-                  This Week
+                  {t('notif.thisWeek')}
                 </p>
                 {filtered
                   .filter((n) => n.time.includes('day') && !n.time.includes('week'))
@@ -392,7 +394,7 @@ export default function NotificationsPage() {
             {filtered.some((n) => n.time.includes('week')) && (
               <>
                 <p className="text-xs text-gray-400 uppercase tracking-wider font-medium px-1 mt-6 mb-2">
-                  Earlier
+                  {t('notif.earlier')}
                 </p>
                 {filtered
                   .filter((n) => n.time.includes('week'))
@@ -407,9 +409,9 @@ export default function NotificationsPage() {
         {/* Notification Preferences Footer */}
         <div className="mt-10 pt-6 border-t border-brand-primary/30 text-center">
           <p className="text-gray-400 text-sm">
-            Notifications are sent via WhatsApp and email.{' '}
+            {t('notif.prefFooter')}{' '}
             <Link href="/profile" className="text-brand-accent hover:underline">
-              Update preferences →
+              {t('notif.updatePrefs')}
             </Link>
           </p>
         </div>
