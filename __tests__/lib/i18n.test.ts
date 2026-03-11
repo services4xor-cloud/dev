@@ -682,6 +682,71 @@ describe('i18n — fashion page translations', () => {
   })
 })
 
+describe('i18n — media page translations', () => {
+  const mediaKeys = [
+    'media.badge',
+    'media.tagline',
+    'media.heroDesc',
+    'media.applyPioneer',
+    'media.commissionContent',
+    'media.opportunityTitle',
+    'media.opportunityP1',
+    'media.opportunityP2',
+    'media.opportunityGap',
+    'media.statPlatforms',
+    'media.statPaths',
+    'media.statPayments',
+    'media.whoHiring',
+    'media.pathsTitle',
+    'media.pathsDesc',
+    'media.featuredTitle',
+    'media.featuredDesc',
+    'media.applyNow',
+    'media.socialTitle',
+    'media.socialTagline',
+    'media.socialDesc',
+    'media.howItWorks',
+    'media.step1',
+    'media.step2',
+    'media.step3',
+    'media.step4',
+    'media.step5',
+    'media.impactTitle',
+    'media.impactDesc',
+    'media.explorePartner',
+    'media.ctaTitle',
+    'media.ctaDesc',
+    'media.exploreFashion',
+  ]
+
+  it('English has all media keys', () => {
+    for (const key of mediaKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all media keys', () => {
+    for (const key of mediaKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all media keys', () => {
+    for (const key of mediaKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('interpolates impactDesc with partner and brand', () => {
+    const result = translate('media.impactDesc', 'en', {
+      partner: 'TestPartner',
+      brand: 'TestBrand',
+    })
+    expect(result).toContain('TestPartner')
+    expect(result).toContain('TestBrand')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

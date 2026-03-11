@@ -553,6 +553,48 @@ const CONTENT: Record<string, ContentDict> = {
       'Join {brand} Fashion as a Pioneer. Set your rates. Choose your shoots. Build your career with dignity.',
     'fashion.exploreMedia': 'Explore Media Division →',
 
+    // Media
+    'media.badge': '{company} — Media Division',
+    'media.tagline': "Tell Africa's Stories. Get Paid.",
+    'media.heroDesc':
+      'Brands, NGOs, safari lodges, and governments need authentic African content. Pioneers who can shoot, edit, write, and create — earn globally from right here in Kenya.',
+    'media.applyPioneer': 'Apply as Media Pioneer',
+    'media.commissionContent': 'Commission Content',
+    'media.opportunityTitle': 'The Opportunity Is Now',
+    'media.opportunityP1':
+      'The world is hungry for authentic African content. A German travel brand needs a Maasai documentary. A British NGO needs impact footage from Kibera. A US safari lodge needs Instagram content that converts.',
+    'media.opportunityP2':
+      'These clients have budgets. They want genuine, locally-created content — not stock footage. And they struggle to find reliable, talented creators in Kenya.',
+    'media.opportunityGap': 'That is the gap {brand} Media exists to fill.',
+    'media.statPlatforms': 'Platforms Reached',
+    'media.statPaths': 'Media Paths',
+    'media.statPayments': 'Local Payments',
+    'media.whoHiring': 'Who Is Hiring?',
+    'media.pathsTitle': 'Media Paths Available',
+    'media.pathsDesc': 'Every creative skill has a market. Find where your talent earns.',
+    'media.featuredTitle': 'Featured Projects',
+    'media.featuredDesc':
+      "Real commissions from real Anchors. These paths are open — apply and tell Africa's story.",
+    'media.applyNow': 'Apply Now',
+    'media.socialTitle': 'Social Media Automation',
+    'media.socialTagline': 'Create content + we auto-distribute to 9 platforms',
+    'media.socialDesc':
+      'Pioneers who create for {brand} Media clients get access to our distribution engine. Post once, reach everywhere. Your content goes from Nairobi to the world automatically — while you focus on the next shoot.',
+    'media.howItWorks': 'How it works',
+    'media.step1': 'Pioneer creates content for an Anchor (lodge, brand, NGO)',
+    'media.step2': 'Content is approved by Anchor and marked for distribution',
+    'media.step3': '{brand} auto-schedules posts across all 9 platforms',
+    'media.step4': 'Analytics delivered to both Pioneer and Anchor',
+    'media.step5': 'Pioneer gets paid via M-Pesa within 48 hours of delivery',
+    'media.impactTitle': "Document {partner}'s Impact for the World",
+    'media.impactDesc':
+      "{partner} is {brand}'s community charity arm — fighting poverty in Kenya through opportunity and dignity. Media Pioneers can document this impact and share it with the world.",
+    'media.explorePartner': 'Explore {partner} →',
+    'media.ctaTitle': "Africa's story is waiting to be told.",
+    'media.ctaDesc':
+      'Join {brand} Media as a Pioneer. Shoot. Write. Create. Earn. Distribute to 9 platforms. Paid via M-Pesa.',
+    'media.exploreFashion': 'Explore Fashion Division →',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -1021,6 +1063,48 @@ const CONTENT: Record<string, ContentDict> = {
       'Werde {brand} Fashion Pionier. Setze deine Preise. Wähle deine Shoots. Baue deine Karriere mit Würde auf.',
     'fashion.exploreMedia': 'Media-Division erkunden →',
 
+    // Media
+    'media.badge': '{company} — Media-Division',
+    'media.tagline': 'Erzähle Afrikas Geschichten. Werde bezahlt.',
+    'media.heroDesc':
+      'Marken, NGOs, Safari-Lodges und Regierungen brauchen authentische afrikanische Inhalte. Pioniere, die filmen, schneiden, schreiben und kreieren — verdienen global direkt aus Kenia.',
+    'media.applyPioneer': 'Als Media-Pionier bewerben',
+    'media.commissionContent': 'Inhalte beauftragen',
+    'media.opportunityTitle': 'Die Chance ist jetzt',
+    'media.opportunityP1':
+      'Die Welt hungert nach authentischen afrikanischen Inhalten. Eine deutsche Reisemarke braucht einen Maasai-Dokumentarfilm. Eine britische NGO braucht Impact-Material aus Kibera. Eine US-Safari-Lodge braucht Instagram-Content der konvertiert.',
+    'media.opportunityP2':
+      'Diese Kunden haben Budgets. Sie wollen echte, lokal erstellte Inhalte — keine Stock-Aufnahmen. Und sie haben Schwierigkeiten, zuverlässige, talentierte Kreative in Kenia zu finden.',
+    'media.opportunityGap': 'Das ist die Lücke, die {brand} Media füllt.',
+    'media.statPlatforms': 'Plattformen erreicht',
+    'media.statPaths': 'Media-Pfade',
+    'media.statPayments': 'Lokale Zahlungen',
+    'media.whoHiring': 'Wer stellt ein?',
+    'media.pathsTitle': 'Verfügbare Media-Pfade',
+    'media.pathsDesc': 'Jede kreative Fähigkeit hat einen Markt. Finde, wo dein Talent verdient.',
+    'media.featuredTitle': 'Ausgewählte Projekte',
+    'media.featuredDesc':
+      'Echte Aufträge von echten Ankern. Diese Pfade sind offen — bewirb dich und erzähle Afrikas Geschichte.',
+    'media.applyNow': 'Jetzt bewerben',
+    'media.socialTitle': 'Social Media Automatisierung',
+    'media.socialTagline': 'Erstelle Inhalte + wir verteilen automatisch auf 9 Plattformen',
+    'media.socialDesc':
+      'Pioniere, die für {brand} Media-Kunden erstellen, erhalten Zugang zu unserer Verteilungs-Engine. Einmal posten, überall erreichen. Dein Content geht automatisch von Nairobi in die Welt — während du dich auf den nächsten Shoot konzentrierst.',
+    'media.howItWorks': 'So funktioniert es',
+    'media.step1': 'Pionier erstellt Inhalte für einen Anker (Lodge, Marke, NGO)',
+    'media.step2': 'Inhalte werden vom Anker genehmigt und zur Verteilung markiert',
+    'media.step3': '{brand} plant automatisch Posts auf allen 9 Plattformen',
+    'media.step4': 'Analysen werden sowohl an Pionier als auch Anker geliefert',
+    'media.step5': 'Pionier wird innerhalb von 48 Stunden nach Lieferung via M-Pesa bezahlt',
+    'media.impactTitle': 'Dokumentiere den Impact von {partner} für die Welt',
+    'media.impactDesc':
+      '{partner} ist {brand}s gemeinnütziger Arm — kämpft gegen Armut in Kenia durch Chancen und Würde. Media-Pioniere können diesen Impact dokumentieren und mit der Welt teilen.',
+    'media.explorePartner': '{partner} erkunden →',
+    'media.ctaTitle': 'Afrikas Geschichte wartet darauf, erzählt zu werden.',
+    'media.ctaDesc':
+      'Werde {brand} Media Pionier. Filme. Schreibe. Kreiere. Verdiene. Verteile auf 9 Plattformen. Bezahlt via M-Pesa.',
+    'media.exploreFashion': 'Fashion-Division erkunden →',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -1418,6 +1502,48 @@ const CONTENT: Record<string, ContentDict> = {
     'fashion.ctaDesc':
       'Jiunge na {brand} Fashion kama Mwanzilishi. Weka bei zako. Chagua picha zako. Jenga kazi yako kwa heshima.',
     'fashion.exploreMedia': 'Chunguza Divisheni ya Media →',
+
+    // Media
+    'media.badge': '{company} — Divisheni ya Media',
+    'media.tagline': 'Simulia Hadithi za Afrika. Lipwa.',
+    'media.heroDesc':
+      'Biashara, NGOs, lodges za safari, na serikali zinahitaji maudhui halisi ya Kiafrika. Waanzilishi wanaoweza kupiga picha, kuhariri, kuandika, na kuunda — wanapata mapato kimataifa hapa hapa Kenya.',
+    'media.applyPioneer': 'Omba kama Mwanzilishi wa Media',
+    'media.commissionContent': 'Agiza Maudhui',
+    'media.opportunityTitle': 'Fursa Ipo Sasa',
+    'media.opportunityP1':
+      'Ulimwengu una njaa ya maudhui halisi ya Kiafrika. Chapa ya usafiri ya Kijerumani inahitaji filamu ya Kimaasai. NGO ya Kiingereza inahitaji video za athari kutoka Kibera. Lodge ya safari ya Marekani inahitaji maudhui ya Instagram yanayobadilisha.',
+    'media.opportunityP2':
+      'Wateja hawa wana bajeti. Wanataka maudhui halisi, yaliyoundwa ndani — sio picha za hisa. Na wanashindana kupata wabunifu wa kuaminika, wenye talanta Kenya.',
+    'media.opportunityGap': 'Hii ndiyo pengo ambalo {brand} Media ipo kulijaza.',
+    'media.statPlatforms': 'Majukwaa Yaliyofikiwa',
+    'media.statPaths': 'Njia za Media',
+    'media.statPayments': 'Malipo ya Ndani',
+    'media.whoHiring': 'Nani Anaajiri?',
+    'media.pathsTitle': 'Njia za Media Zinazopatikana',
+    'media.pathsDesc': 'Kila ujuzi wa ubunifu una soko. Tafuta mahali talanta yako inalipa.',
+    'media.featuredTitle': 'Miradi Iliyoangaziwa',
+    'media.featuredDesc':
+      'Kazi halisi kutoka kwa Ankeri halisi. Njia hizi ziko wazi — omba na usimulie hadithi ya Afrika.',
+    'media.applyNow': 'Omba Sasa',
+    'media.socialTitle': 'Otomatiki ya Media ya Kijamii',
+    'media.socialTagline': 'Unda maudhui + tunasambaza kiotomatiki kwenye majukwaa 9',
+    'media.socialDesc':
+      'Waanzilishi wanaounda kwa wateja wa {brand} Media wanapata ufikiaji wa injini yetu ya usambazaji. Chapisha mara moja, fikia kila mahali. Maudhui yako yanaenda kutoka Nairobi hadi ulimwenguni kiotomatiki — ukijikita kwenye picha inayofuata.',
+    'media.howItWorks': 'Jinsi inavyofanya kazi',
+    'media.step1': 'Mwanzilishi anaunda maudhui kwa Ankeri (lodge, chapa, NGO)',
+    'media.step2': 'Maudhui yanaidhinishwa na Ankeri na kuwekwa alama ya usambazaji',
+    'media.step3': '{brand} inapanga kiotomatiki machapisho kwenye majukwaa yote 9',
+    'media.step4': 'Uchambuzi unafikishwa kwa Mwanzilishi na Ankeri',
+    'media.step5': 'Mwanzilishi analipwa kupitia M-Pesa ndani ya saa 48 baada ya utoaji',
+    'media.impactTitle': 'Andika Athari za {partner} kwa Ulimwengu',
+    'media.impactDesc':
+      '{partner} ni mkono wa hisani wa {brand} — kupigana na umaskini Kenya kupitia fursa na heshima. Waanzilishi wa Media wanaweza kuandika athari hizi na kushiriki na ulimwengu.',
+    'media.explorePartner': 'Chunguza {partner} →',
+    'media.ctaTitle': 'Hadithi ya Afrika inasubiri kusimuliwa.',
+    'media.ctaDesc':
+      'Jiunge na {brand} Media kama Mwanzilishi. Piga picha. Andika. Unda. Pata mapato. Sambaza kwenye majukwaa 9. Lipwa kupitia M-Pesa.',
+    'media.exploreFashion': 'Chunguza Divisheni ya Mitindo →',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',

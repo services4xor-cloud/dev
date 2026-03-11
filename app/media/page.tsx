@@ -9,8 +9,10 @@ import {
   LEGAL,
   IMPACT_PARTNER,
 } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 export default function MediaPage() {
+  const { t } = useTranslation()
   return (
     <main className="min-h-screen bg-[#0A0205] text-white">
       {/* Hero */}
@@ -21,7 +23,7 @@ export default function MediaPage() {
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-brand-accent/20 border border-brand-accent/40 rounded-full px-4 py-1.5 mb-6">
             <span className="text-brand-accent text-sm font-medium">
-              {LEGAL.companyName} — Media Division
+              {t('media.badge', { company: LEGAL.companyName })}
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-4">
@@ -30,24 +32,23 @@ export default function MediaPage() {
             <span className="text-4xl md:text-6xl">🎬</span>
           </h1>
           <p className="text-2xl md:text-3xl font-light text-brand-accent mb-6 tracking-wide">
-            Tell Africa&apos;s Stories. Get Paid.
+            {t('media.tagline')}
           </p>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Brands, NGOs, safari lodges, and governments need authentic African content. Pioneers
-            who can shoot, edit, write, and create — earn globally from right here in Kenya.
+            {t('media.heroDesc')}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=creator"
               className="bg-brand-accent text-white font-bold px-8 py-4 rounded-full hover:opacity-90 transition-colors text-lg"
             >
-              Apply as Media Pioneer
+              {t('media.applyPioneer')}
             </Link>
             <Link
               href="/anchors"
               className="border border-brand-accent text-brand-accent font-semibold px-8 py-4 rounded-full hover:bg-brand-accent/10 transition-colors text-lg"
             >
-              Commission Content
+              {t('media.commissionContent')}
             </Link>
           </div>
         </div>
@@ -58,38 +59,31 @@ export default function MediaPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-white mb-6">The Opportunity Is Now</h2>
+              <h2 className="text-3xl font-bold text-white mb-6">{t('media.opportunityTitle')}</h2>
               <div className="space-y-4 text-gray-300 leading-relaxed">
-                <p>
-                  The world is hungry for authentic African content. A German travel brand needs a
-                  Maasai documentary. A British NGO needs impact footage from Kibera. A US safari
-                  lodge needs Instagram content that converts.
-                </p>
-                <p>
-                  These clients have budgets. They want genuine, locally-created content — not stock
-                  footage. And they struggle to find reliable, talented creators in Kenya.
-                </p>
+                <p>{t('media.opportunityP1')}</p>
+                <p>{t('media.opportunityP2')}</p>
                 <p className="text-brand-accent font-semibold text-lg">
-                  That is the gap {BRAND_NAME} Media exists to fill.
+                  {t('media.opportunityGap', { brand: BRAND_NAME })}
                 </p>
               </div>
               <div className="mt-8 grid grid-cols-3 gap-4 text-center">
                 <div className="bg-brand-primary/30 border border-brand-accent/20 rounded-xl p-4">
                   <div className="text-2xl font-black text-brand-accent">9</div>
-                  <div className="text-xs text-gray-400 mt-1">Platforms Reached</div>
+                  <div className="text-xs text-gray-400 mt-1">{t('media.statPlatforms')}</div>
                 </div>
                 <div className="bg-brand-primary/30 border border-brand-accent/20 rounded-xl p-4">
                   <div className="text-2xl font-black text-brand-accent">4</div>
-                  <div className="text-xs text-gray-400 mt-1">Media Paths</div>
+                  <div className="text-xs text-gray-400 mt-1">{t('media.statPaths')}</div>
                 </div>
                 <div className="bg-brand-primary/30 border border-brand-accent/20 rounded-xl p-4">
                   <div className="text-2xl font-black text-brand-accent">KES</div>
-                  <div className="text-xs text-gray-400 mt-1">Local Payments</div>
+                  <div className="text-xs text-gray-400 mt-1">{t('media.statPayments')}</div>
                 </div>
               </div>
             </div>
             <div className="bg-gradient-to-br from-brand-primary/30 to-[#0D1F3C]/30 border border-brand-accent/20 rounded-2xl p-8">
-              <h3 className="font-bold text-brand-accent mb-4 text-lg">Who Is Hiring?</h3>
+              <h3 className="font-bold text-brand-accent mb-4 text-lg">{t('media.whoHiring')}</h3>
               <ul className="space-y-3">
                 {[
                   'Safari lodges — Instagram, TikTok, YouTube content',
@@ -113,10 +107,10 @@ export default function MediaPage() {
       {/* Media Paths */}
       <section className="py-20 px-4 bg-gradient-to-br from-brand-primary/20 to-transparent">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-white text-center mb-4">Media Paths Available</h2>
-          <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-            Every creative skill has a market. Find where your talent earns.
-          </p>
+          <h2 className="text-3xl font-bold text-white text-center mb-4">
+            {t('media.pathsTitle')}
+          </h2>
+          <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">{t('media.pathsDesc')}</p>
           <div className="grid md:grid-cols-2 gap-6">
             {mediaPaths.map((path) => (
               <div
@@ -150,10 +144,11 @@ export default function MediaPage() {
       {/* Featured Projects */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-white text-center mb-4">Featured Projects</h2>
+          <h2 className="text-3xl font-bold text-white text-center mb-4">
+            {t('media.featuredTitle')}
+          </h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-            Real commissions from real Anchors. These paths are open — apply and tell Africa&apos;s
-            story.
+            {t('media.featuredDesc')}
           </p>
           <div className="space-y-6">
             {featuredProjects.map((project) => (
@@ -201,7 +196,7 @@ export default function MediaPage() {
                       href="/onboarding?type=creator"
                       className="bg-brand-accent text-white text-sm font-bold px-5 py-2 rounded-full hover:opacity-90 transition-colors whitespace-nowrap"
                     >
-                      Apply Now
+                      {t('media.applyNow')}
                     </Link>
                   </div>
                 </div>
@@ -215,14 +210,12 @@ export default function MediaPage() {
       <section className="py-20 px-4 bg-gradient-to-br from-brand-primary/30 via-[#0D1F3C]/30 to-transparent border-t border-brand-accent/10">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">Social Media Automation</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">{t('media.socialTitle')}</h2>
             <p className="text-xl text-brand-accent font-semibold mb-4">
-              Create content + we auto-distribute to 9 platforms
+              {t('media.socialTagline')}
             </p>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Pioneers who create for {BRAND_NAME} Media clients get access to our distribution
-              engine. Post once, reach everywhere. Your content goes from Nairobi to the world
-              automatically — while you focus on the next shoot.
+              {t('media.socialDesc', { brand: BRAND_NAME })}
             </p>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-9 gap-3 mb-12">
@@ -238,27 +231,23 @@ export default function MediaPage() {
           </div>
           <div className="bg-[#0A0205] border border-brand-accent/30 rounded-2xl p-8 max-w-2xl mx-auto text-center">
             <div className="text-3xl mb-4">⚡</div>
-            <h3 className="font-bold text-brand-accent text-xl mb-3">How it works</h3>
+            <h3 className="font-bold text-brand-accent text-xl mb-3">{t('media.howItWorks')}</h3>
             <ol className="text-left space-y-3 text-gray-300 text-sm">
               <li className="flex gap-3">
-                <span className="text-brand-accent font-bold">1.</span> Pioneer creates content for
-                an Anchor (lodge, brand, NGO)
+                <span className="text-brand-accent font-bold">1.</span> {t('media.step1')}
               </li>
               <li className="flex gap-3">
-                <span className="text-brand-accent font-bold">2.</span> Content is approved by
-                Anchor and marked for distribution
+                <span className="text-brand-accent font-bold">2.</span> {t('media.step2')}
               </li>
               <li className="flex gap-3">
-                <span className="text-brand-accent font-bold">3.</span> {BRAND_NAME} auto-schedules
-                posts across all 9 platforms
+                <span className="text-brand-accent font-bold">3.</span>{' '}
+                {t('media.step3', { brand: BRAND_NAME })}
               </li>
               <li className="flex gap-3">
-                <span className="text-brand-accent font-bold">4.</span> Analytics delivered to both
-                Pioneer and Anchor
+                <span className="text-brand-accent font-bold">4.</span> {t('media.step4')}
               </li>
               <li className="flex gap-3">
-                <span className="text-brand-accent font-bold">5.</span> Pioneer gets paid via M-Pesa
-                within 48 hours of delivery
+                <span className="text-brand-accent font-bold">5.</span> {t('media.step5')}
               </li>
             </ol>
           </div>
@@ -270,18 +259,16 @@ export default function MediaPage() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="text-4xl mb-4">🌍</div>
           <h2 className="text-2xl font-bold text-white mb-4">
-            Document {IMPACT_PARTNER.name}&apos;s Impact for the World
+            {t('media.impactTitle', { partner: IMPACT_PARTNER.name })}
           </h2>
           <p className="text-gray-400 mb-6 max-w-xl mx-auto">
-            {IMPACT_PARTNER.name} is {BRAND_NAME}&apos;s community charity arm — fighting poverty in
-            Kenya through opportunity and dignity. Media Pioneers can document this impact and share
-            it with the world.
+            {t('media.impactDesc', { partner: IMPACT_PARTNER.name, brand: BRAND_NAME })}
           </p>
           <Link
             href="/charity"
             className="inline-flex items-center gap-2 bg-brand-success text-white font-bold px-7 py-3 rounded-full hover:bg-[#007700] transition-colors"
           >
-            Explore {IMPACT_PARTNER.name} →
+            {t('media.explorePartner', { partner: IMPACT_PARTNER.name })}
           </Link>
         </div>
       </section>
@@ -289,25 +276,22 @@ export default function MediaPage() {
       {/* CTA */}
       <section className="py-24 px-4 bg-gradient-to-br from-[#0D1F3C] to-[#0A0205]">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl font-black text-white mb-4">
-            Africa&apos;s story is waiting to be told.
-          </h2>
+          <h2 className="text-4xl font-black text-white mb-4">{t('media.ctaTitle')}</h2>
           <p className="text-gray-300 text-lg mb-10 leading-relaxed">
-            Join {BRAND_NAME} Media as a Pioneer. Shoot. Write. Create. Earn. Distribute to 9
-            platforms. Paid via M-Pesa.
+            {t('media.ctaDesc', { brand: BRAND_NAME })}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/onboarding?type=creator"
               className="bg-brand-accent text-white font-black px-10 py-4 rounded-full hover:opacity-90 transition-colors text-xl"
             >
-              Apply as Media Pioneer
+              {t('media.applyPioneer')}
             </Link>
             <Link
               href="/fashion"
               className="border border-brand-accent text-brand-accent font-semibold px-8 py-4 rounded-full hover:bg-brand-accent/10 transition-colors"
             >
-              Explore Fashion Division →
+              {t('media.exploreFashion')}
             </Link>
           </div>
         </div>
