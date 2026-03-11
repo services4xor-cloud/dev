@@ -10,6 +10,7 @@
 
 import { useState, useEffect } from 'react'
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
+import { useIdentity } from '@/lib/identity-context'
 import type { PathListItem } from '@/types/domain'
 
 // ─── Sector → Icon + Category mapping ────────────────────────────────────────
@@ -119,10 +120,14 @@ interface UsePathsResult {
 }
 
 export function usePaths(options: UsePathsOptions = {}): UsePathsResult {
+  const { identity } = useIdentity()
   const [paths, setPaths] = useState<PathListItem[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [fromDB, setFromDB] = useState(false)
+
+  // Use identity context country if no explicit country filter provided
+  const effectiveCountry = options.country ?? identity.country
 
   useEffect(() => {
     let cancelled = false
@@ -130,7 +135,7 @@ export function usePaths(options: UsePathsOptions = {}): UsePathsResult {
     async function fetchPaths() {
       try {
         const params = new URLSearchParams()
-        if (options.country) params.set('country', options.country)
+        if (effectiveCountry) params.set('country', effectiveCountry)
         if (options.sector) params.set('sector', options.sector)
         if (options.q) params.set('q', options.q)
         if (options.limit) params.set('limit', String(options.limit))
@@ -172,7 +177,7 @@ export function usePaths(options: UsePathsOptions = {}): UsePathsResult {
     return () => {
       cancelled = true
     }
-  }, [options.country, options.sector, options.q, options.limit])
+  }, [effectiveCountry, options.country, options.sector, options.q, options.limit])
 
   return { paths, total, loading, fromDB }
 }

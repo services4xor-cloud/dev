@@ -15,7 +15,7 @@
 | Deploy            | Vercel auto on push                              |
 | Pages             | 20+                                              |
 | API routes        | 12+                                              |
-| Library modules   | 16 (incl. threads.ts, geo.ts, emoji-map.ts)      |
+| Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)  |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                 |
 | Jest tests        | 160/160 ✅                                       |
 | Playwright tests  | 102/102 ✅ (16 smoke + 32 brand + 54 responsive) |
@@ -66,6 +66,15 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 33 (2026-03-11) — Auth Wiring + Identity-Driven Content
+
+- [x] **Login page wired**: `signIn('google')` for OAuth, `signIn('credentials')` for email/password. Error handling with NextAuth error codes. Loading spinners.
+- [x] **Signup page wired**: Two-step flow (role select → registration). POST `/api/auth/register` creates DB user with bcrypt hash, then auto `signIn('credentials')`. Google OAuth alternative.
+- [x] **Registration API**: `app/api/auth/register/route.ts` — validates name/email/password, checks duplicates (409), hashes password (bcrypt 10 rounds), creates User with role/country/phone.
+- [x] **Client hooks live**: `usePaths`, `useThreads`, `useThread` — all pages fetch from API with graceful mock fallback. Nav identity switcher uses DB data.
+- [x] **Identity switcher → page content**: Thread/country selection in Nav now drives page-level data filtering via URL params and context.
+- [x] Build: ✅ | TS: 0 errors
 
 ### Session 32 (2026-03-11) — DB Migration: KE/DE/CH Live
 

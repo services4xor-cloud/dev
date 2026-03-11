@@ -15,6 +15,7 @@ import {
 } from '@/lib/nav-structure'
 import type { ThreadType } from '@/lib/threads'
 import { useThreads } from '@/lib/hooks/use-threads'
+import { useIdentity } from '@/lib/identity-context'
 
 const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
 const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
@@ -49,6 +50,7 @@ export default function Nav() {
 
   // Fetch threads from API (falls back to mock data)
   const { threads: navThreads } = useThreads()
+  const { setCountry, setThread } = useIdentity()
   const [teaserIdx, setTeaserIdx] = useState(0)
   const [teaserFade, setTeaserFade] = useState(true)
   const [identityOpen, setIdentityOpen] = useState(false)
@@ -340,6 +342,18 @@ export default function Nav() {
                           href={getThreadUrl(thread)}
                           role="menuitem"
                           onClick={() => {
+                            // Update identity context
+                            if (thread.type === 'country') {
+                              // Map slug to country code (e.g. 'kenya' → 'KE')
+                              const match = COUNTRY_OPTIONS.find(
+                                (c) =>
+                                  c.name.toLowerCase() === thread.slug.toLowerCase() ||
+                                  c.code.toLowerCase() === thread.slug.toLowerCase()
+                              )
+                              if (match) setCountry(match.code)
+                            } else {
+                              setThread(thread.slug, thread.type)
+                            }
                             setIdentityOpen(false)
                             setHoveredThread(null)
                           }}

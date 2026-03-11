@@ -63,24 +63,24 @@
 ## Recent Commits
 
 ```
+881db60 Wire auth: login + signup + registration API
+370dd21 feat: wire login page to NextAuth signIn (Google + credentials)
 86c642e feat: wire UI to DB API — ventures, threads, Nav identity switcher
 f0060f4 docs: add STATUS.md health dashboard, update PROGRESS + ROADMAP
 6eeba89 feat: DB migration — schema, auth, seed, service layer for KE/DE/CH
-e21b01b fix: identity switcher dropdown — opaque bg, dynamic logo, responsive width
-b904ab1 feat: expand BeKenya content — agriculture, marine, engineering
 ```
 
 ---
 
 ## Phase Progress
 
-| Phase | Name         | Status  | Notes                                         |
-| ----- | ------------ | ------- | --------------------------------------------- |
-| 1     | Foundation   | ✅ 100% | All pages, mock data, tests, CI/CD            |
-| 2     | BeKenya Live | 🔧 ~75% | DB + auth + seed + API wiring done. CRUD next |
-| 3     | Traction     | ⏳ 0%   | Notifications, messaging, reviews             |
-| 4     | Expansion    | ⏳ 0%   | BeGermany, BeNigeria live deployments         |
-| 5     | Platform     | ⏳ 0%   | Mobile, AI compass, Be[Tribe]                 |
+| Phase | Name         | Status  | Notes                                                               |
+| ----- | ------------ | ------- | ------------------------------------------------------------------- |
+| 1     | Foundation   | ✅ 100% | All pages, mock data, tests, CI/CD                                  |
+| 2     | BeKenya Live | 🔧 ~80% | DB + auth + seed + API + login/signup wired. Identity switcher next |
+| 3     | Traction     | ⏳ 0%   | Notifications, messaging, reviews                                   |
+| 4     | Expansion    | ⏳ 0%   | BeGermany, BeNigeria live deployments                               |
+| 5     | Platform     | ⏳ 0%   | Mobile, AI compass, Be[Tribe]                                       |
 
 ---
 
@@ -88,9 +88,11 @@ b904ab1 feat: expand BeKenya content — agriculture, marine, engineering
 
 1. ~~Test locally~~ ✅ — DB features, API endpoints, auth verified
 2. ~~Wire Nav to DB~~ ✅ — identity switcher + pages fetch from API
-3. **UI/UX optimization** — header/entry page redesign
-4. **User CRUD** — authenticated users add real data (paths, profiles)
-5. **Fix NEXTAUTH_URL** — set to production URL on Vercel
+3. ~~Auth wiring~~ ✅ — Login/Signup wired to NextAuth + registration API
+4. **Identity switcher → page data** — selecting a thread/country filters page content
+5. **User preferences flow** — post-login preference selection → personalized feed
+6. **Fix NEXTAUTH_URL** — set to production URL on Vercel
+7. **Social auto-posting** — WhatsApp/TikTok/Insta/FB for Anchors (Phase 3)
 
 ---
 

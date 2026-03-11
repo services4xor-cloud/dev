@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import { IdentityProvider } from '@/lib/identity-context'
 import { BRAND_NAME, LEGAL } from '@/data/mock/config'
 import './globals.css'
 
@@ -117,11 +118,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${plusJakarta.variable}`}>
       <body className="bg-brand-bg text-brand-text font-sans antialiased flex flex-col min-h-screen">
-        <Nav />
-        <main id="main-content" tabIndex={-1} className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <IdentityProvider>
+          <Nav />
+          <main id="main-content" tabIndex={-1} className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </IdentityProvider>
       </body>
     </html>
   )
