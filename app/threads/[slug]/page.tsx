@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { ArrowLeft, Users, Compass, ArrowRight, Database } from 'lucide-react'
 import { useThread, useThreads } from '@/lib/hooks/use-threads'
 import { usePaths } from '@/lib/hooks/use-paths'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Thread type → color mapping ─────────────────────────────────────────────
 
@@ -28,6 +29,7 @@ const TYPE_COLORS: Record<string, string> = {
 }
 
 export default function ThreadDetailPage() {
+  const { t } = useTranslation()
   const params = useParams()
   const slug = params.slug as string
   const [joined, setJoined] = useState(false)
@@ -55,14 +57,14 @@ export default function ThreadDetailPage() {
       <div className="min-h-screen bg-brand-bg flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-4">🔍</div>
-          <h1 className="text-2xl font-bold text-white mb-2">Thread Not Found</h1>
-          <p className="text-gray-400 mb-6">This community doesn&apos;t exist yet.</p>
+          <h1 className="text-2xl font-bold text-white mb-2">{t('thread.notFoundTitle')}</h1>
+          <p className="text-gray-400 mb-6">{t('thread.notFoundDesc')}</p>
           <Link
             href="/threads"
             className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Browse All Threads
+            {t('thread.browseAll')}
           </Link>
         </div>
       </div>
@@ -87,7 +89,7 @@ export default function ThreadDetailPage() {
             className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            All Threads
+            {t('thread.allThreads')}
           </Link>
 
           <div className="flex flex-col sm:flex-row items-start gap-6">
@@ -103,7 +105,7 @@ export default function ThreadDetailPage() {
               <div className="flex items-center gap-4 text-sm text-white/60">
                 <span className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  {thread.memberCount.toLocaleString()} Pioneers
+                  {thread.memberCount.toLocaleString()} {t('thread.pioneers')}
                 </span>
                 {thread.countries.length > 0 && <span>{thread.countries.join(', ')}</span>}
               </div>
@@ -116,7 +118,7 @@ export default function ThreadDetailPage() {
                   : 'bg-brand-accent text-white hover:opacity-90'
               }`}
             >
-              {joined ? '✓ Joined' : 'Join Thread'}
+              {joined ? t('thread.joined') : t('thread.joinThread')}
             </button>
           </div>
         </div>
@@ -129,14 +131,18 @@ export default function ThreadDetailPage() {
           <div className="lg:col-span-2 space-y-8">
             {/* About */}
             <section>
-              <h2 className="text-white font-semibold mb-3">About {thread.brandName}</h2>
+              <h2 className="text-white font-semibold mb-3">
+                {t('thread.about', { name: thread.brandName })}
+              </h2>
               <p className="text-gray-300 leading-relaxed">{thread.description}</p>
             </section>
 
             {/* Child threads (e.g. tribes within Kenya) */}
             {childThreads.length > 0 && (
               <section>
-                <h2 className="text-white font-semibold mb-3">Communities within {thread.name}</h2>
+                <h2 className="text-white font-semibold mb-3">
+                  {t('thread.communitiesWithin', { name: thread.name })}
+                </h2>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {childThreads.map((child) => (
                     <Link
@@ -150,7 +156,7 @@ export default function ThreadDetailPage() {
                           {child.brandName}
                         </div>
                         <div className="text-xs text-gray-400">
-                          {child.memberCount.toLocaleString()} Pioneers
+                          {child.memberCount.toLocaleString()} {t('thread.pioneers')}
                         </div>
                       </div>
                     </Link>
@@ -162,12 +168,14 @@ export default function ThreadDetailPage() {
             {/* Community picks — paths relevant to this thread */}
             <section>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-white font-semibold">Paths in {thread.name}</h2>
+                <h2 className="text-white font-semibold">
+                  {t('thread.pathsIn', { name: thread.name })}
+                </h2>
                 <Link
                   href="/ventures"
                   className="text-brand-accent text-sm hover:underline flex items-center gap-1"
                 >
-                  See all <ArrowRight className="w-3 h-3" />
+                  {t('thread.seeAll')} <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               <div className="space-y-3">
@@ -198,22 +206,22 @@ export default function ThreadDetailPage() {
             {/* Compass CTA */}
             <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 text-center">
               <Compass className="w-8 h-8 text-brand-accent mx-auto mb-3" />
-              <h3 className="text-white font-semibold text-sm mb-2">Find Your Path</h3>
-              <p className="text-gray-400 text-xs mb-4">
-                Use the Compass to find Paths matched to your skills and identity.
-              </p>
+              <h3 className="text-white font-semibold text-sm mb-2">{t('thread.findYourPath')}</h3>
+              <p className="text-gray-400 text-xs mb-4">{t('thread.compassDesc')}</p>
               <Link
                 href="/compass"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors"
               >
-                Start Compass
+                {t('thread.startCompass')}
               </Link>
             </div>
 
             {/* Related threads */}
             {relatedThreads.length > 0 && (
               <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
-                <h3 className="text-white font-semibold text-sm mb-3">Related Threads</h3>
+                <h3 className="text-white font-semibold text-sm mb-3">
+                  {t('thread.relatedThreads')}
+                </h3>
                 <div className="space-y-2">
                   {relatedThreads.map((r) => (
                     <Link
@@ -236,21 +244,21 @@ export default function ThreadDetailPage() {
 
             {/* Stats */}
             <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
-              <h3 className="text-white font-semibold text-sm mb-3">Thread Stats</h3>
+              <h3 className="text-white font-semibold text-sm mb-3">{t('thread.threadStats')}</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Members</span>
+                  <span className="text-gray-400">{t('thread.members')}</span>
                   <span className="text-white font-medium">
                     {thread.memberCount.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Type</span>
+                  <span className="text-gray-400">{t('thread.type')}</span>
                   <span className="text-white font-medium capitalize">{thread.type}</span>
                 </div>
                 {thread.parentThread && (
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Part of</span>
+                    <span className="text-gray-400">{t('thread.partOf')}</span>
                     <Link
                       href={`/threads/${thread.parentThread}`}
                       className="text-brand-accent hover:underline"
@@ -262,7 +270,7 @@ export default function ThreadDetailPage() {
                 )}
                 {thread.countries.length > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Countries</span>
+                    <span className="text-gray-400">{t('thread.countries')}</span>
                     <span className="text-white">{thread.countries.join(', ')}</span>
                   </div>
                 )}

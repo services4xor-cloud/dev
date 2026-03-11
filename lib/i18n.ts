@@ -727,6 +727,28 @@ const CONTENT: Record<string, ContentDict> = {
     'agent.ctaDesc':
       "Join {brand}'s Agent network. No upfront cost. Earn commission on every successful placement.",
 
+    // Thread Detail
+    'thread.notFoundTitle': 'Thread Not Found',
+    'thread.notFoundDesc': "This community doesn't exist yet.",
+    'thread.browseAll': 'Browse All Threads',
+    'thread.allThreads': 'All Threads',
+    'thread.pioneers': 'Pioneers',
+    'thread.joined': '✓ Joined',
+    'thread.joinThread': 'Join Thread',
+    'thread.about': 'About {name}',
+    'thread.communitiesWithin': 'Communities within {name}',
+    'thread.pathsIn': 'Paths in {name}',
+    'thread.seeAll': 'See all',
+    'thread.findYourPath': 'Find Your Path',
+    'thread.compassDesc': 'Use the Compass to find Paths matched to your skills and identity.',
+    'thread.startCompass': 'Start Compass',
+    'thread.relatedThreads': 'Related Threads',
+    'thread.threadStats': 'Thread Stats',
+    'thread.members': 'Members',
+    'thread.type': 'Type',
+    'thread.partOf': 'Part of',
+    'thread.countries': 'Countries',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -1370,6 +1392,29 @@ const CONTENT: Record<string, ContentDict> = {
     'agent.ctaDesc':
       'Tritt dem Agent-Netzwerk von {brand} bei. Keine Vorabkosten. Verdiene Provision bei jeder erfolgreichen Vermittlung.',
 
+    // Thread Detail
+    'thread.notFoundTitle': 'Thread nicht gefunden',
+    'thread.notFoundDesc': 'Diese Community existiert noch nicht.',
+    'thread.browseAll': 'Alle Threads durchsuchen',
+    'thread.allThreads': 'Alle Threads',
+    'thread.pioneers': 'Pioneers',
+    'thread.joined': '✓ Beigetreten',
+    'thread.joinThread': 'Thread beitreten',
+    'thread.about': 'Über {name}',
+    'thread.communitiesWithin': 'Communities in {name}',
+    'thread.pathsIn': 'Paths in {name}',
+    'thread.seeAll': 'Alle anzeigen',
+    'thread.findYourPath': 'Finde deinen Path',
+    'thread.compassDesc':
+      'Nutze den Compass, um Paths zu finden, die zu deinen Fähigkeiten und deiner Identität passen.',
+    'thread.startCompass': 'Compass starten',
+    'thread.relatedThreads': 'Verwandte Threads',
+    'thread.threadStats': 'Thread-Statistiken',
+    'thread.members': 'Mitglieder',
+    'thread.type': 'Typ',
+    'thread.partOf': 'Teil von',
+    'thread.countries': 'Länder',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -1941,6 +1986,28 @@ const CONTENT: Record<string, ContentDict> = {
     'agent.ctaTitle': 'Uko tayari kuanza kuweka watu?',
     'agent.ctaDesc':
       'Jiunge na mtandao wa Agent wa {brand}. Hakuna gharama ya awali. Pata kamisheni kwa kila uwekaji wenye mafanikio.',
+
+    // Thread Detail
+    'thread.notFoundTitle': 'Thread Haijapatikana',
+    'thread.notFoundDesc': 'Jamii hii bado haipo.',
+    'thread.browseAll': 'Vinjari Threads Zote',
+    'thread.allThreads': 'Threads Zote',
+    'thread.pioneers': 'Pioneers',
+    'thread.joined': '✓ Umejiunga',
+    'thread.joinThread': 'Jiunge na Thread',
+    'thread.about': 'Kuhusu {name}',
+    'thread.communitiesWithin': 'Jamii ndani ya {name}',
+    'thread.pathsIn': 'Paths katika {name}',
+    'thread.seeAll': 'Ona zote',
+    'thread.findYourPath': 'Pata Path Yako',
+    'thread.compassDesc': 'Tumia Compass kupata Paths zinazolingana na ujuzi na utambulisho wako.',
+    'thread.startCompass': 'Anza Compass',
+    'thread.relatedThreads': 'Threads Zinazohusiana',
+    'thread.threadStats': 'Takwimu za Thread',
+    'thread.members': 'Wanachama',
+    'thread.type': 'Aina',
+    'thread.partOf': 'Sehemu ya',
+    'thread.countries': 'Nchi',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',

@@ -968,6 +968,49 @@ describe('i18n — agent landing translations', () => {
   })
 })
 
+describe('i18n — thread detail translations', () => {
+  const threadKeys = [
+    'thread.notFoundTitle',
+    'thread.notFoundDesc',
+    'thread.browseAll',
+    'thread.allThreads',
+    'thread.pioneers',
+    'thread.joined',
+    'thread.joinThread',
+    'thread.about',
+    'thread.communitiesWithin',
+    'thread.pathsIn',
+    'thread.seeAll',
+    'thread.findYourPath',
+    'thread.compassDesc',
+    'thread.startCompass',
+    'thread.relatedThreads',
+    'thread.threadStats',
+    'thread.members',
+    'thread.type',
+    'thread.partOf',
+    'thread.countries',
+  ]
+
+  it('English has all thread keys', () => {
+    for (const key of threadKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all thread keys', () => {
+    for (const key of threadKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all thread keys', () => {
+    for (const key of threadKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()
