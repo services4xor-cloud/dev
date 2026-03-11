@@ -1,5 +1,16 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import { COUNTRIES } from '@/lib/countries'
+
+const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
+const COUNTRY_FLAG: Record<string, string> = {
+  KE: '🇰🇪',
+  DE: '🇩🇪',
+  CH: '🇨🇭',
+  TH: '🇹🇭',
+  NG: '🇳🇬',
+  GB: '🇬🇧',
+}
+const flag = COUNTRY_FLAG[CC] ?? '🌍'
 import {
   FOOTER_PIONEER_LINKS as PIONEER_LINKS,
   FOOTER_ANCHOR_LINKS as ANCHOR_LINKS,
@@ -29,13 +40,13 @@ export default function Footer() {
               className="inline-flex items-center gap-3 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded-lg"
               aria-label={`${BRAND_NAME} — Home`}
             >
-              <Image
-                src="/logo.svg"
-                alt={`${BRAND_NAME} compass`}
-                width={36}
-                height={36}
-                unoptimized
-              />
+              <span
+                className="flex items-center justify-center w-9 h-9 rounded-full bg-brand-primary border border-brand-accent/40 text-lg"
+                role="img"
+                aria-label={`${BRAND_NAME} logo`}
+              >
+                {flag}
+              </span>
               <span className="text-brand-accent font-bold text-lg tracking-wide">
                 {BRAND_NAME}
               </span>

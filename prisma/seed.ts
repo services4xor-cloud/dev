@@ -21,50 +21,75 @@ async function main() {
 
   // ── Anchors ─────────────────────────────────────────────────────────────────
   const anchors = await Promise.all([
-    // Kenya
-    upsertAnchor('hr@safaricom.test', 'Safaricom HR', 'KE', 'Leading telecom, powering M-Pesa.'),
-    upsertAnchor('careers@kcb.test', 'KCB Bank Kenya', 'KE', 'Largest bank in East Africa.'),
-    upsertAnchor('team@basecamp.test', 'Basecamp Explorer', 'KE', 'Award-winning eco-tourism.'),
-    // Germany
-    upsertAnchor('hr@sap.test', 'SAP SE', 'DE', "Europe's largest software company."),
+    // Kenya — realistic fictional companies
     upsertAnchor(
-      'careers@siemens-health.test',
-      'Siemens Healthineers',
+      'hr@safaritechsolutions.test',
+      'SafariTech Solutions',
+      'KE',
+      'Mobile-first fintech company powering digital payments across East Africa.'
+    ),
+    upsertAnchor(
+      'careers@nairobigeneral.test',
+      'Nairobi General Hospital',
+      'KE',
+      'Leading healthcare provider serving 500K+ patients annually.'
+    ),
+    upsertAnchor(
+      'team@savannahtrails.test',
+      'Savannah Trails Safari',
+      'KE',
+      'Award-winning eco-tourism operator in Masai Mara and Amboseli.'
+    ),
+    // Germany — realistic fictional companies
+    upsertAnchor(
+      'hr@berlindigital.test',
+      'Berlin Digital GmbH',
       'DE',
-      'Global leader in medical technology.'
+      'Enterprise SaaS company building cloud solutions for European businesses.'
     ),
-    upsertAnchor('jobs@deutschebahn.test', 'Deutsche Bahn', 'DE', "Germany's national railway."),
-    // Switzerland
     upsertAnchor(
-      'careers@novartis.test',
-      'Novartis AG',
+      'careers@munichmedtech.test',
+      'Munich MedTech AG',
+      'DE',
+      'Medical technology innovator specializing in diagnostic imaging.'
+    ),
+    upsertAnchor(
+      'jobs@hamburgport.test',
+      'Hamburg Port Services',
+      'DE',
+      "Germany's largest port logistics and rail operations provider."
+    ),
+    // Switzerland — realistic fictional companies
+    upsertAnchor(
+      'careers@baselpharma.test',
+      'Basel Pharma SA',
       'CH',
-      'Global pharmaceutical leader based in Basel.'
+      'Pharmaceutical research company focused on oncology and rare diseases.'
     ),
     upsertAnchor(
-      'hr@ubs.test',
-      'UBS Group',
+      'hr@zurichfintech.test',
+      'Zurich FinTech AG',
       'CH',
-      "Switzerland's largest bank, global wealth management."
+      'Digital wealth management platform for European and African markets.'
     ),
     upsertAnchor(
-      'jobs@swisscom.test',
-      'Swisscom AG',
+      'jobs@swisscloud.test',
+      'SwissCloud AG',
       'CH',
-      'Leading Swiss telecom and IT provider.'
+      'Leading Swiss telecom and cloud infrastructure provider.'
     ),
-    // Thailand
+    // Thailand — realistic fictional companies
     upsertAnchor(
-      'hr@agoda.test',
-      'Agoda Thailand',
+      'hr@bangkoktravel.test',
+      'Bangkok Travel Tech',
       'TH',
-      'Leading online travel platform based in Bangkok.'
+      'Online travel platform serving 10M+ travelers across Southeast Asia.'
     ),
     upsertAnchor(
-      'careers@cpgroup.test',
-      'CP Group',
+      'careers@siamgroup.test',
+      'Siam Agricultural Group',
       'TH',
-      "Thailand's largest private company — agribusiness, retail, telecom."
+      "Thailand's largest agribusiness — farming, retail, and food processing."
     ),
   ])
 
@@ -75,12 +100,12 @@ async function main() {
     // Kenya
     path(
       'Senior Software Engineer',
-      'Safaricom',
+      'SafariTech Solutions',
       anchors[0].id,
       'KE',
       'Nairobi, Kenya',
       'tech',
-      'Join the M-Pesa team and build financial infrastructure for 30M+ users.',
+      'Build mobile payment infrastructure powering digital transactions for 30M+ users.',
       180000,
       280000,
       'KES',
@@ -89,7 +114,7 @@ async function main() {
     ),
     path(
       'Safari Guide & Wildlife Educator',
-      'Basecamp Masai Mara',
+      'Savannah Trails Safari',
       anchors[2].id,
       'KE',
       'Masai Mara, Kenya',
@@ -103,7 +128,7 @@ async function main() {
     ),
     path(
       'Branch Manager — Westlands',
-      'KCB Bank Kenya',
+      'Nairobi General Hospital',
       anchors[1].id,
       'KE',
       'Westlands, Nairobi',
@@ -117,7 +142,7 @@ async function main() {
     ),
     path(
       'Social Media Manager',
-      'Twiga Foods',
+      'SafariTech Solutions',
       anchors[0].id,
       'KE',
       'Nairobi, Kenya',
@@ -131,7 +156,7 @@ async function main() {
     ),
     path(
       'Eco-Lodge Manager — Amboseli',
-      'Ol Tukai Lodge',
+      'Savannah Trails Safari',
       anchors[2].id,
       'KE',
       'Amboseli, Kenya',
@@ -145,7 +170,7 @@ async function main() {
     ),
     path(
       'Community Health Worker — Kibera',
-      'Amref Health Africa',
+      'Nairobi General Hospital',
       anchors[0].id,
       'KE',
       'Kibera, Nairobi',
@@ -161,21 +186,21 @@ async function main() {
     // Germany
     path(
       'Cloud Solutions Architect',
-      'SAP SE',
+      'Berlin Digital GmbH',
       anchors[3].id,
       'DE',
       'Walldorf, Germany',
       'tech',
-      'Design and implement enterprise cloud architectures for SAP S/4HANA customers across Europe.',
+      'Design and implement enterprise cloud architectures for customers across Europe.',
       75000,
       95000,
       'EUR',
-      ['SAP', 'Cloud Architecture', 'TypeScript', 'Kubernetes', 'German B2'],
+      ['Cloud Architecture', 'TypeScript', 'Kubernetes', 'Terraform', 'German B2'],
       'PREMIUM'
     ),
     path(
       'Pflegefachkraft (Nurse)',
-      'Siemens Healthineers',
+      'Munich MedTech AG',
       anchors[4].id,
       'DE',
       'Erlangen, Germany',
@@ -189,7 +214,7 @@ async function main() {
     ),
     path(
       'Lokführer (Train Operator)',
-      'Deutsche Bahn',
+      'Hamburg Port Services',
       anchors[5].id,
       'DE',
       'Munich, Germany',
@@ -203,12 +228,12 @@ async function main() {
     ),
     path(
       'Data Analyst — Automotive',
-      'BMW Group',
+      'Berlin Digital GmbH',
       anchors[3].id,
       'DE',
       'Munich, Germany',
       'tech',
-      "Analyze production and supply chain data for BMW's electric vehicle division.",
+      'Analyze production and supply chain data for the electric vehicle division.',
       55000,
       72000,
       'EUR',
@@ -217,7 +242,7 @@ async function main() {
     ),
     path(
       'Mechanical Engineer',
-      'Siemens Energy',
+      'Munich MedTech AG',
       anchors[4].id,
       'DE',
       'Berlin, Germany',
@@ -231,7 +256,7 @@ async function main() {
     ),
     path(
       'Hotel Manager — Hamburg',
-      'Maritim Hotels',
+      'Hamburg Port Services',
       anchors[5].id,
       'DE',
       'Hamburg, Germany',
@@ -247,12 +272,12 @@ async function main() {
     // Switzerland
     path(
       'Pharma Research Associate',
-      'Novartis AG',
+      'Basel Pharma SA',
       anchors[6].id,
       'CH',
       'Basel, Switzerland',
       'pharma',
-      'Conduct drug discovery research in oncology at Novartis Institutes for BioMedical Research.',
+      'Conduct drug discovery research in oncology at our BioMedical Research Institute.',
       90000,
       120000,
       'CHF',
@@ -261,7 +286,7 @@ async function main() {
     ),
     path(
       'Wealth Manager — Private Banking',
-      'UBS Group',
+      'Zurich FinTech AG',
       anchors[7].id,
       'CH',
       'Zürich, Switzerland',
@@ -275,12 +300,12 @@ async function main() {
     ),
     path(
       'Cloud Engineer',
-      'Swisscom AG',
+      'SwissCloud AG',
       anchors[8].id,
       'CH',
       'Bern, Switzerland',
       'tech',
-      "Build and maintain cloud infrastructure for Switzerland's largest telecom.",
+      'Build and maintain cloud infrastructure for enterprise Swiss clients.',
       95000,
       125000,
       'CHF',
@@ -289,7 +314,7 @@ async function main() {
     ),
     path(
       'Hotel Director — Interlaken',
-      'Victoria Jungfrau',
+      'SwissCloud AG',
       anchors[8].id,
       'CH',
       'Interlaken, Switzerland',
@@ -303,7 +328,7 @@ async function main() {
     ),
     path(
       'Precision CNC Machinist',
-      'Swatch Group',
+      'Basel Pharma SA',
       anchors[6].id,
       'CH',
       'Biel/Bienne, Switzerland',
@@ -317,7 +342,7 @@ async function main() {
     ),
     path(
       'Renewable Energy Engineer',
-      'ABB Switzerland',
+      'Zurich FinTech AG',
       anchors[7].id,
       'CH',
       'Baden, Switzerland',
@@ -333,7 +358,7 @@ async function main() {
     // Thailand
     path(
       'Full-Stack Developer',
-      'Agoda',
+      'Bangkok Travel Tech',
       anchors[9].id,
       'TH',
       'Bangkok, Thailand',
@@ -347,7 +372,7 @@ async function main() {
     ),
     path(
       'Hotel General Manager',
-      'Anantara Hotels',
+      'Siam Agricultural Group',
       anchors[10].id,
       'TH',
       'Koh Samui, Thailand',
@@ -361,7 +386,7 @@ async function main() {
     ),
     path(
       'Dive Instructor — PADI',
-      'Crystal Dive Koh Tao',
+      'Siam Agricultural Group',
       anchors[10].id,
       'TH',
       'Koh Tao, Thailand',
@@ -375,7 +400,7 @@ async function main() {
     ),
     path(
       'Agriculture Innovation Lead',
-      'CP Group',
+      'Bangkok Travel Tech',
       anchors[9].id,
       'TH',
       'Nakhon Ratchasima, Thailand',

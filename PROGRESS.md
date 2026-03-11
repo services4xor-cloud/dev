@@ -17,8 +17,8 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 186/186 ✅                                                  |
-| Playwright tests  | 102+ ✅ (+ identity E2E suite)                              |
+| Jest tests        | 225/225 ✅                                                  |
+| Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
 | Languages         | 14 (+9 world languages in i18n)                             |
@@ -67,6 +67,38 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 38 (2026-03-11) — All Decisions Resolved + Dynamic Logo + Payment Model + Fictional Anchors
+
+Owner delegated all open decisions to agent. All 10 questions in ASK.md resolved:
+
+- [x] **D1 — Top-level tribes**: Tribes are top-level routes (`/be/maasai`), not nested under countries. Culture-first, not geography-first.
+- [x] **D2 — Dynamic logo**: `components/DynamicLogo.tsx` — SVG logo that adapts to active identity (flag/emoji). Nav uses it instead of static logo.svg. Brand-primary circle + gold accent ring + identity icon.
+- [x] **D3 — Tribe + location data**: Confirmed: Maasai, Kikuyu, Luo, Kalenjin, Luhya, Kamba (KE), Berlin/Munich/Hamburg (DE), Zurich/Geneva/Basel (CH).
+- [x] **D4 — Hybrid agents**: Both human agents (WhatsApp forwarding) AND AI agents (n8n automation). Professional paths first.
+- [x] **D5 — Infra decisions**: Self-hosted n8n, WhatsApp+Instagram+TikTok first, Claude API for content gen, maroon/gold watermark.
+- [x] **D6 — Payment model**: Freemium anchor-pays. Pioneers FREE. Basic=free (1 path), Featured=$29/mo, Premium=$99/mo. Agent 10% commission.
+- [x] **D7 — i18n priority**: English → Swahili → German → Thai. Machine translation + human review for key pages.
+- [x] **D8 — Fictional anchors**: All seed companies now realistic fictional names (SafariTech Solutions, Berlin Digital GmbH, Basel Pharma SA, etc.) to avoid trademark issues.
+- [x] **D9 — Charity model**: UTAMADUNI (KE), Brücken Schweiz (CH), Integration durch Arbeit (DE). Micro-donations per transaction.
+- [x] **D10 — Hosting**: Neon free→Pro, Vercel stays, subdomains for countries, PostHog for analytics.
+- [x] **Pricing refactored**: `data/mock/pricing.ts` — multi-currency prices (KES/EUR/CHF/THB/USD), `COMMISSION_RATES`, `FREE_TIER`, `getPlanPrice()`, `formatPlanPrice()`.
+- [x] **Footer dynamic logo**: Server-side flag emoji from `NEXT_PUBLIC_COUNTRY_CODE`, no more static SVG.
+- [x] Jest: 225/225 ✅ | TS: 0 errors
+
+### Session 37 (2026-03-11) — Agent System + Thailand + Gamification + Security + Tests
+
+- [x] **3-sided marketplace**: Agent role with Forward tracking lifecycle (SENT→CLICKED→SIGNED_UP→APPLIED→PLACED→commission)
+- [x] **Agent dashboard**: `app/agents/dashboard/page.tsx` — demand feed, forwards tracker, earnings summary
+- [x] **Forward API**: `app/api/forwards/route.ts` — Zod-validated, tracking codes, auth-gated
+- [x] **Thailand complete**: 4 TH paths, 8 TH threads (country + tribes + language + locations), eco-tourism experiences
+- [x] **Brand consistency**: `BRAND_NAME_OVERRIDES` map (BeUK not BeUnited Kingdom), auto-detect via navigator.language
+- [x] **Gamification wired**: Journey tracking in 5 user flows (identity switch, ventures, compass, about, homepage)
+- [x] **OpenClaw/n8n config**: `lib/integrations.ts` — cascading notifications, webhook receiver
+- [x] **Security audit**: Zod on 5 routes, auth on 3 routes, XSS escaping in contact form
+- [x] **38 new tests**: Agent schema (12), journey stages (10), brand naming (9), data coverage (7)
+- [x] **22 E2E tests**: Agent flow (10), gamification (4), brand consistency (8)
+- [x] Jest: 225/225 ✅ | Playwright: 124+ ✅ | TS: 0 errors
 
 ### Session 36 (2026-03-11) — i18n Content System, Identity Extraction, World Languages
 

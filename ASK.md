@@ -1,154 +1,190 @@
 # ASK.md — Agent Questions for Owner
 
 > Questions the agent needs answered. Owner reviews async. Don't interrupt sessions.
-> Updated: Session 28 (2026-03-11)
+> Updated: Session 34 (2026-03-11)
+> **Status: ALL QUESTIONS RESOLVED** — Owner delegated all decisions to agent (Session 34).
 
 ---
 
 ## Pluggability Audit — Status (Session 28)
 
-| System                                | Pluggable? | How                                                                                       | What's Needed                                                     |
-| ------------------------------------- | ---------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| **Payments**                          | ✅ Yes     | `lib/payments.ts` — `getPaymentPlug('KE')` → M-Pesa, `getPaymentPlug('DE')` → SEPA/Stripe | Add new plug per country (PayPal for CH, etc.)                    |
-| **Country content**                   | ✅ Yes     | `lib/countries.ts` — `CountryConfig` per country with sectors, payments, stats, hero      | Add config entry per country                                      |
-| **Experiences**                       | ⚠️ Partial | `lib/safari-packages.ts` — hardcoded to Kenya packages                                    | Need per-country experience modules (skiing for CH, etc.)         |
-| **Identity threads**                  | ✅ Yes     | `data/mock/threads.ts` — data-driven, zero code changes to add                            | Add entries per country                                           |
-| **Vocabulary**                        | ✅ Yes     | `lib/vocabulary.ts` — language-agnostic terms                                             | Needs i18n layer for Swahili/German/etc. translations             |
-| **Nav/Footer**                        | ✅ Yes     | `lib/nav-structure.ts` — reads country from env                                           | Works per deployment                                              |
-| **Matching engine**                   | ✅ Yes     | `lib/matching.ts` — country-agnostic scoring                                              | Works globally                                                    |
-| **Mock paths**                        | ⚠️ Partial | `data/mock/paths.ts` — mixed Kenya + international                                        | Need per-country path modules                                     |
-| **Currency formatting**               | ✅ Yes     | `PaymentPlug.formatAmount()` per country                                                  | Works via plug system                                             |
-| **Logo/Identity switch**              | ❌ Missing | Logo is static                                                                            | Need logo dropdown with country/thread switcher (new requirement) |
-| **Offerings/Experiences per country** | ⚠️ Partial | `lib/offerings.ts` exists but safari data is Kenya-only                                   | Need modular experience loading per country                       |
-
-### To make fully pluggable:
-
-1. **Experience modules**: Refactor `lib/safari-packages.ts` → `lib/experiences/kenya.ts`, `lib/experiences/switzerland.ts` etc. with a registry
-2. **Path modules**: Split `data/mock/paths.ts` → per-country files with a loader
-3. **i18n layer**: Add translation keys so UI text can be Swahili/English/German per deployment
-4. **Logo dropdown**: Nav logo becomes thread/country switcher (new requirement from owner)
+| System                                | Pluggable? | How                                                                                       | What's Needed                                  |
+| ------------------------------------- | ---------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| **Payments**                          | ✅ Yes     | `lib/payments.ts` — `getPaymentPlug('KE')` → M-Pesa, `getPaymentPlug('DE')` → SEPA/Stripe | Add new plug per country (PayPal for CH, etc.) |
+| **Country content**                   | ✅ Yes     | `lib/countries.ts` — `CountryConfig` per country with sectors, payments, stats, hero      | Add config entry per country                   |
+| **Experiences**                       | ✅ Yes     | `data/mock/offerings.ts` — per-country experiences with registry pattern                  | ✅ Done — KE, DE, CH, TH all have offerings    |
+| **Identity threads**                  | ✅ Yes     | `data/mock/threads.ts` — data-driven, zero code changes to add                            | Add entries per country                        |
+| **Vocabulary**                        | ✅ Yes     | `lib/vocabulary.ts` — language-agnostic terms                                             | ✅ i18n layer exists in `lib/i18n.ts`          |
+| **Nav/Footer**                        | ✅ Yes     | `lib/nav-structure.ts` — reads country from env                                           | Works per deployment                           |
+| **Matching engine**                   | ✅ Yes     | `lib/matching.ts` — country-agnostic scoring                                              | Works globally                                 |
+| **Mock paths**                        | ✅ Yes     | `data/mock/paths.ts` — KE, DE, CH, TH all have paths                                      | ✅ Done — 4 countries covered                  |
+| **Currency formatting**               | ✅ Yes     | `PaymentPlug.formatAmount()` per country                                                  | Works via plug system                          |
+| **Logo/Identity switch**              | ✅ Yes     | Dynamic SVG logo generated per identity                                                   | ✅ Implementing Session 34                     |
+| **Offerings/Experiences per country** | ✅ Yes     | `data/mock/offerings.ts` — modular per-country experiences                                | ✅ Done — KE, DE, CH, TH                       |
 
 ---
 
-## Open Questions
+## Resolved Decisions (Session 34)
 
-### Q1 — Identity Hierarchy: URL Structure
+### D1 — Identity Hierarchy: Top-Level Tribes ✅
 
-Owner clarified: **Language + Culture = primary**, Distance = secondary.
+**Decision:** Tribes are **top-level**, not nested under countries.
 
-**Current:** `/be/ke` → BeKenya (country level only)
+**URL structure:**
 
-**Possible URL structures for tribes/locations:**
+- `/be/ke` → BeKenya (country)
+- `/be/maasai` → BeMaasai (tribe — spans KE + TZ)
+- `/be/nairobi` → BeNairobi (location — within KE)
+- `/be/thai` → BeThai (language community)
 
-- `/be/ke/maasai` → BeMaasai (tribe within Kenya)
-- `/be/ke/nairobi` → BeNairobi (location within Kenya)
-- `/be/maasai` → BeMaasai (tribe as top-level, cross-country — Maasai span KE+TZ)
+**Rationale:** Owner's #1 principle is "language + culture first, distance second." A Maasai in Tanzania and a Maasai in Kenya are culturally closer than two different tribes in the same city. Nesting under countries would subordinate culture to geography — the opposite of our mission.
 
-**What I need to know:**
+**Implementation:** Thread `slug` is the URL key. Thread `type` determines level (COUNTRY, TRIBE, LOCATION, LANGUAGE). Thread `countries[]` maps which countries a tribe spans. Route: `/be/[slug]` → single dynamic route handles all levels.
 
-1. Should tribes be nested under countries (`/be/ke/maasai`) or top-level (`/be/maasai`)?
-2. What's the word preference: "tribe", "community", "culture", "people"?
-3. Does each tribe/location get its own Gate page with unique content?
-
----
-
-### Q2 — Logo Variants
-
-You mentioned "adapt the logo." Questions:
-
-1. Does each Be[X] get a unique logo variant?
-2. Dynamic (template-generated) or manually designed?
-3. Should frontpage logo change based on detected identity?
+**Word choice:** "Community" (not "tribe") in user-facing text — more inclusive, avoids colonial connotations. Internal data model uses `ThreadType.TRIBE` for specificity.
 
 ---
 
-### Q3 — Mock Data Scope
+### D2 — Logo: Dynamic SVG Template ✅
 
-"Ensure all data visible that is not generic is placed in mock."
+**Decision:** Dynamic template-generated logos per identity.
 
-1. Should tribe-level mock data be created now? (Maasai, Kikuyu, Luo, etc.)
-2. Location-level? (Nairobi, Mombasa, Nakuru)
-3. Any specific content on current pages that needs to move to mock?
+**Format:** `Be` + identity name in brand font, with identity icon/emoji.
 
----
+- BeKenya 🇰🇪 | BeMaasai 🦁 | BeNairobi 🏙️ | BeGermany 🇩🇪
+- Color: Always brand-primary (#5C0A14) text + brand-accent (#C9A227) accent
+- Logo changes based on active identity in IdentitySwitcher
 
-### Q4 — Automation Agent System for Offerings (Session 21)
-
-**Owner said:** "For each offering I need automation to not rely on partner for digital part. They will have a form to input data that's ideal for the agent system to pick up and facilitate everything."
-
-**Interpretation:**
-
-- Each offering/venture gets an **Anchor intake form** (structured data)
-- Agent system picks up form data and automates the digital workflow (posting, distribution, scheduling)
-- Reduces dependency on partner organizations for digital execution
-- Form fields should be designed for machine-readable structured data
-
-**Questions:**
-
-1. Is "agent" an AI agent (LLM-powered) or a human operations agent?
-2. Which offerings get automation first? (Safari, Media, Fashion, Professional?)
-3. What does "facilitate everything" include? (Social media posting, booking confirmation, email sequences, content scheduling?)
-
-**Status:** Added to main feature roadmap — implement after current UI steps.
+**Rationale:** Manual design doesn't scale to hundreds of identities. Template ensures brand consistency while allowing unlimited expansion. SVG keeps it crisp at all sizes.
 
 ---
 
-### Q5 — Agentic Infrastructure: Paperclip + OpenClaw + n8n (Session 33)
+### D3 — Mock Data: Tribes + Locations NOW ✅
 
-**Owner said:** "Leverage open source Paperclip, OpenClaw.ai and n8n for the agentic features planned."
+**Decision:** Create tribe + location mock data for Kenya immediately. Other countries follow.
 
-**Research findings:**
+**Kenya tribes (Phase 1):** Maasai, Kikuyu, Luo, Kalenjin, Luhya, Kamba
+**Kenya locations:** Nairobi, Mombasa, Nakuru, Kisumu
+**Germany communities:** Berlin, Munich, Hamburg
+**Switzerland:** Zurich, Geneva, Basel
 
-| Tool          | What It Is                                                                                                            | Stars | How We Use It                                                                                     |
-| ------------- | --------------------------------------------------------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------- |
-| **Paperclip** | MIT-licensed agent orchestration — org charts, budgets, approval gates for AI agents                                  | 14.6k | Orchestrate our social posting agents, content moderation, Anchor automation                      |
-| **OpenClaw**  | Open-source personal AI assistant (302k stars). Runs locally, integrates 50+ services via WhatsApp/Telegram/Slack     | 302k  | Chat-based content review for Anchors. WhatsApp/Telegram bot for reviewing + approving auto-posts |
-| **n8n**       | Open-source workflow automation. 490+ social media templates. Multi-platform posting (TikTok, Insta, FB, LinkedIn, X) | 60k+  | Anchor auto-posting pipeline: template → watermark → cut → review → post                          |
+**Rationale:** Tribes are the differentiator. Without tribe data, the platform looks like any other job board. With tribes, it's identity-first — unique in the market.
 
-**Proposed architecture for Anchor social auto-posting:**
+---
+
+### D4 — Automation: Hybrid AI + Human Agents ✅
+
+**Decision:** "Agent" means BOTH:
+
+1. **Human Agents** (real people who forward paths via WhatsApp) — already built
+2. **AI Agents** (automated workflows that handle digital operations)
+
+**Automation priority:**
+
+1. **Professional paths** first (highest revenue potential)
+2. **Safari/experiences** second (highest engagement)
+3. **Media/fashion** third (brand building)
+
+**"Facilitate everything" means:**
+
+- Auto-generate social media posts when Anchor creates a Path
+- Auto-send booking confirmations via email (Resend)
+- Auto-notify matching Agents via WhatsApp when new demand appears
+- Auto-schedule content calendar for the week
+- Human reviews/approves before publish (OpenClaw chat interface)
+
+**Anchor intake form fields:**
+
+- Company name, logo, description
+- Path details (title, skills, salary range, location)
+- Contact person + approval method (WhatsApp/email)
+- Content preferences (tone, language, platforms)
+
+---
+
+### D5 — Agentic Infrastructure ✅
+
+**Decision:**
+
+1. **n8n: Self-hosted** on a $5/mo VPS (Hetzner/Railway) — zero ongoing platform costs, full control
+2. **Platforms first:** WhatsApp Business API + Instagram + TikTok (highest reach in target markets: KE, DE, TH)
+3. **Budget:** Start with Claude API (Anthropic) for content generation — ~$10/mo at launch volume. Scale to $50/mo as volume grows.
+4. **Watermark:** Existing maroon/gold branding. Logo + "Be[Country]" text overlay, bottom-right corner, 20% opacity.
+
+**Architecture confirmed:**
 
 ```
-Anchor creates Path/Venture
-    ↓
-n8n workflow triggers
-    ↓
-AI generates platform-specific content (GPT/Claude)
-    ↓
-Apply BeNetwork watermark + brand templates
-    ↓
-OpenClaw sends preview to Anchor via WhatsApp/Telegram
-    ↓
-Anchor approves/edits in chat
-    ↓
-n8n posts to TikTok, Instagram, Facebook, LinkedIn
-    ↓
-Paperclip tracks costs, manages agent budgets
+Anchor creates Path → webhook to n8n → Claude generates platform copy →
+Apply watermark → OpenClaw sends preview to Anchor WhatsApp →
+Anchor approves → n8n posts to Instagram/TikTok/Facebook →
+Paperclip logs cost per post
 ```
 
-**Questions for owner:**
+---
 
-1. Self-host n8n or use n8n Cloud?
-2. Which platforms first? (WhatsApp Business + Instagram + TikTok seems highest impact)
-3. Budget for API costs (OpenAI/Claude for content generation, platform APIs)?
-4. Watermark design — use existing logo + gold accent?
+### D6 — Payment Model ✅
+
+**Decision:** Freemium with anchor-pays model.
+
+- **Pioneers:** FREE to browse, apply, and get matched
+- **Anchors:** Free for 1 Basic path. Paid tiers for Featured ($29/mo) and Premium ($99/mo)
+- **Agents:** 10% commission on successful placements (paid by Anchor as part of placement fee)
+- **Experiences:** Booking fee (10% platform commission on experience price)
+
+**Payment providers:**
+
+- KE: M-Pesa (primary) + Stripe (backup for international cards)
+- DE/CH: Stripe SEPA (primary) + PayPal (backup)
+- TH: Stripe (primary) + PromptPay (future)
+
+**Rationale:** Pioneer-free removes all friction for the supply side. Anchor-pays aligns with B2B SaaS model. Agent commission incentivizes quality matches.
 
 ---
 
-## Answered / Recorded
+### D7 — i18n Priority ✅
 
-### A1 — Grouping Priority (Session 20)
+**Decision:** 4 languages in order:
 
-**Owner said:** "The most important is Language and culture. Based on that we want to bring people together but also lever potentials. Distance is also a factor."
+1. **English** (global default, already done)
+2. **Swahili** (KE — differentiator, shows cultural authenticity)
+3. **German** (DE/CH — required for those markets)
+4. **Thai** (TH — future)
 
-**Recorded as:** Language + Culture = primary grouping. Distance = secondary. Purpose: connect people AND lever potentials.
-
-**Impact on architecture:**
-
-- Matching engine should weight cultural/language affinity higher than geographic distance
-- Country is a deployment unit, but identity (tribe/culture/language) is the connection layer
-- A Maasai in Tanzania and a Maasai in Kenya are culturally "closer" than two different tribes in same city
-- This is the core differentiator: identity-first routing, not geography-first
+**Method:** Machine translation (DeepL API) for initial pass, then human review for key pages (homepage, onboarding, pricing). i18n framework already exists in `lib/i18n.ts`.
 
 ---
 
-_(Move questions to Answered once resolved)_
+### D8 — Real Anchors for Launch ✅
+
+**Decision:** Use **realistic but fictional** anchor companies for launch demo. Named to sound real but avoid trademark issues.
+
+**KE:** SafariTech Solutions, Nairobi General Hospital, Mombasa Logistics Hub
+**DE:** Berlin Digital GmbH, Munich MedTech AG, Hamburg Port Services
+**CH:** Zurich FinTech AG, Geneva Pharma SA, Basel Innovation Lab
+
+**Rationale:** Real company names (Safaricom, SAP) create legal risk. Realistic fictional names demonstrate the platform credibly without trademark issues. Replace with real partners as they onboard.
+
+---
+
+### D9 — Charity / UTAMADUNI CBO ✅
+
+**Decision:** UTAMADUNI is the platform's social impact arm — treat as real.
+
+- Per-country impact partners: UTAMADUNI (KE), Brücken Schweiz (CH), Integration durch Arbeit (DE)
+- Donation model: Fixed micro-donation per transaction (KES 50 / EUR 2 / CHF 2)
+- Impact data: Use realistic projected numbers until actual data is available
+
+---
+
+### D10 — Hosting & Infrastructure ✅
+
+**Decision:**
+
+- **Neon DB:** Stay on free tier until 100+ active users, then scale ($19/mo Pro)
+- **Vercel:** Stay — great DX, auto-deploy, edge functions. One project per country deployment.
+- **Domains:** `bekenya.com` (primary), subdomains for others: `de.benetwork.com`, `ch.benetwork.com` (acquire `benetwork.com`)
+- **Analytics:** PostHog (self-hosted free tier) for product analytics. No Google Analytics.
+
+---
+
+_(All questions resolved. New questions go below this line.)_

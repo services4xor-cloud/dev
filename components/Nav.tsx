@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import DynamicLogo from '@/components/DynamicLogo'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { Menu, X, ChevronDown, Compass, LogIn, User as UserIcon, LogOut } from 'lucide-react'
@@ -209,20 +210,11 @@ export default function Nav() {
                   className="relative"
                 >
                   <div
-                    className="absolute inset-0 rounded-lg blur-md opacity-50 group-hover:opacity-70 transition-opacity duration-300"
+                    className="absolute inset-0 rounded-full blur-md opacity-50 group-hover:opacity-70 transition-opacity duration-300"
                     style={{ background: 'var(--color-accent)' }}
                     aria-hidden="true"
                   />
-                  <Image
-                    src="/logo.svg"
-                    alt=""
-                    width={28}
-                    height={28}
-                    priority
-                    unoptimized
-                    aria-hidden="true"
-                    className="relative rounded-lg"
-                  />
+                  <DynamicLogo icon={currentFlag} size={28} className="relative" />
                 </Link>
 
                 {/* Brand name — always stable, always current */}
