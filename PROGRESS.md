@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 328/328 ✅                                                  |
+| Jest tests        | 344/344 ✅                                                  |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
@@ -67,6 +67,18 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 42 (2026-03-12) — i18n Sprint: 4 Pages Wired (business, fashion, media, offerings)
+
+Continued i18n expansion. Wired 4 more public-facing pages to full en/de/sw translations, adding ~123 keys per language.
+
+- [x] **Business page i18n (complete)**: Payment/Financial Control (bankTitle/Desc, mpesaTitle/Desc, globalTitle/Desc, financeNote), Partnership Enquiries (safariPartner, ngoPartner, corpPartner + descs), Contact section (contactTitle/Desc, browseVentures, safariExperiences, charityLink). 37 keys × 3 langs.
+- [x] **Fashion page i18n**: Full page wiring — hero, mission, three paths (model/designer/creative), protections, open paths, partner anchors, CTA. 27 keys × 3 langs.
+- [x] **Media page i18n**: Full page wiring — hero, opportunity section, media paths, featured projects, social media automation (5 steps), impact partner, CTA. 33 keys × 3 langs.
+- [x] **Offerings page i18n**: Full page wiring — location picker, title with {accent} tags, destination descriptions, purpose tabs, safari/eco/professional/trade sections, empty state, impact CTA. 26 keys × 3 langs.
+- [x] **16 new i18n tests**: business (5), fashion (4), media (4), offerings (3) — validates all keys exist in en/de/sw + interpolation tests.
+- [x] Jest: 344/344 ✅ | TS: 0 errors
+- [x] **Pages with i18n**: 18 total (was 14 → now 18: + business, fashion, media, offerings)
 
 ### Session 41 (2026-03-11) — i18n Sprint: 5 Pages Wired (threads, charity, referral, profile, forgot-password)
 
