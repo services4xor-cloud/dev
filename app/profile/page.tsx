@@ -14,22 +14,13 @@ import {
   Mail,
   Briefcase,
 } from 'lucide-react'
-import { SKILLS_SUGGESTIONS } from '@/data/mock'
+import { SKILLS_SUGGESTIONS, MOCK_PROFILE, BRAND_NAME } from '@/data/mock'
 
 export default function ProfilePage() {
   const [skills, setSkills] = useState<string[]>(['TypeScript', 'React'])
   const [skillInput, setSkillInput] = useState('')
   const [saved, setSaved] = useState(false)
-  const [form, setForm] = useState({
-    name: 'John Kamau',
-    email: 'john@example.com',
-    phone: '0712345678',
-    country: 'Kenya',
-    city: 'Nairobi',
-    bio: '',
-    headline: '',
-    linkedin: '',
-  })
+  const [form, setForm] = useState<Record<string, string>>({ ...MOCK_PROFILE })
 
   const addSkill = (skill: string) => {
     if (skill && !skills.includes(skill)) setSkills([...skills, skill])
@@ -55,19 +46,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-brand-bg">
-      {/* Nav */}
-      <div className="bg-[#0d0208] border-b border-brand-primary/50">
-        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">
-            <span className="text-white">Beke</span>
-            <span className="text-brand-accent">nya</span>
-          </Link>
-          <Link href="/dashboard" className="text-gray-400 hover:text-brand-accent text-sm">
-            ← Dashboard
-          </Link>
-        </div>
-      </div>
-
       <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-8">
         {/* Completion bar */}
         <div className="bg-gray-900/60 rounded-2xl p-4 shadow-sm border border-brand-primary/30 mb-6">

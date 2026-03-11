@@ -1,8 +1,9 @@
 import Link from 'next/link'
+import { BRAND_NAME, CONTACT, LEGAL } from '@/data/mock/config'
 
 export const metadata = {
-  title: 'Privacy Policy — Bekenya',
-  description: 'How Bekenya collects, uses, and protects your personal data.',
+  title: `Privacy Policy — ${BRAND_NAME}`,
+  description: `How ${BRAND_NAME} collects, uses, and protects your personal data.`,
 }
 
 export default function PrivacyPage() {
@@ -10,11 +11,11 @@ export default function PrivacyPage() {
     <div className="min-h-screen bg-brand-bg">
       <div className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-white mb-2">Privacy Policy</h1>
-        <p className="text-gray-400 text-sm mb-8">Last updated: March 2024</p>
+        <p className="text-gray-400 text-sm mb-8">Last updated: {LEGAL.privacyLastUpdated}</p>
 
         <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-gray-800 prose prose-invert prose-sm max-w-none">
           <h2>1. Data We Collect</h2>
-          <p>When you use Bekenya, we collect:</p>
+          <p>When you use {BRAND_NAME}, we collect:</p>
           <ul>
             <li>Account information (name, email, phone number)</li>
             <li>Profile data (skills, work history, CV)</li>
@@ -67,8 +68,8 @@ export default function PrivacyPage() {
           <h2>6. Contact</h2>
           <p>
             For privacy concerns, email:{' '}
-            <a href="mailto:privacy@bekenya.com" className="text-brand-accent">
-              privacy@bekenya.com
+            <a href={`mailto:${CONTACT.emailPrivacy}`} className="text-brand-accent">
+              {CONTACT.emailPrivacy}
             </a>
           </p>
         </div>

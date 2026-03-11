@@ -3,33 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Gift, Copy, Check, Users, DollarSign, Share2, ArrowRight, Star } from 'lucide-react'
-
-const steps = [
-  {
-    n: 1,
-    title: 'Share your link',
-    desc: 'Copy your unique referral link and share it with friends seeking Paths.',
-  },
-  {
-    n: 2,
-    title: 'Friend signs up',
-    desc: 'Your friend creates a free account using your referral link.',
-  },
-  {
-    n: 3,
-    title: 'Friend gets placed',
-    desc: 'When your friend gets placed through Bekenya, the countdown starts.',
-  },
-  {
-    n: 4,
-    title: 'You earn KES 5,000',
-    desc: 'M-Pesa payment lands in your account within 7 days. 🎉',
-  },
-]
+import { REFERRAL, BRAND_NAME, REFERRAL_BONUS } from '@/data/mock'
 
 export default function ReferralPage() {
   const [copied, setCopied] = useState(false)
-  const mockLink = 'https://bekenya.com/ref/JK2024'
+  const mockLink = REFERRAL.mockLink
 
   const copy = () => {
     navigator.clipboard.writeText(mockLink)
@@ -39,27 +17,16 @@ export default function ReferralPage() {
 
   return (
     <div className="min-h-screen bg-brand-bg">
-      {/* Nav */}
-      <div className="bg-[#0d0208] border-b border-brand-primary/50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">
-            <span className="text-white">Beke</span>
-            <span className="text-brand-accent">nya</span>
-          </Link>
-          <Link href="/ventures" className="text-gray-400 hover:text-brand-accent text-sm">
-            Browse Paths
-          </Link>
-        </div>
-      </div>
-
       {/* Hero */}
       <div className="bg-gradient-to-br from-brand-primary to-brand-bg text-white py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <Gift className="w-16 h-16 mx-auto mb-4 opacity-90" />
-          <h1 className="text-4xl md:text-5xl font-black mb-4">Earn KES 5,000 per placement</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-4">
+            Earn {REFERRAL_BONUS} per placement
+          </h1>
           <p className="text-xl text-gray-300 max-w-xl mx-auto">
-            Refer a friend who gets placed through Bekenya. We pay you KES 5,000 via M-Pesa — every
-            time.
+            Refer a friend who gets placed through {BRAND_NAME}. We pay you {REFERRAL_BONUS} via{' '}
+            {REFERRAL.paymentMethod} — every time.
           </p>
         </div>
       </div>
@@ -110,7 +77,7 @@ export default function ReferralPage() {
         <div>
           <h2 className="text-2xl font-bold text-white text-center mb-8">How it works</h2>
           <div className="grid md:grid-cols-4 gap-6">
-            {steps.map((step, i) => (
+            {REFERRAL.steps.map((step, i) => (
               <div key={step.n} className="relative">
                 <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 h-full">
                   <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center text-white font-bold mb-4">
@@ -119,7 +86,7 @@ export default function ReferralPage() {
                   <h3 className="font-semibold text-white mb-2">{step.title}</h3>
                   <p className="text-sm text-gray-400 leading-relaxed">{step.desc}</p>
                 </div>
-                {i < steps.length - 1 && (
+                {i < REFERRAL.steps.length - 1 && (
                   <ArrowRight className="hidden md:block absolute top-1/2 -right-3 w-5 h-5 text-gray-300 z-10" />
                 )}
               </div>
@@ -129,34 +96,21 @@ export default function ReferralPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-6">
-          {[
-            {
-              icon: Users,
-              value: '3,200+',
-              label: 'Pioneers placed',
-              color: 'text-brand-accent bg-brand-primary/20',
-            },
-            {
-              icon: DollarSign,
-              value: 'KES 16M+',
-              label: 'Bonuses paid out',
-              color: 'text-green-400 bg-green-900/20',
-            },
-            {
-              icon: Star,
-              value: '99%',
-              label: 'On-time payments',
-              color: 'text-teal-400 bg-teal-900/20',
-            },
-          ].map((stat) => {
-            const Icon = stat.icon
+          {REFERRAL.stats.map((stat, i) => {
+            const icons = [Users, DollarSign, Star]
+            const colors = [
+              'text-brand-accent bg-brand-primary/20',
+              'text-green-400 bg-green-900/20',
+              'text-brand-accent bg-brand-primary/20',
+            ]
+            const Icon = icons[i] ?? Star
             return (
               <div
                 key={stat.label}
                 className="bg-gray-900/60 rounded-2xl p-6 text-center shadow-sm border border-brand-primary/30"
               >
                 <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 ${stat.color}`}
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 ${colors[i]}`}
                 >
                   <Icon className="w-6 h-6" />
                 </div>

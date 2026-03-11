@@ -6,11 +6,17 @@ import {
   FOOTER_DISCOVER_LINKS as DISCOVER_LINKS,
   FOOTER_COMPANY_LINKS as COMPANY_LINKS,
 } from '@/lib/nav-structure'
+import {
+  BRAND_NAME,
+  BRAND_TAGLINE,
+  UTAMADUNI_SHARE,
+  CONTACT,
+  LEGAL,
+  PAYMENT_BADGES,
+} from '@/data/mock'
 
 // ── Component ──────────────────────────────────────────────────────
 export default function Footer() {
-  const year = new Date().getFullYear()
-
   return (
     <footer className="bg-brand-bg border-t border-brand-accent/15">
       <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-phi-7 3xl:py-phi-8">
@@ -21,17 +27,22 @@ export default function Footer() {
             <Link
               href="/"
               className="inline-flex items-center gap-3 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded-lg"
-              aria-label="Be[Country] — Home"
+              aria-label={`${BRAND_NAME} — Home`}
             >
-              <Image src="/logo.svg" alt="Be[Country] compass" width={36} height={36} unoptimized />
-              <span className="text-brand-accent font-bold text-lg tracking-wide">Be[Country]</span>
+              <Image
+                src="/logo.svg"
+                alt={`${BRAND_NAME} compass`}
+                width={36}
+                height={36}
+                unoptimized
+              />
+              <span className="text-brand-accent font-bold text-lg tracking-wide">
+                {BRAND_NAME}
+              </span>
             </Link>
-            <p className="text-[#9D9BAA] text-sm leading-relaxed max-w-xs">
-              An identity-first compass. Find where you belong — work, live, experience, and build
-              across countries. Starting with Kenya.
-            </p>
+            <p className="text-[#9D9BAA] text-sm leading-relaxed max-w-xs">{BRAND_TAGLINE}</p>
             <p className="mt-4 text-xs text-[#9D9BAA]/60">
-              5% of every booking supports UTAMADUNI community projects.
+              {UTAMADUNI_SHARE} of every booking supports UTAMADUNI community projects.
             </p>
           </div>
 
@@ -50,11 +61,13 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-brand-accent/10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-[#9D9BAA]/70">
-          <span>© {year} BeKenya Family Ltd. Built for dignity, everywhere.</span>
+          <span>
+            © {LEGAL.copyrightYear} {LEGAL.companyName}. Built for dignity, everywhere.
+          </span>
           <span className="flex items-center gap-2">
-            <span>🇰🇪 Nairobi</span>
+            <span>{CONTACT.location}</span>
             <span aria-hidden="true">·</span>
-            <span>M-Pesa · Stripe · Flutterwave</span>
+            <span>{PAYMENT_BADGES.map((b) => b.name).join(' · ')}</span>
           </span>
         </div>
       </div>

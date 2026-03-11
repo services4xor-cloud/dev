@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Briefcase, Users, Building2, Check } from 'lucide-react'
+import { Users, Building2, Check } from 'lucide-react'
+import Image from 'next/image'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+import { BRAND_NAME, MOCK_PROFILE } from '@/data/mock'
 
 type Role = 'PIONEER' | 'ANCHOR'
 
@@ -15,7 +17,7 @@ export default function SignupPage() {
     email: '',
     password: '',
     phone: '',
-    country: 'Kenya',
+    country: MOCK_PROFILE.country,
   })
   const [loading, setLoading] = useState(false)
 
@@ -35,13 +37,8 @@ export default function SignupPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center">
-              <Briefcase className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold">
-              <span className="text-white">Beke</span>
-              <span className="text-brand-accent">nya</span>
-            </span>
+            <Image src="/logo.svg" alt={BRAND_NAME} width={40} height={40} unoptimized />
+            <span className="text-2xl font-bold text-brand-accent">{BRAND_NAME}</span>
           </Link>
           <h1 className="mt-4 text-2xl font-bold text-white">Create your account</h1>
           <p className="mt-1 text-gray-400">Free forever. No credit card needed.</p>
@@ -181,7 +178,7 @@ export default function SignupPage() {
                   />
                 </div>
 
-                {form.country === 'Kenya' && (
+                {form.country === MOCK_PROFILE.country && (
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">
                       Phone (M-Pesa) <span className="text-gray-400 font-normal">— optional</span>

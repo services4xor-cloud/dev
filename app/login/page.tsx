@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Eye, EyeOff, Mail, Lock, Briefcase } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import Image from 'next/image'
+import { BRAND_NAME } from '@/data/mock'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -23,13 +25,8 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center">
-              <Briefcase className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold">
-              <span className="text-white">Beke</span>
-              <span className="text-brand-accent">nya</span>
-            </span>
+            <Image src="/logo.svg" alt={BRAND_NAME} width={40} height={40} unoptimized />
+            <span className="text-2xl font-bold text-brand-accent">{BRAND_NAME}</span>
           </Link>
           <h1 className="mt-4 text-2xl font-bold text-white">Welcome back</h1>
           <p className="mt-1 text-gray-400">Sign in to your account</p>
@@ -123,7 +120,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center mt-6 text-gray-400">
-          New to Bekenya?{' '}
+          New to {BRAND_NAME}?{' '}
           <Link href="/signup" className="text-brand-accent font-semibold hover:underline">
             Create free account →
           </Link>

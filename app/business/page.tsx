@@ -13,6 +13,7 @@ import {
   Landmark,
   Lock,
 } from 'lucide-react'
+import { CONTACT } from '@/data/mock'
 import { DIVISIONS, OPERATING_COUNTRIES, SHARE_BLOCKS } from '@/data/mock'
 
 export default function BusinessPage() {
@@ -305,14 +306,14 @@ export default function BusinessPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <a
-              href="mailto:services4xor@gmail.com"
+              href={`mailto:${CONTACT.emailBusiness}`}
               className="inline-flex items-center gap-2 bg-brand-primary text-white rounded-xl px-6 py-3 font-semibold hover:bg-brand-primary/80 transition-colors"
             >
               <Mail className="w-4 h-4" />
-              services4xor@gmail.com
+              {CONTACT.emailBusiness}
             </a>
             <a
-              href="https://wa.me/254700000000"
+              href={`https://wa.me/${CONTACT.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-green-600 text-white rounded-xl px-6 py-3 font-semibold hover:bg-green-700 transition-colors"

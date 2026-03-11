@@ -1,116 +1,93 @@
-# Agent Operations Runbook
+# Be[Country] — Agent Operations
 
-> How the AI agent reads, decides, and acts. Read this to debug agent behavior.
-
----
-
-## 1. Session Boot Sequence (every conversation)
-
-```
-Step 1 → CLAUDE.md         # Mission, rules, vocabulary, stack, forbidden patterns
-Step 2 → PROGRESS.md       # Current state, what's done, what's next, blockers
-Step 3 → (if building)     # PRD.md for requirements, DESIGN_SYSTEM.md for UI
-Step 4 → (if refactoring)  # ARCHITECTURE.md for structure, REQUIREMENTS.md for rules
-Step 5 → (if blocked)      # HUMAN_MANUAL.md for env vars / credentials needed
-```
-
-**If the agent skips Step 2, it will rebuild things already done or miss context.**
+> How the agent reads, decides, and acts. Debug agent behavior here.
 
 ---
 
-## 2. Before Writing Any Code
+## Session Boot
 
 ```
-READ ORDER:
-1. Target file          → understand what exists before changing it
-2. Related lib/ files   → check for shared types, exports, data sources
-3. DESIGN_SYSTEM.md     → if touching UI (colors, spacing, components)
-4. Related test files   → know what tests cover this area
-5. components/          → check for existing reusable components before creating new ones
-
-NEVER DO:
-- Write a new component without checking components/ first
-- Inline data that exists in lib/ or data/mock/
-- Use colors without checking DESIGN_SYSTEM.md forbidden list
-- Create a page without adding it to nav-structure.ts and test arrays
+1. CLAUDE.md     → mission, rules, vocabulary
+2. PROGRESS.md   → current state, blockers
+3. PRD.md        → requirements (if building)
+4. DESIGN_SYSTEM.md → brand rules (if UI)
+5. ARCHITECTURE.md  → structure (if lib/API)
+6. HUMAN_MANUAL.md  → credentials (if blocked)
 ```
 
 ---
 
-## 3. Decision Tree: What to Do When
+## Before Writing Code
 
-```
-User says "build X"
-  ├─ Does X exist partially? → READ it first, extend it
-  ├─ Does a lib/ engine exist? → COMPOSE from it, don't duplicate
-  ├─ Is there a component for this? → REUSE it, don't create new
-  └─ None of the above → CREATE, but add to nav + tests + docs
+1. Read the target file
+2. Check related lib/ files
+3. Check DESIGN_SYSTEM.md (if UI)
+4. Check components/ for existing components
+5. Check data/mock/ for existing data
 
-User says "fix X"
-  ├─ grep for all occurrences → fix ALL, not just the first one
-  ├─ check if docs claim it's fixed → update docs too
-  └─ verify with TypeScript + tests after fix
-
-User says "improve quality"
-  ├─ Audit docs for contradictions/staleness
-  ├─ Audit code for dead exports, typos, violations
-  ├─ Audit UI for consistency with DESIGN_SYSTEM.md
-  └─ Fix in order: data layer → logic → UI → docs
-```
+**Never:** Create component without checking components/. Inline data from lib/ or mock/. Use colors without checking forbidden list.
 
 ---
 
-## 4. File Authority Map (single source of truth)
-
-| Data              | Canonical Source                       | Never Duplicate In                        |
-| ----------------- | -------------------------------------- | ----------------------------------------- |
-| Country list      | `lib/countries.ts` (12 deployed)       | signup forms, inline arrays               |
-| Country geography | `lib/country-selector.ts` (16 records) | page components                           |
-| Vocabulary        | `lib/vocabulary.ts`                    | any hardcoded Pioneer/Anchor/Path strings |
-| Brand colors      | `DESIGN_SYSTEM.md` + Tailwind config   | inline hex outside approved tokens        |
-| Nav links         | `lib/nav-structure.ts`                 | hardcoded navs in components              |
-| Safari packages   | `lib/safari-packages.ts`               | page-level arrays                         |
-| Route corridors   | `lib/compass.ts`                       | page-level route data                     |
-| Test page lists   | `playwright.config.ts` PAGES array     | hardcoded in test files                   |
-| Mock data         | `data/mock/*.ts` via barrel export     | inline in page components                 |
-
----
-
-## 5. Verification Checklist (after every change)
+## Decision Tree
 
 ```
-□ TypeScript:    npx tsc --noEmit         → 0 errors
-□ Jest:          npx jest                  → all pass
-□ Playwright:    npx playwright test       → all pass (if UI changed)
-□ Preview:       preview_start + screenshot → visual check
-□ Brand:         grep for forbidden colors  → zero amber/yellow/orange/#FF6B35
-□ Docs:          update PROGRESS.md        → session log + counts
+"build X" → Does it exist? READ first. Does a lib exist? COMPOSE. Component exists? REUSE.
+"fix X"   → grep ALL occurrences. Fix ALL. Update docs.
+"improve"  → Audit docs → code → UI → fix data→logic→UI→docs order.
 ```
 
 ---
 
-## 6. Common Mistakes This Agent Has Made
+## Single Source of Truth
 
-| Mistake                       | Root Cause                                | Prevention                                        |
-| ----------------------------- | ----------------------------------------- | ------------------------------------------------- |
-| Built Kenya-hardcoded pages   | Didn't read ARCHITECTURE.md first         | Always check country architecture before building |
-| Left amber/yellow violations  | Claimed done without verifying            | Always grep after "cleanup" claims                |
-| Wrong test counts in docs     | Updated one file, not all                 | Search all .md files for the number being changed |
-| Created duplicate components  | Didn't check components/ first            | Read components/ directory before creating        |
-| Inlined country data in pages | Didn't know about lib/country-selector.ts | Check File Authority Map above                    |
-| Stale session numbers         | Updated content but not header            | Always update file header timestamp               |
-
----
-
-## 7. What the Owner Expects
-
-- **Quality over speed** — read before writing, verify after writing
-- **No redundancy** — one source of truth per data type
-- **Clean up after yourself** — delete dead code, update docs, remove stale references
-- **International scale** — everything must work for all countries, not just Kenya
-- **Dark theme everywhere** — `#0A0A0F` background, `#111118` cards, maroon + gold accents
-- **Use the docs** — CLAUDE.md, DESIGN_SYSTEM.md, ARCHITECTURE.md exist for a reason
+| Data              | Source                        |
+| ----------------- | ----------------------------- |
+| Country list      | `lib/countries.ts`            |
+| Country geography | `lib/country-selector.ts`     |
+| Vocabulary        | `lib/vocabulary.ts`           |
+| Brand colors      | `DESIGN_SYSTEM.md` + Tailwind |
+| Nav links         | `lib/nav-structure.ts`        |
+| Mock data         | `data/mock/*.ts`              |
 
 ---
 
-_Last updated: Session 17 (2026-03-11)_
+## Verification (after every change)
+
+```
+□ npx tsc --noEmit       → 0 errors
+□ npx jest               → all pass
+□ npx playwright test    → all pass (if UI)
+□ grep forbidden colors  → zero violations
+□ update PROGRESS.md     → session log
+```
+
+---
+
+## Past Mistakes (prevent these)
+
+| Mistake                   | Prevention                          |
+| ------------------------- | ----------------------------------- |
+| Kenya-hardcoded pages     | Check country architecture first    |
+| Leftover color violations | grep AFTER claiming "done"          |
+| Wrong test counts in docs | Search ALL .md files for the number |
+| Duplicate components      | Read components/ before creating    |
+| Inlined data              | Check File Authority Map above      |
+| Stale session numbers     | Always update file header timestamp |
+
+---
+
+## Owner Expectations
+
+- Quality over speed
+- One source of truth per data type
+- Clean up after yourself
+- International scale (not just Kenya)
+- Dark theme everywhere
+- Use the docs
+- KISS
+- Questions → ASK.md (don't interrupt)
+
+---
+
+_Last updated: Session 20 (2026-03-11)_

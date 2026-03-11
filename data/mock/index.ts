@@ -69,3 +69,16 @@ export {
   type EcoTourismOffering,
   type TradeCorridor,
 } from './offerings'
+export {
+  BRAND_NAME,
+  BRAND_TAGLINE,
+  BRAND_MISSION,
+  UTAMADUNI_SHARE,
+  UTAMADUNI_AMOUNT,
+  REFERRAL_BONUS,
+  CONTACT,
+  LEGAL,
+  REFERRAL,
+  MOCK_PROFILE,
+  PAYMENT_BADGES,
+} from './config'

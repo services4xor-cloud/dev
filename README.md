@@ -4,110 +4,97 @@
 
 **Not a job board. Not a travel site. A Compass.**
 
-Be[Country] connects people with the real possibilities of life in another country — work, business, experiences, community. Starting with **BeKenya**.
+Be[Country] connects people with real possibilities — work, business, experiences, community. Starting with **BeKenya**. Scaling to Be[Tribe] and Be[Location].
 
 ---
 
-## The Vision
+## Vision
 
 Colonial economics moved resources one way. Be[Country] moves them every way.
 
-Pioneers from anywhere can discover, connect, and build their path in Kenya (and soon: Germany, Nigeria, America, UAE). Direct connections. Fair compensation. Community impact built-in.
+Pioneers from anywhere can discover, connect, and build their path. Direct connections. Fair compensation. Community impact built-in.
 
 ---
 
 ## Live: BeKenya
 
-Kenya-first. Safari lodges, eco-tourism, professional paths, community impact.
-
-- [x] 20+ pages — all dark theme, brand consistent
-- [x] M-Pesa Daraja API v2 (STK Push + webhooks)
-- [x] Smart compass with country-to-country routing (16 countries, 14 languages)
-- [x] Real safari packages (Victoria Paradise, Tsavo, Maasai Mara)
-- [x] UTAMADUNI CBO integration (% of every booking)
-- [x] 12-country config system for expansion
-- [x] Centralized type system + mock data layer
-- [x] 25 Jest + 102 Playwright tests passing
+- 20+ pages — dark theme, brand consistent
+- M-Pesa Daraja v2 (STK Push + webhooks)
+- Smart compass (16 countries, 14 languages, Haversine routing)
+- Safari packages (Victoria, Tsavo, Mara)
+- UTAMADUNI CBO integration (% of every booking)
+- 12-country config for expansion
+- 25 Jest + 102 Playwright tests
 
 ---
 
 ## Tech Stack
 
-| Layer      | Technology                                |
-| ---------- | ----------------------------------------- |
-| Framework  | Next.js 14 App Router (TypeScript)        |
-| Styling    | Tailwind CSS + golden ratio design system |
-| Database   | PostgreSQL (Neon) via Prisma              |
-| Auth       | NextAuth.js v4                            |
-| Payments   | M-Pesa Daraja v2, Stripe                  |
-| Email      | Resend                                    |
-| Testing    | Jest 30 + Playwright 1.58                 |
-| Formatting | Prettier + ESLint + Husky                 |
-| Deploy     | Vercel (auto-deploy on push)              |
+| Layer     | Technology                         |
+| --------- | ---------------------------------- |
+| Framework | Next.js 14 App Router (TypeScript) |
+| Styling   | Tailwind CSS + φ design system     |
+| Database  | PostgreSQL (Neon) via Prisma       |
+| Auth      | NextAuth.js v4                     |
+| Payments  | M-Pesa Daraja v2 · Stripe          |
+| Testing   | Jest 30 · Playwright 1.58          |
+| Deploy    | Vercel (auto on push)              |
 
 ---
 
-## Getting Started
+## Quick Start
 
 ```bash
 npm install
-cp .env.example .env.local    # Fill in required values
+cp .env.example .env.local
 npx prisma generate
-npm run dev                   # http://localhost:3000
+npm run dev  # http://localhost:3000
 ```
 
 ---
 
-## Project Structure
+## Structure
 
 ```
-app/          # Next.js pages (compass, ventures, pioneers, anchors, ...)
+app/          # Pages (compass, ventures, pioneers, anchors, ...)
+lib/          # Core libraries (vocabulary, countries, compass, matching)
 types/        # Domain types + API contracts
-services/     # Service interfaces (mock → DB swap)
-data/mock/    # Centralized mock data (14 modules)
-lib/          # Core platform libraries
-components/   # Shared UI components
-prisma/       # Database schema + seed
-__tests__/    # Jest test suite (25/25)
-tests/visual/ # Playwright visual tests (102/102)
-public/       # Static assets (logos, OG images)
+data/mock/    # 15 mock modules
+components/   # Shared UI
+__tests__/    # Jest (25/25)
+tests/visual/ # Playwright (102/102)
 ```
 
 ---
 
-## Documentation
+## Docs
 
-| Doc                | Purpose                             |
-| ------------------ | ----------------------------------- |
-| `CLAUDE.md`        | AI operating manual (read first)    |
-| `PROGRESS.md`      | Live build tracker                  |
-| `PRD.md`           | Product requirements                |
-| `ROADMAP.md`       | Strategic phases + sprints          |
-| `DESIGN_SYSTEM.md` | Brand tokens + component patterns   |
-| `ARCHITECTURE.md`  | Technical + conceptual architecture |
-| `REQUIREMENTS.md`  | User requirements + decisions log   |
-| `TESTING.md`       | Test strategy + CI integration      |
-| `HUMAN_MANUAL.md`  | Setup guide for humans              |
-| `OPERATIONS.md`    | Agent reading order + decision tree |
-
----
-
-## BeNetwork Vocabulary
-
-| Platform Term | Meaning                                     |
-| ------------- | ------------------------------------------- |
-| Pioneer       | Person exploring paths across countries     |
-| Anchor        | Organization offering paths and experiences |
-| Path          | Work or business opportunity                |
-| Chapter       | A Pioneer's engagement with a Path          |
-| Venture       | An experience (safari, cultural, trade)     |
-| Compass       | Smart routing system                        |
+| Doc                | Purpose                    |
+| ------------------ | -------------------------- |
+| `CLAUDE.md`        | Agent operating manual     |
+| `PROGRESS.md`      | Live build tracker         |
+| `PRD.md`           | Product requirements       |
+| `ROADMAP.md`       | Strategic phases           |
+| `DESIGN_SYSTEM.md` | Brand + component patterns |
+| `ARCHITECTURE.md`  | Technical architecture     |
+| `REQUIREMENTS.md`  | User requirements + rules  |
+| `TESTING.md`       | Test strategy              |
+| `HUMAN_MANUAL.md`  | Human-only setup steps     |
+| `OPERATIONS.md`    | Agent decision tree        |
+| `ASK.md`           | Agent questions for owner  |
 
 ---
 
-## Mission
+## Vocabulary
 
-Connect every country. Compensate history through trade. Build dignity everywhere.
+| Term    | Meaning                                 |
+| ------- | --------------------------------------- |
+| Pioneer | Person exploring paths across countries |
+| Anchor  | Organization offering paths             |
+| Path    | Work or business opportunity            |
+| Chapter | Pioneer's engagement with a Path        |
+| Venture | Experience or placement                 |
+| Compass | Smart routing system                    |
 
 ---
 

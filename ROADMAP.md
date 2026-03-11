@@ -1,108 +1,49 @@
-# BeNetwork — Strategic Roadmap
+# Be[Country] — Strategic Roadmap
 
-> ← Back to [CLAUDE.md](./CLAUDE.md) | Related: [PRD.md](./PRD.md) · [PROGRESS.md](./PROGRESS.md)
-> Living document. Updated each phase.
+> ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [PROGRESS.md](./PROGRESS.md)
 
 ---
 
-## Mission: Reverse the Flow
+## Mission
 
-BeNetwork reverses colonial economic flows by empowering people in the Global South to move, work, and thrive on their own terms. Every Pioneer placed. Every safari booked. Every KES 50 to UTAMADUNI. This is not charity — this is structural change through technology.
+Reverse colonial economic flows. Every Pioneer placed, every safari booked, every KES 50 to UTAMADUNI is structural change.
 
-**The 5-year vision:** 1 million Pioneers routed. 50 countries. $50M+ in value delivered to African communities.
+**5-year vision:** 1M Pioneers routed. 50 countries. $50M+ value to African communities.
+
+**Scale path:** Be[Country] → Be[Tribe] → Be[Location]. Countries first, then identity layers.
 
 ---
 
 ## Phase Overview
 
 ```
-Phase 1 ✅ Foundation    — Platform built, design system, tested, vocabulary complete
-Phase 2 🔄 BeKenya Live  — Real data, real payments, real users (blocked on credentials)
-Phase 3 📈 Traction      — 500+ Pioneers, 50+ Paths, 20 safaris/month
-Phase 4 🌍 Expansion     — BeGermany + BeNigeria, multi-country
-Phase 5 🚀 Platform      — Mobile app, AI compass, community
+Phase 1 ✅ Foundation    — Platform built, tested, vocabulary complete
+Phase 2 ⛔ BeKenya Live  — Real data + payments (blocked on credentials)
+Phase 3 📈 Traction      — 500 Pioneers, 50 Paths, 20 safaris/month
+Phase 4 🌍 Expansion     — BeGermany + BeNigeria
+Phase 5 🚀 Platform      — Mobile, AI, Be[Tribe], Be[Location]
 ```
 
 ---
 
 ## Phase 1 — Foundation ✅ COMPLETE
 
-_Sessions 1–14 · 2026-03-09 to 2026-03-10_
-
-**What was built:**
-
-- 20+ pages, fully dark-themed, brand-consistent (zero orange/amber violations)
-- Full BeNetwork vocabulary in UI, API routes, and Prisma schema
-- Compass routing engine with 4-dimension matching + language-aware proximity
-- Country priority selector with Haversine proximity clustering (16 countries, 14 languages)
-- Safari packages (Victoria, Tsavo, Mara)
-- Anchor + Pioneer dashboards (5 tabs each)
-- M-Pesa API client (sandbox ready)
-- Centralized type system (types/domain.ts, types/api.ts, services/types.ts)
-- Centralized mock data layer (data/mock/ — 14 modules, zero inline data in pages)
-- 25 Jest tests + 89 Playwright visual tests passing
-- Dev tooling: Prettier, ESLint, Husky pre-commit, .editorconfig
-- Golden ratio design system (φ = 1.618 spacing + typography tokens)
-- Responsive xs(380px) → 4K(2560px) with fluid typography
-- Legacy route redirects (5 old URLs → modern equivalents)
-
-**Done when:** TypeScript 0 errors ✅, all pages render ✅, CI green ✅, all tests pass ✅.
+Sessions 1–19. 20+ pages, full vocabulary, type system, mock data, 127 tests passing, responsive xs→4K, WCAG AA, loading skeletons, error boundaries, mock booking flow.
 
 ---
 
-## Phase 2 — BeKenya Live 🔄 IN PROGRESS
+## Phase 2 — BeKenya Live ⛔ BLOCKED
 
-_Target: 4 weeks after credentials_
+**Blocker:** Human must provide credentials ([HUMAN_MANUAL.md](./HUMAN_MANUAL.md))
 
-### Sprint 2A — Infrastructure (BLOCKED)
+| Sprint | Task                  | Status       |
+| ------ | --------------------- | ------------ |
+| 2A     | DB + Auth credentials | ⛔ Human     |
+| 2B     | Prisma migrate + seed | Waiting on A |
+| 2C     | Real auth flow        | Waiting on A |
+| 2D     | Real booking + M-Pesa | Waiting on A |
 
-**Dependencies:** Human must provide credentials first (see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md))
-
-| Task                             | Owner     | Status        |
-| -------------------------------- | --------- | ------------- |
-| Neon PostgreSQL → `DATABASE_URL` | 🧑 Human  | ⛔ Blocked    |
-| `NEXTAUTH_SECRET`                | 🧑 Human  | ⛔ Blocked    |
-| `GOOGLE_CLIENT_ID` + `SECRET`    | 🧑 Human  | ⛔ Blocked    |
-| `RESEND_API_KEY`                 | 🧑 Human  | ⛔ Blocked    |
-| `MPESA_CONSUMER_KEY` + `SECRET`  | 🧑 Human  | ⛔ Blocked    |
-| `prisma migrate deploy`          | 🤖 Claude | Waiting on 2A |
-
-### Sprint 2B — Dark Theme ✅ COMPLETE (Session 9)
-
-All pages converted to dark theme. Zero light-bg pages remaining.
-
-### Sprint 2C — International Offerings System (Can do now)
-
-| Feature                                                        | Status       |
-| -------------------------------------------------------------- | ------------ |
-| Country-aware `/offerings` — auto-detect, changeable, scalable | 🔄 Designing |
-| Purpose-driven recommendations (travel / work / business)      | 🔄 Designing |
-| Market + preference + corridor data driving recommendations    | 🔄 Designing |
-| Per-country offering configs in `lib/countries.ts`             | ❌ Not built |
-
-### Sprint 2D — End-to-End Booking (Needs 2A)
-
-| Task                                       | Depends On |
-| ------------------------------------------ | ---------- |
-| Wire booking button → `/api/mpesa/stkpush` | 2A         |
-| M-Pesa confirmation → update DB            | 2A         |
-| Email receipt via Resend                   | 2A         |
-| WhatsApp receipt via WA Business API       | 2A         |
-
-### Sprint 2E — Visual Testing ✅ COMPLETE (Session 7)
-
-- 15/15 smoke tests passing
-- 26/26 brand tests passing
-- 48/48 responsive tests passing
-
-### Phase 2 Success Metrics
-
-- [ ] 5 real Anchor accounts (not mock)
-- [ ] 50 real Pioneer profiles
-- [ ] 1 real safari booking via M-Pesa
-- [x] 0 TypeScript errors
-- [x] All pages dark-themed
-- [x] CI green including visual tests
+**Success:** 5 real Anchors, 50 real Pioneers, 1 real M-Pesa booking.
 
 ---
 
@@ -110,29 +51,15 @@ All pages converted to dark theme. Zero light-bg pages remaining.
 
 _Month 2–3 post-launch_
 
-### Features to Build
+| Feature                           | Value  | Effort |
+| --------------------------------- | ------ | ------ |
+| Push notifications (Path matches) | High   | Medium |
+| Pioneer ↔ Anchor messaging        | High   | High   |
+| Review system                     | High   | Medium |
+| Referral program                  | Medium | Low    |
+| UTAMADUNI live impact counter     | Medium | Low    |
 
-| Feature                                             | Value  | Effort |
-| --------------------------------------------------- | ------ | ------ |
-| Push notifications — Pioneer gets Path match alerts | High   | Medium |
-| Pioneer ↔ Anchor direct message thread              | High   | High   |
-| Review system — Pioneers rate Anchors/Ventures      | High   | Medium |
-| Referral program — KES reward per Chapter           | Medium | Low    |
-| Social sharing — auto-generate route cards          | Medium | Medium |
-| Pioneer search + filter for Anchors                 | High   | Medium |
-| UTAMADUNI live impact counter                       | Medium | Low    |
-
-### Phase 3 Targets
-
-| Metric                | Target       |
-| --------------------- | ------------ |
-| Pioneer profiles      | 500+         |
-| Active Paths          | 50+          |
-| Safari bookings/month | 20+          |
-| UTAMADUNI/month       | KES 50,000+  |
-| Anchor subscribers    | 5+           |
-| MRR                   | KES 120,000+ |
-| NPS                   | > 40         |
+**Targets:** 500 Pioneers, 50 Paths, 20 bookings/month, KES 120K MRR.
 
 ---
 
@@ -140,38 +67,14 @@ _Month 2–3 post-launch_
 
 _Month 4–6_
 
-### BeGermany (First Expansion)
+| Country   | Payment     | Currency | Config                      |
+| --------- | ----------- | -------- | --------------------------- |
+| BeGermany | Stripe SEPA | EUR      | Tech, Manufacturing, Health |
+| BeNigeria | Flutterwave | NGN      | Tech, Trade, Creative       |
 
-```bash
-NEXT_PUBLIC_COUNTRY_CODE=DE
-```
+Same codebase, different Vercel projects + `NEXT_PUBLIC_COUNTRY_CODE`.
 
-- New Vercel project: `begermany.com`
-- SEPA payment rail (Stripe SEPA Debit)
-- German sectors in `lib/countries.ts` (Tech, Manufacturing, Healthcare, Engineering)
-- `/be/de` Gate in German language
-- KE→DE Route corridor live in `lib/compass.ts` ✅ (already coded)
-
-### BeNigeria (Parallel)
-
-```bash
-NEXT_PUBLIC_COUNTRY_CODE=NG
-```
-
-- Flutterwave NGN payment rail
-- Lagos tech sector config
-- Nollywood/Media creative sector
-- NG→AE, NG→GB corridors
-
-### Phase 4 Targets
-
-| Metric                 | Target         |
-| ---------------------- | -------------- |
-| Active countries       | 3 (KE, DE, NG) |
-| Cross-border Chapters  | 50+            |
-| Total Pioneer profiles | 5,000+         |
-| International Anchors  | 20+            |
-| MRR                    | KES 500,000+   |
+**Targets:** 3 countries, 5000 Pioneers, 20 international Anchors, KES 500K MRR.
 
 ---
 
@@ -179,54 +82,29 @@ NEXT_PUBLIC_COUNTRY_CODE=NG
 
 _Month 7–12_
 
-| Feature                                     | Why                                         |
-| ------------------------------------------- | ------------------------------------------- |
-| React Native / Expo mobile app              | 60%+ of African internet is mobile          |
-| AI Compass narrative (LLM + BeNetwork data) | Personalized route story in user's language |
-| Live Anchor API (webhooks)                  | Safari lodge booking confirmation           |
-| UTAMADUNI live dashboard                    | Public impact transparency                  |
-| BeNetwork community (Pioneer ↔ Pioneer)     | Network effects, viral growth               |
-| Verified Anchor badge + background check    | Trust and safety                            |
-| Multi-language UI (EN/SW/DE/FR)             | Accessibility for all Pioneers              |
-| PWA offline support                         | Low-connectivity Pioneers                   |
+| Feature                     | Why                             |
+| --------------------------- | ------------------------------- |
+| React Native / Expo         | 60%+ African internet is mobile |
+| AI Compass (LLM)            | Personalized route narratives   |
+| Be[Tribe] identity layer    | BeMaasai, BeKikuyu, BeLuo…      |
+| Be[Location] layer          | BeNairobi, BeMombasa, BeLagos…  |
+| Multi-language UI           | EN/SW/DE/FR                     |
+| UTAMADUNI live dashboard    | Public impact transparency      |
+| Community (Pioneer↔Pioneer) | Network effects                 |
 
-### Phase 5 Targets
-
-| Metric                  | Target                            |
-| ----------------------- | --------------------------------- |
-| Active Pioneers         | 100,000+                          |
-| Countries               | 10+                               |
-| Monthly bookings        | 1,000+                            |
-| UTAMADUNI annual impact | $100,000+                         |
-| Team size               | 5+ (2 eng, 1 design, 1 BD, 1 ops) |
-| ARR                     | $1M+                              |
+**Targets:** 100K Pioneers, 10+ countries, $1M ARR.
 
 ---
 
-## Dependency Map
+## Risks
 
-```
-Sprint 2A (credentials) ──→ Sprint 2D (booking) ──→ Phase 3 (traction)
-         │                                                  │
-         └──→ Sprint 2C (offerings) ──→ Phase 3            │
-                                                           ↓
-Sprint 2B (dark theme) ✅ ──→ Phase 2 complete ──→ Phase 4 expansion
-Sprint 2E (visual tests) ✅ ──→ CI quality gate ──→ all phases
-```
+| Risk                       | Impact   | Mitigation                          |
+| -------------------------- | -------- | ----------------------------------- |
+| M-Pesa API delayed         | High     | Launch with Stripe card first       |
+| No early Anchor adopters   | High     | Direct outreach to safari operators |
+| Credentials never provided | Critical | Simplify HUMAN_MANUAL, self-service |
+| DB at scale                | High     | Neon autoscales, add Redis Phase 3  |
 
 ---
 
-## Risk Register
-
-| Risk                         | Likelihood | Impact   | Mitigation                                         |
-| ---------------------------- | ---------- | -------- | -------------------------------------------------- |
-| M-Pesa API approval delayed  | Medium     | High     | Build mock payments, launch with Stripe card first |
-| No Anchor early adopters     | Medium     | High     | Direct outreach to 3 known safari operators        |
-| Visa corridor data incorrect | Low        | Medium   | Compass shows "verify requirements" disclaimer     |
-| DB performance at scale      | Low        | High     | Neon autoscales, add Redis cache in Phase 3        |
-| Brand copied by competitors  | Low        | Low      | Mission + community are hard to copy               |
-| Credentials never provided   | Medium     | Critical | Document self-service setup, simplify HUMAN_MANUAL |
-
----
-
-_Last updated: Session 15 (2026-03-11)_
+_Last updated: Session 20 (2026-03-11)_

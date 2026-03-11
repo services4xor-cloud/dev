@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Mail, Phone, MapPin, MessageSquare, CheckCircle, Globe } from 'lucide-react'
+import { CONTACT } from '@/data/mock'
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
@@ -21,26 +22,31 @@ export default function ContactPage() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl 3xl:text-5xl font-black text-white mb-2">
             Get in touch
           </h1>
-          <p className="text-gray-400">We respond within 24 hours on business days</p>
+          <p className="text-gray-400">We respond within {CONTACT.responseTime} on business days</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           {/* Contact info */}
           <div className="space-y-6">
             {[
-              { icon: Mail, label: 'Email', value: 'hello@bekenya.com', sub: 'General enquiries' },
+              { icon: Mail, label: 'Email', value: CONTACT.email, sub: 'General enquiries' },
               {
                 icon: Phone,
                 label: 'WhatsApp',
-                value: '+254 700 000 000',
-                sub: 'Monday–Friday, 8am–6pm EAT',
+                value: CONTACT.phone,
+                sub: CONTACT.businessHours,
               },
-              { icon: MapPin, label: 'Location', value: 'Nairobi, Kenya', sub: 'Westlands, CBD' },
+              {
+                icon: MapPin,
+                label: 'Location',
+                value: CONTACT.location,
+                sub: CONTACT.locationDetail,
+              },
               {
                 icon: Globe,
                 label: 'Social',
-                value: '@bekenya',
-                sub: 'Twitter/X • LinkedIn • Instagram',
+                value: CONTACT.social,
+                sub: CONTACT.socialPlatforms,
               },
             ].map((item) => {
               const Icon = item.icon

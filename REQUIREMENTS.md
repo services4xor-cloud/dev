@@ -1,239 +1,66 @@
-# Be[Country] Platform — Requirements & Decisions Log
+# Be[Country] — Requirements & Decisions
 
-> Living document. Records user requirements and architectural decisions.
-> ← Back to [CLAUDE.md](./CLAUDE.md) | Related: [PRD.md](./PRD.md) · [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md)
-> Last updated: Session 15 (2026-03-11)
+> User requirements + architecture rules.
+> ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md)
 
 ---
 
-## 1. User Requirements (from conversation history)
-
-### R1 — Country Selection as First Action
-
-**Source**: Session 5
-
-**Requirement**: The very first interaction a Pioneer has is selecting destination countries in **priority order**. First choice = highest match score. Allow up to 5 selections.
-
-**Implementation**: `components/CountryPrioritySelector.tsx`
-
-- Used in: `app/compass/page.tsx` (Step 1), `app/onboarding/page.tsx` (Step 3)
-- Data source: `lib/country-selector.ts` (single source of truth)
-- **Status: ✅ Complete**
-
-### R2 — Proximity Clustering (Nearby Countries)
-
-**Source**: Session 5
-
-**Requirement**: Countries geographically close (< 1800km, Haversine) get green pulse animation, glow border, "Nearby" badge.
-
-**Implementation**: `lib/country-selector.ts` → `distanceKm()`, `isNearby()`, `getGroupedCountries()`
-
-- **Status: ✅ Complete**
-
-### R3 — No Duplicate Country Data
-
-**Source**: Code audit session 5
-
-**Requirement**: ONE canonical source of country data. All pages MUST import from `lib/country-selector.ts`.
-
-**Eliminated duplicates**: DESTINATIONS in compass, DESTINATIONS + COUNTRY_LIST in onboarding, ORIGIN_COUNTRIES in anchors/post-path.
-
-- **Status: ✅ Complete**
-
-### R4 — Responsive: Watch → TV
-
-**Source**: Session 4
-
-**Implementation**: Custom screens `xs: 380px`, `3xl: 1920px`, `4xl: 2560px`. Fluid typography with `clamp()`. TV media queries.
-
-- **Status: ✅ Complete**
-
-### R5 — Golden Ratio Design System (φ = 1.618)
-
-**Source**: Session 4
-
-**Implementation**: `tailwind.config.ts` — spacing, fontSize, borderRadius, lineHeight phi tokens.
-
-- **Status: ✅ Tokens added. Progressive adoption ongoing.**
-
-### R6 — Brand Consistency (No Old Orange)
-
-**Source**: Brand guidelines
-
-**Requirement**: No `#FF6B35`, `orange-*`, `amber-*`, `yellow-*` Tailwind classes. All warning/status indicators use `text-[#C9A227]` (gold) instead of `text-yellow-*`.
-
-- **Status: ✅ Complete (Session 6 orange, Session 11 amber/yellow, Session 16 final sweep — 11 remaining violations fixed)**
-
-### R7 — BeNetwork Vocabulary Everywhere
-
-**Source**: CLAUDE.md section 3
-
-**Requirement**: Never use old terms (job, employer, application). Always use Pioneer/Anchor/Path/Chapter/Venture/Compass.
-
-**Implementation**: `lib/vocabulary.ts` — import `VOCAB`, `PIONEER_TYPES`.
-
-- **Status: ✅ Complete — including Prisma schema, API routes, all UI (Session 14)**
-
-### R8 — No Duplicate Navs / Footers
-
-**Source**: Session 4 UX audit
-
-**Rule**: `app/layout.tsx` provides global Nav + Footer. Pages never include their own. Secondary sticky elements use `sticky top-16 z-40`.
-
-- **Status: ✅ Complete**
-
-### R9 — Security: Next.js Patched
-
-**Source**: Session 4
-
-Next.js 14.2.5 → 14.2.35 (patches CVE-2024-46982, CVE-2024-56332, CVE-2024-34351, CVE-2024-46798).
-
-- **Status: ✅ Complete**
-
-### R10 — Preserve Functionality Before Removal
-
-**Source**: Session 4
-
-**Rule**: Before removing any UI element, verify: is it redundant? is it unique? Document the decision.
-
-- **Status: ✅ Enforced**
-
-### R11 — Dark Theme All Pages
-
-**Source**: Session 6 (PRD D2)
-
-**Requirement**: ALL pages use bg-[#0A0A0F] dark theme. No exceptions.
-
-- **Status: ✅ Complete (Session 9) — all 20+ pages converted**
-
-### R12 — Legacy Route Redirects
-
-**Source**: Session 6
-
-**Requirement**: Old URLs 307-redirect to modern equivalents using Next.js `redirect()`.
-
-| Old URL                | New URL               |
-| ---------------------- | --------------------- |
-| `/dashboard`           | `/pioneers/dashboard` |
-| `/employers/dashboard` | `/anchors/dashboard`  |
-| `/post-job`            | `/anchors/post-path`  |
-| `/jobs`                | `/ventures`           |
-| `/jobs/[id]`           | `/ventures`           |
-| `/experiences`         | `/ventures`           |
-
-- **Status: ✅ Complete**
-
-### R13 — Centralized Mock Data
-
-**Source**: Session 10
-
-**Requirement**: All mock data in `data/mock/` directory with barrel export. Zero inline arrays in pages.
-
-- **Status: ✅ Complete (14 modules)**
-
-### R14 — Centralized Nav/Footer Links
-
-**Source**: Session 13
-
-**Requirement**: All Nav + Footer link arrays in `lib/nav-structure.ts`. Components import from there.
-
-- **Status: ✅ Complete**
-
-### R15 — International Scale Architecture
-
-**Source**: Session 16
-
-**Requirement**: The platform MUST scale for all countries. No Kenya-hardcoded pages. Country auto-detected via IP but always changeable. All offerings, recommendations, and content driven by the country system (`lib/countries.ts`, `lib/country-selector.ts`).
-
-**Rules:**
-
-- `/offerings` reads `NEXT_PUBLIC_COUNTRY_CODE` + user selection, not hardcoded Kenya data
-- Recommendations shown by purpose: travel, professional work, business/trade
-- Recommendations driven by market data + user preferences + route corridors
-- New country = new config in `lib/countries.ts` + data in `data/mock/` — zero page changes
-- **Status: 🔄 Designing**
-
-### R16 — Smart Recommendations by Purpose + Market
-
-**Source**: Session 16
-
-**Requirement**: Options shown for traveling / purpose / business, recommended based on:
-
-1. Auto-detected origin country (changeable)
-2. Selected destination country preferences
-3. Market conditions (trade volume, growth rate, sector demand)
-4. Pioneer type / purpose (explorer, professional, artisan, etc.)
-5. Route corridor strength (direct > partner > emerging)
-
-**Implementation**: Extends Compass engine (`lib/compass.ts`) + country configs. Offerings page is a recommendation surface, not a static catalog.
-
-- **Status: 🔄 Designing**
+## Requirements
+
+| ID  | Requirement                                                        | Status | Source       |
+| --- | ------------------------------------------------------------------ | ------ | ------------ |
+| R1  | Country selection as first action (priority order, up to 5)        | ✅     | Session 5    |
+| R2  | Proximity clustering (< 1800km, Haversine, green pulse)            | ✅     | Session 5    |
+| R3  | No duplicate country data (single source: lib/country-selector.ts) | ✅     | Session 5    |
+| R4  | Responsive watch → TV (xs:380 to 4xl:2560)                         | ✅     | Session 4    |
+| R5  | Golden ratio design system (φ = 1.618 spacing + typography)        | ✅     | Session 4    |
+| R6  | Brand consistency (no orange/amber/yellow)                         | ✅     | Session 6–16 |
+| R7  | BeNetwork vocabulary everywhere (UI + API + Prisma)                | ✅     | Session 14   |
+| R8  | No duplicate navs/footers (layout.tsx provides)                    | ✅     | Session 4    |
+| R9  | Next.js patched (14.2.35, CVEs fixed)                              | ✅     | Session 4    |
+| R10 | Preserve functionality before removal                              | ✅     | Session 4    |
+| R11 | Dark theme all pages (bg-[#0A0A0F])                                | ✅     | Session 9    |
+| R12 | Legacy route redirects (/jobs→/ventures, etc.)                     | ✅     | Session 6    |
+| R13 | Centralized mock data (data/mock/, zero inline)                    | ✅     | Session 10   |
+| R14 | Centralized nav/footer links (lib/nav-structure.ts)                | ✅     | Session 13   |
+| R15 | International scale (no Kenya-hardcoded pages, country-aware)      | ✅     | Session 16   |
+| R16 | Smart recommendations (purpose + market + corridor)                | ✅     | Session 16   |
+| R17 | Be[Country/Tribe/Location] architecture (support all 3 levels)     | 🔄     | Session 20   |
+| R18 | All non-generic visible data in mock (no hardcoded display data)   | 🔄     | Session 20   |
+| R19 | Design from DESIGN_SYSTEM.md (no ad-hoc styling)                   | ✅     | Session 20   |
+| R20 | KISS code (no over-engineering)                                    | ✅     | Session 20   |
 
 ---
 
-## 2. Architecture Rules (Enforced)
+## Architecture Rules
 
-### Data Sources — Single Source of Truth
+### Single Source of Truth
 
-| Data                              | Source                    | Never                         |
-| --------------------------------- | ------------------------- | ----------------------------- |
-| Country data (geographic)         | `lib/country-selector.ts` | Inline in pages               |
-| Country config (payment, sectors) | `lib/countries.ts`        | Inline in pages               |
-| Pioneer types + vocabulary        | `lib/vocabulary.ts`       | Hardcode strings              |
-| Route corridors                   | `lib/compass.ts`          | Inline in pages               |
-| Nav/Footer links                  | `lib/nav-structure.ts`    | Inline in components          |
-| Mock data                         | `data/mock/`              | Inline in pages               |
-| Domain types                      | `types/domain.ts`         | Ad-hoc type definitions       |
-| API contracts                     | `types/api.ts`            | Ad-hoc request/response types |
+| Data                  | Source                    | Never                   |
+| --------------------- | ------------------------- | ----------------------- |
+| Country geography     | `lib/country-selector.ts` | Inline in pages         |
+| Country config        | `lib/countries.ts`        | Inline in pages         |
+| Vocabulary            | `lib/vocabulary.ts`       | Hardcode strings        |
+| Route corridors       | `lib/compass.ts`          | Inline in pages         |
+| Nav/Footer links      | `lib/nav-structure.ts`    | Inline in components    |
+| Mock data             | `data/mock/`              | Inline in pages         |
+| Domain types          | `types/domain.ts`         | Ad-hoc type definitions |
+| API contracts         | `types/api.ts`            | Ad-hoc request types    |
+| Brand colors/patterns | `DESIGN_SYSTEM.md`        | Ad-hoc styling          |
 
-### Navigation Architecture
+### Navigation
 
 ```
-app/layout.tsx
-├── <Nav />          ← sticky top-0 z-50 (global, always present)
-├── {children}       ← all page content here
-└── <Footer />       ← always present
+app/layout.tsx → <Nav /> (sticky z-50) + {children} + <Footer />
+Secondary sticky: top-16 z-40
 ```
 
-Secondary sticky elements use `sticky top-16 z-40`.
+---
+
+## Blocked Items
+
+See [HUMAN_MANUAL.md](./HUMAN_MANUAL.md) for credentials needed.
 
 ---
 
-## 3. Next Steps (Priority Order)
-
-### Blocked on Human Credentials
-
-See [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
-
-1. DATABASE_URL (Neon PostgreSQL) → enables real Prisma queries
-2. NEXTAUTH_SECRET → enables auth security
-3. GOOGLE_CLIENT_ID + SECRET → enables Google Sign-In
-4. RESEND_API_KEY → enables real email
-5. MPESA_CONSUMER_KEY + SECRET → enables real M-Pesa payments
-
-### Can Build Now
-
-1. International offerings system — country-aware, purpose-driven recommendations (R15, R16)
-2. End-to-end mock booking flow
-3. Loading skeletons + error boundaries
-4. Progressive φ token adoption in Nav, Footer, cards
-
----
-
-## 4. Document Index
-
-| Doc                                    | Purpose                                   |
-| -------------------------------------- | ----------------------------------------- |
-| [CLAUDE.md](./CLAUDE.md)               | Master agent gateway                      |
-| [PROGRESS.md](./PROGRESS.md)           | Live execution tracker                    |
-| [PRD.md](./PRD.md)                     | Product requirements                      |
-| [ROADMAP.md](./ROADMAP.md)             | Strategic phases + sprints                |
-| [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) | Brand tokens + component patterns         |
-| [ARCHITECTURE.md](./ARCHITECTURE.md)   | Technical structure                       |
-| [REQUIREMENTS.md](./REQUIREMENTS.md)   | This file — user requirements + decisions |
-| [TESTING.md](./TESTING.md)             | Test strategy + test files                |
-| [HUMAN_MANUAL.md](./HUMAN_MANUAL.md)   | Human-only setup steps                    |
-
----
-
-_Last updated: Session 15 (2026-03-11)_
+_Last updated: Session 20 (2026-03-11)_
