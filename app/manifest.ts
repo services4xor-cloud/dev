@@ -2,9 +2,10 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Bekenya — International Jobs',
-    short_name: 'Bekenya',
-    description: 'Find international jobs. Pay with M-Pesa. Work with the world.',
+    name: 'BeKenya — Find Where You Belong. Go There.',
+    short_name: 'BeKenya',
+    description:
+      'Identity-first life-routing platform. Find paths, experiences, and community — Kenya-first, globally connected.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
@@ -12,12 +13,12 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: 'portrait',
     icons: [
       {
-        src: '/icon-192.png',
+        src: '/logo-bekenya-circle.png',
         sizes: '192x192',
         type: 'image/png',
       },
       {
-        src: '/icon-512.png',
+        src: '/logo-bekenya.png',
         sizes: '512x512',
         type: 'image/png',
       },

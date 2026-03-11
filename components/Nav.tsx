@@ -4,7 +4,8 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Menu, X, ChevronDown, Compass, LogIn } from 'lucide-react'
+import { useSession, signOut } from 'next-auth/react'
+import { Menu, X, ChevronDown, Compass, LogIn, User as UserIcon, LogOut } from 'lucide-react'
 import { COUNTRIES } from '@/lib/countries'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import {
@@ -47,6 +48,9 @@ export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<'anchors' | 'about' | null>(null)
   const [scrolled, setScrolled] = useState(false)
+
+  // Auth session
+  const { data: session } = useSession()
 
   // Fetch threads from API (falls back to mock data)
   const { threads: navThreads } = useThreads()
@@ -448,16 +452,51 @@ export default function Nav() {
 
             {/* ── Desktop auth / CTA ─────────────────────────────── */}
             <div className="hidden lg:flex items-center gap-2">
-              <Link
-                href="/login"
-                aria-label="Sign in to your account"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/50
-                           hover:text-white transition-all duration-200
-                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-              >
-                <LogIn className="w-3.5 h-3.5" aria-hidden="true" />
-                Sign In
-              </Link>
+              {session?.user ? (
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/profile"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/60
+                               hover:text-white transition-all duration-200"
+                  >
+                    {session.user.image ? (
+                      <Image
+                        src={session.user.image}
+                        alt=""
+                        width={22}
+                        height={22}
+                        className="rounded-full"
+                        unoptimized
+                      />
+                    ) : (
+                      <UserIcon className="w-4 h-4" aria-hidden="true" />
+                    )}
+                    <span className="max-w-[100px] truncate">
+                      {session.user.name?.split(' ')[0] ?? 'Pioneer'}
+                    </span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[12px] font-medium text-white/30
+                               hover:text-white/60 transition-all duration-200"
+                    aria-label="Sign out"
+                  >
+                    <LogOut className="w-3 h-3" aria-hidden="true" />
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  aria-label="Sign in to your account"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/50
+                             hover:text-white transition-all duration-200
+                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                >
+                  <LogIn className="w-3.5 h-3.5" aria-hidden="true" />
+                  Sign In
+                </Link>
+              )}
               <Link
                 href="/compass"
                 aria-label="Start My Compass — find your path across countries"
@@ -645,16 +684,50 @@ export default function Nav() {
 
             {/* Auth / CTA */}
             <div className="pt-4 mx-1 space-y-2.5">
-              <Link
-                href="/login"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/10
-                           text-white/70 hover:text-white hover:border-white/20 font-medium transition-all duration-200
-                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-              >
-                <LogIn className="w-4 h-4" aria-hidden="true" />
-                Sign In
-              </Link>
+              {session?.user ? (
+                <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-white/10">
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-2 text-white/70 hover:text-white font-medium"
+                  >
+                    {session.user.image ? (
+                      <Image
+                        src={session.user.image}
+                        alt=""
+                        width={24}
+                        height={24}
+                        className="rounded-full"
+                        unoptimized
+                      />
+                    ) : (
+                      <UserIcon className="w-4 h-4" />
+                    )}
+                    {session.user.name?.split(' ')[0] ?? 'Pioneer'}
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileOpen(false)
+                      signOut({ callbackUrl: '/' })
+                    }}
+                    className="text-white/30 hover:text-white/60 text-sm"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/10
+                             text-white/70 hover:text-white hover:border-white/20 font-medium transition-all duration-200
+                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                >
+                  <LogIn className="w-4 h-4" aria-hidden="true" />
+                  Sign In
+                </Link>
+              )}
               <Link
                 href="/compass"
                 onClick={() => setMobileOpen(false)}
