@@ -158,7 +158,7 @@ export default function CompassPage() {
       </div>
 
       {/* Step content */}
-      <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 pb-32">
+      <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 pb-48">
         {loading ? (
           <div className="animate-pulse space-y-6">
             <SkeletonBlock h="h-16" />
@@ -237,22 +237,22 @@ export default function CompassPage() {
                     </div>
                   )}
 
-                  <p className="text-gray-400 text-sm mb-6">
+                  <p className="text-gray-400 text-sm">
                     We use your location to find the strongest routes and payment corridors.
                   </p>
-                  <button
-                    onClick={() => setStep(3)}
-                    className="w-full bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-4 rounded-xl transition-colors text-lg border border-brand-accent/30"
-                  >
-                    Confirmed — I&apos;m in {origin.name} →
-                  </button>
                 </div>
-                <button
-                  onClick={() => setStep(1)}
-                  className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
-                >
-                  ← Back
-                </button>
+                {/* Fixed bottom nav */}
+                <div className="fixed bottom-0 left-0 right-0 bg-brand-bg/95 backdrop-blur border-t border-brand-accent/10 z-40">
+                  <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+                    <button onClick={() => setStep(1)} className="btn-ghost btn-sm">
+                      ← Back
+                    </button>
+                    <span className="text-xs text-gray-500 flex-1 text-center">Step 2 of 4</span>
+                    <button onClick={() => setStep(3)} className="btn-primary btn-sm">
+                      Confirmed — {origin.name} →
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -296,12 +296,17 @@ export default function CompassPage() {
                     ))}
                   </div>
                 </div>
-                <button
-                  onClick={() => setStep(2)}
-                  className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
-                >
-                  ← Back
-                </button>
+                {/* Fixed bottom nav */}
+                <div className="fixed bottom-0 left-0 right-0 bg-brand-bg/95 backdrop-blur border-t border-brand-accent/10 z-40">
+                  <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+                    <button onClick={() => setStep(2)} className="btn-ghost btn-sm">
+                      ← Back
+                    </button>
+                    <span className="text-xs text-gray-500 flex-1 text-center">
+                      Step 3 of 4 — Select your Pioneer type
+                    </span>
+                  </div>
+                </div>
               </div>
             )}
 

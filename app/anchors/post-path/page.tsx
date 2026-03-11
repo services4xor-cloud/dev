@@ -951,8 +951,8 @@ export default function PostPathPage() {
           ))}
         </div>
 
-        {/* Step content */}
-        <div className="mb-8">
+        {/* Step content — pb-32 for fixed bottom nav clearance */}
+        <div className="mb-8 pb-24">
           {step === 1 && <StepBasics form={form} setForm={setForm} />}
           {step === 2 && <StepDescription form={form} setForm={setForm} />}
           {step === 3 && <StepSkills form={form} setForm={setForm} />}
@@ -963,38 +963,44 @@ export default function PostPathPage() {
           )}
         </div>
 
-        {/* Navigation buttons */}
+        {/* Fixed bottom navigation — always visible, never scroll to find */}
         {step < 6 && (
-          <div className="flex items-center justify-between pt-4 border-t border-gray-700/50">
-            {step > 1 ? (
-              <button
-                onClick={() => setStep((s) => s - 1)}
-                className="flex items-center gap-2 px-5 py-3 bg-gray-800 text-gray-300 border border-gray-700 rounded-xl font-medium hover:bg-gray-700 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Back
-              </button>
-            ) : (
-              <div />
-            )}
-
-            <button
-              onClick={() => setStep((s) => s + 1)}
-              disabled={!canProceed()}
-              className="flex items-center gap-2 px-6 py-3 bg-brand-accent text-white rounded-xl font-semibold hover:opacity-90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {step === 5 ? (
-                <>
-                  Preview Path
-                  <Eye className="w-4 h-4" />
-                </>
+          <div className="fixed bottom-0 left-0 right-0 bg-brand-bg/95 backdrop-blur border-t border-brand-accent/10 z-40">
+            <div className="max-w-4xl 3xl:max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+              {step > 1 ? (
+                <button
+                  onClick={() => setStep((s) => s - 1)}
+                  className="btn-ghost btn-sm flex items-center gap-2"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Back
+                </button>
               ) : (
-                <>
-                  Continue
-                  <ArrowRight className="w-4 h-4" />
-                </>
+                <div />
               )}
-            </button>
+
+              <span className="text-xs text-gray-500 flex-1 text-center">Step {step} of 6</span>
+
+              <button
+                onClick={() => setStep((s) => s + 1)}
+                disabled={!canProceed()}
+                className={`btn-sm font-semibold px-6 py-2.5 rounded-xl transition-all duration-150 flex items-center gap-2 ${
+                  canProceed() ? 'btn-primary' : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {step === 5 ? (
+                  <>
+                    Preview Path
+                    <Eye className="w-4 h-4" />
+                  </>
+                ) : (
+                  <>
+                    Continue
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         )}
       </div>

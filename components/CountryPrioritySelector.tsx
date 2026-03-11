@@ -173,10 +173,10 @@ export default function CountryPrioritySelector({
         )
       })}
 
-      {/* Priority rail — sticky selection summary */}
+      {/* Priority rail — fixed to viewport bottom so Continue is always visible */}
       {selected.length > 0 && (
-        <div className="sticky bottom-0 pt-4">
-          <div className="bg-gray-900/95 backdrop-blur-sm border border-brand-accent/30 rounded-2xl p-4 shadow-2xl">
+        <div className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 pt-2">
+          <div className="max-w-3xl 3xl:max-w-5xl mx-auto bg-gray-900/98 backdrop-blur-md border border-brand-accent/30 rounded-2xl p-4 shadow-2xl shadow-black/60">
             {/* Rail label */}
             <div className="text-xs text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
               <span>Your Route Priority</span>
