@@ -348,6 +348,19 @@ const CONTENT: Record<string, ContentDict> = {
     'contact.labelLocation': 'Location',
     'contact.labelSocial': 'Social',
 
+    // Forgot password
+    'forgotPassword.backToSignIn': 'Back to Sign In',
+    'forgotPassword.title': 'Reset password',
+    'forgotPassword.desc': "Enter your email and we'll send you a reset link.",
+    'forgotPassword.emailLabel': 'Email address',
+    'forgotPassword.sending': 'Sending…',
+    'forgotPassword.sendLink': 'Send reset link',
+    'forgotPassword.checkEmail': 'Check your email',
+    'forgotPassword.sentDesc':
+      "If an account exists for {email}, you'll receive a reset link shortly.",
+    'forgotPassword.noAccount': "Don't have an account?",
+    'forgotPassword.signUpFree': 'Sign up free',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -611,6 +624,19 @@ const CONTENT: Record<string, ContentDict> = {
     'contact.labelLocation': 'Standort',
     'contact.labelSocial': 'Soziale Medien',
 
+    // Forgot password
+    'forgotPassword.backToSignIn': 'Zurück zur Anmeldung',
+    'forgotPassword.title': 'Passwort zurücksetzen',
+    'forgotPassword.desc': 'Gib deine E-Mail ein und wir senden dir einen Link zum Zurücksetzen.',
+    'forgotPassword.emailLabel': 'E-Mail-Adresse',
+    'forgotPassword.sending': 'Wird gesendet…',
+    'forgotPassword.sendLink': 'Link senden',
+    'forgotPassword.checkEmail': 'Prüfe deine E-Mails',
+    'forgotPassword.sentDesc':
+      'Falls ein Konto für {email} existiert, erhältst du in Kürze einen Link zum Zurücksetzen.',
+    'forgotPassword.noAccount': 'Noch kein Konto?',
+    'forgotPassword.signUpFree': 'Kostenlos registrieren',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -804,6 +830,19 @@ const CONTENT: Record<string, ContentDict> = {
     'contact.labelWhatsApp': 'WhatsApp',
     'contact.labelLocation': 'Mahali',
     'contact.labelSocial': 'Mitandao ya Kijamii',
+
+    // Forgot password
+    'forgotPassword.backToSignIn': 'Rudi kwenye Kuingia',
+    'forgotPassword.title': 'Weka upya nenosiri',
+    'forgotPassword.desc': 'Ingiza barua pepe yako na tutakutumia kiungo cha kuweka upya.',
+    'forgotPassword.emailLabel': 'Anwani ya barua pepe',
+    'forgotPassword.sending': 'Inatuma…',
+    'forgotPassword.sendLink': 'Tuma kiungo',
+    'forgotPassword.checkEmail': 'Angalia barua pepe yako',
+    'forgotPassword.sentDesc':
+      'Ikiwa akaunti ipo kwa {email}, utapata kiungo cha kuweka upya hivi karibuni.',
+    'forgotPassword.noAccount': 'Huna akaunti?',
+    'forgotPassword.signUpFree': 'Jisajili bure',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',

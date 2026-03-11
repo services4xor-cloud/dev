@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Mail, ArrowLeft, CheckCircle } from 'lucide-react'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -26,32 +28,29 @@ export default function ForgotPasswordPage() {
           className="inline-flex items-center gap-2 text-brand-accent/60 hover:text-brand-accent text-sm mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Sign In
+          {t('forgotPassword.backToSignIn')}
         </Link>
 
         <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-8">
           {sent ? (
             <div className="text-center">
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
-              <h2 className="text-xl font-bold text-white mb-2">Check your email</h2>
-              <p className="text-gray-400 text-sm">
-                If an account exists for <span className="text-brand-accent">{email}</span>,
-                you&apos;ll receive a reset link shortly.
-              </p>
+              <h2 className="text-xl font-bold text-white mb-2">
+                {t('forgotPassword.checkEmail')}
+              </h2>
+              <p className="text-gray-400 text-sm">{t('forgotPassword.sentDesc', { email })}</p>
             </div>
           ) : (
             <>
               <div className="mb-6">
-                <h1 className="text-2xl font-bold text-white mb-1">Reset password</h1>
-                <p className="text-gray-400 text-sm">
-                  Enter your email and we&apos;ll send you a reset link.
-                </p>
+                <h1 className="text-2xl font-bold text-white mb-1">{t('forgotPassword.title')}</h1>
+                <p className="text-gray-400 text-sm">{t('forgotPassword.desc')}</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-1.5">
-                    Email address
+                    {t('forgotPassword.emailLabel')}
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -76,7 +75,7 @@ export default function ForgotPasswordPage() {
                     border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
                   }}
                 >
-                  {loading ? 'Sending…' : 'Send reset link'}
+                  {loading ? t('forgotPassword.sending') : t('forgotPassword.sendLink')}
                 </button>
               </form>
             </>
@@ -84,12 +83,12 @@ export default function ForgotPasswordPage() {
         </div>
 
         <p className="text-center text-gray-600 text-sm mt-4">
-          Don&apos;t have an account?{' '}
+          {t('forgotPassword.noAccount')}{' '}
           <Link
             href="/signup"
             className="text-brand-accent hover:text-brand-accent-light transition-colors"
           >
-            Sign up free
+            {t('forgotPassword.signUpFree')}
           </Link>
         </p>
       </div>
