@@ -24,6 +24,7 @@ import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
 import { usePaths } from '@/lib/hooks/use-paths'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import type { FilterCategory, PathListItem } from '@/types/domain'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -58,6 +59,7 @@ const INITIAL_DISPLAY_COUNT = 6
 export default function VenturesPage() {
   const searchParams = useSearchParams()
   const { identity, brandName } = useIdentity()
+  const { t } = useTranslation()
 
   // ── Read Compass flags from URL ──────────────────────────────────────────
   const compassFrom = searchParams.get('from') ?? ''
@@ -112,7 +114,7 @@ export default function VenturesPage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-60" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent" />
             </span>
-            {total + SAFARI_PACKAGES.length}+ open ventures across 30+ countries
+            {total + SAFARI_PACKAGES.length}+ {t('ventures.allVentures').toLowerCase()}
             {fromDB && (
               <span className="ml-2 flex items-center gap-1 text-green-400 text-[10px]">
                 <Database className="w-2.5 h-2.5" /> Live
@@ -138,7 +140,7 @@ export default function VenturesPage() {
                 )}
               </h1>
               <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-4">
-                Curated for your route
+                {t('ventures.curatedForRoute')}
                 {originCountry ? ` from ${originCountry.flag} ${originCountry.name}` : ''}
                 {destCountries.length > 0
                   ? ` to ${destCountries.map((c) => c!.name).join(', ')}`
@@ -153,21 +155,20 @@ export default function VenturesPage() {
                 }}
                 className="text-sm text-brand-accent/70 hover:text-brand-accent transition-colors mb-6 inline-block"
               >
-                Show all ventures instead →
+                {t('ventures.showAll')} →
               </button>
             </>
           ) : (
             <>
               <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-4 leading-tight">
-                Open Paths.
+                {t('ventures.openPaths')}
                 <br />
-                <span style={{ color: 'var(--color-accent)' }}>Real Ventures.</span>
+                <span style={{ color: 'var(--color-accent)' }}>{t('ventures.realVentures')}</span>
                 <br />
-                Your Chapter Starts Here.
+                {t('ventures.chapterStarts')}
               </h1>
               <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
-                {brandName} brings real paths and ventures together — every one is a chapter waiting
-                to be written by a Pioneer like you.
+                {t('hero.subtitle', { brandName })}
               </p>
             </>
           )}
@@ -285,16 +286,16 @@ export default function VenturesPage() {
           <section>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                🌿 <span>Explorer Ventures</span>
+                🌿 <span>{t('ventures.explorerVentures')}</span>
                 <span className="text-xs font-normal text-gray-400 ml-1">
-                  {visibleSafaris.length} available
+                  {t('ventures.available', { count: String(visibleSafaris.length) })}
                 </span>
               </h2>
               <Link
                 href="/experiences"
                 className="text-brand-accent text-sm font-medium hover:text-brand-accent/70 flex items-center gap-1 transition-colors"
               >
-                See all <ArrowRight className="w-3.5 h-3.5" />
+                {t('ventures.seeAll')} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
@@ -341,7 +342,9 @@ export default function VenturesPage() {
                           <span className="font-black text-white text-base">
                             {formatPackagePrice(pkg)}
                           </span>
-                          <span className="text-gray-400 text-xs ml-1">/ person</span>
+                          <span className="text-gray-400 text-xs ml-1">
+                            {t('ventures.perPerson')}
+                          </span>
                         </div>
                         <div className="flex items-center gap-1 text-gray-400 text-xs">
                           <Clock className="w-3 h-3" />
@@ -361,8 +364,10 @@ export default function VenturesPage() {
           <section>
             <div className="flex items-center gap-2 mb-5">
               <Zap className="w-4 h-4 text-brand-accent" />
-              <h2 className="text-xl font-bold text-white">Featured Paths</h2>
-              <span className="text-xs font-normal text-gray-400">{featuredPaths.length} open</span>
+              <h2 className="text-xl font-bold text-white">{t('ventures.featuredPaths')}</h2>
+              <span className="text-xs font-normal text-gray-400">
+                {t('ventures.open', { count: String(featuredPaths.length) })}
+              </span>
             </div>
             <div className="space-y-3">
               {featuredPaths.map((path) => (
@@ -415,15 +420,13 @@ export default function VenturesPage() {
         {!loading && filteredPaths.length === 0 && !showSafaris && (
           <div className="text-center py-20">
             <div className="text-5xl mb-4">🧭</div>
-            <p className="text-xl font-semibold text-white mb-2">No Paths match this filter yet</p>
-            <p className="text-gray-400 text-sm mb-6">
-              New paths are added every day. Check back or try another category.
-            </p>
+            <p className="text-xl font-semibold text-white mb-2">{t('ventures.noMatch')}</p>
+            <p className="text-gray-400 text-sm mb-6">{t('ventures.noMatchHint')}</p>
             <button
               onClick={() => setFilter('all')}
               className="px-6 py-3 rounded-xl bg-brand-primary text-white font-semibold border border-brand-accent/30 hover:bg-brand-primary-light transition-colors"
             >
-              Show all ventures
+              {t('ventures.showAll')}
             </button>
           </div>
         )}
@@ -438,16 +441,13 @@ export default function VenturesPage() {
             }}
           >
             <Globe className="w-8 h-8 text-brand-accent mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-white mb-2">Are you an Anchor?</h3>
-            <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
-              Post a Path and reach 12,000+ Pioneers across 50+ countries. Local payment rails
-              included.
-            </p>
+            <h3 className="text-2xl font-bold text-white mb-2">{t('ventures.areYouAnchor')}</h3>
+            <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">{t('ventures.anchorCta')}</p>
             <Link
               href="/anchors/post-path"
               className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white border border-brand-accent/40 hover:bg-brand-accent/10 transition-colors"
             >
-              Post a Path →
+              {t('ventures.postPath')}
             </Link>
           </div>
         )}
@@ -491,7 +491,7 @@ function PathCard({ path, featured = false }: { path: PathListItem; featured?: b
             </h3>
             {featured && (
               <span className="flex-shrink-0 text-[10px] font-black px-2 py-0.5 rounded-full bg-brand-accent text-brand-bg uppercase tracking-wide">
-                Featured
+                ★
               </span>
             )}
           </div>
@@ -501,9 +501,7 @@ function PathCard({ path, featured = false }: { path: PathListItem; featured?: b
               <MapPin className="w-3 h-3" />
               {path.location}
             </span>
-            {path.isRemote && (
-              <span className="text-brand-accent text-xs font-semibold">Remote</span>
-            )}
+            {path.isRemote && <span className="text-brand-accent text-xs font-semibold">🌐</span>}
           </div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap gap-1.5">
