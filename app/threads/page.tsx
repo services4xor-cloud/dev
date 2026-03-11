@@ -14,23 +14,25 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Users, Search, Database } from 'lucide-react'
 import { useThreads } from '@/lib/hooks/use-threads'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import type { ThreadType } from '@/lib/threads'
 
 // ─── Filter config ───────────────────────────────────────────────────────────
 
-const TYPE_FILTERS: { id: ThreadType | 'all'; label: string; icon: string }[] = [
-  { id: 'all', label: 'All', icon: '🌍' },
-  { id: 'country', label: 'Countries', icon: '🏳️' },
-  { id: 'tribe', label: 'Tribes', icon: '🦁' },
-  { id: 'language', label: 'Languages', icon: '🗣️' },
-  { id: 'interest', label: 'Interests', icon: '💡' },
-  { id: 'science', label: 'Sciences', icon: '🔬' },
-  { id: 'location', label: 'Locations', icon: '📍' },
+const TYPE_FILTER_KEYS: { id: ThreadType | 'all'; labelKey: string; icon: string }[] = [
+  { id: 'all', labelKey: 'threads.filterAll', icon: '🌍' },
+  { id: 'country', labelKey: 'threads.filterCountries', icon: '🏳️' },
+  { id: 'tribe', labelKey: 'threads.filterTribes', icon: '🦁' },
+  { id: 'language', labelKey: 'threads.filterLanguages', icon: '🗣️' },
+  { id: 'interest', labelKey: 'threads.filterInterests', icon: '💡' },
+  { id: 'science', labelKey: 'threads.filterSciences', icon: '🔬' },
+  { id: 'location', labelKey: 'threads.filterLocations', icon: '📍' },
 ]
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ThreadsPage() {
+  const { t } = useTranslation()
   const [filter, setFilter] = useState<ThreadType | 'all'>('all')
   const [search, setSearch] = useState('')
 
@@ -61,12 +63,20 @@ export default function ThreadsPage() {
       >
         <div className="max-w-4xl mx-auto">
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            Be<span className="text-brand-accent">[You]</span>
+            {t('threads.heroTitle')
+              .split('{accent}')
+              .map((part, i) => {
+                if (i === 0) return <span key={i}>{part}</span>
+                const [accent, rest] = part.split('{/accent}')
+                return (
+                  <span key={i}>
+                    <span className="text-brand-accent">{accent}</span>
+                    {rest}
+                  </span>
+                )
+              })}
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-8">
-            Find your people. Every identity — country, tribe, language, interest — has a thread.
-            Join communities that move, work, and thrive together.
-          </p>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-8">{t('threads.heroDesc')}</p>
 
           {/* Search */}
           <div className="max-w-md mx-auto relative mb-8">
@@ -75,14 +85,14 @@ export default function ThreadsPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search threads..."
+              placeholder={t('threads.search')}
               className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-700 bg-gray-900/60 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-brand-accent transition-colors"
             />
           </div>
 
           {/* Filter chips */}
           <div className="flex flex-wrap justify-center gap-2">
-            {TYPE_FILTERS.map((f) => (
+            {TYPE_FILTER_KEYS.map((f) => (
               <button
                 key={f.id}
                 onClick={() => setFilter(f.id)}
@@ -93,7 +103,7 @@ export default function ThreadsPage() {
                 }`}
               >
                 <span>{f.icon}</span>
-                {f.label}
+                {t(f.labelKey)}
               </button>
             ))}
           </div>
@@ -105,7 +115,8 @@ export default function ThreadsPage() {
         {/* Data source indicator */}
         {fromDB && !threadsLoading && (
           <div className="flex items-center gap-1.5 text-[10px] text-green-400/60 mb-4">
-            <Database className="w-3 h-3" /> Live data · {allThreads.length} threads
+            <Database className="w-3 h-3" /> {t('threads.liveData')} ·{' '}
+            {t('threads.threadsCount', { count: String(allThreads.length) })}
           </div>
         )}
 
@@ -124,7 +135,7 @@ export default function ThreadsPage() {
         {!threadsLoading && filtered.length === 0 && (
           <div className="text-center py-16 text-gray-400">
             <div className="text-4xl mb-3">🔍</div>
-            <p>No threads match your search. Try a different term.</p>
+            <p>{t('threads.empty')}</p>
           </div>
         )}
 

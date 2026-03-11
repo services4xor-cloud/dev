@@ -355,6 +355,48 @@ describe('i18n — contact page translations', () => {
   })
 })
 
+describe('i18n — threads page translations', () => {
+  const threadsKeys = [
+    'threads.heroTitle',
+    'threads.heroDesc',
+    'threads.search',
+    'threads.filterAll',
+    'threads.filterCountries',
+    'threads.filterTribes',
+    'threads.filterLanguages',
+    'threads.filterInterests',
+    'threads.filterSciences',
+    'threads.filterLocations',
+    'threads.liveData',
+    'threads.threadsCount',
+    'threads.empty',
+  ]
+
+  it('English has all threads keys', () => {
+    for (const key of threadsKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all threads keys', () => {
+    for (const key of threadsKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all threads keys', () => {
+    for (const key of threadsKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('threads.threadsCount interpolates count', () => {
+    const result = translate('threads.threadsCount', 'en', { count: '42' })
+    expect(result).toContain('42')
+    expect(result).not.toContain('{count}')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

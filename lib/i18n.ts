@@ -361,6 +361,22 @@ const CONTENT: Record<string, ContentDict> = {
     'forgotPassword.noAccount': "Don't have an account?",
     'forgotPassword.signUpFree': 'Sign up free',
 
+    // Threads
+    'threads.heroTitle': 'Be{accent}[You]{/accent}',
+    'threads.heroDesc':
+      'Find your people. Every identity — country, tribe, language, interest — has a thread. Join communities that move, work, and thrive together.',
+    'threads.search': 'Search threads...',
+    'threads.filterAll': 'All',
+    'threads.filterCountries': 'Countries',
+    'threads.filterTribes': 'Tribes',
+    'threads.filterLanguages': 'Languages',
+    'threads.filterInterests': 'Interests',
+    'threads.filterSciences': 'Sciences',
+    'threads.filterLocations': 'Locations',
+    'threads.liveData': 'Live data',
+    'threads.threadsCount': '{count} threads',
+    'threads.empty': 'No threads match your search. Try a different term.',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -637,6 +653,22 @@ const CONTENT: Record<string, ContentDict> = {
     'forgotPassword.noAccount': 'Noch kein Konto?',
     'forgotPassword.signUpFree': 'Kostenlos registrieren',
 
+    // Threads
+    'threads.heroTitle': 'Be{accent}[Du]{/accent}',
+    'threads.heroDesc':
+      'Finde deine Leute. Jede Identität — Land, Stamm, Sprache, Interesse — hat einen Thread. Tritt Gemeinschaften bei, die gemeinsam leben, arbeiten und wachsen.',
+    'threads.search': 'Threads durchsuchen...',
+    'threads.filterAll': 'Alle',
+    'threads.filterCountries': 'Länder',
+    'threads.filterTribes': 'Stämme',
+    'threads.filterLanguages': 'Sprachen',
+    'threads.filterInterests': 'Interessen',
+    'threads.filterSciences': 'Wissenschaften',
+    'threads.filterLocations': 'Standorte',
+    'threads.liveData': 'Live-Daten',
+    'threads.threadsCount': '{count} Threads',
+    'threads.empty': 'Keine Threads gefunden. Versuche einen anderen Suchbegriff.',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -843,6 +875,22 @@ const CONTENT: Record<string, ContentDict> = {
       'Ikiwa akaunti ipo kwa {email}, utapata kiungo cha kuweka upya hivi karibuni.',
     'forgotPassword.noAccount': 'Huna akaunti?',
     'forgotPassword.signUpFree': 'Jisajili bure',
+
+    // Threads
+    'threads.heroTitle': 'Be{accent}[Wewe]{/accent}',
+    'threads.heroDesc':
+      'Pata watu wako. Kila utambulisho — nchi, kabila, lugha, maslahi — una thread. Jiunge na jamii zinazosonga, kufanya kazi, na kustawi pamoja.',
+    'threads.search': 'Tafuta threads...',
+    'threads.filterAll': 'Zote',
+    'threads.filterCountries': 'Nchi',
+    'threads.filterTribes': 'Makabila',
+    'threads.filterLanguages': 'Lugha',
+    'threads.filterInterests': 'Maslahi',
+    'threads.filterSciences': 'Sayansi',
+    'threads.filterLocations': 'Maeneo',
+    'threads.liveData': 'Data halisi',
+    'threads.threadsCount': 'Threads {count}',
+    'threads.empty': 'Hakuna threads zinazolingana na utafutaji wako. Jaribu neno lingine.',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',
