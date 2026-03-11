@@ -32,16 +32,20 @@ interface IdentitySwitcherProps {
 
 // ─── Relevance engine ───────────────────────────────────────────────
 
+interface CuratedCountry {
+  code: string
+  flag: string
+  name: string
+  currency: string
+  corridor: string // 'direct' | 'partner' | 'emerging'
+  reason: 'current' | 'language' | 'region' | 'corridor'
+}
+
 function getCuratedCountries(
   currentCountry: string,
   currentLanguage: string,
   localizeCountry: (code: string) => string
-): {
-  code: string
-  flag: string
-  name: string
-  reason: 'current' | 'language' | 'region' | 'corridor'
-}[] {
+): CuratedCountry[] {
   const current = COUNTRY_OPTIONS.find((c) => c.code === currentCountry)
   if (!current) return []
 
@@ -60,49 +64,39 @@ function getCuratedCountries(
   ).map((c) => c.code)
 
   const seen = new Set<string>()
-  const results: {
-    code: string
-    flag: string
-    name: string
-    reason: 'current' | 'language' | 'region' | 'corridor'
-  }[] = []
+  const results: CuratedCountry[] = []
+
+  const addCountry = (cc: string, reason: CuratedCountry['reason']) => {
+    if (seen.has(cc)) return
+    const opt = COUNTRY_OPTIONS.find((c) => c.code === cc)
+    if (!opt) return
+    results.push({
+      code: cc,
+      flag: opt.flag,
+      name: localizeCountry(cc),
+      currency: opt.currency,
+      corridor: opt.corridorStrength,
+      reason,
+    })
+    seen.add(cc)
+  }
 
   // 1. Current country always first
-  results.push({
-    code: current.code,
-    flag: current.flag,
-    name: localizeCountry(current.code),
-    reason: 'current',
-  })
-  seen.add(current.code)
+  addCountry(current.code, 'current')
 
   // 2. Countries where user's language is spoken
-  for (const cc of languageCountries) {
-    if (seen.has(cc)) continue
-    const opt = COUNTRY_OPTIONS.find((c) => c.code === cc)
-    if (!opt) continue
-    results.push({ code: cc, flag: opt.flag, name: localizeCountry(cc), reason: 'language' })
-    seen.add(cc)
-  }
+  for (const cc of languageCountries) addCountry(cc, 'language')
 
-  // 3. Same region
+  // 3. Same region (cap at 8 total)
   for (const cc of regionCountries) {
-    if (seen.has(cc)) continue
     if (results.length >= 8) break
-    const opt = COUNTRY_OPTIONS.find((c) => c.code === cc)
-    if (!opt) continue
-    results.push({ code: cc, flag: opt.flag, name: localizeCountry(cc), reason: 'region' })
-    seen.add(cc)
+    addCountry(cc, 'region')
   }
 
-  // 4. Direct corridors
+  // 4. Direct corridors (cap at 10 total)
   for (const cc of corridorCountries) {
-    if (seen.has(cc)) continue
     if (results.length >= 10) break
-    const opt = COUNTRY_OPTIONS.find((c) => c.code === cc)
-    if (!opt) continue
-    results.push({ code: cc, flag: opt.flag, name: localizeCountry(cc), reason: 'corridor' })
-    seen.add(cc)
+    addCountry(cc, 'corridor')
   }
 
   return results
@@ -191,28 +185,57 @@ export default function IdentitySwitcher({
         <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-brand-accent/60 mb-2">
           📍 {t('nav.location') || 'Location'}
         </p>
-        <div className="grid grid-cols-2 gap-1">
-          {countries.map((c) => (
-            <button
-              key={c.code}
-              type="button"
-              role="menuitem"
-              data-testid={`identity-country-${c.code.toLowerCase()}`}
-              onClick={() => {
-                setCountry(c.code)
-                onClose()
-              }}
-              className={`flex items-center gap-2 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150
-                ${
-                  c.reason === 'current'
-                    ? 'bg-brand-accent/12 text-brand-accent border border-brand-accent/20'
-                    : 'text-white/70 hover:text-white hover:bg-white/6'
-                }`}
-            >
-              <span className="text-base shrink-0">{c.flag}</span>
-              <span className="truncate text-[13px]">{c.name}</span>
-            </button>
-          ))}
+        <div className="space-y-0.5">
+          {countries.map((c) => {
+            const isCurrent = c.reason === 'current'
+            const sameCurrency = c.currency === countries[0]?.currency && !isCurrent
+            return (
+              <button
+                key={c.code}
+                type="button"
+                role="menuitem"
+                data-testid={`identity-country-${c.code.toLowerCase()}`}
+                onClick={() => {
+                  setCountry(c.code)
+                  onClose()
+                }}
+                className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left transition-all duration-150
+                  ${
+                    isCurrent
+                      ? 'bg-brand-accent/10 border border-brand-accent/20'
+                      : 'hover:bg-white/5'
+                  }`}
+              >
+                <span className="text-base shrink-0">{c.flag}</span>
+                <div className="flex-1 min-w-0">
+                  <span
+                    className={`text-[13px] font-medium ${isCurrent ? 'text-brand-accent' : 'text-white/80'}`}
+                  >
+                    {c.name}
+                  </span>
+                </div>
+                {/* Currency badge — shows leverage context */}
+                <span
+                  className={`text-[10px] font-mono shrink-0 ${
+                    isCurrent
+                      ? 'text-brand-accent/70'
+                      : sameCurrency
+                        ? 'text-green-400/60'
+                        : 'text-white/30'
+                  }`}
+                >
+                  {c.currency}
+                </span>
+                {/* Corridor strength indicator */}
+                {!isCurrent && c.corridor === 'direct' && (
+                  <span
+                    className="w-1.5 h-1.5 rounded-full bg-green-400/60 shrink-0"
+                    title="Direct corridor"
+                  />
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
