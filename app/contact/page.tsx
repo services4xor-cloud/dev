@@ -52,7 +52,7 @@ export default function ContactPage() {
                   <div>
                     <div className="font-semibold text-white text-sm">{item.label}</div>
                     <div className="text-gray-300 text-sm">{item.value}</div>
-                    <div className="text-gray-500 text-xs">{item.sub}</div>
+                    <div className="text-gray-400 text-xs">{item.sub}</div>
                   </div>
                 </div>
               )

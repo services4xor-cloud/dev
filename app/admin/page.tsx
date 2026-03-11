@@ -97,7 +97,7 @@ function OverviewTab() {
           <p className="text-3xl font-bold text-brand-accent mt-1">
             {PLATFORM_STATS.mpesaPending} pending
           </p>
-          <p className="text-gray-500 text-xs mt-1">Check M-Pesa sandbox dashboard</p>
+          <p className="text-gray-400 text-xs mt-1">Check M-Pesa sandbox dashboard</p>
         </div>
       </div>
 
@@ -119,12 +119,12 @@ function OverviewTab() {
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">{p.name}</p>
-                  <p className="text-gray-500 text-xs">{p.country}</p>
+                  <p className="text-gray-400 text-xs">{p.country}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <PioneerTypeBadge type={p.type} />
-                <span className="text-gray-500 text-xs">{p.joined}</span>
+                <span className="text-gray-400 text-xs">{p.joined}</span>
               </div>
             </div>
           ))}
@@ -144,7 +144,7 @@ function OverviewTab() {
                 <p className="text-white text-sm truncate">
                   <span className="text-brand-accent">{ch.pioneer}</span> → {ch.path}
                 </p>
-                <p className="text-gray-500 text-xs">@ {ch.anchor}</p>
+                <p className="text-gray-400 text-xs">@ {ch.anchor}</p>
               </div>
               <div className="flex items-center gap-3 ml-3 shrink-0">
                 <span
@@ -270,7 +270,7 @@ function PioneersTab() {
                   </td>
                   <td className="p-4 text-gray-300">{p.skills}</td>
                   <td className="p-4 text-gray-300">{p.chapters}</td>
-                  <td className="p-4 text-gray-500 text-xs">{p.joined}</td>
+                  <td className="p-4 text-gray-400 text-xs">{p.joined}</td>
                   <td className="p-4">
                     <div className="flex gap-2">
                       <button className="text-xs text-brand-accent hover:underline">View</button>
@@ -390,7 +390,7 @@ function PathsTab() {
                   <td className="p-4">
                     <StatusDot status={pt.status} />
                   </td>
-                  <td className="p-4 text-gray-500 text-xs">{pt.posted}</td>
+                  <td className="p-4 text-gray-400 text-xs">{pt.posted}</td>
                 </tr>
               ))}
             </tbody>
@@ -446,7 +446,7 @@ function SocialTab() {
                 <span className="text-xl">{platform.icon}</span>
                 <div>
                   <p className="text-white text-sm font-medium">{platform.name}</p>
-                  <p className="text-gray-500 text-xs">{platform.envKey}</p>
+                  <p className="text-gray-400 text-xs">{platform.envKey}</p>
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1">
@@ -492,7 +492,7 @@ function SocialTab() {
                   </span>
                 </div>
                 <p className="text-gray-300 text-sm truncate">{post.content}</p>
-                <p className="text-gray-500 text-xs mt-1">{post.created}</p>
+                <p className="text-gray-400 text-xs mt-1">{post.created}</p>
               </div>
               {post.status === 'failed' && (
                 <button className="text-xs text-brand-accent hover:underline shrink-0">
@@ -522,7 +522,7 @@ function SettingsTab() {
             >
               <div>
                 <code className="text-sm text-white">{ev.key}</code>
-                <p className="text-gray-500 text-xs">{ev.note}</p>
+                <p className="text-gray-400 text-xs">{ev.note}</p>
               </div>
               <span
                 className={`text-xs px-2 py-0.5 rounded-full font-semibold ${

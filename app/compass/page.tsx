@@ -125,7 +125,7 @@ export default function CompassPage() {
                         ? 'bg-brand-accent text-brand-bg'
                         : step === s
                           ? 'bg-brand-primary text-brand-accent border border-brand-accent/60'
-                          : 'bg-gray-800 text-gray-500'
+                          : 'bg-gray-800 text-gray-400'
                     }`}
                   >
                     {step > s ? '✓' : s}
@@ -171,7 +171,7 @@ export default function CompassPage() {
                   🌍
                 </div>
                 <div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wider">Step 2 of 4</div>
+                  <div className="text-xs text-gray-400 uppercase tracking-wider">Step 2 of 4</div>
                   <div className="text-white font-semibold text-lg">
                     Where are you currently based?
                   </div>
@@ -184,7 +184,7 @@ export default function CompassPage() {
                     <span className="text-3xl">{origin.flag}</span>
                     <div>
                       <div className="text-white font-medium">Currently in {origin.name}</div>
-                      <div className="text-gray-500 text-sm">Auto-detected · tap to change</div>
+                      <div className="text-gray-400 text-sm">Auto-detected · tap to change</div>
                     </div>
                   </div>
                   <button
@@ -228,7 +228,7 @@ export default function CompassPage() {
             </div>
             <button
               onClick={() => setStep(1)}
-              className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
+              className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
             >
               ← Back
             </button>
@@ -244,7 +244,7 @@ export default function CompassPage() {
                   ✦
                 </div>
                 <div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wider">Step 3 of 4</div>
+                  <div className="text-xs text-gray-400 uppercase tracking-wider">Step 3 of 4</div>
                   <div className="text-white font-semibold text-lg">
                     What kind of Pioneer are you?
                   </div>
@@ -266,14 +266,14 @@ export default function CompassPage() {
                     <div className="text-white font-semibold text-sm group-hover:text-brand-accent transition-colors mb-1">
                       {type.label}
                     </div>
-                    <div className="text-gray-500 text-xs leading-relaxed">{type.description}</div>
+                    <div className="text-gray-400 text-xs leading-relaxed">{type.description}</div>
                   </button>
                 ))}
               </div>
             </div>
             <button
               onClick={() => setStep(2)}
-              className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
+              className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
             >
               ← Back
             </button>
@@ -306,7 +306,7 @@ export default function CompassPage() {
 
               {selectedDestinations.length > 1 && (
                 <div className="flex flex-wrap gap-2 mb-4 items-center">
-                  <span className="text-xs text-gray-500">Also exploring:</span>
+                  <span className="text-xs text-gray-400">Also exploring:</span>
                   {selectedDestinations.slice(1).map((code) => {
                     const c = COUNTRY_OPTIONS.find((x) => x.code === code)
                     return c ? (
@@ -334,7 +334,7 @@ export default function CompassPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 <div className="bg-gray-800/60 rounded-xl p-4">
-                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">
+                  <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">
                     Visa Route
                   </div>
                   <div className="text-white text-sm leading-relaxed">
@@ -342,7 +342,7 @@ export default function CompassPage() {
                   </div>
                 </div>
                 <div className="bg-gray-800/60 rounded-xl p-4">
-                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">
+                  <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
                     Payments
                   </div>
                   <div className="flex flex-wrap gap-1">
@@ -357,7 +357,7 @@ export default function CompassPage() {
                   </div>
                 </div>
                 <div className="bg-gray-800/60 rounded-xl p-4">
-                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">
+                  <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
                     Top Sectors
                   </div>
                   <div className="space-y-1">
@@ -382,7 +382,7 @@ export default function CompassPage() {
             <div className="text-center">
               <button
                 onClick={handleReset}
-                className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
+                className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
               >
                 ← Navigate a different route
               </button>

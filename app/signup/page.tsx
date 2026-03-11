@@ -134,7 +134,7 @@ export default function SignupPage() {
                   <div className="w-full border-t border-gray-800" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-gray-900/60 px-3 text-gray-500">or fill in your details</span>
+                  <span className="bg-gray-900/60 px-3 text-gray-400">or fill in your details</span>
                 </div>
               </div>
 
@@ -184,7 +184,7 @@ export default function SignupPage() {
                 {form.country === 'Kenya' && (
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">
-                      Phone (M-Pesa) <span className="text-gray-500 font-normal">— optional</span>
+                      Phone (M-Pesa) <span className="text-gray-400 font-normal">— optional</span>
                     </label>
                     <input
                       type="tel"
@@ -217,7 +217,7 @@ export default function SignupPage() {
                   {loading ? 'Creating account...' : 'Create Account — Free'}
                 </button>
 
-                <p className="text-xs text-center text-gray-500">
+                <p className="text-xs text-center text-gray-400">
                   By signing up you agree to our{' '}
                   <Link href="/privacy" className="underline text-gray-400">
                     Privacy Policy

@@ -77,7 +77,7 @@ export default function CountryPrioritySelector({
           preferred order — your first choice gets priority matches
         </p>
         {originCountry && (
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-400 mt-1">
             <span className="text-brand-accent">●</span> Glowing cards are nearby{' '}
             {originCountry.flag} {originCountry.name}
           </p>
@@ -178,7 +178,7 @@ export default function CountryPrioritySelector({
         <div className="sticky bottom-0 pt-4">
           <div className="bg-gray-900/95 backdrop-blur-sm border border-brand-accent/30 rounded-2xl p-4 shadow-2xl">
             {/* Rail label */}
-            <div className="text-xs text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <div className="text-xs text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
               <span>Your Route Priority</span>
               <span className="text-brand-accent">
                 ({selected.length}/{MAX_COUNTRY_SELECTIONS})
@@ -197,7 +197,7 @@ export default function CountryPrioritySelector({
                     <span className="text-white text-xs font-medium">{country.name}</span>
                     <button
                       onClick={() => removeFromPriority(country.code)}
-                      className="text-gray-500 hover:text-red-400 transition-colors ml-0.5 text-xs leading-none"
+                      className="text-gray-400 hover:text-red-400 transition-colors ml-0.5 text-xs leading-none"
                       aria-label={`Remove ${country.name}`}
                     >
                       ×

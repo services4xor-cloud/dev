@@ -346,9 +346,9 @@ export default function HomePage() {
             </div>
 
             {/* Step indicators */}
-            <div className="flex items-center gap-3 mb-8 text-xs text-gray-500">
+            <div className="flex items-center gap-3 mb-8 text-xs text-gray-400">
               <span
-                className={`flex items-center gap-1 ${compassFrom ? 'text-brand-accent' : 'text-gray-500'}`}
+                className={`flex items-center gap-1 ${compassFrom ? 'text-brand-accent' : 'text-gray-400'}`}
               >
                 <span
                   className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassFrom ? 'border-brand-accent text-brand-accent' : 'border-gray-600 text-gray-600'}`}
@@ -359,7 +359,7 @@ export default function HomePage() {
               </span>
               <span className="text-gray-700">&#8594;</span>
               <span
-                className={`flex items-center gap-1 ${compassTo ? 'text-brand-accent' : 'text-gray-500'}`}
+                className={`flex items-center gap-1 ${compassTo ? 'text-brand-accent' : 'text-gray-400'}`}
               >
                 <span
                   className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassTo ? 'border-brand-accent text-brand-accent' : 'border-gray-600 text-gray-600'}`}
@@ -370,7 +370,7 @@ export default function HomePage() {
               </span>
               <span className="text-gray-700">&#8594;</span>
               <span
-                className={`flex items-center gap-1 ${compassType ? 'text-brand-accent' : 'text-gray-500'}`}
+                className={`flex items-center gap-1 ${compassType ? 'text-brand-accent' : 'text-gray-400'}`}
               >
                 <span
                   className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${compassType ? 'border-brand-accent text-brand-accent' : 'border-gray-600 text-gray-600'}`}
@@ -436,7 +436,7 @@ export default function HomePage() {
                     <span className="text-xs font-bold uppercase tracking-widest text-brand-accent bg-brand-accent/10 rounded-full px-3 py-1">
                       {pkg.duration}
                     </span>
-                    <span className="text-xs text-gray-500">{pkg.destination}</span>
+                    <span className="text-xs text-gray-400">{pkg.destination}</span>
                   </div>
                   <h3 className="font-display text-lg font-bold text-white mb-1">{pkg.name}</h3>
                   <p className="text-gray-400 text-sm mb-4 line-clamp-2">
@@ -539,7 +539,7 @@ export default function HomePage() {
                 className={`flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all ${
                   c.status === 'live'
                     ? 'bg-brand-primary/30 border-brand-accent/40 text-white'
-                    : 'bg-gray-900 border-white/5 text-gray-500'
+                    : 'bg-gray-900 border-white/5 text-gray-400'
                 }`}
               >
                 <span className="text-2xl">{c.flag}</span>
@@ -567,7 +567,7 @@ export default function HomePage() {
             <div className="flex items-center gap-3 rounded-2xl px-6 py-4 border border-white/5 bg-gray-900 text-gray-600">
               <span className="text-2xl">+</span>
               <div className="text-left">
-                <div className="font-bold text-sm text-gray-500">More coming</div>
+                <div className="font-bold text-sm text-gray-400">More coming</div>
                 <div className="text-xs text-gray-700">Every country</div>
               </div>
             </div>
@@ -583,7 +583,7 @@ export default function HomePage() {
       <section className="py-24 bg-gradient-to-b from-brand-bg to-gray-900">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="text-6xl mb-6">&#127970;</div>
-          <p className="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-3">
+          <p className="text-gray-400 text-sm font-semibold uppercase tracking-widest mb-3">
             For Organizations
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
@@ -593,7 +593,7 @@ export default function HomePage() {
             Organizations that open paths for Pioneers. Safari lodges, tech companies, NGOs,
             hospitals — any Anchor that believes real talent changes everything.
           </p>
-          <p className="text-gray-500 mb-10">
+          <p className="text-gray-400 mb-10">
             Post a Path. Find Pioneers. Pay with M-Pesa, Stripe, or Flutterwave.{' '}
             <strong className="text-white">From KES 500.</strong>
           </p>
@@ -658,7 +658,7 @@ export default function HomePage() {
                     <div className="text-white font-bold text-sm">
                       {t.name} {t.flag}
                     </div>
-                    <div className="text-gray-500 text-xs">
+                    <div className="text-gray-400 text-xs">
                       {t.from} · {t.type}
                     </div>
                   </div>
@@ -672,7 +672,7 @@ export default function HomePage() {
       {/* ── 11. PAYMENT TRUST STRIP ──────────────────────────────────────────── */}
       <section className="py-12 bg-brand-bg border-y border-white/5">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">
+          <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-6">
             Pay with what you know
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8">

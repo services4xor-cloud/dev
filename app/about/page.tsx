@@ -207,7 +207,7 @@ export default function AboutPage() {
               <span className="text-2xl">{p.icon}</span>
               <div>
                 <div className="font-semibold text-white text-sm">{p.name}</div>
-                <div className="text-xs text-gray-500">{p.desc}</div>
+                <div className="text-xs text-gray-400">{p.desc}</div>
               </div>
             </div>
           ))}

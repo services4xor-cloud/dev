@@ -171,7 +171,7 @@ function CompassTab() {
               <h4 className="text-white font-semibold text-sm group-hover:text-brand-accent transition-colors mb-1">
                 {path.title}
               </h4>
-              <p className="text-xs text-gray-500">{path.location}</p>
+              <p className="text-xs text-gray-400">{path.location}</p>
               <div className="mt-3 flex flex-wrap gap-1">
                 {path.requiredSkills.slice(0, 2).map((skill) => (
                   <span
@@ -233,7 +233,7 @@ function ChaptersTab() {
               <div className="flex-1">
                 <h4 className="text-white font-semibold">{chapter.pathTitle}</h4>
                 <p className="text-gray-400 text-sm">{chapter.anchor}</p>
-                <p className="text-gray-500 text-xs mt-1">Opened {chapter.date}</p>
+                <p className="text-gray-400 text-xs mt-1">Opened {chapter.date}</p>
               </div>
               <div className="flex items-center gap-3">
                 <MatchScoreBadge score={chapter.matchScore} />
@@ -284,7 +284,7 @@ function SavedPathsTab() {
               </button>
             </div>
             <h4 className="text-white font-semibold text-sm mb-1">{path.title}</h4>
-            <p className="text-xs text-gray-500 mb-3">{path.location}</p>
+            <p className="text-xs text-gray-400 mb-3">{path.location}</p>
             <MatchScoreBadge score={MATCH_SCORES[i] ?? 70} />
             <div className="mt-3">
               <Link
@@ -327,7 +327,7 @@ function ProfileTab() {
             <span className="bg-brand-accent/20 text-brand-accent border border-brand-accent/40 px-2 py-0.5 rounded-full text-xs">
               {typeInfo.icon} {typeInfo.label}
             </span>
-            <span className="text-gray-500 text-xs">Joined {pioneer.joinedDate}</span>
+            <span className="text-gray-400 text-xs">Joined {pioneer.joinedDate}</span>
           </div>
         </div>
       </div>
@@ -341,7 +341,7 @@ function ProfileTab() {
           <p className="text-white font-medium">
             {typeInfo.icon} {typeInfo.label}
           </p>
-          <p className="text-gray-500 text-xs mt-1">{typeInfo.description}</p>
+          <p className="text-gray-400 text-xs mt-1">{typeInfo.description}</p>
           <Link
             href="/onboarding"
             className="text-brand-accent text-xs mt-2 inline-block hover:underline"

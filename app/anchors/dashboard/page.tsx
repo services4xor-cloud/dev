@@ -110,7 +110,7 @@ function ChapterStatusBadge({ status }: { status: ChapterStatus }) {
       label: 'Shortlisted',
       class: 'bg-green-900/50 text-green-400 border-green-700/50',
     },
-    declined: { label: 'Declined', class: 'bg-gray-700/50 text-gray-500 border-gray-600/50' },
+    declined: { label: 'Declined', class: 'bg-gray-700/50 text-gray-400 border-gray-600/50' },
   }[status]
   return (
     <span
@@ -208,7 +208,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
           </div>
           <div>
             <div className="text-sm font-medium text-white">Open New Path</div>
-            <div className="text-xs text-gray-500">Post an opportunity</div>
+            <div className="text-xs text-gray-400">Post an opportunity</div>
           </div>
           <ArrowUpRight className="w-4 h-4 text-gray-600 ml-auto group-hover:text-brand-accent" />
         </Link>
@@ -221,7 +221,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
           </div>
           <div>
             <div className="text-sm font-medium text-white">Review Chapters</div>
-            <div className="text-xs text-gray-500">7 awaiting review</div>
+            <div className="text-xs text-gray-400">7 awaiting review</div>
           </div>
           <ArrowUpRight className="w-4 h-4 text-gray-600 ml-auto group-hover:text-teal-400" />
         </button>
@@ -234,7 +234,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
           </div>
           <div>
             <div className="text-sm font-medium text-white">See Analytics</div>
-            <div className="text-xs text-gray-500">Compass insights</div>
+            <div className="text-xs text-gray-400">Compass insights</div>
           </div>
           <ArrowUpRight className="w-4 h-4 text-gray-600 ml-auto group-hover:text-purple-400" />
         </button>
@@ -266,7 +266,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm text-white font-medium">{a.pioneer}</div>
-                  <div className="text-xs text-gray-500 truncate">{a.path}</div>
+                  <div className="text-xs text-gray-400 truncate">{a.path}</div>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <MatchScoreDot score={a.score} />
@@ -284,7 +284,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
               <Target className="w-4 h-4 text-teal-400" />
               Compass Recommendations
             </h2>
-            <span className="text-xs text-gray-500">Pioneers matching your open paths</span>
+            <span className="text-xs text-gray-400">Pioneers matching your open paths</span>
           </div>
           <div className="space-y-3">
             {MOCK_COMPASS_RECOMMENDATIONS.map((r) => (
@@ -301,7 +301,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
                     <PioneerTypeBadge type={r.type} />
                   </div>
                   <div className="text-xs text-gray-400 mt-0.5 truncate">{r.headline}</div>
-                  <div className="text-xs text-gray-500 mt-1">Matches: {r.matchedPath}</div>
+                  <div className="text-xs text-gray-400 mt-1">Matches: {r.matchedPath}</div>
                 </div>
                 <div className="flex-shrink-0 text-right">
                   <div className="text-lg font-bold text-green-400">{r.score}%</div>
@@ -400,14 +400,14 @@ function PathsTab() {
                     <PathStatusBadge status={currentStatus} />
                     <button
                       onClick={() => cycleStatus(path.id)}
-                      className="text-xs text-gray-500 hover:text-gray-300 transition-colors px-2 py-1 rounded-lg bg-gray-700 hover:bg-gray-600"
+                      className="text-xs text-gray-400 hover:text-gray-300 transition-colors px-2 py-1 rounded-lg bg-gray-700 hover:bg-gray-600"
                       title="Click to change status"
                     >
                       Toggle
                     </button>
                     <button
                       onClick={() => setExpandedPath(isExpanded ? null : path.id)}
-                      className="p-1.5 text-gray-500 hover:text-white transition-colors"
+                      className="p-1.5 text-gray-400 hover:text-white transition-colors"
                     >
                       <ChevronDown
                         className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -451,7 +451,7 @@ function PathsTab() {
               )}
 
               {isExpanded && path.topMatches.length === 0 && (
-                <div className="border-t border-gray-700 px-5 py-4 text-center text-gray-500 text-sm">
+                <div className="border-t border-gray-700 px-5 py-4 text-center text-gray-400 text-sm">
                   No top matches yet — Compass is still routing.
                 </div>
               )}
@@ -461,7 +461,7 @@ function PathsTab() {
 
         <Link
           href="/anchors/post-path"
-          className="flex items-center justify-center gap-2 p-5 border-2 border-dashed border-gray-700 rounded-2xl text-gray-500 hover:border-brand-accent hover:text-brand-accent transition-colors"
+          className="flex items-center justify-center gap-2 p-5 border-2 border-dashed border-gray-700 rounded-2xl text-gray-400 hover:border-brand-accent hover:text-brand-accent transition-colors"
         >
           <Plus className="w-4 h-4" />
           Open a new Path
@@ -537,7 +537,7 @@ function ChaptersTab() {
       {/* Chapter cards */}
       <div className="space-y-3">
         {visible.length === 0 && (
-          <div className="text-center py-12 text-gray-500">No chapters in this category yet.</div>
+          <div className="text-center py-12 text-gray-400">No chapters in this category yet.</div>
         )}
         {visible.map((chapter) => {
           const status = chapterStatuses[chapter.id]
@@ -561,7 +561,7 @@ function ChaptersTab() {
                         <ChapterStatusBadge status={status} />
                       </div>
                       <div className="text-gray-300 text-sm mt-0.5">{chapter.headline}</div>
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-xs text-gray-400 mt-1">
                         Applied to: <span className="text-gray-400">{chapter.pathTitle}</span> ·{' '}
                         {chapter.country} · {chapter.openedAt}
                       </div>
@@ -570,7 +570,7 @@ function ChaptersTab() {
                       <div className="text-2xl font-bold">
                         <MatchScoreDot score={chapter.matchScore} />
                       </div>
-                      <div className="text-xs text-gray-500 mt-0.5">match</div>
+                      <div className="text-xs text-gray-400 mt-0.5">match</div>
                     </div>
                   </div>
 
@@ -653,7 +653,7 @@ function AnalyticsTab() {
             <Globe className="w-4 h-4 text-brand-accent" />
             Where are Pioneers coming from?
           </h3>
-          <p className="text-gray-500 text-xs mb-4">By chapter origin country</p>
+          <p className="text-gray-400 text-xs mb-4">By chapter origin country</p>
           <div className="space-y-3">
             {COUNTRY_BREAKDOWN.map((c) => (
               <div key={c.country}>
@@ -680,7 +680,7 @@ function AnalyticsTab() {
             <TrendingUp className="w-4 h-4 text-teal-400" />
             Which Routes are most active?
           </h3>
-          <p className="text-gray-500 text-xs mb-4">Country-to-country pioneer corridors</p>
+          <p className="text-gray-400 text-xs mb-4">Country-to-country pioneer corridors</p>
           <div className="space-y-3">
             {ROUTE_CORRIDORS.map((r, i) => (
               <div
@@ -708,7 +708,7 @@ function AnalyticsTab() {
             <Users className="w-4 h-4 text-purple-400" />
             Pioneer Type Breakdown
           </h3>
-          <p className="text-gray-500 text-xs mb-4">Who is opening chapters with you</p>
+          <p className="text-gray-400 text-xs mb-4">Who is opening chapters with you</p>
           <div className="space-y-2">
             {PIONEER_TYPE_BREAKDOWN.map(({ type, count }) => {
               const cfg = PIONEER_TYPES[type]
@@ -740,7 +740,7 @@ function AnalyticsTab() {
             <Star className="w-4 h-4 text-brand-accent" />
             Best Performing Paths
           </h3>
-          <p className="text-gray-500 text-xs mb-4">Ranked by chapters + average match score</p>
+          <p className="text-gray-400 text-xs mb-4">Ranked by chapters + average match score</p>
           <div className="space-y-3">
             {[...MOCK_PATHS]
               .sort((a, b) => b.chapters * b.matchScoreAvg - a.chapters * a.matchScoreAvg)
@@ -765,13 +765,13 @@ function AnalyticsTab() {
                     <div className="text-lg">{cat?.icon}</div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm text-white truncate">{p.title}</div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-400">
                         {p.chapters} chapters · {p.views} views
                       </div>
                     </div>
                     <div className="text-right">
                       <MatchScoreDot score={p.matchScoreAvg} />
-                      <div className="text-xs text-gray-500">avg</div>
+                      <div className="text-xs text-gray-400">avg</div>
                     </div>
                   </div>
                 )
@@ -873,8 +873,8 @@ function SettingsTab() {
           {[
             { label: 'M-Pesa', icon: '📱', status: 'Connected', color: 'text-green-400' },
             { label: 'Stripe (Card)', icon: '💳', status: 'Connected', color: 'text-green-400' },
-            { label: 'Flutterwave', icon: '🌍', status: 'Not connected', color: 'text-gray-500' },
-            { label: 'PayPal', icon: '🅿️', status: 'Not connected', color: 'text-gray-500' },
+            { label: 'Flutterwave', icon: '🌍', status: 'Not connected', color: 'text-gray-400' },
+            { label: 'PayPal', icon: '🅿️', status: 'Not connected', color: 'text-gray-400' },
           ].map((pm) => (
             <div
               key={pm.label}
@@ -922,7 +922,7 @@ function SettingsTab() {
             >
               <div>
                 <div className="text-sm text-gray-200">{n.label}</div>
-                <div className="text-xs text-gray-500">{n.desc}</div>
+                <div className="text-xs text-gray-400">{n.desc}</div>
               </div>
               <Toggle value={n.value} onChange={n.toggle} />
             </div>
@@ -936,7 +936,7 @@ function SettingsTab() {
           <Radio className="w-4 h-4 text-brand-accent" />
           Social Media Autoposts
         </h3>
-        <p className="text-gray-500 text-xs mb-4">Auto-share when you open a new path</p>
+        <p className="text-gray-400 text-xs mb-4">Auto-share when you open a new path</p>
         <div className="space-y-2">
           {[
             {
@@ -1006,7 +1006,7 @@ export default function AnchorDashboardPage() {
             </div>
             <div>
               <div className="text-white font-bold text-sm leading-tight">BeKenya</div>
-              <div className="text-gray-500 text-xs">Anchor Portal</div>
+              <div className="text-gray-400 text-xs">Anchor Portal</div>
             </div>
           </Link>
         </div>
@@ -1019,7 +1019,7 @@ export default function AnchorDashboardPage() {
             </div>
             <div className="min-w-0">
               <div className="text-white text-sm font-medium truncate">{MOCK_ANCHOR.name}</div>
-              <div className="text-gray-500 text-xs flex items-center gap-1">
+              <div className="text-gray-400 text-xs flex items-center gap-1">
                 <MapPin className="w-2.5 h-2.5" />
                 {MOCK_ANCHOR.country}
               </div>

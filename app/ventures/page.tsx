@@ -202,7 +202,7 @@ export default function VenturesPage() {
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 🌿 <span>Explorer Ventures</span>
-                <span className="text-xs font-normal text-gray-500 ml-1">
+                <span className="text-xs font-normal text-gray-400 ml-1">
                   {visibleSafaris.length} available
                 </span>
               </h2>
@@ -257,9 +257,9 @@ export default function VenturesPage() {
                           <span className="font-black text-white text-base">
                             {formatPackagePrice(pkg)}
                           </span>
-                          <span className="text-gray-500 text-xs ml-1">/ person</span>
+                          <span className="text-gray-400 text-xs ml-1">/ person</span>
                         </div>
-                        <div className="flex items-center gap-1 text-gray-500 text-xs">
+                        <div className="flex items-center gap-1 text-gray-400 text-xs">
                           <Clock className="w-3 h-3" />
                           {pkg.duration}
                         </div>
@@ -278,7 +278,7 @@ export default function VenturesPage() {
             <div className="flex items-center gap-2 mb-5">
               <Zap className="w-4 h-4 text-brand-accent" />
               <h2 className="text-xl font-bold text-white">Featured Paths</h2>
-              <span className="text-xs font-normal text-gray-500">{featuredPaths.length} open</span>
+              <span className="text-xs font-normal text-gray-400">{featuredPaths.length} open</span>
             </div>
             <div className="space-y-3">
               {featuredPaths.map((path) => (
@@ -302,7 +302,7 @@ export default function VenturesPage() {
                       : filter === 'community'
                         ? '🤝 Community Paths'
                         : '💼 All Paths'}
-                <span className="text-xs font-normal text-gray-500">
+                <span className="text-xs font-normal text-gray-400">
                   {filteredPaths.length} open
                 </span>
               </h2>
@@ -422,7 +422,7 @@ function PathCard({ path, featured = false }: { path: PathListItem; featured?: b
             </div>
             <div className="flex items-center gap-3 text-sm flex-shrink-0">
               <span className="font-bold text-white">{path.salary}</span>
-              <span className="flex items-center gap-1 text-xs text-gray-500">
+              <span className="flex items-center gap-1 text-xs text-gray-400">
                 <Clock className="w-3 h-3" />
                 {path.posted}
               </span>

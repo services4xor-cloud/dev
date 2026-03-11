@@ -94,7 +94,7 @@ function StepBasics({
           placeholder="e.g. Senior Wildlife Guide — Big Five Specialist"
           className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent text-lg"
         />
-        <p className="text-xs text-gray-500 mt-1.5">
+        <p className="text-xs text-gray-400 mt-1.5">
           Be specific. Pioneers scan fast — a precise title wins.
         </p>
       </div>
@@ -224,7 +224,7 @@ Don't just list tasks — tell the story of this path."
           className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent min-h-[200px] resize-y text-sm leading-relaxed"
         />
         <div className="flex justify-between mt-1.5">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-400">
             Minimum 100 characters. Compass uses this to match Pioneers.
           </p>
           <span className="text-xs text-gray-600">{form.description.length} chars</span>
@@ -267,7 +267,7 @@ Don't just list tasks — tell the story of this path."
                       requirements: f.requirements.filter((_, j) => j !== i),
                     }))
                   }
-                  className="text-gray-500 hover:text-gray-300"
+                  className="text-gray-400 hover:text-gray-300"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -341,7 +341,7 @@ function StepSkills({
       {/* Added skills */}
       {form.skills.length > 0 && (
         <div>
-          <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wide">
+          <label className="block text-xs text-gray-400 mb-2 uppercase tracking-wide">
             Selected Skills ({form.skills.length})
           </label>
           <div className="flex flex-wrap gap-2">
@@ -359,7 +359,7 @@ function StepSkills({
       {/* Suggestions */}
       {notYetAdded.length > 0 && (
         <div>
-          <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wide flex items-center gap-1.5">
+          <label className="block text-xs text-gray-400 mb-2 uppercase tracking-wide flex items-center gap-1.5">
             <Zap className="w-3 h-3 text-brand-accent" />
             Suggested for{' '}
             {PATH_CATEGORIES.find((c) => c.id === form.category)?.label || 'this path'}
@@ -425,7 +425,7 @@ function StepPioneers({
       {/* Pioneer types */}
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">Pioneer Types</label>
-        <p className="text-xs text-gray-500 mb-3">
+        <p className="text-xs text-gray-400 mb-3">
           Select all types that are a good fit. Leave blank to accept all.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -447,7 +447,7 @@ function StepPioneers({
                   {selected && <Check className="w-4 h-4 text-teal-400" />}
                 </div>
                 <div className="text-sm font-semibold text-gray-200">{cfg.label}</div>
-                <div className="text-xs text-gray-500 mt-0.5 line-clamp-2">{cfg.description}</div>
+                <div className="text-xs text-gray-400 mt-0.5 line-clamp-2">{cfg.description}</div>
               </button>
             )
           })}
@@ -460,7 +460,7 @@ function StepPioneers({
           <Globe className="w-4 h-4" />
           Preferred Pioneer Origins
         </label>
-        <p className="text-xs text-gray-500 mb-3">
+        <p className="text-xs text-gray-400 mb-3">
           Pioneers from these countries will be weighted higher in Compass routing. Leave blank for
           global.
         </p>
@@ -521,9 +521,9 @@ function StepCompensation({
         <label className="block text-sm font-medium text-gray-300 mb-2">Compensation Range</label>
         <div className="grid sm:grid-cols-3 gap-3">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Minimum</label>
+            <label className="block text-xs text-gray-400 mb-1">Minimum</label>
             <div className="relative">
-              <Banknote className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Banknote className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 value={form.salaryMin}
                 onChange={(e) => setForm((f) => ({ ...f, salaryMin: e.target.value }))}
@@ -533,9 +533,9 @@ function StepCompensation({
             </div>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Maximum</label>
+            <label className="block text-xs text-gray-400 mb-1">Maximum</label>
             <div className="relative">
-              <Banknote className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Banknote className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 value={form.salaryMax}
                 onChange={(e) => setForm((f) => ({ ...f, salaryMax: e.target.value }))}
@@ -545,7 +545,7 @@ function StepCompensation({
             </div>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Currency</label>
+            <label className="block text-xs text-gray-400 mb-1">Currency</label>
             <select
               value={form.currency}
               onChange={(e) => setForm((f) => ({ ...f, currency: e.target.value }))}
@@ -559,7 +559,7 @@ function StepCompensation({
             </select>
           </div>
         </div>
-        <p className="text-xs text-gray-500 mt-1.5">
+        <p className="text-xs text-gray-400 mt-1.5">
           Shown as a range. Leave blank to show &quot;Compensation discussed&quot;.
         </p>
       </div>
@@ -569,7 +569,7 @@ function StepCompensation({
         <label className="block text-sm font-medium text-gray-300 mb-2">
           Payment Methods Accepted
         </label>
-        <p className="text-xs text-gray-500 mb-3">
+        <p className="text-xs text-gray-400 mb-3">
           How will this Pioneer be paid? Select all that apply.
         </p>
         <div className="grid sm:grid-cols-2 gap-2">
@@ -592,7 +592,7 @@ function StepCompensation({
                   >
                     {pm.label}
                   </div>
-                  <div className="text-xs text-gray-500">{pm.desc}</div>
+                  <div className="text-xs text-gray-400">{pm.desc}</div>
                 </div>
                 {selected && <Check className="w-4 h-4 text-teal-400 flex-shrink-0" />}
               </button>
@@ -680,7 +680,7 @@ function StepPreview({
         {/* Description */}
         {form.description && (
           <div className="p-6 border-b border-gray-700">
-            <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">About this Path</h4>
+            <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-2">About this Path</h4>
             <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap line-clamp-6">
               {form.description}
             </p>
@@ -690,7 +690,7 @@ function StepPreview({
         {/* Requirements */}
         {form.requirements.length > 0 && (
           <div className="p-6 border-b border-gray-700">
-            <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-3">Requirements</h4>
+            <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-3">Requirements</h4>
             <ul className="space-y-1.5">
               {form.requirements.map((r, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
@@ -705,7 +705,7 @@ function StepPreview({
         {/* Skills */}
         {form.skills.length > 0 && (
           <div className="p-6 border-b border-gray-700">
-            <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-3">Skills Needed</h4>
+            <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-3">Skills Needed</h4>
             <div className="flex flex-wrap gap-2">
               {form.skills.map((s) => (
                 <span
@@ -724,7 +724,7 @@ function StepPreview({
           <div className="grid sm:grid-cols-2 gap-4">
             {form.targetPioneerTypes.length > 0 && (
               <div>
-                <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">
+                <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-2">
                   Pioneer Types
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
@@ -741,7 +741,7 @@ function StepPreview({
             )}
             {form.paymentMethods.length > 0 && (
               <div>
-                <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">
+                <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-2">
                   Payment Methods
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
@@ -907,7 +907,7 @@ export default function PostPathPage() {
           </Link>
           <div>
             <div className="text-white font-semibold text-sm">Open a New Path</div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-gray-400">
               Opening a Path is how Anchors build their tribe.
             </div>
           </div>
@@ -926,7 +926,7 @@ export default function PostPathPage() {
                       ? 'border-teal-500 bg-teal-500 text-white'
                       : step === s.num
                         ? 'border-brand-accent bg-brand-accent text-white'
-                        : 'border-gray-600 bg-gray-800 text-gray-500'
+                        : 'border-gray-600 bg-gray-800 text-gray-400'
                   }`}
                 >
                   {step > s.num ? <Check className="w-4 h-4" /> : s.num}

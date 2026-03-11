@@ -203,7 +203,7 @@ export default function BusinessPage() {
               </div>
             ))}
           </div>
-          <p className="text-center text-sm text-gray-500 mt-6">
+          <p className="text-center text-sm text-gray-400 mt-6">
             Next: BeNigeria (NGN + Flutterwave) · BeAmerica (USD + Stripe) · BeGermany full entity
           </p>
         </div>

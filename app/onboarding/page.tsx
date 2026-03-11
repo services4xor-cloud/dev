@@ -193,7 +193,7 @@ export default function OnboardingPage() {
               style={{ animationDelay: '300ms' }}
             />
           </div>
-          <p className="text-sm text-gray-500 mt-4">Taking you to your Ventures...</p>
+          <p className="text-sm text-gray-400 mt-4">Taking you to your Ventures...</p>
         </div>
       </div>
     )
@@ -440,7 +440,7 @@ export default function OnboardingPage() {
             {/* Custom skills */}
             {skills.filter((s) => !SKILLS_BY_TYPE[pioneerType].includes(s)).length > 0 && (
               <div className="mb-4">
-                <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">
+                <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">
                   Your custom skills
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -503,12 +503,12 @@ export default function OnboardingPage() {
                     placeholder-gray-500 focus:outline-none focus:border-brand-accent focus:ring-2
                     focus:ring-brand-accent/20 transition-all"
                 />
-                <p className="text-xs text-gray-500 mt-1">{headline.length} / 120 characters</p>
+                <p className="text-xs text-gray-400 mt-1">{headline.length} / 120 characters</p>
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-2">
-                  What makes you, you? <span className="text-gray-500 font-normal">(optional)</span>
+                  What makes you, you? <span className="text-gray-400 font-normal">(optional)</span>
                 </label>
                 <textarea
                   value={bio}
@@ -524,7 +524,7 @@ export default function OnboardingPage() {
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-1">
                   WhatsApp number{' '}
-                  <span className="text-gray-500 font-normal">
+                  <span className="text-gray-400 font-normal">
                     (optional — get notified about matches)
                   </span>
                 </label>
@@ -542,7 +542,7 @@ export default function OnboardingPage() {
                       focus:ring-brand-accent/20 transition-all"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   Include country code. We&apos;ll send WhatsApp alerts for new Path matches.
                 </p>
               </div>
@@ -579,7 +579,7 @@ export default function OnboardingPage() {
                 ${
                   canAdvance()
                     ? 'bg-brand-primary hover:bg-brand-primary-light shadow-md hover:shadow-lg'
-                    : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-800 text-gray-400 cursor-not-allowed'
                 }
               `}
             >
@@ -594,7 +594,7 @@ export default function OnboardingPage() {
                 ${
                   canAdvance() && !submitting
                     ? 'bg-gradient-to-r from-brand-primary to-brand-primary-light hover:from-brand-primary-light hover:to-brand-primary shadow-md hover:shadow-lg'
-                    : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-800 text-gray-400 cursor-not-allowed'
                 }
               `}
             >

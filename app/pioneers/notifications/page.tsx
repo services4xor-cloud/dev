@@ -201,7 +201,7 @@ function NotificationCard({
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${badgeClass}`}>
               {typeLabel}
             </span>
-            <span className="text-gray-500 text-xs">{notification.time}</span>
+            <span className="text-gray-400 text-xs">{notification.time}</span>
           </div>
 
           <h4 className="text-white font-semibold text-sm mb-1">{notification.title}</h4>
@@ -220,7 +220,7 @@ function NotificationCard({
             {!notification.read && (
               <button
                 onClick={() => onRead(notification.id)}
-                className="text-gray-500 text-xs hover:text-gray-300 transition-colors"
+                className="text-gray-400 text-xs hover:text-gray-300 transition-colors"
               >
                 Mark as read
               </button>
@@ -362,7 +362,7 @@ export default function NotificationsPage() {
             {/* Group: Today */}
             {filtered.some((n) => n.time.includes('hour') || n.time === 'Just now') && (
               <>
-                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1 mt-4 mb-2">
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium px-1 mt-4 mb-2">
                   Today
                 </p>
                 {filtered
@@ -376,7 +376,7 @@ export default function NotificationsPage() {
             {/* Group: This Week */}
             {filtered.some((n) => n.time.includes('day') && !n.time.includes('week')) && (
               <>
-                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1 mt-6 mb-2">
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium px-1 mt-6 mb-2">
                   This Week
                 </p>
                 {filtered
@@ -390,7 +390,7 @@ export default function NotificationsPage() {
             {/* Group: Earlier */}
             {filtered.some((n) => n.time.includes('week')) && (
               <>
-                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1 mt-6 mb-2">
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium px-1 mt-6 mb-2">
                   Earlier
                 </p>
                 {filtered
@@ -405,7 +405,7 @@ export default function NotificationsPage() {
 
         {/* Notification Preferences Footer */}
         <div className="mt-10 pt-6 border-t border-brand-primary/30 text-center">
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-400 text-sm">
             Notifications are sent via WhatsApp and email.{' '}
             <Link href="/profile" className="text-brand-accent hover:underline">
               Update preferences →

@@ -80,7 +80,7 @@ export default function PricingPage() {
                   <div className="text-3xl font-black text-white">
                     {currency === 'KES' ? `KES ${plan.price.toLocaleString()}` : `$${plan.usd}`}
                   </div>
-                  <div className="text-gray-500 text-sm">one-time payment</div>
+                  <div className="text-gray-400 text-sm">one-time payment</div>
                 </div>
 
                 <ul className="space-y-2 mb-6">
@@ -127,7 +127,7 @@ export default function PricingPage() {
               >
                 <div className="text-2xl mb-1">{method.flag}</div>
                 <div className="font-semibold text-white text-sm">{method.name}</div>
-                <div className="text-xs text-gray-500 mt-0.5">{method.desc}</div>
+                <div className="text-xs text-gray-400 mt-0.5">{method.desc}</div>
               </div>
             ))}
           </div>

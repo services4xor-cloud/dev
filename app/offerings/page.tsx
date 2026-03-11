@@ -96,7 +96,7 @@ export default function OfferingsPage() {
                   </span>
                   <button
                     onClick={() => setDestinationCode(null)}
-                    className="text-gray-500 hover:text-white ml-1"
+                    className="text-gray-400 hover:text-white ml-1"
                   >
                     ✕
                   </button>
@@ -225,7 +225,7 @@ export default function OfferingsPage() {
                           <h3 className="font-bold text-white group-hover:text-brand-accent transition-colors">
                             {rec.country.name}
                           </h3>
-                          <span className="text-gray-500 text-xs">{rec.country.brandName}</span>
+                          <span className="text-gray-400 text-xs">{rec.country.brandName}</span>
                         </div>
                       </div>
                       <span
@@ -248,7 +248,7 @@ export default function OfferingsPage() {
                     </div>
 
                     {rec.paymentRails.length > 0 && (
-                      <div className="flex items-center gap-1.5 text-gray-500 text-xs">
+                      <div className="flex items-center gap-1.5 text-gray-400 text-xs">
                         <CreditCard className="w-3 h-3" />
                         {rec.paymentRails.join(', ')}
                       </div>
@@ -273,7 +273,7 @@ export default function OfferingsPage() {
               <section>
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
                   🦁 Safari Experiences
-                  <span className="text-xs font-normal text-gray-500">
+                  <span className="text-xs font-normal text-gray-400">
                     {offerings.experiences.length} available
                   </span>
                 </h2>
@@ -302,7 +302,7 @@ export default function OfferingsPage() {
                             <span className="font-black text-white text-sm">
                               {formatPackagePrice(pkg)}
                             </span>
-                            <span className="flex items-center gap-1 text-gray-500 text-xs">
+                            <span className="flex items-center gap-1 text-gray-400 text-xs">
                               <Users className="w-3 h-3" />
                               {pkg.maxGuests}
                             </span>
@@ -320,7 +320,7 @@ export default function OfferingsPage() {
               <section>
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
                   🌿 Eco-Tourism
-                  <span className="text-xs font-normal text-gray-500">
+                  <span className="text-xs font-normal text-gray-400">
                     {offerings.ecoTourism.length} available
                   </span>
                 </h2>
@@ -353,7 +353,7 @@ export default function OfferingsPage() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="font-black text-white">${eco.priceUSD}</span>
-                        <span className="flex items-center gap-2 text-gray-500 text-xs">
+                        <span className="flex items-center gap-2 text-gray-400 text-xs">
                           <Clock className="w-3 h-3" />
                           {eco.duration}
                         </span>
@@ -369,7 +369,7 @@ export default function OfferingsPage() {
               <section>
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
                   💼 Professional Sectors in {activeCountry?.name}
-                  <span className="text-xs font-normal text-gray-500">
+                  <span className="text-xs font-normal text-gray-400">
                     {offerings.sectors.length} sectors
                   </span>
                 </h2>
@@ -384,7 +384,7 @@ export default function OfferingsPage() {
                       <h3 className="font-semibold text-white text-sm group-hover:text-brand-accent transition-colors">
                         {sector.name}
                       </h3>
-                      <p className="text-gray-500 text-xs mt-1">
+                      <p className="text-gray-400 text-xs mt-1">
                         {sector.count.toLocaleString()}+ paths
                       </p>
                     </Link>
@@ -398,7 +398,7 @@ export default function OfferingsPage() {
               <section>
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
                   🌍 Trade Corridors
-                  <span className="text-xs font-normal text-gray-500">
+                  <span className="text-xs font-normal text-gray-400">
                     {offerings.tradeCorridors.length} active
                   </span>
                 </h2>
@@ -426,7 +426,7 @@ export default function OfferingsPage() {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                             <Globe className="w-3.5 h-3.5" />
                             Key Sectors
                           </h4>
@@ -442,7 +442,7 @@ export default function OfferingsPage() {
                           </div>
                         </div>
                         <div>
-                          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                             Opportunities
                           </h4>
                           <ul className="space-y-1">

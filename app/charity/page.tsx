@@ -374,7 +374,7 @@ export default function CharityPage() {
 
       {/* Legal footer note */}
       <div className="bg-gray-900/30 py-6 text-center border-t border-gray-800">
-        <p className="text-gray-500 text-sm max-w-2xl mx-auto px-4">
+        <p className="text-gray-400 text-sm max-w-2xl mx-auto px-4">
           UTAMADUNI is registered in Kenya as a Community Based Organisation (CBO). Partnered with
           BeKenya Family Ltd. All programmes are administered locally with full community
           involvement and transparent financial reporting.

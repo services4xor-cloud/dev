@@ -135,7 +135,7 @@ export default function MpesaModal({
             <div className="text-center py-6">
               <Loader2 className="w-12 h-12 text-green-500 mx-auto mb-4 animate-spin" />
               <h3 className="font-bold text-gray-900 mb-2">Check your phone</h3>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-400 text-sm">
                 We sent a payment request to <strong>{phone}</strong>. Enter your M-Pesa PIN to
                 complete the payment.
               </p>
@@ -147,7 +147,7 @@ export default function MpesaModal({
             <div className="text-center py-6">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
               <h3 className="font-bold text-gray-900 text-lg mb-2">Payment Initiated!</h3>
-              <p className="text-gray-500 text-sm mb-4">
+              <p className="text-gray-400 text-sm mb-4">
                 Check your phone and enter your M-Pesa PIN to complete.
               </p>
               {checkoutId && (
@@ -165,7 +165,7 @@ export default function MpesaModal({
             <div className="text-center py-6">
               <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
               <h3 className="font-bold text-gray-900 mb-2">Payment failed</h3>
-              <p className="text-gray-500 text-sm mb-4">{error}</p>
+              <p className="text-gray-400 text-sm mb-4">{error}</p>
               <div className="flex gap-3">
                 <button onClick={() => setStep('input')} className="flex-1 btn-primary py-3">
                   Try Again

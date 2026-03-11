@@ -73,7 +73,7 @@ export default function PathCard({
           </div>
 
           <div className="flex flex-wrap gap-2 mt-2">
-            <span className="flex items-center gap-1 text-xs text-gray-500">
+            <span className="flex items-center gap-1 text-xs text-gray-400">
               <MapPin className="w-3 h-3" />
               {location}
             </span>
@@ -83,7 +83,7 @@ export default function PathCard({
                 Remote
               </span>
             )}
-            <span className="flex items-center gap-1 text-xs text-gray-500">
+            <span className="flex items-center gap-1 text-xs text-gray-400">
               <Clock className="w-3 h-3" />
               {posted}
             </span>
@@ -106,7 +106,7 @@ export default function PathCard({
               </span>
             ))}
             {skills.length > 4 && (
-              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-500 border border-gray-700">
+              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">
                 +{skills.length - 4}
               </span>
             )}

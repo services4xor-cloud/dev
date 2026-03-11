@@ -83,7 +83,7 @@ export default function ProfilePage() {
               style={{ width: `${Math.round((profileComplete / 6) * 100)}%` }}
             />
           </div>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-gray-400 mt-2">
             Complete your profile to get 5x more Anchor views
           </p>
         </div>
