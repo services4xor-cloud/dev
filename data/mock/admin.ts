@@ -37,7 +37,14 @@ export const MOCK_ALL_ANCHORS: Anchor[] = [
     totalChapters: 8,
     verified: true,
   },
-  { id: 'a3', name: 'Safaricom', country: 'KE', openPaths: 5, totalChapters: 15, verified: true },
+  {
+    id: 'a3',
+    name: 'SafariTech Solutions',
+    country: 'KE',
+    openPaths: 5,
+    totalChapters: 15,
+    verified: true,
+  },
   {
     id: 'a4',
     name: 'BeKenya Fashion',
@@ -90,7 +97,7 @@ export const MOCK_ALL_PATHS: AdminPath[] = [
   {
     id: 'pt3',
     title: 'Software Engineer — Fintech',
-    anchor: 'Safaricom',
+    anchor: 'SafariTech Solutions',
     type: 'Professional',
     chapters: 15,
     matchAvg: 86,

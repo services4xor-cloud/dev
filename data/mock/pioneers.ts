@@ -173,7 +173,7 @@ export const MOCK_RECENT_CHAPTERS: AdminChapter[] = [
   {
     pioneer: 'Priya Sharma',
     path: 'Software Engineer — Fintech',
-    anchor: 'Safaricom',
+    anchor: 'SafariTech Solutions',
     score: 88,
     status: 'Under Review',
   },

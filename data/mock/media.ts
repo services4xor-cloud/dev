@@ -51,8 +51,8 @@ export const MEDIA_FEATURED_PROJECTS = [
     value: 'KES 180,000',
   },
   {
-    title: 'Safaricom Digital Campaign',
-    client: 'Safaricom Brand Team',
+    title: 'SafariTech Digital Campaign',
+    client: 'SafariTech Brand Team',
     description:
       '3 content creators needed for a nationwide digital campaign celebrating Kenyan innovation and everyday heroes.',
     needs: ['Content Creator x3', 'Social Media Manager'],

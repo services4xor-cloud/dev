@@ -14,7 +14,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p1',
     title: 'Senior Software Pioneer',
-    anchorName: 'Safaricom PLC',
+    anchorName: 'SafariTech Solutions',
     location: 'Nairobi, Kenya',
     country: 'KE',
     category: 'professional',
@@ -29,7 +29,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p2',
     title: 'Financial Pioneer — UK Markets',
-    anchorName: 'Barclays UK',
+    anchorName: 'London Financial Partners',
     location: 'London, UK',
     country: 'GB',
     category: 'professional',
@@ -44,7 +44,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p3',
     title: 'Remote Community Support',
-    anchorName: 'Shopify',
+    anchorName: 'Ottawa Commerce Inc',
     location: 'Remote — Worldwide',
     country: 'REMOTE',
     category: 'professional',
@@ -58,7 +58,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p4',
     title: 'Healer Pioneer — NHS Scotland',
-    anchorName: 'NHS Scotland',
+    anchorName: 'Edinburgh Health Trust',
     location: 'Edinburgh, UK',
     country: 'GB',
     category: 'professional',
@@ -73,7 +73,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p5',
     title: 'Wildlife Photography Creator',
-    anchorName: 'Nat Geo Expeditions',
+    anchorName: 'World Wildlife Ventures',
     location: 'Maasai Mara, Kenya',
     country: 'KE',
     category: 'creative',
@@ -101,7 +101,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p7',
     title: 'Dubai Construction Guardian',
-    anchorName: 'EMAAR Properties',
+    anchorName: 'Dubai Development Group',
     location: 'Dubai, UAE',
     country: 'AE',
     category: 'community',
@@ -115,7 +115,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p8',
     title: 'Eco-Lodge Host Pioneer',
-    anchorName: 'Basecamp Explorer',
+    anchorName: 'Savannah Trails Safari',
     location: 'Laikipia, Kenya',
     country: 'KE',
     category: 'explorer',
@@ -248,7 +248,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-de-1',
     title: 'Cloud Engineer — SAP',
-    anchorName: 'SAP SE',
+    anchorName: 'Berlin Digital GmbH',
     location: 'Walldorf, Germany',
     country: 'DE',
     category: 'professional',
@@ -262,8 +262,8 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   },
   {
     id: 'p-de-2',
-    title: 'Nurse — Siemens Healthineers',
-    anchorName: 'Siemens Healthineers',
+    title: 'Nurse — Diagnostic Imaging',
+    anchorName: 'Munich MedTech AG',
     location: 'Erlangen, Germany',
     country: 'DE',
     category: 'professional',
@@ -278,7 +278,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-de-3',
     title: 'Train Conductor Trainee',
-    anchorName: 'Deutsche Bahn',
+    anchorName: 'Hamburg Port Services',
     location: 'Berlin, Germany',
     country: 'DE',
     category: 'professional',
@@ -323,7 +323,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-ch-1',
     title: 'Pharma Researcher — Oncology',
-    anchorName: 'Novartis',
+    anchorName: 'Basel Pharma SA',
     location: 'Basel, Switzerland',
     country: 'CH',
     category: 'professional',
@@ -338,7 +338,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-ch-2',
     title: 'Wealth Management Associate',
-    anchorName: 'UBS',
+    anchorName: 'Zurich FinTech AG',
     location: 'Zurich, Switzerland',
     country: 'CH',
     category: 'professional',
@@ -352,7 +352,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-ch-3',
     title: 'Hospitality Manager — Alpine Resort',
-    anchorName: 'Kempinski Palace',
+    anchorName: 'Alpine Grand Hotel',
     location: 'St. Moritz, Switzerland',
     country: 'CH',
     category: 'explorer',
@@ -367,7 +367,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-ch-4',
     title: 'Precision Machinist',
-    anchorName: 'Swatch Group',
+    anchorName: 'Basel Pharma SA',
     location: 'Biel, Switzerland',
     country: 'CH',
     category: 'professional',
@@ -382,7 +382,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-th-1',
     title: 'Hotel Manager — Koh Samui',
-    anchorName: 'Anantara Hotels',
+    anchorName: 'Siam Agricultural Group',
     location: 'Koh Samui, Thailand',
     country: 'TH',
     category: 'explorer',
@@ -397,7 +397,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-th-2',
     title: 'Full-Stack Developer',
-    anchorName: 'Agoda',
+    anchorName: 'Bangkok Travel Tech',
     location: 'Bangkok, Thailand',
     country: 'TH',
     category: 'professional',
@@ -412,7 +412,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-th-3',
     title: 'Dive Instructor',
-    anchorName: 'Crystal Dive',
+    anchorName: 'Andaman Marine Adventures',
     location: 'Koh Tao, Thailand',
     country: 'TH',
     category: 'explorer',
@@ -427,7 +427,7 @@ export const MOCK_VENTURE_PATHS: PathListItem[] = [
   {
     id: 'p-th-4',
     title: 'Agriculture Innovation Lead',
-    anchorName: 'CP Group',
+    anchorName: 'Bangkok Travel Tech',
     location: 'Nakhon Ratchasima, Thailand',
     country: 'TH',
     category: 'community',
@@ -559,7 +559,7 @@ export const MOCK_MATCHING_PATHS: PathOpportunity[] = [
   {
     id: 'path-003',
     title: 'Software Engineer — Fintech',
-    anchorName: 'Safaricom',
+    anchorName: 'SafariTech Solutions',
     category: 'tech',
     location: 'Kenya',
     requiredSkills: ['JavaScript', 'React', 'Node.js', 'API design'],

@@ -2,13 +2,37 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Check, Zap, Star, Crown, Briefcase, Globe, Users } from 'lucide-react'
-import { PRICING_PLANS, PAYMENT_METHODS } from '@/data/mock'
+import { Check, Star, Crown, Briefcase, Globe, Users, Zap } from 'lucide-react'
+import {
+  PRICING_PLANS,
+  PAYMENT_METHODS,
+  COMMISSION_RATES,
+  FREE_TIER,
+  formatPlanPrice,
+} from '@/data/mock'
+import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
+import { COUNTRIES } from '@/lib/countries'
 
 const ICON_MAP: Record<string, typeof Briefcase> = { Briefcase, Star, Crown }
 
+const CURRENCY_OPTIONS = [
+  { code: 'KES', flag: '🇰🇪', label: 'KES' },
+  { code: 'EUR', flag: '🇪🇺', label: 'EUR' },
+  { code: 'CHF', flag: '🇨🇭', label: 'CHF' },
+  { code: 'THB', flag: '🇹🇭', label: 'THB' },
+  { code: 'USD', flag: '🇺🇸', label: 'USD' },
+] as const
+
 export default function PricingPage() {
-  const [currency, setCurrency] = useState<'KES' | 'USD'>('KES')
+  const { identity } = useIdentity()
+  const { t } = useTranslation()
+
+  // Default currency from identity's country config
+  const countryConfig = COUNTRIES[identity.country as keyof typeof COUNTRIES]
+  const defaultCurrency = countryConfig?.currency ?? 'USD'
+
+  const [currency, setCurrency] = useState(defaultCurrency)
 
   return (
     <div className="min-h-screen bg-brand-bg">
@@ -17,30 +41,31 @@ export default function PricingPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-brand-primary/30 text-brand-accent px-4 py-2 rounded-full text-sm font-medium mb-4 border border-brand-accent/20">
             <Globe className="w-4 h-4" />
-            Pay from anywhere — M-Pesa, card, or mobile money
+            {t('pricing.badge') || 'Pay from anywhere — M-Pesa, SEPA, card, or mobile money'}
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl 3xl:text-6xl font-black text-white mb-4">
-            Simple, transparent pricing
+            {t('pricing.title') || 'Simple, transparent pricing'}
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Post a Path in minutes. Pay with M-Pesa. Reach thousands of qualified Pioneers across
-            Kenya and beyond.
+            {t('pricing.subtitle') ||
+              'Pioneers browse and apply for free. Anchors post Paths starting at zero cost. Scale when you need to.'}
           </p>
 
-          {/* Currency toggle */}
-          <div className="flex items-center justify-center gap-2 mt-6">
-            <button
-              onClick={() => setCurrency('KES')}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'KES' ? 'bg-brand-primary text-white border border-brand-accent/30' : 'bg-gray-900 text-gray-400 border border-gray-700 hover:border-gray-600'}`}
-            >
-              🇰🇪 KES
-            </button>
-            <button
-              onClick={() => setCurrency('USD')}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${currency === 'USD' ? 'bg-brand-primary text-white border border-brand-accent/30' : 'bg-gray-900 text-gray-400 border border-gray-700 hover:border-gray-600'}`}
-            >
-              🇺🇸 USD
-            </button>
+          {/* Currency selector */}
+          <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
+            {CURRENCY_OPTIONS.map((opt) => (
+              <button
+                key={opt.code}
+                onClick={() => setCurrency(opt.code)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                  currency === opt.code
+                    ? 'bg-brand-primary text-white border border-brand-accent/30'
+                    : 'bg-gray-900 text-gray-400 border border-gray-700 hover:border-gray-600'
+                }`}
+              >
+                {opt.flag} {opt.label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -48,6 +73,9 @@ export default function PricingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {PRICING_PLANS.map((plan) => {
             const Icon = ICON_MAP[plan.icon] ?? Briefcase
+            const planKey = plan.name.toLowerCase() as 'basic' | 'featured' | 'premium'
+            const priceDisplay = formatPlanPrice(planKey, currency)
+
             return (
               <div
                 key={plan.name}
@@ -77,10 +105,10 @@ export default function PricingPage() {
                 <p className="text-gray-400 text-sm mt-1 mb-4">{plan.description}</p>
 
                 <div className="mb-6">
-                  <div className="text-3xl font-black text-white">
-                    {currency === 'KES' ? `KES ${plan.price.toLocaleString()}` : `$${plan.usd}`}
+                  <div className="text-3xl font-black text-white">{priceDisplay}</div>
+                  <div className="text-gray-400 text-sm">
+                    {planKey === 'basic' ? 'forever' : 'per month'}
                   </div>
-                  <div className="text-gray-400 text-sm">one-time payment</div>
                 </div>
 
                 <ul className="space-y-2 mb-6">
@@ -95,7 +123,7 @@ export default function PricingPage() {
                 </ul>
 
                 <Link
-                  href={`/anchors/post-path?plan=${plan.name.toLowerCase()}`}
+                  href={`/anchors/post-path?plan=${planKey}`}
                   className={`block w-full text-center py-3 rounded-xl font-semibold transition-colors ${
                     plan.popular
                       ? 'bg-brand-primary text-white hover:bg-brand-primary-light border border-brand-accent/30'
@@ -109,25 +137,51 @@ export default function PricingPage() {
           })}
         </div>
 
+        {/* Agent Commission */}
+        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-accent/20 mb-16">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="w-16 h-16 rounded-2xl bg-brand-primary/50 flex items-center justify-center flex-shrink-0">
+              <Zap className="w-8 h-8 text-brand-accent" />
+            </div>
+            <div className="text-center md:text-left">
+              <h2 className="text-2xl font-bold text-white mb-2">
+                Agents earn {(COMMISSION_RATES.agent * 100).toFixed(0)}% commission
+              </h2>
+              <p className="text-gray-400">
+                Forward Paths to your network via WhatsApp. When a Pioneer gets placed through your
+                referral, you earn {(COMMISSION_RATES.agent * 100).toFixed(0)}% of the placement
+                fee. No cap on earnings.
+              </p>
+            </div>
+            <Link
+              href="/agents"
+              className="bg-brand-primary text-white font-bold px-6 py-3 rounded-xl hover:bg-brand-primary-light border border-brand-accent/30 transition-colors whitespace-nowrap"
+            >
+              Become an Agent →
+            </Link>
+          </div>
+        </div>
+
         {/* Payment Methods */}
         <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-primary/30 mb-16">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-white">
-              Pay from anywhere in Africa and the world
+              {t('pricing.paymentTitle') || 'Pay from anywhere in the world'}
             </h2>
             <p className="text-gray-400 mt-2">
-              We accept every major payment method so no one is excluded
+              {t('pricing.paymentSubtitle') ||
+                'We accept every major payment method so no one is excluded'}
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
             {PAYMENT_METHODS.map((method) => (
               <div
                 key={method.name}
-                className="text-center p-4 bg-gray-800/60 rounded-xl border border-gray-700/50"
+                className="text-center p-3 bg-gray-800/60 rounded-xl border border-gray-700/50"
               >
                 <div className="text-2xl mb-1">{method.flag}</div>
                 <div className="font-semibold text-white text-sm">{method.name}</div>
-                <div className="text-xs text-gray-400 mt-0.5">{method.desc}</div>
+                <div className="text-[10px] text-gray-400 mt-0.5">{method.desc}</div>
               </div>
             ))}
           </div>
@@ -136,16 +190,18 @@ export default function PricingPage() {
         {/* For Pioneers */}
         <div className="bg-gradient-to-r from-brand-primary to-brand-primary-light rounded-2xl p-8 text-white text-center border border-brand-accent/20">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-80" />
-          <h2 className="text-2xl font-bold mb-2">Pioneers — always free</h2>
+          <h2 className="text-2xl font-bold mb-2">
+            {t('pricing.pioneersTitle') || 'Pioneers — always free'}
+          </h2>
           <p className="opacity-90 max-w-lg mx-auto mb-6">
-            Creating a profile, opening Chapters, and getting placed is completely free for
-            Pioneers. Always.
+            {t('pricing.pioneersDesc') ||
+              `Creating a profile, opening Chapters, and getting placed is completely free for Pioneers. Always. Up to ${FREE_TIER.maxChapters} active Chapters.`}
           </p>
           <Link
             href="/signup?role=pioneer"
             className="bg-white text-brand-primary font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors inline-block"
           >
-            Create Free Profile →
+            {t('pricing.pioneersCta') || 'Create Free Profile →'}
           </Link>
         </div>
       </div>
