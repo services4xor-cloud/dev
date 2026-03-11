@@ -93,6 +93,47 @@ You mentioned "adapt the logo." Questions:
 
 ---
 
+### Q5 — Agentic Infrastructure: Paperclip + OpenClaw + n8n (Session 33)
+
+**Owner said:** "Leverage open source Paperclip, OpenClaw.ai and n8n for the agentic features planned."
+
+**Research findings:**
+
+| Tool          | What It Is                                                                                                            | Stars | How We Use It                                                                                     |
+| ------------- | --------------------------------------------------------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------- |
+| **Paperclip** | MIT-licensed agent orchestration — org charts, budgets, approval gates for AI agents                                  | 14.6k | Orchestrate our social posting agents, content moderation, Anchor automation                      |
+| **OpenClaw**  | Open-source personal AI assistant (302k stars). Runs locally, integrates 50+ services via WhatsApp/Telegram/Slack     | 302k  | Chat-based content review for Anchors. WhatsApp/Telegram bot for reviewing + approving auto-posts |
+| **n8n**       | Open-source workflow automation. 490+ social media templates. Multi-platform posting (TikTok, Insta, FB, LinkedIn, X) | 60k+  | Anchor auto-posting pipeline: template → watermark → cut → review → post                          |
+
+**Proposed architecture for Anchor social auto-posting:**
+
+```
+Anchor creates Path/Venture
+    ↓
+n8n workflow triggers
+    ↓
+AI generates platform-specific content (GPT/Claude)
+    ↓
+Apply BeNetwork watermark + brand templates
+    ↓
+OpenClaw sends preview to Anchor via WhatsApp/Telegram
+    ↓
+Anchor approves/edits in chat
+    ↓
+n8n posts to TikTok, Instagram, Facebook, LinkedIn
+    ↓
+Paperclip tracks costs, manages agent budgets
+```
+
+**Questions for owner:**
+
+1. Self-host n8n or use n8n Cloud?
+2. Which platforms first? (WhatsApp Business + Instagram + TikTok seems highest impact)
+3. Budget for API costs (OpenAI/Claude for content generation, platform APIs)?
+4. Watermark design — use existing logo + gold accent?
+
+---
+
 ## Answered / Recorded
 
 ### A1 — Grouping Priority (Session 20)

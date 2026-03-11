@@ -146,6 +146,16 @@ _Month 2–3 post-launch_
 | Referral program (live)           | Medium | Low    |
 | UTAMADUNI live impact counter     | Medium | Low    |
 | Community threads (like Reddit)   | High   | High   |
+| **Anchor social auto-posting**    | High   | Medium |
+| **n8n workflow automation**       | High   | Medium |
+
+**Anchor Auto-Posting (leveraging open-source):**
+
+- **n8n** (self-hosted) — workflow engine for content generation → watermarking → multi-platform posting
+- **OpenClaw** — chat-based review. Anchor approves/edits posts via WhatsApp or Telegram before publishing
+- **Paperclip** — agent orchestration layer. Manages posting agents with budget caps, audit logs, approval gates
+- Platforms: WhatsApp Business, TikTok, Instagram, Facebook, LinkedIn
+- Templates with BeNetwork watermark, automatic content cutting from Path/Venture data
 
 **Targets:** 500 Pioneers, 50 Paths, 20 bookings/month, KES 120K MRR.
 
