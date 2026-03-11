@@ -15,6 +15,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
 import { getLocalizedCountryName, getDefaultLanguage } from '@/lib/endonyms'
+import { detectCountryFromTimezone } from '@/lib/geo'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -57,6 +58,15 @@ interface IdentityContextValue {
 const DEFAULT_COUNTRY = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase()
 const DEFAULT_LANGUAGE = getDefaultLanguage(DEFAULT_COUNTRY)
 
+// Countries where "Be" + full country name doesn't work as a brand name
+const BRAND_NAME_OVERRIDES: Record<string, string> = {
+  GB: 'BeUK',
+  US: 'BeUSA',
+  AE: 'BeUAE',
+  ZA: 'BeSouthAfrica',
+  KR: 'BeSouthKorea',
+}
+
 // ─── Context ────────────────────────────────────────────────────────
 
 const IdentityContext = createContext<IdentityContextValue | undefined>(undefined)
@@ -71,10 +81,11 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     language: DEFAULT_LANGUAGE,
   })
 
-  // Hydrate from localStorage on mount
+  // Hydrate from localStorage on mount, or auto-detect from browser
   useEffect(() => {
+    let stored: string | null = null
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
+      stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored)
         if (parsed?.country) {
@@ -87,6 +98,19 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       }
     } catch {
       // Ignore — use default
+    }
+
+    // If nothing stored, detect from browser
+    if (!stored) {
+      try {
+        const browserLang = navigator.language?.split('-')[0] || 'en'
+        const detected = detectCountryFromTimezone()
+        if (detected) {
+          setIdentity({ country: detected, language: browserLang })
+        }
+      } catch {
+        // Ignore — use defaults
+      }
     }
   }, [])
 
@@ -132,7 +156,8 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
 
   // Localized names — thread brand overrides country brand when active
   const countryName = getLocalizedCountryName(identity.country, identity.language)
-  const brandName = identity.threadBrandName || `Be${countryName}`
+  const brandName =
+    identity.threadBrandName || BRAND_NAME_OVERRIDES[identity.country] || `Be${countryName}`
 
   // Helper to localize any country code in the user's current language
   const localizeCountry = useCallback(
@@ -169,7 +194,7 @@ export function useIdentity(): IdentityContextValue {
     return {
       identity: { country: DEFAULT_COUNTRY, language: DEFAULT_LANGUAGE },
       countryName: fallbackName,
-      brandName: `Be${fallbackName}`,
+      brandName: BRAND_NAME_OVERRIDES[DEFAULT_COUNTRY] || `Be${fallbackName}`,
       setCountry: () => {},
       setLanguage: () => {},
       setThread: () => {},

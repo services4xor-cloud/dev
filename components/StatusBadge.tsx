@@ -53,6 +53,31 @@ const STATUS_STYLES: Record<string, { label: string; className: string }> = {
     label: 'Closed',
     className: 'bg-gray-700/50 text-gray-400 border-gray-600/50',
   },
+  // Forward statuses (Agent system)
+  sent: {
+    label: 'Sent',
+    className: 'bg-gray-700/50 text-gray-400 border-gray-600/50',
+  },
+  clicked: {
+    label: 'Clicked',
+    className: 'bg-blue-900/50 text-blue-400 border-blue-700/50',
+  },
+  signed_up: {
+    label: 'Signed Up',
+    className: 'bg-brand-accent/10 text-brand-accent border-brand-accent/30',
+  },
+  applied: {
+    label: 'Applied',
+    className: 'bg-purple-900/50 text-purple-400 border-purple-700/50',
+  },
+  placed: {
+    label: 'Placed',
+    className: 'bg-green-900/50 text-green-400 border-green-700/50',
+  },
+  expired: {
+    label: 'Expired',
+    className: 'bg-gray-700/50 text-gray-400 border-gray-600/50',
+  },
   // Generic
   active: {
     label: 'Active',

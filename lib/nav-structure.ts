@@ -19,6 +19,7 @@ import {
   LogIn,
   Globe,
   Users,
+  Send,
 } from 'lucide-react'
 import { COUNTRIES } from '@/lib/countries'
 
@@ -109,6 +110,22 @@ export const ANCHOR_NAV_LINKS: NavLink[] = [
   },
 ]
 
+// ── Agent-facing links ──────────────────────────────────────────────
+export const AGENT_NAV_LINKS: NavLink[] = [
+  {
+    href: '/agents/dashboard',
+    label: 'Agent Dashboard',
+    icon: LayoutDashboard,
+    aria: 'Manage your forwards and earnings',
+  },
+  {
+    href: '/agents',
+    label: 'Become an Agent',
+    icon: Send,
+    aria: 'Learn about the Agent programme',
+  },
+]
+
 // ── About / company links ──────────────────────────────────────────
 export const ABOUT_NAV_LINKS: NavLink[] = [
   {
@@ -151,6 +168,11 @@ export const FOOTER_ANCHOR_LINKS: FooterLink[] = [
   { href: '/anchors/post-path', label: 'Post a Path' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/anchors/dashboard', label: 'Anchor Dashboard' },
+]
+
+export const FOOTER_AGENT_LINKS: FooterLink[] = [
+  { href: '/agents', label: 'Become an Agent' },
+  { href: '/agents/dashboard', label: 'Agent Dashboard' },
 ]
 
 export const FOOTER_DISCOVER_LINKS: FooterLink[] = [

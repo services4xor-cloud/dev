@@ -39,11 +39,14 @@ model User {
   referred      Referral?         @relation("Referred")
   threadMemberships ThreadMembership[]
   savedPaths    SavedPath[]
+  forwards      Forward[]         // Agent forwards paths to workers
+  agentProfile  AgentProfile?     // Agent-specific profile (territory, commission)
 }
 
 enum UserRole {
   PIONEER
   ANCHOR
+  AGENT
   ADMIN
 }
 
@@ -115,6 +118,7 @@ model Path {
   chapters     Chapter[]
   payments     Payment[]
   savedBy      SavedPath[]
+  forwards     Forward[]    // Agent forwards of this path
 
   @@index([country])
   @@index([status])
@@ -313,6 +317,79 @@ model Referral {
   bonusPaid    Boolean  @default(false)
   bonusAmount  Int?
   createdAt    DateTime @default(now())
+}
+
+// ─── Agent Profile ──────────────────────────────────────────────────────────
+// Agent-specific data: territory, commission rate, network size.
+// Agents are the platform bootstrap — they know workers locally and forward
+// demand signals to their network (WhatsApp, in-person, community groups).
+
+model AgentProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  territory       String   // Country/city they cover: "KE", "KE-Nairobi", "DE-Berlin"
+  sectors         String[] // Sectors they specialize in: ["healthcare", "tech", "hospitality"]
+  networkSize     Int      @default(0) // How many workers they know
+  commissionRate  Float    @default(0.10) // 10% default commission on placement fee
+  totalEarnings   Int      @default(0) // Lifetime earnings in smallest currency unit
+  totalPlacements Int      @default(0) // Successful placements
+  totalForwards   Int      @default(0) // Total forwards sent
+  whatsappNumber  String?  // For receiving demand notifications
+  isActive        Boolean  @default(true)
+  verifiedAt      DateTime? // When admin verified this agent
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([territory])
+  @@index([isActive])
+}
+
+// ─── Forwards ───────────────────────────────────────────────────────────────
+// When an Agent forwards a Path to a worker. Tracks the full lifecycle:
+// forward → click → signup → chapter → placement → commission.
+
+model Forward {
+  id          String        @id @default(cuid())
+  agentId     String
+  agent       User          @relation(fields: [agentId], references: [id])
+  pathId      String
+  path        Path          @relation(fields: [pathId], references: [id])
+  workerName  String?       // Who the agent forwarded to (optional, for agent's tracking)
+  workerPhone String?       // Worker's phone (for WhatsApp follow-up)
+  workerEmail String?       // Worker's email (if known)
+  channel     ForwardChannel @default(WHATSAPP)
+  trackingCode String       @unique // Unique code embedded in forwarding link
+  status      ForwardStatus @default(SENT)
+  clickedAt   DateTime?     // When worker clicked the link
+  signedUpAt  DateTime?     // When worker created an account
+  chapterId   String?       // If worker opened a Chapter via this forward
+  placedAt    DateTime?     // If worker got placed
+  commission  Int?          // Commission earned (in smallest currency unit)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([agentId])
+  @@index([pathId])
+  @@index([trackingCode])
+  @@index([status])
+}
+
+enum ForwardChannel {
+  WHATSAPP
+  SMS
+  EMAIL
+  IN_PERSON
+  SOCIAL_MEDIA
+}
+
+enum ForwardStatus {
+  SENT        // Agent forwarded the path
+  CLICKED     // Worker clicked the link
+  SIGNED_UP   // Worker created an account
+  APPLIED     // Worker opened a Chapter
+  PLACED      // Worker got placed — commission earned!
+  EXPIRED     // Link expired (30 days)
 }
 
 // ─── Social Media Posts ───────────────────────────────────────────────────────
