@@ -19,6 +19,7 @@ import { SAFARI_PACKAGES, getPackageById, formatPackagePrice } from '@/lib/safar
 import { VOCAB } from '@/lib/vocabulary'
 import MpesaModal from '@/components/MpesaModal'
 import { IMPACT_PARTNER } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ── Engagement helpers ──────────────────────────────────────────────
 // Deterministic "random" values seeded by package ID for consistency
@@ -46,6 +47,7 @@ interface BookingInfo {
 }
 
 export default function ExperiencePage() {
+  const { t } = useTranslation()
   const params = useParams()
   const id =
     typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : ''
@@ -87,11 +89,8 @@ export default function ExperiencePage() {
       <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="text-6xl mb-4">🧭</div>
-          <h1 className="text-2xl font-bold text-white mb-2">Venture Not Found</h1>
-          <p className="text-gray-400 mb-6">
-            This path may have already been claimed, or doesn&apos;t exist yet. Explore other open
-            ventures below.
-          </p>
+          <h1 className="text-2xl font-bold text-white mb-2">{t('exp.notFoundTitle')}</h1>
+          <p className="text-gray-400 mb-6">{t('exp.notFoundDesc')}</p>
           <Link
             href="/ventures"
             className="inline-block text-white font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105"
@@ -101,7 +100,7 @@ export default function ExperiencePage() {
               border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
             }}
           >
-            ← Back to Ventures
+            {t('exp.backToVentures')}
           </Link>
         </div>
       </div>
@@ -122,10 +121,10 @@ export default function ExperiencePage() {
     cultural: '🎭',
   }
 
-  const SEASON_LABELS: Record<string, string> = {
-    high: 'High Season',
-    low: 'Low Season',
-    all: 'Year-Round',
+  const SEASON_I18N: Record<string, string> = {
+    high: 'exp.seasonHigh',
+    low: 'exp.seasonLow',
+    all: 'exp.seasonAll',
   }
 
   const hasFessyMarkup = pkg.markup && pkg.markup > 0
@@ -166,9 +165,9 @@ export default function ExperiencePage() {
                 <CheckCircle className="w-12 h-12 text-green-400" />
               </div>
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">You&apos;re going!</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('exp.youreGoing')}</h1>
             <p className="text-gray-400 text-lg">
-              Your adventure to {pkg.destination} is confirmed.
+              {t('exp.adventureConfirmed', { destination: pkg.destination })}
             </p>
           </div>
 
@@ -185,7 +184,7 @@ export default function ExperiencePage() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-white/70 text-xs uppercase tracking-wider mb-1">
-                    Booking Confirmed
+                    {t('exp.bookingConfirmed')}
                   </div>
                   <div className="text-white font-bold text-xl">{pkg.name}</div>
                 </div>
@@ -198,25 +197,25 @@ export default function ExperiencePage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-gray-400 text-xs uppercase tracking-wider mb-1">
-                    Destination
+                    {t('exp.destination')}
                   </div>
                   <div className="text-white font-medium">{pkg.destination}</div>
                 </div>
                 <div>
                   <div className="text-gray-400 text-xs uppercase tracking-wider mb-1">
-                    Duration
+                    {t('exp.duration')}
                   </div>
                   <div className="text-white font-medium">{pkg.duration}</div>
                 </div>
                 <div>
                   <div className="text-gray-400 text-xs uppercase tracking-wider mb-1">
-                    Provider
+                    {t('exp.provider')}
                   </div>
                   <div className="text-white font-medium">{pkg.provider}</div>
                 </div>
                 <div>
                   <div className="text-gray-400 text-xs uppercase tracking-wider mb-1">
-                    Next Departure
+                    {t('exp.nextDeparture')}
                   </div>
                   <div className="text-white font-medium">{nextDeparture}</div>
                 </div>
@@ -224,17 +223,17 @@ export default function ExperiencePage() {
 
               <div className="border-t border-brand-primary/30 pt-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-400">Amount paid</span>
+                  <span className="text-gray-400">{t('exp.amountPaid')}</span>
                   <span className="text-white font-bold text-lg">{formatPackagePrice(pkg)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-400">Payment</span>
+                  <span className="text-gray-400">{t('exp.payment')}</span>
                   <span className="text-gray-300 text-sm">
                     {booking.checkoutId.startsWith('card') ? '💳 Card' : '📱 M-Pesa'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-gray-400">Reference</span>
+                  <span className="text-gray-400">{t('exp.reference')}</span>
                   <span className="text-gray-400 text-xs font-mono">{booking.checkoutId}</span>
                 </div>
               </div>
@@ -245,12 +244,13 @@ export default function ExperiencePage() {
                   <div className="text-2xl">🌱</div>
                   <div>
                     <div className="text-brand-accent font-semibold text-sm">
-                      You just made an impact
+                      {t('exp.madeImpact')}
                     </div>
                     <p className="text-gray-400 text-xs mt-1">
-                      {IMPACT_PARTNER.contributionAmount} from your booking goes directly to{' '}
-                      {IMPACT_PARTNER.name} Community Based Organisation — funding education,
-                      healthcare, and opportunity in Kenya.
+                      {t('exp.impactNote', {
+                        amount: IMPACT_PARTNER.contributionAmount,
+                        name: IMPACT_PARTNER.name,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -259,10 +259,7 @@ export default function ExperiencePage() {
 
             {/* Receipt footer */}
             <div className="px-6 py-4 border-t border-brand-primary/30 bg-gray-900/40">
-              <p className="text-gray-400 text-xs text-center">
-                Confirmation sent to your phone. Provider will contact you within 24 hours with
-                detailed pickup instructions.
-              </p>
+              <p className="text-gray-400 text-xs text-center">{t('exp.confirmationSent')}</p>
             </div>
           </div>
 
@@ -277,13 +274,13 @@ export default function ExperiencePage() {
                 border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
               }}
             >
-              My Dashboard →
+              {t('exp.myDashboard')}
             </Link>
             <Link
               href="/ventures"
               className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-gray-300 bg-gray-800 border border-gray-700 hover:bg-gray-700 transition-all"
             >
-              Browse More Ventures
+              {t('exp.browseMore')}
             </Link>
           </div>
         </div>
@@ -297,8 +294,8 @@ export default function ExperiencePage() {
       <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin mx-auto mb-6" />
-          <h2 className="text-xl font-bold text-white mb-2">Processing your payment...</h2>
-          <p className="text-gray-400">This will only take a moment.</p>
+          <h2 className="text-xl font-bold text-white mb-2">{t('exp.processing')}</h2>
+          <p className="text-gray-400">{t('exp.processingNote')}</p>
         </div>
       </div>
     )
@@ -313,7 +310,7 @@ export default function ExperiencePage() {
             href="/ventures"
             className="inline-flex items-center gap-2 text-gray-300 hover:text-white text-sm mb-8 transition-colors"
           >
-            ← Back to Ventures
+            {t('exp.backToVentures')}
           </Link>
 
           <div className="flex items-center gap-3 mb-4 flex-wrap">
@@ -330,44 +327,48 @@ export default function ExperiencePage() {
             </span>
             {pkg.season && (
               <span className="px-3 py-1 rounded-full text-sm font-medium bg-white/20 text-white">
-                {SEASON_LABELS[pkg.season] ?? pkg.season}
+                {t(SEASON_I18N[pkg.season] ?? 'exp.seasonAll')}
               </span>
             )}
             {/* Social proof badge */}
             <span className="px-3 py-1 rounded-full text-xs font-medium bg-brand-accent/20 text-brand-accent flex items-center gap-1">
               <Star size={11} className="fill-current" />
-              {rating} · {recentBookings} booked this month
+              {rating} · {t('exp.bookedThisMonth', { count: String(recentBookings) })}
             </span>
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">{pkg.name}</h1>
-          <p className="text-gray-300 text-lg mb-phi-5">by {pkg.provider}</p>
+          <p className="text-gray-300 text-lg mb-phi-5">
+            {t('exp.byProvider', { name: pkg.provider })}
+          </p>
 
           {/* Quick stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="bg-white/10 border border-white/20 rounded-xl p-4">
               <div className="flex items-center gap-2 text-gray-300 text-xs mb-1">
                 <Clock size={14} />
-                Duration
+                {t('exp.duration')}
               </div>
               <div className="text-white font-semibold">{pkg.duration}</div>
             </div>
             <div className="bg-white/10 border border-white/20 rounded-xl p-4">
               <div className="flex items-center gap-2 text-gray-300 text-xs mb-1">
                 <Users size={14} />
-                Max Pioneers
+                {t('exp.maxPioneers')}
               </div>
-              <div className="text-white font-semibold">{pkg.maxGuests} guests</div>
+              <div className="text-white font-semibold">
+                {t('exp.guests', { count: String(pkg.maxGuests) })}
+              </div>
             </div>
             <div className="bg-white/10 border border-white/20 rounded-xl p-4">
               <div className="flex items-center gap-2 text-gray-300 text-xs mb-1">
                 <MapPin size={14} />
-                Destination
+                {t('exp.destination')}
               </div>
               <div className="text-white font-semibold text-sm">{pkg.destination}</div>
             </div>
             <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-              <div className="text-gray-300 text-xs mb-1">Starting from</div>
+              <div className="text-gray-300 text-xs mb-1">{t('exp.startingFrom')}</div>
               <div className="text-white font-bold text-xl">{formatPackagePrice(pkg)}</div>
             </div>
           </div>
@@ -380,7 +381,7 @@ export default function ExperiencePage() {
           <div className="lg:col-span-2 space-y-8">
             {/* Highlights */}
             <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
-              <h2 className="text-lg font-bold text-white mb-phi-4">✦ Why This Venture</h2>
+              <h2 className="text-lg font-bold text-white mb-phi-4">{t('exp.whyThisVenture')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {pkg.highlights.map((highlight, i) => (
                   <div key={i} className="flex items-start gap-3">
@@ -395,14 +396,14 @@ export default function ExperiencePage() {
 
             {/* Included / Excluded */}
             <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
-              <h2 className="text-lg font-bold text-white mb-phi-5">What&apos;s Included</h2>
+              <h2 className="text-lg font-bold text-white mb-phi-5">{t('exp.whatsIncluded')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
                     <span className="w-5 h-5 rounded-full bg-green-900/50 flex items-center justify-center text-green-400 text-xs">
                       ✓
                     </span>
-                    Included
+                    {t('exp.included')}
                   </h3>
                   <ul className="space-y-2">
                     {pkg.includes.map((item, i) => (
@@ -418,7 +419,7 @@ export default function ExperiencePage() {
                     <span className="w-5 h-5 rounded-full bg-red-900/50 flex items-center justify-center text-red-400 text-xs">
                       ✗
                     </span>
-                    Not Included
+                    {t('exp.notIncluded')}
                   </h3>
                   <ul className="space-y-2">
                     {pkg.excludes.map((item, i) => (
@@ -434,9 +435,8 @@ export default function ExperiencePage() {
               {hasFessyMarkup && (
                 <div className="mt-6 bg-brand-primary/10 border border-brand-accent/20 rounded-xl p-4">
                   <p className="text-gray-300 text-sm">
-                    <span className="font-semibold">Transparency note:</span> This venture includes
-                    a FessyTours service fee ({Math.round((pkg.markup ?? 0) * 100)}%). This fee
-                    funds platform operations and Pioneer support services.
+                    <span className="font-semibold">{t('exp.transparencyNote')}</span>{' '}
+                    {t('exp.feeNote', { percent: String(Math.round((pkg.markup ?? 0) * 100)) })}
                   </p>
                 </div>
               )}
@@ -444,7 +444,7 @@ export default function ExperiencePage() {
 
             {/* Itinerary */}
             <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
-              <h2 className="text-lg font-bold text-white mb-4">Day-by-Day Itinerary</h2>
+              <h2 className="text-lg font-bold text-white mb-4">{t('exp.itinerary')}</h2>
               <div className="space-y-3">
                 {pkg.days.map((day, i) => (
                   <div
@@ -473,7 +473,7 @@ export default function ExperiencePage() {
                           {day.description}
                         </p>
                         <div className="flex items-center gap-2 text-xs text-gray-400">
-                          <span className="font-medium">Meals:</span>
+                          <span className="font-medium">{t('exp.meals')}</span>
                           <span>{day.meals}</span>
                         </div>
                       </div>
@@ -486,7 +486,7 @@ export default function ExperiencePage() {
             {/* Optional Activities */}
             {pkg.optionalActivities && pkg.optionalActivities.length > 0 && (
               <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
-                <h2 className="text-lg font-bold text-white mb-4">Optional Extras</h2>
+                <h2 className="text-lg font-bold text-white mb-4">{t('exp.optionalExtras')}</h2>
                 <div className="space-y-3">
                   {pkg.optionalActivities.map((activity, i) => (
                     <div
@@ -521,17 +521,17 @@ export default function ExperiencePage() {
                 <div className="flex items-center gap-2 text-xs">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   <span className="text-red-400 font-medium">
-                    Only {spotsLeft} spots left for {nextDeparture}
+                    {t('exp.spotsLeft', { count: String(spotsLeft), date: nextDeparture })}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-400">
                   <TrendingUp size={12} className="text-brand-accent" />
-                  <span>{recentBookings} Pioneers booked this month</span>
+                  <span>{t('exp.pioneersBooked', { count: String(recentBookings) })}</span>
                 </div>
                 {viewers > 0 && (
                   <div className="flex items-center gap-2 text-xs text-gray-400">
                     <span className="w-2 h-2 rounded-full bg-green-500" />
-                    <span>{viewers} people viewing right now</span>
+                    <span>{t('exp.viewingNow', { count: String(viewers) })}</span>
                   </div>
                 )}
               </div>
@@ -540,7 +540,7 @@ export default function ExperiencePage() {
               <div className="flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 rounded-xl px-3 py-2 mb-4">
                 <Calendar size={14} className="text-brand-accent flex-shrink-0" />
                 <div className="text-xs">
-                  <span className="text-gray-400">Next departure: </span>
+                  <span className="text-gray-400">{t('exp.nextDeparture')} </span>
                   <span className="text-brand-accent font-semibold">{nextDeparture}</span>
                 </div>
               </div>
@@ -548,7 +548,7 @@ export default function ExperiencePage() {
               {/* Payment method toggle */}
               <div className="mb-4">
                 <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                  Pay with
+                  {t('exp.payWith')}
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -576,10 +576,7 @@ export default function ExperiencePage() {
 
               {paymentMethod === 'mpesa' && (
                 <div className="bg-green-900/30 border border-green-800/50 rounded-xl p-3 mb-4">
-                  <p className="text-green-300 text-xs leading-relaxed">
-                    Pay via M-Pesa STK Push. You&apos;ll get a prompt on your phone to confirm with
-                    your PIN. Perfect for Kenya-based Pioneers.
-                  </p>
+                  <p className="text-green-300 text-xs leading-relaxed">{t('exp.mpesaNote')}</p>
                 </div>
               )}
 
@@ -592,7 +589,9 @@ export default function ExperiencePage() {
                   border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
                 }}
               >
-                <span className="relative z-10">Book This Venture — {formatPackagePrice(pkg)}</span>
+                <span className="relative z-10">
+                  {t('exp.bookVenture')} — {formatPackagePrice(pkg)}
+                </span>
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
                   style={{
@@ -606,11 +605,11 @@ export default function ExperiencePage() {
               <div className="flex items-center justify-center gap-4 text-xs text-gray-400 mb-4">
                 <div className="flex items-center gap-1">
                   <Shield size={11} />
-                  <span>48hr free cancel</span>
+                  <span>{t('exp.freeCancel')}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <CheckCircle size={11} />
-                  <span>Verified provider</span>
+                  <span>{t('exp.verifiedProvider')}</span>
                 </div>
               </div>
 
@@ -621,26 +620,28 @@ export default function ExperiencePage() {
                   <span className="text-brand-accent font-medium">
                     {IMPACT_PARTNER.contributionAmount}
                   </span>{' '}
-                  from your booking funds {IMPACT_PARTNER.name} community work
+                  {t('exp.fundsWork', { name: IMPACT_PARTNER.name })}
                 </p>
               </div>
 
               {/* Quick info */}
               <div className="pt-4 border-t border-brand-primary/30 space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">Max group size</span>
-                  <span className="font-medium text-gray-200">{pkg.maxGuests} people</span>
+                  <span className="text-gray-400">{t('exp.maxGroupSize')}</span>
+                  <span className="font-medium text-gray-200">
+                    {t('exp.people', { count: String(pkg.maxGuests) })}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">Duration</span>
+                  <span className="text-gray-400">{t('exp.duration')}</span>
                   <span className="font-medium text-gray-200">{pkg.duration}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">Provider</span>
+                  <span className="text-gray-400">{t('exp.provider')}</span>
                   <span className="font-medium text-gray-200">{pkg.provider}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">Destination</span>
+                  <span className="text-gray-400">{t('exp.destination')}</span>
                   <span className="font-medium text-gray-200">{pkg.destination}</span>
                 </div>
               </div>
@@ -650,7 +651,7 @@ export default function ExperiencePage() {
                 className="mt-6 flex items-center justify-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
                 style={{ color: 'var(--color-accent)' }}
               >
-                🧭 Use the Compass to plan your route
+                {t('exp.compassRoute')}
               </Link>
             </div>
           </div>
@@ -659,7 +660,7 @@ export default function ExperiencePage() {
         {/* More Ventures */}
         {related.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-xl font-bold text-white mb-phi-5">More Ventures to Explore</h2>
+            <h2 className="text-xl font-bold text-white mb-phi-5">{t('exp.moreVentures')}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {related.map((relPkg) => (
                 <Link key={relPkg.id} href={`/experiences/${relPkg.id}`}>
@@ -710,7 +711,7 @@ export default function ExperiencePage() {
               border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
             }}
           >
-            Book Now
+            {t('exp.bookNow')}
           </button>
         </div>
       </div>

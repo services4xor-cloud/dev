@@ -1120,6 +1120,88 @@ describe('i18n — notifications page', () => {
   })
 })
 
+// ─── Experience detail page keys ─────────────────────────────────────────────
+
+describe('i18n — experience detail page', () => {
+  const expKeys = [
+    'exp.notFoundTitle',
+    'exp.notFoundDesc',
+    'exp.backToVentures',
+    'exp.bookedThisMonth',
+    'exp.duration',
+    'exp.maxPioneers',
+    'exp.guests',
+    'exp.destination',
+    'exp.startingFrom',
+    'exp.whyThisVenture',
+    'exp.whatsIncluded',
+    'exp.included',
+    'exp.notIncluded',
+    'exp.transparencyNote',
+    'exp.feeNote',
+    'exp.itinerary',
+    'exp.optionalExtras',
+    'exp.meals',
+    'exp.payWith',
+    'exp.spotsLeft',
+    'exp.pioneersBooked',
+    'exp.viewingNow',
+    'exp.nextDeparture',
+    'exp.bookVenture',
+    'exp.freeCancel',
+    'exp.verifiedProvider',
+    'exp.fundsWork',
+    'exp.maxGroupSize',
+    'exp.people',
+    'exp.provider',
+    'exp.compassRoute',
+    'exp.moreVentures',
+    'exp.bookNow',
+    'exp.youreGoing',
+    'exp.adventureConfirmed',
+    'exp.bookingConfirmed',
+    'exp.amountPaid',
+    'exp.payment',
+    'exp.reference',
+    'exp.madeImpact',
+    'exp.impactNote',
+    'exp.confirmationSent',
+    'exp.myDashboard',
+    'exp.browseMore',
+    'exp.processing',
+    'exp.processingNote',
+    'exp.mpesaNote',
+    'exp.byProvider',
+    'exp.seasonHigh',
+    'exp.seasonLow',
+    'exp.seasonAll',
+  ]
+
+  it('English has all experience keys', () => {
+    for (const key of expKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all experience keys', () => {
+    for (const key of expKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all experience keys', () => {
+    for (const key of expKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('interpolates destination in adventureConfirmed', () => {
+    const result = translate('exp.adventureConfirmed', 'en', { destination: 'Watamu' })
+    expect(result).toContain('Watamu')
+    expect(result).toContain('confirmed')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()
