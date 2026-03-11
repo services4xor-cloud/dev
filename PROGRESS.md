@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 303/303 ✅                                                  |
+| Jest tests        | 312/312 ✅                                                  |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
@@ -67,6 +67,18 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 40 (2026-03-11) — DB Re-seed + About/Contact i18n + Architecture Audit
+
+Continued autonomous optimization session. DB re-seeded, i18n expanded to about/contact, architecture verified clean.
+
+- [x] **DB re-seed with fictional names**: Fixed seed upserts (`update: {}` → `update: data`) so re-running actually overwrites old records. Ran `npx prisma db seed` — 11 anchors, 22 paths, 8 pioneers, 53 threads, 6 experiences updated in Neon.
+- [x] **About page fully i18n-wired**: Replaced all hardcoded English with `t()` calls — hero badge, title, description, mission section, values, sectors, payments, impact partner, CTA. Added `{accent}...{/accent}` pattern for styled text spans.
+- [x] **Contact page fully i18n-wired**: Form labels, placeholders, subject dropdown options, success/error messages all use `t()` with interpolation for brand name + response time.
+- [x] **~40 new i18n keys per language**: Added about._ and contact._ keys in English, German, and Swahili — badge, heroTitle, missionTitle/P1/P2, valuesTitle, sectors, payments, impactDesc, ctaTitle, contact subjects, sent/error states.
+- [x] **9 new i18n tests**: Validates all 21 about-page keys and 26 contact-page keys exist in en/de/sw. Tests interpolation for brand, partner, time variables.
+- [x] **Architecture audit passed**: Zero violations across forbidden colors, vocabulary, 'use client' directives, API data access patterns. No console.log in production code.
+- [x] Jest: 312/312 ✅ | TS: 0 errors
 
 ### Session 39 (2026-03-11) — i18n Completeness + Pricing Service + 78 New Tests + Trademark Audit
 
