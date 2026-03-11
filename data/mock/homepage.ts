@@ -16,6 +16,7 @@ export const COUNTRY_GREETINGS: Record<string, { greeting: string; flag: string;
   CH: { greeting: 'Grüezi!', flag: '🇨🇭', name: 'Switzerland' },
   FR: { greeting: 'Bonjour!', flag: '🇫🇷', name: 'France' },
   IN: { greeting: 'Namaste!', flag: '🇮🇳', name: 'India' },
+  TH: { greeting: 'สวัสดี!', flag: '🇹🇭', name: 'Thailand' },
   DEFAULT: { greeting: '👋', flag: '🌍', name: 'your country' },
 }
 
@@ -32,6 +33,7 @@ export const ROTATING_FLAGS = [
   '🇨🇦',
   '🇦🇺',
   '🇸🇦',
+  '🇹🇭',
 ]
 
 export const BENETWORK_PILLARS = [
@@ -132,4 +134,5 @@ export const BE_COUNTRIES = [
   { flag: '🇳🇬', name: 'BeNigeria', status: 'soon' as const, href: '#' },
   { flag: '🇬🇧', name: 'BeUK', status: 'soon' as const, href: '#' },
   { flag: '🇦🇪', name: 'BeUAE', status: 'soon' as const, href: '#' },
+  { flag: '🇹🇭', name: 'BeThailand', status: 'soon' as const, href: '#' },
 ]

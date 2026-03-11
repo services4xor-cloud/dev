@@ -77,3 +77,28 @@ export const PAYMENT_METHODS: PaymentMethodInfo[] = [
   { name: 'PayPal', flag: '🌐', desc: 'Worldwide' },
   { name: 'USSD', flag: '📱', desc: 'No smartphone needed' },
 ]
+
+/** Price multipliers relative to KES base prices */
+export const CURRENCY_CONVERSIONS: Record<string, { symbol: string; rate: number; code: string }> =
+  {
+    KES: { symbol: 'KES', rate: 1, code: 'KES' },
+    EUR: { symbol: '€', rate: 0.0067, code: 'EUR' },
+    CHF: { symbol: 'CHF', rate: 0.0072, code: 'CHF' },
+    THB: { symbol: '฿', rate: 0.24, code: 'THB' },
+    USD: { symbol: '$', rate: 0.0072, code: 'USD' },
+    GBP: { symbol: '£', rate: 0.0058, code: 'GBP' },
+    NGN: { symbol: '₦', rate: 11.2, code: 'NGN' },
+    AED: { symbol: 'AED', rate: 0.026, code: 'AED' },
+  }
+
+/** Payment methods available per country code */
+export const COUNTRY_PAYMENT_METHODS: Record<string, string[]> = {
+  KE: ['M-Pesa', 'Airtel Money', 'USSD'],
+  DE: ['SEPA', 'Stripe'],
+  CH: ['SEPA', 'Stripe'],
+  TH: ['PromptPay', 'Stripe'],
+  NG: ['Flutterwave', 'USSD'],
+  GB: ['Stripe', 'PayPal'],
+  US: ['Stripe', 'PayPal'],
+  AE: ['Stripe', 'PayPal'],
+}

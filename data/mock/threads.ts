@@ -91,6 +91,20 @@ export const MOCK_THREADS: Thread[] = [
     memberCount: 4100,
     active: true,
   },
+  {
+    slug: 'th',
+    name: 'Thailand',
+    brandName: 'BeThailand',
+    type: 'country',
+    icon: '🇹🇭',
+    tagline: 'The Land of Smiles. Hospitality, wellness, and tropical opportunity.',
+    description:
+      "Thailand is Southeast Asia's tourism powerhouse — world-class hospitality, wellness retreats, and a growing tech scene.",
+    relatedThreads: ['bangkok', 'thai', 'hospitality', 'marine'],
+    countries: ['TH'],
+    memberCount: 2800,
+    active: true,
+  },
 
   // ═══════════════════════════════════════════════════════════════════
   // TRIBES / CULTURES — Regional & cultural identity (global)
@@ -251,6 +265,38 @@ export const MOCK_THREADS: Thread[] = [
     parentThread: 'ng',
     countries: ['NG'],
     memberCount: 2100,
+    active: true,
+  },
+
+  // — Thai cultures —
+  {
+    slug: 'isan',
+    name: 'Isan',
+    brandName: 'BeIsan',
+    type: 'tribe',
+    icon: '🌾',
+    tagline: 'The heartland of Thailand. Rice, resilience, and roots.',
+    description:
+      'The Isan people of northeastern Thailand are known for their agricultural heritage, Lao-influenced culture, and vibrant Muay Thai tradition.',
+    relatedThreads: ['th', 'agriculture'],
+    parentThread: 'th',
+    countries: ['TH'],
+    memberCount: 1200,
+    active: true,
+  },
+  {
+    slug: 'lanna',
+    name: 'Lanna',
+    brandName: 'BeLanna',
+    type: 'tribe',
+    icon: '🏯',
+    tagline: 'Northern Thailand. Temples, teak, and timeless culture.',
+    description:
+      'The Lanna people of Chiang Mai and northern Thailand have a distinct culture rooted in Buddhism, traditional crafts, and mountain hospitality.',
+    relatedThreads: ['th', 'chiangmai', 'buddhist'],
+    parentThread: 'th',
+    countries: ['TH'],
+    memberCount: 900,
     active: true,
   },
 
@@ -451,6 +497,20 @@ export const MOCK_THREADS: Thread[] = [
     relatedThreads: ['hospitality', 'marine'],
     countries: ['ID', 'MY'],
     memberCount: 1500,
+    active: true,
+  },
+  {
+    slug: 'thai',
+    name: 'ภาษาไทย',
+    brandName: 'BeThai',
+    type: 'language',
+    icon: '🗣️',
+    tagline: 'Speak Thai. Connect with 70 million hearts.',
+    description:
+      'Thai connects communities across Thailand and the diaspora — from Bangkok tech hubs to Phuket hospitality.',
+    relatedThreads: ['th', 'hospitality', 'marine'],
+    countries: ['TH'],
+    memberCount: 1600,
     active: true,
   },
 
@@ -803,6 +863,53 @@ export const MOCK_THREADS: Thread[] = [
     parentThread: 'ng',
     countries: ['NG'],
     memberCount: 4200,
+    active: true,
+  },
+
+  // — Thailand locations —
+  {
+    slug: 'bangkok',
+    name: 'Bangkok',
+    brandName: 'BeBangkok',
+    type: 'location',
+    icon: '🏙️',
+    tagline: 'The City of Angels. Street food, startups, and infinite energy.',
+    description:
+      "Bangkok is Southeast Asia's largest city — a hub for tech, medical tourism, and vibrant street culture.",
+    relatedThreads: ['th', 'tech', 'hospitality', 'medical'],
+    parentThread: 'th',
+    countries: ['TH'],
+    memberCount: 2200,
+    active: true,
+  },
+  {
+    slug: 'chiangmai',
+    name: 'Chiang Mai',
+    brandName: 'BeChiangMai',
+    type: 'location',
+    icon: '🏯',
+    tagline: 'Digital nomad capital. Temples, mountains, and remote work.',
+    description:
+      "Chiang Mai is the world's top digital nomad destination — affordable, cultural, and surrounded by mountains.",
+    relatedThreads: ['th', 'lanna', 'tech', 'creative'],
+    parentThread: 'th',
+    countries: ['TH'],
+    memberCount: 1500,
+    active: true,
+  },
+  {
+    slug: 'phuket',
+    name: 'Phuket',
+    brandName: 'BePhuket',
+    type: 'location',
+    icon: '🏝️',
+    tagline: 'Island paradise. Diving, hospitality, and coastal living.',
+    description:
+      "Phuket is Thailand's largest island — a world-class destination for diving, luxury hospitality, and marine tourism.",
+    relatedThreads: ['th', 'marine', 'hospitality', 'eco-tourism'],
+    parentThread: 'th',
+    countries: ['TH'],
+    memberCount: 1100,
     active: true,
   },
 

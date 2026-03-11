@@ -8,11 +8,32 @@ import HeroSection from '@/components/HeroSection'
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: send via Resend API
-    setSent(true)
+    setSending(true)
+    setError('')
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+          country: process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE',
+        }),
+      })
+      if (!res.ok) throw new Error('Failed to send')
+      setSent(true)
+    } catch {
+      setError('Something went wrong. Please try again or email us directly.')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -124,8 +145,13 @@ export default function ContactPage() {
                     required
                   />
                 </div>
-                <button type="submit" className="btn-primary w-full py-3">
-                  Send Message →
+                {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="btn-primary w-full py-3 disabled:opacity-50"
+                >
+                  {sending ? 'Sending...' : 'Send Message →'}
                 </button>
               </form>
             )}

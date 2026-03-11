@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PIONEER_TYPES } from '@/lib/vocabulary'
 import StatusBadge from '@/components/StatusBadge'
+import JourneyProgress from '@/components/JourneyProgress'
 import { SkeletonDashboard } from '@/components/Skeleton'
 import {
   MOCK_CURRENT_PIONEER,
@@ -318,11 +319,12 @@ export default function PioneerDashboard() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 xl:px-8 py-6">
+      <div className="max-w-6xl mx-auto px-4 xl:px-8 py-6 space-y-6">
         {loading ? (
           <SkeletonDashboard />
         ) : (
           <>
+            <JourneyProgress />
             {activeTab === 'compass' && <CompassTab />}
             {activeTab === 'chapters' && <ChaptersTab />}
             {activeTab === 'referrals' && <ReferralsTab />}
