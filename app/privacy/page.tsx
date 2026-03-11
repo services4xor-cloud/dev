@@ -9,11 +9,22 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-brand-bg">
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-white mb-2">Privacy Policy</h1>
-        <p className="text-gray-400 text-sm mb-8">Last updated: {LEGAL.privacyLastUpdated}</p>
+      {/* Hero */}
+      <section className="relative bg-gradient-to-b from-brand-primary to-brand-bg py-20 text-center overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.08),transparent_70%)]" />
+        <div className="relative max-w-3xl mx-auto px-4">
+          <div className="w-14 h-14 bg-brand-primary/60 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-brand-accent/20">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3">
+            Privacy Policy
+          </h1>
+          <p className="text-gray-300 text-lg">Last updated: {LEGAL.privacyLastUpdated}</p>
+        </div>
+      </section>
 
-        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-gray-800 prose prose-invert prose-sm max-w-none">
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-primary/30 prose prose-invert prose-sm max-w-none">
           <h2>1. Data We Collect</h2>
           <p>When you use {BRAND_NAME}, we collect:</p>
           <ul>

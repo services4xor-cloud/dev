@@ -47,6 +47,27 @@ You mentioned "adapt the logo." Questions:
 
 ---
 
+### Q4 — Automation Agent System for Offerings (Session 21)
+
+**Owner said:** "For each offering I need automation to not rely on partner for digital part. They will have a form to input data that's ideal for the agent system to pick up and facilitate everything."
+
+**Interpretation:**
+
+- Each offering/venture gets an **Anchor intake form** (structured data)
+- Agent system picks up form data and automates the digital workflow (posting, distribution, scheduling)
+- Reduces dependency on partner organizations for digital execution
+- Form fields should be designed for machine-readable structured data
+
+**Questions:**
+
+1. Is "agent" an AI agent (LLM-powered) or a human operations agent?
+2. Which offerings get automation first? (Safari, Media, Fashion, Professional?)
+3. What does "facilitate everything" include? (Social media posting, booking confirmation, email sequences, content scheduling?)
+
+**Status:** Added to main feature roadmap — implement after current UI steps.
+
+---
+
 ## Answered / Recorded
 
 ### A1 — Grouping Priority (Session 20)

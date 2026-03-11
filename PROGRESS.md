@@ -67,6 +67,14 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ## Session Log
 
+### Session 22 (2026-03-11) — Design Consistency + Wizard Audit
+
+- [x] Added hero gradient sections to Contact, Privacy, Profile pages (matching world-class pages)
+- [x] All pages now have consistent hero gradient pattern: `bg-gradient-to-b from-brand-primary to-brand-bg`
+- [x] Audited all wizard pages: Compass (4-step), Onboarding (5-step), Post-Path (6-step) — all already have numbered steps + "Continue →" pattern
+- [x] Updated border tokens on Privacy card (gray-800 → brand-primary/30)
+- [x] Build: ✅ | Jest: 25/25 ✅ | TS: 0 errors
+
 ### Session 21 (2026-03-11) — Centralize Config + Color Compliance
 
 - [x] Created `data/mock/config.ts`: single source for brand, contact, legal, referral, profile

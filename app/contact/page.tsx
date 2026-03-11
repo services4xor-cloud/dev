@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Mail, Phone, MapPin, MessageSquare, CheckCircle, Globe } from 'lucide-react'
-import { CONTACT } from '@/data/mock'
+import { CONTACT, BRAND_NAME } from '@/data/mock'
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
@@ -16,15 +16,21 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-brand-bg">
-      <div className="max-w-4xl 3xl:max-w-6xl mx-auto px-4 xl:px-8 py-16">
-        <div className="text-center mb-12">
-          <MessageSquare className="w-12 h-12 text-brand-accent mx-auto mb-4" />
-          <h1 className="text-2xl sm:text-3xl md:text-4xl 3xl:text-5xl font-black text-white mb-2">
-            Get in touch
+      {/* Hero */}
+      <section className="relative bg-gradient-to-b from-brand-primary to-brand-bg py-20 text-center overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.08),transparent_70%)]" />
+        <div className="relative max-w-3xl mx-auto px-4">
+          <MessageSquare className="w-14 h-14 text-brand-accent mx-auto mb-5" />
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3">
+            Get in Touch
           </h1>
-          <p className="text-gray-400">We respond within {CONTACT.responseTime} on business days</p>
+          <p className="text-gray-300 text-lg max-w-xl mx-auto">
+            Questions about {BRAND_NAME}? We respond within {CONTACT.responseTime} on business days.
+          </p>
         </div>
+      </section>
 
+      <div className="max-w-4xl 3xl:max-w-6xl mx-auto px-4 xl:px-8 py-12">
         <div className="grid md:grid-cols-3 gap-8">
           {/* Contact info */}
           <div className="space-y-6">
