@@ -1251,6 +1251,58 @@ describe('i18n — anchor dashboard', () => {
   })
 })
 
+describe('i18n — agent dashboard', () => {
+  const agentKeys = [
+    'agentDash.tabDemand',
+    'agentDash.tabForwards',
+    'agentDash.tabEarnings',
+    'agentDash.totalEarned',
+    'agentDash.agentHub',
+    'agentDash.pathsMatching',
+    'agentDash.openPaths',
+    'agentDash.needed',
+    'agentDash.forwardWhatsApp',
+    'agentDash.copyLink',
+    'agentDash.copied',
+    'agentDash.forwarded',
+    'agentDash.commission',
+    'agentDash.totalEarnings',
+    'agentDash.placements',
+    'agentDash.totalForwards',
+    'agentDash.conversionRate',
+    'agentDash.commissionStructure',
+    'agentDash.commissionRate',
+    'agentDash.pendingPayout',
+    'agentDash.networkSize',
+    'agentDash.workers',
+    'agentDash.successfulPlacements',
+    'agentDash.noPlacementsYet',
+    'agentDash.sent',
+    'agentDash.clicked',
+    'agentDash.signedUp',
+    'agentDash.applied',
+    'agentDash.placed',
+  ]
+
+  it('English has all agent dashboard keys', () => {
+    for (const key of agentKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all agent dashboard keys', () => {
+    for (const key of agentKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all agent dashboard keys', () => {
+    for (const key of agentKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

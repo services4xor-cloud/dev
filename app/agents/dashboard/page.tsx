@@ -18,7 +18,6 @@ import {
   MapPin,
   Copy,
   Check,
-  ExternalLink,
   TrendingUp,
   Share2,
   Briefcase,
@@ -26,6 +25,7 @@ import {
 import StatusBadge from '@/components/StatusBadge'
 import { SkeletonDashboard } from '@/components/Skeleton'
 import { BRAND_NAME } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -139,8 +139,6 @@ const MOCK_FORWARDS = [
   },
 ]
 
-type ForwardStatusKey = 'SENT' | 'CLICKED' | 'SIGNED_UP' | 'APPLIED' | 'PLACED'
-
 // ─── Country flag helper ──────────────────────────────────────────────────────
 
 const COUNTRY_FLAGS: Record<string, string> = {
@@ -152,9 +150,26 @@ const COUNTRY_FLAGS: Record<string, string> = {
   NG: '\uD83C\uDDF3\uD83C\uDDEC',
 }
 
+// ─── Tab types ────────────────────────────────────────────────────────────────
+
+type Tab = 'demand' | 'forwards' | 'earnings'
+
+const TAB_KEYS: Tab[] = ['demand', 'forwards', 'earnings']
+const TAB_I18N: Record<Tab, string> = {
+  demand: 'agentDash.tabDemand',
+  forwards: 'agentDash.tabForwards',
+  earnings: 'agentDash.tabEarnings',
+}
+const TAB_ICONS: Record<Tab, React.ComponentType<{ className?: string }>> = {
+  demand: Briefcase,
+  forwards: Send,
+  earnings: DollarSign,
+}
+
 // ─── Tab: Demand Feed ─────────────────────────────────────────────────────────
 
 function DemandFeedTab() {
+  const { t } = useTranslation()
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
   const getForwardLink = (pathId: string) =>
@@ -175,9 +190,9 @@ function DemandFeedTab() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-gray-400 text-sm">Paths matching your territory and sectors</p>
+        <p className="text-gray-400 text-sm">{t('agentDash.pathsMatching')}</p>
         <span className="text-xs text-brand-accent font-medium">
-          {MOCK_DEMAND.length} open paths
+          {t('agentDash.openPaths', { count: String(MOCK_DEMAND.length) })}
         </span>
       </div>
 
@@ -194,7 +209,9 @@ function DemandFeedTab() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-white font-semibold text-sm">{demand.title}</span>
-                <span className="text-xs text-gray-400">{demand.pioneersNeeded} needed</span>
+                <span className="text-xs text-gray-400">
+                  {t('agentDash.needed', { count: String(demand.pioneersNeeded) })}
+                </span>
               </div>
               <div className="text-gray-300 text-sm mt-0.5">{demand.company}</div>
               <div className="flex items-center gap-2 text-xs text-gray-400 mt-1">
@@ -222,7 +239,7 @@ function DemandFeedTab() {
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-green-700 hover:bg-green-600 text-white rounded-lg text-xs font-medium transition-colors"
                 >
                   <Send className="w-3 h-3" />
-                  Forward via WhatsApp
+                  {t('agentDash.forwardWhatsApp')}
                 </button>
                 <button
                   onClick={() => copyLink(demand.id)}
@@ -231,12 +248,12 @@ function DemandFeedTab() {
                   {copiedId === demand.id ? (
                     <>
                       <Check className="w-3 h-3 text-green-400" />
-                      Copied!
+                      {t('agentDash.copied')}
                     </>
                   ) : (
                     <>
                       <Copy className="w-3 h-3" />
-                      Copy Link
+                      {t('agentDash.copyLink')}
                     </>
                   )}
                 </button>
@@ -256,6 +273,7 @@ function DemandFeedTab() {
 // ─── Tab: My Forwards ─────────────────────────────────────────────────────────
 
 function ForwardsTab() {
+  const { t } = useTranslation()
   const statusCounts = MOCK_FORWARDS.reduce(
     (acc, f) => {
       acc[f.status] = (acc[f.status] || 0) + 1
@@ -264,25 +282,22 @@ function ForwardsTab() {
     {} as Record<string, number>
   )
 
+  const FUNNEL_I18N: Record<string, string> = {
+    SENT: 'agentDash.sent',
+    CLICKED: 'agentDash.clicked',
+    SIGNED_UP: 'agentDash.signedUp',
+    APPLIED: 'agentDash.applied',
+    PLACED: 'agentDash.placed',
+  }
+
   return (
     <div className="space-y-5">
       {/* Funnel stats */}
       <div className="grid grid-cols-5 gap-2">
-        {(
-          [
-            { key: 'SENT', label: 'Sent' },
-            { key: 'CLICKED', label: 'Clicked' },
-            { key: 'SIGNED_UP', label: 'Signed Up' },
-            { key: 'APPLIED', label: 'Applied' },
-            { key: 'PLACED', label: 'Placed' },
-          ] as const
-        ).map((step) => (
-          <div
-            key={step.key}
-            className="bg-gray-800 rounded-xl border border-gray-700 p-3 text-center"
-          >
-            <div className="text-xl font-bold text-white">{statusCounts[step.key] || 0}</div>
-            <div className="text-xs text-gray-400 mt-0.5">{step.label}</div>
+        {(['SENT', 'CLICKED', 'SIGNED_UP', 'APPLIED', 'PLACED'] as const).map((step) => (
+          <div key={step} className="bg-gray-800 rounded-xl border border-gray-700 p-3 text-center">
+            <div className="text-xl font-bold text-white">{statusCounts[step] || 0}</div>
+            <div className="text-xs text-gray-400 mt-0.5">{t(FUNNEL_I18N[step])}</div>
           </div>
         ))}
       </div>
@@ -301,7 +316,9 @@ function ForwardsTab() {
                   <StatusBadge status={forward.status.toLowerCase()} size="sm" />
                 </div>
                 <div className="text-xs text-gray-400 mt-1">{forward.pathTitle}</div>
-                <div className="text-xs text-gray-400 mt-0.5">Forwarded {forward.forwardedAt}</div>
+                <div className="text-xs text-gray-400 mt-0.5">
+                  {t('agentDash.forwarded', { date: forward.forwardedAt })}
+                </div>
               </div>
 
               {forward.status === 'PLACED' && forward.commission && (
@@ -309,7 +326,7 @@ function ForwardsTab() {
                   <div className="text-green-400 font-bold text-sm">
                     +KES {forward.commission.toLocaleString()}
                   </div>
-                  <div className="text-xs text-gray-400">commission</div>
+                  <div className="text-xs text-gray-400">{t('agentDash.commission')}</div>
                 </div>
               )}
             </div>
@@ -323,6 +340,7 @@ function ForwardsTab() {
 // ─── Tab: Earnings ────────────────────────────────────────────────────────────
 
 function EarningsTab() {
+  const { t } = useTranslation()
   const profile = MOCK_AGENT_PROFILE
 
   return (
@@ -331,23 +349,23 @@ function EarningsTab() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           {
-            label: 'Total Earnings',
+            label: t('agentDash.totalEarnings'),
             value: `KES ${profile.totalEarnings.toLocaleString()}`,
             icon: <DollarSign className="w-4 h-4" />,
             accent: true,
           },
           {
-            label: 'Placements',
+            label: t('agentDash.placements'),
             value: profile.totalPlacements,
             icon: <Users className="w-4 h-4" />,
           },
           {
-            label: 'Total Forwards',
+            label: t('agentDash.totalForwards'),
             value: profile.totalForwards,
             icon: <Send className="w-4 h-4" />,
           },
           {
-            label: 'Conversion Rate',
+            label: t('agentDash.conversionRate'),
             value: `${((profile.totalPlacements / profile.totalForwards) * 100).toFixed(1)}%`,
             icon: <TrendingUp className="w-4 h-4" />,
           },
@@ -368,24 +386,26 @@ function EarningsTab() {
       <div className="bg-gray-800 rounded-xl border border-gray-700 p-5">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-4">
           <DollarSign className="w-4 h-4 text-brand-accent" />
-          Commission Structure
+          {t('agentDash.commissionStructure')}
         </h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3 bg-gray-700/40 rounded-lg">
-            <span className="text-gray-300 text-sm">Commission Rate</span>
+            <span className="text-gray-300 text-sm">{t('agentDash.commissionRate')}</span>
             <span className="text-brand-accent font-bold">
               {(profile.commissionRate * 100).toFixed(0)}%
             </span>
           </div>
           <div className="flex items-center justify-between p-3 bg-gray-700/40 rounded-lg">
-            <span className="text-gray-300 text-sm">Pending Payout</span>
+            <span className="text-gray-300 text-sm">{t('agentDash.pendingPayout')}</span>
             <span className="text-white font-bold">
               KES {profile.pendingPayout.toLocaleString()}
             </span>
           </div>
           <div className="flex items-center justify-between p-3 bg-gray-700/40 rounded-lg">
-            <span className="text-gray-300 text-sm">Network Size</span>
-            <span className="text-white font-bold">{profile.networkSize} workers</span>
+            <span className="text-gray-300 text-sm">{t('agentDash.networkSize')}</span>
+            <span className="text-white font-bold">
+              {t('agentDash.workers', { count: String(profile.networkSize) })}
+            </span>
           </div>
         </div>
       </div>
@@ -394,12 +414,10 @@ function EarningsTab() {
       <div className="bg-gray-800 rounded-xl border border-gray-700 p-5">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-4">
           <TrendingUp className="w-4 h-4 text-brand-accent" />
-          Successful Placements
+          {t('agentDash.successfulPlacements')}
         </h3>
         {MOCK_FORWARDS.filter((f) => f.status === 'PLACED').length === 0 ? (
-          <p className="text-gray-400 text-sm text-center py-6">
-            No placements yet. Keep forwarding paths to your network!
-          </p>
+          <p className="text-gray-400 text-sm text-center py-6">{t('agentDash.noPlacementsYet')}</p>
         ) : (
           <div className="space-y-2">
             {MOCK_FORWARDS.filter((f) => f.status === 'PLACED').map((f) => (
@@ -428,25 +446,14 @@ function EarningsTab() {
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
-type Tab = 'demand' | 'forwards' | 'earnings'
-
-const TABS: {
-  key: Tab
-  label: string
-  icon: React.ComponentType<{ className?: string }>
-}[] = [
-  { key: 'demand', label: 'Demand Feed', icon: Briefcase },
-  { key: 'forwards', label: 'My Forwards', icon: Send },
-  { key: 'earnings', label: 'Earnings', icon: DollarSign },
-]
-
 export default function AgentDashboardPage() {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<Tab>('demand')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 600)
-    return () => clearTimeout(t)
+    const timer = setTimeout(() => setLoading(false), 600)
+    return () => clearTimeout(timer)
   }, [])
 
   const profile = MOCK_AGENT_PROFILE
@@ -476,35 +483,35 @@ export default function AgentDashboardPage() {
                 <div className="text-brand-accent font-bold text-sm">
                   KES {profile.totalEarnings.toLocaleString()}
                 </div>
-                <div className="text-xs text-gray-400">total earned</div>
+                <div className="text-xs text-gray-400">{t('agentDash.totalEarned')}</div>
               </div>
               <Link
                 href="/agents"
                 className="flex items-center gap-2 px-4 py-2 border border-brand-accent/40 text-brand-accent rounded-xl text-sm font-medium hover:bg-brand-accent/10 transition-colors"
               >
                 <Share2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Agent Hub</span>
+                <span className="hidden sm:inline">{t('agentDash.agentHub')}</span>
               </Link>
             </div>
           </div>
 
           {/* Tabs */}
           <div className="flex gap-1 mt-4">
-            {TABS.map((tab) => {
-              const Icon = tab.icon
+            {TAB_KEYS.map((tabKey) => {
+              const Icon = TAB_ICONS[tabKey]
               return (
                 <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
+                  key={tabKey}
+                  onClick={() => setActiveTab(tabKey)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === tab.key
+                    activeTab === tabKey
                       ? 'bg-brand-accent/10 text-brand-accent'
                       : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  {tab.label}
-                  {tab.key === 'forwards' && (
+                  {t(TAB_I18N[tabKey])}
+                  {tabKey === 'forwards' && (
                     <span className="text-xs bg-brand-accent text-white rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {MOCK_FORWARDS.length}
                     </span>
