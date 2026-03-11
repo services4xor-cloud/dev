@@ -234,7 +234,67 @@ export const MOCK_THREADS: Thread[] = [
     active: true,
   },
 
+  // ── Additional interest threads ─────────────────────────────────
+  {
+    slug: 'agriculture',
+    name: 'Agriculture & Farming',
+    brandName: 'BeFarmer',
+    type: 'interest',
+    icon: '🌾',
+    tagline: 'Tea, coffee, flowers, and the future of African agriculture.',
+    description:
+      'The agriculture thread connects tea estate workers, coffee farmers, horticulture exporters, and agricultural innovators across Kenya and East Africa.',
+    relatedThreads: ['ke', 'eco-tourism'],
+    countries: ['KE', 'TZ', 'UG'],
+    memberCount: 3100,
+    active: true,
+  },
+  {
+    slug: 'marine',
+    name: 'Marine & Water',
+    brandName: 'BeWater',
+    type: 'interest',
+    icon: '🌊',
+    tagline: 'From deep-sea fishing to marine conservation. The ocean calls.',
+    description:
+      'Connects diving instructors, fishing guides, marine biologists, and water-sports professionals along the East African coast.',
+    relatedThreads: ['ke', 'mombasa', 'eco-tourism'],
+    countries: ['KE', 'TZ'],
+    memberCount: 1400,
+    active: true,
+  },
+
   // ── Location threads ────────────────────────────────────────────
+  {
+    slug: 'kericho',
+    name: 'Kericho',
+    brandName: 'BeKericho',
+    type: 'location',
+    icon: '🍵',
+    tagline: 'The tea heartland of Kenya. Green hills, golden opportunity.',
+    description:
+      'Kericho is the capital of Kenyan tea production, home to vast estates and a growing agricultural tech sector.',
+    relatedThreads: ['ke', 'agriculture'],
+    parentThread: 'ke',
+    countries: ['KE'],
+    memberCount: 820,
+    active: true,
+  },
+  {
+    slug: 'diani',
+    name: 'Diani Beach',
+    brandName: 'BeDiani',
+    type: 'location',
+    icon: '🏖️',
+    tagline: 'Where the Indian Ocean meets world-class hospitality.',
+    description:
+      'Diani Beach on the south coast is a top destination for water sports, diving, and eco-resorts.',
+    relatedThreads: ['ke', 'marine', 'eco-tourism', 'mombasa'],
+    parentThread: 'ke',
+    countries: ['KE'],
+    memberCount: 650,
+    active: true,
+  },
   {
     slug: 'nairobi',
     name: 'Nairobi',

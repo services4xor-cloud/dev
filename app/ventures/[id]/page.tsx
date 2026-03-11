@@ -77,6 +77,50 @@ const PATH_DETAILS: Record<
       'Professional development (CFA support)',
     ],
   },
+  p11: {
+    description:
+      'James Finlays Kenya is one of the largest tea producers in East Africa, managing over 4,000 hectares of tea estates in the Kericho highlands. Supervise production across estates, ensure quality standards, and lead a team of 200+ workers through the harvest cycle.',
+    responsibilities: [
+      'Oversee daily tea plucking operations across assigned estates',
+      'Monitor leaf quality and processing standards',
+      'Manage seasonal workforce scheduling and welfare',
+      'Report on yield targets and implement improvement plans',
+    ],
+    requirements: [
+      'Diploma or degree in Agriculture, Agronomy, or related field',
+      'Experience in estate or farm management',
+      'Strong leadership and Swahili communication skills',
+      'Knowledge of sustainable farming practices',
+    ],
+    benefits: [
+      'Salary: KES 85,000 - 120,000/mo',
+      'On-estate housing and meals',
+      'Healthcare for family',
+      'Training in advanced tea production techniques',
+    ],
+  },
+  p13: {
+    description:
+      "Hemingways Watamu is a luxury resort on Kenya's north coast, famous for world-class deep-sea fishing. Guide international guests on fishing expeditions for marlin, sailfish, and yellowfin tuna in the warm Indian Ocean waters.",
+    responsibilities: [
+      'Lead deep-sea fishing expeditions (full and half-day)',
+      'Maintain fishing equipment and boat safety standards',
+      'Brief guests on marine wildlife and conservation',
+      'Coordinate with resort hospitality team for seamless experiences',
+    ],
+    requirements: [
+      'Boat handling certification and fishing experience',
+      'Strong swimming ability and water safety knowledge',
+      'English and Swahili fluency',
+      'Customer service orientation',
+    ],
+    benefits: [
+      'Salary: KES 60,000 - 90,000/mo + guest tips',
+      'Resort accommodation included',
+      'Free diving and water sports access',
+      'International tourism exposure',
+    ],
+  },
 }
 
 // Fallback for paths without detailed mock data
