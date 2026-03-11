@@ -257,14 +257,14 @@ export default function BeCountryPage() {
           <div className="mt-12">
             <p className="text-white/40 text-sm mb-4">Explore other Be[Country] platforms:</p>
             <div className="flex flex-wrap gap-2 justify-center">
-              {(['ke', 'de', 'us', 'ng'] as const)
-                .filter((code) => code !== rawCode.toLowerCase())
+              {Object.keys(COUNTRIES)
+                .filter((code) => code !== rawCode)
                 .map((code) => {
-                  const cfg = COUNTRIES[code.toUpperCase() as keyof typeof COUNTRIES]
+                  const cfg = COUNTRIES[code as keyof typeof COUNTRIES]
                   return (
                     <Link
                       key={code}
-                      href={`/be/${code}`}
+                      href={`/be/${code.toLowerCase()}`}
                       className="bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white px-4 py-2 rounded-lg text-sm transition-all"
                     >
                       {cfg.flag} {cfg.brandName}
