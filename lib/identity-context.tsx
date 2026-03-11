@@ -14,13 +14,15 @@
  */
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
-import { COUNTRIES } from '@/lib/countries'
+import { getLocalizedCountryName, getDefaultLanguage } from '@/lib/endonyms'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
 interface Identity {
   /** ISO country code (KE, DE, CH, etc.) */
   country: string
+  /** ISO 639-1 language code (en, de, sw, fr, etc.) */
+  language: string
   /** Thread slug if viewing a specific thread (e.g. 'bemaasai') */
   threadSlug?: string
   /** Thread type if viewing a specific thread (e.g. 'tribe') */
@@ -30,28 +32,28 @@ interface Identity {
 interface IdentityContextValue {
   /** Current active identity */
   identity: Identity
-  /** Country name (e.g. "Kenya", "Germany") */
+  /** Country name localized to user's language (e.g. "Kenia" in German, "Kenya" in English) */
   countryName: string
-  /** Brand name (e.g. "BeKenya", "BeGermany") */
+  /** Brand name localized (e.g. "BeDeutschland" in German, "BeGermany" in English) */
   brandName: string
-  /** Set the active country */
+  /** Set the active country (also resets language to country default) */
   setCountry: (code: string) => void
+  /** Set the display language */
+  setLanguage: (code: string) => void
   /** Set the active thread */
   setThread: (slug: string, type: string) => void
   /** Clear thread selection (back to country-level) */
   clearThread: () => void
-  /** Reset to default country */
+  /** Reset to default country + language */
   reset: () => void
+  /** Get any country's name in the current display language */
+  localizeCountry: (countryCode: string) => string
 }
 
 // ─── Default ────────────────────────────────────────────────────────
 
 const DEFAULT_COUNTRY = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase()
-
-function getCountryName(code: string): string {
-  const key = code.toUpperCase() as keyof typeof COUNTRIES
-  return COUNTRIES[key]?.name ?? code
-}
+const DEFAULT_LANGUAGE = getDefaultLanguage(DEFAULT_COUNTRY)
 
 // ─── Context ────────────────────────────────────────────────────────
 
@@ -62,7 +64,10 @@ const IdentityContext = createContext<IdentityContextValue | undefined>(undefine
 const STORAGE_KEY = 'be-identity'
 
 export function IdentityProvider({ children }: { children: ReactNode }) {
-  const [identity, setIdentity] = useState<Identity>({ country: DEFAULT_COUNTRY })
+  const [identity, setIdentity] = useState<Identity>({
+    country: DEFAULT_COUNTRY,
+    language: DEFAULT_LANGUAGE,
+  })
 
   // Hydrate from localStorage on mount
   useEffect(() => {
@@ -71,6 +76,10 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       if (stored) {
         const parsed = JSON.parse(stored)
         if (parsed?.country) {
+          // Migrate old format (no language field) → add default language
+          if (!parsed.language) {
+            parsed.language = getDefaultLanguage(parsed.country)
+          }
           setIdentity(parsed)
         }
       }
@@ -89,7 +98,17 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
   }, [identity])
 
   const setCountry = useCallback((code: string) => {
-    setIdentity({ country: code.toUpperCase() })
+    const cc = code.toUpperCase()
+    setIdentity((prev) => ({
+      country: cc,
+      // When changing country, keep current language unless switching to a country
+      // where the current language isn't spoken — then reset to country default
+      language: prev.language || getDefaultLanguage(cc),
+    }))
+  }, [])
+
+  const setLanguage = useCallback((code: string) => {
+    setIdentity((prev) => ({ ...prev, language: code.toLowerCase() }))
   }, [])
 
   const setThread = useCallback((slug: string, type: string) => {
@@ -97,15 +116,22 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const clearThread = useCallback(() => {
-    setIdentity((prev) => ({ country: prev.country }))
+    setIdentity((prev) => ({ country: prev.country, language: prev.language }))
   }, [])
 
   const reset = useCallback(() => {
-    setIdentity({ country: DEFAULT_COUNTRY })
+    setIdentity({ country: DEFAULT_COUNTRY, language: DEFAULT_LANGUAGE })
   }, [])
 
-  const countryName = getCountryName(identity.country)
+  // Localized names based on the user's language
+  const countryName = getLocalizedCountryName(identity.country, identity.language)
   const brandName = `Be${countryName}`
+
+  // Helper to localize any country code in the user's current language
+  const localizeCountry = useCallback(
+    (countryCode: string) => getLocalizedCountryName(countryCode, identity.language),
+    [identity.language]
+  )
 
   return (
     <IdentityContext.Provider
@@ -114,9 +140,11 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         countryName,
         brandName,
         setCountry,
+        setLanguage,
         setThread,
         clearThread,
         reset,
+        localizeCountry,
       }}
     >
       {children}
@@ -130,14 +158,17 @@ export function useIdentity(): IdentityContextValue {
   const ctx = useContext(IdentityContext)
   if (!ctx) {
     // Graceful fallback when used outside provider (e.g. in API routes)
+    const fallbackName = getLocalizedCountryName(DEFAULT_COUNTRY, DEFAULT_LANGUAGE)
     return {
-      identity: { country: DEFAULT_COUNTRY },
-      countryName: getCountryName(DEFAULT_COUNTRY),
-      brandName: `Be${getCountryName(DEFAULT_COUNTRY)}`,
+      identity: { country: DEFAULT_COUNTRY, language: DEFAULT_LANGUAGE },
+      countryName: fallbackName,
+      brandName: `Be${fallbackName}`,
       setCountry: () => {},
+      setLanguage: () => {},
       setThread: () => {},
       clearThread: () => {},
       reset: () => {},
+      localizeCountry: (cc: string) => getLocalizedCountryName(cc, DEFAULT_LANGUAGE),
     }
   }
   return ctx

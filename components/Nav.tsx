@@ -54,7 +54,7 @@ export default function Nav() {
 
   // Fetch threads from API (falls back to mock data)
   const { threads: navThreads } = useThreads()
-  const { countryName: identityCountryName, setCountry, setThread } = useIdentity()
+  const { countryName: identityCountryName, setCountry, setLanguage, setThread } = useIdentity()
   const [teaserIdx, setTeaserIdx] = useState(0)
   const [teaserFade, setTeaserFade] = useState(true)
   const [identityOpen, setIdentityOpen] = useState(false)
@@ -335,7 +335,7 @@ export default function Nav() {
                     </div>
 
                     {/* Thread list */}
-                    <div className="max-h-64 overflow-y-auto py-1.5 px-1.5">
+                    <div className="max-h-64 overflow-y-auto overscroll-contain py-1.5 px-1.5">
                       {navThreads
                         .filter((t) => t.type === identityTab && t.active)
                         .sort((a, b) => b.memberCount - a.memberCount)
@@ -345,15 +345,33 @@ export default function Nav() {
                             href={getThreadUrl(thread)}
                             role="menuitem"
                             onClick={() => {
-                              // Update identity context
+                              // Update identity context based on thread type
                               if (thread.type === 'country') {
-                                // Map slug to country code (e.g. 'kenya' → 'KE')
                                 const match = COUNTRY_OPTIONS.find(
                                   (c) =>
                                     c.name.toLowerCase() === thread.slug.toLowerCase() ||
                                     c.code.toLowerCase() === thread.slug.toLowerCase()
                                 )
                                 if (match) setCountry(match.code)
+                              } else if (thread.type === 'language') {
+                                // Language threads set the display language
+                                // Map thread slug to language code (e.g. 'swahili' → 'sw', 'german' → 'de')
+                                const LANG_MAP: Record<string, string> = {
+                                  swahili: 'sw',
+                                  german: 'de',
+                                  deutsch: 'de',
+                                  french: 'fr',
+                                  english: 'en',
+                                  arabic: 'ar',
+                                  hindi: 'hi',
+                                  zulu: 'zu',
+                                  hausa: 'ha',
+                                  yoruba: 'yo',
+                                  luganda: 'lg',
+                                }
+                                const langCode = LANG_MAP[thread.slug] ?? thread.slug
+                                setLanguage(langCode)
+                                setThread(thread.slug, thread.type)
                               } else {
                                 setThread(thread.slug, thread.type)
                               }
