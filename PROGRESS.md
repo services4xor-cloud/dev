@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 344/344 ✅                                                  |
+| Jest tests        | 360/360 ✅                                                  |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
@@ -67,6 +67,18 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 43 (2026-03-12) — i18n Sprint: 4 More Pages Wired (beCountry, pioneer dashboard, agents, thread detail)
+
+Continued i18n expansion. Wired 4 more pages with ~102 keys per language across all three (en/de/sw).
+
+- [x] **Be[Country] gate i18n**: Full page wiring — coming-soon state, hero CTAs, payment section, sector cards (with SectorCard sub-component hook), popular searches, cross-routes section. 19 keys × 3 langs.
+- [x] **Pioneer dashboard i18n**: All 3 tabs (Compass, Chapters, Referrals) + main shell — stat cards, top paths, empty states, referral code section, tab labels. 23 keys × 3 langs.
+- [x] **Agent landing i18n**: Full marketing page — hero, stats, how-it-works (4 steps), benefits (4 cards), who-is-this-for (6 items), CTA. Data arrays moved inside component for t() access. 40 keys × 3 langs.
+- [x] **Thread detail i18n**: Full page wiring — 404 state, hero join button, about/communities/paths sections, compass CTA sidebar, related threads, stats sidebar. 20 keys × 3 langs.
+- [x] **16 new i18n tests**: beCountry (5), pioneer (4), agent (4), thread (3) — validates all keys exist in en/de/sw + interpolation tests.
+- [x] Jest: 360/360 ✅ | TS: 0 errors
+- [x] **Pages with i18n**: 22 total (was 18 → now 22: + beCountry, pioneer dashboard, agents, thread detail)
 
 ### Session 42 (2026-03-12) — i18n Sprint: 4 Pages Wired (business, fashion, media, offerings)
 
