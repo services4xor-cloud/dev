@@ -5,6 +5,8 @@ import {
   MEDIA_PATHS as mediaPaths,
   MEDIA_FEATURED_PROJECTS as featuredProjects,
   MEDIA_PLATFORMS as platforms,
+  BRAND_NAME,
+  LEGAL,
 } from '@/data/mock'
 
 export default function MediaPage() {
@@ -18,11 +20,11 @@ export default function MediaPage() {
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-brand-accent/20 border border-brand-accent/40 rounded-full px-4 py-1.5 mb-6">
             <span className="text-brand-accent text-sm font-medium">
-              BeKenya Family Ltd — Media Division
+              {LEGAL.companyName} — Media Division
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-4">
-            <span className="text-brand-accent">BeKenya</span>{' '}
+            <span className="text-brand-accent">{BRAND_NAME}</span>{' '}
             <span className="text-white">Media</span>{' '}
             <span className="text-4xl md:text-6xl">🎬</span>
           </h1>
@@ -67,7 +69,7 @@ export default function MediaPage() {
                   footage. And they struggle to find reliable, talented creators in Kenya.
                 </p>
                 <p className="text-brand-accent font-semibold text-lg">
-                  That is the gap BeKenya Media exists to fill.
+                  That is the gap {BRAND_NAME} Media exists to fill.
                 </p>
               </div>
               <div className="mt-8 grid grid-cols-3 gap-4 text-center">
@@ -217,9 +219,9 @@ export default function MediaPage() {
               Create content + we auto-distribute to 9 platforms
             </p>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Pioneers who create for BeKenya Media clients get access to our distribution engine.
-              Post once, reach everywhere. Your content goes from Nairobi to the world automatically
-              — while you focus on the next shoot.
+              Pioneers who create for {BRAND_NAME} Media clients get access to our distribution
+              engine. Post once, reach everywhere. Your content goes from Nairobi to the world
+              automatically — while you focus on the next shoot.
             </p>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-9 gap-3 mb-12">
@@ -246,8 +248,8 @@ export default function MediaPage() {
                 Anchor and marked for distribution
               </li>
               <li className="flex gap-3">
-                <span className="text-brand-accent font-bold">3.</span> BeKenya auto-schedules posts
-                across all 9 platforms
+                <span className="text-brand-accent font-bold">3.</span> {BRAND_NAME} auto-schedules
+                posts across all 9 platforms
               </li>
               <li className="flex gap-3">
                 <span className="text-brand-accent font-bold">4.</span> Analytics delivered to both
@@ -270,9 +272,9 @@ export default function MediaPage() {
             Document UTAMADUNI&apos;s Impact for the World
           </h2>
           <p className="text-gray-400 mb-6 max-w-xl mx-auto">
-            UTAMADUNI is BeKenya&apos;s community charity arm — fighting poverty in Kenya through
-            opportunity and dignity. Media Pioneers can document this impact and share it with the
-            world.
+            UTAMADUNI is {BRAND_NAME}&apos;s community charity arm — fighting poverty in Kenya
+            through opportunity and dignity. Media Pioneers can document this impact and share it
+            with the world.
           </p>
           <Link
             href="/charity"
@@ -290,8 +292,8 @@ export default function MediaPage() {
             Africa&apos;s story is waiting to be told.
           </h2>
           <p className="text-gray-300 text-lg mb-10 leading-relaxed">
-            Join BeKenya Media as a Pioneer. Shoot. Write. Create. Earn. Distribute to 9 platforms.
-            Paid via M-Pesa.
+            Join {BRAND_NAME} Media as a Pioneer. Shoot. Write. Create. Earn. Distribute to 9
+            platforms. Paid via M-Pesa.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link

@@ -136,7 +136,7 @@ function getTypeAccentClass(type: NotificationType): string {
   const map: Record<NotificationType, string> = {
     path: 'border-l-[var(--color-accent)]',
     chapter: 'border-l-blue-500',
-    compass: 'border-l-teal-500',
+    compass: 'border-l-brand-accent',
     community: 'border-l-green-500',
     earnings: 'border-l-[var(--color-accent)]',
   }
@@ -147,7 +147,7 @@ function getTypeBadgeClass(type: NotificationType): string {
   const map: Record<NotificationType, string> = {
     path: 'bg-brand-primary/30 text-brand-accent',
     chapter: 'bg-blue-900/30 text-blue-400',
-    compass: 'bg-teal-900/30 text-teal-400',
+    compass: 'bg-brand-primary/20 text-brand-accent',
     community: 'bg-green-900/30 text-green-400',
     earnings: 'bg-brand-accent/10 text-brand-accent',
   }

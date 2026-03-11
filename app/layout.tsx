@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import { BRAND_NAME, LEGAL } from '@/data/mock/config'
 import './globals.css'
 
 // ── Fonts ──────────────────────────────────────────────────────────
@@ -23,10 +24,10 @@ const countryCode = process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE'
 
 const COUNTRY_META: Record<string, { title: string; description: string; twitter: string }> = {
   KE: {
-    title: 'BeKenya — Find Where You Belong. Go There.',
+    title: `${BRAND_NAME} — Find Where You Belong. Go There.`,
     description:
       'An identity-first compass for Pioneers. Safari paths, professional ventures, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
-    twitter: '@BeKenya',
+    twitter: `@${BRAND_NAME}`,
   },
   DE: {
     title: 'BeGermany — Find Your Path in Germany.',
@@ -62,9 +63,9 @@ export const metadata: Metadata = {
     'dignified work Africa',
   ],
 
-  authors: [{ name: 'BeKenya Family Ltd', url: siteUrl }],
-  creator: 'BeKenya Family Ltd',
-  publisher: 'BeKenya Family Ltd',
+  authors: [{ name: LEGAL.companyName, url: siteUrl }],
+  creator: LEGAL.companyName,
+  publisher: LEGAL.companyName,
 
   robots: {
     index: true,

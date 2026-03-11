@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { COUNTRIES } from '@/lib/countries'
+import { BRAND_NAME } from '@/data/mock'
 
 type CountryConfig = (typeof COUNTRIES)[keyof typeof COUNTRIES]
 
@@ -87,8 +88,8 @@ export default function BeCountryPage() {
             This Be[Country] is coming soon.
           </h1>
           <p className="text-white/70 mb-8 text-lg">
-            We are expanding to more countries every month. In the meantime, BeKenya is live now and
-            packed with opportunities.
+            We are expanding to more countries every month. In the meantime, {BRAND_NAME} is live
+            now and packed with opportunities.
           </p>
           <Link
             href="/be/ke"
@@ -99,7 +100,7 @@ export default function BeCountryPage() {
               border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
             }}
           >
-            Go to BeKenya →
+            Go to {BRAND_NAME} →
           </Link>
           <div className="mt-6">
             <Link

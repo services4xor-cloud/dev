@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 20 (2026-03-11)
+> Last updated: Session 21 (2026-03-11)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -16,7 +16,7 @@
 | Pages             | 20+                                              |
 | API routes        | 12+                                              |
 | Library modules   | 13                                               |
-| Mock data modules | 15                                               |
+| Mock data modules | 16 (incl. config.ts)                             |
 | Jest tests        | 25/25 ✅                                         |
 | Playwright tests  | 102/102 ✅ (16 smoke + 32 brand + 54 responsive) |
 | TypeScript errors | 0                                                |
@@ -67,6 +67,17 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ## Session Log
 
+### Session 21 (2026-03-11) — Centralize Config + Color Compliance
+
+- [x] Created `data/mock/config.ts`: single source for brand, contact, legal, referral, profile
+- [x] Updated 10+ pages to import from config (Footer, Login, Signup, Contact, Profile, Referral, Privacy, Business, Homepage)
+- [x] Fixed all teal-400/500/900 color violations → brand-accent/brand-primary (anchors/dashboard, post-path, notifications)
+- [x] Replaced all hardcoded "BeKenya" in page files with dynamic BRAND_NAME (about, charity, fashion, media, be/[country], business, layout)
+- [x] Homepage: BRAND_NAME, UTAMADUNI_AMOUNT, PAYMENT_BADGES from config
+- [x] Removed duplicate navs from profile and referral pages
+- [x] Zero teal/orange/amber/yellow violations remaining
+- [x] Only 3 acceptable "BeKenya" references remain: error.tsx (console), og/route.tsx (domain), layout.tsx (fallback URL)
+
 ### Session 20 (2026-03-11) — MD Cleanup + Vision Update
 
 - [x] Audited all 11 MD files for inconsistencies
@@ -103,4 +114,4 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ---
 
-_Last updated: Session 20 (2026-03-11)_
+_Last updated: Session 21 (2026-03-11)_

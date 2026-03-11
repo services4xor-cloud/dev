@@ -7,6 +7,7 @@ import {
   MOCK_CURRENT_PIONEER,
   MOCK_CHAPTERS as CHAPTERS_DATA,
   MOCK_MATCHING_PATHS,
+  BRAND_NAME,
 } from '@/data/mock'
 import { SkeletonDashboard } from '@/components/Skeleton'
 
@@ -429,12 +430,12 @@ function ReferralsTab() {
   }
 
   const shareWhatsApp = () => {
-    const msg = `Join BeNetwork — the platform for Pioneers! Use my code ${pioneer.referralCode} and let's go together. https://bekenya.com?ref=${pioneer.referralCode}`
+    const msg = `Join BeNetwork — the platform for Pioneers! Use my code ${pioneer.referralCode} and let's go together. https://${BRAND_NAME.toLowerCase()}.com?ref=${pioneer.referralCode}`
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
   }
 
   const shareTwitter = () => {
-    const msg = `Finding my path with @BeKenya — the BeNetwork for Pioneers! Join me with code ${pioneer.referralCode} 🦁 #BeKenya #Pioneer`
+    const msg = `Finding my path with @${BRAND_NAME} — the BeNetwork for Pioneers! Join me with code ${pioneer.referralCode} 🦁 #${BRAND_NAME} #Pioneer`
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}`, '_blank')
   }
 

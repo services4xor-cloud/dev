@@ -13,7 +13,7 @@ import {
   Landmark,
   Lock,
 } from 'lucide-react'
-import { CONTACT } from '@/data/mock'
+import { CONTACT, BRAND_NAME, LEGAL } from '@/data/mock'
 import { DIVISIONS, OPERATING_COUNTRIES, SHARE_BLOCKS } from '@/data/mock'
 
 export default function BusinessPage() {
@@ -26,7 +26,7 @@ export default function BusinessPage() {
             <Landmark className="w-4 h-4 text-brand-accent" />
             <span>Legal Entity</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">BeKenya Family Ltd</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">{LEGAL.companyName}</h1>
           <p className="text-xl text-gray-300 font-light mb-3">A Family. A Mission. A Structure.</p>
           <p className="text-gray-400 max-w-2xl mx-auto">
             The legal and operational home of the BeNetwork platform and all Be[Country] ventures.
@@ -67,7 +67,7 @@ export default function BusinessPage() {
                 icon: <Building2 className="w-5 h-5 text-brand-accent" />,
                 label: 'Entity Type',
                 value: 'Private Limited Company',
-                sub: 'BeKenya Family Ltd',
+                sub: LEGAL.companyName,
               },
               {
                 icon: <Lock className="w-5 h-5 text-brand-accent" />,
@@ -271,7 +271,7 @@ export default function BusinessPage() {
               {
                 icon: '🦁',
                 type: 'Safari Lodges & Conservancies',
-                desc: 'List your packages on BeKenya Experiences. Reach global travellers directly.',
+                desc: `List your packages on ${BRAND_NAME} Experiences. Reach global travellers directly.`,
               },
               {
                 icon: '🌍',

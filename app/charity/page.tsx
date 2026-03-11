@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { IMPACT_STATS, PILLARS, STORIES, PARTNER_TYPES } from '@/data/mock'
+import { IMPACT_STATS, PILLARS, STORIES, PARTNER_TYPES, BRAND_NAME, LEGAL } from '@/data/mock'
 
 type DonationAmount = 10 | 25 | 50 | 100 | 'custom'
 
@@ -38,7 +38,7 @@ export default function CharityPage() {
           </div>
 
           <p className="text-xl text-green-100 max-w-2xl leading-relaxed mb-8">
-            The charitable arm of BeKenya. Every path opened on our platform contributes to
+            The charitable arm of {BRAND_NAME}. Every path opened on our platform contributes to
             communities, conservation, and culture across Kenya.
           </p>
 
@@ -63,7 +63,7 @@ export default function CharityPage() {
       <div className="bg-brand-accent/5 border-y border-brand-accent/10 py-6">
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 text-center">
           <p className="text-gray-300 text-base font-medium">
-            When you book a Venture or open a Path on BeKenya,
+            When you book a Venture or open a Path on {BRAND_NAME},
             <span className="text-brand-accent font-bold"> a percentage flows to UTAMADUNI </span>—
             funding real programs in real communities. No middlemen. Full transparency.
           </p>
@@ -132,7 +132,7 @@ export default function CharityPage() {
       <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-3">How It Works</h2>
-          <p className="text-gray-400">The BeKenya circle of dignified work</p>
+          <p className="text-gray-400">The {BRAND_NAME} circle of dignified work</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="text-center p-6">
@@ -141,8 +141,8 @@ export default function CharityPage() {
             </div>
             <h3 className="font-bold text-white mb-2">Pioneers Book Ventures</h3>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Every safari, eco-lodge stay, or professional path opened on BeKenya generates value
-              in the ecosystem.
+              Every safari, eco-lodge stay, or professional path opened on {BRAND_NAME} generates
+              value in the ecosystem.
             </p>
           </div>
           <div className="text-center p-6 relative">
@@ -367,7 +367,7 @@ export default function CharityPage() {
             >
               booking a Venture
             </Link>{' '}
-            on BeKenya — a percentage automatically supports UTAMADUNI.
+            on {BRAND_NAME} — a percentage automatically supports UTAMADUNI.
           </p>
         </div>
       </div>
@@ -376,7 +376,7 @@ export default function CharityPage() {
       <div className="bg-gray-900/30 py-6 text-center border-t border-gray-800">
         <p className="text-gray-400 text-sm max-w-2xl mx-auto px-4">
           UTAMADUNI is registered in Kenya as a Community Based Organisation (CBO). Partnered with
-          BeKenya Family Ltd. All programmes are administered locally with full community
+          {LEGAL.companyName}. All programmes are administered locally with full community
           involvement and transparent financial reporting.
         </p>
       </div>

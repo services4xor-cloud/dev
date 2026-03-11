@@ -5,6 +5,8 @@ import {
   FASHION_PATHS as fashionPaths,
   FASHION_PARTNER_ANCHORS as partnerAnchors,
   FASHION_PROTECTIONS as protections,
+  BRAND_NAME,
+  LEGAL,
 } from '@/data/mock'
 
 export default function FashionPage() {
@@ -19,11 +21,11 @@ export default function FashionPage() {
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-brand-accent/20 border border-brand-accent/40 rounded-full px-4 py-1.5 mb-6">
             <span className="text-brand-accent text-sm font-medium">
-              BeKenya Family Ltd — Fashion Division
+              {LEGAL.companyName} — Fashion Division
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-4">
-            <span className="text-brand-accent">BeKenya</span>{' '}
+            <span className="text-brand-accent">{BRAND_NAME}</span>{' '}
             <span className="text-white">Fashion</span>
           </h1>
           <p className="text-2xl md:text-3xl font-light text-brand-accent mb-6 tracking-wide">
@@ -59,9 +61,9 @@ export default function FashionPage() {
             story.&rdquo;
           </p>
           <p className="mt-6 text-gray-400 max-w-2xl mx-auto">
-            BeKenya Fashion exists because Africa&apos;s creative talent deserves global opportunity
-            — without the exploitation, without the gatekeepers. We build safe, paid, professional
-            pathways from Kenya to the world.
+            {BRAND_NAME} Fashion exists because Africa&apos;s creative talent deserves global
+            opportunity — without the exploitation, without the gatekeepers. We build safe, paid,
+            professional pathways from Kenya to the world.
           </p>
         </div>
       </section>
@@ -137,7 +139,7 @@ export default function FashionPage() {
       <section className="py-20 px-4 bg-gradient-to-br from-brand-primary/30 to-transparent">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">
-            What Makes BeKenya Fashion Different
+            What Makes {BRAND_NAME} Fashion Different
           </h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
             Every Pioneer is protected. Full stop.
@@ -220,7 +222,7 @@ export default function FashionPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">Partner Anchors</h2>
           <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-            Organisations that trust BeKenya Fashion to connect them with verified, talented
+            Organisations that trust {BRAND_NAME} Fashion to connect them with verified, talented
             Pioneers
           </p>
           <div className="grid md:grid-cols-3 gap-6">
@@ -243,8 +245,8 @@ export default function FashionPage() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl font-black text-white mb-4">Ready to walk your path?</h2>
           <p className="text-gray-300 text-lg mb-10 leading-relaxed">
-            Join BeKenya Fashion as a Pioneer. Set your rates. Choose your shoots. Build your career
-            with dignity.
+            Join {BRAND_NAME} Fashion as a Pioneer. Set your rates. Choose your shoots. Build your
+            career with dignity.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link

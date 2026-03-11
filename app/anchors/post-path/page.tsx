@@ -170,7 +170,7 @@ function StepBasics({
                 onClick={() => setForm((f) => ({ ...f, isRemote: opt.val }))}
                 className={`flex-1 py-3 rounded-xl border text-sm font-medium transition-all ${
                   form.isRemote === opt.val
-                    ? 'border-teal-500 bg-teal-900/30 text-teal-400'
+                    ? 'border-brand-accent bg-brand-primary/30 text-brand-accent'
                     : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
                 }`}
               >
@@ -258,7 +258,7 @@ Don't just list tasks — tell the story of this path."
                 key={i}
                 className="flex items-center gap-3 p-2.5 bg-gray-800 rounded-xl border border-gray-700"
               >
-                <Check className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                <Check className="w-4 h-4 text-brand-accent flex-shrink-0" />
                 <span className="text-sm text-gray-200 flex-1">{req}</span>
                 <button
                   onClick={() =>
@@ -438,13 +438,13 @@ function StepPioneers({
                 onClick={() => togglePioneerType(type)}
                 className={`p-4 rounded-xl border text-left transition-all ${
                   selected
-                    ? 'border-teal-500 bg-teal-900/30 text-white'
+                    ? 'border-brand-accent bg-brand-primary/30 text-white'
                     : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-2xl">{cfg.icon}</span>
-                  {selected && <Check className="w-4 h-4 text-teal-400" />}
+                  {selected && <Check className="w-4 h-4 text-brand-accent" />}
                 </div>
                 <div className="text-sm font-semibold text-gray-200">{cfg.label}</div>
                 <div className="text-xs text-gray-400 mt-0.5 line-clamp-2">{cfg.description}</div>
@@ -581,20 +581,20 @@ function StepCompensation({
                 onClick={() => togglePayment(pm.id)}
                 className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all ${
                   selected
-                    ? 'border-teal-500 bg-teal-900/30'
+                    ? 'border-brand-accent bg-brand-primary/30'
                     : 'border-gray-700 bg-gray-800 hover:border-gray-600'
                 }`}
               >
                 <span className="text-xl">{pm.icon}</span>
                 <div className="flex-1">
                   <div
-                    className={`text-sm font-medium ${selected ? 'text-teal-300' : 'text-gray-300'}`}
+                    className={`text-sm font-medium ${selected ? 'text-brand-accent' : 'text-gray-300'}`}
                   >
                     {pm.label}
                   </div>
                   <div className="text-xs text-gray-400">{pm.desc}</div>
                 </div>
-                {selected && <Check className="w-4 h-4 text-teal-400 flex-shrink-0" />}
+                {selected && <Check className="w-4 h-4 text-brand-accent flex-shrink-0" />}
               </button>
             )
           })}
@@ -656,7 +656,7 @@ function StepPreview({
                   </span>
                 )}
                 {form.isRemote && (
-                  <span className="text-xs px-2 py-1 bg-teal-900/50 text-teal-400 rounded-full border border-teal-700/50">
+                  <span className="text-xs px-2 py-1 bg-brand-primary/30 text-brand-accent rounded-full border border-brand-accent/30">
                     Remote OK
                   </span>
                 )}
@@ -694,7 +694,7 @@ function StepPreview({
             <ul className="space-y-1.5">
               {form.requirements.map((r, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                  <Check className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                  <Check className="w-4 h-4 text-brand-accent flex-shrink-0" />
                   {r}
                 </li>
               ))}
@@ -764,7 +764,7 @@ function StepPreview({
       </div>
 
       {/* Publish CTA */}
-      <div className="bg-gradient-to-r from-brand-primary/40 to-teal-900/40 rounded-2xl border border-brand-accent/30 p-6 text-center">
+      <div className="bg-gradient-to-r from-brand-primary/40 to-brand-primary/40 rounded-2xl border border-brand-accent/30 p-6 text-center">
         <Rocket className="w-8 h-8 text-brand-accent mx-auto mb-3" />
         <h3 className="text-white font-bold text-lg mb-1">Ready to open this Path?</h3>
         <p className="text-gray-400 text-sm mb-5">
@@ -923,7 +923,7 @@ export default function PostPathPage() {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all ${
                     step > s.num
-                      ? 'border-teal-500 bg-teal-500 text-white'
+                      ? 'border-brand-accent bg-brand-accent text-brand-bg'
                       : step === s.num
                         ? 'border-brand-accent bg-brand-accent text-white'
                         : 'border-gray-600 bg-gray-800 text-gray-400'
@@ -942,7 +942,7 @@ export default function PostPathPage() {
               {i < STEPS.length - 1 && (
                 <div
                   className={`h-px flex-1 mx-2 sm:mx-3 transition-colors ${
-                    step > s.num ? 'bg-teal-500' : 'bg-gray-700'
+                    step > s.num ? 'bg-brand-accent' : 'bg-gray-700'
                   }`}
                   style={{ minWidth: '20px' }}
                 />

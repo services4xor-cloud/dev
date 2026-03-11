@@ -16,6 +16,7 @@ import {
   ABOUT_PAYMENT_METHODS as PAYMENT_METHODS,
   ABOUT_STATS as STATS,
   ABOUT_VOCAB_ITEMS as VOCAB_ITEMS,
+  BRAND_NAME,
 } from '@/data/mock'
 
 export default function AboutPage() {
@@ -227,7 +228,7 @@ export default function AboutPage() {
           <h3 className="text-2xl font-bold mb-3">UTAMADUNI CBO</h3>
           <p className="text-gray-300 max-w-xl mx-auto mb-6 text-sm leading-relaxed">
             Our community arm. Supporting conservation workers, local guides, and cultural educators
-            across East Africa. Every booking through BeKenya contributes.
+            across East Africa. Every booking through {BRAND_NAME} contributes.
           </p>
           <Link
             href="/charity"

@@ -39,6 +39,7 @@ import {
   COUNTRY_BREAKDOWN,
   ROUTE_CORRIDORS,
   PIONEER_TYPE_BREAKDOWN,
+  BRAND_NAME,
   type PathStatus,
   type ChapterStatus,
 } from '@/data/mock'
@@ -69,7 +70,7 @@ function StatCard({
       </div>
       <div className="text-2xl font-bold text-white">{value}</div>
       <div className="text-sm text-gray-400 mt-0.5">{label}</div>
-      {sub && <div className="text-xs text-teal-400 mt-1">{sub}</div>}
+      {sub && <div className="text-xs text-brand-accent mt-1">{sub}</div>}
     </div>
   )
 }
@@ -151,7 +152,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
           <p className="text-gray-400 mt-1">
             {MOCK_ANCHOR.sector} · {MOCK_ANCHOR.country}
             {MOCK_ANCHOR.verified && (
-              <span className="ml-2 inline-flex items-center gap-1 text-teal-400 text-xs">
+              <span className="ml-2 inline-flex items-center gap-1 text-brand-accent text-xs">
                 <CheckCircle className="w-3 h-3" /> Verified Anchor
               </span>
             )}
@@ -187,7 +188,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
           label="Pioneers Matched"
           value={12}
           sub="via Compass"
-          color="bg-teal-500/20 text-teal-400"
+          color="bg-brand-primary/30 text-brand-accent"
         />
         <StatCard
           icon={<Eye className="w-5 h-5" />}
@@ -215,16 +216,16 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
         </Link>
         <button
           onClick={() => setActiveTab('chapters')}
-          className="flex items-center gap-3 p-4 bg-gray-800 border border-gray-700 rounded-xl hover:border-teal-500 hover:bg-gray-750 transition-all group text-left"
+          className="flex items-center gap-3 p-4 bg-gray-800 border border-gray-700 rounded-xl hover:border-brand-accent hover:bg-gray-750 transition-all group text-left"
         >
-          <div className="w-9 h-9 rounded-lg bg-teal-500/20 flex items-center justify-center text-teal-400 group-hover:bg-teal-500/30">
+          <div className="w-9 h-9 rounded-lg bg-brand-primary/30 flex items-center justify-center text-brand-accent group-hover:bg-brand-primary/40">
             <Layout className="w-5 h-5" />
           </div>
           <div>
             <div className="text-sm font-medium text-white">Review Chapters</div>
             <div className="text-xs text-gray-400">7 awaiting review</div>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-gray-600 ml-auto group-hover:text-teal-400" />
+          <ArrowUpRight className="w-4 h-4 text-gray-600 ml-auto group-hover:text-brand-accent" />
         </button>
         <button
           onClick={() => setActiveTab('analytics')}
@@ -251,7 +252,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
             </h2>
             <button
               onClick={() => setActiveTab('chapters')}
-              className="text-xs text-teal-400 hover:text-teal-300 flex items-center gap-1"
+              className="text-xs text-brand-accent hover:text-brand-accent/80 flex items-center gap-1"
             >
               See all <ChevronRight className="w-3 h-3" />
             </button>
@@ -282,7 +283,7 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
         <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-white font-semibold flex items-center gap-2">
-              <Target className="w-4 h-4 text-teal-400" />
+              <Target className="w-4 h-4 text-brand-accent" />
               Compass Recommendations
             </h2>
             <span className="text-xs text-gray-400">Pioneers matching your open paths</span>
@@ -291,9 +292,9 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
             {MOCK_COMPASS_RECOMMENDATIONS.map((r) => (
               <div
                 key={r.id}
-                className="flex items-start gap-3 p-3 bg-gray-700/40 rounded-xl border border-gray-700 hover:border-teal-500/50 transition-colors"
+                className="flex items-start gap-3 p-3 bg-gray-700/40 rounded-xl border border-gray-700 hover:border-brand-accent/50 transition-colors"
               >
-                <div className="w-9 h-9 rounded-full bg-teal-900/50 border border-teal-700/50 flex items-center justify-center text-sm flex-shrink-0">
+                <div className="w-9 h-9 rounded-full bg-brand-primary/30 border border-brand-accent/30 flex items-center justify-center text-sm flex-shrink-0">
                   {PIONEER_TYPES[r.type].icon}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -306,7 +307,9 @@ function OverviewTab({ setActiveTab }: { setActiveTab: (t: Tab) => void }) {
                 </div>
                 <div className="flex-shrink-0 text-right">
                   <div className="text-lg font-bold text-green-400">{r.score}%</div>
-                  <button className="text-xs text-teal-400 hover:text-teal-300 mt-1">Invite</button>
+                  <button className="text-xs text-brand-accent hover:text-brand-accent/80 mt-1">
+                    Invite
+                  </button>
                 </div>
               </div>
             ))}
@@ -420,7 +423,7 @@ function PathsTab() {
 
               {isExpanded && path.topMatches.length > 0 && (
                 <div className="border-t border-gray-700 px-5 py-4 bg-gray-750/30">
-                  <div className="text-xs font-medium text-teal-400 mb-3 flex items-center gap-1.5">
+                  <div className="text-xs font-medium text-brand-accent mb-3 flex items-center gap-1.5">
                     <Target className="w-3.5 h-3.5" />
                     Top Compass Matches for this Path
                   </div>
@@ -441,7 +444,7 @@ function PathsTab() {
                         </div>
                         <div className="flex items-center gap-2">
                           <MatchScoreDot score={m.score} />
-                          <button className="text-xs text-teal-400 hover:text-teal-300 px-2 py-1 rounded-lg bg-teal-900/30 border border-teal-700/50">
+                          <button className="text-xs text-brand-accent hover:text-brand-accent/80 px-2 py-1 rounded-lg bg-brand-primary/20 border border-brand-accent/30">
                             Invite to Route
                           </button>
                         </div>
@@ -592,7 +595,7 @@ function ChaptersTab() {
                     {status !== 'shortlisted' && status !== 'declined' && (
                       <button
                         onClick={() => updateStatus(chapter.id, 'shortlisted')}
-                        className="px-3 py-1.5 bg-teal-900/50 text-teal-400 border border-teal-700/50 rounded-xl text-xs font-medium hover:bg-teal-900 transition-colors"
+                        className="px-3 py-1.5 bg-brand-primary/30 text-brand-accent border border-brand-accent/30 rounded-xl text-xs font-medium hover:bg-brand-primary/40 transition-colors"
                       >
                         Invite to Route
                       </button>
@@ -678,7 +681,7 @@ function AnalyticsTab() {
         {/* Route corridors */}
         <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5">
           <h3 className="text-white font-semibold mb-1 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-teal-400" />
+            <TrendingUp className="w-4 h-4 text-brand-accent" />
             Which Routes are most active?
           </h3>
           <p className="text-gray-400 text-xs mb-4">Country-to-country pioneer corridors</p>
@@ -696,7 +699,7 @@ function AnalyticsTab() {
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-semibold text-white">{r.count}</div>
-                  <div className="text-xs text-teal-400">{r.trend}</div>
+                  <div className="text-xs text-brand-accent">{r.trend}</div>
                 </div>
               </div>
             ))}
@@ -724,7 +727,7 @@ function AnalyticsTab() {
                     </div>
                     <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-teal-500 to-teal-400 rounded-full"
+                        className="h-full bg-gradient-to-r from-brand-accent to-brand-accent/80 rounded-full"
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -797,7 +800,7 @@ function SettingsTab() {
   const Toggle = ({ value, onChange }: { value: boolean; onChange: () => void }) => (
     <button onClick={onChange} className="focus:outline-none">
       {value ? (
-        <ToggleRight className="w-8 h-8 text-teal-400" />
+        <ToggleRight className="w-8 h-8 text-brand-accent" />
       ) : (
         <ToggleLeft className="w-8 h-8 text-gray-600" />
       )}
@@ -867,7 +870,7 @@ function SettingsTab() {
       {/* Payment Methods */}
       <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5">
         <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-          <Globe className="w-4 h-4 text-teal-400" />
+          <Globe className="w-4 h-4 text-brand-accent" />
           Payment Methods Linked
         </h3>
         <div className="space-y-2">
@@ -887,7 +890,7 @@ function SettingsTab() {
               </div>
               <div className="flex items-center gap-3">
                 <span className={`text-xs ${pm.color}`}>{pm.status}</span>
-                <button className="text-xs text-teal-400 hover:text-teal-300">
+                <button className="text-xs text-brand-accent hover:text-brand-accent/80">
                   {pm.status === 'Connected' ? 'Manage' : 'Connect'}
                 </button>
               </div>
@@ -1018,7 +1021,7 @@ export default function AnchorDashboardPage() {
               B
             </div>
             <div>
-              <div className="text-white font-bold text-sm leading-tight">BeKenya</div>
+              <div className="text-white font-bold text-sm leading-tight">{BRAND_NAME}</div>
               <div className="text-gray-400 text-xs">Anchor Portal</div>
             </div>
           </Link>

@@ -17,6 +17,10 @@ import {
   TO_COUNTRIES,
   TESTIMONIALS,
   BE_COUNTRIES,
+  BRAND_NAME,
+  BRAND_MISSION,
+  UTAMADUNI_AMOUNT,
+  PAYMENT_BADGES,
 } from '@/data/mock'
 
 // ─── Derived Data ─────────────────────────────────────────────────────────────
@@ -145,8 +149,8 @@ export default function HomePage() {
           </h1>
 
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            BeKenya is not a job board. It&apos;s a compass — for Pioneers who want to move, grow,
-            and belong somewhere extraordinary.
+            {BRAND_NAME} is not a job board. It&apos;s a compass — for Pioneers who want to move,
+            grow, and belong somewhere extraordinary.
           </p>
 
           {/* CTAs */}
@@ -190,7 +194,7 @@ export default function HomePage() {
           <p className="text-gray-400 text-sm">
             Pioneers active today ·{' '}
             <span className="font-medium" style={{ color: 'var(--color-accent)' }}>
-              KES 50 from every booking
+              {UTAMADUNI_AMOUNT} from every booking
             </span>{' '}
             funds UTAMADUNI community work
           </p>
@@ -508,7 +512,7 @@ export default function HomePage() {
               empowerment.
             </p>
             <p className="font-bold text-xl mb-8" style={{ color: 'var(--color-accent)' }}>
-              KES 50 from every booking. Automatically. Always.
+              {UTAMADUNI_AMOUNT} from every booking. Automatically. Always.
             </p>
             <div className="flex flex-wrap items-center gap-8 mb-8 text-white text-sm">
               <span>&#127979; Education for rural children</span>
@@ -535,7 +539,7 @@ export default function HomePage() {
             The BeNetwork
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
-            BeKenya is just the beginning.
+            {BRAND_NAME} is just the beginning.
           </h2>
           <p className="text-gray-400 text-lg mb-12 max-w-xl mx-auto">
             Same mission. Every country. Every community.
@@ -685,18 +689,13 @@ export default function HomePage() {
             Pay with what you know
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8">
-            {[
-              { name: 'M-Pesa', color: '#00A651', symbol: 'M' },
-              { name: 'Stripe', color: '#635BFF', symbol: 'S' },
-              { name: 'Flutterwave', color: '#F5A623', symbol: 'F' },
-              { name: 'PayPal', color: '#003087', symbol: 'P' },
-            ].map((p) => (
+            {PAYMENT_BADGES.map((p) => (
               <div key={p.name} className="flex items-center gap-3">
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-black"
                   style={{ backgroundColor: p.color + '22', border: `1px solid ${p.color}44` }}
                 >
-                  <span style={{ color: p.color }}>{p.symbol}</span>
+                  <span style={{ color: p.color }}>{p.name[0]}</span>
                 </div>
                 <span className="text-gray-400 font-semibold text-sm">{p.name}</span>
               </div>
