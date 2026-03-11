@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 26 (2026-03-11)
+> Last updated: Session 28 (2026-03-11)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -66,6 +66,15 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 ---
 
 ## Session Log
+
+### Session 28 (2026-03-11) — Venture Detail, Identity Flags, Country Gate
+
+- [x] **Venture detail page**: Created `app/ventures/[id]/page.tsx` — core conversion page with path details (description, responsibilities, requirements, benefits), sticky sidebar with "Open Chapter" CTA, success state, similar paths sidebar. Uses shared StatusBadge and VOCAB constants.
+- [x] **Identity flags system**: New `lib/identity-flags.ts` — stores Pioneer identity (type, origin, destinations, skills) in localStorage after onboarding. Provides `saveIdentityFlags()`, `loadIdentityFlags()`, `getCompassUrl()`, `getVenturesUrl()` helpers.
+- [x] **Onboarding → Ventures flow**: Updated onboarding to save flags locally (works without DB) and redirect to personalized Ventures feed with pre-filtered URL params.
+- [x] **Homepage returning Pioneer**: Homepage detects returning Pioneers (completed onboarding) and links to personalized Ventures instead of generic Compass.
+- [x] **Country Gate dynamic links**: "Other Be[Country]" cross-links at bottom of Gate pages now iterate `Object.keys(COUNTRIES)` instead of hardcoded array.
+- [x] Build: ✅ | TS: 0 errors
 
 ### Session 27 (2026-03-11) — Unify Compass, KISS Anchor Dashboard, Consistency
 
