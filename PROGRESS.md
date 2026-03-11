@@ -98,7 +98,9 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 - [x] Responsive scaling — watch to TV across all key pages (session 18)
 - [x] Ventures loading skeleton (session 18)
 - [x] End-to-end mock booking flow with engagement nudges (session 19)
-- [ ] Loading skeletons for remaining data-fetching pages
+- [x] WCAG AA contrast enforcement codebase-wide (session 19)
+- [x] UX audit fixes: color harmony, phi spacing, mobile sticky CTA (session 19)
+- [x] Loading skeletons: reusable component + Pioneer/Anchor dashboards + Compass (session 19)
 - [ ] Error boundaries on all dashboard pages
 - [ ] Progressive φ token adoption in Nav, Footer, cards
 
@@ -183,7 +185,7 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ## Session Log (Reverse Chronological)
 
-### Session 19 (2026-03-11) — End-to-End Mock Booking Flow
+### Session 19 (2026-03-11) — Booking Flow, UX Audit, WCAG, Skeletons
 
 - [x] Booking state machine: browsing → paying → confirmed (experience detail page)
 - [x] M-Pesa modal wired to "Book This Venture" button (was dead/disconnected)
@@ -194,7 +196,17 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 - [x] Trust signals: 48hr free cancel, verified provider badges
 - [x] Seeded deterministic randomness per package ID (no hydration flicker)
 - [x] Compass cross-sell CTA in booking sidebar
-- [x] Build: TS 0 errors, preview verified, Vercel auto-deploy
+- [x] **UX audit**: WCAG contrast, color harmony, phi spacing, mobile sticky CTA
+- [x] `text-gray-500` → `text-gray-400` codebase-wide (143 occurrences, 23 files) — 3.81:1 → 7.9:1 contrast
+- [x] Off-brand `bg-[#0891B2]` (teal) replaced with `bg-brand-primary-light`
+- [x] Phi token adoption on experience page: `py-phi-7`, `py-phi-6`, `p-phi-5`, `mb-phi-5`
+- [x] Mobile sticky CTA bar (`fixed bottom-0 lg:hidden`) for experience booking
+- [x] DESIGN_SYSTEM.md updated: WCAG contrast table, approved functional colors, phi spacing guidance
+- [x] Reusable `components/Skeleton.tsx`: 8 atomic primitives (SkeletonLine, Block, Card, Grid, ListItem, StatCard, Dashboard, Page)
+- [x] Skeleton loading: Pioneer dashboard (600ms init + 300ms tab switch)
+- [x] Skeleton loading: Anchor dashboard (same pattern)
+- [x] Skeleton loading: Compass wizard (600ms initial load)
+- [x] Build: TS 0 errors, Vercel auto-deploy
 
 ### Session 18 (2026-03-11) — Centralized Semantic Color System + Responsive
 
