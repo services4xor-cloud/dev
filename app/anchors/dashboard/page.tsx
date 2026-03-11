@@ -412,9 +412,12 @@ function PathsTab() {
                     <button
                       onClick={() => setExpandedPath(isExpanded ? null : path.id)}
                       className="p-1.5 text-gray-400 hover:text-white transition-colors"
+                      aria-label={isExpanded ? 'Collapse path details' : 'Expand path details'}
+                      aria-expanded={isExpanded}
                     >
                       <ChevronDown
                         className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                        aria-hidden="true"
                       />
                     </button>
                   </div>
@@ -797,12 +800,26 @@ function SettingsTab() {
   const [twitter, setTwitter] = useState(false)
   const [facebook, setFacebook] = useState(false)
 
-  const Toggle = ({ value, onChange }: { value: boolean; onChange: () => void }) => (
-    <button onClick={onChange} className="focus:outline-none">
+  const Toggle = ({
+    value,
+    onChange,
+    label,
+  }: {
+    value: boolean
+    onChange: () => void
+    label?: string
+  }) => (
+    <button
+      onClick={onChange}
+      className="focus:outline-none"
+      aria-label={label}
+      aria-checked={value}
+      role="switch"
+    >
       {value ? (
-        <ToggleRight className="w-8 h-8 text-brand-accent" />
+        <ToggleRight className="w-8 h-8 text-brand-accent" aria-hidden="true" />
       ) : (
-        <ToggleLeft className="w-8 h-8 text-gray-600" />
+        <ToggleLeft className="w-8 h-8 text-gray-600" aria-hidden="true" />
       )}
     </button>
   )
@@ -928,7 +945,7 @@ function SettingsTab() {
                 <div className="text-sm text-gray-200">{n.label}</div>
                 <div className="text-xs text-gray-400">{n.desc}</div>
               </div>
-              <Toggle value={n.value} onChange={n.toggle} />
+              <Toggle value={n.value} onChange={n.toggle} label={`Toggle ${n.label}`} />
             </div>
           ))}
         </div>
@@ -976,7 +993,7 @@ function SettingsTab() {
                 <span>{p.icon}</span>
                 <span className="text-sm text-gray-300">{p.label}</span>
               </div>
-              <Toggle value={p.value} onChange={p.toggle} />
+              <Toggle value={p.value} onChange={p.toggle} label={`Toggle ${p.label}`} />
             </div>
           ))}
         </div>
@@ -1091,9 +1108,15 @@ export default function AnchorDashboardPage() {
             <span className="text-white">{tabs.find((t) => t.key === activeTab)?.label}</span>
           </div>
           <div className="flex items-center gap-3">
-            <button className="relative p-2 text-gray-400 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-accent rounded-full" />
+            <button
+              className="relative p-2 text-gray-400 hover:text-white transition-colors"
+              aria-label="Notifications"
+            >
+              <Bell className="w-5 h-5" aria-hidden="true" />
+              <span
+                className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-accent rounded-full"
+                aria-hidden="true"
+              />
             </button>
             <div className="w-8 h-8 rounded-full bg-gray-700 border border-gray-600 flex items-center justify-center text-base">
               {MOCK_ANCHOR.logo}

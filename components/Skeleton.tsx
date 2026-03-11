@@ -33,7 +33,7 @@ export function SkeletonBlock({ h = 'h-32', className = '' }: { h?: string; clas
 
 export function SkeletonCard() {
   return (
-    <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden">
+    <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl overflow-hidden">
       <div className="h-36 bg-gray-800/40" />
       <div className="p-4 space-y-3">
         <div className="h-4 w-20 bg-gray-800/60 rounded-full" />
@@ -64,7 +64,7 @@ export function SkeletonGrid({ count = 3 }: { count?: number }) {
 
 export function SkeletonListItem() {
   return (
-    <div className="flex items-start gap-4 p-5 rounded-2xl bg-gray-900/60 border border-gray-800">
+    <div className="flex items-start gap-4 p-5 rounded-2xl bg-gray-900/60 border border-brand-primary/30">
       <div className="w-12 h-12 rounded-xl bg-gray-800/60 flex-shrink-0" />
       <div className="flex-1 space-y-2">
         <div className="h-4 w-3/4 bg-gray-800/60 rounded" />
@@ -82,7 +82,7 @@ export function SkeletonListItem() {
 
 export function SkeletonStatCard() {
   return (
-    <div className="bg-gray-900/60 border border-gray-800 rounded-2xl p-phi-5">
+    <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-phi-5">
       <div className="flex items-center justify-between mb-3">
         <div className="h-3 w-20 bg-gray-800/60 rounded" />
         <div className="w-8 h-8 bg-gray-800/40 rounded-lg" />

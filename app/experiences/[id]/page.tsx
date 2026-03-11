@@ -172,7 +172,7 @@ export default function ExperiencePage() {
           </div>
 
           {/* Receipt card */}
-          <div className="bg-gray-900/60 rounded-2xl border border-gray-800 overflow-hidden">
+          <div className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 overflow-hidden">
             {/* Receipt header */}
             <div
               className="p-6"
@@ -221,7 +221,7 @@ export default function ExperiencePage() {
                 </div>
               </div>
 
-              <div className="border-t border-gray-800 pt-4">
+              <div className="border-t border-brand-primary/30 pt-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400">Amount paid</span>
                   <span className="text-white font-bold text-lg">{formatPackagePrice(pkg)}</span>
@@ -256,7 +256,7 @@ export default function ExperiencePage() {
             </div>
 
             {/* Receipt footer */}
-            <div className="px-6 py-4 border-t border-gray-800 bg-gray-900/40">
+            <div className="px-6 py-4 border-t border-brand-primary/30 bg-gray-900/40">
               <p className="text-gray-400 text-xs text-center">
                 Confirmation sent to your phone. Provider will contact you within 24 hours with
                 detailed pickup instructions.
@@ -377,7 +377,7 @@ export default function ExperiencePage() {
           {/* Main content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Highlights */}
-            <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-phi-5">
+            <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
               <h2 className="text-lg font-bold text-white mb-phi-4">✦ Why This Venture</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {pkg.highlights.map((highlight, i) => (
@@ -392,7 +392,7 @@ export default function ExperiencePage() {
             </section>
 
             {/* Included / Excluded */}
-            <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-phi-5">
+            <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
               <h2 className="text-lg font-bold text-white mb-phi-5">What&apos;s Included</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
@@ -441,11 +441,14 @@ export default function ExperiencePage() {
             </section>
 
             {/* Itinerary */}
-            <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-phi-5">
+            <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
               <h2 className="text-lg font-bold text-white mb-4">Day-by-Day Itinerary</h2>
               <div className="space-y-3">
                 {pkg.days.map((day, i) => (
-                  <div key={i} className="border border-gray-800 rounded-xl overflow-hidden">
+                  <div
+                    key={i}
+                    className="border border-brand-primary/30 rounded-xl overflow-hidden"
+                  >
                     <button
                       className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-800/50 transition-colors"
                       onClick={() => setOpenDay(openDay === i ? null : i)}
@@ -463,7 +466,7 @@ export default function ExperiencePage() {
                       )}
                     </button>
                     {openDay === i && (
-                      <div className="px-4 pb-4 border-t border-gray-800">
+                      <div className="px-4 pb-4 border-t border-brand-primary/30">
                         <p className="text-gray-400 text-sm leading-relaxed mt-3 mb-3">
                           {day.description}
                         </p>
@@ -480,7 +483,7 @@ export default function ExperiencePage() {
 
             {/* Optional Activities */}
             {pkg.optionalActivities && pkg.optionalActivities.length > 0 && (
-              <section className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm p-phi-5">
+              <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
                 <h2 className="text-lg font-bold text-white mb-4">Optional Extras</h2>
                 <div className="space-y-3">
                   {pkg.optionalActivities.map((activity, i) => (
@@ -504,7 +507,7 @@ export default function ExperiencePage() {
 
           {/* ── Booking sidebar ──────────────────────────────────────── */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-md p-phi-5 sticky top-6">
+            <div className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-md p-phi-5 sticky top-6">
               {/* Price */}
               <div className="text-center mb-4">
                 <div className="text-3xl font-bold text-white">{formatPackagePrice(pkg)}</div>
@@ -618,7 +621,7 @@ export default function ExperiencePage() {
               </div>
 
               {/* Quick info */}
-              <div className="pt-4 border-t border-gray-800 space-y-3">
+              <div className="pt-4 border-t border-brand-primary/30 space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Max group size</span>
                   <span className="font-medium text-gray-200">{pkg.maxGuests} people</span>
@@ -655,7 +658,7 @@ export default function ExperiencePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {related.map((relPkg) => (
                 <Link key={relPkg.id} href={`/experiences/${relPkg.id}`}>
-                  <div className="bg-gray-900/60 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md hover:border-gray-700 transition-all duration-200 overflow-hidden h-full">
+                  <div className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm hover:shadow-md hover:border-gray-700 transition-all duration-200 overflow-hidden h-full">
                     <div className="bg-gradient-to-br from-gray-800 to-brand-primary/30 h-28 flex items-center justify-center text-4xl">
                       {TYPE_EMOJI[relPkg.type] ?? '🌍'}
                     </div>
@@ -685,7 +688,7 @@ export default function ExperiencePage() {
       </div>
 
       {/* Mobile sticky CTA — visible only on mobile where sidebar is below fold */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-brand-bg/95 backdrop-blur-sm border-t border-gray-800 px-4 py-3 safe-bottom">
+      <div className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-brand-bg/95 backdrop-blur-sm border-t border-brand-primary/30 px-4 py-3 safe-bottom">
         <div className="flex items-center justify-between gap-3 max-w-5xl mx-auto">
           <div>
             <div className="text-white font-bold text-lg">{formatPackagePrice(pkg)}</div>

@@ -44,7 +44,7 @@ export default function SignupPage() {
           <p className="mt-1 text-gray-400">Free forever. No credit card needed.</p>
         </div>
 
-        <div className="bg-gray-900/60 rounded-2xl shadow-sm border border-gray-800 p-8">
+        <div className="bg-gray-900/60 rounded-2xl shadow-sm border border-brand-primary/30 p-8">
           {step === 1 && (
             <>
               <h2 className="text-lg font-semibold text-white mb-4">I am a...</h2>
@@ -128,7 +128,7 @@ export default function SignupPage() {
 
               <div className="relative mb-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-800" />
+                  <div className="w-full border-t border-brand-primary/30" />
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="bg-gray-900/60 px-3 text-gray-400">or fill in your details</span>

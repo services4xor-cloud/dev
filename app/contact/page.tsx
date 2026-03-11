@@ -72,7 +72,7 @@ export default function ContactPage() {
           </div>
 
           {/* Contact form */}
-          <div className="md:col-span-2 bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-gray-800">
+          <div className="md:col-span-2 bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30">
             {sent ? (
               <div className="text-center py-8">
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />

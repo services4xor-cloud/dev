@@ -85,8 +85,11 @@ export default function ProfilePage() {
               <div className="w-20 h-20 bg-brand-primary rounded-full flex items-center justify-center text-white font-bold text-2xl">
                 {form.name.charAt(0)}
               </div>
-              <button className="absolute bottom-0 right-0 w-7 h-7 bg-gray-900 rounded-full flex items-center justify-center text-white">
-                <Camera className="w-3.5 h-3.5" />
+              <button
+                aria-label="Change profile photo"
+                className="absolute bottom-0 right-0 w-7 h-7 bg-gray-900 rounded-full flex items-center justify-center text-white"
+              >
+                <Camera className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
             </div>
             <div>
@@ -94,7 +97,7 @@ export default function ProfilePage() {
                 Upload a professional photo to get more views
               </p>
               <button className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1">
-                <Upload className="w-3 h-3" /> Upload Photo
+                <Upload className="w-3 h-3" aria-hidden="true" /> Upload Photo
               </button>
             </div>
           </div>
@@ -187,8 +190,12 @@ export default function ProfilePage() {
                 className="flex items-center gap-1 badge bg-brand-primary/20 text-brand-accent"
               >
                 {skill}
-                <button onClick={() => removeSkill(skill)} className="hover:opacity-70">
-                  <X className="w-3 h-3" />
+                <button
+                  onClick={() => removeSkill(skill)}
+                  className="hover:opacity-70"
+                  aria-label={`Remove skill: ${skill}`}
+                >
+                  <X className="w-3 h-3" aria-hidden="true" />
                 </button>
               </span>
             ))}
@@ -202,8 +209,12 @@ export default function ProfilePage() {
               placeholder="Add a skill..."
               className="input flex-1"
             />
-            <button onClick={() => addSkill(skillInput)} className="btn-secondary px-3">
-              <Plus className="w-4 h-4" />
+            <button
+              onClick={() => addSkill(skillInput)}
+              className="btn-secondary px-3"
+              aria-label="Add skill"
+            >
+              <Plus className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
           <div className="flex flex-wrap gap-1.5 mt-3">

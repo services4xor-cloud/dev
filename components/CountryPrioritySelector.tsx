@@ -131,7 +131,7 @@ export default function CountryPrioritySelector({
                         ? 'border-brand-accent bg-brand-primary/30 shadow-[0_0_0_1px_rgb(var(--color-accent-rgb) / 0.38)]'
                         : near
                           ? 'border-emerald-700/50 bg-gray-900/80 shadow-[0_0_12px_2px_rgba(52,211,153,0.12)] hover:border-brand-accent/60 hover:shadow-[0_0_16px_4px_rgb(var(--color-accent-rgb) / 0.15)]'
-                          : 'border-gray-800 bg-gray-900/60 hover:border-brand-accent/40 hover:bg-gray-900',
+                          : 'border-brand-primary/30 bg-gray-900/60 hover:border-brand-accent/40 hover:bg-gray-900',
                     ].join(' ')}
                   >
                     {/* Priority badge */}

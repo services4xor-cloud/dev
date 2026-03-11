@@ -245,7 +245,7 @@ export default function CharityPage() {
           {PARTNER_TYPES.map((partner) => (
             <div
               key={partner.label}
-              className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 text-center shadow-sm hover:border-gray-700 transition-colors"
+              className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-5 text-center shadow-sm hover:border-gray-700 transition-colors"
             >
               <div className="text-3xl mb-3">{partner.icon}</div>
               <h3 className="font-semibold text-white text-sm mb-1">{partner.label}</h3>
@@ -373,7 +373,7 @@ export default function CharityPage() {
       </div>
 
       {/* Legal footer note */}
-      <div className="bg-gray-900/30 py-6 text-center border-t border-gray-800">
+      <div className="bg-gray-900/30 py-6 text-center border-t border-brand-primary/30">
         <p className="text-gray-400 text-sm max-w-2xl mx-auto px-4">
           UTAMADUNI is registered in Kenya as a Community Based Organisation (CBO). Partnered with
           {LEGAL.companyName}. All programmes are administered locally with full community

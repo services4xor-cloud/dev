@@ -54,7 +54,7 @@ export default function PricingPage() {
                 className={`bg-gray-900/60 rounded-2xl p-6 shadow-sm border-2 transition-transform hover:-translate-y-1 relative ${
                   plan.popular
                     ? 'border-brand-accent/50 shadow-lg shadow-brand-accent/5'
-                    : 'border-gray-800'
+                    : 'border-brand-primary/30'
                 }`}
               >
                 {plan.popular && (
@@ -110,7 +110,7 @@ export default function PricingPage() {
         </div>
 
         {/* Payment Methods */}
-        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-gray-800 mb-16">
+        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-primary/30 mb-16">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-white">
               Pay from anywhere in Africa and the world

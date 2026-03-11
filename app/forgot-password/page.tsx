@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
           Back to Sign In
         </Link>
 
-        <div className="bg-gray-900/60 border border-gray-800 rounded-2xl p-8">
+        <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-8">
           {sent ? (
             <div className="text-center">
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />

@@ -67,6 +67,19 @@ Needs human credentials → [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ## Session Log
 
+### Session 23 (2026-03-11) — Nav Redesign + Border/A11y Sweep
+
+- [x] **Nav redesign**: Fixed position with scroll-aware background (transparent → solid)
+- [x] **Rotating Be[Country] teaser**: Cycles 12 countries every 3s under logo — reinforces platform vision
+- [x] **Mobile menu**: Identity ticker ("One platform, every identity — BeGermany · BeKenya · BeYou")
+- [x] **CTA shimmer**: Gold pill button with hover shimmer effect
+- [x] **Gold accent line**: Subtle gradient line at top of nav
+- [x] **Breakpoint lowered**: Desktop nav now shows at `lg` (1024px) instead of `xl` (1280px)
+- [x] **Border sweep**: All `border-gray-800` → `border-brand-primary/30` (16 files, 0 remaining)
+- [x] **Accessibility**: Global `focus-visible` ring, aria-labels on icon-only buttons, skip-to-content verified
+- [x] **R24 (automation agent)** + **R25 (nav redesign)** added to REQUIREMENTS.md
+- [x] Build: ✅ | Jest: 25/25 ✅ | TS: 0 errors
+
 ### Session 22 (2026-03-11) — Design Consistency + Wizard Audit
 
 - [x] Added hero gradient sections to Contact, Privacy, Profile pages (matching world-class pages)

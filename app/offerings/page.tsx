@@ -216,7 +216,7 @@ export default function OfferingsPage() {
                   <button
                     key={rec.country.code}
                     onClick={() => setDestinationCode(rec.country.code)}
-                    className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 text-left hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-primary/20 transition-all duration-200 group"
+                    className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-5 text-left hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-primary/20 transition-all duration-200 group"
                   >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -280,7 +280,7 @@ export default function OfferingsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {offerings.experiences.map((pkg) => (
                     <Link key={pkg.id} href={`/experiences/${pkg.id}`}>
-                      <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden hover:border-brand-accent/40 transition-all duration-200 h-full group">
+                      <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl overflow-hidden hover:border-brand-accent/40 transition-all duration-200 h-full group">
                         <div
                           className="h-32 flex items-center justify-center text-4xl"
                           style={{ background: 'linear-gradient(135deg, #3D1A00, #7B3F00)' }}
@@ -328,7 +328,7 @@ export default function OfferingsPage() {
                   {offerings.ecoTourism.map((eco) => (
                     <div
                       key={eco.id}
-                      className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 hover:border-brand-accent/40 transition-all duration-200"
+                      className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-5 hover:border-brand-accent/40 transition-all duration-200"
                     >
                       <h3 className="font-bold text-white text-lg mb-1">{eco.name}</h3>
                       <div className="flex items-center gap-1 text-gray-400 text-sm mb-3">
@@ -378,7 +378,7 @@ export default function OfferingsPage() {
                     <Link
                       key={sector.name}
                       href={`/ventures?sector=${encodeURIComponent(sector.name)}`}
-                      className="bg-gray-900/60 border border-gray-800 rounded-xl p-4 hover:border-brand-accent/40 transition-all duration-200 group"
+                      className="bg-gray-900/60 border border-brand-primary/30 rounded-xl p-4 hover:border-brand-accent/40 transition-all duration-200 group"
                     >
                       <div className="text-2xl mb-2">{sector.emoji}</div>
                       <h3 className="font-semibold text-white text-sm group-hover:text-brand-accent transition-colors">
@@ -406,7 +406,7 @@ export default function OfferingsPage() {
                   {offerings.tradeCorridors.map((corridor) => (
                     <div
                       key={corridor.id}
-                      className="bg-gray-900/60 border border-gray-800 rounded-2xl p-5 hover:border-brand-accent/30 transition-all"
+                      className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-5 hover:border-brand-accent/30 transition-all"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                         <div className="flex items-center gap-3">

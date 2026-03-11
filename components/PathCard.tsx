@@ -48,7 +48,7 @@ export default function PathCard({
       className={`block rounded-2xl p-5 border-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/30 ${
         isFeatured
           ? 'bg-brand-primary/20 border-brand-accent/40 hover:border-brand-accent/70'
-          : 'bg-gray-900/60 border-gray-800 hover:border-brand-accent/30'
+          : 'bg-gray-900/60 border-brand-primary/30 hover:border-brand-accent/30'
       }`}
     >
       <div className="flex items-start gap-4">

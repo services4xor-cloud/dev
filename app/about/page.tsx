@@ -89,7 +89,7 @@ export default function AboutPage() {
           {STATS.map((stat) => (
             <div
               key={stat.label}
-              className="text-center p-6 rounded-2xl bg-gray-900/60 border border-gray-800"
+              className="text-center p-6 rounded-2xl bg-gray-900/60 border border-brand-primary/30"
             >
               <div className="text-3xl md:text-4xl font-black text-brand-accent mb-2">
                 {stat.value}
@@ -127,7 +127,7 @@ export default function AboutPage() {
             {VOCAB_ITEMS.map((item) => (
               <div
                 key={item.label}
-                className="flex items-start gap-4 p-4 rounded-xl bg-gray-900/50 border border-gray-800"
+                className="flex items-start gap-4 p-4 rounded-xl bg-gray-900/50 border border-brand-primary/30"
               >
                 <div className="w-10 h-10 rounded-lg bg-brand-primary/40 border border-brand-accent/20 flex items-center justify-center flex-shrink-0">
                   <item.icon className="w-5 h-5 text-brand-accent" />
@@ -154,7 +154,7 @@ export default function AboutPage() {
           {VALUES.map((v) => (
             <div
               key={v.title}
-              className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-brand-accent/30 transition-colors"
+              className="p-6 rounded-2xl bg-gray-900/50 border border-brand-primary/30 hover:border-brand-accent/30 transition-colors"
             >
               <div className="w-10 h-10 rounded-xl bg-brand-primary/40 border border-brand-accent/20 flex items-center justify-center mb-4">
                 <v.icon className="w-5 h-5 text-brand-accent" />
@@ -178,7 +178,7 @@ export default function AboutPage() {
           {SECTORS.map((s) => (
             <div
               key={s.name}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-brand-accent/30 transition-colors text-center"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-gray-900/50 border border-brand-primary/30 hover:border-brand-accent/30 transition-colors text-center"
             >
               <span className="text-2xl">{s.emoji}</span>
               <span className="text-xs text-gray-400 font-medium leading-tight">{s.name}</span>
@@ -203,7 +203,7 @@ export default function AboutPage() {
           {PAYMENT_METHODS.map((p) => (
             <div
               key={p.name}
-              className="flex items-center gap-3 p-4 rounded-xl bg-gray-900/50 border border-gray-800"
+              className="flex items-center gap-3 p-4 rounded-xl bg-gray-900/50 border border-brand-primary/30"
             >
               <span className="text-2xl">{p.icon}</span>
               <div>

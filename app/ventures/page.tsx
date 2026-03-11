@@ -121,7 +121,7 @@ export default function VenturesPage() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden"
+                  className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl overflow-hidden"
                 >
                   <div className="h-36 bg-gray-800/40" />
                   <div className="p-4 space-y-3">
@@ -141,7 +141,7 @@ export default function VenturesPage() {
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="flex items-start gap-4 p-5 rounded-2xl bg-gray-900/60 border border-gray-800"
+                className="flex items-start gap-4 p-5 rounded-2xl bg-gray-900/60 border border-brand-primary/30"
               >
                 <div className="w-12 h-12 rounded-xl bg-gray-800/60 flex-shrink-0" />
                 <div className="flex-1 space-y-2">
@@ -217,7 +217,7 @@ export default function VenturesPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {visibleSafaris.map((pkg) => (
                 <Link key={pkg.id} href={`/experiences/${pkg.id}`}>
-                  <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-primary/20 transition-all duration-200 h-full group">
+                  <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl overflow-hidden hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-primary/20 transition-all duration-200 h-full group">
                     {/* Image area */}
                     <div
                       className="h-36 flex items-center justify-center text-5xl"
@@ -371,7 +371,7 @@ function PathCard({ path, featured = false }: { path: PathListItem; featured?: b
         className={`group flex items-start gap-4 p-5 rounded-2xl border transition-all duration-200 hover:scale-[1.005] hover:shadow-lg ${
           featured
             ? 'bg-brand-primary/20 border-brand-accent/30 hover:border-brand-accent/60 hover:shadow-brand-primary/30'
-            : 'bg-gray-900/60 border-gray-800 hover:border-brand-accent/30 hover:shadow-brand-primary/20'
+            : 'bg-gray-900/60 border-brand-primary/30 hover:border-brand-accent/30 hover:shadow-brand-primary/20'
         }`}
       >
         {/* Icon */}

@@ -281,8 +281,9 @@ function SavedPathsTab() {
                 onClick={() => setSaved((prev) => prev.filter((p) => p.id !== path.id))}
                 className="text-red-400 hover:text-red-300 transition-colors text-lg"
                 title="Remove from saved"
+                aria-label={`Remove ${path.title} from saved paths`}
               >
-                ♥
+                <span aria-hidden="true">♥</span>
               </button>
             </div>
             <h4 className="text-white font-semibold text-sm mb-1">{path.title}</h4>

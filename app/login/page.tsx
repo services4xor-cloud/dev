@@ -33,7 +33,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-gray-900/60 rounded-2xl shadow-sm border border-gray-800 p-8">
+        <div className="bg-gray-900/60 rounded-2xl shadow-sm border border-brand-primary/30 p-8">
           {/* Google SSO */}
           <button className="w-full flex items-center justify-center gap-3 border border-gray-700 rounded-xl py-3 px-4 font-medium text-gray-300 hover:bg-gray-800 transition-colors mb-6">
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@ export default function LoginPage() {
 
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-800" />
+              <div className="w-full border-t border-brand-primary/30" />
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="bg-gray-900/60 px-3 text-gray-400">or sign in with email</span>
