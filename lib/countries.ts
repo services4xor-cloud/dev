@@ -16,6 +16,7 @@
 export type CountryCode =
   | 'KE'
   | 'DE'
+  | 'CH'
   | 'US'
   | 'NG'
   | 'GH'
@@ -275,6 +276,102 @@ const germanyConfig: CountryConfig = {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// SWITZERLAND — BeSwitzerland 🇨🇭
+// ─────────────────────────────────────────────────────────────────────────────
+const switzerlandConfig: CountryConfig = {
+  code: 'CH',
+  name: 'Switzerland',
+  brandName: 'BeSwitzerland',
+  domain: 'beswitzerland.com',
+  flag: '🇨🇭',
+  currency: 'CHF',
+  currencySymbol: 'CHF',
+  locale: 'de-CH',
+  phonePrefix: '+41',
+  primaryColor: '#5C0A14',
+  impactPartner: {
+    name: 'Brücken Schweiz',
+    fullName: 'Brücken Schweiz — Verein für Integration',
+    tagline: 'Brücken bauen zwischen Kulturen',
+    sharePercent: '5%',
+    contributionAmount: 'CHF 2',
+    pillars: ['Integration', 'Language Training', 'Professional Mentorship', 'Cultural Exchange'],
+    url: '/charity',
+  },
+  paymentMethods: [
+    {
+      id: 'twint',
+      name: 'TWINT',
+      logo: 'TW',
+      description: 'Swiss mobile payment',
+      currencies: ['CHF'],
+    },
+    {
+      id: 'sepa',
+      name: 'SEPA Direct Debit',
+      logo: 'EU',
+      description: 'EU/Swiss bank transfer',
+      currencies: ['CHF', 'EUR'],
+    },
+    {
+      id: 'stripe',
+      name: 'Stripe / Kreditkarte',
+      logo: 'S',
+      description: 'Visa, Mastercard, Amex',
+      currencies: ['CHF', 'EUR'],
+    },
+    {
+      id: 'paypal',
+      name: 'PayPal',
+      logo: 'P',
+      description: 'PayPal international',
+      currencies: ['CHF', 'EUR', 'USD'],
+    },
+  ],
+  featuredSectors: [
+    { id: 'finance', name: 'Finance & Banking', emoji: '🏦', count: 9200 },
+    {
+      id: 'pharma',
+      name: 'Pharma & Biotech',
+      emoji: '💊',
+      count: 6800,
+      partnerName: 'Interpharma',
+      partnerUrl: 'https://www.interpharma.ch',
+    },
+    { id: 'hospitality', name: 'Hospitality & Tourism', emoji: '🏔️', count: 5400 },
+    { id: 'it', name: 'IT & Software', emoji: '💻', count: 8400 },
+    {
+      id: 'precision',
+      name: 'Precision Engineering',
+      emoji: '⚙️',
+      count: 3200,
+      partnerName: 'Swissmem',
+      partnerUrl: 'https://www.swissmem.ch',
+    },
+    { id: 'renewable', name: 'Renewable Energy', emoji: '⚡', count: 1800 },
+    { id: 'healthcare', name: 'Healthcare', emoji: '🏥', count: 4200 },
+    { id: 'education', name: 'Education & Research', emoji: '🎓', count: 2800 },
+  ],
+  popularSearches: [
+    'Software Engineer',
+    'Pharma Research',
+    'Hotel Management',
+    'Banking',
+    'Zürich',
+    'Remote',
+  ],
+  heroTagline: 'Dein Weg in die Schweiz',
+  heroSubtext:
+    'Finde deinen Pfad bei führenden Schweizer Ankern. Pharma, Finanzen, Hospitality — Weltklasse-Chancen.',
+  statsBar: [
+    { label: 'Offene Pfade', value: '38,000+' },
+    { label: 'Anker', value: '1,800+' },
+    { label: 'Pioniere platziert', value: '4,200' },
+    { label: 'Ø Vergütung', value: 'CHF 85k' },
+  ],
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // USA — BeAmerica 🇺🇸
 // ─────────────────────────────────────────────────────────────────────────────
 const usaConfig: CountryConfig = {
@@ -410,6 +507,7 @@ const nigeriaConfig: CountryConfig = {
 export const COUNTRIES: Record<CountryCode, CountryConfig> = {
   KE: kenyaConfig,
   DE: germanyConfig,
+  CH: switzerlandConfig,
   US: usaConfig,
   NG: nigeriaConfig,
   // Placeholders — configs to be built out:

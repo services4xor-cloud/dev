@@ -55,6 +55,20 @@ export const MOCK_THREADS: Thread[] = [
     active: true,
   },
   {
+    slug: 'ch',
+    name: 'Switzerland',
+    brandName: 'BeSwitzerland',
+    type: 'country',
+    icon: '🇨🇭',
+    tagline: 'Precision, pharma, and Alpine opportunity.',
+    description:
+      'Switzerland offers world-class opportunities in finance, pharmaceuticals, hospitality, and precision engineering with some of the highest salaries globally.',
+    relatedThreads: ['de', 'deutsch', 'tech', 'medical'],
+    countries: ['CH'],
+    memberCount: 1800,
+    active: true,
+  },
+  {
     slug: 'gb',
     name: 'United Kingdom',
     brandName: 'BeBritain',
@@ -140,8 +154,8 @@ export const MOCK_THREADS: Thread[] = [
     tagline: 'Sprechen Sie Deutsch? Connect with German-speaking opportunities.',
     description:
       'The German-speaking community thread connects Pioneers with opportunities in Germany, Austria, and Switzerland.',
-    relatedThreads: ['de', 'tech', 'medical'],
-    countries: ['DE', 'AT', 'CH'],
+    relatedThreads: ['de', 'ch', 'tech', 'medical'],
+    countries: ['DE', 'CH', 'AT'],
     memberCount: 1800,
     active: true,
   },

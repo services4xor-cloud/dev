@@ -1,5 +1,9 @@
+/* eslint-disable no-console */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { chapterService } from '@/services'
 
 const openChapterSchema = z.object({
   pathId: z.string().min(1),
@@ -9,6 +13,14 @@ const openChapterSchema = z.object({
 // POST /api/chapters — Pioneer opens a Chapter on a Path
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: 'Login required to open a Chapter' },
+        { status: 401 }
+      )
+    }
+
     const body = await req.json()
     const parsed = openChapterSchema.safeParse(body)
     if (!parsed.success) {
@@ -18,46 +30,42 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // TODO: get session
-    // const session = await getServerSession(authOptions)
-    // if (!session) return NextResponse.json({ success: false, error: 'Login required' }, { status: 401 })
+    const chapter = await chapterService.create({
+      pathId: parsed.data.pathId,
+      pioneerId: session.user.id,
+      coverLetter: parsed.data.coverLetter,
+    })
 
-    // TODO: check for duplicate Chapter
-    // const existing = await prisma.chapter.findFirst({ where: { pathId: parsed.data.pathId, pioneerId: session.user.id } })
-    // if (existing) return NextResponse.json({ success: false, error: 'Chapter already opened on this Path' }, { status: 409 })
-
-    // TODO: create Chapter
-    // const chapter = await prisma.chapter.create({ data: { ...parsed.data, pioneerId: session.user.id, status: 'PENDING' } })
-
-    return NextResponse.json(
-      {
-        success: true,
-        data: {
-          id: `ch_${Date.now()}`,
-          ...parsed.data,
-          status: 'PENDING',
-          openedAt: new Date().toISOString(),
-        },
-      },
-      { status: 201 }
-    )
+    return NextResponse.json({ success: true, data: chapter }, { status: 201 })
   } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to open Chapter'
+    const status = message.includes('already opened') ? 409 : 500
     console.error('POST /api/chapters error:', err)
-    return NextResponse.json({ success: false, error: 'Failed to open Chapter' }, { status: 500 })
+    return NextResponse.json({ success: false, error: message }, { status })
   }
 }
 
 // GET /api/chapters — list Chapters for current user
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  const role = searchParams.get('role') // 'pioneer' | 'anchor'
+  const role = searchParams.get('role')
 
   try {
-    // TODO: session + Prisma query
-    // if (role === 'anchor') → list chapters on paths the anchor posted
-    // if (role === 'pioneer') → list chapters the pioneer opened
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ success: false, error: 'Login required' }, { status: 401 })
+    }
 
-    return NextResponse.json({ success: true, data: [], total: 0 })
+    let chapters: Awaited<ReturnType<typeof chapterService.listByPioneer>>
+    if (role === 'anchor') {
+      // For anchors, we'd list chapters on their paths
+      // For now, return empty — will expand when anchor dashboard is wired
+      chapters = []
+    } else {
+      chapters = await chapterService.listByPioneer(session.user.id)
+    }
+
+    return NextResponse.json({ success: true, data: chapters, total: chapters.length })
   } catch (err) {
     console.error('GET /api/chapters error:', err)
     return NextResponse.json({ success: false, error: 'Failed to fetch Chapters' }, { status: 500 })

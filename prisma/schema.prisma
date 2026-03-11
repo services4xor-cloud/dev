@@ -3,6 +3,9 @@
 //
 // Vocabulary: Pioneer (person), Anchor (org), Path (opportunity),
 //             Chapter (engagement), Venture (experience + path)
+//
+// Scale: Be[Country] → Be[Tribe] → Be[Location] → Be[Interest]
+// Countries live in code (lib/countries.ts). Dynamic content lives here.
 
 generator client {
   provider = "prisma-client-js"
@@ -19,7 +22,8 @@ model User {
   id            String    @id @default(cuid())
   email         String    @unique
   name          String?
-  phone         String?   // Kenyan format: 2547XXXXXXXX
+  phone         String?
+  passwordHash  String?   // bcrypt hash for Credentials auth (null for OAuth-only)
   role          UserRole  @default(PIONEER)
   avatarUrl     String?
   country       String    @default("KE")
@@ -27,11 +31,14 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   profile       Profile?
-  postedPaths   Path[]        // Anchors post Paths
-  chapters      Chapter[]     // Pioneers open Chapters
+  accounts      Account[]         // OAuth providers (Google, etc.)
+  postedPaths   Path[]            // Anchors post Paths
+  chapters      Chapter[]         // Pioneers open Chapters
   payments      Payment[]
-  referrals     Referral[]  @relation("ReferredBy")
-  referred      Referral?   @relation("Referred")
+  referrals     Referral[]        @relation("ReferredBy")
+  referred      Referral?         @relation("Referred")
+  threadMemberships ThreadMembership[]
+  savedPaths    SavedPath[]
 }
 
 enum UserRole {
@@ -40,16 +47,39 @@ enum UserRole {
   ADMIN
 }
 
+// ─── Account (NextAuth OAuth) ────────────────────────────────────────────────
+// Stores OAuth provider data. Required by @auth/prisma-adapter.
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String  // "oauth" | "credentials"
+  provider          String  // "google" | "credentials"
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
 // ─── Profile ─────────────────────────────────────────────────────────────────
 
 model Profile {
   id          String   @id @default(cuid())
   userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   headline    String?
   bio         String?
+  pioneerType String?  // explorer, professional, artisan, guardian, creator, healer
   resumeUrl   String?
-  skills      String[] // Array of skill tags
+  skills      String[]
   experience  Int?     // Years of experience
   location    String?
   linkedinUrl String?
@@ -66,7 +96,7 @@ model Path {
   anchor       User        @relation(fields: [anchorId], references: [id])
   title        String
   company      String
-  description  String
+  description  String      @db.Text
   location     String
   isRemote     Boolean     @default(false)
   pathType     PathType    @default(FULL_PATH)
@@ -74,14 +104,21 @@ model Path {
   salaryMax    Int?
   currency     String      @default("KES")
   skills       String[]
+  sector       String?     // tech, healthcare, hospitality, finance, etc.
   country      String      @default("KE")
   status       PathStatus  @default(OPEN)
   tier         PathTier    @default(BASIC)
   expiresAt    DateTime
   createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
   chapters     Chapter[]
   payments     Payment[]
+  savedBy      SavedPath[]
+
+  @@index([country])
+  @@index([status])
+  @@index([sector])
 }
 
 enum PathType {
@@ -115,10 +152,13 @@ model Chapter {
   path        Path          @relation(fields: [pathId], references: [id])
   pioneerId   String
   pioneer     User          @relation(fields: [pioneerId], references: [id])
-  coverLetter String?
+  coverLetter String?       @db.Text
   status      ChapterStatus @default(PENDING)
   openedAt    DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+
+  @@index([pathId])
+  @@index([pioneerId])
 }
 
 enum ChapterStatus {
@@ -129,6 +169,101 @@ enum ChapterStatus {
   PLACED
 }
 
+// ─── Threads ─────────────────────────────────────────────────────────────────
+// Identity-based communities. Be[Country] → Be[Tribe] → Be[Location].
+// Each thread is a community space with its own Gate page and curated feed.
+
+model Thread {
+  id           String       @id @default(cuid())
+  slug         String       @unique
+  name         String
+  brandName    String       // "BeKenya", "BeMaasai", "BeNairobi"
+  type         ThreadType
+  icon         String       // Emoji: 🇰🇪, 🦁, 🏙️
+  tagline      String
+  description  String       @db.Text
+  parentSlug   String?
+  parent       Thread?      @relation("ThreadHierarchy", fields: [parentSlug], references: [slug])
+  children     Thread[]     @relation("ThreadHierarchy")
+  countries    String[]     // ISO codes this thread spans
+  relatedSlugs String[]     // Related thread slugs for cross-linking
+  memberCount  Int          @default(0)
+  active       Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  memberships  ThreadMembership[]
+
+  @@index([type])
+  @@index([active])
+  @@index([parentSlug])
+}
+
+enum ThreadType {
+  COUNTRY
+  TRIBE
+  LANGUAGE
+  INTEREST
+  RELIGION
+  SCIENCE
+  LOCATION
+}
+
+// ─── Thread Membership ───────────────────────────────────────────────────────
+
+model ThreadMembership {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  threadId  String
+  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  role      String   @default("member") // member, moderator, admin
+  joinedAt  DateTime @default(now())
+
+  @@unique([userId, threadId])
+  @@index([threadId])
+}
+
+// ─── Experiences ─────────────────────────────────────────────────────────────
+// Eco-tourism, cultural immersions, professional ventures.
+
+model Experience {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  location    String
+  type        String   // eco-lodge, conservation, community-stay, safari, cultural
+  duration    String   // "5 days", "2 weeks"
+  priceUSD    Int
+  priceNote   String?
+  capacity    Int      @default(12)
+  highlights  String[]
+  impactNote  String?
+  seasonBest  String?
+  imageUrl    String?
+  country     String   @default("KE")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([country])
+  @@index([type])
+}
+
+// ─── Saved Paths ─────────────────────────────────────────────────────────────
+
+model SavedPath {
+  id      String   @id @default(cuid())
+  userId  String
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pathId  String
+  path    Path     @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  savedAt DateTime @default(now())
+
+  @@unique([userId, pathId])
+  @@index([userId])
+}
+
 // ─── Payments ─────────────────────────────────────────────────────────────────
 
 model Payment {
@@ -137,17 +272,18 @@ model Payment {
   user               User          @relation(fields: [userId], references: [id])
   pathId             String?
   path               Path?         @relation(fields: [pathId], references: [id])
-  amount             Int           // In smallest currency unit (KES cents or USD cents)
+  amount             Int           // In smallest currency unit
   currency           String        @default("KES")
   method             PaymentMethod
   status             PaymentStatus @default(PENDING)
-  // M-Pesa specific
   mpesaReceiptNumber String?
   checkoutRequestId  String?
-  // Stripe specific
   stripePaymentId    String?
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([status])
 }
 
 enum PaymentMethod {
@@ -155,6 +291,8 @@ enum PaymentMethod {
   STRIPE
   FLUTTERWAVE
   PAYPAL
+  SEPA
+  TWINT
 }
 
 enum PaymentStatus {
@@ -173,7 +311,7 @@ model Referral {
   referredId   String   @unique
   referred     User     @relation("Referred", fields: [referredId], references: [id])
   bonusPaid    Boolean  @default(false)
-  bonusAmount  Int?     // KES amount
+  bonusAmount  Int?
   createdAt    DateTime @default(now())
 }
 
@@ -181,17 +319,17 @@ model Referral {
 
 model SocialPost {
   id           String   @id @default(cuid())
-  type         String   // 'new_path' | 'safari_package' | 'pioneer_success' | 'charity_update'
+  type         String
   title        String
   body         String   @db.Text
   imageUrl     String?
   link         String?
-  platforms    String   // JSON array of platform names
+  platforms    String   // JSON array
   scheduledFor DateTime?
   postedAt     DateTime?
-  status       String   @default("draft") // 'draft' | 'scheduled' | 'posted' | 'failed'
+  status       String   @default("draft")
   countryCode  String   @default("KE")
-  results      String?  @db.Text // JSON results per platform
+  results      String?  @db.Text
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
