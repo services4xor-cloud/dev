@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 225/225 ✅                                                  |
+| Jest tests        | 303/303 ✅                                                  |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
@@ -67,6 +67,21 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 39 (2026-03-11) — i18n Completeness + Pricing Service + 78 New Tests + Trademark Audit
+
+5-sprint autonomous optimization session focused on i18n parity, service layer, and test coverage.
+
+- [x] **Swahili i18n near-parity**: Added ~80 new Swahili keys (auth, onboarding, compass, ventures, pricing, footer, contact) bringing sw to ~160 keys, matching German. Also added German pricing/about/contact/footer keys.
+- [x] **Pricing page fully i18n-wired**: Removed all `|| 'fallback'` patterns from `app/pricing/page.tsx`. Every text string now uses `t()` with proper interpolation for commission rates, plan names, durations.
+- [x] **Pricing service**: `services/pricing.ts` wraps static pricing data in async service pattern. Exported from `services/index.ts` barrel. Consistent with pathService/threadService pattern.
+- [x] **Service layer tests**: 18 tests in `__tests__/lib/service-layer.test.ts` — validates exports, mock fallback, data integrity, pricing methods (getPlans, getPaymentMethods, getPlanPrice, formatPlanPrice, getCommissionRates, getFreeTier, getCountryPaymentMethods).
+- [x] **Pricing data tests**: 36 tests in `__tests__/lib/pricing.test.ts` — plans structure, getPlanPrice() multi-currency, formatPlanPrice() symbols, commission rates, free tier, payment methods, currency conversions, country payment methods.
+- [x] **DynamicLogo tests**: 10 tests in `__tests__/lib/dynamic-logo.test.ts` — SVG sizing logic, font scaling (55%), circle radius, accent ring offset, icon handling.
+- [x] **i18n tests expanded**: 14 new tests — pricing keys in en/de/sw, footer/contact keys, Swahili completeness (auth, onboarding, compass, taglines), interpolation verification.
+- [x] **Trademark audit**: Systematic grep + fix of remaining real company names. `services/paths.ts`: SAP→Berlin Digital GmbH, Novartis→Basel Pharma SA. `data/mock/admin.ts`: Safaricom→SafariTech Solutions. `data/mock/paths.ts`: NHS Scotland→Edinburgh Health Trust.
+- [x] **DB vs Mock discovery**: Tests using real Neon DB (hasDatabase=true). Seed data needs re-running to apply fictional company names.
+- [x] Jest: 303/303 ✅ | TS: 0 errors
 
 ### Session 38 (2026-03-11) — All Decisions Resolved + Dynamic Logo + Payment Model + Fictional Anchors
 
