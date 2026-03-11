@@ -245,6 +245,116 @@ describe('i18n — Swahili completeness', () => {
   })
 })
 
+describe('i18n — about page translations', () => {
+  const aboutKeys = [
+    'about.title',
+    'about.badge',
+    'about.heroTitle',
+    'about.heroDesc',
+    'about.startCompass',
+    'about.postPath',
+    'about.mission',
+    'about.missionTitle',
+    'about.missionP1',
+    'about.missionP2',
+    'about.valuesTitle',
+    'about.valuesSubtitle',
+    'about.sectors',
+    'about.sectorsTitle',
+    'about.payments',
+    'about.paymentsTitle',
+    'about.paymentsDesc',
+    'about.impactDesc',
+    'about.learnImpact',
+    'about.ctaTitle',
+    'about.ctaDesc',
+  ]
+
+  it('English has all about page keys', () => {
+    for (const key of aboutKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all about page keys', () => {
+    for (const key of aboutKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all about page keys', () => {
+    for (const key of aboutKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('about.impactDesc interpolates brand name', () => {
+    const result = translate('about.impactDesc', 'en', { brand: 'BeKenya' })
+    expect(result).toContain('BeKenya')
+    expect(result).not.toContain('{brand}')
+  })
+
+  it('about.learnImpact interpolates partner name', () => {
+    const result = translate('about.learnImpact', 'de', { name: 'UTAMADUNI' })
+    expect(result).toContain('UTAMADUNI')
+  })
+})
+
+describe('i18n — contact page translations', () => {
+  const contactKeys = [
+    'contact.title',
+    'contact.subtitle',
+    'contact.name',
+    'contact.namePlaceholder',
+    'contact.email',
+    'contact.emailPlaceholder',
+    'contact.subject',
+    'contact.subjectPlaceholder',
+    'contact.subjectPath',
+    'contact.subjectPayment',
+    'contact.subjectAccount',
+    'contact.subjectScam',
+    'contact.subjectPartner',
+    'contact.subjectOther',
+    'contact.message',
+    'contact.messagePlaceholder',
+    'contact.send',
+    'contact.sending',
+    'contact.sent',
+    'contact.sentDesc',
+    'contact.error',
+    'contact.labelEmail',
+    'contact.labelEmailSub',
+    'contact.labelWhatsApp',
+    'contact.labelLocation',
+    'contact.labelSocial',
+  ]
+
+  it('English has all contact page keys', () => {
+    for (const key of contactKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all contact page keys', () => {
+    for (const key of contactKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all contact page keys', () => {
+    for (const key of contactKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('contact.subtitle interpolates brand and time', () => {
+    const result = translate('contact.subtitle', 'en', { brand: 'BeKenya', time: '24 hours' })
+    expect(result).toContain('BeKenya')
+    expect(result).toContain('24 hours')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()
