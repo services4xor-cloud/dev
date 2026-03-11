@@ -1,5 +1,10 @@
+/* eslint-disable no-console */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { hasDatabase } from '@/services/db'
 import { buildWhatsAppPayload } from '@/lib/whatsapp-templates'
 import { rankPathsForPioneer, MOCK_PATHS } from '@/lib/matching'
 import type { PioneerProfile } from '@/lib/matching'
@@ -10,21 +15,15 @@ const OnboardingSchema = z.object({
     errorMap: () => ({ message: 'Please select a valid Pioneer type' }),
   }),
   fromCountry: z.string().min(2, 'Origin country is required').max(10),
-  toCountries: z
-    .array(z.string().min(2).max(10))
-    .min(1, 'Select at least one destination')
-    .max(8),
-  skills: z
-    .array(z.string().min(1).max(100))
-    .min(3, 'Select at least 3 skills')
-    .max(50),
+  toCountries: z.array(z.string().min(2).max(10)).min(1, 'Select at least one destination').max(8),
+  skills: z.array(z.string().min(1).max(100)).min(3, 'Select at least 3 skills').max(50),
   headline: z.string().min(5, 'Headline must be at least 5 characters').max(200),
   bio: z.string().max(1000).optional().default(''),
   phone: z
     .string()
     .max(20)
     .optional()
-    .transform(val => {
+    .transform((val) => {
       if (!val) return undefined
       // Normalise: strip non-digits except leading +
       const cleaned = val.replace(/[^\d+]/g, '')
@@ -51,7 +50,11 @@ async function queueWelcomeWhatsApp(
       String(matchCount),
       pioneerType.charAt(0).toUpperCase() + pioneerType.slice(1),
     ])
-    console.log('[WhatsApp mock] Would send pioneer_welcome to', phone, JSON.stringify(payload, null, 2))
+    console.log(
+      '[WhatsApp mock] Would send pioneer_welcome to',
+      phone,
+      JSON.stringify(payload, null, 2)
+    )
     return
   }
 
@@ -63,17 +66,14 @@ async function queueWelcomeWhatsApp(
   ])
 
   try {
-    const res = await fetch(
-      `https://graph.facebook.com/v18.0/${waPhoneId}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${waToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }
-    )
+    const res = await fetch(`https://graph.facebook.com/v18.0/${waPhoneId}/messages`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${waToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
     if (!res.ok) {
       const err = await res.text()
       console.error('[WhatsApp] Send failed:', err)
@@ -85,38 +85,53 @@ async function queueWelcomeWhatsApp(
   }
 }
 
-// ─── Mock DB Save ─────────────────────────────────────────────────────────────
+// ─── DB Save (real or mock) ───────────────────────────────────────────────────
 async function savePioneerProfile(data: OnboardingPayload): Promise<string> {
-  const DATABASE_URL = process.env.DATABASE_URL
-
-  if (!DATABASE_URL) {
+  if (!hasDatabase) {
     // Mock mode: generate a deterministic-ish ID
     const mockId = `pioneer-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
-    console.log('[DB mock] Would save pioneer profile:', JSON.stringify({ id: mockId, ...data }, null, 2))
+    console.log(
+      '[DB mock] Would save pioneer profile:',
+      JSON.stringify({ id: mockId, ...data }, null, 2)
+    )
     return mockId
   }
 
-  // Real Prisma upsert (enabled when DATABASE_URL is set + NextAuth session exists)
-  // import { prisma } from '@/lib/db' — uncomment when DB is live
-  // const session = await getServerSession(authOptions)
-  // if (!session?.user?.id) throw new Error('Unauthenticated')
-  // const pioneer = await prisma.user.update({
-  //   where: { id: session.user.id },
-  //   data: {
-  //     pioneerType: data.pioneerType,
-  //     fromCountry: data.fromCountry,
-  //     toCountries: data.toCountries,
-  //     skills: data.skills,
-  //     headline: data.headline,
-  //     bio: data.bio,
-  //     phone: data.phone,
-  //     onboardingCompleted: true,
-  //   },
-  // })
-  // return pioneer.id
+  // Real DB save: update user profile with onboarding data
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    // No session — still save locally via mock mode
+    return `pioneer-anon-${Date.now().toString(36)}`
+  }
 
-  // Placeholder until DB is live
-  return `pioneer-${Date.now().toString(36)}`
+  // Update user with onboarding preferences
+  const user = await db.user.update({
+    where: { id: session.user.id },
+    data: {
+      country: data.fromCountry,
+      phone: data.phone ?? null,
+    },
+  })
+
+  // Upsert profile with pioneer-specific data
+  await db.profile.upsert({
+    where: { userId: session.user.id },
+    create: {
+      userId: session.user.id,
+      headline: data.headline,
+      bio: data.bio ?? '',
+      skills: data.skills,
+      pioneerType: data.pioneerType,
+    },
+    update: {
+      headline: data.headline,
+      bio: data.bio ?? '',
+      skills: data.skills,
+      pioneerType: data.pioneerType,
+    },
+  })
+
+  return user.id
 }
 
 // ─── POST /api/onboarding ─────────────────────────────────────────────────────
@@ -126,10 +141,7 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json()
   } catch {
-    return NextResponse.json(
-      { success: false, error: 'Invalid JSON body' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Invalid JSON body' }, { status: 400 })
   }
 
   // Validate
@@ -137,10 +149,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     const fieldErrors = parsed.error.flatten().fieldErrors
     const firstError = Object.values(fieldErrors).flat()[0] ?? 'Validation failed'
-    return NextResponse.json(
-      { success: false, error: firstError, fieldErrors },
-      { status: 422 }
-    )
+    return NextResponse.json({ success: false, error: firstError, fieldErrors }, { status: 422 })
   }
 
   const data = parsed.data
@@ -154,7 +163,7 @@ export async function POST(req: NextRequest) {
     headline: data.headline,
   }
   const matches = rankPathsForPioneer(pioneerProfile, MOCK_PATHS)
-  const strongMatches = matches.filter(m => m.score >= 40)
+  const strongMatches = matches.filter((m) => m.score >= 40)
 
   // Save profile (mock or real)
   let pioneerId: string
@@ -176,7 +185,7 @@ export async function POST(req: NextRequest) {
       nameFromHeadline || 'Pioneer',
       data.pioneerType,
       strongMatches.length
-    ).catch(err => console.error('[WhatsApp queue] Error:', err))
+    ).catch((err) => console.error('[WhatsApp queue] Error:', err))
   }
 
   // Build welcome message based on pioneer type
