@@ -7,11 +7,11 @@ import { defineConfig, devices } from '@playwright/test'
  */
 
 export const VIEWPORTS = {
-  xs:   { width: 380,  height: 812  },
-  sm:   { width: 640,  height: 812  },
-  md:   { width: 768,  height: 1024 },
-  lg:   { width: 1024, height: 768  },
-  desktop: { width: 1280, height: 800  },
+  xs: { width: 380, height: 812 },
+  sm: { width: 640, height: 812 },
+  md: { width: 768, height: 1024 },
+  lg: { width: 1024, height: 768 },
+  desktop: { width: 1280, height: 800 },
   '3xl': { width: 1920, height: 1080 },
 } as const
 
@@ -20,6 +20,7 @@ export const PAGES = [
   '/',
   '/compass',
   '/ventures',
+  '/offerings',
   '/about',
   '/pioneers/dashboard',
   '/anchors/dashboard',

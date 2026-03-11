@@ -148,7 +148,7 @@ function OverviewTab() {
               </div>
               <div className="flex items-center gap-3 ml-3 shrink-0">
                 <span
-                  className={`text-xs font-bold ${ch.score >= 80 ? 'text-green-400' : 'text-yellow-400'}`}
+                  className={`text-xs font-bold ${ch.score >= 80 ? 'text-green-400' : 'text-[#C9A227]'}`}
                 >
                   {ch.score}%
                 </span>
@@ -171,12 +171,12 @@ function OverviewTab() {
           ].map((item) => (
             <div
               key={item.name}
-              className={`rounded-lg p-3 border ${item.status === 'ok' ? 'border-green-500/30 bg-green-900/10' : 'border-yellow-500/30 bg-yellow-900/10'}`}
+              className={`rounded-lg p-3 border ${item.status === 'ok' ? 'border-green-500/30 bg-green-900/10' : 'border-[#C9A227]/30 bg-[#C9A227]/5'}`}
             >
               <div className="text-xl mb-1">{item.icon}</div>
               <p className="text-white text-sm font-medium">{item.name}</p>
               <p
-                className={`text-xs ${item.status === 'ok' ? 'text-green-400' : 'text-yellow-400'}`}
+                className={`text-xs ${item.status === 'ok' ? 'text-green-400' : 'text-[#C9A227]'}`}
               >
                 {item.status === 'ok' ? '✓' : '⚠️'} {item.msg}
               </p>
@@ -320,7 +320,7 @@ function AnchorsTab() {
                     {a.verified ? (
                       <span className="text-green-400 text-xs font-semibold">✓ Verified</span>
                     ) : (
-                      <span className="text-yellow-400 text-xs font-semibold">⚠ Pending</span>
+                      <span className="text-[#C9A227] text-xs font-semibold">⚠ Pending</span>
                     )}
                   </td>
                   <td className="p-4">
@@ -382,7 +382,7 @@ function PathsTab() {
                   <td className="p-4 text-gray-300">{pt.chapters}</td>
                   <td className="p-4">
                     <span
-                      className={`text-xs font-bold ${pt.matchAvg >= 80 ? 'text-green-400' : 'text-yellow-400'}`}
+                      className={`text-xs font-bold ${pt.matchAvg >= 80 ? 'text-green-400' : 'text-[#C9A227]'}`}
                     >
                       {pt.matchAvg}%
                     </span>

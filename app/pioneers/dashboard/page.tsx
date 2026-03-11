@@ -51,7 +51,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function MatchScoreBadge({ score }: { score: number }) {
-  const color = score >= 80 ? 'text-green-400' : score >= 60 ? 'text-yellow-400' : 'text-[#C9A227]'
+  const color = score >= 80 ? 'text-green-400' : 'text-[#C9A227]'
   return <span className={`text-sm font-bold ${color}`}>{score}% match</span>
 }
 

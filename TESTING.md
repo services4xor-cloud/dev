@@ -2,7 +2,7 @@
 
 > ← Back to [CLAUDE.md](./CLAUDE.md) | Related: [ARCHITECTURE.md](./ARCHITECTURE.md)
 > Two test layers: Jest unit tests (CI enforced) + Playwright visual tests (design quality gate).
-> **Status: All tests passing (25 Jest + 89 Playwright)**
+> **Status: All tests passing (25 Jest + 100 Playwright)**
 
 ---
 
@@ -10,7 +10,7 @@
 
 ```
 Layer 1: Jest unit tests      → lib/* logic, API schema, scoring engine (25/25 ✅)
-Layer 2: Playwright visual    → every page renders, brand is correct, responsive (89/89 ✅)
+Layer 2: Playwright visual    → every page renders, brand is correct, responsive (100/100 ✅)
 ```
 
 ---
@@ -58,22 +58,22 @@ describe('myFunction', () => {
 ### Run
 
 ```bash
-npx playwright test                        # all visual tests (89/89)
-npx playwright test tests/visual/smoke     # smoke only (15/15)
-npx playwright test tests/visual/brand     # brand only (26/26)
-npx playwright test tests/visual/responsive # responsive only (48/48)
+npx playwright test                        # all visual tests (100/100)
+npx playwright test tests/visual/smoke     # smoke only (16/16)
+npx playwright test tests/visual/brand     # brand only (30/30)
+npx playwright test tests/visual/responsive # responsive only (54/54)
 npx playwright test --headed               # watch mode
 npx playwright show-report                 # view HTML report
 ```
 
 ### Test files
 
-#### `tests/visual/smoke.spec.ts` — All pages load, no console errors (15/15 ✅)
+#### `tests/visual/smoke.spec.ts` — All pages load, no console errors (16/16 ✅)
 
 Checks every route returns HTTP 200 and has no red console errors.
 Viewports: desktop (1280x800) only — fast CI gate.
 
-#### `tests/visual/brand.spec.ts` — Design system compliance (26/26 ✅)
+#### `tests/visual/brand.spec.ts` — Design system compliance (30/30 ✅)
 
 - No `#FF6B35` hex visible in DOM or computed styles
 - No `orange-` Tailwind classes rendered
@@ -82,7 +82,7 @@ Viewports: desktop (1280x800) only — fast CI gate.
 - All buttons have dark theme (no `bg-white` on CTAs)
 - 4 known light-bg exception pages handled correctly
 
-#### `tests/visual/responsive.spec.ts` — Multi-breakpoint no-overflow (48/48 ✅)
+#### `tests/visual/responsive.spec.ts` — Multi-breakpoint no-overflow (54/54 ✅)
 
 Checks no horizontal scroll at any breakpoint (xs/sm/md/lg/3xl).
 

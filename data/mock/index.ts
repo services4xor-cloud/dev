@@ -63,3 +63,10 @@ export {
 export { SKILLS_SUGGESTIONS } from './profile'
 export { MEDIA_PATHS, MEDIA_FEATURED_PROJECTS, MEDIA_PLATFORMS } from './media'
 export { FASHION_PATHS, FASHION_PARTNER_ANCHORS, FASHION_PROTECTIONS } from './fashion'
+export {
+  ECO_TOURISM_OFFERINGS,
+  TRADE_CORRIDORS,
+  OFFERINGS_STATS,
+  type EcoTourismOffering,
+  type TradeCorridor,
+} from './offerings'

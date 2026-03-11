@@ -60,9 +60,9 @@
 
 **Source**: Brand guidelines
 
-**Requirement**: No `#FF6B35`, `orange-*`, `amber-*`, `yellow-*` Tailwind classes.
+**Requirement**: No `#FF6B35`, `orange-*`, `amber-*`, `yellow-*` Tailwind classes. All warning/status indicators use `text-[#C9A227]` (gold) instead of `text-yellow-*`.
 
-- **Status: ✅ Complete (Session 6 orange sweep, Session 11 amber/yellow sweep)**
+- **Status: ✅ Complete (Session 6 orange, Session 11 amber/yellow, Session 16 final sweep — 11 remaining violations fixed)**
 
 ### R7 — BeNetwork Vocabulary Everywhere
 
@@ -139,6 +139,36 @@ Next.js 14.2.5 → 14.2.35 (patches CVE-2024-46982, CVE-2024-56332, CVE-2024-343
 
 - **Status: ✅ Complete**
 
+### R15 — International Scale Architecture
+
+**Source**: Session 16
+
+**Requirement**: The platform MUST scale for all countries. No Kenya-hardcoded pages. Country auto-detected via IP but always changeable. All offerings, recommendations, and content driven by the country system (`lib/countries.ts`, `lib/country-selector.ts`).
+
+**Rules:**
+
+- `/offerings` reads `NEXT_PUBLIC_COUNTRY_CODE` + user selection, not hardcoded Kenya data
+- Recommendations shown by purpose: travel, professional work, business/trade
+- Recommendations driven by market data + user preferences + route corridors
+- New country = new config in `lib/countries.ts` + data in `data/mock/` — zero page changes
+- **Status: 🔄 Designing**
+
+### R16 — Smart Recommendations by Purpose + Market
+
+**Source**: Session 16
+
+**Requirement**: Options shown for traveling / purpose / business, recommended based on:
+
+1. Auto-detected origin country (changeable)
+2. Selected destination country preferences
+3. Market conditions (trade volume, growth rate, sector demand)
+4. Pioneer type / purpose (explorer, professional, artisan, etc.)
+5. Route corridor strength (direct > partner > emerging)
+
+**Implementation**: Extends Compass engine (`lib/compass.ts`) + country configs. Offerings page is a recommendation surface, not a static catalog.
+
+- **Status: 🔄 Designing**
+
 ---
 
 ## 2. Architecture Rules (Enforced)
@@ -183,7 +213,7 @@ See [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ### Can Build Now
 
-1. Kenya Offerings pages (`/offerings/safaris`, `/offerings/eco-tourism`, `/offerings/trade`)
+1. International offerings system — country-aware, purpose-driven recommendations (R15, R16)
 2. End-to-end mock booking flow
 3. Loading skeletons + error boundaries
 4. Progressive φ token adoption in Nav, Footer, cards

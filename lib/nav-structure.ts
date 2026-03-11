@@ -17,6 +17,7 @@ import {
   LayoutDashboard,
   PlusSquare,
   LogIn,
+  Globe,
 } from 'lucide-react'
 
 export interface NavLink {
@@ -60,6 +61,12 @@ export const PIONEER_NAV_LINKS: NavLink[] = [
     label: 'Browse Ventures',
     icon: Map,
     aria: 'Explore all paths and experiences',
+  },
+  {
+    href: '/offerings',
+    label: 'Offerings',
+    icon: Globe,
+    aria: 'Country offerings — travel, work, business',
   },
   {
     href: '/compass',
@@ -136,6 +143,7 @@ export const FOOTER_ANCHOR_LINKS: FooterLink[] = [
 ]
 
 export const FOOTER_DISCOVER_LINKS: FooterLink[] = [
+  { href: '/offerings', label: 'Country Offerings' },
   { href: '/experiences', label: 'Safari Experiences' },
   { href: '/be/ke', label: 'BeKenya' },
   { href: '/charity', label: 'UTAMADUNI' },

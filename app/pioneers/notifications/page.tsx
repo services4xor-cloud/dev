@@ -138,7 +138,7 @@ function getTypeAccentClass(type: NotificationType): string {
     chapter: 'border-l-blue-500',
     compass: 'border-l-teal-500',
     community: 'border-l-green-500',
-    earnings: 'border-l-yellow-500',
+    earnings: 'border-l-[#C9A227]',
   }
   return map[type] ?? 'border-l-gray-500'
 }

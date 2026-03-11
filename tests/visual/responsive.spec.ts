@@ -18,6 +18,7 @@ const RESPONSIVE_PAGES = [
   { route: '/', name: 'homepage' },
   { route: '/compass', name: 'compass' },
   { route: '/ventures', name: 'ventures' },
+  { route: '/offerings', name: 'offerings' },
   { route: '/pioneers/dashboard', name: 'pioneer-dashboard' },
   { route: '/anchors/dashboard', name: 'anchor-dashboard' },
   { route: '/be/ke', name: 'gate-kenya' },
@@ -35,7 +36,9 @@ if (!fs.existsSync(SCREENSHOT_DIR)) {
 
 for (const { route, name } of RESPONSIVE_PAGES) {
   for (const [breakpoint, viewport] of Object.entries(VIEWPORTS)) {
-    test(`[responsive] ${name} @ ${breakpoint} (${viewport.width}×${viewport.height})`, async ({ page }) => {
+    test(`[responsive] ${name} @ ${breakpoint} (${viewport.width}×${viewport.height})`, async ({
+      page,
+    }) => {
       await page.setViewportSize(viewport)
       await page.goto(route, { waitUntil: 'domcontentloaded' })
 

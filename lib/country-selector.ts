@@ -27,8 +27,20 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type LanguageCode =
-  | 'en' | 'sw' | 'de' | 'fr' | 'ar' | 'hi' | 'pt'
-  | 'nl' | 'zu' | 'ha' | 'yo' | 'am' | 'lg' | 'rw'
+  | 'en'
+  | 'sw'
+  | 'de'
+  | 'fr'
+  | 'ar'
+  | 'hi'
+  | 'pt'
+  | 'nl'
+  | 'zu'
+  | 'ha'
+  | 'yo'
+  | 'am'
+  | 'lg'
+  | 'rw'
 
 export interface Language {
   code: LanguageCode
@@ -42,20 +54,92 @@ export interface Language {
 
 /** All supported languages — indexed by code for O(1) lookup */
 export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
-  en: { code: 'en', name: 'English',    nativeName: 'English',    countries: ['KE','UG','TZ','NG','GH','ZA','GB','US','CA','AU','IN','AE','RW','NL'], digitalReach: 'global' },
-  sw: { code: 'sw', name: 'Swahili',    nativeName: 'Kiswahili',  countries: ['KE','TZ','UG','RW'],             digitalReach: 'regional' },
-  de: { code: 'de', name: 'German',     nativeName: 'Deutsch',    countries: ['DE','NL'],                       digitalReach: 'regional' },
-  fr: { code: 'fr', name: 'French',     nativeName: 'Français',   countries: ['FR','CA','RW'],                  digitalReach: 'global' },
-  ar: { code: 'ar', name: 'Arabic',     nativeName: 'العربية',     countries: ['AE'],                            digitalReach: 'regional' },
-  hi: { code: 'hi', name: 'Hindi',      nativeName: 'हिन्दी',       countries: ['IN'],                            digitalReach: 'regional' },
-  pt: { code: 'pt', name: 'Portuguese', nativeName: 'Português',  countries: [],                                digitalReach: 'global' },
-  nl: { code: 'nl', name: 'Dutch',      nativeName: 'Nederlands', countries: ['NL','ZA'],                       digitalReach: 'regional' },
-  zu: { code: 'zu', name: 'Zulu',       nativeName: 'isiZulu',    countries: ['ZA'],                            digitalReach: 'local' },
-  ha: { code: 'ha', name: 'Hausa',      nativeName: 'Hausa',      countries: ['NG','GH'],                       digitalReach: 'local' },
-  yo: { code: 'yo', name: 'Yoruba',     nativeName: 'Yorùbá',     countries: ['NG'],                            digitalReach: 'local' },
-  am: { code: 'am', name: 'Amharic',    nativeName: 'አማርኛ',       countries: [],                                digitalReach: 'local' },
-  lg: { code: 'lg', name: 'Luganda',    nativeName: 'Luganda',    countries: ['UG'],                            digitalReach: 'local' },
-  rw: { code: 'rw', name: 'Kinyarwanda',nativeName: 'Ikinyarwanda', countries: ['RW'],                          digitalReach: 'local' },
+  en: {
+    code: 'en',
+    name: 'English',
+    nativeName: 'English',
+    countries: ['KE', 'UG', 'TZ', 'NG', 'GH', 'ZA', 'GB', 'US', 'CA', 'AU', 'IN', 'AE', 'RW', 'NL'],
+    digitalReach: 'global',
+  },
+  sw: {
+    code: 'sw',
+    name: 'Swahili',
+    nativeName: 'Kiswahili',
+    countries: ['KE', 'TZ', 'UG', 'RW'],
+    digitalReach: 'regional',
+  },
+  de: {
+    code: 'de',
+    name: 'German',
+    nativeName: 'Deutsch',
+    countries: ['DE', 'NL'],
+    digitalReach: 'regional',
+  },
+  fr: {
+    code: 'fr',
+    name: 'French',
+    nativeName: 'Français',
+    countries: ['FR', 'CA', 'RW'],
+    digitalReach: 'global',
+  },
+  ar: {
+    code: 'ar',
+    name: 'Arabic',
+    nativeName: 'العربية',
+    countries: ['AE'],
+    digitalReach: 'regional',
+  },
+  hi: {
+    code: 'hi',
+    name: 'Hindi',
+    nativeName: 'हिन्दी',
+    countries: ['IN'],
+    digitalReach: 'regional',
+  },
+  pt: {
+    code: 'pt',
+    name: 'Portuguese',
+    nativeName: 'Português',
+    countries: [],
+    digitalReach: 'global',
+  },
+  nl: {
+    code: 'nl',
+    name: 'Dutch',
+    nativeName: 'Nederlands',
+    countries: ['NL', 'ZA'],
+    digitalReach: 'regional',
+  },
+  zu: { code: 'zu', name: 'Zulu', nativeName: 'isiZulu', countries: ['ZA'], digitalReach: 'local' },
+  ha: {
+    code: 'ha',
+    name: 'Hausa',
+    nativeName: 'Hausa',
+    countries: ['NG', 'GH'],
+    digitalReach: 'local',
+  },
+  yo: {
+    code: 'yo',
+    name: 'Yoruba',
+    nativeName: 'Yorùbá',
+    countries: ['NG'],
+    digitalReach: 'local',
+  },
+  am: { code: 'am', name: 'Amharic', nativeName: 'አማርኛ', countries: [], digitalReach: 'local' },
+  lg: {
+    code: 'lg',
+    name: 'Luganda',
+    nativeName: 'Luganda',
+    countries: ['UG'],
+    digitalReach: 'local',
+  },
+  rw: {
+    code: 'rw',
+    name: 'Kinyarwanda',
+    nativeName: 'Ikinyarwanda',
+    countries: ['RW'],
+    digitalReach: 'local',
+  },
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -104,14 +188,34 @@ export interface RegionClusterConfig {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const REGION_CLUSTERS: RegionClusterConfig[] = [
-  { key: 'east-africa',    label: 'East Africa',     emoji: '🌍', description: 'EAC corridor — free movement & M-Pesa' },
-  { key: 'west-africa',    label: 'West Africa',     emoji: '🌍', description: 'ECOWAS & Pan-African trade' },
-  { key: 'southern-africa',label: 'Southern Africa', emoji: '🌍', description: 'SADC markets & mining corridor' },
-  { key: 'middle-east',    label: 'Middle East',     emoji: '🏜️', description: 'Gulf opportunity corridor' },
-  { key: 'europe',         label: 'Europe',          emoji: '🏛️', description: 'Skilled worker visa routes' },
-  { key: 'americas',       label: 'Americas',        emoji: '🌎', description: 'Diaspora & tech hub routes' },
-  { key: 'south-asia',     label: 'South Asia',      emoji: '🌏', description: 'Trade & tech corridor' },
-  { key: 'oceania',        label: 'Oceania',         emoji: '🌏', description: 'Skilled migration programme' },
+  {
+    key: 'east-africa',
+    label: 'East Africa',
+    emoji: '🌍',
+    description: 'EAC corridor — free movement & M-Pesa',
+  },
+  {
+    key: 'west-africa',
+    label: 'West Africa',
+    emoji: '🌍',
+    description: 'ECOWAS & Pan-African trade',
+  },
+  {
+    key: 'southern-africa',
+    label: 'Southern Africa',
+    emoji: '🌍',
+    description: 'SADC markets & mining corridor',
+  },
+  {
+    key: 'middle-east',
+    label: 'Middle East',
+    emoji: '🏜️',
+    description: 'Gulf opportunity corridor',
+  },
+  { key: 'europe', label: 'Europe', emoji: '🏛️', description: 'Skilled worker visa routes' },
+  { key: 'americas', label: 'Americas', emoji: '🌎', description: 'Diaspora & tech hub routes' },
+  { key: 'south-asia', label: 'South Asia', emoji: '🌏', description: 'Trade & tech corridor' },
+  { key: 'oceania', label: 'Oceania', emoji: '🌏', description: 'Skilled migration programme' },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -172,7 +276,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     code: 'RW',
     name: 'Rwanda',
     flag: '🇷🇼',
-    lat: -1.940,
+    lat: -1.94,
     lng: 29.874,
     region: 'east-africa',
     corridorStrength: 'direct',
@@ -321,7 +425,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     code: 'US',
     name: 'United States',
     flag: '🇺🇸',
-    lat: 37.090,
+    lat: 37.09,
     lng: -95.713,
     region: 'americas',
     corridorStrength: 'partner',
@@ -337,7 +441,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     code: 'CA',
     name: 'Canada',
     flag: '🇨🇦',
-    lat: 56.130,
+    lat: 56.13,
     lng: -106.347,
     region: 'americas',
     corridorStrength: 'direct',
@@ -390,18 +494,13 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Haversine distance in km between two lat/lng points */
-export function distanceKm(
-  lat1: number, lng1: number,
-  lat2: number, lng2: number
-): number {
+export function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371
   const dLat = (lat2 - lat1) * (Math.PI / 180)
   const dLng = (lng2 - lng1) * (Math.PI / 180)
   const a =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos(lat1 * (Math.PI / 180)) *
-    Math.cos(lat2 * (Math.PI / 180)) *
-    Math.sin(dLng / 2) ** 2
+    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * Math.sin(dLng / 2) ** 2
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
@@ -410,7 +509,7 @@ export const NEARBY_KM = 1800
 
 /** Proximity label for a distance */
 export function proximityLabel(km: number): string {
-  if (km < 500)  return 'Neighbor'
+  if (km < 500) return 'Neighbor'
   if (km < 1800) return 'Nearby'
   if (km < 5000) return 'Regional'
   if (km < 9000) return 'Long-haul'
@@ -419,21 +518,22 @@ export function proximityLabel(km: number): string {
 
 /** Is a country "nearby" relative to an origin country? */
 export function isNearby(originCode: string, targetCode: string): boolean {
-  const origin = COUNTRY_OPTIONS.find(c => c.code === originCode)
-  const target = COUNTRY_OPTIONS.find(c => c.code === targetCode)
+  const origin = COUNTRY_OPTIONS.find((c) => c.code === originCode)
+  const target = COUNTRY_OPTIONS.find((c) => c.code === targetCode)
   if (!origin || !target || originCode === targetCode) return false
   return distanceKm(origin.lat, origin.lng, target.lat, target.lng) < NEARBY_KM
 }
 
 /** Get a sorted list of countries by proximity to a given origin */
 export function sortedByProximity(originCode: string): CountryOption[] {
-  const origin = COUNTRY_OPTIONS.find(c => c.code === originCode)
+  const origin = COUNTRY_OPTIONS.find((c) => c.code === originCode)
   if (!origin) return COUNTRY_OPTIONS
   return [...COUNTRY_OPTIONS]
-    .filter(c => c.code !== originCode)
-    .sort((a, b) =>
-      distanceKm(origin.lat, origin.lng, a.lat, a.lng) -
-      distanceKm(origin.lat, origin.lng, b.lat, b.lng)
+    .filter((c) => c.code !== originCode)
+    .sort(
+      (a, b) =>
+        distanceKm(origin.lat, origin.lng, a.lat, a.lng) -
+        distanceKm(origin.lat, origin.lng, b.lat, b.lng)
     )
 }
 
@@ -441,23 +541,24 @@ export function sortedByProximity(originCode: string): CountryOption[] {
 export function getGroupedCountries(
   originCode: string,
   excludeSelf = true
-): { cluster: RegionClusterConfig; countries: (CountryOption & { isNearby: boolean; distKm: number })[] }[] {
-  const origin = COUNTRY_OPTIONS.find(c => c.code === originCode)
-  const countries = COUNTRY_OPTIONS
-    .filter(c => excludeSelf ? c.code !== originCode : true)
-    .map(c => ({
+): {
+  cluster: RegionClusterConfig
+  countries: (CountryOption & { isNearby: boolean; distKm: number })[]
+}[] {
+  const origin = COUNTRY_OPTIONS.find((c) => c.code === originCode)
+  const countries = COUNTRY_OPTIONS.filter((c) => (excludeSelf ? c.code !== originCode : true)).map(
+    (c) => ({
       ...c,
       isNearby: origin ? distanceKm(origin.lat, origin.lng, c.lat, c.lng) < NEARBY_KM : false,
       distKm: origin ? Math.round(distanceKm(origin.lat, origin.lng, c.lat, c.lng)) : 0,
-    }))
+    })
+  )
 
   // Group by region, put nearby-heavy clusters first
-  return REGION_CLUSTERS
-    .map(cluster => ({
-      cluster,
-      countries: countries.filter(c => c.region === cluster.key),
-    }))
-    .filter(g => g.countries.length > 0)
+  return REGION_CLUSTERS.map((cluster) => ({
+    cluster,
+    countries: countries.filter((c) => c.region === cluster.key),
+  })).filter((g) => g.countries.length > 0)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -465,16 +566,25 @@ export function getGroupedCountries(
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const CORRIDOR_BADGE: Record<CorridorStrength, { label: string; className: string }> = {
-  direct:   { label: 'Direct Route',   className: 'bg-emerald-900/60 text-emerald-300 border border-emerald-700/40' },
-  partner:  { label: 'Partner Route',  className: 'bg-blue-900/60    text-blue-300    border border-blue-700/40' },
-  emerging: { label: 'Emerging',       className: 'bg-amber-900/60   text-amber-300   border border-amber-700/40' },
+  direct: {
+    label: 'Direct Route',
+    className: 'bg-emerald-900/60 text-emerald-300 border border-emerald-700/40',
+  },
+  partner: {
+    label: 'Partner Route',
+    className: 'bg-blue-900/60    text-blue-300    border border-blue-700/40',
+  },
+  emerging: {
+    label: 'Emerging',
+    className: 'bg-[#C9A227]/10   text-[#C9A227]   border border-[#C9A227]/30',
+  },
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Priority number display (Unicode circled numbers ①–⑩)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const PRIORITY_CHARS = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩']
+const PRIORITY_CHARS = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
 export function priorityChar(n: number): string {
   return PRIORITY_CHARS[n - 1] ?? String(n)
 }
@@ -490,21 +600,23 @@ export const MAX_COUNTRY_SELECTIONS = 5
 export function getCountriesBySharedLanguage(
   countryCode: string
 ): { language: Language; countries: CountryOption[] }[] {
-  const country = COUNTRY_OPTIONS.find(c => c.code === countryCode)
+  const country = COUNTRY_OPTIONS.find((c) => c.code === countryCode)
   if (!country) return []
 
-  return country.languages.map(langCode => {
-    const language = LANGUAGE_REGISTRY[langCode]
-    const countries = COUNTRY_OPTIONS.filter(
-      c => c.code !== countryCode && c.languages.includes(langCode)
-    )
-    return { language, countries }
-  }).filter(g => g.countries.length > 0)
+  return country.languages
+    .map((langCode) => {
+      const language = LANGUAGE_REGISTRY[langCode]
+      const countries = COUNTRY_OPTIONS.filter(
+        (c) => c.code !== countryCode && c.languages.includes(langCode)
+      )
+      return { language, countries }
+    })
+    .filter((g) => g.countries.length > 0)
 }
 
 /** Get all countries where a specific language is spoken */
 export function getCountriesForLanguage(langCode: LanguageCode): CountryOption[] {
-  return COUNTRY_OPTIONS.filter(c => c.languages.includes(langCode))
+  return COUNTRY_OPTIONS.filter((c) => c.languages.includes(langCode))
 }
 
 /** Get all unique languages across all countries — useful for filter UIs */
@@ -528,10 +640,10 @@ export function getAllLanguages(): Language[] {
  * when Pioneer and destination share languages.
  */
 export function languageOverlap(codeA: string, codeB: string): number {
-  const a = COUNTRY_OPTIONS.find(c => c.code === codeA)
-  const b = COUNTRY_OPTIONS.find(c => c.code === codeB)
+  const a = COUNTRY_OPTIONS.find((c) => c.code === codeA)
+  const b = COUNTRY_OPTIONS.find((c) => c.code === codeB)
   if (!a || !b) return 0
-  const shared = a.languages.filter(l => b.languages.includes(l))
+  const shared = a.languages.filter((l) => b.languages.includes(l))
   const total = new Set([...a.languages, ...b.languages]).size
   return total > 0 ? shared.length / total : 0
 }
@@ -539,10 +651,10 @@ export function languageOverlap(codeA: string, codeB: string): number {
 /** Get countries grouped by language — for language-first UI views */
 export function getGroupedByLanguage(): { language: Language; countries: CountryOption[] }[] {
   return Object.values(LANGUAGE_REGISTRY)
-    .map(lang => ({
+    .map((lang) => ({
       language: lang,
-      countries: COUNTRY_OPTIONS.filter(c => c.languages.includes(lang.code)),
+      countries: COUNTRY_OPTIONS.filter((c) => c.languages.includes(lang.code)),
     }))
-    .filter(g => g.countries.length > 0)
+    .filter((g) => g.countries.length > 0)
     .sort((a, b) => b.countries.length - a.countries.length)
 }

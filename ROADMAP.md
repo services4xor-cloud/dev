@@ -71,13 +71,14 @@ _Target: 4 weeks after credentials_
 
 All pages converted to dark theme. Zero light-bg pages remaining.
 
-### Sprint 2C — Kenya Offerings Pages (Can do now)
+### Sprint 2C — International Offerings System (Can do now)
 
-| Feature                                              | Status       |
-| ---------------------------------------------------- | ------------ |
-| `/offerings/safaris` — Real package cards + book-now | ❌ Not built |
-| `/offerings/eco-tourism` — Eco-lodge packages        | ❌ Not built |
-| `/offerings/trade` — Trade corridor info             | ❌ Not built |
+| Feature                                                        | Status       |
+| -------------------------------------------------------------- | ------------ |
+| Country-aware `/offerings` — auto-detect, changeable, scalable | 🔄 Designing |
+| Purpose-driven recommendations (travel / work / business)      | 🔄 Designing |
+| Market + preference + corridor data driving recommendations    | 🔄 Designing |
+| Per-country offering configs in `lib/countries.ts`             | ❌ Not built |
 
 ### Sprint 2D — End-to-End Booking (Needs 2A)
 

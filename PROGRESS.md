@@ -93,7 +93,7 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ### Can Build Now (no credentials needed)
 
-- [ ] Kenya Offerings pages (`/offerings/safaris`, `/offerings/eco-tourism`, `/offerings/trade`)
+- [ ] International offerings system — country-aware, purpose-driven recommendations (R15, R16)
 - [ ] End-to-end mock booking flow (frontend → API → mock payment)
 - [ ] Loading skeletons for data-fetching pages
 - [ ] Error boundaries on all dashboard pages
@@ -161,11 +161,11 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 | --------------------- | ------------------------- |
 | Pages live            | 20+                       |
 | API routes            | 12+                       |
-| Library modules       | 12                        |
-| Mock data modules     | 14                        |
+| Library modules       | 13                        |
+| Mock data modules     | 15                        |
 | Type definition files | 3                         |
 | Jest tests            | 25/25 ✅                  |
-| Playwright tests      | 89/89 ✅                  |
+| Playwright tests      | 100/100 ✅                |
 | TypeScript errors     | 0                         |
 | Countries configured  | 12 (16 in selector)       |
 | Languages             | 14                        |
@@ -180,11 +180,21 @@ These cannot be done by Claude — see [HUMAN_MANUAL.md](./HUMAN_MANUAL.md):
 
 ## Session Log (Reverse Chronological)
 
+### Session 16 (2026-03-11) — Brand Cleanup + International Offerings
+
+- [x] Final amber/yellow sweep — 11 remaining violations fixed across 5 files (zero remaining)
+- [x] `lib/offerings.ts` — country-aware, purpose-driven offerings engine
+- [x] `data/mock/offerings.ts` — eco-tourism + trade corridor data
+- [x] `/offerings` page — auto-detect country, changeable, purpose tabs, route recommendations
+- [x] R15 + R16 added to REQUIREMENTS.md (international scale + smart recommendations)
+- [x] Nav + Footer updated with offerings link
+- [x] Playwright tests updated: `/offerings` in smoke, brand, responsive (89→100 tests)
+
 ### Session 15 (2026-03-11) — Documentation Overhaul
 
-- [ ] Audited all 13 .md files for accuracy and cross-linking
-- [ ] Deleted 3 redundant files: TODO_HUMAN.md, WAR_PLAN.md, STEPS.md
-- [ ] Updated all remaining .md files to reflect sessions 7-14
+- [x] Audited all 13 .md files for accuracy and cross-linking
+- [x] Deleted 3 redundant files: TODO_HUMAN.md, WAR_PLAN.md, STEPS.md
+- [x] Updated all remaining .md files to reflect sessions 7-14
 
 ### Session 14 (2026-03-10) — BeNetwork Vocabulary Migration
 
