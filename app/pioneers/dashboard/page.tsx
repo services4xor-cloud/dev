@@ -11,6 +11,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PIONEER_TYPES } from '@/lib/vocabulary'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import StatusBadge from '@/components/StatusBadge'
 import JourneyProgress from '@/components/JourneyProgress'
 import { SkeletonDashboard } from '@/components/Skeleton'
@@ -49,15 +50,16 @@ function MatchScore({ score }: { score: number }) {
 // ─── Tab: Compass (overview + matched paths) ──────────────────────────────────
 
 function CompassTab() {
+  const { t } = useTranslation()
   return (
     <div className="space-y-6">
       {/* Quick stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: 'Compass Route', value: pioneer.route, accent: true },
-          { label: 'Profile', value: `${pioneer.profileComplete}%` },
-          { label: 'Open Chapters', value: CHAPTERS.length },
-          { label: 'New Matches', value: 3, accent: true },
+          { label: t('pioneer.compassRoute'), value: pioneer.route, accent: true },
+          { label: t('pioneer.profile'), value: `${pioneer.profileComplete}%` },
+          { label: t('pioneer.openChapters'), value: CHAPTERS.length },
+          { label: t('pioneer.newMatches'), value: 3, accent: true },
         ].map((s) => (
           <div key={s.label} className="bg-gray-800 rounded-xl p-4 border border-gray-700">
             <div className={`text-xs mb-1 ${s.accent ? 'text-brand-accent' : 'text-gray-400'}`}>
@@ -70,7 +72,7 @@ function CompassTab() {
 
       {/* Top matched paths */}
       <div>
-        <h3 className="text-white font-semibold mb-3">Top Paths for You</h3>
+        <h3 className="text-white font-semibold mb-3">{t('pioneer.topPaths')}</h3>
         <div className="space-y-3">
           {TOP_PATHS.map((path, i) => (
             <Link
@@ -108,13 +110,13 @@ function CompassTab() {
           href="/compass"
           className="flex items-center gap-2 px-5 py-2.5 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors"
         >
-          Update Compass
+          {t('pioneer.updateCompass')}
         </Link>
         <Link
           href="/ventures"
           className="flex items-center gap-2 px-5 py-2.5 border border-brand-accent/40 text-brand-accent rounded-xl text-sm font-medium hover:bg-brand-accent/10 transition-colors"
         >
-          Browse All Paths
+          {t('pioneer.browseAllPaths')}
         </Link>
       </div>
     </div>
@@ -124,16 +126,17 @@ function CompassTab() {
 // ─── Tab: Chapters ────────────────────────────────────────────────────────────
 
 function ChaptersTab() {
+  const { t } = useTranslation()
   if (CHAPTERS.length === 0) {
     return (
       <div className="text-center py-16 text-gray-400">
         <p className="text-4xl mb-3">📖</p>
-        <p>You haven&apos;t opened any chapters yet.</p>
+        <p>{t('pioneer.noChapters')}</p>
         <Link
           href="/ventures"
           className="mt-4 inline-block text-brand-accent hover:underline text-sm"
         >
-          Browse Ventures →
+          {t('pioneer.browseVentures')}
         </Link>
       </div>
     )
@@ -153,7 +156,7 @@ function ChaptersTab() {
                 <StatusBadge status={chapter.status} size="sm" />
               </div>
               <div className="text-xs text-gray-400 mt-1">
-                {chapter.anchor} · Opened {chapter.date}
+                {chapter.anchor} · {t('pioneer.opened')} {chapter.date}
               </div>
             </div>
             <MatchScore score={chapter.matchScore} />
@@ -167,6 +170,7 @@ function ChaptersTab() {
 // ─── Tab: Referrals ───────────────────────────────────────────────────────────
 
 function ReferralsTab() {
+  const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
 
   const copyCode = () => {
@@ -179,7 +183,7 @@ function ReferralsTab() {
     <div className="space-y-6">
       {/* Referral code */}
       <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
-        <p className="text-gray-400 text-sm mb-2">Your Referral Code</p>
+        <p className="text-gray-400 text-sm mb-2">{t('pioneer.yourReferralCode')}</p>
         <div className="flex items-center gap-3">
           <code className="text-xl font-mono font-bold text-brand-accent bg-gray-900 px-4 py-2 rounded-lg">
             {pioneer.referralCode}
@@ -188,7 +192,7 @@ function ReferralsTab() {
             onClick={copyCode}
             className="px-4 py-2 bg-brand-accent text-white rounded-lg text-sm font-medium hover:opacity-90 transition-colors"
           >
-            {copied ? '✓ Copied!' : 'Copy'}
+            {copied ? t('pioneer.copied') : t('pioneer.copy')}
           </button>
         </div>
       </div>
@@ -197,19 +201,19 @@ function ReferralsTab() {
       <div className="bg-gray-800 border border-green-500/30 rounded-xl p-4 flex items-center gap-4">
         <span className="text-3xl">💰</span>
         <div>
-          <p className="text-green-400 font-bold text-sm">KES 5,000 per placement</p>
-          <p className="text-gray-400 text-xs">
-            When someone you referred gets placed, you earn. No limit.
+          <p className="text-green-400 font-bold text-sm">
+            {t('pioneer.perPlacement', { amount: 'KES 5,000' })}
           </p>
+          <p className="text-gray-400 text-xs">{t('pioneer.referralIncentive')}</p>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Referrals', value: 3 },
-          { label: 'Placements', value: 1 },
-          { label: 'Earned', value: 'KES 5,000', accent: true },
+          { label: t('pioneer.referrals'), value: 3 },
+          { label: t('pioneer.placements'), value: 1 },
+          { label: t('pioneer.earned'), value: 'KES 5,000', accent: true },
         ].map((s) => (
           <div
             key={s.label}
@@ -240,7 +244,7 @@ function ReferralsTab() {
           onClick={copyCode}
           className="flex items-center gap-2 border border-gray-600 text-gray-300 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
         >
-          🔗 Copy Link
+          🔗 {t('pioneer.copyLink')}
         </button>
       </div>
     </div>
@@ -251,13 +255,15 @@ function ReferralsTab() {
 
 type Tab = 'compass' | 'chapters' | 'referrals'
 
-const TABS: { key: Tab; label: string }[] = [
-  { key: 'compass', label: '🧭 Compass' },
-  { key: 'chapters', label: '📖 Chapters' },
-  { key: 'referrals', label: '💰 Referrals' },
-]
+const TAB_KEYS: Tab[] = ['compass', 'chapters', 'referrals']
+const TAB_I18N: Record<Tab, string> = {
+  compass: 'pioneer.tabCompass',
+  chapters: 'pioneer.tabChapters',
+  referrals: 'pioneer.tabReferrals',
+}
 
 export default function PioneerDashboard() {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<Tab>('compass')
   const [loading, setLoading] = useState(true)
 
@@ -290,24 +296,24 @@ export default function PioneerDashboard() {
               href="/compass"
               className="flex items-center gap-2 px-4 py-2 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors"
             >
-              <span className="hidden sm:inline">Update</span> Compass
+              <span className="hidden sm:inline">{t('pioneer.update')}</span> Compass
             </Link>
           </div>
 
           {/* Tabs */}
           <div className="flex gap-1 mt-4">
-            {TABS.map((tab) => (
+            {TAB_KEYS.map((tabKey) => (
               <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                key={tabKey}
+                onClick={() => setActiveTab(tabKey)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === tab.key
+                  activeTab === tabKey
                     ? 'bg-brand-accent/10 text-brand-accent'
                     : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
                 }`}
               >
-                {tab.label}
-                {tab.key === 'chapters' && CHAPTERS.length > 0 && (
+                {t(TAB_I18N[tabKey])}
+                {tabKey === 'chapters' && CHAPTERS.length > 0 && (
                   <span className="ml-1.5 text-xs bg-brand-accent text-white rounded-full w-5 h-5 inline-flex items-center justify-center font-bold">
                     {CHAPTERS.length}
                   </span>

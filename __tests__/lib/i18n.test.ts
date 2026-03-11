@@ -849,6 +849,57 @@ describe('i18n — beCountry gate translations', () => {
   })
 })
 
+describe('i18n — pioneer dashboard translations', () => {
+  const pioneerKeys = [
+    'pioneer.compassRoute',
+    'pioneer.profile',
+    'pioneer.openChapters',
+    'pioneer.newMatches',
+    'pioneer.topPaths',
+    'pioneer.updateCompass',
+    'pioneer.browseAllPaths',
+    'pioneer.noChapters',
+    'pioneer.browseVentures',
+    'pioneer.opened',
+    'pioneer.yourReferralCode',
+    'pioneer.copied',
+    'pioneer.copy',
+    'pioneer.perPlacement',
+    'pioneer.referralIncentive',
+    'pioneer.referrals',
+    'pioneer.placements',
+    'pioneer.earned',
+    'pioneer.copyLink',
+    'pioneer.tabCompass',
+    'pioneer.tabChapters',
+    'pioneer.tabReferrals',
+    'pioneer.update',
+  ]
+
+  it('English has all pioneer keys', () => {
+    for (const key of pioneerKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all pioneer keys', () => {
+    for (const key of pioneerKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all pioneer keys', () => {
+    for (const key of pioneerKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('interpolates amount in perPlacement', () => {
+    const result = translate('pioneer.perPlacement', 'en', { amount: 'KES 5,000' })
+    expect(result).toBe('KES 5,000 per placement')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()
