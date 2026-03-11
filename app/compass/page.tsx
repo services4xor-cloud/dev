@@ -18,6 +18,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import CountryPrioritySelector from '@/components/CountryPrioritySelector'
 import { PIONEER_TYPES, PioneerType, VOCAB } from '@/lib/vocabulary'
+import { SkeletonLine, SkeletonBlock } from '@/components/Skeleton'
 import { COUNTRY_OPTIONS, CORRIDOR_BADGE, type CountryOption } from '@/lib/country-selector'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -42,6 +43,12 @@ export default function CompassPage() {
   const [origin, setOrigin] = useState<CountryOption>(COUNTRY_OPTIONS.find((c) => c.code === 'KE')!)
   const [pioneerType, setPioneerType] = useState<PioneerType | null>(null)
   const [showOriginPicker, setShowOriginPicker] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 600)
+    return () => clearTimeout(t)
+  }, [])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -152,242 +159,264 @@ export default function CompassPage() {
 
       {/* Step content */}
       <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 pb-32">
-        {/* STEP 1 — Country priority selector */}
-        {step === 1 && (
-          <div className="animate-[fadeIn_0.3s_ease]">
-            <CountryPrioritySelector
-              originCode={origin.code}
-              onComplete={handleDestinationsComplete}
-            />
+        {loading ? (
+          <div className="animate-pulse space-y-6">
+            <SkeletonBlock h="h-16" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <SkeletonBlock key={i} h="h-20" />
+              ))}
+            </div>
+            <SkeletonLine w="w-40" h="h-10" className="mx-auto" />
           </div>
-        )}
-
-        {/* STEP 2 — Origin confirmation */}
-        {step === 2 && (
-          <div className="space-y-5 animate-[fadeIn_0.3s_ease]">
-            <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
-                  🌍
-                </div>
-                <div>
-                  <div className="text-xs text-gray-400 uppercase tracking-wider">Step 2 of 4</div>
-                  <div className="text-white font-semibold text-lg">
-                    Where are you currently based?
-                  </div>
-                </div>
+        ) : (
+          <>
+            {/* STEP 1 — Country priority selector */}
+            {step === 1 && (
+              <div className="animate-[fadeIn_0.3s_ease]">
+                <CountryPrioritySelector
+                  originCode={origin.code}
+                  onComplete={handleDestinationsComplete}
+                />
               </div>
+            )}
 
-              {!showOriginPicker ? (
-                <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-4 flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">{origin.flag}</span>
+            {/* STEP 2 — Origin confirmation */}
+            {step === 2 && (
+              <div className="space-y-5 animate-[fadeIn_0.3s_ease]">
+                <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
+                      🌍
+                    </div>
                     <div>
-                      <div className="text-white font-medium">Currently in {origin.name}</div>
-                      <div className="text-gray-400 text-sm">Auto-detected · tap to change</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setShowOriginPicker(true)}
-                    className="text-brand-accent text-sm font-medium hover:text-brand-accent/70 transition-colors"
-                  >
-                    Change
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
-                  {ORIGIN_COUNTRIES.map((c) => (
-                    <button
-                      key={c.code}
-                      onClick={() => {
-                        setOrigin(c)
-                        setShowOriginPicker(false)
-                      }}
-                      className={`flex items-center gap-2 p-3 rounded-xl border text-left transition-all ${
-                        origin.code === c.code
-                          ? 'border-brand-accent bg-brand-primary/30 text-brand-accent'
-                          : 'border-gray-700 bg-gray-800/40 text-white hover:border-brand-accent/50'
-                      }`}
-                    >
-                      <span className="text-xl">{c.flag}</span>
-                      <span className="text-sm font-medium">{c.name}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <p className="text-gray-400 text-sm mb-6">
-                We use your location to find the strongest routes and payment corridors.
-              </p>
-              <button
-                onClick={() => setStep(3)}
-                className="w-full bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-4 rounded-xl transition-colors text-lg border border-brand-accent/30"
-              >
-                Confirmed — I&apos;m in {origin.name} →
-              </button>
-            </div>
-            <button
-              onClick={() => setStep(1)}
-              className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
-            >
-              ← Back
-            </button>
-          </div>
-        )}
-
-        {/* STEP 3 — Pioneer type */}
-        {step === 3 && (
-          <div className="animate-[fadeIn_0.3s_ease]">
-            <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6 mb-5">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
-                  ✦
-                </div>
-                <div>
-                  <div className="text-xs text-gray-400 uppercase tracking-wider">Step 3 of 4</div>
-                  <div className="text-white font-semibold text-lg">
-                    What kind of Pioneer are you?
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {(
-                  Object.entries(PIONEER_TYPES) as [
-                    PioneerType,
-                    (typeof PIONEER_TYPES)[PioneerType],
-                  ][]
-                ).map(([key, type]) => (
-                  <button
-                    key={key}
-                    onClick={() => handlePioneerSelect(key)}
-                    className="bg-gray-800/60 border border-gray-700 hover:border-brand-accent/50 hover:bg-gray-800 rounded-xl p-4 text-center transition-all duration-200 group"
-                  >
-                    <div className="text-3xl mb-2">{type.icon}</div>
-                    <div className="text-white font-semibold text-sm group-hover:text-brand-accent transition-colors mb-1">
-                      {type.label}
-                    </div>
-                    <div className="text-gray-400 text-xs leading-relaxed">{type.description}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-            <button
-              onClick={() => setStep(2)}
-              className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
-            >
-              ← Back
-            </button>
-          </div>
-        )}
-
-        {/* STEP 4 — Route result */}
-        {step === 4 && primaryDestination && pioneerType && (
-          <div className="animate-[fadeIn_0.3s_ease] space-y-4">
-            <div className="bg-gradient-to-br from-gray-900 to-gray-900/80 border border-brand-accent/30 rounded-2xl p-6">
-              <div className="text-xs text-brand-accent font-semibold uppercase tracking-widest mb-4">
-                Your Route
-              </div>
-
-              <div className="flex items-center gap-4 mb-5">
-                <div className="text-center">
-                  <div className="text-3xl mb-1">{origin.flag}</div>
-                  <div className="text-white font-medium text-sm">{origin.name}</div>
-                </div>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="flex-1 h-px bg-gradient-to-r from-gray-700 to-brand-accent/50" />
-                  <span className="text-brand-accent font-bold text-lg">→</span>
-                  <div className="flex-1 h-px bg-gradient-to-r from-brand-accent/50 to-gray-700" />
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl mb-1">{primaryDestination.flag}</div>
-                  <div className="text-white font-medium text-sm">{primaryDestination.name}</div>
-                </div>
-              </div>
-
-              {selectedDestinations.length > 1 && (
-                <div className="flex flex-wrap gap-2 mb-4 items-center">
-                  <span className="text-xs text-gray-400">Also exploring:</span>
-                  {selectedDestinations.slice(1).map((code) => {
-                    const c = COUNTRY_OPTIONS.find((x) => x.code === code)
-                    return c ? (
-                      <span
-                        key={code}
-                        className="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-full"
-                      >
-                        {c.flag} {c.name}
-                      </span>
-                    ) : null
-                  })}
-                </div>
-              )}
-
-              <div className="flex flex-wrap gap-2 mb-6">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${CORRIDOR_BADGE[primaryDestination.corridorStrength].className}`}
-                >
-                  {CORRIDOR_BADGE[primaryDestination.corridorStrength].label}
-                </span>
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-brand-primary/60 text-brand-accent border border-brand-accent/30">
-                  {PIONEER_TYPES[pioneerType].icon} {PIONEER_TYPES[pioneerType].label} Pioneer
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                <div className="bg-gray-800/60 rounded-xl p-4">
-                  <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">
-                    Visa Route
-                  </div>
-                  <div className="text-white text-sm leading-relaxed">
-                    {primaryDestination.visa}
-                  </div>
-                </div>
-                <div className="bg-gray-800/60 rounded-xl p-4">
-                  <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
-                    Payments
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {primaryDestination.payment.map((p) => (
-                      <span
-                        key={p}
-                        className="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full"
-                      >
-                        {p}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div className="bg-gray-800/60 rounded-xl p-4">
-                  <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
-                    Top Sectors
-                  </div>
-                  <div className="space-y-1">
-                    {displaySectors.map((sector) => (
-                      <div key={sector} className="text-white text-xs flex items-center gap-1">
-                        <span className="text-brand-accent">•</span>
-                        {sector}
+                      <div className="text-xs text-gray-400 uppercase tracking-wider">
+                        Step 2 of 4
                       </div>
+                      <div className="text-white font-semibold text-lg">
+                        Where are you currently based?
+                      </div>
+                    </div>
+                  </div>
+
+                  {!showOriginPicker ? (
+                    <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-4 flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">{origin.flag}</span>
+                        <div>
+                          <div className="text-white font-medium">Currently in {origin.name}</div>
+                          <div className="text-gray-400 text-sm">Auto-detected · tap to change</div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setShowOriginPicker(true)}
+                        className="text-brand-accent text-sm font-medium hover:text-brand-accent/70 transition-colors"
+                      >
+                        Change
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
+                      {ORIGIN_COUNTRIES.map((c) => (
+                        <button
+                          key={c.code}
+                          onClick={() => {
+                            setOrigin(c)
+                            setShowOriginPicker(false)
+                          }}
+                          className={`flex items-center gap-2 p-3 rounded-xl border text-left transition-all ${
+                            origin.code === c.code
+                              ? 'border-brand-accent bg-brand-primary/30 text-brand-accent'
+                              : 'border-gray-700 bg-gray-800/40 text-white hover:border-brand-accent/50'
+                          }`}
+                        >
+                          <span className="text-xl">{c.flag}</span>
+                          <span className="text-sm font-medium">{c.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  <p className="text-gray-400 text-sm mb-6">
+                    We use your location to find the strongest routes and payment corridors.
+                  </p>
+                  <button
+                    onClick={() => setStep(3)}
+                    className="w-full bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-4 rounded-xl transition-colors text-lg border border-brand-accent/30"
+                  >
+                    Confirmed — I&apos;m in {origin.name} →
+                  </button>
+                </div>
+                <button
+                  onClick={() => setStep(1)}
+                  className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
+
+            {/* STEP 3 — Pioneer type */}
+            {step === 3 && (
+              <div className="animate-[fadeIn_0.3s_ease]">
+                <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6 mb-5">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
+                      ✦
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-400 uppercase tracking-wider">
+                        Step 3 of 4
+                      </div>
+                      <div className="text-white font-semibold text-lg">
+                        What kind of Pioneer are you?
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {(
+                      Object.entries(PIONEER_TYPES) as [
+                        PioneerType,
+                        (typeof PIONEER_TYPES)[PioneerType],
+                      ][]
+                    ).map(([key, type]) => (
+                      <button
+                        key={key}
+                        onClick={() => handlePioneerSelect(key)}
+                        className="bg-gray-800/60 border border-gray-700 hover:border-brand-accent/50 hover:bg-gray-800 rounded-xl p-4 text-center transition-all duration-200 group"
+                      >
+                        <div className="text-3xl mb-2">{type.icon}</div>
+                        <div className="text-white font-semibold text-sm group-hover:text-brand-accent transition-colors mb-1">
+                          {type.label}
+                        </div>
+                        <div className="text-gray-400 text-xs leading-relaxed">
+                          {type.description}
+                        </div>
+                      </button>
                     ))}
                   </div>
                 </div>
+                <button
+                  onClick={() => setStep(2)}
+                  className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
+                >
+                  ← Back
+                </button>
               </div>
+            )}
 
-              <Link
-                href="/ventures"
-                className="block w-full bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-4 rounded-xl transition-colors text-center text-lg border border-brand-accent/30 hover:border-brand-accent/60"
-              >
-                {VOCAB.pioneer_join} — See Open Paths →
-              </Link>
-            </div>
+            {/* STEP 4 — Route result */}
+            {step === 4 && primaryDestination && pioneerType && (
+              <div className="animate-[fadeIn_0.3s_ease] space-y-4">
+                <div className="bg-gradient-to-br from-gray-900 to-gray-900/80 border border-brand-accent/30 rounded-2xl p-6">
+                  <div className="text-xs text-brand-accent font-semibold uppercase tracking-widest mb-4">
+                    Your Route
+                  </div>
 
-            <div className="text-center">
-              <button
-                onClick={handleReset}
-                className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
-              >
-                ← Navigate a different route
-              </button>
-            </div>
-          </div>
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="text-center">
+                      <div className="text-3xl mb-1">{origin.flag}</div>
+                      <div className="text-white font-medium text-sm">{origin.name}</div>
+                    </div>
+                    <div className="flex-1 flex items-center gap-2">
+                      <div className="flex-1 h-px bg-gradient-to-r from-gray-700 to-brand-accent/50" />
+                      <span className="text-brand-accent font-bold text-lg">→</span>
+                      <div className="flex-1 h-px bg-gradient-to-r from-brand-accent/50 to-gray-700" />
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl mb-1">{primaryDestination.flag}</div>
+                      <div className="text-white font-medium text-sm">
+                        {primaryDestination.name}
+                      </div>
+                    </div>
+                  </div>
+
+                  {selectedDestinations.length > 1 && (
+                    <div className="flex flex-wrap gap-2 mb-4 items-center">
+                      <span className="text-xs text-gray-400">Also exploring:</span>
+                      {selectedDestinations.slice(1).map((code) => {
+                        const c = COUNTRY_OPTIONS.find((x) => x.code === code)
+                        return c ? (
+                          <span
+                            key={code}
+                            className="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-full"
+                          >
+                            {c.flag} {c.name}
+                          </span>
+                        ) : null
+                      })}
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${CORRIDOR_BADGE[primaryDestination.corridorStrength].className}`}
+                    >
+                      {CORRIDOR_BADGE[primaryDestination.corridorStrength].label}
+                    </span>
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-brand-primary/60 text-brand-accent border border-brand-accent/30">
+                      {PIONEER_TYPES[pioneerType].icon} {PIONEER_TYPES[pioneerType].label} Pioneer
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-gray-800/60 rounded-xl p-4">
+                      <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">
+                        Visa Route
+                      </div>
+                      <div className="text-white text-sm leading-relaxed">
+                        {primaryDestination.visa}
+                      </div>
+                    </div>
+                    <div className="bg-gray-800/60 rounded-xl p-4">
+                      <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
+                        Payments
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {primaryDestination.payment.map((p) => (
+                          <span
+                            key={p}
+                            className="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full"
+                          >
+                            {p}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="bg-gray-800/60 rounded-xl p-4">
+                      <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
+                        Top Sectors
+                      </div>
+                      <div className="space-y-1">
+                        {displaySectors.map((sector) => (
+                          <div key={sector} className="text-white text-xs flex items-center gap-1">
+                            <span className="text-brand-accent">•</span>
+                            {sector}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <Link
+                    href="/ventures"
+                    className="block w-full bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-4 rounded-xl transition-colors text-center text-lg border border-brand-accent/30 hover:border-brand-accent/60"
+                  >
+                    {VOCAB.pioneer_join} — See Open Paths →
+                  </Link>
+                </div>
+
+                <div className="text-center">
+                  <button
+                    onClick={handleReset}
+                    className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
+                  >
+                    ← Navigate a different route
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

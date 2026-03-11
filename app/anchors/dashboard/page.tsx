@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Plus,
@@ -29,6 +29,7 @@ import {
   ToggleRight,
 } from 'lucide-react'
 import { PIONEER_TYPES, PATH_CATEGORIES, type PioneerType } from '@/lib/vocabulary'
+import { SkeletonDashboard } from '@/components/Skeleton'
 import {
   MOCK_ANCHOR,
   MOCK_PATHS,
@@ -985,6 +986,18 @@ function SettingsTab() {
 
 export default function AnchorDashboardPage() {
   const [activeTab, setActiveTab] = useState<Tab>('overview')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 600)
+    return () => clearTimeout(t)
+  }, [])
+
+  const switchTab = (tab: Tab) => {
+    setActiveTab(tab)
+    setLoading(true)
+    setTimeout(() => setLoading(false), 300)
+  }
 
   const tabs: { key: Tab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { key: 'overview', label: 'Overview', icon: Layout },
@@ -1034,7 +1047,7 @@ export default function AnchorDashboardPage() {
             return (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => switchTab(tab.key)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left ${
                   activeTab === tab.key
                     ? 'bg-brand-accent/10 text-brand-accent border border-brand-accent/20'
@@ -1087,11 +1100,17 @@ export default function AnchorDashboardPage() {
 
         {/* Tab content */}
         <div className="flex-1 overflow-y-auto p-6">
-          {activeTab === 'overview' && <OverviewTab setActiveTab={setActiveTab} />}
-          {activeTab === 'paths' && <PathsTab />}
-          {activeTab === 'chapters' && <ChaptersTab />}
-          {activeTab === 'analytics' && <AnalyticsTab />}
-          {activeTab === 'settings' && <SettingsTab />}
+          {loading ? (
+            <SkeletonDashboard />
+          ) : (
+            <>
+              {activeTab === 'overview' && <OverviewTab setActiveTab={switchTab} />}
+              {activeTab === 'paths' && <PathsTab />}
+              {activeTab === 'chapters' && <ChaptersTab />}
+              {activeTab === 'analytics' && <AnalyticsTab />}
+              {activeTab === 'settings' && <SettingsTab />}
+            </>
+          )}
         </div>
       </div>
     </div>

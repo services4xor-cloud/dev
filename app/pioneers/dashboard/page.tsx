@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PIONEER_TYPES } from '@/lib/vocabulary'
 import {
@@ -8,6 +8,7 @@ import {
   MOCK_CHAPTERS as CHAPTERS_DATA,
   MOCK_MATCHING_PATHS,
 } from '@/data/mock'
+import { SkeletonDashboard } from '@/components/Skeleton'
 
 const MOCK_PIONEER = MOCK_CURRENT_PIONEER
 
@@ -526,6 +527,19 @@ const TABS = [
 
 export default function PioneerDashboard() {
   const [activeTab, setActiveTab] = useState('compass')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 600)
+    return () => clearTimeout(t)
+  }, [])
+
+  // Brief skeleton on tab switch (simulates data fetch)
+  const switchTab = (id: string) => {
+    setActiveTab(id)
+    setLoading(true)
+    setTimeout(() => setLoading(false), 300)
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0005] text-white">
@@ -565,7 +579,7 @@ export default function PioneerDashboard() {
           {TABS.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => switchTab(tab.id)}
               className={`px-4 py-3 text-sm font-medium rounded-t-xl transition-all border-b-2 -mb-px ${
                 activeTab === tab.id
                   ? 'text-brand-accent border-brand-accent bg-brand-surface-elevated'
@@ -579,11 +593,17 @@ export default function PioneerDashboard() {
 
         {/* Tab Content */}
         <div>
-          {activeTab === 'compass' && <CompassTab />}
-          {activeTab === 'chapters' && <ChaptersTab />}
-          {activeTab === 'saved' && <SavedPathsTab />}
-          {activeTab === 'profile' && <ProfileTab />}
-          {activeTab === 'earnings' && <ReferralsTab />}
+          {loading ? (
+            <SkeletonDashboard />
+          ) : (
+            <>
+              {activeTab === 'compass' && <CompassTab />}
+              {activeTab === 'chapters' && <ChaptersTab />}
+              {activeTab === 'saved' && <SavedPathsTab />}
+              {activeTab === 'profile' && <ProfileTab />}
+              {activeTab === 'earnings' && <ReferralsTab />}
+            </>
+          )}
         </div>
       </div>
     </div>
