@@ -132,6 +132,7 @@ function listFromMock(filters: ThreadFilters = {}): ThreadItem[] {
     description: t.description,
     parentSlug: 'parentThread' in t ? (t as { parentThread?: string }).parentThread : null,
     countries: t.countries ?? [],
+    relatedSlugs: t.relatedThreads ?? [],
     memberCount: t.memberCount ?? 0,
     active: t.active ?? true,
   }))
@@ -152,6 +153,7 @@ function getBySlugFromMock(slug: string): ThreadItem | null {
     parentSlug:
       'parentThread' in thread ? (thread as { parentThread?: string }).parentThread : null,
     countries: thread.countries ?? [],
+    relatedSlugs: thread.relatedThreads ?? [],
     memberCount: thread.memberCount ?? 0,
     active: thread.active ?? true,
   }

@@ -4,9 +4,10 @@
 // "Find where you belong. Go there."
 // Autodetect country, emotional, end-user-centric, BeNetwork vocabulary
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ChevronDown } from 'lucide-react'
 import { PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
 import { detectCountryFromTimezone } from '@/lib/geo'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
@@ -14,6 +15,7 @@ import { hasCompletedOnboarding, getVenturesUrl } from '@/lib/identity-flags'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
 import { useIdentity } from '@/lib/identity-context'
 import { COUNTRIES, type CountryCode } from '@/lib/countries'
+import IdentitySwitcher from '@/components/IdentitySwitcher'
 import {
   COUNTRY_GREETINGS,
   ROTATING_FLAGS,
@@ -25,6 +27,7 @@ import {
   IMPACT_PARTNER,
   PAYMENT_BADGES,
 } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Derived Data ─────────────────────────────────────────────────────────────
 
@@ -35,9 +38,12 @@ const EXPERIENCE_PACKAGES = SAFARI_PACKAGES.slice(0, 3)
 export default function HomePage() {
   const [detectedCountry, setDetectedCountry] = useState<string>('DEFAULT')
   const [flagIndex, setFlagIndex] = useState(0)
+  const [heroIdentityOpen, setHeroIdentityOpen] = useState(false)
+  const heroIdentityRef = useRef<HTMLDivElement>(null)
 
   // Identity context — drives all dynamic content on the page
   const { identity, countryName, brandName, localizeCountry } = useIdentity()
+  const { t } = useTranslation()
   const countryConfig = COUNTRIES[identity.country as CountryCode]
 
   // Rotate background flags
@@ -46,6 +52,17 @@ export default function HomePage() {
       setFlagIndex((i) => (i + 1) % ROTATING_FLAGS.length)
     }, 1800)
     return () => clearInterval(timer)
+  }, [])
+
+  // Close hero identity dropdown on outside click
+  useEffect(() => {
+    function onPointer(e: PointerEvent) {
+      if (heroIdentityRef.current && !heroIdentityRef.current.contains(e.target as Node)) {
+        setHeroIdentityOpen(false)
+      }
+    }
+    document.addEventListener('pointerdown', onPointer)
+    return () => document.removeEventListener('pointerdown', onPointer)
   }, [])
 
   // Detect country via timezone heuristic (uses canonical COUNTRY_OPTIONS)
@@ -106,17 +123,55 @@ export default function HomePage() {
         />
 
         <div className="relative max-w-5xl 3xl:max-w-7xl mx-auto px-4 py-28 3xl:py-40 text-center">
-          {/* Compass rose logo */}
-          <Image
-            src="/logo.svg"
-            width={100}
-            height={100}
-            alt=""
-            priority
-            unoptimized
-            aria-hidden="true"
-            className="mx-auto mb-6 drop-shadow-2xl"
-          />
+          {/* Compass rose logo — clickable identity switcher */}
+          <div className="relative inline-block mb-6" ref={heroIdentityRef}>
+            <button
+              type="button"
+              onClick={() => setHeroIdentityOpen((v) => !v)}
+              aria-expanded={heroIdentityOpen}
+              aria-haspopup="menu"
+              aria-label={`${brandName} — Choose your identity`}
+              data-testid="hero-identity-trigger"
+              className="group relative cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
+                         focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg rounded-2xl"
+            >
+              <Image
+                src="/logo.svg"
+                width={100}
+                height={100}
+                alt=""
+                priority
+                unoptimized
+                aria-hidden="true"
+                className="mx-auto drop-shadow-2xl group-hover:scale-105 transition-transform duration-300"
+              />
+              {/* Brand name + chevron below logo */}
+              <div className="flex items-center justify-center gap-1.5 mt-2">
+                <span className="text-lg font-bold">
+                  <span style={{ color: 'var(--color-accent)' }}>Be</span>
+                  <span className="text-white">{brandName.replace(/^Be/, '')}</span>
+                </span>
+                <ChevronDown
+                  className={`w-4 h-4 text-white/40 transition-transform duration-200 ${heroIdentityOpen ? 'rotate-180' : ''}`}
+                  aria-hidden="true"
+                />
+              </div>
+              {/* Subtle hint text */}
+              <p className="text-[10px] text-white/30 mt-1 tracking-wider uppercase">
+                Click to switch identity
+              </p>
+            </button>
+
+            {/* Identity dropdown — positioned centered below logo */}
+            {heroIdentityOpen && (
+              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-50">
+                <IdentitySwitcher
+                  open={heroIdentityOpen}
+                  onClose={() => setHeroIdentityOpen(false)}
+                />
+              </div>
+            )}
+          </div>
 
           {/* Geo greeting chip */}
           <div
@@ -127,27 +182,20 @@ export default function HomePage() {
             }}
           >
             <span className="text-xl">{geo.flag}</span>
-            <span>
-              We see you&apos;re in {geo.name}. {geo.greeting}
-            </span>
+            <span>{t('hero.greeting', { geoName: geo.name, geoGreeting: geo.greeting })}</span>
           </div>
 
-          {/* Main headline — driven by identity context */}
+          {/* Main headline — driven by identity context + language */}
           <h1 className="font-display text-5xl md:text-7xl xl:text-8xl 3xl:text-9xl font-bold leading-[1.1] mb-6">
-            <span className="text-white">{countryConfig?.heroTagline || 'Find where you'}</span>
+            <span className="text-white">{countryConfig?.heroTagline || t('hero.headline')}</span>
             <br />
-            <span style={{ color: 'var(--color-accent)' }}>belong.</span>
+            <span style={{ color: 'var(--color-accent)' }}>{t('hero.belong')}</span>
             <br />
-            <span style={{ color: 'var(--color-accent)' }}>Go there.</span>
+            <span style={{ color: 'var(--color-accent)' }}>{t('hero.goThere')}</span>
           </h1>
 
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            {countryConfig?.heroSubtext || (
-              <>
-                {brandName} is not a job board. It&apos;s a compass — for Pioneers who want to move,
-                grow, and belong somewhere extraordinary.
-              </>
-            )}
+            {countryConfig?.heroSubtext || t('hero.subtitle', { brandName })}
           </p>
 
           {/* CTAs */}
@@ -162,7 +210,7 @@ export default function HomePage() {
                 border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
               }}
             >
-              <span>Start My Compass</span>
+              <span>{t('hero.startCompass')}</span>
               <span>&#8594;</span>
             </Link>
             <Link
@@ -174,7 +222,7 @@ export default function HomePage() {
                 background: 'rgb(var(--color-accent-rgb) / 0.08)',
               }}
             >
-              <span>Browse Ventures</span>
+              <span>{t('hero.browseVentures')}</span>
             </Link>
           </div>
 
@@ -189,11 +237,11 @@ export default function HomePage() {
 
           {/* Tiny trust line — country-aware impact partner */}
           <p className="text-gray-400 text-sm">
-            Pioneers active today ·{' '}
+            {t('hero.pioneersTrust')} ·{' '}
             <span className="font-medium" style={{ color: 'var(--color-accent)' }}>
-              {activeImpactPartner.contributionAmount} from every booking
+              {t('hero.everyBooking', { amount: activeImpactPartner.contributionAmount })}
             </span>{' '}
-            funds {activeImpactPartner.name} community work
+            {t('hero.fundsCommunity', { partner: activeImpactPartner.name })}
           </p>
 
           {/* Gold dot pulse at bottom center */}
@@ -220,15 +268,12 @@ export default function HomePage() {
               className="text-sm font-semibold uppercase tracking-widest mb-3"
               style={{ color: 'var(--color-accent)' }}
             >
-              The BeNetwork
+              {t('network.label')}
             </p>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
-              Three kinds of people. One network.
+              {t('network.headline')}
             </h2>
-            <p className="text-gray-300 max-w-xl mx-auto">
-              No jargon. No CVs rotting in inboxes. Just Pioneers, Anchors, and Explorers — finding
-              each other.
-            </p>
+            <p className="text-gray-300 max-w-xl mx-auto">{t('network.subtitle')}</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 3xl:gap-8">
@@ -292,19 +337,16 @@ export default function HomePage() {
             </div>
 
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
-              Where do you want to go?
+              {t('compass.headline')}
             </h2>
-            <p className="text-gray-400 mb-8 max-w-lg mx-auto">
-              Tell us your journey in 3 quick steps. We&apos;ll match you with Paths, Anchors, and
-              communities — anywhere in the world.
-            </p>
+            <p className="text-gray-400 mb-8 max-w-lg mx-auto">{t('compass.subtitle')}</p>
 
             {/* How it works — visual steps */}
             <div className="flex items-center justify-center gap-2 md:gap-4 mb-10 text-xs md:text-sm">
               {[
-                { num: 1, label: 'Choose destinations' },
-                { num: 2, label: 'Confirm origin' },
-                { num: 3, label: 'Your Pioneer type' },
+                { num: 1, label: t('compass.step1') },
+                { num: 2, label: t('compass.step2') },
+                { num: 3, label: t('compass.step3') },
               ].map((s, i) => (
                 <div key={s.num} className="flex items-center gap-2 md:gap-3">
                   {i > 0 && <span className="text-gray-700 hidden sm:inline">&#8594;</span>}
@@ -326,7 +368,7 @@ export default function HomePage() {
             {detectedOption && (
               <p className="text-gray-500 text-sm mb-6">
                 <span className="text-lg mr-1">{detectedOption.flag}</span>
-                We&apos;ll start with {detectedOption.name} as your origin
+                {t('compass.originHint', { country: detectedOption.name })}
               </p>
             )}
 
@@ -340,7 +382,7 @@ export default function HomePage() {
                 boxShadow: '0 8px 24px rgb(var(--color-primary-rgb) / 0.35)',
               }}
             >
-              <span>Start My Compass</span>
+              <span>{t('hero.startCompass')}</span>
               <span className="text-xl">&#10148;</span>
             </Link>
           </div>
@@ -484,11 +526,9 @@ export default function HomePage() {
             The BeNetwork
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
-            {brandName} is just the beginning.
+            {t('expansion.headline', { brandName })}
           </h2>
-          <p className="text-gray-400 text-lg mb-12 max-w-xl mx-auto">
-            Same mission. Every country. Every community.
-          </p>
+          <p className="text-gray-400 text-lg mb-12 max-w-xl mx-auto">{t('expansion.subtitle')}</p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
             {BE_COUNTRIES.map((c) => (
@@ -517,7 +557,7 @@ export default function HomePage() {
                   <div
                     className={`text-xs ${c.status === 'live' ? 'text-brand-accent' : 'text-gray-600'}`}
                   >
-                    {c.status === 'live' ? 'Live now' : 'Coming soon'}
+                    {c.status === 'live' ? t('expansion.live') : t('expansion.coming')}
                   </div>
                 </div>
               </div>
@@ -525,8 +565,8 @@ export default function HomePage() {
             <div className="flex items-center gap-3 rounded-2xl px-6 py-4 border border-white/5 bg-gray-900 text-gray-600">
               <span className="text-2xl">+</span>
               <div className="text-left">
-                <div className="font-bold text-sm text-gray-400">More coming</div>
-                <div className="text-xs text-gray-700">Every country</div>
+                <div className="font-bold text-sm text-gray-400">{t('expansion.more')}</div>
+                <div className="text-xs text-gray-700">{t('expansion.every')}</div>
               </div>
             </div>
           </div>
@@ -546,15 +586,12 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="text-6xl mb-6">&#127970;</div>
           <p className="text-gray-400 text-sm font-semibold uppercase tracking-widest mb-3">
-            For Organizations
+            {t('anchors.label')}
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
-            Are you an Anchor?
+            {t('anchors.headline')}
           </h2>
-          <p className="text-gray-400 text-lg mb-4 max-w-2xl mx-auto">
-            Organizations that open paths for Pioneers. Safari lodges, tech companies, NGOs,
-            hospitals — any Anchor that believes real talent changes everything.
-          </p>
+          <p className="text-gray-400 text-lg mb-4 max-w-2xl mx-auto">{t('anchors.subtitle')}</p>
           <p className="text-gray-400 mb-10">
             Post a Path. Find Pioneers. Pay with{' '}
             {countryConfig?.paymentMethods
@@ -578,13 +615,13 @@ export default function HomePage() {
                 boxShadow: '0 8px 24px rgb(var(--color-primary-rgb) / 0.35)',
               }}
             >
-              Post a Path &#8594;
+              {t('anchors.postPath')} &#8594;
             </Link>
             <Link
               href="/pricing"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-brand-accent/30 hover:border-brand-accent/50 text-white font-bold rounded-full px-10 py-4 transition-all"
             >
-              See How It Works
+              {t('anchors.howItWorks')}
             </Link>
           </div>
         </div>
@@ -598,10 +635,10 @@ export default function HomePage() {
               className="text-sm font-semibold uppercase tracking-widest mb-3"
               style={{ color: 'var(--color-accent)' }}
             >
-              Pioneer Stories
+              {t('testimonials.label')}
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
-              Real journeys. Real chapters.
+              {t('testimonials.headline')}
             </h2>
           </div>
 
@@ -643,7 +680,7 @@ export default function HomePage() {
       <section className="py-12 bg-brand-bg border-y border-white/5">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-6">
-            Pay with what you know
+            {t('payments.label')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8">
             {PAYMENT_BADGES.map((p) => (
@@ -658,7 +695,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <p className="text-gray-700 text-xs mt-6">All transactions are secure and transparent</p>
+          <p className="text-gray-700 text-xs mt-6">{t('payments.secure')}</p>
         </div>
       </section>
     </div>

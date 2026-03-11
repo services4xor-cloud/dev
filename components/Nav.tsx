@@ -14,9 +14,9 @@ import {
   ANCHOR_NAV_LINKS as ANCHOR_LINKS,
   ABOUT_NAV_LINKS as ABOUT_LINKS,
 } from '@/lib/nav-structure'
-import type { ThreadType } from '@/lib/threads'
-import { useThreads } from '@/lib/hooks/use-threads'
 import { useIdentity } from '@/lib/identity-context'
+import IdentitySwitcher, { IDENTITY_TABS } from '@/components/IdentitySwitcher'
+import { useThreads } from '@/lib/hooks/use-threads'
 
 const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
 const BRAND = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
@@ -27,65 +27,6 @@ const TEASER_COUNTRIES = COUNTRY_OPTIONS.slice(0, 12).map((c) => ({
   flag: c.flag,
 }))
 
-// ─── Identity Switcher Tabs (5 categories — scalable) ───────────────
-// Each tab maps to one or more ThreadType values from the data.
-// Content is dynamic — only tabs with threads are shown.
-const IDENTITY_TABS: { types: ThreadType[]; label: string; icon: string }[] = [
-  { types: ['country'], label: 'Countries', icon: '🌍' },
-  { types: ['tribe'], label: 'Tribes', icon: '🏛️' },
-  { types: ['language'], label: 'Languages', icon: '🗣️' },
-  { types: ['religion'], label: 'Faith', icon: '🕊️' },
-  { types: ['interest', 'science', 'location'], label: 'Paths', icon: '⭐' },
-]
-
-// Language → Country mapping: selecting a language also sets the primary country
-const LANGUAGE_COUNTRY_MAP: Record<string, string> = {
-  sw: 'KE',
-  swahili: 'KE',
-  de: 'DE',
-  deutsch: 'DE',
-  german: 'DE',
-  fr: 'FR',
-  french: 'FR',
-  français: 'FR',
-  en: 'GB',
-  english: 'GB',
-  ar: 'AE',
-  arabic: 'AE',
-  hi: 'IN',
-  hindi: 'IN',
-  zu: 'ZA',
-  zulu: 'ZA',
-  ha: 'NG',
-  hausa: 'NG',
-  yo: 'NG',
-  yoruba: 'NG',
-  lg: 'UG',
-  luganda: 'UG',
-}
-
-// Tribe → Country mapping: selecting a tribe sets the associated country
-const TRIBE_COUNTRY_MAP: Record<string, string> = {
-  maasai: 'KE',
-  kikuyu: 'KE',
-  luo: 'KE',
-  bavarian: 'DE',
-  swabian: 'DE',
-  schwaben: 'DE',
-  berliner: 'DE',
-  romand: 'CH',
-  'alemannic-swiss': 'CH',
-  alemannic: 'CH',
-  yoruba: 'NG',
-  igbo: 'NG',
-}
-
-/** Get the URL for a thread */
-function getThreadUrl(thread: { type: ThreadType; slug: string }): string {
-  if (thread.type === 'country') return `/be/${thread.slug}`
-  return `/threads/${thread.slug}`
-}
-
 // ─────────────────────────────────────────────────────────────────
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -95,20 +36,12 @@ export default function Nav() {
   // Auth session
   const { data: session } = useSession()
 
-  // Fetch threads from API (falls back to mock data)
+  // Fetch threads from API (falls back to mock data) — for mobile tab links
   const { threads: navThreads } = useThreads()
-  const {
-    identity,
-    brandName: identityBrandName,
-    countryName: identityCountryName,
-    setCountry,
-    setLanguage,
-    setThread,
-  } = useIdentity()
+  const { identity, brandName: identityBrandName } = useIdentity()
   const [teaserIdx, setTeaserIdx] = useState(0)
   const [teaserFade, setTeaserFade] = useState(true)
   const [identityOpen, setIdentityOpen] = useState(false)
-  const [identityTabIdx, setIdentityTabIdx] = useState(0)
   const [hoveredThread, setHoveredThread] = useState<{
     icon: string
     brandName: string
@@ -350,127 +283,15 @@ export default function Nav() {
 
               {/* ── Identity Switcher Panel ──────────────────────── */}
               {identityOpen && (
-                <div role="menu" className="absolute left-0 top-full mt-2">
-                  <div className="w-[calc(100vw-2rem)] sm:w-96 max-w-[24rem] rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/60 overflow-hidden">
-                    {/* Tab row — 4 focused categories */}
-                    <div className="flex gap-0.5 px-2 pt-2 pb-1 overflow-x-auto scrollbar-hide border-b border-white/5">
-                      {IDENTITY_TABS.map((tab, idx) => {
-                        const count = navThreads.filter(
-                          (t) => tab.types.includes(t.type) && t.active
-                        ).length
-                        if (count === 0) return null
-                        return (
-                          <button
-                            key={tab.label}
-                            type="button"
-                            onClick={() => setIdentityTabIdx(idx)}
-                            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap transition-colors duration-150 ${
-                              identityTabIdx === idx
-                                ? 'bg-brand-accent/15 text-brand-accent'
-                                : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-                            }`}
-                          >
-                            <span className="text-xs">{tab.icon}</span>
-                            {tab.label}
-                          </button>
-                        )
-                      })}
-                    </div>
-
-                    {/* Thread list — sorted by relevance to active identity */}
-                    <div className="max-h-64 overflow-y-auto overscroll-contain py-1.5 px-1.5">
-                      {navThreads
-                        .filter(
-                          (t) => IDENTITY_TABS[identityTabIdx]?.types.includes(t.type) && t.active
-                        )
-                        .sort((a, b) => {
-                          // Threads matching active country appear first
-                          const aMatch = a.countries?.includes(identity.country) ? 1 : 0
-                          const bMatch = b.countries?.includes(identity.country) ? 1 : 0
-                          if (aMatch !== bMatch) return bMatch - aMatch
-                          return b.memberCount - a.memberCount
-                        })
-                        .map((thread) => (
-                          <Link
-                            key={thread.slug}
-                            href={getThreadUrl(thread)}
-                            role="menuitem"
-                            onClick={() => {
-                              // Every selection updates the full identity context
-                              // — whatever is clicked becomes the "main interest"
-                              if (thread.type === 'country') {
-                                const match = COUNTRY_OPTIONS.find(
-                                  (c) =>
-                                    c.name.toLowerCase() === thread.slug.toLowerCase() ||
-                                    c.code.toLowerCase() === thread.slug.toLowerCase()
-                                )
-                                if (match) setCountry(match.code)
-                              } else if (thread.type === 'language') {
-                                // Language = Country: selecting Deutsch → sets DE
-                                const langCode =
-                                  thread.slug.length <= 3 ? thread.slug : thread.slug.slice(0, 2)
-                                setLanguage(langCode)
-                                const mappedCountry = LANGUAGE_COUNTRY_MAP[thread.slug]
-                                if (mappedCountry) setCountry(mappedCountry)
-                                setThread(thread.slug, thread.type, thread.brandName)
-                              } else if (thread.type === 'tribe') {
-                                // Tribe → sets associated country too
-                                const mappedCountry = TRIBE_COUNTRY_MAP[thread.slug]
-                                if (mappedCountry) setCountry(mappedCountry)
-                                setThread(thread.slug, thread.type, thread.brandName)
-                              } else {
-                                setThread(thread.slug, thread.type, thread.brandName)
-                              }
-                              setIdentityOpen(false)
-                              setHoveredThread(null)
-                            }}
-                            onMouseEnter={() =>
-                              setHoveredThread({ icon: thread.icon, brandName: thread.brandName })
-                            }
-                            onMouseLeave={() => setHoveredThread(null)}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200
-                                     hover:bg-white/8 group/item"
-                          >
-                            <span className="text-lg shrink-0">{thread.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold text-white group-hover/item:text-brand-accent transition-colors truncate">
-                                  {thread.brandName}
-                                </span>
-                                {(thread.slug === identity.country.toLowerCase() ||
-                                  thread.slug === identity.threadSlug) && (
-                                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-brand-accent/20 text-brand-accent uppercase tracking-wider">
-                                    Active
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-[11px] text-white/40 truncate mt-0.5">
-                                {thread.memberCount.toLocaleString()} pioneers ·{' '}
-                                {thread.tagline.slice(0, 50)}
-                              </p>
-                            </div>
-                          </Link>
-                        ))}
-                    </div>
-
-                    {/* Footer — Browse all + Home link */}
-                    <div className="border-t border-white/5 px-3 py-2 flex items-center justify-between">
-                      <Link
-                        href="/threads"
-                        onClick={() => setIdentityOpen(false)}
-                        className="text-[11px] font-medium text-brand-accent/70 hover:text-brand-accent transition-colors"
-                      >
-                        Browse all threads →
-                      </Link>
-                      <Link
-                        href="/"
-                        onClick={() => setIdentityOpen(false)}
-                        className="text-[11px] font-medium text-white/30 hover:text-white/60 transition-colors"
-                      >
-                        Home
-                      </Link>
-                    </div>
-                  </div>
+                <div className="absolute left-0 top-full mt-2">
+                  <IdentitySwitcher
+                    open={identityOpen}
+                    onClose={() => {
+                      setIdentityOpen(false)
+                      setHoveredThread(null)
+                    }}
+                    onHoverThread={setHoveredThread}
+                  />
                 </div>
               )}
             </div>
@@ -610,15 +431,12 @@ export default function Nav() {
       {/* ── Mobile Menu — fullscreen overlay ─────────────────────── */}
       <div
         id="mobile-nav"
-        className={`lg:hidden fixed inset-0 top-0 z-40 transition-all duration-300 ${
+        className={`lg:hidden fixed inset-0 top-0 z-40 transition-opacity duration-150 ${
           mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        {/* Backdrop */}
-        <div
-          className="absolute inset-0 bg-brand-bg/98 backdrop-blur-xl"
-          onClick={() => setMobileOpen(false)}
-        />
+        {/* Backdrop — instant opaque background, no blur delay */}
+        <div className="absolute inset-0 bg-brand-bg" onClick={() => setMobileOpen(false)} />
 
         {/* Content — below nav height */}
         <div className="relative h-full pt-[68px] overflow-y-auto">

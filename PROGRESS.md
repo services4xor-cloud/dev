@@ -8,20 +8,21 @@
 
 ## Current State
 
-| Metric            | Value                                            |
-| ----------------- | ------------------------------------------------ |
-| Phase             | 2 (BeKenya Live) — DB live, KE/DE/CH seeded      |
-| Branch            | `main` (direct push)                             |
-| Deploy            | Vercel auto on push                              |
-| Pages             | 20+                                              |
-| API routes        | 12+                                              |
-| Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)  |
-| Mock data modules | 17 (incl. config.ts, threads.ts)                 |
-| Jest tests        | 160/160 ✅                                       |
-| Playwright tests  | 102/102 ✅ (16 smoke + 32 brand + 54 responsive) |
-| TypeScript errors | 0                                                |
-| Countries config  | 13 (16 in selector, +CH)                         |
-| Languages         | 14                                               |
+| Metric            | Value                                                       |
+| ----------------- | ----------------------------------------------------------- |
+| Phase             | 2 (BeKenya Live) — DB live, KE/DE/CH seeded                 |
+| Branch            | `main` (direct push)                                        |
+| Deploy            | Vercel auto on push                                         |
+| Pages             | 20+                                                         |
+| API routes        | 12+                                                         |
+| Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
+| Mock data modules | 17 (incl. config.ts, threads.ts)                            |
+| Jest tests        | 186/186 ✅                                                  |
+| Playwright tests  | 102+ ✅ (+ identity E2E suite)                              |
+| TypeScript errors | 0                                                           |
+| Countries config  | 13 (16 in selector, +CH)                                    |
+| Languages         | 14 (+9 world languages in i18n)                             |
+| i18n languages    | 14 (en, de, sw, fr, ar, hi, zh, es, pt, ru, ja, ko, tr, id) |
 
 ---
 
@@ -66,6 +67,21 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 36 (2026-03-11) — i18n Content System, Identity Extraction, World Languages
+
+- [x] **i18n content dictionary**: `lib/i18n.ts` — 14 languages (en, de, sw, fr, ar, hi, zh, es, pt, ru, ja, ko, tr, id). 100+ keys for English master, core translations for all others. `translate(key, lang, vars?)` with English fallback and `{varName}` interpolation. Language prefix matching (de-CH → de).
+- [x] **useTranslation hook**: `lib/hooks/use-translation.ts` — connects i18n to identity context. Returns `{ t, language }`. Memoized via useCallback.
+- [x] **Homepage fully i18n-wired**: All hardcoded English text in `app/page.tsx` replaced with `t()` calls — hero, trust line, BeNetwork, Compass CTA, expansion, anchors, testimonials, payments sections.
+- [x] **IdentitySwitcher extracted**: `components/IdentitySwitcher.tsx` — reusable identity dropdown with LANGUAGE_COUNTRY_MAP (22 entries) and TRIBE_COUNTRY_MAP (11 entries). Replaced ~100 lines of inline logic in Nav.
+- [x] **Homepage identity dropdown**: Hero logo is now clickable → opens IdentitySwitcher. "Click to switch identity" hint text. Outside click handling.
+- [x] **9 world language threads added**: Chinese (中文), Spanish (Español), Portuguese (Português), Russian (Русский), Japanese (日本語), Korean (한국어), Turkish (Türkçe), Indonesian (Bahasa). Each with brandName, countries, relatedThreads.
+- [x] **Mock service fix**: `services/threads.ts` — added missing `relatedSlugs` field in both `listFromMock` and `getBySlugFromMock` mapper functions.
+- [x] **Mobile nav smoothed**: Changed `transition-all duration-300` + `backdrop-blur-xl` → `transition-opacity duration-150` + fully opaque `bg-brand-bg`. Instant open.
+- [x] **Identity chain tests**: 13 Jest tests validating mock thread data format — 30+ threads, required fields, brandName prefix, valid types, country threads, world languages, parent thread validity, slug uniqueness.
+- [x] **i18n tests**: 13 Jest tests — English fallback, German/Swahili translations, interpolation, prefix matching, unknown keys, 10+ global languages.
+- [x] **E2E identity tests**: 14 Playwright tests — API layer validation, Nav switcher, homepage dropdown, i18n switching, data integrity, mobile speed, persistence.
+- [x] Jest: 186/186 ✅ | TS: 0 errors
 
 ### Session 35 (2026-03-11) — Unified Identity, Email Wiring, GDPR, Smart Prefill
 
