@@ -454,7 +454,7 @@ async function main() {
     thread(
       'gb',
       'United Kingdom',
-      'BeBritain',
+      'BeUK',
       'COUNTRY',
       '🇬🇧',
       'Gateway to Europe.',

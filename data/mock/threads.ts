@@ -80,7 +80,7 @@ export const MOCK_THREADS: Thread[] = [
   {
     slug: 'gb',
     name: 'United Kingdom',
-    brandName: 'BeBritain',
+    brandName: 'BeUK',
     type: 'country',
     icon: '🇬🇧',
     tagline: 'Gateway to Europe. Healthcare, education, and global opportunity.',

@@ -84,7 +84,7 @@ export interface CountryConfig {
 const kenyaConfig: CountryConfig = {
   code: 'KE',
   name: 'Kenya',
-  brandName: 'Bekenya',
+  brandName: 'BeKenya',
   domain: 'bekenya.com',
   flag: '🇰🇪',
   currency: 'KES',
