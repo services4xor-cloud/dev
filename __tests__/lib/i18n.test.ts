@@ -1011,6 +1011,57 @@ describe('i18n — thread detail translations', () => {
   })
 })
 
+describe('i18n — venture detail translations', () => {
+  const ventureKeys = [
+    'venture.notFoundTitle',
+    'venture.notFoundDesc',
+    'venture.browseAll',
+    'venture.backToVentures',
+    'venture.remoteOk',
+    'venture.aboutPath',
+    'venture.whatYouDo',
+    'venture.requirements',
+    'venture.benefits',
+    'venture.compensation',
+    'venture.posted',
+    'venture.pioneersNeeded',
+    'venture.anchor',
+    'venture.chapterOpened',
+    'venture.chapterReview',
+    'venture.goToDashboard',
+    'venture.chapterNote',
+    'venture.similarPaths',
+    'venture.professional',
+    'venture.explorer',
+    'venture.creative',
+    'venture.community',
+  ]
+
+  it('English has all venture keys', () => {
+    for (const key of ventureKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all venture keys', () => {
+    for (const key of ventureKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all venture keys', () => {
+    for (const key of ventureKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+
+  it('interpolates chapter and anchor in chapterNote', () => {
+    const result = translate('venture.chapterNote', 'en', { chapter: 'Chapter', anchor: 'Anchor' })
+    expect(result).toContain('Chapter')
+    expect(result).toContain('Anchor')
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

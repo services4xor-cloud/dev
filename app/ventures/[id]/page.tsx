@@ -26,6 +26,7 @@ import {
 import { VOCAB } from '@/lib/vocabulary'
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import StatusBadge from '@/components/StatusBadge'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Extended mock details (until DB provides real data) ──────────────────────
 
@@ -150,6 +151,7 @@ const DEFAULT_DETAILS = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function VentureDetailPage() {
+  const { t } = useTranslation()
   const params = useParams()
   const pathId = params.id as string
   const [chapterOpened, setChapterOpened] = useState(false)
@@ -162,14 +164,14 @@ export default function VentureDetailPage() {
       <div className="min-h-screen bg-brand-bg flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-4">🧭</div>
-          <h1 className="text-2xl font-bold text-white mb-2">Path Not Found</h1>
-          <p className="text-gray-400 mb-6">This venture doesn&apos;t exist or has been closed.</p>
+          <h1 className="text-2xl font-bold text-white mb-2">{t('venture.notFoundTitle')}</h1>
+          <p className="text-gray-400 mb-6">{t('venture.notFoundDesc')}</p>
           <Link
             href="/ventures"
             className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Browse All Ventures
+            {t('venture.browseAll')}
           </Link>
         </div>
       </div>
@@ -178,10 +180,10 @@ export default function VentureDetailPage() {
 
   const details = PATH_DETAILS[pathId] ?? DEFAULT_DETAILS
   const categoryLabels: Record<string, string> = {
-    professional: 'Professional',
-    explorer: 'Explorer',
-    creative: 'Creative',
-    community: 'Community',
+    professional: t('venture.professional'),
+    explorer: t('venture.explorer'),
+    creative: t('venture.creative'),
+    community: t('venture.community'),
   }
 
   return (
@@ -194,7 +196,7 @@ export default function VentureDetailPage() {
             className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Ventures
+            {t('venture.backToVentures')}
           </Link>
         </div>
       </div>
@@ -227,7 +229,7 @@ export default function VentureDetailPage() {
                         <span className="text-gray-600">|</span>
                         <span className="flex items-center gap-1 text-brand-accent">
                           <Globe className="w-3.5 h-3.5" />
-                          Remote OK
+                          {t('venture.remoteOk')}
                         </span>
                       </>
                     )}
@@ -254,13 +256,13 @@ export default function VentureDetailPage() {
 
             {/* Description */}
             <section>
-              <h2 className="text-white font-semibold mb-3">About This Path</h2>
+              <h2 className="text-white font-semibold mb-3">{t('venture.aboutPath')}</h2>
               <p className="text-gray-300 leading-relaxed">{details.description}</p>
             </section>
 
             {/* Responsibilities */}
             <section>
-              <h2 className="text-white font-semibold mb-3">What You&apos;ll Do</h2>
+              <h2 className="text-white font-semibold mb-3">{t('venture.whatYouDo')}</h2>
               <ul className="space-y-2">
                 {details.responsibilities.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-gray-300 text-sm">
@@ -273,7 +275,7 @@ export default function VentureDetailPage() {
 
             {/* Requirements */}
             <section>
-              <h2 className="text-white font-semibold mb-3">What We&apos;re Looking For</h2>
+              <h2 className="text-white font-semibold mb-3">{t('venture.requirements')}</h2>
               <ul className="space-y-2">
                 {details.requirements.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-gray-300 text-sm">
@@ -286,7 +288,7 @@ export default function VentureDetailPage() {
 
             {/* Benefits */}
             <section>
-              <h2 className="text-white font-semibold mb-3">What You&apos;ll Get</h2>
+              <h2 className="text-white font-semibold mb-3">{t('venture.benefits')}</h2>
               <ul className="space-y-2">
                 {details.benefits.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-gray-300 text-sm">
@@ -304,13 +306,13 @@ export default function VentureDetailPage() {
               {/* Summary card */}
               <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 space-y-5">
                 <div>
-                  <div className="text-xs text-gray-400 mb-1">Compensation</div>
+                  <div className="text-xs text-gray-400 mb-1">{t('venture.compensation')}</div>
                   <div className="text-xl font-bold text-white">{path.salary}</div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">Posted</div>
+                    <div className="text-xs text-gray-400 mb-1">{t('venture.posted')}</div>
                     <div className="flex items-center gap-1 text-sm text-white">
                       <Clock className="w-3.5 h-3.5 text-gray-500" />
                       {path.posted}
@@ -318,7 +320,9 @@ export default function VentureDetailPage() {
                   </div>
                   {path.pioneersNeeded && (
                     <div>
-                      <div className="text-xs text-gray-400 mb-1">Pioneers Needed</div>
+                      <div className="text-xs text-gray-400 mb-1">
+                        {t('venture.pioneersNeeded')}
+                      </div>
                       <div className="flex items-center gap-1 text-sm text-white">
                         <Users className="w-3.5 h-3.5 text-gray-500" />
                         {path.pioneersNeeded}
@@ -328,7 +332,7 @@ export default function VentureDetailPage() {
                 </div>
 
                 <div className="border-t border-gray-700 pt-4">
-                  <div className="text-xs text-gray-400 mb-1">Anchor</div>
+                  <div className="text-xs text-gray-400 mb-1">{t('venture.anchor')}</div>
                   <div className="text-sm text-white font-medium">{path.anchorName}</div>
                   <div className="text-xs text-gray-400 mt-0.5">{path.location}</div>
                 </div>
@@ -337,15 +341,15 @@ export default function VentureDetailPage() {
                 {chapterOpened ? (
                   <div className="bg-green-900/30 border border-green-700/50 rounded-xl p-4 text-center">
                     <CheckCircle2 className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                    <p className="text-green-400 font-semibold text-sm">Chapter Opened!</p>
-                    <p className="text-gray-400 text-xs mt-1">
-                      The Anchor will review your profile. Check your dashboard for updates.
+                    <p className="text-green-400 font-semibold text-sm">
+                      {t('venture.chapterOpened')}
                     </p>
+                    <p className="text-gray-400 text-xs mt-1">{t('venture.chapterReview')}</p>
                     <Link
                       href="/pioneers/dashboard"
                       className="inline-block mt-3 text-brand-accent text-xs hover:underline"
                     >
-                      Go to Dashboard →
+                      {t('venture.goToDashboard')}
                     </Link>
                   </div>
                 ) : (
@@ -358,14 +362,18 @@ export default function VentureDetailPage() {
                 )}
 
                 <p className="text-xs text-gray-500 text-center">
-                  Opening a {VOCAB.chapter.singular} shares your profile with this{' '}
-                  {VOCAB.anchor.singular}.
+                  {t('venture.chapterNote', {
+                    chapter: VOCAB.chapter.singular,
+                    anchor: VOCAB.anchor.singular,
+                  })}
                 </p>
               </div>
 
               {/* Similar paths */}
               <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
-                <h3 className="text-white font-semibold text-sm mb-3">Similar Paths</h3>
+                <h3 className="text-white font-semibold text-sm mb-3">
+                  {t('venture.similarPaths')}
+                </h3>
                 <div className="space-y-3">
                   {MOCK_VENTURE_PATHS.filter((p) => p.id !== pathId && p.category === path.category)
                     .slice(0, 3)
