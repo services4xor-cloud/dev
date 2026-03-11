@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { IMPACT_PARTNER } from '@/data/mock'
 
 // ─── Notification Types & Mock Data ──────────────────────────────────────────
 
@@ -53,7 +54,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
     id: 'n4',
     type: 'community',
     icon: '🎉',
-    title: 'UTAMADUNI Milestone',
+    title: `${IMPACT_PARTNER.name} Milestone`,
     body: "Your bookings and contributions helped fund 5 children's education this month. Asante sana!",
     link: '/charity',
     time: '2 days ago',

@@ -13,7 +13,7 @@ import {
   Landmark,
   Lock,
 } from 'lucide-react'
-import { CONTACT, BRAND_NAME, LEGAL } from '@/data/mock'
+import { CONTACT, BRAND_NAME, LEGAL, IMPACT_PARTNER } from '@/data/mock'
 import { DIVISIONS, OPERATING_COUNTRIES, SHARE_BLOCKS } from '@/data/mock'
 
 export default function BusinessPage() {
@@ -250,9 +250,9 @@ export default function BusinessPage() {
               <Lock className="w-5 h-5 text-brand-accent mt-0.5 shrink-0" />
               <p className="text-sm text-gray-300">
                 <strong>Finance Controller Oversight:</strong> All revenue withdrawals, partner
-                disbursements, and UTAMADUNI transfers require dual approval. Platform revenue
-                auto-routes: 10% to charity reserve, 15% to operational float, remainder to growth
-                fund.
+                disbursements, and {IMPACT_PARTNER.name} transfers require dual approval. Platform
+                revenue auto-routes: 10% to charity reserve, 15% to operational float, remainder to
+                growth fund.
               </p>
             </div>
           </div>
@@ -276,7 +276,7 @@ export default function BusinessPage() {
               {
                 icon: '🌍',
                 type: 'NGOs & Development Partners',
-                desc: 'Co-fund UTAMADUNI projects. Skills training, youth employment, community builds.',
+                desc: `Co-fund ${IMPACT_PARTNER.name} projects. Skills training, youth employment, community builds.`,
               },
               {
                 icon: '🏢',
@@ -339,7 +339,7 @@ export default function BusinessPage() {
               href="/charity"
               className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-brand-accent transition-colors font-medium"
             >
-              UTAMADUNI Charity <ChevronRight className="w-4 h-4" />
+              {IMPACT_PARTNER.name} Charity <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

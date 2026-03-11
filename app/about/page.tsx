@@ -17,6 +17,7 @@ import {
   ABOUT_STATS as STATS,
   ABOUT_VOCAB_ITEMS as VOCAB_ITEMS,
   BRAND_NAME,
+  IMPACT_PARTNER,
 } from '@/data/mock'
 
 export default function AboutPage() {
@@ -215,7 +216,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* UTAMADUNI CBO */}
+      {/* Impact Partner */}
       <section className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-12">
         <div
           className="rounded-2xl p-8 text-center"
@@ -225,7 +226,7 @@ export default function AboutPage() {
           }}
         >
           <div className="text-3xl mb-3">🤲</div>
-          <h3 className="text-2xl font-bold mb-3">UTAMADUNI CBO</h3>
+          <h3 className="text-2xl font-bold mb-3">{IMPACT_PARTNER.name}</h3>
           <p className="text-gray-300 max-w-xl mx-auto mb-6 text-sm leading-relaxed">
             Our community arm. Supporting conservation workers, local guides, and cultural educators
             across East Africa. Every booking through {BRAND_NAME} contributes.
@@ -234,7 +235,7 @@ export default function AboutPage() {
             href="/charity"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-brand-accent border border-brand-accent/40 hover:bg-brand-accent/10 transition-colors"
           >
-            Learn about UTAMADUNI →
+            Learn about {IMPACT_PARTNER.name} →
           </Link>
         </div>
       </section>

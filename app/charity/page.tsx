@@ -2,7 +2,15 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { IMPACT_STATS, PILLARS, STORIES, PARTNER_TYPES, BRAND_NAME, LEGAL } from '@/data/mock'
+import {
+  IMPACT_STATS,
+  PILLARS,
+  STORIES,
+  PARTNER_TYPES,
+  BRAND_NAME,
+  LEGAL,
+  IMPACT_PARTNER,
+} from '@/data/mock'
 
 type DonationAmount = 10 | 25 | 50 | 100 | 'custom'
 
@@ -24,10 +32,10 @@ export default function CharityPage() {
             <span>Community-Based Organization · Registered in Kenya</span>
           </div>
 
-          {/* UTAMADUNI heading */}
+          {/* IMPACT_PARTNER heading */}
           <div className="mb-6">
             <h1 className="text-6xl md:text-7xl font-black tracking-tight mb-3 text-white">
-              UTAMADUNI
+              {IMPACT_PARTNER.name}
             </h1>
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-white/20 max-w-xs"></div>
@@ -47,7 +55,7 @@ export default function CharityPage() {
               href="#donate"
               className="inline-block bg-brand-accent text-white font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-colors text-center"
             >
-              Support UTAMADUNI
+              Support {IMPACT_PARTNER.name}
             </a>
             <a
               href="#pillars"
@@ -64,8 +72,11 @@ export default function CharityPage() {
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 text-center">
           <p className="text-gray-300 text-base font-medium">
             When you book a Venture or open a Path on {BRAND_NAME},
-            <span className="text-brand-accent font-bold"> a percentage flows to UTAMADUNI </span>—
-            funding real programs in real communities. No middlemen. Full transparency.
+            <span className="text-brand-accent font-bold">
+              {' '}
+              a percentage flows to {IMPACT_PARTNER.name}{' '}
+            </span>
+            — funding real programs in real communities. No middlemen. Full transparency.
           </p>
         </div>
       </div>
@@ -152,10 +163,10 @@ export default function CharityPage() {
             <div className="w-16 h-16 rounded-2xl bg-brand-success/10 flex items-center justify-center text-3xl mx-auto mb-4">
               💚
             </div>
-            <h3 className="font-bold text-white mb-2">Portion Goes to UTAMADUNI</h3>
+            <h3 className="font-bold text-white mb-2">Portion Goes to {IMPACT_PARTNER.name}</h3>
             <p className="text-gray-400 text-sm leading-relaxed">
-              A transparent percentage of each transaction is allocated to UTAMADUNI programs —
-              automatically.
+              A transparent percentage of each transaction is allocated to {IMPACT_PARTNER.name}{' '}
+              programs — automatically.
             </p>
           </div>
           <div className="text-center p-6 relative">
@@ -235,7 +246,7 @@ export default function CharityPage() {
       {/* Partner With Us */}
       <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-3">Partner With UTAMADUNI</h2>
+          <h2 className="text-3xl font-bold text-white mb-3">Partner With {IMPACT_PARTNER.name}</h2>
           <p className="text-gray-400 max-w-xl mx-auto">
             We welcome partnerships with organisations who share our belief in dignified work,
             community development, and conservation.
@@ -266,7 +277,7 @@ export default function CharityPage() {
       {/* Donation CTA */}
       <div id="donate" className="bg-gradient-to-br from-brand-success to-brand-success py-16">
         <div className="max-w-xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white mb-3">Support UTAMADUNI</h2>
+          <h2 className="text-3xl font-bold text-white mb-3">Support {IMPACT_PARTNER.name}</h2>
           <p className="text-green-200 mb-8">
             Every contribution — big or small — builds skills, protects wildlife, and preserves
             Kenyan culture for generations to come.
@@ -338,8 +349,8 @@ export default function CharityPage() {
             {paymentTab === 'mpesa' && (
               <div className="bg-green-50 border border-green-100 rounded-xl p-3 mb-4 text-left">
                 <p className="text-green-800 text-xs">
-                  Donate via M-Pesa: Paybill <strong>UTAMADUNI CBO</strong>. You&apos;ll receive
-                  full payment instructions after clicking below.
+                  Donate via M-Pesa: Paybill <strong>{IMPACT_PARTNER.name} CBO</strong>. You&apos;ll
+                  receive full payment instructions after clicking below.
                 </p>
               </div>
             )}
@@ -351,7 +362,7 @@ export default function CharityPage() {
                 : customAmount
                   ? `$${customAmount}`
                   : ''}{' '}
-              to UTAMADUNI
+              to {IMPACT_PARTNER.name}
             </button>
 
             <p className="text-gray-400 text-xs mt-3">
@@ -367,7 +378,7 @@ export default function CharityPage() {
             >
               booking a Venture
             </Link>{' '}
-            on {BRAND_NAME} — a percentage automatically supports UTAMADUNI.
+            on {BRAND_NAME} — a percentage automatically supports {IMPACT_PARTNER.name}.
           </p>
         </div>
       </div>
@@ -375,7 +386,8 @@ export default function CharityPage() {
       {/* Legal footer note */}
       <div className="bg-gray-900/30 py-6 text-center border-t border-brand-primary/30">
         <p className="text-gray-400 text-sm max-w-2xl mx-auto px-4">
-          UTAMADUNI is registered in Kenya as a Community Based Organisation (CBO). Partnered with
+          {IMPACT_PARTNER.name} is registered in Kenya as a Community Based Organisation (CBO).
+          Partnered with
           {LEGAL.companyName}. All programmes are administered locally with full community
           involvement and transparent financial reporting.
         </p>

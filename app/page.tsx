@@ -19,7 +19,7 @@ import {
   BE_COUNTRIES,
   BRAND_NAME,
   BRAND_MISSION,
-  UTAMADUNI_AMOUNT,
+  IMPACT_PARTNER,
   PAYMENT_BADGES,
 } from '@/data/mock'
 
@@ -194,9 +194,9 @@ export default function HomePage() {
           <p className="text-gray-400 text-sm">
             Pioneers active today ·{' '}
             <span className="font-medium" style={{ color: 'var(--color-accent)' }}>
-              {UTAMADUNI_AMOUNT} from every booking
+              {IMPACT_PARTNER.contributionAmount} from every booking
             </span>{' '}
-            funds UTAMADUNI community work
+            funds {IMPACT_PARTNER.name} community work
           </p>
 
           {/* Gold dot pulse at bottom center */}
@@ -483,7 +483,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 6. UTAMADUNI BANNER ──────────────────────────────────────────────── */}
+      {/* ── 6. IMPACT PARTNER BANNER ─────────────────────────────────────────── */}
       <section
         className="py-phi-7 relative overflow-hidden"
         style={{
@@ -505,14 +505,14 @@ export default function HomePage() {
               className="font-display text-2xl md:text-4xl font-bold mb-4"
               style={{ color: 'var(--color-accent)' }}
             >
-              Every venture supports UTAMADUNI
+              Every venture supports {IMPACT_PARTNER.name}
             </h2>
             <p className="text-white text-lg mb-2 max-w-2xl">
               Kenya&apos;s community development CBO — education, conservation, women&apos;s
               empowerment.
             </p>
             <p className="font-bold text-xl mb-8" style={{ color: 'var(--color-accent)' }}>
-              {UTAMADUNI_AMOUNT} from every booking. Automatically. Always.
+              {IMPACT_PARTNER.contributionAmount} from every booking. Automatically. Always.
             </p>
             <div className="flex flex-wrap items-center gap-8 mb-8 text-white text-sm">
               <span>&#127979; Education for rural children</span>
@@ -523,7 +523,7 @@ export default function HomePage() {
               href="/charity"
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold rounded-full px-8 py-3 transition-colors"
             >
-              Learn about UTAMADUNI &#8594;
+              Learn about {IMPACT_PARTNER.name} &#8594;
             </Link>
           </div>
         </div>

@@ -24,6 +24,7 @@ import {
   getPurposeAvailability,
   type OfferingPurpose,
 } from '@/lib/offerings'
+import { IMPACT_PARTNER } from '@/data/mock'
 
 const ALL_COUNTRIES = Object.values(COUNTRIES)
 
@@ -510,7 +511,7 @@ export default function OfferingsPage() {
             href="/charity"
             className="inline-flex items-center gap-2 text-brand-accent font-semibold text-sm hover:text-brand-accent/70 transition-colors"
           >
-            Learn about UTAMADUNI <ArrowRight className="w-3.5 h-3.5" />
+            Learn about {IMPACT_PARTNER.name} <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>

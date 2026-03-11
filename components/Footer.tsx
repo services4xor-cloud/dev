@@ -9,7 +9,7 @@ import {
 import {
   BRAND_NAME,
   BRAND_TAGLINE,
-  UTAMADUNI_SHARE,
+  IMPACT_PARTNER,
   CONTACT,
   LEGAL,
   PAYMENT_BADGES,
@@ -42,7 +42,8 @@ export default function Footer() {
             </Link>
             <p className="text-[#9D9BAA] text-sm leading-relaxed max-w-xs">{BRAND_TAGLINE}</p>
             <p className="mt-4 text-xs text-[#9D9BAA]/60">
-              {UTAMADUNI_SHARE} of every booking supports UTAMADUNI community projects.
+              {IMPACT_PARTNER.sharePercent} of every booking supports {IMPACT_PARTNER.name}{' '}
+              community projects.
             </p>
           </div>
 

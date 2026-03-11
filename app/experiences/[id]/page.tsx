@@ -18,6 +18,7 @@ import {
 import { SAFARI_PACKAGES, getPackageById, formatPackagePrice } from '@/lib/safari-packages'
 import { VOCAB } from '@/lib/vocabulary'
 import MpesaModal from '@/components/MpesaModal'
+import { IMPACT_PARTNER } from '@/data/mock'
 
 // ── Engagement helpers ──────────────────────────────────────────────
 // Deterministic "random" values seeded by package ID for consistency
@@ -238,7 +239,7 @@ export default function ExperiencePage() {
                 </div>
               </div>
 
-              {/* UTAMADUNI impact */}
+              {/* Impact Partner */}
               <div className="bg-brand-accent/10 border border-brand-accent/20 rounded-xl p-4">
                 <div className="flex items-start gap-3">
                   <div className="text-2xl">🌱</div>
@@ -247,8 +248,9 @@ export default function ExperiencePage() {
                       You just made an impact
                     </div>
                     <p className="text-gray-400 text-xs mt-1">
-                      KES 50 from your booking goes directly to UTAMADUNI Community Based
-                      Organisation — funding education, healthcare, and opportunity in Kenya.
+                      {IMPACT_PARTNER.contributionAmount} from your booking goes directly to{' '}
+                      {IMPACT_PARTNER.name} Community Based Organisation — funding education,
+                      healthcare, and opportunity in Kenya.
                     </p>
                   </div>
                 </div>
@@ -612,11 +614,14 @@ export default function ExperiencePage() {
                 </div>
               </div>
 
-              {/* UTAMADUNI impact nudge */}
+              {/* Impact Partner nudge */}
               <div className="bg-brand-primary/10 border border-brand-primary/20 rounded-xl p-3 mb-4">
                 <p className="text-gray-400 text-xs text-center">
-                  🌱 <span className="text-brand-accent font-medium">KES 50</span> from your booking
-                  funds UTAMADUNI community work
+                  🌱{' '}
+                  <span className="text-brand-accent font-medium">
+                    {IMPACT_PARTNER.contributionAmount}
+                  </span>{' '}
+                  from your booking funds {IMPACT_PARTNER.name} community work
                 </p>
               </div>
 

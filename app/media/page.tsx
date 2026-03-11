@@ -7,6 +7,7 @@ import {
   MEDIA_PLATFORMS as platforms,
   BRAND_NAME,
   LEGAL,
+  IMPACT_PARTNER,
 } from '@/data/mock'
 
 export default function MediaPage() {
@@ -264,23 +265,23 @@ export default function MediaPage() {
         </div>
       </section>
 
-      {/* Document UTAMADUNI */}
+      {/* Impact Partner */}
       <section className="py-16 px-4 bg-brand-success/10 border-t border-brand-success/30">
         <div className="max-w-4xl mx-auto text-center">
           <div className="text-4xl mb-4">🌍</div>
           <h2 className="text-2xl font-bold text-white mb-4">
-            Document UTAMADUNI&apos;s Impact for the World
+            Document {IMPACT_PARTNER.name}&apos;s Impact for the World
           </h2>
           <p className="text-gray-400 mb-6 max-w-xl mx-auto">
-            UTAMADUNI is {BRAND_NAME}&apos;s community charity arm — fighting poverty in Kenya
-            through opportunity and dignity. Media Pioneers can document this impact and share it
-            with the world.
+            {IMPACT_PARTNER.name} is {BRAND_NAME}&apos;s community charity arm — fighting poverty in
+            Kenya through opportunity and dignity. Media Pioneers can document this impact and share
+            it with the world.
           </p>
           <Link
             href="/charity"
             className="inline-flex items-center gap-2 bg-brand-success text-white font-bold px-7 py-3 rounded-full hover:bg-[#007700] transition-colors"
           >
-            Explore UTAMADUNI →
+            Explore {IMPACT_PARTNER.name} →
           </Link>
         </div>
       </section>
