@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { PIONEER_TYPES, type PioneerType } from '@/lib/vocabulary'
 import { detectCountryFromTimezone } from '@/lib/geo'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+import { hasCompletedOnboarding, getVenturesUrl } from '@/lib/identity-flags'
 import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
 import {
   COUNTRY_GREETINGS,
@@ -50,7 +51,10 @@ export default function HomePage() {
 
   const geo = COUNTRY_GREETINGS[detectedCountry] || COUNTRY_GREETINGS.DEFAULT
   const detectedOption = COUNTRY_OPTIONS.find((c) => c.code === detectedCountry)
-  const compassHref = `/compass${detectedCountry !== 'DEFAULT' ? `?from=${detectedCountry}` : ''}`
+  const isReturning = typeof window !== 'undefined' && hasCompletedOnboarding()
+  const compassHref = isReturning
+    ? getVenturesUrl()
+    : `/compass${detectedCountry !== 'DEFAULT' ? `?from=${detectedCountry}` : ''}`
 
   return (
     <div className="bg-brand-bg text-white overflow-x-hidden">

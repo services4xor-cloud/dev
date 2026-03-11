@@ -6,6 +6,7 @@ import { PIONEER_TYPES, PioneerType } from '@/lib/vocabulary'
 import { COUNTRY_OPTIONS, CORRIDOR_BADGE } from '@/lib/country-selector'
 import { SKILLS_BY_TYPE } from '@/data/mock'
 import { detectCountryFromTimezone } from '@/lib/geo'
+import { saveIdentityFlags, getVenturesUrl } from '@/lib/identity-flags'
 
 // ─── Confetti Component ───────────────────────────────────────────────────────
 function ConfettiBlast() {
@@ -127,32 +128,45 @@ export default function OnboardingPage() {
 
   // ── Submit ──
   const handleSubmit = async () => {
-    if (!canAdvance()) return
+    if (!canAdvance() || !pioneerType) return
     setSubmitting(true)
     setError(null)
     try {
-      const res = await fetch('/api/onboarding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          pioneerType,
-          fromCountry,
-          toCountries,
-          skills,
-          headline,
-          bio,
-          phone,
-        }),
+      // Save identity flags locally (works without DB)
+      saveIdentityFlags({
+        pioneerType,
+        fromCountry,
+        toCountries,
+        skills,
+        headline,
+        bio,
+        phone,
       })
-      const data = await res.json()
-      if (data.success) {
-        setDone(true)
-        setTimeout(() => router.push('/ventures'), 3000)
-      } else {
-        setError(data.error ?? 'Something went wrong. Please try again.')
+
+      // Also try API (will succeed when backend is live)
+      try {
+        await fetch('/api/onboarding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            pioneerType,
+            fromCountry,
+            toCountries,
+            skills,
+            headline,
+            bio,
+            phone,
+          }),
+        })
+      } catch {
+        // API not live yet — that's fine, flags are saved locally
       }
+
+      setDone(true)
+      // Redirect to personalized Ventures feed
+      setTimeout(() => router.push(getVenturesUrl()), 3000)
     } catch {
-      setError('Network error — please check your connection.')
+      setError('Something went wrong — please try again.')
     } finally {
       setSubmitting(false)
     }
