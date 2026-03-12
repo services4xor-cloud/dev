@@ -262,31 +262,21 @@ const ENDONYMS: Record<string, Record<string, string>> = {
 }
 
 // ─── Default language per country ────────────────────────────────────────────
-// What language does the platform default to for each country deployment?
+// Derived from COUNTRY_OPTIONS — first language in each country's languages[] array
+// is the default. No hardcoded map needed.
 
-const COUNTRY_DEFAULT_LANGUAGE: Record<string, string> = {
-  KE: 'en',
-  DE: 'de',
-  CH: 'de',
-  NG: 'en',
-  GH: 'en',
-  ZA: 'en',
-  UG: 'en',
-  TZ: 'sw',
-  GB: 'en',
-  US: 'en',
-  CA: 'en',
-  AE: 'en',
-  IN: 'en',
-  BR: 'pt',
-  CN: 'zh',
-  JP: 'ja',
-  KR: 'ko',
-  TR: 'tr',
-  RU: 'ru',
-  ES: 'es',
-  FR: 'fr',
-  ID: 'id',
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+
+/** Lazy-built lookup: country code → first language from COUNTRY_OPTIONS */
+let _defaultLangCache: Record<string, string> | null = null
+function getDefaultLangMap(): Record<string, string> {
+  if (!_defaultLangCache) {
+    _defaultLangCache = {}
+    for (const c of COUNTRY_OPTIONS) {
+      _defaultLangCache[c.code] = c.languages[0] ?? 'en'
+    }
+  }
+  return _defaultLangCache
 }
 
 // ─── Public API ──────────────────────────────────────────────────────────────
@@ -326,7 +316,7 @@ export function getLocalizedCountryName(countryCode: string, languageCode: strin
  * Used when the user hasn't explicitly set a language preference.
  */
 export function getDefaultLanguage(countryCode: string): string {
-  return COUNTRY_DEFAULT_LANGUAGE[countryCode.toUpperCase()] ?? 'en'
+  return getDefaultLangMap()[countryCode.toUpperCase()] ?? 'en'
 }
 
 /**
