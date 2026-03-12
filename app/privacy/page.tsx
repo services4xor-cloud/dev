@@ -31,16 +31,16 @@ export default function PrivacyPage() {
             <li>Account information (name, email, phone number)</li>
             <li>Profile data (skills, work history, CV)</li>
             <li>Payment information (M-Pesa transaction IDs — we never store your PIN)</li>
-            <li>Chapter data (which Paths you engaged with)</li>
+            <li>Exchange data (which Opportunities you engaged with)</li>
             <li>Usage data (pages visited, search terms)</li>
           </ul>
 
           <h2>2. How We Use Your Data</h2>
           <ul>
-            <li>To match you with relevant Paths via the Compass</li>
+            <li>To match you with relevant Opportunities via Discovery</li>
             <li>To process payments via M-Pesa, Stripe, or Flutterwave</li>
-            <li>To send Path alerts and Chapter updates (you can opt out)</li>
-            <li>To prevent fraud and verify Anchor legitimacy</li>
+            <li>To send Opportunity alerts and Exchange updates (you can opt out)</li>
+            <li>To prevent fraud and verify Host legitimacy</li>
             <li>To improve our platform based on usage patterns</li>
           </ul>
 
@@ -48,7 +48,7 @@ export default function PrivacyPage() {
           <p>We share your data with:</p>
           <ul>
             <li>
-              <strong>Anchors</strong> — only your profile information when you open a Chapter
+              <strong>Hosts</strong> — only your profile information when you start an Exchange
             </li>
             <li>
               <strong>Payment processors</strong> — Safaricom (M-Pesa), Stripe, Flutterwave

@@ -306,10 +306,10 @@ export default function BusinessPage() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
-            href="/ventures"
+            href="/exchange"
             className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-brand-accent transition-colors font-medium"
           >
-            {t('business.browseVentures')} <ChevronRight className="w-4 h-4" />
+            Browse Exchange <ChevronRight className="w-4 h-4" />
           </Link>
           <Link
             href="/experiences"

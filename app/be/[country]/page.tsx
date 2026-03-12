@@ -38,7 +38,7 @@ function SectorCard({ sector }: { sector: CountryConfig['featuredSectors'][numbe
   const emoji = sector.emoji || getSectorEmoji(sector.name)
   return (
     <Link
-      href={`/ventures?sector=${sector.id}`}
+      href={`/exchange?sector=${sector.id}`}
       className="group glass-subtle rounded-xl p-phi-4 transition-all duration-200 hover:shadow-lg hover:shadow-brand-accent/10 hover:-translate-y-0.5"
     >
       <div className="text-3xl mb-3">{emoji}</div>
@@ -87,10 +87,10 @@ export default function BeCountryPage() {
           </Link>
           <div className="mt-6">
             <Link
-              href="/compass"
+              href="/"
               className="text-brand-accent hover:text-brand-accent/80 underline text-sm"
             >
-              {t('beCountry.compassFallback')}
+              Discover your path
             </Link>
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function BeCountryPage() {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href={`/compass?from=${country.code}`}
+              href={`/?from=${country.code}`}
               className="text-white font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 hover:scale-105"
               style={{
                 background:
@@ -144,13 +144,13 @@ export default function BeCountryPage() {
                 boxShadow: '0 4px 20px rgb(var(--color-primary-rgb) / 0.30)',
               }}
             >
-              {t('beCountry.startCompass')}
+              Discover
             </Link>
             <Link
-              href="/ventures"
+              href="/exchange"
               className="bg-white/10 hover:bg-white/20 text-white border border-white/30 hover:border-white/60 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
             >
-              {t('beCountry.browseVentures')}
+              Exchange
             </Link>
           </div>
         </div>
@@ -224,7 +224,7 @@ export default function BeCountryPage() {
             {country.popularSearches.map((search) => (
               <Link
                 key={search}
-                href={`/ventures?q=${encodeURIComponent(search)}`}
+                href={`/exchange?q=${encodeURIComponent(search)}`}
                 className="bg-brand-primary/60 hover:bg-brand-primary border border-brand-accent/30 hover:border-brand-accent text-white hover:text-brand-accent px-5 py-2 rounded-full text-sm font-medium transition-all duration-200"
               >
                 {search}
@@ -244,16 +244,16 @@ export default function BeCountryPage() {
           <p className="text-white/70 text-lg mb-8">{t('beCountry.crossDesc')}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/compass"
+              href="/"
               className="bg-brand-accent hover:bg-brand-accent/80 text-stone-900 font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 hover:scale-105"
             >
-              {t('beCountry.openCompass')}
+              Discover
             </Link>
             <Link
-              href="/ventures"
+              href="/exchange"
               className="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
             >
-              {t('beCountry.allVentures')}
+              Browse Exchange
             </Link>
           </div>
 
