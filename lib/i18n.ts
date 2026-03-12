@@ -1411,6 +1411,14 @@ const CONTENT: Record<string, ContentDict> = {
     'me.emailUpdatesDesc': 'Weekly digest of opportunities',
     'me.profileVisibility': 'Profile visibility',
     'me.profileVisibilityDesc': 'Allow others to find you',
+    'me.dimLocation': 'Location',
+    'me.dimLanguages': 'Languages',
+    'me.dimFaith': 'Faith',
+    'me.dimCraft': 'Craft',
+    'me.dimPassion': 'Passion',
+    'me.dimReach': 'Reach',
+    'me.dimCulture': 'Culture',
+    'me.dimMarket': 'Market',
 
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
@@ -2747,6 +2755,14 @@ const CONTENT: Record<string, ContentDict> = {
     'me.emailUpdatesDesc': 'Wöchentliche Zusammenfassung der Möglichkeiten',
     'me.profileVisibility': 'Profil-Sichtbarkeit',
     'me.profileVisibilityDesc': 'Erlaube anderen, dich zu finden',
+    'me.dimLocation': 'Standort',
+    'me.dimLanguages': 'Sprachen',
+    'me.dimFaith': 'Glaube',
+    'me.dimCraft': 'Handwerk',
+    'me.dimPassion': 'Leidenschaft',
+    'me.dimReach': 'Reichweite',
+    'me.dimCulture': 'Kultur',
+    'me.dimMarket': 'Markt',
 
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
@@ -3833,6 +3849,14 @@ const CONTENT: Record<string, ContentDict> = {
     'me.emailUpdatesDesc': 'Muhtasari wa kila wiki wa fursa',
     'me.profileVisibility': 'Uonekano wa wasifu',
     'me.profileVisibilityDesc': 'Ruhusu wengine kukupata',
+    'me.dimLocation': 'Mahali',
+    'me.dimLanguages': 'Lugha',
+    'me.dimFaith': 'Imani',
+    'me.dimCraft': 'Ufundi',
+    'me.dimPassion': 'Shauku',
+    'me.dimReach': 'Ufikio',
+    'me.dimCulture': 'Utamaduni',
+    'me.dimMarket': 'Soko',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',
@@ -5493,6 +5517,14 @@ const CONTENT: Record<string, ContentDict> = {
     'me.emailUpdatesDesc': 'Résumé hebdomadaire des opportunités',
     'me.profileVisibility': 'Visibilité du profil',
     'me.profileVisibilityDesc': 'Permettre aux autres de vous trouver',
+    'me.dimLocation': 'Localisation',
+    'me.dimLanguages': 'Langues',
+    'me.dimFaith': 'Foi',
+    'me.dimCraft': 'Métier',
+    'me.dimPassion': 'Passion',
+    'me.dimReach': 'Portée',
+    'me.dimCulture': 'Culture',
+    'me.dimMarket': 'Marché',
 
     // Footer
     'footer.builtWith': 'Construit avec détermination à Nairobi, Berlin et Zurich',

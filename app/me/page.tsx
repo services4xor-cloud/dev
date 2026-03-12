@@ -839,7 +839,7 @@ export default function MePage() {
                 >
                   <span className="text-lg">{dim.icon}</span>
                   <span className="text-[10px] font-medium uppercase tracking-wider">
-                    {dim.label}
+                    {t(dim.labelKey)}
                   </span>
                 </div>
               )

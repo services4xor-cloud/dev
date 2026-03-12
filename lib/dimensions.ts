@@ -265,17 +265,18 @@ export function getReachOption(id: string): ReachOption | undefined {
 
 export interface DimensionMeta {
   key: string
-  label: string
+  label: string // Fallback label (English)
+  labelKey: string // i18n key for translation
   icon: string
 }
 
 export const DIMENSION_META: DimensionMeta[] = [
-  { key: 'location', label: 'Location', icon: '📍' },
-  { key: 'languages', label: 'Languages', icon: '🗣️' },
-  { key: 'faith', label: 'Faith', icon: '🙏' },
-  { key: 'craft', label: 'Craft', icon: '🛠️' },
-  { key: 'interests', label: 'Passion', icon: '❤️' },
-  { key: 'reach', label: 'Reach', icon: '🌐' },
-  { key: 'culture', label: 'Culture', icon: '🌿' },
-  { key: 'market', label: 'Market', icon: '📊' },
+  { key: 'location', label: 'Location', labelKey: 'me.dimLocation', icon: '📍' },
+  { key: 'languages', label: 'Languages', labelKey: 'me.dimLanguages', icon: '🗣️' },
+  { key: 'faith', label: 'Faith', labelKey: 'me.dimFaith', icon: '🙏' },
+  { key: 'craft', label: 'Craft', labelKey: 'me.dimCraft', icon: '🛠️' },
+  { key: 'interests', label: 'Passion', labelKey: 'me.dimPassion', icon: '❤️' },
+  { key: 'reach', label: 'Reach', labelKey: 'me.dimReach', icon: '🌐' },
+  { key: 'culture', label: 'Culture', labelKey: 'me.dimCulture', icon: '🌿' },
+  { key: 'market', label: 'Market', labelKey: 'me.dimMarket', icon: '📊' },
 ]
