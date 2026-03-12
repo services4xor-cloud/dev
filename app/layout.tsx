@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import CookieConsent from '@/components/CookieConsent'
 import Providers from '@/components/Providers'
 import { BRAND_NAME, LEGAL } from '@/data/mock/config'
+import { COUNTRY_META } from '@/lib/countries'
 import './globals.css'
 
 // ── Fonts ──────────────────────────────────────────────────────────
@@ -23,21 +24,6 @@ const plusJakarta = Plus_Jakarta_Sans({
 // ── Site metadata (country-aware) ──────────────────────────────────
 const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://bekenya.com'
 const countryCode = process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE'
-
-const COUNTRY_META: Record<string, { title: string; description: string; twitter: string }> = {
-  KE: {
-    title: `${BRAND_NAME} — Find Where You Belong. Go There.`,
-    description:
-      'An identity-first compass for Pioneers. Safari paths, professional ventures, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
-    twitter: `@${BRAND_NAME}`,
-  },
-  DE: {
-    title: 'BeGermany — Find Your Path in Germany.',
-    description:
-      'Your compass for professional paths, experiences, and community in Germany. SEPA payments, skilled worker routes, European connections.',
-    twitter: '@BeGermany',
-  },
-}
 
 const meta = COUNTRY_META[countryCode] ?? COUNTRY_META.KE
 

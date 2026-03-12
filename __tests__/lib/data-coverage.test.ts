@@ -17,6 +17,8 @@ import {
   MOCK_RECENT_CHAPTERS,
   MOCK_CHANNEL_MESSAGES,
 } from '@/data/mock'
+import { COUNTRY_META } from '@/lib/countries'
+import { SECTOR_META, getSectorIcon, getSectorCategory } from '@/lib/sectors'
 
 const TARGET_COUNTRIES = ['KE', 'DE', 'CH', 'TH']
 
@@ -193,5 +195,41 @@ describe('Messages data quality', () => {
         expect(msg.author.trim()).not.toBe('')
       })
     }
+  })
+})
+
+// ─── Centralized config modules ─────────────────────────────────────
+
+describe('COUNTRY_META (SEO)', () => {
+  it('has SEO metadata for all deployed countries', () => {
+    ;['KE', 'DE', 'CH', 'TH'].forEach((code) => {
+      expect(COUNTRY_META[code]).toBeDefined()
+      expect(COUNTRY_META[code].title).toBeTruthy()
+      expect(COUNTRY_META[code].description).toBeTruthy()
+      expect(COUNTRY_META[code].twitter).toBeTruthy()
+    })
+  })
+})
+
+describe('SECTOR_META', () => {
+  it('has at least 15 sector definitions', () => {
+    expect(Object.keys(SECTOR_META).length).toBeGreaterThanOrEqual(15)
+  })
+
+  it('every sector has icon and category', () => {
+    for (const [, meta] of Object.entries(SECTOR_META)) {
+      expect(meta.icon).toBeTruthy()
+      expect(meta.category).toBeTruthy()
+    }
+  })
+
+  it('getSectorIcon returns fallback for unknown sector', () => {
+    expect(getSectorIcon('nonexistent')).toBe('🧭')
+    expect(getSectorIcon('tech')).toBe('💻')
+  })
+
+  it('getSectorCategory returns fallback for unknown sector', () => {
+    expect(getSectorCategory('nonexistent')).toBe('professional')
+    expect(getSectorCategory('safari')).toBe('explorer')
   })
 })

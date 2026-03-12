@@ -17,29 +17,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { useIdentity } from '@/lib/identity-context'
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
+import { SECTOR_META } from '@/lib/sectors'
 import type { PathListItem } from '@/types/domain'
-
-// ─── Sector → Icon + Category mapping ────────────────────────────────────────
-
-const SECTOR_META: Record<string, { icon: string; category: string }> = {
-  tech: { icon: '💻', category: 'professional' },
-  safari: { icon: '🦁', category: 'explorer' },
-  healthcare: { icon: '🏥', category: 'professional' },
-  finance: { icon: '💰', category: 'professional' },
-  education: { icon: '📚', category: 'community' },
-  agriculture: { icon: '🌾', category: 'community' },
-  engineering: { icon: '⚙️', category: 'professional' },
-  hospitality: { icon: '🏨', category: 'explorer' },
-  pharma: { icon: '💊', category: 'professional' },
-  marine: { icon: '🐠', category: 'explorer' },
-  energy: { icon: '⚡', category: 'professional' },
-  media: { icon: '🎬', category: 'creative' },
-  arts: { icon: '🎨', category: 'creative' },
-  transport: { icon: '🚄', category: 'professional' },
-  telecom: { icon: '📡', category: 'professional' },
-  banking: { icon: '🏦', category: 'professional' },
-  conservation: { icon: '🌿', category: 'explorer' },
-}
 
 /** Format salary range: "KES 80,000 – 140,000/mo" */
 function formatSalary(min: number | null, max: number | null, currency: string): string {

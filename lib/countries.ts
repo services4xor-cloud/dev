@@ -684,6 +684,43 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
   },
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SEO metadata per country (used in app/layout.tsx <head>)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface CountrySEOMeta {
+  title: string
+  description: string
+  twitter: string
+}
+
+export const COUNTRY_META: Record<string, CountrySEOMeta> = {
+  KE: {
+    title: 'BeKenya — Find Where You Belong. Go There.',
+    description:
+      'An identity-first compass for Pioneers. Safari paths, professional ventures, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
+    twitter: '@BeKenya',
+  },
+  DE: {
+    title: 'BeGermany — Find Your Path in Germany.',
+    description:
+      'Your compass for professional paths, experiences, and community in Germany. SEPA payments, skilled worker routes, European connections.',
+    twitter: '@BeGermany',
+  },
+  CH: {
+    title: 'BeSwitzerland — Find Your Path in Switzerland.',
+    description:
+      'Your compass for professional paths, alpine experiences, and community in Switzerland. TWINT, Stripe, cross-border routes.',
+    twitter: '@BeSwitzerland',
+  },
+  TH: {
+    title: 'BeThailand — Find Your Path in Thailand.',
+    description:
+      'Your compass for professional paths, tourism ventures, and community in Thailand. PromptPay, Stripe, cultural exchange.',
+    twitter: '@BeThailand',
+  },
+}
+
 /** Get active country config (from env var or default to Kenya) */
 export function getCountryConfig(): CountryConfig {
   const code = (process.env.NEXT_PUBLIC_COUNTRY_CODE as CountryCode) || 'KE'
