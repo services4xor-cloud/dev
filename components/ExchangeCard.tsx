@@ -75,6 +75,9 @@ export default function ExchangeCard({
 }: ExchangeCardProps) {
   const router = useRouter()
 
+  const sharedLangs = data.languages.filter((lang) =>
+    userLanguages.some((ul) => ul.toLowerCase() === lang.toLowerCase())
+  )
   const isSharedLang = (lang: string) =>
     userLanguages.some((ul) => ul.toLowerCase() === lang.toLowerCase())
 
@@ -84,6 +87,23 @@ export default function ExchangeCard({
         ui.toLowerCase().includes(skill.toLowerCase()) ||
         skill.toLowerCase().includes(ui.toLowerCase())
     )
+  const sharedSkills = data.skills.filter(isSharedSkill)
+
+  // Build "why you match" reasons
+  const matchReasons: string[] = []
+  if (type === 'person') {
+    if (sharedLangs.length > 0)
+      matchReasons.push(
+        `🗣 ${sharedLangs.length} shared language${sharedLangs.length > 1 ? 's' : ''}`
+      )
+    if (sharedSkills.length > 0)
+      matchReasons.push(
+        `🔧 ${sharedSkills.length} common skill${sharedSkills.length > 1 ? 's' : ''}`
+      )
+    if (data.matchScore >= 80) matchReasons.push('⚡ High compatibility')
+    if (data.subtitle.includes(', KE') || data.subtitle.includes('Kenya'))
+      matchReasons.push('📍 Same country')
+  }
 
   return (
     <Link href={`/exchange/${data.id}`} className="block">
@@ -102,7 +122,7 @@ export default function ExchangeCard({
                   : 'border border-brand-accent/30 text-brand-accent'
               }`}
             >
-              {type === 'person' ? 'Pioneer' : 'Opportunity'}
+              {type === 'person' ? 'Pioneer' : 'Path'}
             </span>
             {data.mode && type === 'person' && (
               <span className="rounded-full bg-white/10 px-phi-2 py-0.5 text-phi-xs text-white/60">
@@ -110,22 +130,50 @@ export default function ExchangeCard({
               </span>
             )}
           </div>
-          <div className="text-right">
-            <span className={`text-phi-lg font-bold ${getScoreColor(data.matchScore)}`}>
+          <div className="flex items-center gap-2">
+            {/* Score bar */}
+            <div className="w-12 h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${data.matchScore}%`,
+                  background:
+                    data.matchScore >= 80
+                      ? '#22c55e'
+                      : data.matchScore >= 60
+                        ? '#C9A227'
+                        : 'rgba(255,255,255,0.3)',
+                }}
+              />
+            </div>
+            <span className={`text-phi-sm font-bold ${getScoreColor(data.matchScore)}`}>
               {data.matchScore}%
             </span>
-            <span className="ml-1 text-phi-xs text-white/40">{getScoreLabel(data.matchScore)}</span>
           </div>
         </div>
 
         {/* ── Title + Subtitle ── */}
-        <div className="mb-phi-3">
+        <div className="mb-phi-2">
           <h3 className="text-phi-lg font-semibold text-white group-hover:text-brand-accent transition-colors">
             {data.flag && <span className="mr-phi-1">{data.flag}</span>}
             {data.title}
           </h3>
           <p className="mt-0.5 text-phi-sm text-white/50">{data.subtitle}</p>
         </div>
+
+        {/* ── Why you match (person cards only) ── */}
+        {type === 'person' && matchReasons.length > 0 && (
+          <div className="mb-phi-2 flex flex-wrap gap-1.5">
+            {matchReasons.map((reason) => (
+              <span
+                key={reason}
+                className="rounded-full px-2 py-0.5 text-[10px] bg-brand-accent/8 text-brand-accent/80 border border-brand-accent/15"
+              >
+                {reason}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* ── Sector ── */}
         {data.sector && (
@@ -145,11 +193,11 @@ export default function ExchangeCard({
                   key={lang}
                   className={`rounded-full px-phi-2 py-0.5 text-phi-xs ${
                     isSharedLang(lang)
-                      ? 'border border-brand-accent/50 bg-brand-accent/10 text-brand-accent'
+                      ? 'border border-brand-accent/50 bg-brand-accent/10 text-brand-accent font-medium'
                       : 'bg-white/5 text-white/50'
                   }`}
                 >
-                  {lang}
+                  {isSharedLang(lang) ? `✓ ${lang}` : lang}
                 </span>
               ))}
             </div>
@@ -160,7 +208,7 @@ export default function ExchangeCard({
         {data.skills.length > 0 && (
           <div className="mb-phi-3">
             <p className="mb-1 text-phi-xs text-white/30">
-              {type === 'person' ? 'Skills' : 'Required'}
+              {type === 'person' ? 'Craft' : 'Skills needed'}
             </p>
             <div className="flex flex-wrap gap-1">
               {data.skills.slice(0, 5).map((skill) => (
@@ -168,11 +216,11 @@ export default function ExchangeCard({
                   key={skill}
                   className={`rounded-full px-phi-2 py-0.5 text-phi-xs ${
                     isSharedSkill(skill)
-                      ? 'border border-brand-accent/50 bg-brand-accent/10 text-brand-accent'
+                      ? 'border border-brand-accent/50 bg-brand-accent/10 text-brand-accent font-medium'
                       : 'bg-white/5 text-white/50'
                   }`}
                 >
-                  {skill}
+                  {isSharedSkill(skill) ? `✓ ${skill}` : skill}
                 </span>
               ))}
               {data.skills.length > 5 && (
@@ -201,7 +249,7 @@ export default function ExchangeCard({
               : 'border border-brand-accent/40 text-brand-accent hover:bg-brand-accent/10'
           }`}
         >
-          {type === 'person' ? 'Connect' : 'View Path'}
+          {type === 'person' ? '💬 Connect & Chat' : 'View Path →'}
         </button>
       </GlassCard>
     </Link>

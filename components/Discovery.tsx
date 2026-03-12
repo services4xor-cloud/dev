@@ -870,7 +870,7 @@ export default function Discovery() {
     setFaith(selectedFaith)
     if (selectedCulture) setCulture(selectedCulture)
     if (editCity) setCity(editCity)
-    router.push('/world')
+    router.push('/')
   }
 
   return (
