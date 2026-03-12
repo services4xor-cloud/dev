@@ -11,8 +11,28 @@
  */
 
 import { getMarketScore, type MarketSignal } from './market-data'
+import type { DimensionPriority } from './hooks/use-profile-sync'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+
+/** Priority multipliers: high dimensions get amplified, low get dampened */
+const PRIORITY_MULTIPLIER: Record<DimensionPriority, number> = {
+  high: 1.5,
+  medium: 1.0,
+  low: 0.5,
+}
+
+/** Map dimension keys to breakdown field names */
+const DIMENSION_KEY_MAP: Record<string, keyof DimensionScore['breakdown']> = {
+  language: 'language',
+  craft: 'craft',
+  faith: 'faith',
+  reach: 'reach',
+  culture: 'culture',
+  interests: 'passion',
+  location: 'location',
+  market: 'market',
+}
 
 export interface DimensionProfile {
   country: string
@@ -255,7 +275,8 @@ function scoreCulture(
 export function scoreDimensions(
   me: DimensionProfile,
   them: DimensionProfile,
-  marketSignals: MarketSignal[]
+  marketSignals: MarketSignal[],
+  priorities?: Record<string, DimensionPriority> | null
 ): DimensionScore {
   const language = scoreLanguage(me, them)
   const market = scoreMarket(them, marketSignals)
@@ -268,7 +289,8 @@ export function scoreDimensions(
 
   const humanBonus = me.isHuman && them.isHuman ? 10 : 0
 
-  const breakdown = {
+  // Raw scores before priority weighting
+  const rawBreakdown = {
     language: language.score,
     market: market.score,
     craft: craft.score,
@@ -277,6 +299,31 @@ export function scoreDimensions(
     faith: faith.score,
     reach: reach.score,
     culture: culture.score,
+  }
+
+  // Apply priority multipliers if provided
+  const breakdown = { ...rawBreakdown }
+  if (priorities && Object.keys(priorities).length > 0) {
+    const rawTotal = Object.values(rawBreakdown).reduce((sum, v) => sum + v, 0)
+
+    for (const [dimKey, priority] of Object.entries(priorities)) {
+      const breakdownKey = DIMENSION_KEY_MAP[dimKey]
+      if (breakdownKey && breakdown[breakdownKey] !== undefined) {
+        breakdown[breakdownKey] = Math.round(
+          breakdown[breakdownKey] * PRIORITY_MULTIPLIER[priority]
+        )
+      }
+    }
+
+    // Re-normalize so weighted total stays on the same scale as raw total
+    // This prevents HIGH priorities from inflating scores beyond 100
+    const weightedTotal = Object.values(breakdown).reduce((sum, v) => sum + v, 0)
+    if (weightedTotal > 0 && rawTotal > 0) {
+      const scale = rawTotal / weightedTotal
+      for (const key of Object.keys(breakdown) as (keyof typeof breakdown)[]) {
+        breakdown[key] = Math.round(breakdown[key] * scale)
+      }
+    }
   }
 
   const baseTotal =

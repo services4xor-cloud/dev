@@ -99,7 +99,24 @@ export default function MePage() {
   const [activeTab, setActiveTab] = useState<TabId>('Dashboard')
   const [mounted, setMounted] = useState(false)
   const { saving, lastSaved, pioneerId, saveProfile } = useProfileSync()
-  const [priorities, setPriorities] = useState<Record<string, DimensionPriority>>({})
+  const [priorities, setPriorities] = useState<Record<string, DimensionPriority>>(() => {
+    if (typeof window === 'undefined') return {}
+    try {
+      const stored = localStorage.getItem('be-priorities')
+      return stored ? JSON.parse(stored) : {}
+    } catch {
+      return {}
+    }
+  })
+
+  // Persist priorities to localStorage for Exchange page access
+  useEffect(() => {
+    try {
+      localStorage.setItem('be-priorities', JSON.stringify(priorities))
+    } catch {
+      // Ignore
+    }
+  }, [priorities])
 
   // Auto-save identity dimensions to DB when they change
   const syncIdentity = useCallback(() => {

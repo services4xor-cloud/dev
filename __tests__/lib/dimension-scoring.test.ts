@@ -123,4 +123,61 @@ describe('scoreDimensions', () => {
     expect(Array.isArray(result.highlights)).toBe(true)
     expect(result.highlights.length).toBeGreaterThan(0)
   })
+
+  it('priority HIGH amplifies a dimension relative to LOW', () => {
+    const me = makeProfile({
+      languages: ['English', 'Swahili'],
+      faith: ['christian'],
+    })
+    const them = makeProfile({
+      languages: ['English', 'Swahili'],
+      faith: ['christian'],
+    })
+
+    // Without priorities
+    const base = scoreDimensions(me, them, MARKET_SIGNALS)
+
+    // With faith HIGH, language LOW
+    const withPriorities = scoreDimensions(me, them, MARKET_SIGNALS, {
+      faith: 'high',
+      language: 'low',
+    })
+
+    // Faith should get amplified relative to language
+    expect(withPriorities.breakdown.faith).toBeGreaterThan(withPriorities.breakdown.language)
+    // But total should stay similar (re-normalization)
+    const baseTotalNoBonuses =
+      base.breakdown.language +
+      base.breakdown.faith +
+      base.breakdown.craft +
+      base.breakdown.passion +
+      base.breakdown.location +
+      base.breakdown.reach +
+      base.breakdown.market +
+      base.breakdown.culture
+    const priTotalNoBonuses =
+      withPriorities.breakdown.language +
+      withPriorities.breakdown.faith +
+      withPriorities.breakdown.craft +
+      withPriorities.breakdown.passion +
+      withPriorities.breakdown.location +
+      withPriorities.breakdown.reach +
+      withPriorities.breakdown.market +
+      withPriorities.breakdown.culture
+
+    // Allow ±2 for rounding
+    expect(Math.abs(baseTotalNoBonuses - priTotalNoBonuses)).toBeLessThanOrEqual(2)
+  })
+
+  it('no priorities = same behavior as before', () => {
+    const me = makeProfile()
+    const them = makeProfile({ country: 'DE', languages: ['German'] })
+
+    const withoutPri = scoreDimensions(me, them, MARKET_SIGNALS)
+    const withNull = scoreDimensions(me, them, MARKET_SIGNALS, null)
+    const withEmpty = scoreDimensions(me, them, MARKET_SIGNALS, {})
+
+    expect(withNull.total).toBe(withoutPri.total)
+    expect(withEmpty.total).toBe(withoutPri.total)
+  })
 })

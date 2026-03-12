@@ -23,6 +23,8 @@ import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
+import { computeCompleteness } from '@/lib/profile-completeness'
+import type { DimensionPriority } from '@/lib/hooks/use-profile-sync'
 import { getSignalsForRegion } from '@/lib/market-data'
 import ExchangeCard, { type ExchangeCardData } from '@/components/ExchangeCard'
 import GlassCard from '@/components/ui/GlassCard'
@@ -150,6 +152,20 @@ export default function ExchangePage() {
     }
   }, [hasCompletedDiscovery, router])
 
+  // Load user priorities from localStorage (saved by Me page / profile sync)
+  const [priorities, setPriorities] = useState<Record<string, DimensionPriority>>({})
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('be-priorities')
+      if (stored) setPriorities(JSON.parse(stored))
+    } catch {
+      // Ignore
+    }
+  }, [])
+
+  // Compute profile completeness for match boost
+  const completeness = useMemo(() => computeCompleteness(identity, false, false), [identity])
+
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [sectorFilter, setSectorFilter] = useState<string>('all')
   const [dbPaths, setDbPaths] = useState<
@@ -233,13 +249,14 @@ export default function ExchangePage() {
     return allAgents
       .map((agent) => {
         const themProfile = agentToProfile(agent)
-        const dimScore = scoreDimensions(meProfile, themProfile, signals)
-        // Normalize 0-110 to 0-100
-        const displayScore = Math.min(100, Math.round((dimScore.total / 110) * 100))
+        const dimScore = scoreDimensions(meProfile, themProfile, signals, priorities)
+        // Normalize 0-110 to 0-100, then apply completeness matchBoost
+        const rawDisplay = Math.min(100, Math.round((dimScore.total / 110) * 100))
+        const displayScore = Math.min(100, Math.round(rawDisplay * completeness.matchBoost))
         return { agent, score: displayScore }
       })
       .sort((a, b) => b.score - a.score)
-  }, [identity])
+  }, [identity, priorities, completeness.matchBoost])
 
   // Build scored feed items
   const feedItems = useMemo(() => {

@@ -5,10 +5,19 @@ import { authOptions } from '@/lib/auth'
 import { chapterService } from '@/services'
 import { sendEmail } from '@/lib/email'
 import { logger } from '@/lib/logger'
+import { suggestEnrichmentFromPath } from '@/lib/profile-completeness'
 
 const openChapterSchema = z.object({
   pathId: z.string().min(1),
   coverLetter: z.string().max(2000).optional(),
+  /** Pioneer's current craft/skills for enrichment suggestions */
+  userCrafts: z.array(z.string()).optional(),
+  /** Pioneer's current interests for enrichment suggestions */
+  userInterests: z.array(z.string()).optional(),
+  /** Path's sectors (for enrichment) */
+  pathSectors: z.array(z.string()).optional(),
+  /** Path's required skills (for enrichment) */
+  pathSkills: z.array(z.string()).optional(),
 })
 
 // POST /api/chapters — Pioneer opens a Chapter on a Path
@@ -49,7 +58,15 @@ export async function POST(req: NextRequest) {
       pathId: parsed.data.pathId,
     }).catch((err) => logger.error('Chapter opened email failed', { error: String(err) }))
 
-    return NextResponse.json({ success: true, data: chapter }, { status: 201 })
+    // Self-enrichment: suggest profile additions based on the Path
+    const enrichment = suggestEnrichmentFromPath(
+      parsed.data.pathSectors ?? [],
+      parsed.data.pathSkills ?? [],
+      parsed.data.userCrafts ?? [],
+      parsed.data.userInterests ?? []
+    )
+
+    return NextResponse.json({ success: true, data: chapter, enrichment }, { status: 201 })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to open Chapter'
     const status = message.includes('already opened') ? 409 : 500
