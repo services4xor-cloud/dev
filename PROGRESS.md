@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 59 (2026-03-12) — Language-First Architecture + 120+ Countries
+> Last updated: Session 60 (2026-03-12) — French Translations + IdentitySwitcher Refactor
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -24,13 +24,38 @@
 | Build             | ✅ passes                                                                                 |
 | Countries         | 120+ selectable (COUNTRY_OPTIONS) + 193 in world-data.ts                                  |
 | Languages         | 100+ in LANGUAGE_REGISTRY (Tier A: en/de/fr/sw, Tier B: 10 stubs, Tier C: 90+ label-only) |
-| i18n translations | en: ~1200 keys, de: ~1200, sw: ~1200, fr: expanding, + 10 stub languages                  |
+| i18n translations | en: ~1200 keys, de: ~1200, sw: ~1200, fr: ~1200, + 10 stub languages                      |
 | AI Agents         | ~700 deterministic personas across 193 countries                                          |
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Passion, Reach, Culture, Market)                    |
 | Skills            | 22+ (`becountry-*` + `bex-*`) covering all process areas                                  |
 | DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
 | Auth              | ✅ Google OAuth + email/password + password reset                                         |
 | Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 60: French Translations + IdentitySwitcher + Test Fixes
+
+### French i18n Complete (~1200 keys)
+
+- Full `fr` block covering all sections: nav, hero, compass, discovery, exchange, pricing, about, contact, me dashboard, messages, ventures, experiences, auth, common, footer, shared
+- Formal "vous" register throughout, BeNetwork vocabulary preserved (Pionnier, Ancre, Chemin, Chapitre, Venture, Boussole)
+- All 4 Tier A languages now complete: en, de, fr, sw
+
+### IdentitySwitcher Refactor
+
+- Language section moved ABOVE country section (language-first UX)
+- Scrollable on all viewports with max-h + overflow-y-auto
+- Shows ALL 100+ languages in 3 tiers: country languages → global reach → all others
+- Search filter when list exceeds 12 languages
+- Current language pinned at top with highlight
+- Bottom gradient fade indicates more content
+
+### Nav-Structure Test Fixes
+
+- Fixed 4 pre-existing test failures: routes updated to match actual nav (/exchange, /compass instead of /world, /pricing)
+- Footer columns: 3 (was asserting 4)
+- All 787 tests pass, build succeeds
 
 ---
 
