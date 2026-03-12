@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 491/491 ✅ (26 suites)                                      |
+| Jest tests        | 521/521 ✅ (29 suites)                                      |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
@@ -67,6 +67,20 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 47 (2026-03-12) — SEO, Accessibility, Image Optimization, API Hardening
+
+Continued optimization loop. Focused on cross-cutting production quality improvements.
+
+- [x] **Image optimization**: Added OAuth provider domains (Google, GitHub, Facebook, Twitter) to `next.config.js` remotePatterns. Removed `unoptimized` prop from Nav.tsx avatar images — profile pics now get AVIF/WebP conversion + responsive sizing
+- [x] **3 not-found.tsx pages**: experiences/[id], be/[country], ventures — branded 404 pages for dynamic routes
+- [x] **27 new tests** (494→521, 29 suites):
+  - countries (16): config validation, payment methods, impact partners, sectors, getCountryConfig, getAllCountries
+  - identity-flags (11): localStorage round-trip, hasCompletedOnboarding, URL builders, clearIdentityFlags
+- [x] **SEO metadata for 10 pages**: contact, login, signup, offerings, threads, referral, onboarding, fashion, media, profile — each gets unique title + description via layout.tsx
+- [x] **Accessibility (a11y)**: MpesaModal gets role="dialog" + aria-modal + close button aria-label. Nav.tsx backdrop gets role="presentation". WizardShell back button gets aria-label
+- [x] **API hardening**: Added defensive JSON parsing (try/catch on req.json()) to bookings, paths, chapters routes — returns 400 instead of unhandled 500
+- [x] Jest: 521/521 ✅ | TS: 0 errors | 29 test suites
 
 ### Session 46 (2026-03-12) — UX + Test Coverage Sprint (loading skeletons, error boundaries, 107 new tests)
 
