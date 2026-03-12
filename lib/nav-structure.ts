@@ -37,14 +37,48 @@ export const MAIN_NAV_LINKS: NavLink[] = [
   { href: '/me', label: 'Me', icon: Users, aria: 'Your profile and settings' },
 ]
 
-export const FOOTER_LINKS: FooterLink[] = [
-  { href: '/about', label: 'About' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/charity', label: 'Community' },
-  { href: '/business', label: 'Business' },
-  { href: '/privacy', label: 'Privacy' },
-  { href: '/contact', label: 'Contact' },
+export interface FooterColumn {
+  title: string
+  links: FooterLink[]
+}
+
+export const FOOTER_COLUMNS: FooterColumn[] = [
+  {
+    title: 'Explore',
+    links: [
+      { href: '/world', label: 'My World' },
+      { href: '/messages', label: 'Messages' },
+      { href: '/me', label: 'Me' },
+    ],
+  },
+  {
+    title: 'Connect',
+    links: [
+      { href: '/exchange', label: 'Exchange' },
+      { href: '/media', label: 'Media' },
+      { href: '/fashion', label: 'Fashion' },
+    ],
+  },
+  {
+    title: 'Community',
+    links: [
+      { href: '/charity', label: 'Charity' },
+      { href: '/referral', label: 'Referral' },
+      { href: '/contact', label: 'Contact' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/pricing', label: 'Pricing' },
+      { href: '/business', label: 'Business' },
+      { href: '/privacy', label: 'Privacy' },
+    ],
+  },
 ]
+
+export const FOOTER_LINKS: FooterLink[] = FOOTER_COLUMNS.flatMap((col) => col.links)
 
 export const LOGIN_LINK: NavLink = {
   href: '/login',
