@@ -9,9 +9,10 @@
 
 **Be[Country]** is an identity-first life-routing platform that reverses colonial economic flows. People in the Global South move, work, and thrive on their own terms.
 
-**Scale vision:** Be[Country] → Be[Tribe] → Be[Location]. One codebase, infinite identities. Start with countries (BeKenya), expand to tribes (BeMaasai) and locations (BeNairobi). The architecture must support all three levels from day one.
+**Scale vision:** Be[X] where X = Country, Tribe, Ethnicity, Location, Resource, Skill — anything the user defines as important in their profile. One codebase, infinite identities. Start with countries (BeKenya), expand to tribes (BeMaasai), locations (BeNairobi), crafts (BeEngineer). Every deployment serves all countries and languages — the user's profile dimensions determine their Be[X] context.
 
 **Current deployment:** BeKenya. `NEXT_PUBLIC_COUNTRY_CODE=KE`.
+**Active deployments:** Kenya (KE), Germany (DE), Switzerland (CH) — same codebase, different env vars.
 
 ---
 
@@ -32,6 +33,7 @@
 | **`ASK.md`**           | Agent questions for owner (async)  | When questions arise |
 
 **After every feature:** Update `PROGRESS.md`. Not optional.
+**After ANY change:** Run `becountry-sync` — code, docs, and skills MUST stay in sync. Not optional.
 **Questions for owner:** Write to `ASK.md`. Never interrupt the session.
 
 ---
@@ -62,8 +64,10 @@ Source: `lib/vocabulary.ts` — import `VOCAB`, never hardcode.
 - Create / edit / delete any file
 - Run `npm`, `git`, `prisma`, `next`, `jest` commands
 - Commit + push to `main` after every meaningful change
+- **SYNC: When code changes → update affected docs + skills. When docs change → update code + skills. Always.**
 - Update `PROGRESS.md` after completing each feature
 - Write questions to `ASK.md` (never interrupt session)
+- Optimize for effectiveness and efficiency — learn from every session, never repeat mistakes
 
 ### Never do:
 
@@ -77,7 +81,7 @@ Source: `lib/vocabulary.ts` — import `VOCAB`, never hardcode.
 
 1. **`'use client'`** at line 1 for any file with `onClick`, `useState`, `useEffect`
 2. **`prisma generate`** before `next build` (in `package.json`)
-3. **Mock data** in `data/mock/` — all pages import from there until `DATABASE_URL` is set
+3. **Mock data** in `data/mock/` — for tests only. Real app uses Prisma + Neon PostgreSQL
 4. **Country data** in `lib/country-selector.ts` ONLY — never inline
 5. **Brand colors** via Tailwind tokens — never `#FF6B35`, `orange-*`, `amber-*`, `yellow-*`
 6. **Nav/Footer links** in `lib/nav-structure.ts` — never inline
@@ -157,7 +161,7 @@ NEXT_PUBLIC_COUNTRY_CODE=NG  → BeNigeria (Flutterwave, NGN)
 // Same codebase → different Vercel projects
 ```
 
-**Future:** Be[Tribe] and Be[Location] layers within each country.
+**Be[X] Identity:** X is dynamic per user profile — country, tribe, ethnicity, location, craft, skill. Every deployment serves all countries and languages.
 
 ---
 
@@ -181,9 +185,10 @@ npx prisma db push      # Sync schema
 1. Read PROGRESS.md    → current state
 2. Read PRD.md         → what to build
 3. Build               → follow DESIGN_SYSTEM.md for UI
-4. Test                 → npm run test && npx playwright test
-5. Update PROGRESS.md  → log what's done
-6. Commit + push       → Vercel auto-deploys
+4. Test                → npm run test && npx playwright test
+5. Sync                → run becountry-sync (code ↔ docs ↔ skills)
+6. Update PROGRESS.md  → log what's done
+7. Commit + push       → Vercel auto-deploys
 ```
 
 | Error               | Fix                                     |
@@ -205,4 +210,35 @@ Project: tobias-projects-81752e2c / dev
 
 ---
 
-_Last updated: Session 20 (2026-03-11)_
+## 13. Skill Ecosystem (20 skills)
+
+Entry point: `becountry-process` — tells which skill to use for any task.
+
+| Category | Skills                                                                    |
+| -------- | ------------------------------------------------------------------------- |
+| Process  | `becountry-process` (orchestrator), `becountry-sync` (code↔docs↔skills)   |
+| Planning | `becountry-sprint`, `becountry-requirements`, `becountry-big-picture`     |
+| Build    | `becountry-architecture`, `becountry-data`                                |
+| Design   | `becountry-design-review`, `becountry-ui-review`, `becountry-ux-workflow` |
+| Quality  | `becountry-testing`, `becountry-e2e-test`, `becountry-security`           |
+| Business | `becountry-business-review`                                               |
+| Deploy   | `becountry-deployment`, `becountry-push`, `becountry-country-deploy`      |
+| Ops      | `becountry-ops`, `becountry-human-tasks`, `becountry-status`              |
+
+**Sync rule:** Code changes → docs update → skills update. Always bidirectional. `becountry-sync` enforces this.
+
+---
+
+## 14. Self-Learning System
+
+This platform is a **self-learning system** that optimizes for effectiveness and efficiency:
+
+- **Learn from mistakes:** Log errors in `OPERATIONS.md`, never repeat them
+- **Improve processes:** When a skill is insufficient, update it
+- **Measure outcomes:** Track test counts, build times, deploy success rates
+- **Reduce waste:** DRY, YAGNI, KISS — no unnecessary code or docs
+- **Feedback loops:** Every review skill produces actionable findings that feed back into build skills
+
+---
+
+_Last updated: Session 54 (2026-03-12)_

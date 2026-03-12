@@ -4,7 +4,13 @@
 
 ## When to Use
 
-Invoke this skill when starting ANY work session on the Be[Country] platform, or when unsure which skill to use for a task.
+Invoke this skill when starting ANY work session on the Be[X] platform, or when unsure which skill to use for a task.
+
+## SYNC RULE (Non-negotiable)
+
+**After EVERY change — code, docs, or skills — run `becountry-sync`.**
+Code changes → docs update. Docs change → code follows. Skills change → both align.
+This is what makes the system self-learning and self-maintaining.
 
 ## Process Map
 
@@ -56,20 +62,25 @@ USER REQUEST
     │     └── /becountry-human-tasks
     │         Reads: HUMAN_MANUAL.md
     │
+    ├── "Sync everything"
+    │     └── /becountry-sync
+    │         Ensures code ↔ docs ↔ skills are aligned
+    │
     └── "Full process review"
           Run ALL skills in sequence:
           1. /becountry-status
-          2. /becountry-security
-          3. /becountry-architecture
-          4. /becountry-design-review
-          5. /becountry-ui-review
-          6. /becountry-ux-workflow
-          7. /becountry-testing
-          8. /becountry-business-review
-          9. /becountry-big-picture
-         10. /becountry-requirements
-         11. /becountry-data
-         12. /becountry-ops
+          2. /becountry-sync
+          3. /becountry-security
+          4. /becountry-architecture
+          5. /becountry-design-review
+          6. /becountry-ui-review
+          7. /becountry-ux-workflow
+          8. /becountry-testing
+          9. /becountry-business-review
+         10. /becountry-big-picture
+         11. /becountry-requirements
+         12. /becountry-data
+         13. /becountry-ops
 ```
 
 ## Skill ↔ Documentation Map
@@ -93,6 +104,7 @@ USER REQUEST
 | `becountry-deployment`      | ARCHITECTURE.md, HUMAN_MANUAL.md      | Deploy pipeline + environments   |
 | `becountry-country-deploy`  | ARCHITECTURE.md, lib/countries.ts     | Multi-country rollout            |
 | `becountry-human-tasks`     | HUMAN_MANUAL.md                       | Tasks requiring human action     |
+| `becountry-sync`            | All .MD + all skills                  | Bidirectional code↔docs↔skills   |
 | `becountry-push`            | —                                     | Git commit + Vercel deploy       |
 
 ## Multi-Country Awareness

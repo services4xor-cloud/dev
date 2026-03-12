@@ -17,24 +17,34 @@ Run when the user says "push", "deploy", "ship it", or after completing a featur
 - `npm test` — All Jest tests must pass
 - `npx prettier --check .` — Code formatted
 
-### 2. Git State
+### 2. Sync Check (MANDATORY)
+
+Run `becountry-sync` skill — code, docs, and skills MUST be in sync before push:
+
+- Route/API/test/module counts in PROGRESS.md match reality
+- ARCHITECTURE.md reflects current schema and API structure
+- Skills reference correct file paths and processes
+- CLAUDE.md repo map matches actual file structure
+- **If anything is out of sync: fix it before pushing**
+
+### 3. Git State
 
 - `git status` — Check for uncommitted changes
 - `git diff --stat` — Review what's changed
 - If uncommitted: stage relevant files, commit with descriptive message
 
-### 3. PROGRESS.md Update
+### 4. PROGRESS.md Update
 
 - Read current PROGRESS.md
 - Append session work summary if not already logged
 - Commit the update
 
-### 4. Push
+### 5. Push
 
 - `git push origin main` — Push to GitHub
 - Verify push succeeded
 
-### 5. Deployment Verification
+### 6. Deployment Verification
 
 - Note: Vercel auto-deploys on push to main
 - Project: `dev-git-main-tobias-projects-81752e2c.vercel.app`
