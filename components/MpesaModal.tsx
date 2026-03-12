@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { X, Phone, CheckCircle, Loader2, AlertCircle } from 'lucide-react'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 interface MpesaModalProps {
   isOpen: boolean
@@ -30,6 +31,7 @@ export default function MpesaModal({
   const [step, setStep] = useState<Step>('input')
   const [checkoutId, setCheckoutId] = useState('')
   const [error, setError] = useState('')
+  const { t } = useTranslation()
 
   if (!isOpen) return null
 
@@ -53,7 +55,7 @@ export default function MpesaModal({
       const data = await res.json()
 
       if (!data.success) {
-        setError(data.error || 'Payment failed. Please try again.')
+        setError(data.error || t('payment.genericError'))
         setStep('error')
         return
       }
@@ -62,7 +64,7 @@ export default function MpesaModal({
       setStep('success')
       onSuccess?.(data.checkoutRequestId)
     } catch {
-      setError('Network error. Check your connection and try again.')
+      setError(t('payment.networkError'))
       setStep('error')
     }
   }
@@ -112,7 +114,7 @@ export default function MpesaModal({
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  M-Pesa Phone Number
+                  {t('payment.mpesaPhoneLabel')}
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -127,50 +129,43 @@ export default function MpesaModal({
                     autoFocus
                   />
                 </div>
-                <p className="text-xs text-gray-400 mt-1">
-                  You will receive a push notification on your phone
-                </p>
+                <p className="text-xs text-gray-400 mt-1">{t('payment.pushNotification')}</p>
               </div>
 
               <button
                 type="submit"
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition-colors"
               >
-                Send KES {amount.toLocaleString('en-US')} →
+                {t('payment.sendAmount', { currency, amount: amount.toLocaleString('en-US') })}
               </button>
 
-              <p className="text-xs text-center text-gray-400">
-                Secured by Safaricom M-Pesa. Your PIN is never shared.
-              </p>
+              <p className="text-xs text-center text-gray-400">{t('payment.securedBy')}</p>
             </form>
           )}
 
           {step === 'pending' && (
             <div className="text-center py-6">
               <Loader2 className="w-12 h-12 text-green-500 mx-auto mb-4 animate-spin" />
-              <h3 className="font-bold text-gray-900 mb-2">Check your phone</h3>
+              <h3 className="font-bold text-gray-900 mb-2">{t('payment.checkPhone')}</h3>
               <p className="text-gray-400 text-sm">
-                We sent a payment request to <strong>{phone}</strong>. Enter your M-Pesa PIN to
-                complete the payment.
+                {t('payment.sentRequest')} <strong>{phone}</strong>. {t('payment.enterPin')}
               </p>
-              <p className="text-xs text-gray-400 mt-4">This may take up to 30 seconds</p>
+              <p className="text-xs text-gray-400 mt-4">{t('payment.mayTake30s')}</p>
             </div>
           )}
 
           {step === 'success' && (
             <div className="text-center py-6">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              <h3 className="font-bold text-gray-900 text-lg mb-2">Payment Initiated!</h3>
-              <p className="text-gray-400 text-sm mb-4">
-                Check your phone and enter your M-Pesa PIN to complete.
-              </p>
+              <h3 className="font-bold text-gray-900 text-lg mb-2">{t('payment.initiated')}</h3>
+              <p className="text-gray-400 text-sm mb-4">{t('payment.checkPhonePin')}</p>
               {checkoutId && (
                 <p className="text-xs text-gray-400 bg-gray-50 rounded-lg p-2 font-mono break-all">
                   Ref: {checkoutId}
                 </p>
               )}
               <button onClick={onClose} className="mt-4 btn-primary w-full py-3">
-                Done
+                {t('payment.done')}
               </button>
             </div>
           )}
@@ -178,14 +173,14 @@ export default function MpesaModal({
           {step === 'error' && (
             <div className="text-center py-6">
               <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-              <h3 className="font-bold text-gray-900 mb-2">Payment failed</h3>
+              <h3 className="font-bold text-gray-900 mb-2">{t('payment.failed')}</h3>
               <p className="text-gray-400 text-sm mb-4">{error}</p>
               <div className="flex gap-3">
                 <button onClick={() => setStep('input')} className="flex-1 btn-primary py-3">
-                  Try Again
+                  {t('payment.tryAgain')}
                 </button>
                 <button onClick={onClose} className="flex-1 btn-secondary py-3">
-                  Cancel
+                  {t('payment.cancel')}
                 </button>
               </div>
             </div>

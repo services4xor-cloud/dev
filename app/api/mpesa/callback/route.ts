@@ -100,62 +100,84 @@ async function sendWhatsAppConfirmation(
   }
 }
 
-/** Mark booking as confirmed in the database */
+/** Mark payment as confirmed in the database */
 async function confirmBooking(details: PaymentDetails): Promise<void> {
-  // TODO: Implement once DATABASE_URL is configured
-  // Uncomment and adapt:
-  //
-  // const { db } = await import('@/lib/db')
-  // await db.payment.upsert({
-  //   where: { checkoutRequestId: details.checkoutRequestId },
-  //   create: {
-  //     checkoutRequestId: details.checkoutRequestId,
-  //     mpesaReceiptNumber: details.mpesaReceiptNumber,
-  //     amount: details.amount,
-  //     phoneNumber: details.phoneNumber,
-  //     transactionDate: details.transactionDate,
-  //     status: 'confirmed',
-  //   },
-  //   update: { status: 'confirmed', mpesaReceiptNumber: details.mpesaReceiptNumber },
-  // })
-  //
-  // Also: unlock the feature tied to this payment
-  // await db.booking.updateMany({
-  //   where: { checkoutRequestId: details.checkoutRequestId },
-  //   data: { status: 'confirmed', paidAt: new Date() },
-  // })
+  if (!process.env.DATABASE_URL) {
+    logger.debug('Skipping DB write (DATABASE_URL not set)', {
+      checkoutRequestId: details.checkoutRequestId,
+      receipt: details.mpesaReceiptNumber,
+      amount: details.amount,
+    })
+    return
+  }
 
-  logger.debug('Would confirm booking (DB not connected)', {
-    checkoutRequestId: details.checkoutRequestId,
-    receipt: details.mpesaReceiptNumber,
-    amount: details.amount,
-  })
+  try {
+    const { db } = await import('@/lib/db')
+    await db.payment.updateMany({
+      where: { checkoutRequestId: details.checkoutRequestId },
+      data: {
+        status: 'SUCCESS',
+        mpesaReceiptNumber: details.mpesaReceiptNumber,
+        updatedAt: new Date(),
+      },
+    })
+    logger.info('Payment confirmed in DB', {
+      checkoutRequestId: details.checkoutRequestId,
+      receipt: details.mpesaReceiptNumber,
+    })
+  } catch (err) {
+    logger.error('Failed to confirm payment in DB', { error: String(err) })
+  }
 }
 
-/** Mark booking as failed in the database */
+/** Mark payment as failed in the database */
 async function failBooking(checkoutRequestId: string, reason: string): Promise<void> {
-  // TODO: Implement once DATABASE_URL is configured
-  // await db.payment.updateMany({
-  //   where: { checkoutRequestId },
-  //   data: { status: 'failed', failureReason: reason },
-  // })
+  if (!process.env.DATABASE_URL) {
+    logger.debug('Skipping DB write (DATABASE_URL not set)', { checkoutRequestId, reason })
+    return
+  }
 
-  logger.debug('Would mark booking failed (DB not connected)', { checkoutRequestId, reason })
+  try {
+    const { db } = await import('@/lib/db')
+    await db.payment.updateMany({
+      where: { checkoutRequestId },
+      data: { status: 'FAILED' as const, updatedAt: new Date() },
+    })
+    logger.info('Payment marked failed in DB', { checkoutRequestId, reason })
+  } catch (err) {
+    logger.error('Failed to update payment status in DB', { error: String(err) })
+  }
 }
 
-/** Notify user of payment failure (e.g. user cancelled, insufficient funds) */
+/** Notify Pioneer of payment failure via WhatsApp if configured */
 async function notifyPaymentFailure(
   phoneNumber: string,
   checkoutRequestId: string,
   reason: string
 ): Promise<void> {
-  // TODO: Send WhatsApp / SMS failure notification
-  // For now just log — a real implementation would use a fallback SMS service
-  logger.debug('Payment failure notification (not yet implemented)', {
-    phoneNumber,
-    reason,
-    checkoutRequestId,
-  })
+  const waToken = process.env.WHATSAPP_CLOUD_API_TOKEN
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID
+
+  if (!waToken || !phoneNumberId || !phoneNumber) {
+    logger.debug('Payment failure notification skipped (WhatsApp not configured or no phone)', {
+      checkoutRequestId,
+      reason,
+    })
+    return
+  }
+
+  const waPhone = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`
+  try {
+    const payload = buildWhatsAppPayload(waPhone, 'payment_failure', 'en_US', [reason])
+    await fetch(`https://graph.facebook.com/v18.0/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${waToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    logger.info('Payment failure notification sent', { phone: waPhone })
+  } catch (err) {
+    logger.error('Failed to send payment failure notification', { error: String(err) })
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

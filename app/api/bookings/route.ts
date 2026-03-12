@@ -44,8 +44,24 @@ export async function POST(req: NextRequest) {
     const data = parsed.data
     const bookingId = `bk_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
 
-    // TODO: Save booking to DB when Booking model exists
-    // For now, generate confirmation and send email
+    // Persist booking + payment record if DB is available
+    if (process.env.DATABASE_URL) {
+      try {
+        const { db } = await import('@/lib/db')
+        await db.payment.create({
+          data: {
+            userId: session.user.id,
+            amount: data.totalAmount,
+            currency: data.currency,
+            method: data.paymentMethod === 'mpesa' ? 'MPESA' : 'STRIPE',
+            status: data.paymentMethod === 'mpesa' ? 'PENDING' : 'SUCCESS',
+          },
+        })
+        logger.info('Booking payment created', { bookingId, method: data.paymentMethod })
+      } catch (err) {
+        logger.error('Failed to persist booking payment', { error: String(err) })
+      }
+    }
 
     // Send confirmation email (fire-and-forget)
     void sendEmail(session.user.email!, 'safari_booking_confirmation', {

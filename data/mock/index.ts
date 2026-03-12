@@ -93,3 +93,4 @@ export {
   PAYMENT_BADGES,
 } from './config'
 export { MOCK_THREADS } from './threads'
+export { MOCK_CHANNEL_MESSAGES, type MockMessage } from './messages'

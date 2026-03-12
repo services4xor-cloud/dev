@@ -1506,6 +1506,30 @@ const CONTENT: Record<string, ContentDict> = {
     'footer.rights': 'All rights reserved',
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Service',
+
+    // Payment (M-Pesa)
+    'payment.mpesaPhoneLabel': 'M-Pesa Phone Number',
+    'payment.pushNotification': 'You will receive a push notification on your phone',
+    'payment.sendAmount': 'Send {currency} {amount} →',
+    'payment.securedBy': 'Secured by Safaricom M-Pesa. Your PIN is never shared.',
+    'payment.checkPhone': 'Check your phone',
+    'payment.sentRequest': 'We sent a payment request to',
+    'payment.enterPin': 'Enter your M-Pesa PIN to complete the payment.',
+    'payment.mayTake30s': 'This may take up to 30 seconds',
+    'payment.initiated': 'Payment Initiated!',
+    'payment.checkPhonePin': 'Check your phone and enter your M-Pesa PIN to complete.',
+    'payment.done': 'Done',
+    'payment.failed': 'Payment failed',
+    'payment.tryAgain': 'Try Again',
+    'payment.cancel': 'Cancel',
+    'payment.networkError': 'Network error. Check your connection and try again.',
+    'payment.genericError': 'Payment failed. Please try again.',
+
+    // Error boundary
+    'error.tryAgain': 'Try Again',
+    'error.returnHome': 'Return Home',
+    'error.returnCompass': 'Return to Compass',
+    'error.errorId': 'Error ID: {id}',
   },
 
   // ─── German (Deutsch) ────────────────────────────────────────
@@ -2932,6 +2956,31 @@ const CONTENT: Record<string, ContentDict> = {
     'footer.rights': 'Alle Rechte vorbehalten',
     'footer.privacy': 'Datenschutzrichtlinie',
     'footer.terms': 'Nutzungsbedingungen',
+
+    // Payment (M-Pesa)
+    'payment.mpesaPhoneLabel': 'M-Pesa Telefonnummer',
+    'payment.pushNotification': 'Sie erhalten eine Push-Benachrichtigung auf Ihrem Telefon',
+    'payment.sendAmount': '{currency} {amount} senden →',
+    'payment.securedBy': 'Gesichert durch Safaricom M-Pesa. Ihre PIN wird nie weitergegeben.',
+    'payment.checkPhone': 'Überprüfen Sie Ihr Telefon',
+    'payment.sentRequest': 'Wir haben eine Zahlungsanfrage gesendet an',
+    'payment.enterPin': 'Geben Sie Ihre M-Pesa-PIN ein, um die Zahlung abzuschließen.',
+    'payment.mayTake30s': 'Dies kann bis zu 30 Sekunden dauern',
+    'payment.initiated': 'Zahlung eingeleitet!',
+    'payment.checkPhonePin': 'Überprüfen Sie Ihr Telefon und geben Sie Ihre M-Pesa-PIN ein.',
+    'payment.done': 'Fertig',
+    'payment.failed': 'Zahlung fehlgeschlagen',
+    'payment.tryAgain': 'Erneut versuchen',
+    'payment.cancel': 'Abbrechen',
+    'payment.networkError':
+      'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
+    'payment.genericError': 'Zahlung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+
+    // Error boundary
+    'error.tryAgain': 'Erneut versuchen',
+    'error.returnHome': 'Zurück zur Startseite',
+    'error.returnCompass': 'Zurück zum Kompass',
+    'error.errorId': 'Fehler-ID: {id}',
   },
 
   // ─── Swahili (Kiswahili) ─────────────────────────────────────
@@ -4356,6 +4405,30 @@ const CONTENT: Record<string, ContentDict> = {
     'discovery.nav.next': 'Endelea',
     'discovery.nav.back': 'Rudi',
     'discovery.nav.skip': 'Ruka',
+
+    // Payment (M-Pesa)
+    'payment.mpesaPhoneLabel': 'Nambari ya Simu ya M-Pesa',
+    'payment.pushNotification': 'Utapokea arifa ya malipo kwenye simu yako',
+    'payment.sendAmount': 'Tuma {currency} {amount} →',
+    'payment.securedBy': 'Imelindiwa na Safaricom M-Pesa. PIN yako haishirikiw kamwe.',
+    'payment.checkPhone': 'Angalia simu yako',
+    'payment.sentRequest': 'Tumetuma ombi la malipo kwa',
+    'payment.enterPin': 'Weka PIN yako ya M-Pesa kukamilisha malipo.',
+    'payment.mayTake30s': 'Hii inaweza kuchukua hadi sekunde 30',
+    'payment.initiated': 'Malipo Yameanzishwa!',
+    'payment.checkPhonePin': 'Angalia simu yako na uweke PIN yako ya M-Pesa.',
+    'payment.done': 'Imekamilika',
+    'payment.failed': 'Malipo yameshindikana',
+    'payment.tryAgain': 'Jaribu Tena',
+    'payment.cancel': 'Ghairi',
+    'payment.networkError': 'Hitilafu ya mtandao. Angalia muunganisho wako na ujaribu tena.',
+    'payment.genericError': 'Malipo yameshindikana. Tafadhali jaribu tena.',
+
+    // Error boundary
+    'error.tryAgain': 'Jaribu Tena',
+    'error.returnHome': 'Rudi Nyumbani',
+    'error.returnCompass': 'Rudi kwa Dira',
+    'error.errorId': 'Kitambulisho cha Hitilafu: {id}',
   },
 
   // ─── French (Français) ────────────────────────────────────────
@@ -5862,6 +5935,30 @@ const CONTENT: Record<string, ContentDict> = {
     'footer.rights': 'Tous droits réservés',
     'footer.privacy': 'Politique de Confidentialité',
     'footer.terms': "Conditions d'Utilisation",
+
+    // Payment (M-Pesa)
+    'payment.mpesaPhoneLabel': 'Numéro de téléphone M-Pesa',
+    'payment.pushNotification': 'Vous recevrez une notification push sur votre téléphone',
+    'payment.sendAmount': 'Envoyer {currency} {amount} →',
+    'payment.securedBy': "Sécurisé par Safaricom M-Pesa. Votre PIN n'est jamais partagé.",
+    'payment.checkPhone': 'Vérifiez votre téléphone',
+    'payment.sentRequest': 'Nous avons envoyé une demande de paiement à',
+    'payment.enterPin': 'Entrez votre PIN M-Pesa pour finaliser le paiement.',
+    'payment.mayTake30s': "Cela peut prendre jusqu'à 30 secondes",
+    'payment.initiated': 'Paiement initié !',
+    'payment.checkPhonePin': 'Vérifiez votre téléphone et entrez votre PIN M-Pesa.',
+    'payment.done': 'Terminé',
+    'payment.failed': 'Échec du paiement',
+    'payment.tryAgain': 'Réessayer',
+    'payment.cancel': 'Annuler',
+    'payment.networkError': 'Erreur réseau. Vérifiez votre connexion et réessayez.',
+    'payment.genericError': 'Échec du paiement. Veuillez réessayer.',
+
+    // Error boundary
+    'error.tryAgain': 'Réessayer',
+    'error.returnHome': "Retour à l'accueil",
+    'error.returnCompass': 'Retour à la boussole',
+    'error.errorId': "ID d'erreur : {id}",
   },
 
   // ─── Arabic (العربية) ──────────────────────────────────────────

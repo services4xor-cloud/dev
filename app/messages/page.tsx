@@ -5,7 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 // Threads fetched from real DB via /api/threads
-import { MOCK_THREADS } from '@/data/mock'
+import {
+  MOCK_THREADS,
+  MOCK_CHANNEL_MESSAGES as CHANNEL_MESSAGES,
+  type MockMessage,
+} from '@/data/mock'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
@@ -24,76 +28,6 @@ function langCodeToName(code: string): string {
 function categoryInfo(id: string): { label: string; icon: string } {
   const cat = EXCHANGE_CATEGORIES.find((c) => c.id === id)
   return cat ? { label: cat.label, icon: cat.icon } : { label: id, icon: '📌' }
-}
-
-// ── Types ────────────────────────────────────────────────────────────
-
-interface MockMessage {
-  id: string
-  author: string
-  avatar: string
-  text: string
-  time: string
-}
-
-// ── Mock messages per channel ────────────────────────────────────────
-
-const CHANNEL_MESSAGES: Record<string, MockMessage[]> = {
-  ke: [
-    {
-      id: '1',
-      author: 'Amina W.',
-      avatar: '🇰🇪',
-      text: 'Has anyone used the KE→DE route for nursing? Looking for advice on credential recognition.',
-      time: '2 hours ago',
-    },
-    {
-      id: '2',
-      author: 'James O.',
-      avatar: '💻',
-      text: 'Just got my Blue Card approved! Happy to answer questions about the process.',
-      time: '4 hours ago',
-    },
-    {
-      id: '3',
-      author: 'Wanjiku M.',
-      avatar: '🌿',
-      text: 'Welcome to all new Pioneers joining this week. Feel free to introduce yourselves!',
-      time: '6 hours ago',
-    },
-  ],
-  tech: [
-    {
-      id: '1',
-      author: 'David K.',
-      avatar: '💻',
-      text: 'Anyone working on mobile money integrations? Would love to connect.',
-      time: '1 hour ago',
-    },
-    {
-      id: '2',
-      author: 'Sarah L.',
-      avatar: '⚙️',
-      text: 'Just published a guide on getting remote tech roles from Nairobi. Check my profile!',
-      time: '3 hours ago',
-    },
-  ],
-  nairobi: [
-    {
-      id: '1',
-      author: 'Peter N.',
-      avatar: '🏙️',
-      text: 'iHub is hosting a meetup next Thursday. Who is coming?',
-      time: '30 min ago',
-    },
-    {
-      id: '2',
-      author: 'Grace A.',
-      avatar: '🎯',
-      text: 'Looking for co-working space recommendations in Westlands area.',
-      time: '2 hours ago',
-    },
-  ],
 }
 
 // ── Thread type labels ───────────────────────────────────────────────
