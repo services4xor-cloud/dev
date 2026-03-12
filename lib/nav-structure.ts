@@ -38,7 +38,7 @@ export interface FooterLink {
 // ── Human Exchange Network navigation ──────────────────
 export const PUBLIC_NAV_LINKS: NavLink[] = [
   { href: '/exchange', label: 'Exchange', icon: Sparkles, aria: 'Browse people and opportunities' },
-  { href: '/ventures', label: 'Ventures', icon: Compass, aria: 'Explore ventures and experiences' },
+  { href: '/pricing', label: 'Pricing', icon: DollarSign, aria: 'View pricing and plans' },
   { href: '/about', label: 'About', icon: Info, aria: 'About the platform' },
   { href: '/charity', label: 'Charity', icon: Heart, aria: 'Community charity initiatives' },
 ]

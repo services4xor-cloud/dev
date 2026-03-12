@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
-import { Menu, X, LogIn, ArrowRight, LogOut } from 'lucide-react'
+import { Menu, X, LogIn, ArrowRight, LogOut, Bell } from 'lucide-react'
 import { PUBLIC_NAV_LINKS, MAIN_NAV_LINKS, LOGIN_LINK } from '@/lib/nav-structure'
 import { useIdentity } from '@/lib/identity-context'
 
@@ -136,8 +136,19 @@ export default function Nav() {
             {/* ── Desktop auth area ─────────────────────────────── */}
             <div className="hidden lg:flex items-center gap-2">
               {isAuthenticated ? (
-                /* Logged in: avatar + sign out */
+                /* Logged in: notifications + avatar + sign out */
                 <div className="flex items-center gap-3">
+                  <Link
+                    href="/notifications"
+                    aria-label="Notifications"
+                    className="relative p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/5 transition-all"
+                  >
+                    <Bell className="w-4 h-4" />
+                    <span
+                      className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-brand-accent"
+                      aria-hidden="true"
+                    />
+                  </Link>
                   <Link
                     href="/me"
                     className="flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-white/5 transition-all"
