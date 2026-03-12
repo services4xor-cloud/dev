@@ -13,6 +13,7 @@ import {
   PUBLIC_NAV_LINKS,
   MAIN_NAV_LINKS,
   FOOTER_LINKS,
+  FOOTER_COLUMNS,
   LOGIN_LINK,
   // Legacy deprecated exports
   PRIMARY_LINKS,
@@ -119,5 +120,30 @@ describe('Nav Structure — legacy exports exist', () => {
     expect(FOOTER_AGENT_LINKS).toBeDefined()
     expect(FOOTER_DISCOVER_LINKS).toBeDefined()
     expect(FOOTER_COMPANY_LINKS).toBeDefined()
+  })
+})
+
+describe('Nav Structure — footer columns', () => {
+  it('exports FOOTER_COLUMNS with 4 columns', () => {
+    expect(FOOTER_COLUMNS.length).toBe(4)
+  })
+
+  it('each column has title and links', () => {
+    for (const col of FOOTER_COLUMNS) {
+      expect(col.title).toBeTruthy()
+      expect(col.links.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('includes referral and media links', () => {
+    const allHrefs = FOOTER_COLUMNS.flatMap((c) => c.links.map((l) => l.href))
+    expect(allHrefs).toContain('/referral')
+    expect(allHrefs).toContain('/media')
+    expect(allHrefs).toContain('/fashion')
+  })
+
+  it('FOOTER_LINKS is flat array of all column links', () => {
+    const expected = FOOTER_COLUMNS.flatMap((col) => col.links)
+    expect(FOOTER_LINKS).toEqual(expected)
   })
 })
