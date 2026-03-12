@@ -11,6 +11,7 @@
  */
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import GlassCard from '@/components/ui/GlassCard'
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -72,6 +73,8 @@ export default function ExchangeCard({
   userInterests,
   onAction,
 }: ExchangeCardProps) {
+  const router = useRouter()
+
   const isSharedLang = (lang: string) =>
     userLanguages.some((ul) => ul.toLowerCase() === lang.toLowerCase())
 
@@ -186,7 +189,11 @@ export default function ExchangeCard({
           onClick={(e) => {
             e.preventDefault()
             e.stopPropagation()
-            onAction?.()
+            if (type === 'person') {
+              router.push(`/messages?dm=${data.id}`)
+            } else {
+              onAction?.()
+            }
           }}
           className={`w-full rounded-lg py-phi-2 text-phi-sm font-medium transition-all ${
             type === 'person'

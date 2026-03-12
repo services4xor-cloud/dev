@@ -11,8 +11,10 @@ import {
   FAITH_OPTIONS,
   REACH_OPTIONS,
   DIMENSION_META,
+  CRAFT_SUGGESTIONS,
   getFaithOption,
   getReachOption,
+  getCultureSuggestionsForCountry,
 } from '@/lib/dimensions'
 import { getMarketScore, getSignalsForRegion } from '@/lib/market-data'
 import ModeToggle from '@/components/ModeToggle'
@@ -111,6 +113,7 @@ export default function MePage() {
   // Form state for Profile tab
   const [editCity, setEditCity] = useState(identity.city ?? '')
   const [editBio, setEditBio] = useState('')
+  const [craftSearch, setCraftSearch] = useState('')
 
   useEffect(() => {
     setMounted(true)
@@ -445,6 +448,39 @@ export default function MePage() {
               <span className="text-phi-sm text-white/30 italic">No crafts added yet</span>
             )}
           </div>
+          {/* Craft search + suggestions */}
+          <div className="mt-phi-3">
+            <input
+              type="text"
+              value={craftSearch}
+              onChange={(e) => setCraftSearch(e.target.value)}
+              placeholder="Search crafts to add..."
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-phi-sm text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors mb-phi-2"
+            />
+            {craftSearch.length >= 2 && (
+              <div className="flex flex-wrap gap-phi-1">
+                {CRAFT_SUGGESTIONS.filter(
+                  (c) =>
+                    c.toLowerCase().includes(craftSearch.toLowerCase()) &&
+                    !identity.craft.includes(c)
+                )
+                  .slice(0, 8)
+                  .map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => {
+                        setCraft([...identity.craft, c])
+                        setCraftSearch('')
+                      }}
+                      className="px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10 text-phi-xs hover:bg-brand-primary/20 hover:text-white/70 transition-colors"
+                    >
+                      + {c}
+                    </button>
+                  ))}
+              </div>
+            )}
+          </div>
         </GlassCard>
 
         {/* 4. Interests / Passion */}
@@ -506,23 +542,69 @@ export default function MePage() {
               <span className="text-phi-sm text-white/30 italic">No reach preferences set</span>
             )}
           </div>
+          {/* Available reach options to add */}
+          {REACH_OPTIONS.filter((ro) => !identity.reach.includes(ro.id)).length > 0 && (
+            <div className="flex flex-wrap gap-phi-1 mt-phi-3">
+              {REACH_OPTIONS.filter((ro) => !identity.reach.includes(ro.id)).map((ro) => (
+                <button
+                  key={ro.id}
+                  type="button"
+                  onClick={() => setReach([...identity.reach, ro.id])}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10 text-phi-xs hover:bg-white/10 hover:text-white/70 transition-colors"
+                  title={ro.description}
+                >
+                  <span>{ro.icon}</span>
+                  {ro.label}
+                </button>
+              ))}
+            </div>
+          )}
         </GlassCard>
 
-        {/* 6. Faith */}
+        {/* 6. Faith (multi-select) */}
         <GlassCard padding="md">
           <label className="block text-phi-sm text-white/60 mb-phi-2">
             <span className="mr-1">🙏</span> Faith
           </label>
-          {faithOptions.length > 0 ? (
-            <div className="flex flex-wrap gap-phi-2">
+          {/* Selected faith badges with remove */}
+          {faithOptions.length > 0 && (
+            <div className="flex flex-wrap gap-phi-2 mb-phi-3">
               {faithOptions.map((opt) => (
-                <div key={opt!.id} className="flex items-center gap-1">
-                  <span className="text-lg">{opt!.icon}</span>
-                  <span className="text-white/80">{opt!.label}</span>
-                </div>
+                <span
+                  key={opt!.id}
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-brand-accent/10 text-brand-accent border border-brand-accent/30 text-phi-sm"
+                >
+                  <span>{opt!.icon}</span>
+                  {opt!.label}
+                  <button
+                    type="button"
+                    onClick={() => setFaith(identity.faith.filter((f) => f !== opt!.id))}
+                    className="ml-1 text-brand-accent/60 hover:text-brand-accent"
+                    aria-label={`Remove ${opt!.label}`}
+                  >
+                    &times;
+                  </button>
+                </span>
               ))}
             </div>
-          ) : (
+          )}
+          {/* Available faith options to add */}
+          {FAITH_OPTIONS.filter((fo) => !identity.faith.includes(fo.id)).length > 0 && (
+            <div className="flex flex-wrap gap-phi-1">
+              {FAITH_OPTIONS.filter((fo) => !identity.faith.includes(fo.id)).map((fo) => (
+                <button
+                  key={fo.id}
+                  type="button"
+                  onClick={() => setFaith([...identity.faith, fo.id])}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10 text-phi-xs hover:bg-white/10 hover:text-white/70 transition-colors"
+                >
+                  <span>{fo.icon}</span>
+                  {fo.label}
+                </button>
+              ))}
+            </div>
+          )}
+          {faithOptions.length === 0 && FAITH_OPTIONS.length === 0 && (
             <span className="text-phi-sm text-white/30 italic">Not specified</span>
           )}
         </GlassCard>
@@ -533,10 +615,42 @@ export default function MePage() {
             <span className="mr-1">🌿</span> Culture
           </label>
           {identity.culture ? (
-            <span className="text-white/80">{identity.culture}</span>
+            <div className="flex items-center gap-phi-2 mb-phi-3">
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-brand-accent/10 text-brand-accent border border-brand-accent/30 text-phi-sm">
+                {identity.culture}
+                <button
+                  type="button"
+                  onClick={() => setCulture(undefined)}
+                  className="ml-1 text-brand-accent/60 hover:text-brand-accent"
+                  aria-label={`Remove ${identity.culture}`}
+                >
+                  &times;
+                </button>
+              </span>
+            </div>
           ) : (
-            <span className="text-phi-sm text-white/30 italic">Not specified</span>
+            <p className="text-phi-sm text-white/30 italic mb-phi-3">Not specified</p>
           )}
+          {/* Suggestions based on country */}
+          {(() => {
+            const suggestions = getCultureSuggestionsForCountry(identity.country)
+            const available = suggestions.filter((s) => s !== identity.culture)
+            if (available.length === 0) return null
+            return (
+              <div className="flex flex-wrap gap-phi-1">
+                {available.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setCulture(s)}
+                    className="px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10 text-phi-xs hover:bg-white/10 hover:text-white/70 transition-colors"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )
+          })()}
         </GlassCard>
 
         {/* 8. Market Score */}

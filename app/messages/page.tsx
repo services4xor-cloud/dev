@@ -148,8 +148,12 @@ function agentToProfile(agent: AgentPersona): DimensionProfile {
   }
 }
 
-/** Generate a contextual response from an agent based on their persona */
-function generateAgentResponse(agent: AgentPersona, userMessage: string): string {
+/** Generate a contextual response from an agent based on their persona and conversation history */
+function generateAgentResponse(
+  agent: AgentPersona,
+  userMessage: string,
+  previousMessages?: Array<{ author: 'user' | 'agent'; text: string }>
+): string {
   const greetings = [
     'Jambo! Great to connect with you. ',
     'Hello! Thanks for reaching out. ',
@@ -193,7 +197,10 @@ function generateAgentResponse(agent: AgentPersona, userMessage: string): string
 
   // Pick based on message content or random
   const lowerMsg = userMessage.toLowerCase()
+  const msgCount = previousMessages?.length ?? 0
   let response = ''
+
+  // ── Topic detection ──────────────────────────────────────────────
 
   if (
     lowerMsg.includes('faith') ||
@@ -205,6 +212,41 @@ function generateAgentResponse(agent: AgentPersona, userMessage: string): string
       agent.faith.length > 0
         ? `My ${agent.faith.join(' and ')} faith is central to who I am. It shapes how I work and connect with people. What about you?`
         : 'I keep an open mind about spirituality. I believe in connecting with people regardless of their beliefs.'
+  } else if (
+    lowerMsg.includes('help') ||
+    lowerMsg.includes('need') ||
+    lowerMsg.includes('looking for')
+  ) {
+    // Share exchange proposals
+    if (agent.exchangeProposals.length > 1) {
+      response = `I can definitely help! Here is what I have to offer: ${agent.exchangeProposals.join(' Also, ')} What resonates with you?`
+    } else if (agent.exchangeProposals.length === 1) {
+      response = `Absolutely! ${agent.exchangeProposals[0]} Does that sound useful to you?`
+    } else {
+      response = `I would love to help. My skills in ${agent.craft.join(', ') || 'various areas'} could be valuable. What exactly do you need?`
+    }
+  } else if (
+    lowerMsg.includes('culture') ||
+    lowerMsg.includes('tradition') ||
+    lowerMsg.includes('customs')
+  ) {
+    const cultureRef = agent.culture ? `As ${agent.culture}, ` : ''
+    response = `${cultureRef}Culture is everything to me. In ${agent.city}, we have a rich blend of traditions — from how we greet each other to how we celebrate milestones. ${agent.faith.length > 0 ? `Our ${agent.faith[0]} heritage also plays a big role in daily life.` : 'Every community here has its own unique flavor.'} I would love to share more about our traditions if you are curious!`
+  } else if (
+    lowerMsg.includes('family') ||
+    lowerMsg.includes('home') ||
+    lowerMsg.includes('miss')
+  ) {
+    response = `${agent.city} is home and it holds a special place in my heart. The community here is warm and tight-knit. ${agent.culture ? `Growing up ${agent.culture}, ` : ''}family and neighbors are everything. The food, the sounds, the energy of the streets — there is nothing quite like it. Have you ever been to ${agent.country}?`
+  } else if (
+    lowerMsg.includes('money') ||
+    lowerMsg.includes('salary') ||
+    lowerMsg.includes('cost') ||
+    lowerMsg.includes('earn') ||
+    lowerMsg.includes('income') ||
+    lowerMsg.includes('expensive')
+  ) {
+    response = `The economic landscape in ${agent.country} is full of both challenges and opportunities. ${agent.craft.length > 0 ? `In ${agent.craft[0]}, there is growing demand, but the pay structure is still evolving compared to international standards.` : 'Many sectors are growing rapidly.'} That is why platforms like this matter — they help us find value exchanges that work across different economies. What is the situation like where you are?`
   } else if (
     lowerMsg.includes('work') ||
     lowerMsg.includes('craft') ||
@@ -238,6 +280,55 @@ function generateAgentResponse(agent: AgentPersona, userMessage: string): string
   } else {
     // Random topical response
     response = topicResponses[Math.floor(Math.random() * topicResponses.length)]
+  }
+
+  // ── Follow-up awareness (3+ messages = more personal) ────────────
+
+  if (msgCount >= 3 && previousMessages) {
+    // Gather topics mentioned in previous messages
+    const allPrevText = previousMessages.map((m) => m.text.toLowerCase()).join(' ')
+    const extras: string[] = []
+
+    // Reference earlier topics
+    if (allPrevText.includes('faith') || allPrevText.includes('believe')) {
+      if (agent.faith.length > 0) {
+        extras.push(`Since we both value faith, I think there is a deeper connection here.`)
+      }
+    }
+    if (
+      allPrevText.includes('craft') ||
+      allPrevText.includes('work') ||
+      allPrevText.includes('skill')
+    ) {
+      extras.push(
+        `Building on what we discussed about work — ${agent.exchangeProposals[0] || 'I think we could create real value together.'}`
+      )
+    }
+
+    // Suggest concrete next steps at 4+ messages
+    if (msgCount >= 4) {
+      const nextSteps = [
+        'Want to schedule a video call so we can discuss this properly?',
+        `I can introduce you to some people in my network here in ${agent.city} who might help.`,
+        'Should we set up a small exchange project together? I think it could work!',
+        'If you are serious about this, I know a few Anchors on the platform who would be interested.',
+      ]
+      extras.push(nextSteps[Math.floor(Math.random() * nextSteps.length)])
+    }
+
+    // At 6+ messages, agent becomes warmer
+    if (msgCount >= 6) {
+      const warmth = [
+        `I am really glad we connected. This is exactly what the platform is for.`,
+        `You know, conversations like this make me optimistic about what we can build together.`,
+        `I feel like we have a lot in common. Let us make something happen!`,
+      ]
+      extras.push(warmth[Math.floor(Math.random() * warmth.length)])
+    }
+
+    if (extras.length > 0) {
+      response += ' ' + extras[Math.floor(Math.random() * extras.length)]
+    }
   }
 
   return response
@@ -389,7 +480,7 @@ export default function MessagesPage() {
         const agentMsg = {
           id: `msg-${Date.now()}-reply`,
           author: 'agent' as const,
-          text: generateAgentResponse(agent, inputText),
+          text: generateAgentResponse(agent, inputText, chatMessages[agentId] || []),
           time: 'Just now',
         }
         setChatMessages((prev) => ({

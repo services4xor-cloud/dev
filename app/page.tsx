@@ -171,6 +171,10 @@ export default function HomePage() {
         return { agent, score, breakdown: dimScore.breakdown }
       })
       .sort((a, b) => b.score - a.score)
+      .filter(({ agent }) => {
+        if (!identity.focusTopic) return true
+        return agent.interests.includes(identity.focusTopic)
+      })
       .slice(0, 6)
   }, [hasCompletedDiscovery, identity])
 
@@ -182,6 +186,16 @@ export default function HomePage() {
       .filter(Boolean)
 
     return dbPaths
+      .filter((path) => {
+        if (!identity.focusTopic) return true
+        const cat = EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)
+        if (!cat) return true
+        const catLower = cat.label.toLowerCase()
+        return path.skills.some(
+          (t) =>
+            catLower.includes(t.toLowerCase()) || t.toLowerCase().includes(catLower.split(' ')[0])
+        )
+      })
       .map((path) => {
         let score = 25
         const skillMatch = path.skills.some((skill) =>
@@ -216,7 +230,7 @@ export default function HomePage() {
       })
       .sort((a, b) => b.score - a.score)
       .slice(0, 4)
-  }, [hasCompletedDiscovery, identity.interests, identity.country, dbPaths])
+  }, [hasCompletedDiscovery, identity.interests, identity.country, identity.focusTopic, dbPaths])
 
   // ─── First-time visitor flow ──────────────────────────────────
   if (!hasCompletedDiscovery) {
@@ -314,6 +328,15 @@ export default function HomePage() {
               ) : null
             })}
           </div>
+          {identity.focusTopic && (
+            <div className="mt-3 flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full text-xs bg-brand-accent/15 text-brand-accent border border-brand-accent/30 flex items-center gap-1.5">
+                Focus:{' '}
+                {EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)?.label ??
+                  identity.focusTopic}
+              </span>
+            </div>
+          )}
         </div>
       </section>
 
