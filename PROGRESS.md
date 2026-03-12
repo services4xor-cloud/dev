@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 62 (2026-03-12) — Data Quality + Code Cleanup Sprint
+> Last updated: Session 63 (2026-03-12) — Full-Night Sprint: Identity, Profile, Routes, Data, Links
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -18,7 +18,7 @@
 | API routes        | 12+                                                                                       |
 | Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)                     |
 | Mock data modules | 18 (+ messages.ts); admin data deduplicated, all pages import from barrel                 |
-| Jest tests        | 811/811 ✅ (44 suites)                                                                    |
+| Jest tests        | 838/838 ✅ (45 suites)                                                                    |
 | Playwright tests  | 144+ ✅ (8 suites incl. demo-flow)                                                        |
 | TypeScript errors | 0                                                                                         |
 | Build             | ✅ passes                                                                                 |
@@ -31,6 +31,66 @@
 | DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
 | Auth              | ✅ Google OAuth + email/password + password reset                                         |
 | Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 63: Full-Night Sprint — Identity, Profile, Routes, Data, Links
+
+### Phase 1: Identity Labels + Quick Fixes
+
+- Fixed "Be[Country]" literals in layout.tsx → dynamic brandName from COUNTRY_META
+- Added COUNTRY_META SEO entries for all 14 countries (was only KE, DE, CH, TH)
+- Dynamic keywords in `<head>` based on country sectors
+
+### Phase 2: Profile Enrichment + Stat Hexagon
+
+- Extended Profile API (Zod + PATCH): headline, experience, pioneerType, videoUrl, resumeUrl, linkedinUrl, upworkUrl, fiverrUrl
+- Added `upworkUrl`, `fiverrUrl` fields to Prisma schema
+- Built **StatHexagon** (`components/StatHexagon.tsx`) — SVG 8-axis radar chart
+  - Dimensions: Language, Market, Craft, Passion, Location, Faith, Reach, Culture
+  - Priority cycling (click labels → low/medium/high), brand colors, glow effects
+  - Auto-calculated from dimension-scoring breakdown
+- Extended `/me` page with new profile sections: headline, pioneer type, experience, external profiles
+- Added ~18 i18n keys × 4 languages
+
+### Phase 3: Adaptive Route & Experience Engine
+
+- Built `generateRoute(from, to)` in `lib/compass.ts` — derives routes from COUNTRIES config
+  - Shared sectors, payment methods, visa logic, region-based strength scoring
+  - Every country pair now gets a route (curated ones richer, generated ones functional)
+- Created `lib/country-highlights.ts` — 65+ location-unique resources/events across all 14 countries
+  - Types: event, resource, experience, certification
+  - Functions: getCountryHighlights, getHighlightsBySector, getSeasonalHighlights, getHighlightSectors
+- Expanded eco-tourism offerings: 12 → 32 (2+ per remaining 10 countries)
+- Expanded trade corridors: 9 → 20 (US-DE, US-IN, GB-NG, KE-TZ, ZA-NG, etc.)
+
+### Phase 4: Destination Preferences + Profile Routing
+
+- Added `toCountries String[]` to Prisma Profile model
+- Extended identity context: `toCountries`, `setToCountries` (max 10, localStorage persisted)
+- Extended profile API: Zod validation, PATCH, GET for toCountries
+- Built destination picker in `/me`: searchable country list, removable flag pills, route suggestions
+
+### Phase 5: Fix Dead Links
+
+- Comprehensive link audit across all app/ pages
+- Fixed 8 files: `/agents` → `/exchange`, `/profile` → `/me`, `/threads` → `/messages`, `/ventures` → `/exchange`
+
+### Phase 6: Consistency + Data Quality + Tests
+
+- Fixed payment methods for 8 countries with inherited wrong configs:
+  - GH (MTN MoMo/GHS), ZA (EFT/ZAR), UG (MTN MoMo/UGX), TZ (M-Pesa/TZS + Tigo Pesa)
+  - IN (UPI/Razorpay/INR), AE (Apple Pay/AED), CA (Interac/CAD), GB (Faster Payments/GBP)
+- Added 22 cross-reference validation tests covering all data modules
+- Tests: 816 → 838 (+22), all passing
+
+### Key New Files
+
+| File                                    | Purpose                                        |
+| --------------------------------------- | ---------------------------------------------- |
+| `components/StatHexagon.tsx`            | 8-axis SVG radar chart for identity dimensions |
+| `lib/country-highlights.ts`             | Location-unique resources/events per country   |
+| `__tests__/lib/cross-reference.test.ts` | Cross-reference validation (22 tests)          |
 
 ---
 
