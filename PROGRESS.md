@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 48 (2026-03-12)
+> Last updated: Session 49 (2026-03-12)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 635/635 ✅ (35 suites)                                      |
+| Jest tests        | 673/673 ✅ (38 suites)                                      |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
@@ -402,6 +402,19 @@ Owner delegated all open decisions to agent. All 10 questions in ASK.md resolved
 - [x] Removed duplicate navs from profile and referral pages
 - [x] Zero teal/orange/amber/yellow violations remaining
 - [x] Only 3 acceptable "BeKenya" references remain: error.tsx (console), og/route.tsx (domain), layout.tsx (fallback URL)
+
+### Session 49 (2026-03-12) — Premium Design System Rework
+
+Complete design system overhaul for premium glassmorphism aesthetic.
+
+- [x] **CSS Foundation**: Glassmorphism (3 tiers), ambient glows, animated gradient borders, scroll-reveal stagger, gold shimmer loading, gradient text, glow effects, btn-disabled
+- [x] **4 New Components**: GlassCard (3 variants + hover), SectionLayout (phi spacing + ambient + stagger), StatCard (glass + tabular-nums), SkillChip (3 variants + hover scale)
+- [x] **Component Upgrades**: HeroSection (gradient text + particles + phi), SectionHeader (accent underline + phi), PathCard (glass + SkillChip), Nav (glass-strong + active dot), Footer (gradient separator), Skeleton (gold shimmer), WizardShell (glass footer + btn-disabled)
+- [x] **Full Page Sweep (25+ pages)**: All pages use GlassCard, SectionLayout, phi typography, phi spacing, reveal-stagger, ambient glow
+- [x] **Loading Skeletons**: All 21 loading.tsx files updated with gold shimmer + glass containers
+- [x] **Journey Fixes**: Deleted orphaned dirs (employers, jobs, post-job, dashboard)
+- [x] All CSS-only — zero JS animation libraries
+- [x] Jest: 673/673 ✅ | TS: 0 errors | Clean build
 
 ### Session 20 (2026-03-11) — MD Cleanup + Vision Update
 
