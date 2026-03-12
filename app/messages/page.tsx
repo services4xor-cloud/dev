@@ -1,9 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
 import { MOCK_THREADS } from '@/data/mock'
+import { generateAllAgents, type AgentPersona } from '@/lib/agents'
+import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
+import { getSignalsForRegion } from '@/lib/market-data'
 import GlassCard from '@/components/ui/GlassCard'
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -90,11 +93,63 @@ const TYPE_LABELS: Record<string, string> = {
 
 // ── Component ────────────────────────────────────────────────────────
 
+/** Build DimensionProfile from user identity */
+function identityToProfile(identity: {
+  country: string
+  city?: string
+  languages: string[]
+  interests: string[]
+}): DimensionProfile {
+  return {
+    country: identity.country,
+    city: identity.city,
+    languages: identity.languages,
+    faith: (identity as Record<string, unknown>).faith as string | undefined,
+    craft: ((identity as Record<string, unknown>).craft as string[]) ?? [],
+    interests: identity.interests,
+    reach: ((identity as Record<string, unknown>).reach as string[]) ?? [],
+    culture: (identity as Record<string, unknown>).culture as string | undefined,
+    isHuman: true,
+  }
+}
+
+/** Build DimensionProfile from agent */
+function agentToProfile(agent: AgentPersona): DimensionProfile {
+  return {
+    country: agent.country,
+    city: agent.city,
+    languages: agent.languages,
+    faith: agent.faith,
+    craft: agent.craft,
+    interests: agent.interests,
+    reach: agent.reach,
+    culture: agent.culture,
+    isHuman: false,
+  }
+}
+
 export default function MessagesPage() {
   const router = useRouter()
-  const { hasCompletedDiscovery } = useIdentity()
+  const { identity, hasCompletedDiscovery } = useIdentity()
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
   const [showMobileContent, setShowMobileContent] = useState(false)
+
+  // Top-matched AI agents for Direct Messages section
+  const topAgents = useMemo(() => {
+    const allAgents = generateAllAgents()
+    const meProfile = identityToProfile(identity)
+    const signals = getSignalsForRegion(identity.country)
+
+    return allAgents
+      .map((agent) => {
+        const themProfile = agentToProfile(agent)
+        const dimScore = scoreDimensions(meProfile, themProfile, signals)
+        const displayScore = Math.min(100, Math.round((dimScore.total / 110) * 100))
+        return { agent, score: displayScore }
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+  }, [identity])
 
   // Gate: redirect if discovery not complete
   if (!hasCompletedDiscovery) {
@@ -117,11 +172,18 @@ export default function MessagesPage() {
   // Display order for thread types
   const typeOrder = ['country', 'tribe', 'language', 'interest', 'science', 'location', 'religion']
 
-  const selectedThread = selectedSlug
-    ? MOCK_THREADS.find((t) => t.slug === selectedSlug)
+  const selectedThread =
+    selectedSlug && !selectedSlug.startsWith('dm-')
+      ? MOCK_THREADS.find((t) => t.slug === selectedSlug)
+      : null
+
+  // Find selected AI agent for DM view
+  const selectedAgent = selectedSlug?.startsWith('dm-')
+    ? topAgents.find(({ agent }) => `dm-${agent.id}` === selectedSlug)
     : null
 
-  const messages = selectedSlug ? CHANNEL_MESSAGES[selectedSlug] || [] : []
+  const messages =
+    selectedSlug && !selectedSlug.startsWith('dm-') ? CHANNEL_MESSAGES[selectedSlug] || [] : []
 
   const handleSelectChannel = (slug: string) => {
     setSelectedSlug(slug)
@@ -178,21 +240,161 @@ export default function MessagesPage() {
         )
       })}
 
-      {/* Direct Messages */}
+      {/* Direct Messages — AI agent conversation starters */}
       <div className="mt-phi-5 border-t border-white/10 pt-phi-3">
         <h3 className="mb-phi-2 px-phi-3 text-phi-xs font-semibold uppercase tracking-wider text-white/40">
           Direct Messages
         </h3>
-        <GlassCard variant="subtle" padding="sm" className="mx-phi-3">
-          <p className="text-phi-sm text-white/40">
-            Connect with someone on Exchange to start a conversation
-          </p>
-        </GlassCard>
+        {topAgents.length > 0 ? (
+          <div className="space-y-px">
+            {topAgents.map(({ agent, score }) => (
+              <button
+                key={agent.id}
+                onClick={() => handleSelectChannel(`dm-${agent.id}`)}
+                className={`flex w-full items-center gap-phi-2 px-phi-3 py-phi-2 text-left transition-all duration-200 hover:bg-white/5 ${
+                  selectedSlug === `dm-${agent.id}`
+                    ? 'glass-subtle border-l-2 border-brand-accent bg-white/5'
+                    : 'border-l-2 border-transparent'
+                }`}
+              >
+                <span className="text-phi-base">{agent.avatar}</span>
+                <div className="min-w-0 flex-1">
+                  <p
+                    className={`truncate text-phi-sm font-medium ${
+                      selectedSlug === `dm-${agent.id}` ? 'text-brand-accent' : 'text-white/80'
+                    }`}
+                  >
+                    <span className="mr-1 text-phi-xs opacity-60">🤖</span>
+                    {agent.name}
+                  </p>
+                  <p className="truncate text-phi-xs text-white/30">
+                    {agent.city}, {agent.country} · {score}% match
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <GlassCard variant="subtle" padding="sm" className="mx-phi-3">
+            <p className="text-phi-sm text-white/40">
+              Connect with someone on Exchange to start a conversation
+            </p>
+          </GlassCard>
+        )}
       </div>
     </div>
   )
 
   // ── Content panel ────────────────────────────────────────────────
+
+  // ── Agent DM content panel ─────────────────────────────────────
+  const agentDmPanel = selectedAgent ? (
+    <div className="flex h-full flex-col">
+      {/* Agent header */}
+      <div className="flex items-center gap-phi-3 border-b border-white/10 px-phi-5 py-phi-3">
+        <button
+          onClick={handleBackToList}
+          className="mr-phi-1 text-white/60 transition-colors hover:text-white md:hidden"
+          aria-label="Back to channels"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+        <span className="text-phi-lg">{selectedAgent.agent.avatar}</span>
+        <div>
+          <h2 className="text-phi-base font-semibold text-white">
+            <span className="mr-1 text-phi-xs opacity-60">🤖</span>
+            {selectedAgent.agent.name}
+          </h2>
+          <p className="text-phi-xs text-white/50">
+            {selectedAgent.agent.city}, {selectedAgent.agent.country} · {selectedAgent.score}% match
+          </p>
+        </div>
+      </div>
+
+      {/* Agent bio + exchange proposals */}
+      <div className="flex-1 space-y-phi-3 overflow-y-auto px-phi-5 py-phi-5">
+        <GlassCard variant="subtle" padding="sm" className="mb-phi-5">
+          <p className="text-phi-sm text-white/50">
+            <span className="font-medium text-brand-accent">About:</span> {selectedAgent.agent.bio}
+          </p>
+        </GlassCard>
+
+        {/* Exchange proposals as conversation starters */}
+        {selectedAgent.agent.exchangeProposals.map((proposal, idx) => (
+          <div key={idx} className="flex items-start gap-phi-3">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-brand-surface text-phi-sm">
+              {selectedAgent.agent.avatar}
+            </div>
+            <GlassCard variant="subtle" padding="sm" className="min-w-0 flex-1">
+              <div className="mb-phi-1 flex items-baseline gap-phi-2">
+                <span className="text-phi-sm font-medium text-white">
+                  🤖 {selectedAgent.agent.name}
+                </span>
+                <span className="text-phi-xs text-white/30">Conversation starter</span>
+              </div>
+              <p className="text-phi-sm text-white/70">{proposal}</p>
+            </GlassCard>
+          </div>
+        ))}
+
+        {/* Craft tags */}
+        {selectedAgent.agent.craft.length > 0 && (
+          <div className="pt-phi-3">
+            <p className="mb-phi-2 text-phi-xs font-semibold uppercase tracking-wider text-white/30">
+              Crafts
+            </p>
+            <div className="flex flex-wrap gap-phi-1">
+              {selectedAgent.agent.craft.map((c) => (
+                <span
+                  key={c}
+                  className="rounded-full bg-white/5 px-phi-2 py-0.5 text-phi-xs text-white/50"
+                >
+                  {c}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Message input bar */}
+      <div className="border-t border-white/10 px-phi-5 py-phi-3">
+        <div className="glass-subtle flex items-center gap-phi-2 rounded-lg px-phi-3 py-phi-2">
+          <input
+            type="text"
+            placeholder={`Message ${selectedAgent.agent.name}...`}
+            className="flex-1 bg-transparent text-phi-sm text-white placeholder-white/30 outline-none"
+            disabled
+          />
+          <button
+            className="flex-shrink-0 text-white/30 transition-colors hover:text-brand-accent"
+            disabled
+            aria-label="Send message"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  ) : null
 
   const contentPanel = selectedThread ? (
     <div className="flex h-full flex-col">
@@ -285,12 +487,14 @@ export default function MessagesPage() {
         </div>
       </div>
     </div>
+  ) : agentDmPanel ? (
+    agentDmPanel
   ) : (
     <div className="flex h-full items-center justify-center">
       <div className="text-center">
         <p className="text-phi-lg text-white/20">Select a conversation</p>
         <p className="mt-phi-1 text-phi-sm text-white/10">
-          Choose a community channel to view messages
+          Choose a community channel or AI agent to view messages
         </p>
       </div>
     </div>
