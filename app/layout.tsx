@@ -32,23 +32,19 @@ export const metadata: Metadata = {
 
   title: {
     default: meta.title,
-    template: `%s | Be[Country] — The BeNetwork`,
+    template: `%s | ${meta.brandName} — The BeNetwork`,
   },
   description: meta.description,
 
   keywords: [
     'BeNetwork',
-    'Kenya jobs',
-    'safari guide jobs Kenya',
-    'work in Kenya',
-    'Africa opportunities',
-    'M-Pesa',
-    'Kenya careers',
-    'Maasai Mara safari',
-    'eco-tourism Kenya',
-    'work abroad Kenya',
+    meta.brandName,
+    `paths in ${meta.brandName.replace('Be', '')}`,
+    `work in ${meta.brandName.replace('Be', '')}`,
     'country routing',
-    'dignified work Africa',
+    'identity-first platform',
+    'dignified work',
+    'cultural exchange',
   ],
 
   authors: [{ name: LEGAL.companyName, url: siteUrl }],
@@ -71,10 +67,12 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: siteUrl,
-    siteName: 'Be[Country]',
+    siteName: `${meta.brandName} — The BeNetwork`,
     title: meta.title,
     description: meta.description,
-    images: [{ url: '/og', width: 1200, height: 630, alt: 'Be[Country] — Find where you belong.' }],
+    images: [
+      { url: '/og', width: 1200, height: 630, alt: `${meta.brandName} — Find where you belong.` },
+    ],
   },
 
   twitter: {

@@ -79,14 +79,18 @@ export const LOGIN_LINK: NavLink = {
   aria: 'Sign in to your account',
 }
 
-// ── DEPRECATED: Legacy exports (kept for backward compat) ──
+// ── DEPRECATED: Legacy exports (kept for backward compat — tests assert existence) ──
 export const PRIMARY_LINKS = PUBLIC_NAV_LINKS
 export const PIONEER_NAV_LINKS = MAIN_NAV_LINKS
+/** @deprecated Empty — use role-based nav from identity context instead */
 export const ANCHOR_NAV_LINKS: NavLink[] = []
+/** @deprecated Empty — use role-based nav from identity context instead */
 export const AGENT_NAV_LINKS: NavLink[] = []
 export const ABOUT_NAV_LINKS = PUBLIC_NAV_LINKS
 export const FOOTER_PIONEER_LINKS: FooterLink[] = FOOTER_LINKS
+/** @deprecated Empty — footer uses unified FOOTER_LINKS */
 export const FOOTER_ANCHOR_LINKS: FooterLink[] = []
+/** @deprecated Empty — footer uses unified FOOTER_LINKS */
 export const FOOTER_AGENT_LINKS: FooterLink[] = []
 export const FOOTER_DISCOVER_LINKS: FooterLink[] = FOOTER_LINKS
 export const FOOTER_COMPANY_LINKS: FooterLink[] = FOOTER_LINKS

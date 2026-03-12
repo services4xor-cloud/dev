@@ -118,11 +118,11 @@ export function getCountryOfferings(countryCode: CountryCode): CountryOfferings 
   const config = COUNTRIES[countryCode]
 
   return {
-    // Experiences — currently KE only, extensible by country
+    // Experiences — safari packages are Kenya-specific
     experiences: countryCode === 'KE' ? SAFARI_PACKAGES : [],
 
-    // Eco-tourism — currently KE only, extensible
-    ecoTourism: countryCode === 'KE' ? ECO_TOURISM_OFFERINGS : [],
+    // Eco-tourism — filtered by country (each offering tagged with country code)
+    ecoTourism: ECO_TOURISM_OFFERINGS.filter((o) => o.country === countryCode),
 
     // Trade corridors that involve this country (either direction)
     tradeCorridors: TRADE_CORRIDORS.filter(

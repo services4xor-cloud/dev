@@ -692,6 +692,7 @@ export interface CountrySEOMeta {
   title: string
   description: string
   twitter: string
+  brandName: string
 }
 
 export const COUNTRY_META: Record<string, CountrySEOMeta> = {
@@ -700,24 +701,98 @@ export const COUNTRY_META: Record<string, CountrySEOMeta> = {
     description:
       'An identity-first compass for Pioneers. Safari paths, professional ventures, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
     twitter: '@BeKenya',
+    brandName: 'BeKenya',
   },
   DE: {
     title: 'BeGermany — Find Your Path in Germany.',
     description:
       'Your compass for professional paths, experiences, and community in Germany. SEPA payments, skilled worker routes, European connections.',
     twitter: '@BeGermany',
+    brandName: 'BeGermany',
   },
   CH: {
     title: 'BeSwitzerland — Find Your Path in Switzerland.',
     description:
       'Your compass for professional paths, alpine experiences, and community in Switzerland. TWINT, Stripe, cross-border routes.',
     twitter: '@BeSwitzerland',
+    brandName: 'BeSwitzerland',
   },
   TH: {
     title: 'BeThailand — Find Your Path in Thailand.',
     description:
       'Your compass for professional paths, tourism ventures, and community in Thailand. PromptPay, Stripe, cultural exchange.',
     twitter: '@BeThailand',
+    brandName: 'BeThailand',
+  },
+  US: {
+    title: 'BeAmerica — Find Your Path in the United States.',
+    description:
+      'Your compass for professional paths, innovation hubs, and diverse communities across America. ACH, Stripe, global connections.',
+    twitter: '@BeAmerica',
+    brandName: 'BeAmerica',
+  },
+  NG: {
+    title: 'BeNigeria — Find Your Path in Nigeria.',
+    description:
+      "Your compass for tech, creative, and professional paths in Nigeria. Flutterwave, Paystack, Africa's largest economy.",
+    twitter: '@BeNigeria',
+    brandName: 'BeNigeria',
+  },
+  GH: {
+    title: 'BeGhana — Find Your Path in Ghana.',
+    description:
+      'Your compass for professional paths, cultural heritage, and community in Ghana. MTN MoMo, Flutterwave, West African connections.',
+    twitter: '@BeGhana',
+    brandName: 'BeGhana',
+  },
+  ZA: {
+    title: 'BeSouthAfrica — Find Your Path in South Africa.',
+    description:
+      'Your compass for professional paths, wildlife ventures, and community in South Africa. EFT, Stripe, continental gateway.',
+    twitter: '@BeSouthAfrica',
+    brandName: 'BeSouthAfrica',
+  },
+  UG: {
+    title: 'BeUganda — Find Your Path in Uganda.',
+    description:
+      'Your compass for professional paths, gorilla trekking ventures, and community in Uganda. MTN MoMo, Airtel Money, East African routes.',
+    twitter: '@BeUganda',
+    brandName: 'BeUganda',
+  },
+  TZ: {
+    title: 'BeTanzania — Find Your Path in Tanzania.',
+    description:
+      'Your compass for professional paths, Serengeti ventures, and community in Tanzania. M-Pesa, Tigo Pesa, East African connections.',
+    twitter: '@BeTanzania',
+    brandName: 'BeTanzania',
+  },
+  IN: {
+    title: 'BeIndia — Find Your Path in India.',
+    description:
+      'Your compass for technology paths, cultural experiences, and community across India. UPI, Razorpay, global talent hub.',
+    twitter: '@BeIndia',
+    brandName: 'BeIndia',
+  },
+  AE: {
+    title: 'BeUAE — Find Your Path in the UAE.',
+    description:
+      'Your compass for professional paths, business ventures, and community in the UAE. Apple Pay, Stripe, global business hub.',
+    twitter: '@BeUAE',
+    brandName: 'BeUAE',
+  },
+  CA: {
+    title: 'BeCanada — Find Your Path in Canada.',
+    description:
+      'Your compass for professional paths, natural adventures, and multicultural community in Canada. Interac, Stripe, immigration pathways.',
+    twitter: '@BeCanada',
+    brandName: 'BeCanada',
+  },
+  GB: {
+    title: 'BeUK — Find Your Path in the United Kingdom.',
+    description:
+      'Your compass for professional paths, cultural experiences, and community in the UK. Faster Payments, Stripe, global connections.',
+    twitter: '@BeUK',
+    brandName: 'BeUK',
   },
 }
 

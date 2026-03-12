@@ -12,6 +12,7 @@ export interface EcoTourismOffering {
   id: string
   name: string
   location: string
+  country: string
   type: 'eco-lodge' | 'conservation' | 'community-stay' | 'permaculture'
   duration: string
   priceUSD: number
@@ -28,6 +29,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'lamu-eco-retreat',
     name: 'Lamu Island Eco-Retreat',
     location: 'Lamu Archipelago, Coast Province',
+    country: 'KE',
     type: 'eco-lodge',
     duration: '4 Days / 3 Nights',
     priceUSD: 380,
@@ -48,6 +50,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'ol-pejeta-conservancy',
     name: 'Ol Pejeta Conservancy Stay',
     location: 'Laikipia County, Central Kenya',
+    country: 'KE',
     type: 'conservation',
     duration: '3 Days / 2 Nights',
     priceUSD: 450,
@@ -68,6 +71,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'maasai-community-stay',
     name: 'Maasai Community Immersion',
     location: 'Kajiado County, Southern Kenya',
+    country: 'KE',
     type: 'community-stay',
     duration: '3 Days / 2 Nights',
     priceUSD: 220,
@@ -88,6 +92,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'kakamega-forest-camp',
     name: 'Kakamega Rainforest Explorer',
     location: 'Kakamega County, Western Kenya',
+    country: 'KE',
     type: 'conservation',
     duration: '2 Days / 1 Night',
     priceUSD: 160,
@@ -108,6 +113,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'watamu-marine-eco',
     name: 'Watamu Marine Eco-Experience',
     location: 'Watamu, Kilifi County',
+    country: 'KE',
     type: 'conservation',
     duration: '3 Days / 2 Nights',
     priceUSD: 320,
@@ -128,6 +134,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'mt-kenya-permaculture',
     name: 'Mt Kenya Permaculture Farm Stay',
     location: 'Nyeri County, Central Kenya',
+    country: 'KE',
     type: 'permaculture',
     duration: '5 Days / 4 Nights',
     priceUSD: 280,
@@ -150,6 +157,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'black-forest-eco-lodge',
     name: 'Black Forest Eco-Lodge Retreat',
     location: 'Schwarzwald, Baden-Württemberg',
+    country: 'DE',
     type: 'eco-lodge',
     duration: '5 Days / 4 Nights',
     priceUSD: 620,
@@ -170,6 +178,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'bavarian-alps-farm-stay',
     name: 'Bavarian Alpine Farm Stay',
     location: 'Garmisch-Partenkirchen, Bavaria',
+    country: 'DE',
     type: 'community-stay',
     duration: '4 Days / 3 Nights',
     priceUSD: 480,
@@ -192,6 +201,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'swiss-alps-permaculture',
     name: 'Swiss Alpine Permaculture Farm',
     location: 'Graubünden, Eastern Switzerland',
+    country: 'CH',
     type: 'permaculture',
     duration: '6 Days / 5 Nights',
     priceUSD: 750,
@@ -212,6 +222,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'lake-geneva-conservation',
     name: 'Lake Geneva Conservation Experience',
     location: 'Lavaux, Canton de Vaud',
+    country: 'CH',
     type: 'conservation',
     duration: '3 Days / 2 Nights',
     priceUSD: 550,
@@ -234,6 +245,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'chiang-mai-eco-village',
     name: 'Chiang Mai Eco-Village Immersion',
     location: 'Mae Taeng, Chiang Mai Province',
+    country: 'TH',
     type: 'community-stay',
     duration: '5 Days / 4 Nights',
     priceUSD: 320,
@@ -254,6 +266,7 @@ export const ECO_TOURISM_OFFERINGS: EcoTourismOffering[] = [
     id: 'andaman-marine-conservation',
     name: 'Andaman Sea Marine Conservation',
     location: 'Koh Lanta, Krabi Province',
+    country: 'TH',
     type: 'conservation',
     duration: '7 Days / 6 Nights',
     priceUSD: 480,

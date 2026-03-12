@@ -72,10 +72,11 @@ describe('Offerings — getCountryOfferings', () => {
     expect(offerings.sectors.length).toBeGreaterThan(0)
   })
 
-  it('returns DE offerings with sectors but no KE experiences', () => {
+  it('returns DE offerings with sectors and country-specific eco-tourism', () => {
     const offerings = getCountryOfferings('DE')
-    expect(offerings.experiences).toHaveLength(0)
-    expect(offerings.ecoTourism).toHaveLength(0)
+    expect(offerings.experiences).toHaveLength(0) // Safari packages are KE-only
+    expect(offerings.ecoTourism.length).toBeGreaterThan(0) // DE has eco-tourism
+    expect(offerings.ecoTourism.every((o) => o.country === 'DE')).toBe(true)
     expect(offerings.sectors.length).toBeGreaterThan(0)
   })
 })
