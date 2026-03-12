@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 61 (2026-03-12) — Self-Enrichment Engine + Priority Scoring
+> Last updated: Session 62 (2026-03-12) — Data Quality + Code Cleanup Sprint
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -17,20 +17,63 @@
 | Supporting Routes | `/be/[code]` `/signup` `/login` `/forgot-password` `/referral` `/media` `/fashion` + info |
 | API routes        | 12+                                                                                       |
 | Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)                     |
-| Mock data modules | 17 → reduced to test-only; all pages now use real DB or inline constants                  |
-| Jest tests        | 789/789 ✅ (44 suites)                                                                    |
+| Mock data modules | 18 (+ messages.ts); admin data deduplicated, all pages import from barrel                 |
+| Jest tests        | 811/811 ✅ (44 suites)                                                                    |
 | Playwright tests  | 144+ ✅ (8 suites incl. demo-flow)                                                        |
 | TypeScript errors | 0                                                                                         |
 | Build             | ✅ passes                                                                                 |
 | Countries         | 120+ selectable (COUNTRY_OPTIONS) + 193 in world-data.ts                                  |
 | Languages         | 100+ in LANGUAGE_REGISTRY (Tier A: en/de/fr/sw, Tier B: 10 stubs, Tier C: 90+ label-only) |
-| i18n translations | en: ~1200 keys, de: ~1200, sw: ~1200, fr: ~1200, + 10 stub languages                      |
+| i18n translations | en: ~1220 keys, de: ~1220, sw: ~1220, fr: ~1220, + 10 stub languages                      |
 | AI Agents         | ~700 deterministic personas across 193 countries                                          |
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Passion, Reach, Culture, Market)                    |
 | Skills            | 22+ (`becountry-*` + `bex-*`) covering all process areas                                  |
 | DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
 | Auth              | ✅ Google OAuth + email/password + password reset                                         |
 | Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 62: Data Quality + Code Cleanup Sprint
+
+### DRY Error Boundaries (-650 lines)
+
+- Created reusable `RouteError` component (`components/ui/RouteError.tsx`)
+- Replaced 13 duplicate error.tsx files with thin wrappers (50→22 lines each)
+- Each wrapper customizes emoji, title, description, context label
+- Net reduction: ~650 lines of duplicated code
+
+### Single Source of Truth (SSoT) Admin Data
+
+- Moved 315 lines of inline admin data → imports from `data/mock/admin.ts`
+- Added `MOCK_RECENT_PIONEERS`, `MOCK_ALL_PIONEERS`, `MOCK_RECENT_CHAPTERS` to pioneers.ts
+- Created `data/mock/messages.ts` for channel messages (was inline in messages page)
+- Updated barrel export (`data/mock/index.ts`) with all new exports
+
+### i18n MpesaModal (16 keys × 4 languages)
+
+- Extracted 16 hardcoded English strings from `MpesaModal.tsx` → `payment.*` i18n keys
+- Added translations in all 4 Tier A languages (en, de, sw, fr)
+- Added `error.*` i18n keys for error boundaries (4 keys × 4 languages)
+
+### API Route Cleanup
+
+- `POST /api/mpesa/callback`: Replaced commented-out DB code with live Prisma implementation (gates on `DATABASE_URL`)
+- `POST /api/bookings`: Added payment persistence when DB available
+- `POST /api/webhooks/n8n`: Added structured logging, removed bare TODOs
+- All API routes now use `PaymentStatus` enum values correctly (SUCCESS/FAILED, not COMPLETED)
+
+### Data Consistency
+
+- Cross-reference tests caught real bug: chapters referencing non-existent anchors
+- Added "Kenyatta Conference Centre" and "Safari & Wild Media" to anchor list
+- Fixed "KCC" abbreviation → full name for consistency
+- 22 new tests: mock-barrel assertions, cross-reference validation, messages quality
+
+### Test Growth
+
+- 789 → 811 tests (+22), all passing
+- New test categories: admin data, messages data, cross-reference consistency, no-duplicate-IDs
 
 ---
 
