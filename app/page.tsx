@@ -132,7 +132,7 @@ export default function HomePage() {
           style={{ background: 'rgb(var(--color-primary-rgb) / 0.25)' }}
         />
 
-        <div className="relative max-w-5xl 3xl:max-w-7xl mx-auto px-4 py-28 3xl:py-40 text-center">
+        <div className="relative max-w-5xl 3xl:max-w-7xl mx-auto px-4 py-28 3xl:py-40 text-center reveal-stagger">
           {/* Compass rose logo — clickable identity switcher */}
           <div className="relative inline-block mb-8" ref={heroIdentityRef}>
             <button
@@ -158,8 +158,8 @@ export default function HomePage() {
               />
               {/* Brand name + chevron */}
               <div className="flex items-center justify-center gap-2 mt-3">
-                <span className="text-2xl md:text-3xl font-bold tracking-tight">
-                  <span style={{ color: 'var(--color-accent)' }}>Be</span>
+                <span className="text-phi-xl md:text-phi-2xl font-bold tracking-tight">
+                  <span className="text-brand-accent">Be</span>
                   <span className="text-white">{brandName.replace(/^Be/, '')}</span>
                 </span>
                 <ChevronDown
@@ -178,13 +178,7 @@ export default function HomePage() {
           </div>
 
           {/* Geo greeting chip */}
-          <div
-            className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm text-gray-200 mb-8 border"
-            style={{
-              background: 'rgb(var(--color-accent-rgb) / 0.08)',
-              borderColor: 'rgb(var(--color-accent-rgb) / 0.25)',
-            }}
-          >
+          <div className="glass-subtle inline-flex items-center gap-2 rounded-full px-5 py-2 text-phi-sm text-gray-200 mb-8">
             <span className="text-xl">{geo.flag}</span>
             <span>
               {t('hero.greeting', {
@@ -195,19 +189,19 @@ export default function HomePage() {
           </div>
 
           {/* Main headline — driven by identity context + language */}
-          <h1 className="font-display text-5xl md:text-7xl xl:text-8xl 3xl:text-9xl font-bold leading-[1.1] mb-6">
+          <h1 className="font-display text-phi-3xl md:text-phi-4xl xl:text-phi-5xl font-bold leading-phi-tight mb-phi-5">
             <span className="text-white">
               {t(`hero.tagline.${identity.country}`) !== `hero.tagline.${identity.country}`
                 ? t(`hero.tagline.${identity.country}`)
                 : t('hero.headline')}
             </span>
             <br />
-            <span style={{ color: 'var(--color-accent)' }}>{t('hero.belong')}</span>
+            <span className="gradient-text">{t('hero.belong')}</span>
             <br />
-            <span style={{ color: 'var(--color-accent)' }}>{t('hero.goThere')}</span>
+            <span className="gradient-text">{t('hero.goThere')}</span>
           </h1>
 
-          <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-phi-lg text-gray-300 mb-10 max-w-2xl mx-auto leading-phi">
             {t('hero.subtitle', { brandName })}
           </p>
 
@@ -215,7 +209,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
             <Link
               href="/compass"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-white font-bold text-lg rounded-full px-10 py-4 transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-white font-bold text-phi-lg rounded-full px-10 py-4 transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] glow-primary"
               style={{
                 background:
                   'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
@@ -228,12 +222,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/ventures"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 font-bold text-lg rounded-full px-10 py-4 transition-all border hover:scale-[1.02] active:scale-[0.98]"
-              style={{
-                color: 'var(--color-accent)',
-                borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
-                background: 'rgb(var(--color-accent-rgb) / 0.08)',
-              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 font-bold text-phi-lg rounded-full px-10 py-4 transition-all glass-subtle text-brand-accent hover:scale-[1.02] active:scale-[0.98]"
             >
               <span>{t('hero.browseVentures')}</span>
             </Link>
@@ -249,9 +238,9 @@ export default function HomePage() {
           />
 
           {/* Tiny trust line — country-aware impact partner */}
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 text-phi-sm">
             {t('hero.pioneersTrust')} ·{' '}
-            <span className="font-medium" style={{ color: 'var(--color-accent)' }}>
+            <span className="font-medium text-brand-accent">
               {t('hero.everyBooking', { amount: activeImpactPartner.contributionAmount })}
             </span>{' '}
             {t('hero.fundsCommunity', { partner: activeImpactPartner.name })}
