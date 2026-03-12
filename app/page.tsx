@@ -302,13 +302,13 @@ export default function HomePage() {
             </div>
             <div className="flex gap-3">
               <Link
-                href="/world"
+                href="/compass"
                 className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-primary text-white font-semibold text-phi-sm
                            hover:bg-brand-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98]
                            border border-[rgb(var(--color-accent-rgb)/0.3)]"
               >
                 <Globe className="w-4 h-4" />
-                {t('home.myWorld')}
+                {t('compass.title')}
               </Link>
               <Link
                 href="/exchange"
@@ -697,13 +697,13 @@ export default function HomePage() {
           <p className="text-white/50 text-phi-base mb-8">{t('home.worldGrowingDesc')}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/world"
+              href="/exchange"
               className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-brand-primary text-white font-bold
                          hover:bg-brand-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98]
                          border border-[rgb(var(--color-accent-rgb)/0.3)] shadow-[0_8px_24px_rgb(var(--color-primary-rgb)/0.3)]"
             >
-              <Globe className="w-5 h-5" />
-              {t('home.enterMyWorld')}
+              <Sparkles className="w-5 h-5" />
+              {t('home.browseExchange')}
             </Link>
             <Link
               href="/me"

@@ -4,24 +4,13 @@
  * Single source of truth for site-wide link structure.
  * Nav.tsx and Footer.tsx both import from here.
  *
- * Human Exchange Network architecture:
- *   Logged out: logo + About + Pricing + [Sign In] + [Begin →]
- *   Logged in:  logo + My World + Exchange + Messages + Me
+ * Navigation architecture:
+ *   Public:    Home + Exchange + Compass + About + [Sign In] + [Begin →]
+ *   Logged in: Home + Exchange + Compass + Messages + Me
  */
 
 import type { LucideIcon } from 'lucide-react'
-import {
-  DollarSign,
-  Info,
-  Globe,
-  Map,
-  Send,
-  Users,
-  LogIn,
-  Compass,
-  Heart,
-  Sparkles,
-} from 'lucide-react'
+import { Info, Send, Users, LogIn, Compass, Sparkles } from 'lucide-react'
 
 export interface NavLink {
   href: string
@@ -35,17 +24,16 @@ export interface FooterLink {
   label: string
 }
 
-// ── Human Exchange Network navigation ──────────────────
+// ── Navigation links ──────────────────────────────
 export const PUBLIC_NAV_LINKS: NavLink[] = [
   { href: '/exchange', label: 'Exchange', icon: Sparkles, aria: 'Browse people and opportunities' },
-  { href: '/pricing', label: 'Pricing', icon: DollarSign, aria: 'View pricing and plans' },
+  { href: '/compass', label: 'Compass', icon: Compass, aria: 'Find your route' },
   { href: '/about', label: 'About', icon: Info, aria: 'About the platform' },
-  { href: '/charity', label: 'Charity', icon: Heart, aria: 'Community charity initiatives' },
 ]
 
 export const MAIN_NAV_LINKS: NavLink[] = [
-  { href: '/world', label: 'My World', icon: Globe, aria: 'Your network graph' },
   { href: '/exchange', label: 'Exchange', icon: Sparkles, aria: 'Browse people and opportunities' },
+  { href: '/compass', label: 'Compass', icon: Compass, aria: 'Find your route' },
   { href: '/messages', label: 'Messages', icon: Send, aria: 'Your conversations' },
   { href: '/me', label: 'Me', icon: Users, aria: 'Your profile and settings' },
 ]
@@ -59,24 +47,15 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: 'Explore',
     links: [
-      { href: '/world', label: 'My World' },
-      { href: '/messages', label: 'Messages' },
-      { href: '/me', label: 'Me' },
-    ],
-  },
-  {
-    title: 'Connect',
-    links: [
       { href: '/exchange', label: 'Exchange' },
-      { href: '/media', label: 'Media' },
-      { href: '/fashion', label: 'Fashion' },
+      { href: '/compass', label: 'Compass' },
+      { href: '/messages', label: 'Messages' },
     ],
   },
   {
     title: 'Community',
     links: [
       { href: '/charity', label: 'Charity' },
-      { href: '/referral', label: 'Referral' },
       { href: '/contact', label: 'Contact' },
     ],
   },
@@ -101,7 +80,6 @@ export const LOGIN_LINK: NavLink = {
 }
 
 // ── DEPRECATED: Legacy exports (kept for backward compat) ──
-// These will be removed in Phase 3 cleanup
 export const PRIMARY_LINKS = PUBLIC_NAV_LINKS
 export const PIONEER_NAV_LINKS = MAIN_NAV_LINKS
 export const ANCHOR_NAV_LINKS: NavLink[] = []
