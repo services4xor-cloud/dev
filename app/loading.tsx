@@ -7,7 +7,7 @@ export default function Loading() {
       className="min-h-screen flex items-center justify-center"
       style={{ backgroundColor: 'var(--color-bg)' }}
     >
-      <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-phi-4">
         {/* Lion paw spinning emblem */}
         <div
           className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl animate-spin"

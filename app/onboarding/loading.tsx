@@ -11,45 +11,23 @@ export default function OnboardingLoading() {
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="h-1.5 flex-1 rounded-full animate-pulse"
-              style={{
-                backgroundColor: i === 0 ? 'var(--color-accent)' : 'var(--color-surface-2)',
-                opacity: i === 0 ? 0.5 : 0.3,
-                animationDelay: `${i * 80}ms`,
-              }}
+              className="h-1.5 flex-1 rounded-full skeleton-shimmer"
+              style={{ animationDelay: `${i * 80}ms` }}
             />
           ))}
         </div>
 
         {/* Card skeleton */}
-        <div
-          className="rounded-2xl p-8 animate-pulse"
-          style={{
-            backgroundColor: 'var(--color-surface-2)',
-            border: '1px solid var(--color-primary)',
-          }}
-        >
+        <div className="glass rounded-2xl p-phi-6">
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-6 skeleton-shimmer" />
+          <div className="h-7 w-56 mx-auto rounded mb-3 skeleton-shimmer" />
           <div
-            className="w-16 h-16 rounded-2xl mx-auto mb-6"
-            style={{ backgroundColor: 'var(--color-primary)' }}
-          />
-          <div
-            className="h-7 w-56 mx-auto rounded mb-3"
-            style={{ backgroundColor: 'var(--color-primary)' }}
-          />
-          <div
-            className="h-4 w-72 mx-auto rounded mb-8"
-            style={{ backgroundColor: 'var(--color-primary)', opacity: 0.6 }}
+            className="h-4 w-72 mx-auto rounded mb-8 skeleton-shimmer"
+            style={{ opacity: 0.6 }}
           />
           <div className="space-y-3">
-            <div
-              className="h-12 w-full rounded-xl"
-              style={{ backgroundColor: 'var(--color-primary)' }}
-            />
-            <div
-              className="h-12 w-full rounded-xl"
-              style={{ backgroundColor: 'var(--color-primary)', opacity: 0.7 }}
-            />
+            <div className="h-12 w-full rounded-xl skeleton-shimmer" />
+            <div className="h-12 w-full rounded-xl skeleton-shimmer" style={{ opacity: 0.7 }} />
           </div>
         </div>
       </div>
