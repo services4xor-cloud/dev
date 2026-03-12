@@ -46,6 +46,7 @@ interface RankedCountry {
   score: number
   isCurrent: boolean
   tags: string[] // e.g. ['Same language', 'Direct corridor']
+  languages: string[] // ISO language codes for this country
 }
 
 /** Haversine distance between two lat/lng points in km */
@@ -122,6 +123,7 @@ function getRankedCountries(
         score,
         isCurrent: false,
         tags: tags.slice(0, 2), // Max 2 tags shown
+        languages: c.languages,
       }
     })
     .sort((a, b) => b.score - a.score)
@@ -247,11 +249,21 @@ export default function IdentitySwitcher({
   const currentOpt = COUNTRY_OPTIONS.find((c) => c.code === identity.country)
   const allRanked = getRankedCountries(identity.country, identity.language, localizeCountry)
 
-  // Filter countries by search query
+  // Filter countries by search query (name, code, or language)
   const query = search.trim().toLowerCase()
   const ranked = query
     ? allRanked.filter(
-        (c) => c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query)
+        (c) =>
+          c.name.toLowerCase().includes(query) ||
+          c.code.toLowerCase().includes(query) ||
+          c.languages.some((lang) => {
+            const entry = LANGUAGE_REGISTRY[lang as LanguageCode]
+            return (
+              lang.includes(query) ||
+              entry?.name.toLowerCase().includes(query) ||
+              entry?.nativeName.toLowerCase().includes(query)
+            )
+          })
       )
     : allRanked
 
@@ -406,18 +418,24 @@ export default function IdentitySwitcher({
                     Be{c.name}
                   </span>
                 </div>
-                {c.tags.length > 0 && (
-                  <div className="flex gap-1 mt-0.5">
-                    {c.tags.map((tag) => (
+                <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  {c.languages.slice(0, 3).map((lang) => {
+                    const entry = LANGUAGE_REGISTRY[lang as LanguageCode]
+                    return (
                       <span
-                        key={tag}
-                        className="text-[9px] px-1.5 py-0.5 rounded-full bg-white/5 text-white/30"
+                        key={lang}
+                        className={`text-[9px] ${
+                          lang === identity.language ? 'text-brand-accent/60' : 'text-white/25'
+                        }`}
                       >
-                        {tag}
+                        {entry?.nativeName ?? lang}
                       </span>
-                    ))}
-                  </div>
-                )}
+                    )
+                  })}
+                  {c.languages.length > 3 && (
+                    <span className="text-[9px] text-white/15">+{c.languages.length - 3}</span>
+                  )}
+                </div>
               </div>
               <div className="text-right shrink-0">
                 <span className="text-[10px] font-mono text-white/25 block">{c.currency}</span>
