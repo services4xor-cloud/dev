@@ -316,7 +316,7 @@ export default function IdentitySwitcher({
     <div
       role="menu"
       data-testid="identity-switcher"
-      className={`${widthClass} rounded-2xl bg-[#12121a]/95 backdrop-blur-xl border border-white/8 shadow-2xl shadow-black/80 overflow-hidden max-h-[70vh] overflow-y-auto ${className}`}
+      className={`${widthClass} rounded-2xl bg-[#12121a]/95 backdrop-blur-xl border border-white/8 shadow-2xl shadow-black/80 overflow-hidden ${className}`}
     >
       {/* ── Current (always visible, highlighted) ────── */}
       {currentOpt && (
