@@ -2301,7 +2301,7 @@ function getCraftsForCountry(country: CountryData, rng: () => number): string[] 
     if (crafts) available.push(...crafts)
   }
   // Deduplicate
-  const unique = [...new Set(available)]
+  const unique = Array.from(new Set(available))
   if (unique.length === 0) return pickN(CRAFT_SUGGESTIONS as unknown as string[], 3, rng)
   return unique
 }
@@ -2314,7 +2314,7 @@ function getInterestsForCrafts(crafts: string[]): string[] {
   }
   // Ensure at least one category
   if (ids.size === 0) ids.add('culture')
-  return [...ids]
+  return Array.from(ids)
 }
 
 function formatCraftName(craft: string): string {

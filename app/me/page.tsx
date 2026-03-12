@@ -447,29 +447,19 @@ export default function MePage() {
             <span className="mr-1">📊</span> Market Relevance
           </label>
           <div className="flex items-center gap-phi-3 mb-phi-2">
-            <span className="text-phi-xl font-bold text-brand-accent">
-              {marketScore.total}/{marketScore.maxTotal}
-            </span>
+            <span className="text-phi-xl font-bold text-brand-accent">{marketScore}/20</span>
             <div className="flex-1">
               <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-brand-accent rounded-full transition-all duration-500"
-                  style={{ width: `${(marketScore.total / marketScore.maxTotal) * 100}%` }}
+                  style={{ width: `${(marketScore / 20) * 100}%` }}
                 />
               </div>
             </div>
           </div>
-          <p className="text-xs text-white/30">Based on real-world demand signals</p>
-          <div className="mt-phi-2 grid grid-cols-1 sm:grid-cols-2 gap-phi-1">
-            {marketScore.signals.map((s) => (
-              <div key={s.dimension} className="flex items-center justify-between text-xs">
-                <span className="text-white/50">{s.label}</span>
-                <span className="text-white/40">
-                  {s.score}/{s.maxScore}
-                </span>
-              </div>
-            ))}
-          </div>
+          <p className="text-xs text-white/30">
+            Based on real-world demand signals for your craft and region
+          </p>
         </GlassCard>
 
         {/* Bio */}
