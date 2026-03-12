@@ -663,14 +663,14 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview')
 
   return (
-    <div className="min-h-screen bg-[#0a0005] text-white">
+    <div className="min-h-screen bg-brand-bg text-white">
       {/* Header */}
-      <header className="bg-[#0d0208] border-b border-brand-primary/50 sticky top-16 z-30">
+      <header className="glass-subtle border-b border-brand-accent/10 sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl">🦁</span>
             <div>
-              <span className="text-lg font-bold text-brand-accent">{t('admin.title')}</span>
+              <span className="text-phi-lg font-bold text-brand-accent">{t('admin.title')}</span>
               <span className="ml-2 text-xs bg-brand-primary text-brand-accent border border-brand-accent/30 px-2 py-0.5 rounded-full">
                 {t('admin.badge')}
               </span>
@@ -687,12 +687,15 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <SectionLayout size="sm" maxWidth="max-w-7xl">
         {/* Admin Warning Banner */}
-        <div className="bg-brand-primary/30 border border-brand-accent/30 rounded-xl px-4 py-3 mb-6 text-sm text-brand-accent flex items-center gap-2">
+        <GlassCard
+          padding="sm"
+          className="mb-phi-5 text-phi-sm text-brand-accent flex items-center gap-2 !border-brand-accent/30"
+        >
           <span>⚠️</span>
           <span>{t('admin.mockWarning')}</span>
-        </div>
+        </GlassCard>
 
         {/* Tabs */}
         <div className="flex gap-2 flex-wrap mb-8 border-b border-brand-primary/30 pb-0">
@@ -720,7 +723,7 @@ export default function AdminDashboard() {
           {activeTab === 'social' && <SocialTab />}
           {activeTab === 'settings' && <SettingsTab />}
         </div>
-      </div>
+      </SectionLayout>
     </div>
   )
 }
