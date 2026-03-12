@@ -18,7 +18,7 @@ export default function HomePage() {
     <main className="bg-brand-bg min-h-screen">
       {hasCompletedDiscovery ? (
         // Returning user: show WowHero with "Enter My World" CTA
-        <WowHero onBegin={() => router.push('/ventures')} returning />
+        <WowHero onBegin={() => router.push('/world')} returning />
       ) : !showDiscovery ? (
         <WowHero onBegin={() => setShowDiscovery(true)} />
       ) : (

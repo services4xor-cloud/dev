@@ -429,7 +429,7 @@ export default function Discovery() {
     // Commit all selections to identity context
     setLanguages(selectedLanguages)
     setInterests(selectedInterests)
-    router.push('/ventures')
+    router.push('/world')
   }
 
   return (
