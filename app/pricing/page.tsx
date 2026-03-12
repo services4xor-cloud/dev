@@ -112,9 +112,13 @@ function getPlanPrice(plan: 'basic' | 'featured' | 'premium', currencyCode: stri
   return prices[currencyCode as keyof typeof prices] ?? prices.USD
 }
 
-function formatPlanPrice(plan: 'basic' | 'featured' | 'premium', currencyCode: string): string {
+function formatPlanPrice(
+  plan: 'basic' | 'featured' | 'premium',
+  currencyCode: string,
+  freeLabel: string
+): string {
   const price = getPlanPrice(plan, currencyCode)
-  if (price === 0) return 'Free'
+  if (price === 0) return freeLabel
   const conv = CURRENCY_CONVERSIONS[currencyCode]
   if (!conv) return `$${price}`
   return `${conv.symbol} ${price.toLocaleString()}/mo`
@@ -201,7 +205,7 @@ export default function PricingPage() {
           {PRICING_PLANS.map((plan) => {
             const Icon = ICON_MAP[plan.icon] ?? Briefcase
             const planKey = plan.name.toLowerCase() as 'basic' | 'featured' | 'premium'
-            const priceDisplay = formatPlanPrice(planKey, currency)
+            const priceDisplay = formatPlanPrice(planKey, currency, t('pricing.free'))
 
             return (
               <GlassCard
@@ -226,8 +230,12 @@ export default function PricingPage() {
                   />
                 </div>
 
-                <h3 className="text-phi-xl font-bold text-white">{plan.name}</h3>
-                <p className="text-gray-400 text-phi-sm mt-1 mb-4">{plan.description}</p>
+                <h3 className="text-phi-xl font-bold text-white">
+                  {t(`pricing.plan${plan.name}`)}
+                </h3>
+                <p className="text-gray-400 text-phi-sm mt-1 mb-4">
+                  {t(`pricing.desc${plan.name}`)}
+                </p>
 
                 <div className="mb-6">
                   <div className="text-phi-2xl font-black text-white">{priceDisplay}</div>
@@ -303,19 +311,16 @@ export default function PricingPage() {
           </div>
         </GlassCard>
 
-        {/* For Explorers */}
+        {/* For Pioneers */}
         <GlassCard variant="featured" padding="lg" className="text-center">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-80" />
-          <h2 className="text-phi-xl font-bold text-white mb-2">Free for Explorers</h2>
-          <p className="opacity-90 max-w-lg mx-auto mb-6">
-            Browsing, discovering opportunities, and connecting with Hosts is always free. Start
-            exploring today.
-          </p>
+          <h2 className="text-phi-xl font-bold text-white mb-2">{t('pricing.pioneersTitle')}</h2>
+          <p className="opacity-90 max-w-lg mx-auto mb-6">{t('pricing.pioneersDesc')}</p>
           <Link
             href="/signup"
             className="bg-white text-brand-primary font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors inline-block"
           >
-            Tell us who you are
+            {t('pricing.pioneersCta')}
           </Link>
         </GlassCard>
       </SectionLayout>

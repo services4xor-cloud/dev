@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import { LANGUAGE_REGISTRY, COUNTRY_OPTIONS, type LanguageCode } from '@/lib/country-selector'
 import { getCategoriesByIds } from '@/lib/exchange-categories'
 // Real data fetched from API routes (chapters, paths, profile)
@@ -25,9 +26,21 @@ import JourneyProgress from '@/components/JourneyProgress'
 
 // ─── Tab definitions ────────────────────────────────────────────────────────
 
-const EXPLORER_TABS = ['Dashboard', 'Saved', 'Exchanges', 'Referrals'] as const
-const HOST_TABS = ['Dashboard', 'Offerings', 'Requests', 'Earnings'] as const
-const SHARED_TABS = ['Profile', 'Settings'] as const
+const EXPLORER_TAB_IDS = ['Dashboard', 'Saved', 'Exchanges', 'Referrals'] as const
+const HOST_TAB_IDS = ['Dashboard', 'Offerings', 'Requests', 'Earnings'] as const
+const SHARED_TAB_IDS = ['Profile', 'Settings'] as const
+
+const TAB_KEYS: Record<string, string> = {
+  Dashboard: 'me.tabDashboard',
+  Saved: 'me.tabSaved',
+  Exchanges: 'me.tabExchanges',
+  Referrals: 'me.tabReferrals',
+  Offerings: 'me.tabOfferings',
+  Requests: 'me.tabRequests',
+  Earnings: 'me.tabEarnings',
+  Profile: 'me.tabProfile',
+  Settings: 'me.tabSettings',
+}
 
 type TabId = string
 
@@ -64,6 +77,7 @@ function StatusBadge({ status }: { status: string }) {
 // ─── Page component ─────────────────────────────────────────────────────────
 
 export default function MePage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const {
     identity,
@@ -164,16 +178,13 @@ export default function MePage() {
       <main className="min-h-screen bg-brand-bg flex items-center justify-center">
         <div className="text-center py-16 px-4">
           <p className="text-phi-2xl mb-4">👤</p>
-          <h2 className="text-phi-xl font-bold text-white mb-3">Set Up Your Identity First</h2>
-          <p className="text-white/60 mb-6 max-w-md mx-auto">
-            Select your languages on the homepage to unlock your personal dashboard — manage your
-            paths, chapters, and connections.
-          </p>
+          <h2 className="text-phi-xl font-bold text-white mb-3">{t('me.setupTitle')}</h2>
+          <p className="text-white/60 mb-6 max-w-md mx-auto">{t('me.setupDescription')}</p>
           <Link
             href="/"
             className="inline-block bg-brand-accent text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-colors"
           >
-            Go to Discovery &rarr;
+            {t('me.goToDiscovery')}
           </Link>
         </div>
       </main>
@@ -198,12 +209,12 @@ export default function MePage() {
     marketSignals
   )
 
-  const modeTabs = identity.mode === 'explorer' ? EXPLORER_TABS : HOST_TABS
-  const allTabs = [...modeTabs, ...SHARED_TABS]
+  const modeTabs = identity.mode === 'explorer' ? EXPLORER_TAB_IDS : HOST_TAB_IDS
+  const allTabs = [...modeTabs, ...SHARED_TAB_IDS]
   const userInterests = getCategoriesByIds(identity.interests)
   const flag = getCountryFlag(identity.country)
   // Derive display name from profile or identity
-  const displayName = userProfile?.name || identity.city || countryName || 'Pioneer'
+  const displayName = userProfile?.name || identity.city || countryName || t('me.defaultName')
   const referralCode =
     userProfile?.referralCode || `BE-${displayName.replace(/\s+/g, '').toUpperCase().slice(0, 6)}`
   const initials = displayName
@@ -218,9 +229,9 @@ export default function MePage() {
   function renderExplorerDashboard() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-phi-4">
-        <StatCard label="Connections" value={12} icon={<span>🤝</span>} accent />
-        <StatCard label="Matches" value={42} icon={<span>🎯</span>} />
-        <StatCard label="Active" value={3} icon={<span>⚡</span>} />
+        <StatCard label={t('me.connections')} value={12} icon={<span>🤝</span>} accent />
+        <StatCard label={t('me.matches')} value={42} icon={<span>🎯</span>} />
+        <StatCard label={t('me.active')} value={3} icon={<span>⚡</span>} />
       </div>
     )
   }
@@ -228,9 +239,9 @@ export default function MePage() {
   function renderHostDashboard() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-phi-4">
-        <StatCard label="Views" value={156} icon={<span>👁️</span>} accent />
-        <StatCard label="Requests" value={8} icon={<span>📩</span>} />
-        <StatCard label="Earnings" value="$0" icon={<span>💰</span>} />
+        <StatCard label={t('me.views')} value={156} icon={<span>👁️</span>} accent />
+        <StatCard label={t('me.requestsCount')} value={8} icon={<span>📩</span>} />
+        <StatCard label={t('me.earningsLabel')} value="$0" icon={<span>💰</span>} />
       </div>
     )
   }
@@ -240,10 +251,8 @@ export default function MePage() {
       <GlassCard variant="subtle" padding="lg">
         <div className="text-center py-phi-7">
           <p className="text-phi-2xl mb-phi-2">🔖</p>
-          <p className="text-white/60">No saved items yet</p>
-          <p className="text-phi-sm text-white/40 mt-phi-1">
-            Save Paths and Experiences to find them here
-          </p>
+          <p className="text-white/60">{t('me.noSavedItems')}</p>
+          <p className="text-phi-sm text-white/40 mt-phi-1">{t('me.savedItemsHint')}</p>
         </div>
       </GlassCard>
     )
@@ -253,10 +262,8 @@ export default function MePage() {
     if (dbChapters.length === 0) {
       return (
         <GlassCard variant="subtle" padding="lg">
-          <p className="text-center text-white/60">No exchanges yet</p>
-          <p className="text-phi-sm text-white/40 mt-phi-1 text-center">
-            Open a Chapter on a Path to start your journey
-          </p>
+          <p className="text-center text-white/60">{t('me.noExchanges')}</p>
+          <p className="text-phi-sm text-white/40 mt-phi-1 text-center">{t('me.exchangesHint')}</p>
         </GlassCard>
       )
     }
@@ -266,8 +273,10 @@ export default function MePage() {
           <GlassCard key={ch.id} hover padding="md">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-white font-medium">{ch.path?.title ?? 'Path'}</h3>
-                <p className="text-phi-sm text-white/50">{ch.path?.company ?? 'Unknown Anchor'}</p>
+                <h3 className="text-white font-medium">{ch.path?.title ?? t('me.defaultPath')}</h3>
+                <p className="text-phi-sm text-white/50">
+                  {ch.path?.company ?? t('me.unknownAnchor')}
+                </p>
               </div>
               <StatusBadge status={ch.status} />
             </div>
@@ -281,12 +290,12 @@ export default function MePage() {
     return (
       <div className="space-y-phi-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-phi-4">
-          <StatCard label="Referrals Sent" value={3} icon={<span>📤</span>} />
-          <StatCard label="Successful" value={1} icon={<span>✅</span>} accent />
+          <StatCard label={t('me.referralsSent')} value={3} icon={<span>📤</span>} />
+          <StatCard label={t('me.successful')} value={1} icon={<span>✅</span>} accent />
         </div>
         <GlassCard variant="subtle" padding="md">
           <p className="text-phi-sm text-white/60">
-            Your referral code:{' '}
+            {t('me.yourReferralCode')}{' '}
             <span className="text-brand-accent font-mono font-medium">{referralCode}</span>
           </p>
         </GlassCard>
@@ -300,8 +309,8 @@ export default function MePage() {
         <GlassCard variant="subtle" padding="lg">
           <div className="text-center py-phi-7">
             <p className="text-phi-2xl mb-phi-2">📋</p>
-            <p className="text-white/60">No offerings yet</p>
-            <p className="text-phi-sm text-white/40 mt-phi-1">Post a Path to start hosting</p>
+            <p className="text-white/60">{t('me.noOfferings')}</p>
+            <p className="text-phi-sm text-white/40 mt-phi-1">{t('me.offeringsHint')}</p>
           </div>
         </GlassCard>
       )
@@ -347,10 +356,8 @@ export default function MePage() {
       <GlassCard variant="subtle" padding="lg">
         <div className="text-center py-phi-7">
           <p className="text-phi-2xl mb-phi-2">📬</p>
-          <p className="text-white/60">No incoming requests</p>
-          <p className="text-phi-sm text-white/40 mt-phi-1">
-            Requests from Explorers will appear here
-          </p>
+          <p className="text-white/60">{t('me.noRequests')}</p>
+          <p className="text-phi-sm text-white/40 mt-phi-1">{t('me.requestsHint')}</p>
         </div>
       </GlassCard>
     )
@@ -361,10 +368,8 @@ export default function MePage() {
       <GlassCard variant="subtle" padding="lg">
         <div className="text-center py-phi-7">
           <p className="text-phi-2xl mb-phi-2">💵</p>
-          <p className="text-white/60">No earnings yet</p>
-          <p className="text-phi-sm text-white/40 mt-phi-1">
-            Start hosting to earn through the platform
-          </p>
+          <p className="text-white/60">{t('me.noEarnings')}</p>
+          <p className="text-phi-sm text-white/40 mt-phi-1">{t('me.earningsHint')}</p>
         </div>
       </GlassCard>
     )
@@ -378,14 +383,14 @@ export default function MePage() {
         {/* 1. Location */}
         <GlassCard padding="md">
           <label className="block text-phi-sm text-white/60 mb-phi-1">
-            <span className="mr-1">📍</span> Location
+            <span className="mr-1">📍</span> {t('me.location')}
           </label>
           <input
             type="text"
             value={editCity}
             onChange={(e) => setEditCity(e.target.value)}
             onBlur={() => setCity(editCity)}
-            placeholder="e.g. Nairobi"
+            placeholder={t('me.locationPlaceholder')}
             className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors"
           />
           <p className="text-xs text-white/30 mt-phi-1">
@@ -397,7 +402,7 @@ export default function MePage() {
         {/* 2. Languages */}
         <GlassCard padding="md">
           <label className="block text-phi-sm text-white/60 mb-phi-2">
-            <span className="mr-1">🗣️</span> Languages
+            <span className="mr-1">🗣️</span> {t('me.languages')}
           </label>
           <div className="flex flex-wrap gap-phi-2">
             {identity.languages.map((code) => (
@@ -417,7 +422,7 @@ export default function MePage() {
               </span>
             ))}
             {identity.languages.length === 0 && (
-              <span className="text-phi-sm text-white/30 italic">No languages selected</span>
+              <span className="text-phi-sm text-white/30 italic">{t('me.noLanguages')}</span>
             )}
           </div>
         </GlassCard>
@@ -425,7 +430,7 @@ export default function MePage() {
         {/* 3. Craft */}
         <GlassCard padding="md">
           <label className="block text-phi-sm text-white/60 mb-phi-2">
-            <span className="mr-1">🛠️</span> Craft &amp; Skills
+            <span className="mr-1">🛠️</span> {t('me.craftAndSkills')}
           </label>
           <div className="flex flex-wrap gap-phi-2">
             {identity.craft.map((skill) => (
@@ -445,7 +450,7 @@ export default function MePage() {
               </span>
             ))}
             {identity.craft.length === 0 && (
-              <span className="text-phi-sm text-white/30 italic">No crafts added yet</span>
+              <span className="text-phi-sm text-white/30 italic">{t('me.noCrafts')}</span>
             )}
           </div>
           {/* Craft search + suggestions */}
@@ -454,7 +459,7 @@ export default function MePage() {
               type="text"
               value={craftSearch}
               onChange={(e) => setCraftSearch(e.target.value)}
-              placeholder="Search crafts to add..."
+              placeholder={t('me.craftSearchPlaceholder')}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-phi-sm text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors mb-phi-2"
             />
             {craftSearch.length >= 2 && (
@@ -486,7 +491,7 @@ export default function MePage() {
         {/* 4. Interests / Passion */}
         <GlassCard padding="md">
           <label className="block text-phi-sm text-white/60 mb-phi-2">
-            <span className="mr-1">❤️</span> Passion &amp; Interests
+            <span className="mr-1">❤️</span> {t('me.passionAndInterests')}
           </label>
           <div className="flex flex-wrap gap-phi-2">
             {userInterests.map((cat) => (
@@ -507,7 +512,7 @@ export default function MePage() {
               </span>
             ))}
             {userInterests.length === 0 && (
-              <span className="text-phi-sm text-white/30 italic">No interests selected</span>
+              <span className="text-phi-sm text-white/30 italic">{t('me.noInterests')}</span>
             )}
           </div>
         </GlassCard>
@@ -515,7 +520,7 @@ export default function MePage() {
         {/* 5. Reach */}
         <GlassCard padding="md">
           <label className="block text-phi-sm text-white/60 mb-phi-2">
-            <span className="mr-1">🌐</span> Reach
+            <span className="mr-1">🌐</span> {t('me.reach')}
           </label>
           <div className="flex flex-wrap gap-phi-2">
             {identity.reach.map((id) => {
@@ -539,7 +544,7 @@ export default function MePage() {
               )
             })}
             {identity.reach.length === 0 && (
-              <span className="text-phi-sm text-white/30 italic">No reach preferences set</span>
+              <span className="text-phi-sm text-white/30 italic">{t('me.noReach')}</span>
             )}
           </div>
           {/* Available reach options to add */}
@@ -564,7 +569,7 @@ export default function MePage() {
         {/* 6. Faith (multi-select) */}
         <GlassCard padding="md">
           <label className="block text-phi-sm text-white/60 mb-phi-2">
-            <span className="mr-1">🙏</span> Faith
+            <span className="mr-1">🙏</span> {t('me.faith')}
           </label>
           {/* Selected faith badges with remove */}
           {faithOptions.length > 0 && (
@@ -605,14 +610,14 @@ export default function MePage() {
             </div>
           )}
           {faithOptions.length === 0 && FAITH_OPTIONS.length === 0 && (
-            <span className="text-phi-sm text-white/30 italic">Not specified</span>
+            <span className="text-phi-sm text-white/30 italic">{t('me.notSpecified')}</span>
           )}
         </GlassCard>
 
         {/* 7. Culture */}
         <GlassCard padding="md">
           <label className="block text-phi-sm text-white/60 mb-phi-2">
-            <span className="mr-1">🌿</span> Culture
+            <span className="mr-1">🌿</span> {t('me.culture')}
           </label>
           {identity.culture ? (
             <div className="flex items-center gap-phi-2 mb-phi-3">
@@ -629,7 +634,7 @@ export default function MePage() {
               </span>
             </div>
           ) : (
-            <p className="text-phi-sm text-white/30 italic mb-phi-3">Not specified</p>
+            <p className="text-phi-sm text-white/30 italic mb-phi-3">{t('me.notSpecified')}</p>
           )}
           {/* Suggestions based on country */}
           {(() => {
@@ -656,7 +661,7 @@ export default function MePage() {
         {/* 8. Market Score */}
         <GlassCard padding="md">
           <label className="block text-phi-sm text-white/60 mb-phi-2">
-            <span className="mr-1">📊</span> Market Relevance
+            <span className="mr-1">📊</span> {t('me.marketRelevance')}
           </label>
           <div className="flex items-center gap-phi-3 mb-phi-2">
             <span className="text-phi-xl font-bold text-brand-accent">{marketScore}/20</span>
@@ -669,18 +674,16 @@ export default function MePage() {
               </div>
             </div>
           </div>
-          <p className="text-xs text-white/30">
-            Based on real-world demand signals for your craft and region
-          </p>
+          <p className="text-xs text-white/30">{t('me.marketDescription')}</p>
         </GlassCard>
 
         {/* Bio */}
         <GlassCard padding="md">
-          <label className="block text-phi-sm text-white/60 mb-phi-1">Bio</label>
+          <label className="block text-phi-sm text-white/60 mb-phi-1">{t('me.bio')}</label>
           <textarea
             value={editBio}
             onChange={(e) => setEditBio(e.target.value)}
-            placeholder="Tell others about yourself..."
+            placeholder={t('me.bioPlaceholder')}
             rows={4}
             className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors resize-none"
           />
@@ -695,8 +698,8 @@ export default function MePage() {
         <GlassCard padding="md">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-white font-medium">Push notifications</h3>
-              <p className="text-phi-sm text-white/50">Get notified about new matches</p>
+              <h3 className="text-white font-medium">{t('me.pushNotifications')}</h3>
+              <p className="text-phi-sm text-white/50">{t('me.pushNotificationsDesc')}</p>
             </div>
             <div className="w-10 h-6 rounded-full bg-brand-accent/30 relative cursor-pointer">
               <div className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-brand-accent transition-transform" />
@@ -707,8 +710,8 @@ export default function MePage() {
         <GlassCard padding="md">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-white font-medium">Email updates</h3>
-              <p className="text-phi-sm text-white/50">Weekly digest of opportunities</p>
+              <h3 className="text-white font-medium">{t('me.emailUpdates')}</h3>
+              <p className="text-phi-sm text-white/50">{t('me.emailUpdatesDesc')}</p>
             </div>
             <div className="w-10 h-6 rounded-full bg-white/10 relative cursor-pointer">
               <div className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white/40 transition-transform" />
@@ -719,8 +722,8 @@ export default function MePage() {
         <GlassCard padding="md">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-white font-medium">Profile visibility</h3>
-              <p className="text-phi-sm text-white/50">Allow others to find you</p>
+              <h3 className="text-white font-medium">{t('me.profileVisibility')}</h3>
+              <p className="text-phi-sm text-white/50">{t('me.profileVisibilityDesc')}</p>
             </div>
             <div className="w-10 h-6 rounded-full bg-brand-accent/30 relative cursor-pointer">
               <div className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-brand-accent transition-transform translate-x-4" />
@@ -795,9 +798,9 @@ export default function MePage() {
           </div>
 
           {/* Match count + dimension count */}
-          <p className="text-phi-sm text-brand-accent">Connected to 42 people</p>
+          <p className="text-phi-sm text-brand-accent">{t('me.connectedTo', { count: '42' })}</p>
           <p className="text-phi-sm text-white/40 mt-phi-1">
-            {activeDimensions}/8 dimensions active
+            {t('me.dimensionsActive', { count: String(activeDimensions) })}
           </p>
         </div>
 
@@ -867,7 +870,7 @@ export default function MePage() {
                   : 'glass-subtle text-white/60 hover:text-white/80'
               }`}
             >
-              {tab}
+              {t(TAB_KEYS[tab] || tab)}
             </button>
           ))}
         </div>

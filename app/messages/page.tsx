@@ -12,6 +12,7 @@ import { getSignalsForRegion } from '@/lib/market-data'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import GlassCard from '@/components/ui/GlassCard'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 /** Resolve a language code to its human-readable name */
 function langCodeToName(code: string): string {
@@ -97,14 +98,14 @@ const CHANNEL_MESSAGES: Record<string, MockMessage[]> = {
 
 // ── Thread type labels ───────────────────────────────────────────────
 
-const TYPE_LABELS: Record<string, string> = {
-  country: 'Countries',
-  tribe: 'Tribes',
-  language: 'Languages',
-  interest: 'Interests',
-  religion: 'Faith',
-  science: 'Knowledge',
-  location: 'Locations',
+const TYPE_LABEL_KEYS: Record<string, string> = {
+  country: 'messages.typeCountries',
+  tribe: 'messages.typeTribes',
+  language: 'messages.typeLanguages',
+  interest: 'messages.typeInterests',
+  religion: 'messages.typeFaith',
+  science: 'messages.typeKnowledge',
+  location: 'messages.typeLocations',
 }
 
 // ── Component ────────────────────────────────────────────────────────
@@ -449,6 +450,7 @@ export default function MessagesPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { identity, hasCompletedDiscovery } = useIdentity()
+  const { t } = useTranslation()
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
   const [showMobileContent, setShowMobileContent] = useState(false)
   const [chatMessages, setChatMessages] = useState<
@@ -609,16 +611,13 @@ export default function MessagesPage() {
       <main className="min-h-screen bg-brand-bg flex items-center justify-center">
         <div className="text-center py-16 px-4">
           <p className="text-phi-2xl mb-4">💬</p>
-          <h2 className="text-phi-xl font-bold text-white mb-3">Set Up Your Identity First</h2>
-          <p className="text-white/60 mb-6 max-w-md mx-auto">
-            Select your languages on the homepage to unlock Messages and start connecting with
-            people in your communities.
-          </p>
+          <h2 className="text-phi-xl font-bold text-white mb-3">{t('messages.setupIdentity')}</h2>
+          <p className="text-white/60 mb-6 max-w-md mx-auto">{t('messages.setupIdentityDesc')}</p>
           <Link
             href="/"
             className="inline-block bg-brand-accent text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-colors"
           >
-            Go to Discovery &rarr;
+            {t('messages.goToDiscovery')} &rarr;
           </Link>
         </div>
       </main>
@@ -673,7 +672,7 @@ export default function MessagesPage() {
         return (
           <div key={type} className="mb-phi-3">
             <h3 className="mb-phi-1 px-phi-3 text-phi-xs font-semibold uppercase tracking-wider text-white/40">
-              {TYPE_LABELS[type] || type}
+              {TYPE_LABEL_KEYS[type] ? t(TYPE_LABEL_KEYS[type]) : type}
             </h3>
             <div className="space-y-px">
               {threads.map((thread) => (
@@ -697,7 +696,7 @@ export default function MessagesPage() {
                     </p>
                     {thread.memberCount && (
                       <p className="text-phi-xs text-white/30">
-                        {thread.memberCount.toLocaleString()} members
+                        {t('messages.memberCount', { count: thread.memberCount.toLocaleString() })}
                       </p>
                     )}
                   </div>
@@ -711,7 +710,7 @@ export default function MessagesPage() {
       {/* Direct Messages — AI agent conversation starters */}
       <div className="mt-phi-5 border-t border-white/10 pt-phi-3">
         <h3 className="mb-phi-2 px-phi-3 text-phi-xs font-semibold uppercase tracking-wider text-white/40">
-          Direct Messages
+          {t('messages.directMessages')}
         </h3>
         {topAgents.length > 0 ? (
           <div className="space-y-px">
@@ -736,7 +735,8 @@ export default function MessagesPage() {
                     {agent.name}
                   </p>
                   <p className="truncate text-phi-xs text-white/30">
-                    {agent.city}, {agent.country} · {score}% match
+                    {agent.city}, {agent.country} ·{' '}
+                    {t('messages.matchPercent', { score: String(score) })}
                   </p>
                 </div>
               </button>
@@ -744,9 +744,7 @@ export default function MessagesPage() {
           </div>
         ) : (
           <GlassCard variant="subtle" padding="sm" className="mx-phi-3">
-            <p className="text-phi-sm text-white/40">
-              Connect with someone on Exchange to start a conversation
-            </p>
+            <p className="text-phi-sm text-white/40">{t('messages.connectToStart')}</p>
           </GlassCard>
         )}
       </div>
@@ -785,7 +783,8 @@ export default function MessagesPage() {
             {selectedAgent.agent.name}
           </h2>
           <p className="text-phi-xs text-white/50">
-            {selectedAgent.agent.city}, {selectedAgent.agent.country} · {selectedAgent.score}% match
+            {selectedAgent.agent.city}, {selectedAgent.agent.country} ·{' '}
+            {t('messages.matchPercent', { score: String(selectedAgent.score) })}
           </p>
         </div>
       </div>
@@ -794,7 +793,8 @@ export default function MessagesPage() {
       <div className="flex-1 space-y-phi-3 overflow-y-auto px-phi-5 py-phi-5">
         <GlassCard variant="subtle" padding="sm" className="mb-phi-5">
           <p className="text-phi-sm text-white/50">
-            <span className="font-medium text-brand-accent">About:</span> {selectedAgent.agent.bio}
+            <span className="font-medium text-brand-accent">{t('messages.about')}:</span>{' '}
+            {selectedAgent.agent.bio}
           </p>
         </GlassCard>
 
@@ -809,7 +809,9 @@ export default function MessagesPage() {
                 <span className="text-phi-sm font-medium text-white">
                   🤖 {selectedAgent.agent.name}
                 </span>
-                <span className="text-phi-xs text-white/30">Conversation starter</span>
+                <span className="text-phi-xs text-white/30">
+                  {t('messages.conversationStarter')}
+                </span>
               </div>
               <p className="text-phi-sm text-white/70">{proposal}</p>
             </GlassCard>
@@ -820,7 +822,7 @@ export default function MessagesPage() {
         {selectedAgent.agent.craft.length > 0 && (
           <div className="pt-phi-3">
             <p className="mb-phi-2 text-phi-xs font-semibold uppercase tracking-wider text-white/30">
-              Crafts
+              {t('messages.crafts')}
             </p>
             <div className="flex flex-wrap gap-phi-1">
               {selectedAgent.agent.craft.map((c) => (
@@ -843,7 +845,7 @@ export default function MessagesPage() {
         {selectedAgent.agent.faith.length > 0 && (
           <div className="pt-phi-3">
             <p className="mb-phi-2 text-phi-xs font-semibold uppercase tracking-wider text-white/30">
-              Faith &amp; Beliefs
+              {t('messages.faithBeliefs')}
             </p>
             <div className="flex flex-wrap gap-phi-1">
               {selectedAgent.agent.faith.map((f) => {
@@ -869,7 +871,7 @@ export default function MessagesPage() {
         {selectedAgent.agent.languages.length > 0 && (
           <div className="pt-phi-3">
             <p className="mb-phi-2 text-phi-xs font-semibold uppercase tracking-wider text-white/30">
-              Languages
+              {t('messages.languages')}
             </p>
             <div className="flex flex-wrap gap-phi-1">
               {selectedAgent.agent.languages.map((l) => {
@@ -895,7 +897,7 @@ export default function MessagesPage() {
         {selectedAgent.agent.interests.length > 0 && (
           <div className="pt-phi-3">
             <p className="mb-phi-2 text-phi-xs font-semibold uppercase tracking-wider text-white/30">
-              Interests
+              {t('messages.interests')}
             </p>
             <div className="flex flex-wrap gap-phi-1">
               {selectedAgent.agent.interests.map((i) => {
@@ -942,24 +944,29 @@ export default function MessagesPage() {
               className="mt-phi-3 border border-brand-accent/20"
             >
               <p className="mb-phi-1 text-phi-xs font-semibold uppercase tracking-wider text-brand-accent">
-                What You Share
+                {t('messages.whatYouShare')}
               </p>
               <div className="space-y-1">
                 {sharedLangs.length > 0 && (
                   <p className="text-phi-xs text-white/60">
-                    🗣 Languages: {sharedLangs.map(langCodeToName).join(', ')}
+                    🗣 {t('messages.languages')}: {sharedLangs.map(langCodeToName).join(', ')}
                   </p>
                 )}
                 {sharedFaith.length > 0 && (
-                  <p className="text-phi-xs text-white/60">🙏 Faith: {sharedFaith.join(', ')}</p>
+                  <p className="text-phi-xs text-white/60">
+                    🙏 {t('messages.faith')}: {sharedFaith.join(', ')}
+                  </p>
                 )}
                 {sharedInterests.length > 0 && (
                   <p className="text-phi-xs text-white/60">
-                    💡 Interests: {sharedInterests.map((i) => categoryInfo(i).label).join(', ')}
+                    💡 {t('messages.interests')}:{' '}
+                    {sharedInterests.map((i) => categoryInfo(i).label).join(', ')}
                   </p>
                 )}
                 {sharedCraft.length > 0 && (
-                  <p className="text-phi-xs text-white/60">🛠 Crafts: {sharedCraft.join(', ')}</p>
+                  <p className="text-phi-xs text-white/60">
+                    🛠 {t('messages.crafts')}: {sharedCraft.join(', ')}
+                  </p>
                 )}
               </div>
             </GlassCard>
@@ -970,10 +977,10 @@ export default function MessagesPage() {
         <div className="mt-phi-5 rounded-xl border border-white/10 bg-white/[0.03] p-phi-3">
           <div className="mb-phi-2 flex items-center justify-between">
             <p className="text-phi-xs font-semibold uppercase tracking-wider text-white/40">
-              Your Identity
+              {t('messages.yourIdentity')}
             </p>
             <Link href="/me" className="text-phi-xs text-brand-accent hover:underline">
-              Edit &rarr;
+              {t('messages.edit')} &rarr;
             </Link>
           </div>
           <div className="space-y-1">
@@ -1016,7 +1023,7 @@ export default function MessagesPage() {
             >
               <div className="mb-phi-1 flex items-baseline gap-phi-2">
                 <span className="text-phi-sm font-medium text-white">
-                  {msg.author === 'user' ? 'You' : `🤖 ${selectedAgent.agent.name}`}
+                  {msg.author === 'user' ? t('messages.you') : `🤖 ${selectedAgent.agent.name}`}
                 </span>
                 <span className="text-phi-xs text-white/30">{msg.time}</span>
               </div>
@@ -1040,7 +1047,7 @@ export default function MessagesPage() {
                 handleSendMessage(selectedAgent.agent.id, selectedAgent.agent)
               }
             }}
-            placeholder={`Message ${selectedAgent.agent.name}...`}
+            placeholder={t('messages.messagePlaceholder', { name: selectedAgent.agent.name })}
             className="flex-1 bg-transparent text-phi-sm text-white placeholder-white/30 outline-none"
           />
           <button
@@ -1097,7 +1104,7 @@ export default function MessagesPage() {
         {/* Channel description */}
         <GlassCard variant="subtle" padding="sm" className="mb-phi-5">
           <p className="text-phi-sm text-white/50">
-            <span className="font-medium text-brand-accent">About this channel:</span>{' '}
+            <span className="font-medium text-brand-accent">{t('messages.aboutChannel')}:</span>{' '}
             {selectedThread.description}
           </p>
         </GlassCard>
@@ -1120,9 +1127,7 @@ export default function MessagesPage() {
           ))
         ) : (
           <div className="py-phi-7 text-center">
-            <p className="text-phi-sm text-white/30">
-              No messages yet. Be the first to start a conversation!
-            </p>
+            <p className="text-phi-sm text-white/30">{t('messages.noMessagesYet')}</p>
           </div>
         )}
       </div>
@@ -1132,7 +1137,7 @@ export default function MessagesPage() {
         <div className="glass-subtle flex items-center gap-phi-2 rounded-lg px-phi-3 py-phi-2">
           <input
             type="text"
-            placeholder={`Message ${selectedThread.brandName}...`}
+            placeholder={t('messages.messagePlaceholder', { name: selectedThread.brandName })}
             className="flex-1 bg-transparent text-phi-sm text-white placeholder-white/30 outline-none"
             disabled
           />
@@ -1158,10 +1163,8 @@ export default function MessagesPage() {
   ) : (
     <div className="flex h-full items-center justify-center">
       <div className="text-center">
-        <p className="text-phi-lg text-white/20">Select a conversation</p>
-        <p className="mt-phi-1 text-phi-sm text-white/10">
-          Choose a community channel or AI agent to view messages
-        </p>
+        <p className="text-phi-lg text-white/20">{t('messages.selectConversation')}</p>
+        <p className="mt-phi-1 text-phi-sm text-white/10">{t('messages.selectConversationDesc')}</p>
       </div>
     </div>
   )
@@ -1172,10 +1175,8 @@ export default function MessagesPage() {
     <main className="min-h-screen bg-brand-bg px-phi-3 py-phi-5 md:px-phi-7">
       {/* Page title */}
       <div className="mx-auto mb-phi-5 max-w-7xl">
-        <h1 className="gradient-text text-phi-2xl font-bold">Messages</h1>
-        <p className="mt-phi-1 text-phi-sm text-white/50">
-          Community channels and direct conversations
-        </p>
+        <h1 className="gradient-text text-phi-2xl font-bold">{t('messages.title')}</h1>
+        <p className="mt-phi-1 text-phi-sm text-white/50">{t('messages.subtitle')}</p>
       </div>
 
       {/* Two-column layout */}

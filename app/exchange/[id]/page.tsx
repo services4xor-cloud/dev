@@ -15,6 +15,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { ArrowLeft, Globe, MapPin, Briefcase, Star, MessageCircle, Zap, Send } from 'lucide-react'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 // Real paths fetched from /api/paths/[id] (Prisma → Neon PostgreSQL)
 import { generateAllAgents } from '@/lib/agents'
@@ -60,6 +61,7 @@ export default function ExchangeDetailPage() {
   const params = useParams()
   const router = useRouter()
   const { identity, hasCompletedDiscovery } = useIdentity()
+  const { t } = useTranslation()
   const id = params.id as string
   const [messageSent, setMessageSent] = useState(false)
 
@@ -126,14 +128,14 @@ export default function ExchangeDetailPage() {
     return (
       <SectionLayout>
         <div className="py-phi-7 text-center">
-          <h1 className="text-phi-xl font-bold text-white">Not Found</h1>
-          <p className="mt-phi-2 text-white/50">This exchange item could not be found.</p>
+          <h1 className="text-phi-xl font-bold text-white">{t('exchangeDetail.notFound')}</h1>
+          <p className="mt-phi-2 text-white/50">{t('exchangeDetail.notFoundDesc')}</p>
           <Link
             href="/exchange"
             className="mt-phi-4 inline-flex items-center gap-phi-1 text-brand-accent hover:text-brand-accent/80 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Exchange
+            {t('exchangeDetail.backToExchange')}
           </Link>
         </div>
       </SectionLayout>
@@ -164,7 +166,7 @@ export default function ExchangeDetailPage() {
           className="mb-phi-4 inline-flex items-center gap-phi-1 text-phi-sm text-white/50 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Exchange
+          {t('exchangeDetail.backToExchange')}
         </Link>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -177,7 +179,9 @@ export default function ExchangeDetailPage() {
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-3xl">{agent.avatar}</span>
                     <span className="px-2 py-0.5 rounded-full text-phi-xs bg-brand-primary/30 text-white">
-                      {agent.type === 'ai' ? '🤖 AI Agent' : '✨ Human'}
+                      {agent.type === 'ai'
+                        ? `🤖 ${t('exchangeDetail.aiAgent')}`
+                        : `✨ ${t('exchangeDetail.human')}`}
                     </span>
                   </div>
                   <h1 className="text-phi-2xl font-bold text-white">{agent.name}</h1>
@@ -191,13 +195,15 @@ export default function ExchangeDetailPage() {
                 </div>
                 <div className="text-right">
                   <div className="text-phi-2xl font-bold text-brand-accent">{score}%</div>
-                  <div className="text-phi-xs text-white/40">match</div>
+                  <div className="text-phi-xs text-white/40">{t('exchangeDetail.match')}</div>
                 </div>
               </div>
 
               {/* Bio */}
               <div className="mb-phi-5">
-                <h2 className="text-phi-base font-semibold text-white/70 mb-2">About</h2>
+                <h2 className="text-phi-base font-semibold text-white/70 mb-2">
+                  {t('exchangeDetail.about')}
+                </h2>
                 <p className="text-white/60 leading-relaxed">{agent.bio}</p>
               </div>
 
@@ -206,7 +212,7 @@ export default function ExchangeDetailPage() {
                 <div className="mb-phi-5">
                   <h2 className="text-phi-base font-semibold text-white/70 mb-2 flex items-center gap-2">
                     <Zap className="w-4 h-4 text-brand-accent" />
-                    Exchange Proposals
+                    {t('exchangeDetail.proposals')}
                   </h2>
                   <div className="space-y-2">
                     {agent.exchangeProposals.map((proposal, i) => (
@@ -223,7 +229,9 @@ export default function ExchangeDetailPage() {
 
               {/* Languages */}
               <div className="mb-phi-5">
-                <h2 className="text-phi-base font-semibold text-white/70 mb-2">Languages</h2>
+                <h2 className="text-phi-base font-semibold text-white/70 mb-2">
+                  {t('exchangeDetail.languages')}
+                </h2>
                 <div className="flex flex-wrap gap-2">
                   {agent.languages.map((code) => {
                     const shared = sharedLangs.includes(code)
@@ -247,7 +255,9 @@ export default function ExchangeDetailPage() {
 
               {/* Craft & Skills */}
               <div className="mb-phi-5">
-                <h2 className="text-phi-base font-semibold text-white/70 mb-2">Craft & Skills</h2>
+                <h2 className="text-phi-base font-semibold text-white/70 mb-2">
+                  {t('exchangeDetail.craftSkills')}
+                </h2>
                 <div className="flex flex-wrap gap-2">
                   {agent.craft.map((skill) => {
                     const shared = sharedCraft.includes(skill)
@@ -269,7 +279,9 @@ export default function ExchangeDetailPage() {
 
               {/* Interests */}
               <div>
-                <h2 className="text-phi-base font-semibold text-white/70 mb-2">Interests</h2>
+                <h2 className="text-phi-base font-semibold text-white/70 mb-2">
+                  {t('exchangeDetail.interests')}
+                </h2>
                 <div className="flex flex-wrap gap-2">
                   {agent.interests.map((intId) => {
                     const cat = EXCHANGE_CATEGORIES.find((c) => c.id === intId)
@@ -296,7 +308,9 @@ export default function ExchangeDetailPage() {
           <div className="space-y-4">
             {/* Dimension Breakdown */}
             <GlassCard padding="md">
-              <h3 className="text-phi-base font-semibold text-white mb-3">Match Breakdown</h3>
+              <h3 className="text-phi-base font-semibold text-white mb-3">
+                {t('exchangeDetail.matchBreakdown')}
+              </h3>
               <div className="space-y-2.5">
                 {(
                   [
@@ -331,7 +345,9 @@ export default function ExchangeDetailPage() {
                 })}
               </div>
               <div className="mt-3 pt-3 border-t border-white/10 flex justify-between">
-                <span className="text-phi-sm text-white/60 font-medium">Total</span>
+                <span className="text-phi-sm text-white/60 font-medium">
+                  {t('exchangeDetail.total')}
+                </span>
                 <span className="text-phi-sm text-brand-accent font-bold">{score}%</span>
               </div>
             </GlassCard>
@@ -339,7 +355,9 @@ export default function ExchangeDetailPage() {
             {/* Shared Languages */}
             {sharedLangs.length > 0 && (
               <GlassCard padding="md">
-                <h3 className="text-phi-sm font-semibold text-white/70 mb-2">You both speak</h3>
+                <h3 className="text-phi-sm font-semibold text-white/70 mb-2">
+                  {t('exchangeDetail.youBothSpeak')}
+                </h3>
                 <div className="flex flex-wrap gap-1.5">
                   {sharedLangs.map((l) => (
                     <span
@@ -358,8 +376,12 @@ export default function ExchangeDetailPage() {
               {messageSent ? (
                 <div className="text-center py-2">
                   <div className="text-2xl mb-2">✅</div>
-                  <p className="text-brand-accent font-semibold text-phi-sm">Connection sent!</p>
-                  <p className="text-white/40 text-phi-xs mt-1">Redirecting to messages...</p>
+                  <p className="text-brand-accent font-semibold text-phi-sm">
+                    {t('exchangeDetail.connectionSent')}
+                  </p>
+                  <p className="text-white/40 text-phi-xs mt-1">
+                    {t('exchangeDetail.redirecting')}
+                  </p>
                 </div>
               ) : (
                 <>
@@ -368,10 +390,10 @@ export default function ExchangeDetailPage() {
                     className="w-full flex items-center justify-center gap-2 rounded-lg bg-brand-primary py-3 text-phi-base font-semibold text-white transition-all hover:bg-brand-primary/80 active:scale-[0.98] mb-2"
                   >
                     <MessageCircle className="w-4 h-4" />
-                    Connect with {agent.name.split(' ')[0]}
+                    {t('exchangeDetail.connectWith', { name: agent.name.split(' ')[0] })}
                   </button>
                   <p className="text-center text-phi-xs text-white/30">
-                    Opens a conversation in Messages
+                    {t('exchangeDetail.opensConversation')}
                   </p>
                 </>
               )}
@@ -389,7 +411,7 @@ export default function ExchangeDetailPage() {
     const salaryDisplay =
       path.salaryMin || path.salaryMax
         ? `${path.currency} ${(path.salaryMin || 0).toLocaleString()}${path.salaryMax ? ` - ${path.salaryMax.toLocaleString()}` : '+'}`
-        : 'Competitive'
+        : t('exchangeDetail.competitive')
     const postedAgo = (() => {
       const diff = Date.now() - new Date(path.createdAt).getTime()
       const h = Math.floor(diff / 3600000)
@@ -412,7 +434,7 @@ export default function ExchangeDetailPage() {
           className="mb-phi-4 inline-flex items-center gap-phi-1 text-phi-sm text-white/50 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Exchange
+          {t('exchangeDetail.backToExchange')}
         </Link>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -453,22 +475,24 @@ export default function ExchangeDetailPage() {
               {/* Details grid */}
               <div className="mb-phi-5 grid grid-cols-2 gap-3">
                 <div className="glass-subtle rounded-lg p-3">
-                  <p className="text-phi-xs text-white/40">Compensation</p>
+                  <p className="text-phi-xs text-white/40">{t('exchangeDetail.compensation')}</p>
                   <p className="text-phi-sm font-semibold text-white">{salaryDisplay}</p>
                 </div>
                 <div className="glass-subtle rounded-lg p-3">
-                  <p className="text-phi-xs text-white/40">Posted</p>
+                  <p className="text-phi-xs text-white/40">{t('exchangeDetail.posted')}</p>
                   <p className="text-phi-sm font-semibold text-white">{postedAgo}</p>
                 </div>
                 {path._count && path._count.chapters > 0 && (
                   <div className="glass-subtle rounded-lg p-3">
-                    <p className="text-phi-xs text-white/40">Chapters Opened</p>
+                    <p className="text-phi-xs text-white/40">
+                      {t('exchangeDetail.chaptersOpened')}
+                    </p>
                     <p className="text-phi-sm font-semibold text-white">{path._count.chapters}</p>
                   </div>
                 )}
                 {path.sector && (
                   <div className="glass-subtle rounded-lg p-3">
-                    <p className="text-phi-xs text-white/40">Sector</p>
+                    <p className="text-phi-xs text-white/40">{t('exchangeDetail.sector')}</p>
                     <p className="text-phi-sm font-semibold text-white capitalize">{path.sector}</p>
                   </div>
                 )}
@@ -478,7 +502,7 @@ export default function ExchangeDetailPage() {
               {path.description && (
                 <div className="mb-phi-5">
                   <h2 className="mb-2 text-phi-base font-semibold text-white/70">
-                    About this Path
+                    {t('exchangeDetail.aboutPath')}
                   </h2>
                   <p className="text-white/60 text-phi-sm leading-relaxed whitespace-pre-line">
                     {path.description}
@@ -488,7 +512,9 @@ export default function ExchangeDetailPage() {
 
               {/* Skills */}
               <div>
-                <h2 className="mb-2 text-phi-base font-semibold text-white/70">Skills Required</h2>
+                <h2 className="mb-2 text-phi-base font-semibold text-white/70">
+                  {t('exchangeDetail.skillsRequired')}
+                </h2>
                 <div className="flex flex-wrap gap-2">
                   {path.skills.map((skill) => {
                     const shared = (identity.craft ?? []).some(
@@ -522,15 +548,17 @@ export default function ExchangeDetailPage() {
                 className="w-full flex items-center justify-center gap-2 rounded-lg border border-brand-accent/40 py-3 text-phi-base font-semibold text-brand-accent transition-all hover:bg-brand-accent/10 active:scale-[0.98] mb-2"
               >
                 <Send className="w-4 h-4" />
-                Apply for this Path
+                {t('exchangeDetail.applyForPath')}
               </button>
               <p className="text-center text-phi-xs text-white/30">
-                Opens a conversation with the Anchor
+                {t('exchangeDetail.opensConversationAnchor')}
               </p>
             </GlassCard>
 
             <GlassCard padding="md">
-              <h3 className="text-phi-sm font-semibold text-white/70 mb-2">Posted by</h3>
+              <h3 className="text-phi-sm font-semibold text-white/70 mb-2">
+                {t('exchangeDetail.postedBy')}
+              </h3>
               <p className="text-white font-medium">{anchorName}</p>
               <p className="text-white/40 text-phi-xs mt-1">
                 {countryInfo?.flag} {path.location}
