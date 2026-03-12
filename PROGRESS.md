@@ -1,31 +1,66 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 51 (2026-03-12) — World Dimensions + AI Agent Network
+> Last updated: Session 52 (2026-03-12) — Full Audit + Live Wiring + Restorations
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
 
 ## Current State
 
-| Metric            | Value                                                                           |
-| ----------------- | ------------------------------------------------------------------------------- |
-| Phase             | 4 (World Dimensions + AI Agents)                                                |
-| Branch            | `main` (direct push)                                                            |
-| Deploy            | Vercel auto on push                                                             |
-| Core Routes       | 5: `/` (Landing+Discovery), `/world`, `/exchange`, `/messages`, `/me`           |
-| Supporting Routes | `/be/[code]`, `/exchange/[id]`, `/referral`, `/media`, `/fashion`, + info pages |
-| API routes        | 12+                                                                             |
-| Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)           |
-| Mock data modules | 17 (incl. config.ts, threads.ts)                                                |
-| Jest tests        | 785/785 ✅ (44 suites)                                                          |
-| Playwright tests  | 124+ ✅ (may need updates for new routes)                                       |
-| TypeScript errors | 0 (1 pre-existing in test file)                                                 |
-| Build             | ✅ passes                                                                       |
-| Countries         | 193 (all UN member states in world-data.ts)                                     |
-| Languages         | ~70 (world languages with native names + Intl.DisplayNames)                     |
-| AI Agents         | ~700 deterministic personas across 193 countries                                |
-| Identity dims     | 8 (Location, Languages, Faith, Craft, Passion, Reach, Culture, Market)          |
+| Metric            | Value                                                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| Phase             | 4 (World Dimensions + AI Agents)                                                          |
+| Branch            | `main` (direct push)                                                                      |
+| Deploy            | Vercel auto on push                                                                       |
+| Core Routes       | 7: `/` `/world` `/exchange` `/messages` `/me` `/notifications` `/exchange/[id]`           |
+| Supporting Routes | `/be/[code]` `/signup` `/login` `/forgot-password` `/referral` `/media` `/fashion` + info |
+| API routes        | 12+                                                                                       |
+| Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)                     |
+| Mock data modules | 17 (incl. config.ts, threads.ts)                                                          |
+| Jest tests        | 785/785 ✅ (44 suites)                                                                    |
+| Playwright tests  | 124+ ✅ (may need updates for new routes)                                                 |
+| TypeScript errors | 0 (1 pre-existing in test file)                                                           |
+| Build             | ✅ passes                                                                                 |
+| Countries         | 193 (all UN member states in world-data.ts)                                               |
+| Languages         | ~70 (world languages with native names + Intl.DisplayNames)                               |
+| AI Agents         | ~700 deterministic personas across 193 countries                                          |
+| Identity dims     | 8 (Location, Languages, Faith, Craft, Passion, Reach, Culture, Market)                    |
+
+---
+
+## 🔥 Session 52: Full Audit + Live Wiring + Restorations
+
+Comprehensive audit of git history, restoration of deleted pages, and wiring real flows.
+
+### Restorations
+
+- **Signup page** restored — Google OAuth + email/password registration with role selection
+- **Forgot-password page** restored — email reset form with branded UI
+- **Notifications page** created — tabbed (All/Matches/Messages/Paths), read/unread state, mock data
+
+### Critical Fixes
+
+- **Exchange detail page** (`/exchange/[id]`) rewrote to use real `generateAllAgents()` (~700 agents) instead of hardcoded 10-person mock array — clicking an agent card now actually shows their profile
+- **GlassCard** extended with `HTMLAttributes<HTMLDivElement>` passthrough — supports onClick, onMouseEnter, etc. for interactive cards
+- **Homepage** rewritten from 29 → 397 lines — post-discovery dashboard with scored agents, matched paths, identity chips, quick stats
+
+### Nav Improvements
+
+- **Notification bell** added to authenticated desktop nav with unread indicator dot
+- **Dynamic logo** — `Be` in accent + rest of brandName from `useIdentity()` context
+- **Public nav** updated: Exchange, Pricing, About, Charity (replaced dead /ventures link)
+- **Auth integration** — avatar + name for logged-in users, sign out button
+
+### New Documents
+
+- **ROADMAP-LIVE.md** — comprehensive live roadmap with current state, priorities, architecture diagram, phase breakdown
+
+### Session Commits
+
+- `313904a` feat: rich post-discovery homepage + interactive GlassCard
+- `9b7e04f` feat: restore signup, forgot-password, notifications + fix exchange detail
+- `68197b3` feat: add notification bell to nav + fix public nav links
 
 ---
 
