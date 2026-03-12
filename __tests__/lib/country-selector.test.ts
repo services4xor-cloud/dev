@@ -82,8 +82,8 @@ describe('REGION_CLUSTERS', () => {
 })
 
 describe('LANGUAGE_REGISTRY', () => {
-  it('has 14 languages', () => {
-    expect(Object.keys(LANGUAGE_REGISTRY).length).toBe(14)
+  it('has 100+ languages (Tier A/B/C)', () => {
+    expect(Object.keys(LANGUAGE_REGISTRY).length).toBeGreaterThanOrEqual(100)
   })
 
   it('English is global reach', () => {
@@ -92,6 +92,21 @@ describe('LANGUAGE_REGISTRY', () => {
 
   it('Swahili covers KE, TZ, UG', () => {
     expect(LANGUAGE_REGISTRY.sw.countries).toEqual(expect.arrayContaining(['KE', 'TZ', 'UG']))
+  })
+
+  it('every language used in COUNTRY_OPTIONS exists in LANGUAGE_REGISTRY', () => {
+    const allLangs = new Set(COUNTRY_OPTIONS.flatMap((c) => c.languages))
+    allLangs.forEach((lang) => {
+      expect(LANGUAGE_REGISTRY).toHaveProperty(lang)
+    })
+  })
+
+  it('every language has nativeName, name, and countries[]', () => {
+    Object.values(LANGUAGE_REGISTRY).forEach((lang) => {
+      expect(lang.nativeName.length).toBeGreaterThan(0)
+      expect(lang.name.length).toBeGreaterThan(0)
+      expect(lang.countries.length).toBeGreaterThan(0)
+    })
   })
 })
 
