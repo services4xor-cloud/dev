@@ -523,6 +523,29 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     currencySymbol: '₵',
     locale: 'en-GH',
     phonePrefix: '+233',
+    paymentMethods: [
+      {
+        id: 'mtn-momo',
+        name: 'MTN MoMo',
+        logo: 'M',
+        description: 'MTN Mobile Money',
+        currencies: ['GHS'],
+      },
+      {
+        id: 'flutterwave',
+        name: 'Flutterwave',
+        logo: 'F',
+        description: 'Pan-African payments',
+        currencies: ['GHS', 'USD'],
+      },
+      {
+        id: 'stripe',
+        name: 'Stripe',
+        logo: 'S',
+        description: 'Cards (international)',
+        currencies: ['USD', 'GBP'],
+      },
+    ],
   },
   ZA: {
     ...kenyaConfig,
@@ -535,6 +558,29 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     currencySymbol: 'R',
     locale: 'en-ZA',
     phonePrefix: '+27',
+    paymentMethods: [
+      {
+        id: 'eft',
+        name: 'EFT / Bank Transfer',
+        logo: 'E',
+        description: 'South African bank transfer',
+        currencies: ['ZAR'],
+      },
+      {
+        id: 'stripe',
+        name: 'Stripe',
+        logo: 'S',
+        description: 'Cards (Visa, Mastercard)',
+        currencies: ['ZAR', 'USD'],
+      },
+      {
+        id: 'flutterwave',
+        name: 'Flutterwave',
+        logo: 'F',
+        description: 'Pan-African payments',
+        currencies: ['ZAR', 'USD'],
+      },
+    ],
   },
   UG: {
     ...kenyaConfig,
@@ -547,6 +593,29 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     currencySymbol: 'USh',
     locale: 'en-UG',
     phonePrefix: '+256',
+    paymentMethods: [
+      {
+        id: 'mtn-momo',
+        name: 'MTN MoMo',
+        logo: 'M',
+        description: 'MTN Mobile Money Uganda',
+        currencies: ['UGX'],
+      },
+      {
+        id: 'airtel-money',
+        name: 'Airtel Money',
+        logo: 'A',
+        description: 'Airtel Money Uganda',
+        currencies: ['UGX'],
+      },
+      {
+        id: 'flutterwave',
+        name: 'Flutterwave',
+        logo: 'F',
+        description: 'Pan-African payments',
+        currencies: ['UGX', 'USD'],
+      },
+    ],
   },
   TZ: {
     ...kenyaConfig,
@@ -559,6 +628,29 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     currencySymbol: 'TSh',
     locale: 'en-TZ',
     phonePrefix: '+255',
+    paymentMethods: [
+      {
+        id: 'mpesa',
+        name: 'M-Pesa',
+        logo: 'M',
+        description: 'Vodacom M-Pesa Tanzania',
+        currencies: ['TZS'],
+      },
+      {
+        id: 'tigo-pesa',
+        name: 'Tigo Pesa',
+        logo: 'T',
+        description: 'Tigo mobile money',
+        currencies: ['TZS'],
+      },
+      {
+        id: 'flutterwave',
+        name: 'Flutterwave',
+        logo: 'F',
+        description: 'Pan-African payments',
+        currencies: ['TZS', 'USD'],
+      },
+    ],
   },
   IN: {
     ...usaConfig,
@@ -571,6 +663,29 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     currencySymbol: '₹',
     locale: 'en-IN',
     phonePrefix: '+91',
+    paymentMethods: [
+      {
+        id: 'upi',
+        name: 'UPI',
+        logo: 'U',
+        description: 'Unified Payments Interface',
+        currencies: ['INR'],
+      },
+      {
+        id: 'razorpay',
+        name: 'Razorpay',
+        logo: 'R',
+        description: 'Cards, UPI, wallets',
+        currencies: ['INR', 'USD'],
+      },
+      {
+        id: 'stripe',
+        name: 'Stripe',
+        logo: 'S',
+        description: 'Cards (international)',
+        currencies: ['INR', 'USD'],
+      },
+    ],
   },
   AE: {
     ...usaConfig,
@@ -583,6 +698,29 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     currencySymbol: 'د.إ',
     locale: 'en-AE',
     phonePrefix: '+971',
+    paymentMethods: [
+      {
+        id: 'apple-pay',
+        name: 'Apple Pay',
+        logo: 'A',
+        description: 'Apple Pay (UAE)',
+        currencies: ['AED', 'USD'],
+      },
+      {
+        id: 'stripe',
+        name: 'Stripe',
+        logo: 'S',
+        description: 'Cards (Visa, Mastercard)',
+        currencies: ['AED', 'USD'],
+      },
+      {
+        id: 'paypal',
+        name: 'PayPal',
+        logo: 'P',
+        description: 'PayPal',
+        currencies: ['AED', 'USD'],
+      },
+    ],
   },
   CA: {
     ...usaConfig,
@@ -595,6 +733,29 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     currencySymbol: 'CA$',
     locale: 'en-CA',
     phonePrefix: '+1',
+    paymentMethods: [
+      {
+        id: 'interac',
+        name: 'Interac',
+        logo: 'I',
+        description: 'Interac e-Transfer',
+        currencies: ['CAD'],
+      },
+      {
+        id: 'stripe',
+        name: 'Stripe',
+        logo: 'S',
+        description: 'Cards (Visa, Mastercard)',
+        currencies: ['CAD', 'USD'],
+      },
+      {
+        id: 'paypal',
+        name: 'PayPal',
+        logo: 'P',
+        description: 'PayPal',
+        currencies: ['CAD', 'USD'],
+      },
+    ],
   },
   GB: {
     ...usaConfig,
@@ -607,6 +768,29 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     currencySymbol: '£',
     locale: 'en-GB',
     phonePrefix: '+44',
+    paymentMethods: [
+      {
+        id: 'faster-payments',
+        name: 'Faster Payments',
+        logo: 'F',
+        description: 'UK bank transfer',
+        currencies: ['GBP'],
+      },
+      {
+        id: 'stripe',
+        name: 'Stripe',
+        logo: 'S',
+        description: 'Cards (Visa, Mastercard)',
+        currencies: ['GBP', 'EUR', 'USD'],
+      },
+      {
+        id: 'paypal',
+        name: 'PayPal',
+        logo: 'P',
+        description: 'PayPal',
+        currencies: ['GBP', 'EUR', 'USD'],
+      },
+    ],
   },
   TH: {
     ...usaConfig,
