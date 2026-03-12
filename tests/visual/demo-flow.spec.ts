@@ -19,28 +19,9 @@ async function seedIdentity(page: Page) {
       craft: ['Software Development', 'Data Analysis'],
       reach: ['local', 'regional'],
       culture: 'Kikuyu',
-      focusTopic: '',
     }
     localStorage.setItem('be-identity', JSON.stringify(identity))
   })
-}
-
-/** Seed identity WITH a focusTopic set */
-async function seedIdentityWithFocus(page: Page, topic: string) {
-  await page.addInitScript((t: string) => {
-    const identity = {
-      country: 'KE',
-      city: 'Nairobi',
-      languages: ['sw', 'en'],
-      interests: ['tech', 'business'],
-      faith: ['Christianity'],
-      craft: ['Software Development'],
-      reach: ['local'],
-      culture: 'Kikuyu',
-      focusTopic: t,
-    }
-    localStorage.setItem('be-identity', JSON.stringify(identity))
-  }, topic)
 }
 
 // ─── Discovery (Homepage) ────────────────────────────────────────
@@ -205,26 +186,6 @@ test.describe('Demo Flow: Messages', () => {
     if (await input.isVisible()) {
       await expect(input).toBeVisible()
     }
-  })
-})
-
-// ─── Focus Topic Filtering ──────────────────────────────────────
-
-test.describe('Demo Flow: Focus Topic', () => {
-  test('[demo] exchange shows focus banner when topic is set', async ({ page }) => {
-    await seedIdentityWithFocus(page, 'tech')
-    await page.goto('/exchange', { waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(500)
-    // Should show the focus indicator
-    await expect(page.getByText(/focus/i).first()).toBeVisible()
-  })
-
-  test('[demo] exchange filters results by focus topic', async ({ page }) => {
-    await seedIdentityWithFocus(page, 'tech')
-    await page.goto('/exchange', { waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(1000)
-    // Results count should be visible (filtered)
-    await expect(page.getByText(/\d+ results?/i).first()).toBeVisible()
   })
 })
 

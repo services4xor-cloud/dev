@@ -13,6 +13,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import GlassCard from '@/components/ui/GlassCard'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -57,11 +58,11 @@ function getScoreColor(score: number): string {
   return 'text-white/40'
 }
 
-function getScoreLabel(score: number): string {
-  if (score >= 80) return 'Perfect'
-  if (score >= 60) return 'Strong'
-  if (score >= 40) return 'Good'
-  return 'Possible'
+function getScoreLabel(score: number, t: (key: string) => string): string {
+  if (score >= 80) return t('exchange.card.scorePerfect')
+  if (score >= 60) return t('exchange.card.scoreStrong')
+  if (score >= 40) return t('exchange.card.scoreGood')
+  return t('exchange.card.scorePossible')
 }
 
 // ─── Component ──────────────────────────────────────────────────────
@@ -74,6 +75,7 @@ export default function ExchangeCard({
   onAction,
 }: ExchangeCardProps) {
   const router = useRouter()
+  const { t } = useTranslation()
 
   const sharedLangs = data.languages.filter((lang) =>
     userLanguages.some((ul) => ul.toLowerCase() === lang.toLowerCase())
@@ -94,15 +96,15 @@ export default function ExchangeCard({
   if (type === 'person') {
     if (sharedLangs.length > 0)
       matchReasons.push(
-        `🗣 ${sharedLangs.length} shared language${sharedLangs.length > 1 ? 's' : ''}`
+        `🗣 ${sharedLangs.length} ${sharedLangs.length > 1 ? t('exchange.card.sharedLanguages') : t('exchange.card.sharedLanguage')}`
       )
     if (sharedSkills.length > 0)
       matchReasons.push(
-        `🔧 ${sharedSkills.length} common skill${sharedSkills.length > 1 ? 's' : ''}`
+        `🔧 ${sharedSkills.length} ${sharedSkills.length > 1 ? t('exchange.card.commonSkills') : t('exchange.card.commonSkill')}`
       )
-    if (data.matchScore >= 80) matchReasons.push('⚡ High compatibility')
+    if (data.matchScore >= 80) matchReasons.push(`⚡ ${t('exchange.card.highCompatibility')}`)
     if (data.subtitle.includes(', KE') || data.subtitle.includes('Kenya'))
-      matchReasons.push('📍 Same country')
+      matchReasons.push(`📍 ${t('exchange.card.sameCountry')}`)
   }
 
   return (
@@ -128,11 +130,11 @@ export default function ExchangeCard({
                   : 'border border-brand-accent/30 text-brand-accent'
               }`}
             >
-              {type === 'person' ? 'Pioneer' : 'Path'}
+              {type === 'person' ? t('exchange.card.pioneer') : t('exchange.card.path')}
             </span>
             {data.mode && type === 'person' && (
               <span className="rounded-full bg-white/10 px-phi-2 py-0.5 text-phi-xs text-white/60">
-                {data.mode === 'explorer' ? 'Explorer' : 'Host'}
+                {data.mode === 'explorer' ? t('exchange.card.explorer') : t('exchange.card.host')}
               </span>
             )}
           </div>
@@ -192,7 +194,7 @@ export default function ExchangeCard({
         {/* ── Languages row ── */}
         {data.languages.length > 0 && (
           <div className="mb-phi-2">
-            <p className="mb-1 text-phi-xs text-white/30">Languages</p>
+            <p className="mb-1 text-phi-xs text-white/30">{t('exchange.card.languages')}</p>
             <div className="flex flex-wrap gap-1">
               {data.languages.map((lang) => (
                 <span
@@ -214,7 +216,7 @@ export default function ExchangeCard({
         {data.skills.length > 0 && (
           <div className="mb-phi-3">
             <p className="mb-1 text-phi-xs text-white/30">
-              {type === 'person' ? 'Craft' : 'Skills needed'}
+              {type === 'person' ? t('exchange.card.craft') : t('exchange.card.skillsNeeded')}
             </p>
             <div className="flex flex-wrap gap-1">
               {data.skills.slice(0, 5).map((skill) => (
@@ -255,7 +257,7 @@ export default function ExchangeCard({
               : 'border border-brand-accent/40 text-brand-accent hover:bg-brand-accent/10'
           }`}
         >
-          {type === 'person' ? '💬 Connect & Chat' : 'View Path →'}
+          {type === 'person' ? t('exchange.card.connectChat') : t('exchange.card.viewPath')}
         </button>
       </GlassCard>
     </Link>

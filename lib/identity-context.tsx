@@ -46,8 +46,6 @@ interface Identity {
   reach: string[]
   /** Optional ethnic/cultural identity */
   culture?: string
-  /** Active topic focus — filters all feeds when set */
-  focusTopic?: string
   /** Auto-detected location from browser timezone (ISO country code) — separate from selected country */
   detectedLocation?: string
 }
@@ -89,8 +87,6 @@ interface IdentityContextValue {
   setReach: (reach: string[]) => void
   /** Set ethnic/cultural identity */
   setCulture: (culture: string | undefined) => void
-  /** Set topic focus — filters Exchange, Messages, World by topic */
-  setFocusTopic: (topic: string | undefined) => void
   /** Set detected location (ISO country code from browser timezone) */
   setDetectedLocation: (code: string | undefined) => void
 }
@@ -281,10 +277,6 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     setIdentity((prev) => ({ ...prev, culture }))
   }, [])
 
-  const setFocusTopic = useCallback((focusTopic: string | undefined) => {
-    setIdentity((prev) => ({ ...prev, focusTopic }))
-  }, [])
-
   const setDetectedLocation = useCallback((detectedLocation: string | undefined) => {
     setIdentity((prev) => ({ ...prev, detectedLocation }))
   }, [])
@@ -325,7 +317,6 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         setCraft,
         setReach,
         setCulture,
-        setFocusTopic,
         setDetectedLocation,
       }}
     >
@@ -369,7 +360,6 @@ export function useIdentity(): IdentityContextValue {
       setCraft: () => {},
       setReach: () => {},
       setCulture: () => {},
-      setFocusTopic: () => {},
       setDetectedLocation: () => {},
     }
   }
