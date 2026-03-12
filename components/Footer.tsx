@@ -29,10 +29,12 @@ import {
 // ── Component ──────────────────────────────────────────────────────
 export default function Footer() {
   return (
-    <footer className="bg-brand-bg border-t border-brand-accent/15">
+    <footer className="bg-brand-bg relative">
+      {/* Gradient separator */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-accent/30 to-transparent" />
       <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-phi-7 3xl:py-phi-8">
         {/* Top — brand + columns */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-phi-6 mb-phi-6">
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link

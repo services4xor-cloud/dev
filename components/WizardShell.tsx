@@ -155,7 +155,7 @@ export default function WizardShell({
 
       {/* Navigation footer */}
       {!hideNav && (
-        <div className="fixed bottom-0 left-0 right-0 bg-brand-bg/95 backdrop-blur border-t border-brand-accent/10 z-40">
+        <div className="fixed bottom-0 left-0 right-0 glass-strong border-t border-brand-accent/10 z-40">
           <div className={`${maxWidth} mx-auto px-4 py-4 flex items-center gap-3`}>
             {/* Back button */}
             {!isFirstStep ? (
@@ -180,9 +180,7 @@ export default function WizardShell({
               onClick={handleContinue}
               disabled={!canContinue || submitting}
               className={`btn-sm font-semibold px-6 py-2.5 rounded-xl transition-all duration-150 ${
-                canContinue && !submitting
-                  ? 'btn-primary'
-                  : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                canContinue && !submitting ? 'btn-primary' : 'btn-disabled'
               }`}
             >
               {submitting ? (

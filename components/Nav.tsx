@@ -181,7 +181,7 @@ export default function Nav() {
         aria-label="Main navigation"
         className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow] duration-200 ${
           scrolled
-            ? 'bg-brand-bg/95 backdrop-blur-xl shadow-lg shadow-black/20'
+            ? 'glass-strong shadow-lg shadow-black/20'
             : 'bg-gradient-to-b from-black/40 to-transparent'
         }`}
       >
@@ -250,7 +250,7 @@ export default function Nav() {
                     href={link.href}
                     aria-label={link.aria}
                     aria-current={isActive(link.href) ? 'page' : undefined}
-                    className={desktopLink(isActive(link.href))}
+                    className={`${desktopLink(isActive(link.href))} ${pathname === link.href ? 'nav-link-active' : ''}`}
                   >
                     {link.label}
                     {isActive(link.href) && (

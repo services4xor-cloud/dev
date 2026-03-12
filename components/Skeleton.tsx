@@ -22,26 +22,26 @@ export function SkeletonLine({
   h?: string
   className?: string
 }) {
-  return <div className={`${h} ${w} bg-gray-800/60 rounded ${className}`} />
+  return <div className={`${h} ${w} skeleton-shimmer rounded ${className}`} />
 }
 
 export function SkeletonBlock({ h = 'h-32', className = '' }: { h?: string; className?: string }) {
-  return <div className={`${h} w-full bg-gray-800/40 rounded-xl ${className}`} />
+  return <div className={`${h} w-full skeleton-shimmer rounded-xl ${className}`} />
 }
 
 // ── Card skeleton (matches PathCard / venture card) ────────────────
 
 export function SkeletonCard() {
   return (
-    <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl overflow-hidden">
-      <div className="h-36 bg-gray-800/40" />
+    <div className="glass rounded-2xl overflow-hidden">
+      <div className="h-36 skeleton-shimmer" />
       <div className="p-4 space-y-3">
-        <div className="h-4 w-20 bg-gray-800/60 rounded-full" />
-        <div className="h-4 w-full bg-gray-800/60 rounded" />
-        <div className="h-3 w-2/3 bg-gray-800/40 rounded" />
+        <div className="h-4 w-20 skeleton-shimmer rounded-full" />
+        <div className="h-4 w-full skeleton-shimmer rounded" />
+        <div className="h-3 w-2/3 skeleton-shimmer rounded" />
         <div className="flex justify-between">
-          <div className="h-5 w-24 bg-gray-800/60 rounded" />
-          <div className="h-4 w-16 bg-gray-800/40 rounded" />
+          <div className="h-5 w-24 skeleton-shimmer rounded" />
+          <div className="h-4 w-16 skeleton-shimmer rounded" />
         </div>
       </div>
     </div>
