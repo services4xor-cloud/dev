@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 60 (2026-03-12) — French Translations + IdentitySwitcher Refactor
+> Last updated: Session 61 (2026-03-12) — Self-Enrichment Engine + Priority Scoring
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -18,7 +18,7 @@
 | API routes        | 12+                                                                                       |
 | Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)                     |
 | Mock data modules | 17 → reduced to test-only; all pages now use real DB or inline constants                  |
-| Jest tests        | 787/787 ✅ (44 suites)                                                                    |
+| Jest tests        | 789/789 ✅ (44 suites)                                                                    |
 | Playwright tests  | 144+ ✅ (8 suites incl. demo-flow)                                                        |
 | TypeScript errors | 0                                                                                         |
 | Build             | ✅ passes                                                                                 |
@@ -31,6 +31,34 @@
 | DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
 | Auth              | ✅ Google OAuth + email/password + password reset                                         |
 | Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 61: Self-Enrichment Engine + Priority Scoring
+
+### Priority-Weighted Dimension Scoring
+
+- `dimension-scoring.ts` now accepts optional `priorities` param (HIGH=1.5x, MEDIUM=1.0x, LOW=0.5x)
+- Re-normalization keeps total score on 100-point scale — priorities **redistribute**, not inflate
+- Exchange page passes user priorities to `scoreDimensions()` for personalized ranking
+- Me page persists priorities to `localStorage` (`be-priorities`) for cross-page access
+
+### Profile Completeness Match Boost
+
+- `computeCompleteness()` matchBoost (0.6x–1.2x) now applied in Exchange scoring
+- More complete profiles → higher quality match scores → better Exchange results
+- Creates incentive loop: fill profile → get better matches → engage more
+
+### Chapter Enrichment Suggestions
+
+- `POST /api/chapters` now returns `enrichment` object with suggested crafts/interests
+- `suggestEnrichmentFromPath()` analyzes Path's sectors/skills vs Pioneer's profile
+- Up to 3 new craft suggestions + 2 new interest suggestions per Chapter opened
+
+### Tests
+
+- 2 new dimension-scoring tests: priority weighting + backward compatibility
+- 789/789 Jest tests pass, build succeeds
 
 ---
 
