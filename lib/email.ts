@@ -14,6 +14,8 @@
  *   await sendEmail('user@example.com', 'pioneer_welcome', { name: 'Alice', ... })
  */
 
+import { logger } from '@/lib/logger'
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
@@ -610,8 +612,7 @@ export async function sendEmail(
 
   // Development fallback — log to console when Resend key not set
   if (!process.env.RESEND_API_KEY) {
-    // eslint-disable-next-line no-console
-    console.log(`[Email MOCK] ${template} → ${to} | Subject: ${subject}`)
+    logger.debug('[Email MOCK]', { template, to, subject })
     return {
       success: true,
       id: `mock-${Date.now()}`,
@@ -637,7 +638,7 @@ export async function sendEmail(
 
     if (!res.ok) {
       const errorText = await res.text()
-      console.error('[Email] Resend API error:', errorText)
+      logger.error('[Email] Resend API error', { status: res.status, body: errorText })
       return { success: false, error: `Resend API error: ${res.status}` }
     }
 
@@ -645,7 +646,7 @@ export async function sendEmail(
     return { success: true, id: result.id, mock: false }
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown send error'
-    console.error('[Email] Send failed:', message)
+    logger.error('[Email] Send failed', { error: message })
     return { success: false, error: message }
   }
 }
