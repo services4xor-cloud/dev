@@ -12,6 +12,8 @@ import {
   IMPACT_PARTNER,
 } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 type DonationAmount = 10 | 25 | 50 | 100 | 'custom'
 
@@ -36,18 +38,18 @@ export default function CharityPage() {
 
           {/* IMPACT_PARTNER heading */}
           <div className="mb-6">
-            <h1 className="text-6xl md:text-7xl font-black tracking-tight mb-3 text-white">
+            <h1 className="text-phi-3xl md:text-phi-4xl font-black tracking-tight mb-3 text-white">
               {IMPACT_PARTNER.name}
             </h1>
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-white/20 max-w-xs"></div>
-              <span className="text-green-300 font-medium italic text-lg">
+              <span className="text-green-300 font-medium italic text-phi-lg">
                 {t('charity.tagline')}
               </span>
             </div>
           </div>
 
-          <p className="text-xl text-green-100 max-w-2xl leading-relaxed mb-8">
+          <p className="text-phi-xl text-green-100 max-w-2xl leading-relaxed mb-8">
             {t('charity.heroDesc', { brand: BRAND_NAME })}
           </p>
 
@@ -71,7 +73,7 @@ export default function CharityPage() {
       {/* How it works banner */}
       <div className="bg-brand-accent/5 border-y border-brand-accent/10 py-6">
         <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 text-center">
-          <p className="text-gray-300 text-base font-medium">
+          <p className="text-gray-300 text-phi-base font-medium">
             {t('charity.howBanner', { brand: BRAND_NAME, partner: IMPACT_PARTNER.name })
               .split('{accent}')
               .map((part, i) => {
@@ -89,44 +91,50 @@ export default function CharityPage() {
       </div>
 
       {/* Impact Numbers */}
-      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
+      <SectionLayout ambient>
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-white mb-2">{t('charity.impactTitle')}</h2>
+          <h2 className="text-phi-xl font-bold text-white mb-2">{t('charity.impactTitle')}</h2>
           <p className="text-gray-400">{t('charity.impactDesc')}</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-phi-5">
           {IMPACT_STATS.map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-4xl mb-2">{stat.icon}</div>
-              <div className="text-4xl font-black text-brand-success mb-1">{stat.number}</div>
-              <div className="text-gray-400 text-sm font-medium">{stat.label}</div>
-            </div>
+            <GlassCard key={stat.label} hover>
+              <div className="text-center">
+                <div className="text-phi-2xl mb-2">{stat.icon}</div>
+                <div className="text-phi-2xl font-black text-brand-success mb-1">{stat.number}</div>
+                <div className="text-gray-400 text-phi-sm font-medium">{stat.label}</div>
+              </div>
+            </GlassCard>
           ))}
         </div>
-      </div>
+      </SectionLayout>
 
       {/* 4 Pillars */}
-      <div id="pillars" className="bg-gray-900/30 py-16">
-        <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4">
+      <div id="pillars">
+        <SectionLayout as="div" className="bg-gray-900/30">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3">{t('charity.pillarsTitle')}</h2>
+            <h2 className="text-phi-2xl font-bold text-white mb-3">{t('charity.pillarsTitle')}</h2>
             <p className="text-gray-400 max-w-xl mx-auto">{t('charity.pillarsDesc')}</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-phi-5 reveal-stagger">
             {PILLARS.map((pillar) => (
               <div
                 key={pillar.title}
-                className={`bg-gradient-to-br ${pillar.color} border ${pillar.border} rounded-2xl p-6`}
+                className={`bg-gradient-to-br ${pillar.color} border ${pillar.border} rounded-2xl p-phi-5`}
               >
-                <div className="text-4xl mb-4">{pillar.icon}</div>
+                <div className="text-phi-2xl mb-4">{pillar.icon}</div>
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className={`text-xl font-bold ${pillar.accent} mb-0.5`}>{pillar.title}</h3>
-                    <p className="text-gray-400 text-sm italic">{pillar.subtitle}</p>
+                    <h3 className={`text-phi-xl font-bold ${pillar.accent} mb-0.5`}>
+                      {pillar.title}
+                    </h3>
+                    <p className="text-gray-400 text-phi-sm italic">{pillar.subtitle}</p>
                   </div>
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">{pillar.description}</p>
+                <p className="text-gray-300 text-phi-sm leading-relaxed mb-4">
+                  {pillar.description}
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {pillar.programs.map((program) => (
                     <span
@@ -140,130 +148,126 @@ export default function CharityPage() {
               </div>
             ))}
           </div>
-        </div>
+        </SectionLayout>
       </div>
 
       {/* How it works — platform connection */}
-      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
+      <SectionLayout>
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-3">{t('charity.howTitle')}</h2>
+          <h2 className="text-phi-2xl font-bold text-white mb-3">{t('charity.howTitle')}</h2>
           <p className="text-gray-400">{t('charity.howSubtitle', { brand: BRAND_NAME })}</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="text-center p-6">
-            <div className="w-16 h-16 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-3xl mx-auto mb-4">
-              🌍
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-phi-4">
+          <GlassCard variant="subtle" hover>
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-phi-2xl mx-auto mb-4">
+                🌍
+              </div>
+              <h3 className="font-bold text-white mb-2">{t('charity.step1Title')}</h3>
+              <p className="text-gray-400 text-phi-sm leading-relaxed">
+                {t('charity.step1Desc', { brand: BRAND_NAME })}
+              </p>
             </div>
-            <h3 className="font-bold text-white mb-2">{t('charity.step1Title')}</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              {t('charity.step1Desc', { brand: BRAND_NAME })}
-            </p>
-          </div>
-          <div className="text-center p-6 relative">
-            <div className="hidden sm:block absolute top-1/2 -left-4 transform -translate-y-1/2 text-gray-300 text-2xl">
-              →
+          </GlassCard>
+          <GlassCard variant="subtle" hover>
+            <div className="text-center relative">
+              <div className="hidden sm:block absolute top-1/2 -left-8 transform -translate-y-1/2 text-gray-300 text-phi-xl">
+                →
+              </div>
+              <div className="w-16 h-16 rounded-2xl bg-brand-success/10 flex items-center justify-center text-phi-2xl mx-auto mb-4">
+                💚
+              </div>
+              <h3 className="font-bold text-white mb-2">
+                {t('charity.step2Title', { partner: IMPACT_PARTNER.name })}
+              </h3>
+              <p className="text-gray-400 text-phi-sm leading-relaxed">
+                {t('charity.step2Desc', { partner: IMPACT_PARTNER.name })}
+              </p>
             </div>
-            <div className="w-16 h-16 rounded-2xl bg-brand-success/10 flex items-center justify-center text-3xl mx-auto mb-4">
-              💚
+          </GlassCard>
+          <GlassCard variant="subtle" hover>
+            <div className="text-center relative">
+              <div className="hidden sm:block absolute top-1/2 -left-8 transform -translate-y-1/2 text-gray-300 text-phi-xl">
+                →
+              </div>
+              <div className="w-16 h-16 rounded-2xl bg-[#0891B2]/10 flex items-center justify-center text-phi-2xl mx-auto mb-4">
+                🏘️
+              </div>
+              <h3 className="font-bold text-white mb-2">{t('charity.step3Title')}</h3>
+              <p className="text-gray-400 text-phi-sm leading-relaxed">{t('charity.step3Desc')}</p>
             </div>
-            <h3 className="font-bold text-white mb-2">
-              {t('charity.step2Title', { partner: IMPACT_PARTNER.name })}
-            </h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              {t('charity.step2Desc', { partner: IMPACT_PARTNER.name })}
-            </p>
-          </div>
-          <div className="text-center p-6 relative">
-            <div className="hidden sm:block absolute top-1/2 -left-4 transform -translate-y-1/2 text-gray-300 text-2xl">
-              →
-            </div>
-            <div className="w-16 h-16 rounded-2xl bg-[#0891B2]/10 flex items-center justify-center text-3xl mx-auto mb-4">
-              🏘️
-            </div>
-            <h3 className="font-bold text-white mb-2">{t('charity.step3Title')}</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">{t('charity.step3Desc')}</p>
-          </div>
+          </GlassCard>
         </div>
-      </div>
+      </SectionLayout>
 
       {/* Impact Stories */}
-      <div className="bg-gray-900 text-white py-16">
-        <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-3">{t('charity.storiesTitle')}</h2>
-            <p className="text-gray-400">{t('charity.storiesDesc')}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {STORIES.map((story, i) => (
-              <div
-                key={story.name}
-                className="bg-gray-800 border border-gray-700 rounded-2xl p-6 flex flex-col"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-2xl">
-                    {story.avatar}
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">{story.name}</div>
-                    <div className="text-gray-400 text-xs flex items-center gap-1">
-                      <span>📍</span>
-                      {story.location}
-                    </div>
-                  </div>
+      <SectionLayout className="bg-gray-900 text-white">
+        <div className="text-center mb-12">
+          <h2 className="text-phi-2xl font-bold mb-3">{t('charity.storiesTitle')}</h2>
+          <p className="text-gray-400">{t('charity.storiesDesc')}</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-phi-5 reveal-stagger">
+          {STORIES.map((story, i) => (
+            <GlassCard key={story.name} hover className="flex flex-col">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-phi-xl">
+                  {story.avatar}
                 </div>
-
-                <h3 className="text-white font-bold mb-3 leading-tight">
-                  &quot;{story.title}&quot;
-                </h3>
-
-                <p
-                  className={`text-gray-300 text-sm leading-relaxed mb-4 ${expandedStory === i ? '' : 'line-clamp-3'}`}
-                >
-                  {story.story}
-                </p>
-
-                <button
-                  onClick={() => setExpandedStory(expandedStory === i ? null : i)}
-                  className="text-brand-accent text-xs font-medium mb-4 hover:text-brand-accent-light transition-colors text-left"
-                >
-                  {expandedStory === i ? t('charity.showLess') : t('charity.readMore')}
-                </button>
-
-                <div className="mt-auto pt-4 border-t border-gray-700">
-                  <div className="text-brand-accent text-xs font-semibold mb-1">
-                    {t('charity.today')}
-                  </div>
-                  <div className="text-gray-200 text-sm font-medium">{story.outcome}</div>
-                  <div className="mt-2">
-                    <span className="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full">
-                      {story.pillar}
-                    </span>
+                <div>
+                  <div className="text-white font-semibold">{story.name}</div>
+                  <div className="text-gray-400 text-xs flex items-center gap-1">
+                    <span>📍</span>
+                    {story.location}
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+
+              <h3 className="text-white font-bold mb-3 leading-tight">&quot;{story.title}&quot;</h3>
+
+              <p
+                className={`text-gray-300 text-phi-sm leading-relaxed mb-4 ${expandedStory === i ? '' : 'line-clamp-3'}`}
+              >
+                {story.story}
+              </p>
+
+              <button
+                onClick={() => setExpandedStory(expandedStory === i ? null : i)}
+                className="text-brand-accent text-xs font-medium mb-4 hover:text-brand-accent-light transition-colors text-left"
+              >
+                {expandedStory === i ? t('charity.showLess') : t('charity.readMore')}
+              </button>
+
+              <div className="mt-auto pt-4 border-t border-white/10">
+                <div className="text-brand-accent text-xs font-semibold mb-1">
+                  {t('charity.today')}
+                </div>
+                <div className="text-gray-200 text-phi-sm font-medium">{story.outcome}</div>
+                <div className="mt-2">
+                  <span className="text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full">
+                    {story.pillar}
+                  </span>
+                </div>
+              </div>
+            </GlassCard>
+          ))}
         </div>
-      </div>
+      </SectionLayout>
 
       {/* Partner With Us */}
-      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 py-16">
+      <SectionLayout>
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-3">
+          <h2 className="text-phi-2xl font-bold text-white mb-3">
             {t('charity.partnerTitle', { partner: IMPACT_PARTNER.name })}
           </h2>
           <p className="text-gray-400 max-w-xl mx-auto">{t('charity.partnerDesc')}</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-phi-4 mb-10 reveal-stagger">
           {PARTNER_TYPES.map((partner) => (
-            <div
-              key={partner.label}
-              className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-5 text-center shadow-sm hover:border-gray-700 transition-colors"
-            >
-              <div className="text-3xl mb-3">{partner.icon}</div>
-              <h3 className="font-semibold text-white text-sm mb-1">{partner.label}</h3>
+            <GlassCard key={partner.label} hover className="text-center">
+              <div className="text-phi-2xl mb-3">{partner.icon}</div>
+              <h3 className="font-semibold text-white text-phi-sm mb-1">{partner.label}</h3>
               <p className="text-gray-400 text-xs leading-relaxed">{partner.desc}</p>
-            </div>
+            </GlassCard>
           ))}
         </div>
         <div className="text-center">
@@ -274,18 +278,18 @@ export default function CharityPage() {
             {t('charity.getInTouch')}
           </Link>
         </div>
-      </div>
+      </SectionLayout>
 
       {/* Donation CTA */}
-      <div id="donate" className="bg-gradient-to-br from-brand-success to-brand-success py-16">
+      <div id="donate" className="bg-gradient-to-br from-brand-success to-brand-success py-phi-7">
         <div className="max-w-xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white mb-3">
+          <h2 className="text-phi-2xl font-bold text-white mb-3">
             {t('charity.donateTitle', { partner: IMPACT_PARTNER.name })}
           </h2>
           <p className="text-green-200 mb-8">{t('charity.donateDesc')}</p>
 
           {/* Amount selector */}
-          <div className="bg-white rounded-2xl p-6 shadow-xl mb-4">
+          <div className="bg-white rounded-2xl p-phi-5 shadow-xl mb-4">
             <div className="text-sm font-semibold text-gray-700 mb-3 text-left">
               {t('charity.chooseAmount')}
             </div>
@@ -357,7 +361,7 @@ export default function CharityPage() {
               </div>
             )}
 
-            <button className="w-full bg-brand-accent text-white font-bold py-4 rounded-xl hover:opacity-90 transition-colors text-base">
+            <button className="w-full bg-brand-accent text-white font-bold py-4 rounded-xl hover:opacity-90 transition-colors text-phi-base">
               {t('charity.donateBtn', {
                 amount:
                   donationAmount !== 'custom'
@@ -372,7 +376,7 @@ export default function CharityPage() {
             <p className="text-gray-400 text-xs mt-3">{t('charity.donateNote')}</p>
           </div>
 
-          <p className="text-green-200 text-sm">
+          <p className="text-green-200 text-phi-sm">
             {t('charity.alsoContribute', { brand: BRAND_NAME, partner: IMPACT_PARTNER.name })
               .split('{link}')
               .map((part, i) => {
@@ -396,7 +400,7 @@ export default function CharityPage() {
 
       {/* Legal footer note */}
       <div className="bg-gray-900/30 py-6 text-center border-t border-brand-primary/30">
-        <p className="text-gray-400 text-sm max-w-2xl mx-auto px-4">
+        <p className="text-gray-400 text-phi-sm max-w-2xl mx-auto px-4">
           {t('charity.legal', { partner: IMPACT_PARTNER.name, company: LEGAL.companyName })}
         </p>
       </div>

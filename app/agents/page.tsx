@@ -9,7 +9,6 @@
 
 import Link from 'next/link'
 import {
-  Send,
   Users,
   DollarSign,
   TrendingUp,
@@ -21,6 +20,8 @@ import {
 } from 'lucide-react'
 import { BRAND_NAME } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 export default function AgentLandingPage() {
   const { t } = useTranslation()
@@ -75,7 +76,7 @@ export default function AgentLandingPage() {
     <div className="min-h-screen bg-brand-bg">
       {/* Hero */}
       <section
-        className="relative py-20 lg:py-28"
+        className="relative py-phi-8"
         style={{
           background: 'linear-gradient(to bottom, var(--color-primary) 0%, var(--color-bg) 40%)',
         }}
@@ -85,10 +86,10 @@ export default function AgentLandingPage() {
             <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
               {t('agent.badge')}
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
+            <h1 className="text-phi-2xl md:text-phi-2xl lg:text-phi-3xl font-bold text-white leading-tight mb-4">
               {t('agent.heroTitle', { brand: BRAND_NAME })}
             </h1>
-            <p className="text-lg text-gray-300 mb-2">{t('agent.heroTagline')}</p>
+            <p className="text-phi-lg text-gray-300 mb-2">{t('agent.heroTagline')}</p>
             <p className="text-gray-400 mb-8 max-w-2xl">{t('agent.heroDesc')}</p>
             <div className="flex flex-wrap gap-3">
               <Link
@@ -110,111 +111,99 @@ export default function AgentLandingPage() {
       </section>
 
       {/* Stats */}
-      <section className="py-12 border-b border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 xl:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {AGENT_STATS.map((stat) => {
-              const Icon = stat.icon
-              return (
-                <div
-                  key={stat.label}
-                  className="bg-gray-800 rounded-xl border border-gray-700 p-5 text-center"
-                >
-                  <Icon className="w-5 h-5 text-brand-accent mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs text-gray-400 mt-1">{stat.label}</div>
-                </div>
-              )
-            })}
-          </div>
+      <SectionLayout size="sm" className="border-b border-gray-800" ambient>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-phi-4">
+          {AGENT_STATS.map((stat) => {
+            const Icon = stat.icon
+            return (
+              <GlassCard key={stat.label} hover className="text-center">
+                <Icon className="w-5 h-5 text-brand-accent mx-auto mb-2" />
+                <div className="text-phi-xl font-bold text-white">{stat.value}</div>
+                <div className="text-xs text-gray-400 mt-1">{stat.label}</div>
+              </GlassCard>
+            )
+          })}
         </div>
-      </section>
+      </SectionLayout>
 
       {/* How it works */}
-      <section className="py-16">
-        <div className="max-w-6xl mx-auto px-4 xl:px-8">
-          <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            {t('agent.howBadge')}
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">{t('agent.howTitle')}</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {HOW_IT_WORKS.map((item) => (
-              <div
-                key={item.step}
-                className="bg-gray-800 rounded-xl border border-gray-700 p-5 hover:border-gray-600 transition-colors"
-              >
-                <div className="w-8 h-8 rounded-full bg-brand-accent/20 text-brand-accent flex items-center justify-center text-sm font-bold mb-3">
-                  {item.step}
-                </div>
-                <h3 className="text-white font-semibold mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-sm">{item.description}</p>
-              </div>
-            ))}
-          </div>
+      <SectionLayout>
+        <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
+          {t('agent.howBadge')}
         </div>
-      </section>
+        <h2 className="text-phi-xl md:text-phi-2xl font-bold text-white mb-8">
+          {t('agent.howTitle')}
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-phi-4 reveal-stagger">
+          {HOW_IT_WORKS.map((item) => (
+            <GlassCard key={item.step} hover>
+              <div className="w-8 h-8 rounded-full bg-brand-accent/20 text-brand-accent flex items-center justify-center text-sm font-bold mb-3">
+                {item.step}
+              </div>
+              <h3 className="text-white font-semibold mb-2">{item.title}</h3>
+              <p className="text-gray-400 text-phi-sm">{item.description}</p>
+            </GlassCard>
+          ))}
+        </div>
+      </SectionLayout>
 
       {/* Benefits */}
-      <section className="py-16 bg-gray-900/50">
-        <div className="max-w-6xl mx-auto px-4 xl:px-8">
-          <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            {t('agent.benefitsBadge')}
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">
-            {t('agent.benefitsTitle')}
-          </h2>
+      <SectionLayout className="bg-gray-900/50">
+        <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
+          {t('agent.benefitsBadge')}
+        </div>
+        <h2 className="text-phi-xl md:text-phi-2xl font-bold text-white mb-8">
+          {t('agent.benefitsTitle')}
+        </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {BENEFITS.map((benefit) => {
-              const Icon = benefit.icon
-              return (
-                <div
-                  key={benefit.title}
-                  className="bg-gray-800 rounded-xl border border-gray-700 p-5 hover:border-gray-600 transition-colors"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-brand-primary/30 border border-brand-accent/30 flex items-center justify-center shrink-0">
-                      <Icon className="w-5 h-5 text-brand-accent" />
-                    </div>
-                    <div>
-                      <h3 className="text-white font-semibold mb-1">{benefit.title}</h3>
-                      <p className="text-gray-400 text-sm">{benefit.description}</p>
-                    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-phi-4 reveal-stagger">
+          {BENEFITS.map((benefit) => {
+            const Icon = benefit.icon
+            return (
+              <GlassCard key={benefit.title} hover>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-brand-primary/30 border border-brand-accent/30 flex items-center justify-center shrink-0">
+                    <Icon className="w-5 h-5 text-brand-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">{benefit.title}</h3>
+                    <p className="text-gray-400 text-phi-sm">{benefit.description}</p>
                   </div>
                 </div>
-              )
-            })}
-          </div>
+              </GlassCard>
+            )
+          })}
         </div>
-      </section>
+      </SectionLayout>
 
       {/* Who can be an Agent */}
-      <section className="py-16">
-        <div className="max-w-6xl mx-auto px-4 xl:px-8">
-          <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            {t('agent.whoBadge')}
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">{t('agent.whoTitle')}</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {WHO_ITEMS.map((item) => (
-              <div
-                key={item}
-                className="flex items-center gap-3 p-4 bg-gray-800 rounded-xl border border-gray-700"
-              >
-                <CheckCircle className="w-5 h-5 text-green-400 shrink-0" />
-                <span className="text-gray-300 text-sm">{item}</span>
-              </div>
-            ))}
-          </div>
+      <SectionLayout>
+        <div className="text-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
+          {t('agent.whoBadge')}
         </div>
-      </section>
+        <h2 className="text-phi-xl md:text-phi-2xl font-bold text-white mb-8">
+          {t('agent.whoTitle')}
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 reveal-stagger">
+          {WHO_ITEMS.map((item) => (
+            <GlassCard key={item} padding="sm" hover>
+              <div className="flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-green-400 shrink-0" />
+                <span className="text-gray-300 text-phi-sm">{item}</span>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+      </SectionLayout>
 
       {/* CTA */}
-      <section className="py-16 bg-gray-900/50 border-t border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 xl:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{t('agent.ctaTitle')}</h2>
+      <SectionLayout className="bg-gray-900/50 border-t border-gray-800">
+        <div className="text-center">
+          <h2 className="text-phi-xl md:text-phi-2xl font-bold text-white mb-4">
+            {t('agent.ctaTitle')}
+          </h2>
           <p className="text-gray-400 mb-8 max-w-xl mx-auto">
             {t('agent.ctaDesc', { brand: BRAND_NAME })}
           </p>
@@ -226,7 +215,7 @@ export default function AgentLandingPage() {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-      </section>
+      </SectionLayout>
     </div>
   )
 }
