@@ -385,7 +385,7 @@ export default function CharityPage() {
                 return (
                   <span key={i}>
                     <Link
-                      href="/ventures"
+                      href="/exchange"
                       className="text-white underline font-medium hover:text-green-100"
                     >
                       {linkText}

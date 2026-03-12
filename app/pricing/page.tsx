@@ -129,7 +129,7 @@ export default function PricingPage() {
                 </ul>
 
                 <Link
-                  href={`/anchors/post-path?plan=${planKey}`}
+                  href={`/exchange?plan=${planKey}`}
                   className={`block w-full text-center py-3 rounded-xl font-semibold transition-colors ${
                     plan.popular
                       ? 'bg-brand-primary text-white hover:bg-brand-primary-light border border-brand-accent/30'
@@ -184,16 +184,16 @@ export default function PricingPage() {
           </div>
         </GlassCard>
 
-        {/* For Pioneers */}
+        {/* For Explorers */}
         <GlassCard variant="featured" padding="lg" className="text-center">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-80" />
-          <h2 className="text-phi-xl font-bold text-white mb-2">{t('pricing.pioneersTitle')}</h2>
-          <p className="opacity-90 max-w-lg mx-auto mb-6">{t('pricing.pioneersDesc')}</p>
+          <h2 className="text-phi-xl font-bold text-white mb-2">Free for Explorers</h2>
+          <p className="opacity-90 max-w-lg mx-auto mb-6">Browsing, discovering opportunities, and connecting with Hosts is always free. Start exploring today.</p>
           <Link
-            href="/signup?role=pioneer"
+            href="/signup"
             className="bg-white text-brand-primary font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors inline-block"
           >
-            {t('pricing.pioneersCta')}
+            Tell us who you are
           </Link>
         </GlassCard>
       </SectionLayout>

@@ -10,7 +10,7 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Compass, Anchor } from 'lucide-react'
+import { Globe, Users } from 'lucide-react'
 import { useJourney } from '@/lib/hooks/use-journey'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import GlassCard from '@/components/ui/GlassCard'
@@ -63,7 +63,7 @@ export default function AboutPage() {
             />
           </div>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-accent text-sm font-medium mb-8">
-            <Compass className="w-3.5 h-3.5" />
+            <Globe className="w-3.5 h-3.5" />
             {t('about.badge')}
           </div>
           <h1 className="text-5xl md:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
@@ -85,7 +85,7 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
-              href="/compass"
+              href="/"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all hover:scale-105"
               style={{
                 background:
@@ -93,15 +93,15 @@ export default function AboutPage() {
                 border: '1px solid rgb(var(--color-accent-rgb) / 0.38)',
               }}
             >
-              <Compass className="w-5 h-5" />
-              {t('about.startCompass')} →
+              <Globe className="w-5 h-5" />
+              Explore →
             </Link>
             <Link
-              href="/anchors/post-path"
+              href="/exchange"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border border-brand-accent/40 text-brand-accent hover:bg-brand-accent/10 transition-all"
             >
-              <Anchor className="w-5 h-5" />
-              {t('about.postPath')}
+              <Users className="w-5 h-5" />
+              Browse Exchange
             </Link>
           </div>
         </div>
@@ -261,7 +261,7 @@ export default function AboutPage() {
         <p className="text-gray-400 text-phi-lg mb-10">{t('about.ctaDesc')}</p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
-            href="/compass"
+            href="/"
             className="inline-flex items-center gap-2 px-10 py-4 rounded-xl font-bold text-white text-lg transition-all hover:scale-105"
             style={{
               background:
@@ -269,15 +269,15 @@ export default function AboutPage() {
               border: '1px solid rgb(var(--color-accent-rgb) / 0.38)',
             }}
           >
-            <Compass className="w-5 h-5" />
-            {t('about.startCompass')} →
+            <Globe className="w-5 h-5" />
+            Explore →
           </Link>
           <Link
-            href="/anchors/post-path"
+            href="/exchange"
             className="inline-flex items-center gap-2 px-10 py-4 rounded-xl font-bold border border-brand-accent/40 text-brand-accent hover:bg-brand-accent/10 transition-all text-lg"
           >
-            <Anchor className="w-5 h-5" />
-            {t('about.postPath')}
+            <Users className="w-5 h-5" />
+            Browse Exchange
           </Link>
         </div>
       </SectionLayout>
