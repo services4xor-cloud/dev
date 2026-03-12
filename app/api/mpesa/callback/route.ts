@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { buildWhatsAppPayload } from '@/lib/whatsapp-templates'
+import { logger } from '@/lib/logger'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/mpesa/callback
@@ -48,7 +49,7 @@ interface PaymentDetails {
 
 /** Extract a named value from M-Pesa CallbackMetadata items */
 function getMetaValue(items: MpesaCallbackItem[], name: string): string {
-  const item = items.find(i => i.Name === name)
+  const item = items.find((i) => i.Name === name)
   return item?.Value !== undefined ? String(item.Value) : ''
 }
 
@@ -62,49 +63,40 @@ async function sendWhatsAppConfirmation(
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID
 
   if (!waToken || !phoneNumberId) {
-    console.log('[WhatsApp] Credentials not configured — skipping notification')
-    console.log('[WhatsApp] Would send safari_booking_confirmation to:', phoneNumber)
+    logger.debug('WhatsApp credentials not configured — skipping notification', { phoneNumber })
     return
   }
 
   // Format phone for WhatsApp: 2547XXXXXXXX → +2547XXXXXXXX
   const waPhone = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`
 
-  const payload = buildWhatsAppPayload(
-    waPhone,
-    'safari_booking_confirmation',
-    'en_US',
-    [
-      'Your Safari Booking', // {{1}} package name
-      new Date().toLocaleDateString('en-KE', { dateStyle: 'full' }), // {{2}} date
-      '1', // {{3}} guests — real value would come from booking DB lookup
-      'Nairobi — confirm with guide', // {{4}} meeting point
-      `KES ${Number(details.amount).toLocaleString('en-US')}`, // {{5}} total paid
-      bookingRef, // {{6}} booking ref
-    ]
-  )
+  const payload = buildWhatsAppPayload(waPhone, 'safari_booking_confirmation', 'en_US', [
+    'Your Safari Booking', // {{1}} package name
+    new Date().toLocaleDateString('en-KE', { dateStyle: 'full' }), // {{2}} date
+    '1', // {{3}} guests — real value would come from booking DB lookup
+    'Nairobi — confirm with guide', // {{4}} meeting point
+    `KES ${Number(details.amount).toLocaleString('en-US')}`, // {{5}} total paid
+    bookingRef, // {{6}} booking ref
+  ])
 
   try {
-    const res = await fetch(
-      `https://graph.facebook.com/v18.0/${phoneNumberId}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${waToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }
-    )
+    const res = await fetch(`https://graph.facebook.com/v18.0/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${waToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
 
     if (!res.ok) {
       const err = await res.text()
-      console.error('[WhatsApp] Send failed:', err)
+      logger.error('WhatsApp send failed', { error: err })
     } else {
-      console.log('[WhatsApp] Booking confirmation sent to:', waPhone)
+      logger.info('WhatsApp booking confirmation sent', { phone: waPhone })
     }
   } catch (err) {
-    console.error('[WhatsApp] Network error:', err)
+    logger.error('WhatsApp network error', { error: String(err) })
   }
 }
 
@@ -133,7 +125,7 @@ async function confirmBooking(details: PaymentDetails): Promise<void> {
   //   data: { status: 'confirmed', paidAt: new Date() },
   // })
 
-  console.log('[DB] Would confirm booking:', {
+  logger.debug('Would confirm booking (DB not connected)', {
     checkoutRequestId: details.checkoutRequestId,
     receipt: details.mpesaReceiptNumber,
     amount: details.amount,
@@ -148,7 +140,7 @@ async function failBooking(checkoutRequestId: string, reason: string): Promise<v
   //   data: { status: 'failed', failureReason: reason },
   // })
 
-  console.log('[DB] Would mark booking failed:', { checkoutRequestId, reason })
+  logger.debug('Would mark booking failed (DB not connected)', { checkoutRequestId, reason })
 }
 
 /** Notify user of payment failure (e.g. user cancelled, insufficient funds) */
@@ -159,7 +151,11 @@ async function notifyPaymentFailure(
 ): Promise<void> {
   // TODO: Send WhatsApp / SMS failure notification
   // For now just log — a real implementation would use a fallback SMS service
-  console.log('[Notify] Payment failed for phone:', phoneNumber, 'reason:', reason, 'ref:', checkoutRequestId)
+  logger.debug('Payment failure notification (not yet implemented)', {
+    phoneNumber,
+    reason,
+    checkoutRequestId,
+  })
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -172,14 +168,15 @@ export async function POST(req: NextRequest) {
     // Validate callback structure
     const callback = body?.Body?.stkCallback
     if (!callback) {
-      console.warn('[M-Pesa Callback] Malformed payload — missing Body.stkCallback')
+      logger.warn('M-Pesa callback malformed — missing Body.stkCallback')
       // Still return 200 to prevent Safaricom retry loops
       return NextResponse.json({ ResultCode: 0, ResultDesc: 'Accepted' })
     }
 
-    const { CheckoutRequestID, MerchantRequestID, ResultCode, ResultDesc, CallbackMetadata } = callback
+    const { CheckoutRequestID, MerchantRequestID, ResultCode, ResultDesc, CallbackMetadata } =
+      callback
 
-    console.log(`[M-Pesa Callback] CheckoutRequestID=${CheckoutRequestID} ResultCode=${ResultCode}`)
+    logger.info('M-Pesa callback received', { CheckoutRequestID, ResultCode })
 
     if (ResultCode === 0) {
       // ── PAYMENT SUCCESSFUL ──────────────────────────────────────────────
@@ -194,7 +191,10 @@ export async function POST(req: NextRequest) {
         transactionDate: getMetaValue(items, 'TransactionDate'),
       }
 
-      console.log('[M-Pesa] Payment confirmed:', details)
+      logger.info('M-Pesa payment confirmed', {
+        receipt: details.mpesaReceiptNumber,
+        amount: details.amount,
+      })
 
       // 1. Mark booking confirmed in DB
       await confirmBooking(details)
@@ -204,10 +204,9 @@ export async function POST(req: NextRequest) {
       if (details.phoneNumber) {
         await sendWhatsAppConfirmation(details.phoneNumber, details, bookingRef)
       }
-
     } else {
       // ── PAYMENT FAILED / CANCELLED ──────────────────────────────────────
-      console.log(`[M-Pesa] Payment failed [${ResultCode}]: ${ResultDesc}`)
+      logger.warn('M-Pesa payment failed', { ResultCode, ResultDesc })
 
       await failBooking(CheckoutRequestID, ResultDesc)
 
@@ -218,9 +217,8 @@ export async function POST(req: NextRequest) {
 
     // Always return 200 — Safaricom retries on any non-200 response
     return NextResponse.json({ ResultCode: 0, ResultDesc: 'Accepted' })
-
   } catch (err) {
-    console.error('[M-Pesa Callback] Unhandled error:', err)
+    logger.error('M-Pesa callback unhandled error', { error: String(err) })
     // Return 200 even on errors — we never want Safaricom to retry indefinitely
     return NextResponse.json({ ResultCode: 0, ResultDesc: 'Accepted' })
   }

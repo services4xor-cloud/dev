@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger'
 
 const profileSchema = z.object({
   name: z.string().min(2).max(100).optional(),
@@ -25,7 +26,7 @@ export async function GET(_req: NextRequest) {
     // TODO: prisma.user.findUnique({ where: { id: session.user.id } })
     return NextResponse.json({ success: true, data: null })
   } catch (err) {
-    console.error('GET /api/profile error:', err)
+    logger.error('GET /api/profile failed', { error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to fetch profile' }, { status: 500 })
   }
 }
@@ -60,7 +61,7 @@ export async function PATCH(req: NextRequest) {
       data: { ...parsed.data, updatedAt: new Date().toISOString() },
     })
   } catch (err) {
-    console.error('PATCH /api/profile error:', err)
+    logger.error('PATCH /api/profile failed', { error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to update profile' }, { status: 500 })
   }
 }

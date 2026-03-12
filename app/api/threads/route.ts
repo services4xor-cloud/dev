@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { threadService } from '@/services'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/threads — List identity threads
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
       total: threads.length,
     })
   } catch (err) {
-    console.error('GET /api/threads error:', err)
+    logger.error('GET /api/threads failed', { error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to fetch threads' }, { status: 500 })
   }
 }

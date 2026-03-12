@@ -1,10 +1,10 @@
-/* eslint-disable no-console */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { chapterService } from '@/services'
 import { sendEmail } from '@/lib/email'
+import { logger } from '@/lib/logger'
 
 const openChapterSchema = z.object({
   pathId: z.string().min(1),
@@ -41,13 +41,13 @@ export async function POST(req: NextRequest) {
     void sendEmail(session.user.email!, 'chapter_opened', {
       name: session.user.name || 'Pioneer',
       pathId: parsed.data.pathId,
-    }).catch((err) => console.error('Chapter opened email error:', err))
+    }).catch((err) => logger.error('Chapter opened email failed', { error: String(err) }))
 
     return NextResponse.json({ success: true, data: chapter }, { status: 201 })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to open Chapter'
     const status = message.includes('already opened') ? 409 : 500
-    console.error('POST /api/chapters error:', err)
+    logger.error('POST /api/chapters failed', { error: String(err) })
     return NextResponse.json({ success: false, error: message }, { status })
   }
 }
@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ success: true, data: chapters, total: chapters.length })
   } catch (err) {
-    console.error('GET /api/chapters error:', err)
+    logger.error('GET /api/chapters failed', { error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to fetch Chapters' }, { status: 500 })
   }
 }

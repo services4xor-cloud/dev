@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // app/api/social/route.ts
 // Social media automation API
 //
@@ -23,6 +22,7 @@ import {
   PostStatus,
   generatePathPostCopy,
 } from '@/lib/social-media'
+import { logger } from '@/lib/logger'
 
 // ──────────────────────────────────────────────
 // In-memory store (replace with Prisma/DB later)
@@ -119,7 +119,7 @@ async function dispatchToPlatform(
       // TODO: Meta Graph API — POST /{ig-user-id}/media + /{ig-user-id}/media_publish
       // Requires: INSTAGRAM_ACCESS_TOKEN, INSTAGRAM_BUSINESS_ACCOUNT_ID
       // Docs: https://developers.facebook.com/docs/instagram-api/guides/content-publishing
-      console.log('[social] instagram stub:', { title: post.title, body })
+      logger.debug('Instagram dispatch stub', { platform: 'instagram', title: post.title, body })
       return { success: true, postId: `ig_mock_${Date.now()}` }
     }
 
@@ -127,7 +127,7 @@ async function dispatchToPlatform(
       // TODO: TikTok Content Posting API — POST /v2/post/publish/video/init/
       // Requires: TIKTOK_ACCESS_TOKEN, TIKTOK_CLIENT_KEY, TIKTOK_CLIENT_SECRET
       // Docs: https://developers.tiktok.com/doc/content-posting-api-get-started
-      console.log('[social] tiktok stub:', { title: post.title, body })
+      logger.debug('TikTok dispatch stub', { platform: 'tiktok', title: post.title, body })
       return { success: true, postId: `tt_mock_${Date.now()}` }
     }
 
@@ -136,7 +136,11 @@ async function dispatchToPlatform(
       // Requires: WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_BUSINESS_ACCOUNT_ID
       // Note: For broadcasts you need approved message templates.
       // Docs: https://developers.facebook.com/docs/whatsapp/cloud-api/messages
-      console.log('[social] whatsapp_business stub:', { title: post.title, body })
+      logger.debug('WhatsApp Business dispatch stub', {
+        platform: 'whatsapp_business',
+        title: post.title,
+        body,
+      })
       return { success: true, postId: `wa_mock_${Date.now()}` }
     }
 
@@ -144,7 +148,7 @@ async function dispatchToPlatform(
       // TODO: Meta Pages API — POST /{page-id}/feed
       // Requires: FACEBOOK_PAGE_ACCESS_TOKEN, FACEBOOK_PAGE_ID
       // Docs: https://developers.facebook.com/docs/pages-api/posts
-      console.log('[social] facebook stub:', { title: post.title, body })
+      logger.debug('Facebook dispatch stub', { platform: 'facebook', title: post.title, body })
       return { success: true, postId: `fb_mock_${Date.now()}` }
     }
 
@@ -152,7 +156,7 @@ async function dispatchToPlatform(
       // TODO: Twitter/X API v2 — POST /2/tweets
       // Requires: TWITTER_API_KEY, TWITTER_API_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET
       // Docs: https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/post-tweets
-      console.log('[social] twitter_x stub:', { title: post.title, body })
+      logger.debug('Twitter/X dispatch stub', { platform: 'twitter_x', title: post.title, body })
       return { success: true, postId: `x_mock_${Date.now()}` }
     }
 
@@ -160,7 +164,7 @@ async function dispatchToPlatform(
       // TODO: LinkedIn Marketing API — POST /ugcPosts or /shares
       // Requires: LINKEDIN_ACCESS_TOKEN, LINKEDIN_ORGANIZATION_ID
       // Docs: https://docs.microsoft.com/en-us/linkedin/marketing/integrations/community-management/shares/ugc-post-api
-      console.log('[social] linkedin stub:', { title: post.title, body })
+      logger.debug('LinkedIn dispatch stub', { platform: 'linkedin', title: post.title, body })
       return { success: true, postId: `li_mock_${Date.now()}` }
     }
 
@@ -168,7 +172,7 @@ async function dispatchToPlatform(
       // TODO: YouTube Data API v3 — videos.insert (requires OAuth 2.0 + video file)
       // Requires: YOUTUBE_API_KEY, YOUTUBE_CHANNEL_ID, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
       // Docs: https://developers.google.com/youtube/v3/docs/videos/insert
-      console.log('[social] youtube stub:', { title: post.title, body })
+      logger.debug('YouTube dispatch stub', { platform: 'youtube', title: post.title, body })
       return { success: true, postId: `yt_mock_${Date.now()}` }
     }
 
@@ -195,7 +199,7 @@ async function dispatchToPlatform(
         }
         return { success: false, error: data.description ?? 'Telegram error' }
       }
-      console.log('[social] telegram stub (no token):', { body })
+      logger.debug('Telegram dispatch stub (no token)', { platform: 'telegram', body })
       return { success: true, postId: `tg_mock_${Date.now()}` }
     }
 
@@ -203,7 +207,7 @@ async function dispatchToPlatform(
       // TODO: Snapchat Marketing API — ad creative endpoints
       // Requires: SNAPCHAT_ACCESS_TOKEN, SNAPCHAT_AD_ACCOUNT_ID
       // Docs: https://marketingapi.snapchat.com/docs/
-      console.log('[social] snapchat stub:', { title: post.title, body })
+      logger.debug('Snapchat dispatch stub', { platform: 'snapchat', title: post.title, body })
       return { success: true, postId: `sc_mock_${Date.now()}` }
     }
 

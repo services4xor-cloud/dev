@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
+import { logger } from '@/lib/logger'
 
 const bookingSchema = z.object({
   experienceId: z.string().min(1),
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       totalAmount: String(data.totalAmount),
       currency: data.currency,
       bookingId,
-    }).catch((err) => console.error('Booking confirmation email error:', err))
+    }).catch((err) => logger.error('Booking confirmation email failed', { error: String(err) }))
 
     return NextResponse.json(
       {
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     )
   } catch (err) {
-    console.error('POST /api/bookings error:', err)
+    logger.error('POST /api/bookings failed', { error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to create booking' }, { status: 500 })
   }
 }

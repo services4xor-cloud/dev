@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
@@ -8,6 +7,7 @@ import { hasDatabase } from '@/services/db'
 import { buildWhatsAppPayload } from '@/lib/whatsapp-templates'
 import { rankPathsForPioneer, MOCK_PATHS } from '@/lib/matching'
 import type { PioneerProfile } from '@/lib/matching'
+import { logger } from '@/lib/logger'
 
 // ─── Validation Schema ────────────────────────────────────────────────────────
 const OnboardingSchema = z.object({
@@ -50,11 +50,7 @@ async function queueWelcomeWhatsApp(
       String(matchCount),
       pioneerType.charAt(0).toUpperCase() + pioneerType.slice(1),
     ])
-    console.log(
-      '[WhatsApp mock] Would send pioneer_welcome to',
-      phone,
-      JSON.stringify(payload, null, 2)
-    )
+    logger.debug('WhatsApp mock: would send pioneer_welcome', { phone, payload })
     return
   }
 
@@ -76,12 +72,12 @@ async function queueWelcomeWhatsApp(
     })
     if (!res.ok) {
       const err = await res.text()
-      console.error('[WhatsApp] Send failed:', err)
+      logger.error('WhatsApp send failed', { error: err })
     } else {
-      console.log('[WhatsApp] pioneer_welcome sent to', phone)
+      logger.info('WhatsApp pioneer_welcome sent', { phone })
     }
   } catch (err) {
-    console.error('[WhatsApp] Network error:', err)
+    logger.error('WhatsApp network error', { error: String(err) })
   }
 }
 
@@ -90,10 +86,7 @@ async function savePioneerProfile(data: OnboardingPayload): Promise<string> {
   if (!hasDatabase) {
     // Mock mode: generate a deterministic-ish ID
     const mockId = `pioneer-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
-    console.log(
-      '[DB mock] Would save pioneer profile:',
-      JSON.stringify({ id: mockId, ...data }, null, 2)
-    )
+    logger.debug('DB mock: would save pioneer profile', { id: mockId, ...data })
     return mockId
   }
 
@@ -170,7 +163,7 @@ export async function POST(req: NextRequest) {
   try {
     pioneerId = await savePioneerProfile(data)
   } catch (err) {
-    console.error('[Onboarding] DB save failed:', err)
+    logger.error('Onboarding DB save failed', { error: String(err) })
     return NextResponse.json(
       { success: false, error: 'Failed to save profile. Please try again.' },
       { status: 500 }
@@ -185,7 +178,7 @@ export async function POST(req: NextRequest) {
       nameFromHeadline || 'Pioneer',
       data.pioneerType,
       strongMatches.length
-    ).catch((err) => console.error('[WhatsApp queue] Error:', err))
+    ).catch((err) => logger.error('WhatsApp queue error', { error: String(err) }))
   }
 
   // Build welcome message based on pioneer type

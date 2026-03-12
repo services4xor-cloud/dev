@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { logger } from '@/lib/logger'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 
@@ -74,7 +75,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Contact form error:', error)
+    logger.error('Contact form submission failed', { error: String(error) })
     return NextResponse.json({ error: 'Failed to send message' }, { status: 500 })
   }
 }

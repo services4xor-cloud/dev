@@ -3,6 +3,7 @@ import { hash } from 'bcryptjs'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 import { sendEmail } from '@/lib/email'
+import { logger } from '@/lib/logger'
 
 const registerSchema = z.object({
   name: z.string().min(1, 'Name is required').max(200),
@@ -76,11 +77,11 @@ export async function POST(req: NextRequest) {
       name: name || 'Pioneer',
       role: user.role,
       country: user.country,
-    }).catch((err) => console.error('Welcome email error:', err))
+    }).catch((err) => logger.error('Welcome email failed', { error: String(err) }))
 
     return NextResponse.json({ success: true, user }, { status: 201 })
   } catch (err) {
-    console.error('POST /api/auth/register error:', err)
+    logger.error('POST /api/auth/register failed', { error: String(err) })
     return NextResponse.json(
       { error: 'Failed to create account. Please try again.' },
       { status: 500 }

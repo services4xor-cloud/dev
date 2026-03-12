@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { threadService } from '@/services'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/threads/[slug] — Get a single thread by slug
@@ -16,7 +17,7 @@ export async function GET(_req: NextRequest, { params }: { params: { slug: strin
 
     return NextResponse.json({ success: true, thread })
   } catch (err) {
-    console.error(`GET /api/threads/${params.slug} error:`, err)
+    logger.error('GET /api/threads/[slug] failed', { slug: params.slug, error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to fetch thread' }, { status: 500 })
   }
 }

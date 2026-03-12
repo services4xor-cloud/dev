@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -162,7 +163,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (err) {
-    console.error('POST /api/forwards error:', err)
+    logger.error('POST /api/forwards failed', { error: String(err) })
     return NextResponse.json({ error: 'Failed to create forward' }, { status: 500 })
   }
 }

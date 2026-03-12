@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
@@ -6,6 +5,7 @@ import { authOptions } from '@/lib/auth'
 import { pathService } from '@/services'
 import { generatePathPostCopy, type SocialPlatform } from '@/lib/social-media'
 import { COUNTRIES, type CountryCode } from '@/lib/countries'
+import { logger } from '@/lib/logger'
 
 // ─── Deployment defaults ─────────────────────────────────────────────────────
 const DEPLOY_COUNTRY = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE') as CountryCode
@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
       totalPages: Math.ceil(total / limit),
     })
   } catch (err) {
-    console.error('GET /api/paths error:', err)
+    logger.error('GET /api/paths failed', { error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to fetch paths' }, { status: 500 })
   }
 }
@@ -120,11 +120,11 @@ export async function POST(req: NextRequest) {
       location: data.location,
       category: data.sector || '',
       country: data.country,
-    }).catch((err: unknown) => console.error('Social auto-post queue error:', err))
+    }).catch((err: unknown) => logger.error('Social auto-post queue error', { error: String(err) }))
 
     return NextResponse.json({ success: true, data: path }, { status: 201 })
   } catch (err) {
-    console.error('POST /api/paths error:', err)
+    logger.error('POST /api/paths failed', { error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to create path' }, { status: 500 })
   }
 }
@@ -147,8 +147,10 @@ async function queueSocialAutoPost(path: PathRecord): Promise<void> {
   const copy = generatePathPostCopy(path.title, path.anchorName, path.location, path.category)
 
   for (const platform of enabledPlatforms) {
-    console.log(
-      `[SocialAutoPost] Queued post to ${platform} for path "${path.title}": ${copy[platform].slice(0, 60)}…`
-    )
+    logger.info('Social auto-post queued', {
+      platform,
+      pathTitle: path.title,
+      preview: copy[platform].slice(0, 60),
+    })
   }
 }
