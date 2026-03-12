@@ -66,6 +66,12 @@ export default function ForgotPasswordPage() {
                 <p className="text-gray-400 text-sm">{t('forgotPassword.desc')}</p>
               </div>
 
+              {error && (
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm mb-4">
+                  {error}
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-1.5">

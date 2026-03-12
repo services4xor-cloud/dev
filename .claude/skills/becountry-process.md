@@ -27,11 +27,12 @@ USER REQUEST
     ├── "Build a feature"
     │     ├── 1. /becountry-architecture  (design check)
     │     ├── 2. /becountry-ux-workflow   (user flow design)
-    │     ├── 3. Build the feature
+    │     ├── 3. /becountry-implement     (build it — real DB, tests, sync)
     │     ├── 4. /becountry-ui-review     (visual/interaction check)
     │     ├── 5. /becountry-testing       (automated tests)
     │     ├── 6. /becountry-e2e-test      (full flow test)
-    │     └── 7. /becountry-push          (commit + deploy)
+    │     ├── 7. /becountry-sync          (code ↔ docs ↔ skills)
+    │     └── 8. /becountry-push          (commit + deploy)
     │
     ├── "Review the product"
     │     ├── /becountry-design-review    (brand + design system)
@@ -100,6 +101,7 @@ USER REQUEST
 | `becountry-big-picture`     | ROADMAP.md, PRD.md                    | Strategic vision alignment       |
 | `becountry-requirements`    | REQUIREMENTS.md, PRD.md               | Requirements traceability        |
 | `becountry-data`            | ARCHITECTURE.md, prisma/schema.prisma | Data model + integrity           |
+| `becountry-implement`       | All code files                        | Build features with real DB      |
 | `becountry-ops`             | OPERATIONS.md                         | Monitoring + incident response   |
 | `becountry-deployment`      | ARCHITECTURE.md, HUMAN_MANUAL.md      | Deploy pipeline + environments   |
 | `becountry-country-deploy`  | ARCHITECTURE.md, lib/countries.ts     | Multi-country rollout            |

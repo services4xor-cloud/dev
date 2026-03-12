@@ -16,7 +16,6 @@ import Link from 'next/link'
 import { Users, Building2, Check, AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
-import { MOCK_PROFILE } from '@/data/mock'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import GlassCard from '@/components/ui/GlassCard'
@@ -33,7 +32,7 @@ export default function SignupPage() {
     email: '',
     password: '',
     phone: '',
-    country: identity.country || MOCK_PROFILE.country,
+    country: identity.country || 'KE',
   })
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
@@ -286,7 +285,7 @@ export default function SignupPage() {
                   />
                 </div>
 
-                {form.country === MOCK_PROFILE.country && (
+                {form.country === 'KE' && (
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">
                       {t('auth.phoneOptional')}

@@ -9,7 +9,7 @@ import React from 'react'
 // Mock useContext to return undefined so useIdentity takes the fallback path
 const originalUseContext = React.useContext
 beforeEach(() => {
-  jest.spyOn(React, 'useContext').mockReturnValue(undefined)
+  jest.spyOn(React, 'useContext').mockReturnValue(undefined!)
 })
 afterEach(() => {
   jest.restoreAllMocks()
