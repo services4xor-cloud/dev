@@ -524,9 +524,9 @@ function Step4({
   onBack,
 }: {
   selectedCountry: string
-  selectedFaith: string | undefined
+  selectedFaith: string[]
   selectedCulture: string
-  onSelectFaith: (id: string | undefined) => void
+  onSelectFaith: (id: string) => void
   onCultureChange: (val: string) => void
   onNext: () => void
   onBack: () => void
@@ -551,11 +551,11 @@ function Step4({
       <p className="text-white/80 font-semibold mb-3">Faith or belief</p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
         {FAITH_OPTIONS.map((opt) => {
-          const isSelected = selectedFaith === opt.id
+          const isSelected = selectedFaith.includes(opt.id)
           return (
             <button
               key={opt.id}
-              onClick={() => onSelectFaith(isSelected ? undefined : opt.id)}
+              onClick={() => onSelectFaith(opt.id)}
               className={`glass-subtle p-4 text-left transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
                 isSelected ? '' : 'hover:border-white/10'
               }`}
@@ -825,7 +825,7 @@ export default function Discovery() {
   const [editCity, setEditCity] = useState('')
   const [selectedCrafts, setSelectedCrafts] = useState<string[]>([])
   const [selectedReach, setSelectedReach] = useState<string[]>([])
-  const [selectedFaith, setSelectedFaith] = useState<string | undefined>()
+  const [selectedFaith, setSelectedFaith] = useState<string[]>([])
   const [selectedCulture, setSelectedCulture] = useState('')
   const [craftSearch, setCraftSearch] = useState('')
   const [langSearch, setLangSearch] = useState('')
@@ -867,7 +867,7 @@ export default function Discovery() {
     setInterests(selectedInterests)
     setCraft(selectedCrafts)
     setReach(selectedReach)
-    if (selectedFaith) setFaith(selectedFaith)
+    setFaith(selectedFaith)
     if (selectedCulture) setCulture(selectedCulture)
     if (editCity) setCity(editCity)
     router.push('/world')
@@ -919,7 +919,11 @@ export default function Discovery() {
           selectedCountry={selectedCountry}
           selectedFaith={selectedFaith}
           selectedCulture={selectedCulture}
-          onSelectFaith={setSelectedFaith}
+          onSelectFaith={(id: string) =>
+            setSelectedFaith((prev) =>
+              prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
+            )
+          }
           onCultureChange={setSelectedCulture}
           onNext={() => setStep(5)}
           onBack={() => setStep(3)}
@@ -934,7 +938,7 @@ export default function Discovery() {
           languageCount={selectedLanguages.length}
           craftCount={selectedCrafts.length}
           reachCount={selectedReach.length}
-          hasFaith={!!selectedFaith}
+          hasFaith={selectedFaith.length > 0}
           hasCulture={!!selectedCulture}
         />
       )}

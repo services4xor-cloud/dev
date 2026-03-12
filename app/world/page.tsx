@@ -7,7 +7,8 @@
  * Shows people, paths, and communities scored by relevance to the Pioneer's identity.
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
 import { buildGraph, type GraphNode } from '@/lib/graph'
@@ -25,13 +26,6 @@ export default function WorldPage() {
   const router = useRouter()
   const { identity, hasCompletedDiscovery } = useIdentity()
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null)
-
-  // Redirect if discovery not completed
-  useEffect(() => {
-    if (!hasCompletedDiscovery) {
-      router.push('/')
-    }
-  }, [hasCompletedDiscovery, router])
 
   const { nodes, edges } = useMemo(() => buildGraph(identity), [identity])
 
@@ -56,7 +50,24 @@ export default function WorldPage() {
   }
 
   if (!hasCompletedDiscovery) {
-    return null
+    return (
+      <main className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="text-center py-16 px-4">
+          <p className="text-phi-2xl mb-4">🌍</p>
+          <h2 className="text-phi-xl font-bold text-white mb-3">Set Up Your Identity First</h2>
+          <p className="text-white/60 mb-6 max-w-md mx-auto">
+            Select your languages on the homepage to unlock your World network and start connecting
+            with people, paths, and communities.
+          </p>
+          <Link
+            href="/"
+            className="inline-block bg-brand-accent text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-colors"
+          >
+            Go to Discovery &rarr;
+          </Link>
+        </div>
+      </main>
+    )
   }
 
   return (
@@ -75,11 +86,7 @@ export default function WorldPage() {
           {/* Graph */}
           <div className="flex-1 w-full">
             <GlassCard variant="subtle" padding="md">
-              <NetworkGraph
-                nodes={nodes}
-                edges={edges}
-                onNodeClick={handleNodeClick}
-              />
+              <NetworkGraph nodes={nodes} edges={edges} onNodeClick={handleNodeClick} />
             </GlassCard>
           </div>
 
@@ -95,14 +102,10 @@ export default function WorldPage() {
                 </span>
 
                 {/* Name */}
-                <h2 className="text-phi-5 font-semibold text-white mb-1">
-                  {selectedNode.label}
-                </h2>
+                <h2 className="text-phi-5 font-semibold text-white mb-1">{selectedNode.label}</h2>
 
                 {/* Sublabel */}
-                <p className="text-white/50 text-phi-3 mb-4">
-                  {selectedNode.sublabel}
-                </p>
+                <p className="text-white/50 text-phi-3 mb-4">{selectedNode.sublabel}</p>
 
                 {/* Match score */}
                 <div className="flex items-center gap-3 mb-5">
@@ -151,9 +154,21 @@ export default function WorldPage() {
             {/* Stats */}
             <div className="mt-4 grid grid-cols-3 gap-2">
               {[
-                { label: 'People', count: nodes.filter((n) => n.type === 'person').length, color: 'text-brand-accent' },
-                { label: 'Paths', count: nodes.filter((n) => n.type === 'opportunity').length, color: 'text-brand-primary-light' },
-                { label: 'Communities', count: nodes.filter((n) => n.type === 'community').length, color: 'text-emerald-400' },
+                {
+                  label: 'People',
+                  count: nodes.filter((n) => n.type === 'person').length,
+                  color: 'text-brand-accent',
+                },
+                {
+                  label: 'Paths',
+                  count: nodes.filter((n) => n.type === 'opportunity').length,
+                  color: 'text-brand-primary-light',
+                },
+                {
+                  label: 'Communities',
+                  count: nodes.filter((n) => n.type === 'community').length,
+                  color: 'text-emerald-400',
+                },
               ].map(({ label, count, color }) => (
                 <GlassCard key={label} variant="subtle" padding="sm" className="text-center">
                   <p className={`text-phi-5 font-bold ${color}`}>{count}</p>

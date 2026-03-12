@@ -19,6 +19,28 @@
       "Bash(sed *)"
     ]
   },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd C:/GIT/dev && echo '=== BE[X] SESSION CONTEXT ===' && echo 'Branch:' $(git branch --show-current) && echo 'Last commit:' $(git log --oneline -1) && echo 'Uncommitted:' $(git status --short | wc -l) 'files' && echo '=== PENDING QUESTIONS ===' && (cat ASK.md 2>/dev/null | head -20 || echo 'No pending questions') && echo '=== SKILLS: bex-scrum-orchestrator, bex-parallel-development, bex-consistency, bex-mvc-enrichment ===' && echo 'Auto-mode: ON. Commit+push after every feature. Update PROGRESS.md always.'"
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'COMPACTED — Skills: bex-scrum-orchestrator (auto Scrum), bex-parallel-development (parallel agents), bex-consistency (vocab/brand), bex-mvc-enrichment (View leverages Model). Auto-mode ON. VOCAB: Pioneer/Anchor/Path/Chapter/Venture/Compass/Gate/Route.'"
+          }
+        ]
+      }
+    ]
+  },
   "env": {
     "CLAUDE_PROJECT": "benetwork",
     "CLAUDE_COUNTRY": "KE"

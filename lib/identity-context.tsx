@@ -39,7 +39,7 @@ interface Identity {
   /** Explorer discovers experiences, Host offers them */
   mode: 'explorer' | 'host'
   /** Faith/spiritual dimension */
-  faith?: string
+  faith: string[]
   /** Profession/skill tags */
   craft: string[]
   /** Mobility/capability tags */
@@ -78,7 +78,7 @@ interface IdentityContextValue {
   /** Set user's city */
   setCity: (city: string) => void
   /** Set faith/spiritual dimension */
-  setFaith: (faith: string | undefined) => void
+  setFaith: (faith: string[]) => void
   /** Set profession/skill tags */
   setCraft: (craft: string[]) => void
   /** Set mobility/capability tags */
@@ -116,6 +116,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     languages: [],
     interests: [],
     mode: 'explorer',
+    faith: [],
     craft: [],
     reach: [],
   })
@@ -141,6 +142,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
           if (!parsed.mode) {
             parsed.mode = 'explorer'
           }
+          if (!Array.isArray(parsed.faith)) parsed.faith = parsed.faith ? [parsed.faith] : []
           if (!Array.isArray(parsed.craft)) parsed.craft = []
           if (!Array.isArray(parsed.reach)) parsed.reach = []
           setIdentity(parsed)
@@ -162,6 +164,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
             languages: [],
             interests: [],
             mode: 'explorer',
+            faith: [],
             craft: [],
             reach: [],
           })
@@ -231,6 +234,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       languages: [],
       interests: [],
       mode: 'explorer',
+      faith: [],
       craft: [],
       reach: [],
     })
@@ -252,7 +256,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     setIdentity((prev) => ({ ...prev, city }))
   }, [])
 
-  const setFaith = useCallback((faith: string | undefined) => {
+  const setFaith = useCallback((faith: string[]) => {
     setIdentity((prev) => ({ ...prev, faith }))
   }, [])
 
@@ -273,9 +277,9 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
   const brandName =
     identity.threadBrandName || BRAND_NAME_OVERRIDES[identity.country] || `Be${countryName}`
 
-  // Discovery is complete when user has selected at least one language and one interest
-  const hasCompletedDiscovery =
-    identity.languages.length > 0 && identity.interests.length > 0 && identity.craft.length > 0
+  // Discovery is complete when user has selected at least one language
+  // (interests and craft enrich the experience but don't block navigation)
+  const hasCompletedDiscovery = identity.languages.length > 0
 
   // Helper to localize any country code in the user's current language
   const localizeCountry = useCallback(
@@ -325,6 +329,7 @@ export function useIdentity(): IdentityContextValue {
         languages: [],
         interests: [],
         mode: 'explorer' as const,
+        faith: [],
         craft: [],
         reach: [],
       },

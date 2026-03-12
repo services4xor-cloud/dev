@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 import { LANGUAGE_REGISTRY, COUNTRY_OPTIONS, type LanguageCode } from '@/lib/country-selector'
 import { getCategoriesByIds } from '@/lib/exchange-categories'
@@ -137,22 +138,37 @@ export default function MePage() {
       .catch(() => {})
   }, [])
 
-  useEffect(() => {
-    if (mounted && !hasCompletedDiscovery) {
-      router.push('/')
-    }
-  }, [mounted, hasCompletedDiscovery, router])
-
   // Reset tab to Dashboard when mode changes
   const handleModeChange = (newMode: 'explorer' | 'host') => {
     setMode(newMode)
     setActiveTab('Dashboard')
   }
 
-  if (!mounted || !hasCompletedDiscovery) {
+  if (!mounted) {
     return (
       <main className="min-h-screen bg-brand-bg flex items-center justify-center">
         <div className="text-white/40">Loading...</div>
+      </main>
+    )
+  }
+
+  if (!hasCompletedDiscovery) {
+    return (
+      <main className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="text-center py-16 px-4">
+          <p className="text-phi-2xl mb-4">👤</p>
+          <h2 className="text-phi-xl font-bold text-white mb-3">Set Up Your Identity First</h2>
+          <p className="text-white/60 mb-6 max-w-md mx-auto">
+            Select your languages on the homepage to unlock your personal dashboard — manage your
+            paths, chapters, and connections.
+          </p>
+          <Link
+            href="/"
+            className="inline-block bg-brand-accent text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-colors"
+          >
+            Go to Discovery &rarr;
+          </Link>
+        </div>
       </main>
     )
   }
@@ -161,7 +177,7 @@ export default function MePage() {
   const activeDimensions = [
     identity.country, // location — always active
     identity.languages.length > 0,
-    identity.faith,
+    identity.faith.length > 0,
     identity.craft.length > 0,
     identity.interests.length > 0,
     identity.reach.length > 0,
@@ -348,7 +364,7 @@ export default function MePage() {
   }
 
   function renderProfile() {
-    const faithOption = identity.faith ? getFaithOption(identity.faith) : null
+    const faithOptions = identity.faith.map((f) => getFaithOption(f)).filter(Boolean)
 
     return (
       <div className="space-y-phi-5">
@@ -493,10 +509,14 @@ export default function MePage() {
           <label className="block text-phi-sm text-white/60 mb-phi-2">
             <span className="mr-1">🙏</span> Faith
           </label>
-          {faithOption ? (
-            <div className="flex items-center gap-phi-2">
-              <span className="text-lg">{faithOption.icon}</span>
-              <span className="text-white/80">{faithOption.label}</span>
+          {faithOptions.length > 0 ? (
+            <div className="flex flex-wrap gap-phi-2">
+              {faithOptions.map((opt) => (
+                <div key={opt!.id} className="flex items-center gap-1">
+                  <span className="text-lg">{opt!.icon}</span>
+                  <span className="text-white/80">{opt!.label}</span>
+                </div>
+              ))}
             </div>
           ) : (
             <span className="text-phi-sm text-white/30 italic">Not specified</span>
@@ -674,7 +694,7 @@ export default function MePage() {
                   case 'languages':
                     return identity.languages.length > 0
                   case 'faith':
-                    return !!identity.faith
+                    return identity.faith.length > 0
                   case 'craft':
                     return identity.craft.length > 0
                   case 'interests':

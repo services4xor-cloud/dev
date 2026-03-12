@@ -5,8 +5,8 @@
  * routes by checking the NextAuth JWT token.
  *
  * Protected routes:
- *   /pioneers/dashboard, /anchors/dashboard, /agents/dashboard,
- *   /admin, /profile, /anchors/post-path, /notifications
+ *   /pioneers/dashboard, /anchors/dashboard,
+ *   /admin, /profile, /notifications
  *
  * Public routes (no auth required):
  *   /, /ventures, /compass, /about, /pricing, /login, /signup,
@@ -23,10 +23,8 @@ import { getToken } from 'next-auth/jwt'
 const PROTECTED_PATHS = [
   '/pioneers/dashboard',
   '/anchors/dashboard',
-  '/agents/dashboard',
   '/admin',
   '/profile',
-  '/anchors/post-path',
   '/notifications',
 ]
 
@@ -71,8 +69,6 @@ export const config = {
   matcher: [
     '/pioneers/dashboard/:path*',
     '/anchors/dashboard/:path*',
-    '/anchors/post-path/:path*',
-    '/agents/dashboard/:path*',
     '/admin/:path*',
     '/profile/:path*',
     '/notifications/:path*',

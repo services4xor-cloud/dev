@@ -37,7 +37,7 @@ function identityToProfile(identity: {
   city?: string
   languages: string[]
   interests: string[]
-  faith?: string
+  faith: string[]
   craft?: string[]
   reach?: string[]
   culture?: string

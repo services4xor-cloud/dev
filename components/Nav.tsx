@@ -193,7 +193,7 @@ export default function Nav() {
                     {LOGIN_LINK.label}
                   </Link>
                   <Link
-                    href="/"
+                    href="/signup"
                     aria-label="Begin your journey"
                     className="flex items-center gap-1.5 px-5 py-2 rounded-full text-[13px] font-bold text-white
                                bg-brand-primary hover:bg-brand-primary/90

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 // Threads fetched from real DB via /api/threads
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
@@ -99,16 +100,20 @@ function identityToProfile(identity: {
   city?: string
   languages: string[]
   interests: string[]
+  faith: string[]
+  craft?: string[]
+  reach?: string[]
+  culture?: string
 }): DimensionProfile {
   return {
     country: identity.country,
     city: identity.city,
     languages: identity.languages,
-    faith: (identity as Record<string, unknown>).faith as string | undefined,
-    craft: ((identity as Record<string, unknown>).craft as string[]) ?? [],
+    faith: identity.faith,
+    craft: identity.craft ?? [],
     interests: identity.interests,
-    reach: ((identity as Record<string, unknown>).reach as string[]) ?? [],
-    culture: (identity as Record<string, unknown>).culture as string | undefined,
+    reach: identity.reach ?? [],
+    culture: identity.culture,
     isHuman: true,
   }
 }
@@ -199,10 +204,26 @@ export default function MessagesPage() {
     return top5
   }, [identity, dmParam])
 
-  // Gate: redirect if discovery not complete
+  // Gate: show guidance if discovery not complete
   if (!hasCompletedDiscovery) {
-    router.push('/')
-    return null
+    return (
+      <main className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="text-center py-16 px-4">
+          <p className="text-phi-2xl mb-4">💬</p>
+          <h2 className="text-phi-xl font-bold text-white mb-3">Set Up Your Identity First</h2>
+          <p className="text-white/60 mb-6 max-w-md mx-auto">
+            Select your languages on the homepage to unlock Messages and start connecting with
+            people in your communities.
+          </p>
+          <Link
+            href="/"
+            className="inline-block bg-brand-accent text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-colors"
+          >
+            Go to Discovery &rarr;
+          </Link>
+        </div>
+      </main>
+    )
   }
 
   // Group threads by type for the sidebar

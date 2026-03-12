@@ -33,7 +33,7 @@ export interface AgentPersona {
   country: string // ISO code
   city: string
   languages: string[] // ISO 639-1 codes
-  faith?: string // FaithId
+  faith: string[] // FaithId[]
   craft: string[] // From CRAFT_SUGGESTIONS
   interests: string[] // Exchange category IDs
   reach: string[] // ReachId[]
@@ -2374,11 +2374,16 @@ export function generateAgentsForCountry(countryCode: string): AgentPersona[] {
     const reachCount = 1 + Math.floor(rng() * 2)
     const reach = pickN(REACH_OPTIONS as unknown as string[], reachCount, rng)
 
-    // Faith: optional, from country's predominant faiths
-    const faith =
-      country.faiths.length > 0 && rng() > 0.3
-        ? country.faiths[Math.floor(rng() * country.faiths.length)]
-        : undefined
+    // Faith: array, from country's predominant faiths
+    const faithArr: string[] = []
+    if (country.faiths.length > 0 && rng() > 0.3) {
+      faithArr.push(country.faiths[Math.floor(rng() * country.faiths.length)])
+      // 20% chance of having a second faith
+      if (rng() > 0.8 && country.faiths.length > 1) {
+        const second = country.faiths[Math.floor(rng() * country.faiths.length)]
+        if (!faithArr.includes(second)) faithArr.push(second)
+      }
+    }
 
     // Bio
     const bioTemplate = BIO_TEMPLATES[Math.floor(rng() * BIO_TEMPLATES.length)]
@@ -2413,7 +2418,7 @@ export function generateAgentsForCountry(countryCode: string): AgentPersona[] {
       country: countryCode,
       city,
       languages,
-      faith,
+      faith: faithArr,
       craft: agentCrafts,
       interests,
       reach,

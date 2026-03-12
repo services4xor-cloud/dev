@@ -187,4 +187,43 @@ Paperclip logs cost per post
 
 ---
 
+---
+
+## New Feature Designs (Session 57 — 2026-03-12)
+
+### F1 — Custom Tags System (CEO input)
+
+**Context:** CEO says tags are too limited — users should create their own tags for interests, craft, reach, faith. Tags become searchable and grow organically.
+
+**Proposed Design:**
+
+- Tags are free-text strings stored as `string[]` on identity
+- When a user types a new tag, it's added to a global tag registry (DB table)
+- Autocomplete suggests existing tags as you type
+- Popular tags surface first; rare tags still work
+- No predefined lists — FAITH_OPTIONS, CRAFT arrays become seed data only
+- Tags shared across dimensions: craft tags, interest tags, faith tags, reach tags
+
+**Status:** Awaiting confirmation. Will implement once DB is connected.
+
+### F2 — Topic Focus Mode (CEO input)
+
+**Context:** CEO wants to switch focus within the app to a topic and see all feeds filtered by it. Like a "lens" — click "Engineering" and Exchange, Messages, World all filter to engineering-related content.
+
+**Proposed Design:**
+
+- Add `focusTopic?: string` to identity context
+- Nav gets a "Focus" dropdown showing user's tags + popular topics
+- When focus is set, all feeds filter: Exchange shows only matching paths, Messages shows relevant threads, World graph highlights matching nodes
+- Clear focus → back to full feeds
+- Works with both human and agent (bot) content
+
+**Status:** Awaiting confirmation. Architectural work (identity context change) can start now.
+
+### F3 — MVC Enforcement (CEO input)
+
+**Context:** CEO wants strict Model-View-Controller separation. Views should MAXIMALLY leverage Model data (score, rank, filter, personalize — not just display). Controller layer should support 200+ parallel agents working on the codebase.
+
+**Status:** ✅ Skill `bex-mvc-enrichment` created. Enforced via skill on every page build.
+
 _(All questions resolved. New questions go below this line.)_

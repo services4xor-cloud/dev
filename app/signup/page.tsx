@@ -262,7 +262,7 @@ export default function SignupPage() {
                       className="input w-full"
                     >
                       {COUNTRY_OPTIONS.map((c) => (
-                        <option key={c.code} value={c.name}>
+                        <option key={c.code} value={c.code}>
                           {c.flag} {c.name}
                         </option>
                       ))}

@@ -41,7 +41,7 @@ interface Identity {
   interests: string[]
   mode: 'explorer' | 'host'
   city?: string
-  faith?: string
+  faith: string[]
   craft?: string[]
   reach?: string[]
   culture?: string

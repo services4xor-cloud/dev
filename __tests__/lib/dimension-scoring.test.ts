@@ -7,6 +7,7 @@ function makeProfile(overrides: Partial<DimensionProfile> = {}): DimensionProfil
   return {
     country: 'KE',
     languages: ['English', 'Swahili'],
+    faith: [],
     craft: ['software'],
     interests: ['tech'],
     reach: ['can-travel'],
@@ -97,7 +98,7 @@ describe('scoreDimensions', () => {
       craft: ['software'],
       interests: ['tech', 'culture', 'education'],
       reach: ['can-travel'],
-      faith: 'christian',
+      faith: ['christian'],
       culture: 'Kikuyu',
     })
     const perfectMatch = makeProfile({
@@ -106,7 +107,7 @@ describe('scoreDimensions', () => {
       craft: ['marketing', 'design', 'sales'],
       interests: ['tech', 'culture', 'education'],
       reach: ['can-host'],
-      faith: 'christian',
+      faith: ['christian'],
       culture: 'Kikuyu',
     })
 

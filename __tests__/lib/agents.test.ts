@@ -120,12 +120,13 @@ describe('generateAgentsForCountry', () => {
     }
   })
 
-  it('agents have optional faith from country faiths', () => {
+  it('agents have faith array from country faiths', () => {
     const agents = generateAgentsForCountry('KE')
     const kenyanFaiths = ['christianity', 'islam', 'traditional']
     for (const agent of agents) {
-      if (agent.faith) {
-        expect(kenyanFaiths).toContain(agent.faith)
+      expect(Array.isArray(agent.faith)).toBe(true)
+      for (const f of agent.faith) {
+        expect(kenyanFaiths).toContain(f)
       }
     }
   })

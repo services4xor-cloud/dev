@@ -40,7 +40,7 @@ function identityToProfile(identity: {
   city?: string
   languages: string[]
   interests: string[]
-  faith?: string
+  faith: string[]
   craft?: string[]
   reach?: string[]
   culture?: string
@@ -49,11 +49,11 @@ function identityToProfile(identity: {
     country: identity.country,
     city: identity.city,
     languages: identity.languages,
-    faith: (identity as Record<string, unknown>).faith as string | undefined,
-    craft: ((identity as Record<string, unknown>).craft as string[]) ?? [],
+    faith: identity.faith,
+    craft: identity.craft ?? [],
     interests: identity.interests,
-    reach: ((identity as Record<string, unknown>).reach as string[]) ?? [],
-    culture: (identity as Record<string, unknown>).culture as string | undefined,
+    reach: identity.reach ?? [],
+    culture: identity.culture,
     isHuman: true,
   }
 }
@@ -268,9 +268,26 @@ export default function ExchangePage() {
     return items.sort((a, b) => b.score - a.score)
   }, [typeFilter, sectorFilter, identity.interests, identity.country, scoredAgents, dbPaths])
 
-  // Don't render until identity is checked
+  // Guide user to set up identity if not done
   if (!hasCompletedDiscovery) {
-    return null
+    return (
+      <SectionLayout>
+        <div className="text-center py-phi-7">
+          <p className="text-phi-2xl mb-phi-3">🌍</p>
+          <h2 className="text-phi-xl font-bold text-white mb-phi-2">Set Up Your Identity First</h2>
+          <p className="text-white/60 mb-phi-5 max-w-md mx-auto">
+            Select your languages on the homepage to unlock the Exchange and start connecting with
+            people and paths.
+          </p>
+          <Link
+            href="/"
+            className="inline-block bg-brand-accent text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-colors"
+          >
+            Go to Discovery &rarr;
+          </Link>
+        </div>
+      </SectionLayout>
+    )
   }
 
   return (

@@ -18,7 +18,7 @@ export interface DimensionProfile {
   country: string
   city?: string
   languages: string[]
-  faith?: string
+  faith: string[]
   craft: string[]
   interests: string[] // Passion
   reach: string[]
@@ -199,8 +199,9 @@ function scoreFaith(
   me: DimensionProfile,
   them: DimensionProfile
 ): { score: number; highlight: string | null } {
-  if (me.faith && them.faith && lower(me.faith) === lower(them.faith)) {
-    return { score: 8, highlight: `Shared faith: ${me.faith}` }
+  const faithOverlap = me.faith.filter((f) => them.faith.some((t) => lower(t) === lower(f)))
+  if (faithOverlap.length > 0) {
+    return { score: 8, highlight: `Shared faith: ${faithOverlap.join(', ')}` }
   }
   return { score: 0, highlight: null }
 }
