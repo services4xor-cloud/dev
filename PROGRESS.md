@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 54 (2026-03-12) — Be[X] Skill Ecosystem + Real DB/Auth
+> Last updated: Session 56 (2026-03-12) — DB Wiring + Consistency Sweep + Auto-Scrum Skills
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -17,7 +17,7 @@
 | Supporting Routes | `/be/[code]` `/signup` `/login` `/forgot-password` `/referral` `/media` `/fashion` + info |
 | API routes        | 12+                                                                                       |
 | Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)                     |
-| Mock data modules | 17 (incl. config.ts, threads.ts) — mock for tests only, real DB for app                   |
+| Mock data modules | 17 → reduced to test-only; all pages now use real DB or inline constants                  |
 | Jest tests        | 785/785 ✅ (44 suites)                                                                    |
 | Playwright tests  | 124+ ✅ (may need updates for new routes)                                                 |
 | TypeScript errors | 0 (1 pre-existing in test file)                                                           |
@@ -26,10 +26,44 @@
 | Languages         | ~70 (world languages with native names + Intl.DisplayNames)                               |
 | AI Agents         | ~700 deterministic personas across 193 countries                                          |
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Passion, Reach, Culture, Market)                    |
-| Skills            | 19 (`becountry-*`) covering all process areas                                             |
+| Skills            | 22+ (`becountry-*` + `bex-*`) covering all process areas                                  |
 | DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
 | Auth              | ✅ Google OAuth + email/password + password reset                                         |
 | Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 55-56: DB Wiring + Consistency Sweep + Auto-Scrum
+
+Wired all major pages from mock data to real Neon PostgreSQL. Created autonomous development skills.
+
+### Pages Wired to Real DB (Session 55-56)
+
+- **Homepage** — paths from `/api/paths`, scored against user identity
+- **Ventures/[id]** — full detail from `/api/paths/[id]` with salary, skills, sector display
+- **Exchange + Exchange/[id]** — real opportunity scoring with DB fields
+- **Messages** — threads from `/api/threads`
+- **Me (Pioneer profile)** — chapters from `/api/chapters`, paths from `/api/paths`, profile from `/api/profile`
+- **Fashion, Media** — static content inlined (not DB entities)
+- **Admin, Pricing, Business, Charity** — page-specific data inlined
+
+### Config Migration
+
+- Created `lib/platform-config.ts` — canonical location for BRAND_NAME, CONTACT, LEGAL, IMPACT_PARTNER
+- 8 files migrated from `@/data/mock` config imports → `@/lib/platform-config`
+- New API route: `GET /api/paths/[id]` for single path lookup
+
+### Consistency Sweep
+
+- Fixed mission text across 5 files (PRD, ROADMAP, CLAUDE.md, i18n, skills)
+- Removed all "colonial", "Global South only" language
+- Canonical: "identity-first life-routing platform for everyone"
+
+### New Skills Created
+
+- `bex-parallel-development` — dependency graph, parallelization rules for subagents
+- `bex-scrum-orchestrator` — full automated Scrum: plan → parallel dev → review → merge → doc sync
+- `bex-consistency` — vocabulary, brand colors, mission text enforcement + grep checks
 
 ---
 
