@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 52 (2026-03-12) — Full Audit + Live Wiring + Restorations
+> Last updated: Session 54 (2026-03-12) — Be[X] Skill Ecosystem + Real DB/Auth
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -17,7 +17,7 @@
 | Supporting Routes | `/be/[code]` `/signup` `/login` `/forgot-password` `/referral` `/media` `/fashion` + info |
 | API routes        | 12+                                                                                       |
 | Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)                     |
-| Mock data modules | 17 (incl. config.ts, threads.ts)                                                          |
+| Mock data modules | 17 (incl. config.ts, threads.ts) — mock for tests only, real DB for app                   |
 | Jest tests        | 785/785 ✅ (44 suites)                                                                    |
 | Playwright tests  | 124+ ✅ (may need updates for new routes)                                                 |
 | TypeScript errors | 0 (1 pre-existing in test file)                                                           |
@@ -26,6 +26,54 @@
 | Languages         | ~70 (world languages with native names + Intl.DisplayNames)                               |
 | AI Agents         | ~700 deterministic personas across 193 countries                                          |
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Passion, Reach, Culture, Market)                    |
+| Skills            | 19 (`becountry-*`) covering all process areas                                             |
+| DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
+| Auth              | ✅ Google OAuth + email/password + password reset                                         |
+| Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 53-54: Real DB + Auth + Be[X] Skill Ecosystem
+
+Wired real credentials, built comprehensive skill ecosystem for autonomous platform management.
+
+### Real Backend (Session 53)
+
+- **Neon PostgreSQL** connected — `prisma db push` synced 16-model schema
+- **DB Seeded** — 11 anchors, 22 paths, 8 pioneers, 53 threads, 6 experiences
+- **Google OAuth** wired with `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`
+- **Email/Password Auth** — bcrypt hashing, credential provider
+- **Password Reset** — secure SHA-256 token flow via Account model (`provider: 'password_reset'`)
+- **Resend Email** — `sendPasswordReset()` sends branded reset emails
+- **Connect → Messages** — agent ID passed via URL query param, auto-selects DM panel
+
+### Be[X] Skill Ecosystem (Session 54)
+
+19 skills renamed from `bekenya-*` to `becountry-*` — works for ANY Be[X] identity context.
+
+| Category     | Skills                                                                    |
+| ------------ | ------------------------------------------------------------------------- |
+| **Process**  | `becountry-process` (master orchestrator)                                 |
+| **Planning** | `becountry-sprint`, `becountry-requirements`, `becountry-big-picture`     |
+| **Build**    | `becountry-architecture`, `becountry-data`                                |
+| **Design**   | `becountry-design-review`, `becountry-ui-review`, `becountry-ux-workflow` |
+| **Quality**  | `becountry-testing`, `becountry-e2e-test`, `becountry-security`           |
+| **Business** | `becountry-business-review`                                               |
+| **Deploy**   | `becountry-deployment`, `becountry-push`, `becountry-country-deploy`      |
+| **Ops**      | `becountry-ops`, `becountry-human-tasks`, `becountry-status`              |
+
+All skills link to corresponding `.MD` documentation files (see `becountry-process.md` for full map).
+
+### Be[X] Identity Model
+
+Be[X] where X is dynamic per user profile — can be:
+
+- **Country** (BeKenya, BeGermany, BeSwiss)
+- **Tribe/Ethnicity** (BeMaasai, BeBavarian)
+- **Location** (BeNairobi, BeMunich)
+- **Resource/Skill** (BeEngineer, BeFarmer)
+
+Every deployment serves all countries + languages. The user's profile determines which Be[X] contexts are most relevant to them.
 
 ---
 
