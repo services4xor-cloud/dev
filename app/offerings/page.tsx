@@ -26,6 +26,7 @@ import {
 } from '@/lib/offerings'
 import { IMPACT_PARTNER } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
 
 const ALL_COUNTRIES = Object.values(COUNTRIES)
 
@@ -139,7 +140,7 @@ export default function OfferingsPage() {
             </div>
           )}
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-4 leading-tight">
+          <h1 className="text-phi-2xl sm:text-phi-3xl md:text-phi-4xl xl:text-phi-5xl font-bold text-white mb-phi-3 leading-phi-tight">
             {destinationCode
               ? t('offerings.titleDest', { country: activeCountry?.name ?? '' })
                   .split('{accent}')
@@ -166,7 +167,7 @@ export default function OfferingsPage() {
                     )
                   })}
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mb-8">
+          <p className="text-gray-400 text-lg max-w-2xl mb-phi-5">
             {destinationCode
               ? t('offerings.descDest', { country: activeCountry?.name ?? '' })
               : t('offerings.descDefault')}
@@ -206,15 +207,15 @@ export default function OfferingsPage() {
         </div>
       </section>
 
-      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 pb-20 space-y-10">
+      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 pb-20 space-y-phi-6 ambient-glow">
         {/* ── If no destination selected: show route recommendations ── */}
         {!destinationCode && (
           <section>
-            <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
+            <h2 className="text-phi-xl font-bold text-white mb-phi-4 flex items-center gap-2">
               <Compass className="w-5 h-5 text-brand-accent" />
               {t('offerings.recommended', { country: COUNTRIES[originCode]?.name ?? '' })}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-phi-3 reveal-stagger">
               {recommendations.slice(0, 6).map((rec) => {
                 const strengthBadge = {
                   direct: {
@@ -236,7 +237,7 @@ export default function OfferingsPage() {
                   <button
                     key={rec.country.code}
                     onClick={() => setDestinationCode(rec.country.code)}
-                    className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-5 text-left hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-primary/20 transition-all duration-200 group"
+                    className="glass rounded-2xl p-phi-4 text-left hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-primary/20 transition-all duration-200 group"
                   >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -291,16 +292,16 @@ export default function OfferingsPage() {
             {/* Travel & Experiences */}
             {showTravel && offerings.experiences.length > 0 && (
               <section>
-                <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
+                <h2 className="text-phi-xl font-bold text-white mb-phi-4 flex items-center gap-2">
                   🦁 {t('offerings.safariExperiences')}
                   <span className="text-xs font-normal text-gray-400">
                     {t('offerings.available', { count: String(offerings.experiences.length) })}
                   </span>
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-phi-3 reveal-stagger">
                   {offerings.experiences.map((pkg) => (
                     <Link key={pkg.id} href={`/experiences/${pkg.id}`}>
-                      <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl overflow-hidden hover:border-brand-accent/40 transition-all duration-200 h-full group">
+                      <div className="glass rounded-2xl overflow-hidden hover:border-brand-accent/40 transition-all duration-200 h-full group">
                         <div
                           className="h-32 flex items-center justify-center text-4xl"
                           style={{ background: 'var(--gradient-experience)' }}
@@ -338,17 +339,17 @@ export default function OfferingsPage() {
             {/* Eco-Tourism */}
             {showTravel && offerings.ecoTourism.length > 0 && (
               <section>
-                <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
+                <h2 className="text-phi-xl font-bold text-white mb-phi-4 flex items-center gap-2">
                   🌿 {t('offerings.ecoTourism')}
                   <span className="text-xs font-normal text-gray-400">
                     {t('offerings.available', { count: String(offerings.ecoTourism.length) })}
                   </span>
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-phi-3 reveal-stagger">
                   {offerings.ecoTourism.map((eco) => (
                     <div
                       key={eco.id}
-                      className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-5 hover:border-brand-accent/40 transition-all duration-200"
+                      className="glass rounded-2xl p-phi-4 hover:border-brand-accent/40 transition-all duration-200"
                     >
                       <h3 className="font-bold text-white text-lg mb-1">{eco.name}</h3>
                       <div className="flex items-center gap-1 text-gray-400 text-sm mb-3">
@@ -387,18 +388,18 @@ export default function OfferingsPage() {
             {/* Professional Sectors */}
             {showProfessional && offerings.sectors.length > 0 && (
               <section>
-                <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
+                <h2 className="text-phi-xl font-bold text-white mb-phi-4 flex items-center gap-2">
                   💼 {t('offerings.professionalSectors', { country: activeCountry?.name ?? '' })}
                   <span className="text-xs font-normal text-gray-400">
                     {t('offerings.sectors', { count: String(offerings.sectors.length) })}
                   </span>
                 </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-phi-3 reveal-stagger">
                   {offerings.sectors.map((sector) => (
                     <Link
                       key={sector.name}
                       href={`/ventures?sector=${encodeURIComponent(sector.name)}`}
-                      className="bg-gray-900/60 border border-brand-primary/30 rounded-xl p-4 hover:border-brand-accent/40 transition-all duration-200 group"
+                      className="glass-subtle rounded-xl p-phi-3 hover:border-brand-accent/40 transition-all duration-200 group"
                     >
                       <div className="text-2xl mb-2">{sector.emoji}</div>
                       <h3 className="font-semibold text-white text-sm group-hover:text-brand-accent transition-colors">
@@ -416,17 +417,17 @@ export default function OfferingsPage() {
             {/* Trade Corridors */}
             {showBusiness && offerings.tradeCorridors.length > 0 && (
               <section>
-                <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
+                <h2 className="text-phi-xl font-bold text-white mb-phi-4 flex items-center gap-2">
                   🌍 {t('offerings.tradeCorridors')}
                   <span className="text-xs font-normal text-gray-400">
                     {t('offerings.active', { count: String(offerings.tradeCorridors.length) })}
                   </span>
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-phi-3">
                   {offerings.tradeCorridors.map((corridor) => (
                     <div
                       key={corridor.id}
-                      className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-5 hover:border-brand-accent/30 transition-all"
+                      className="glass rounded-2xl p-phi-4 hover:border-brand-accent/30 transition-all"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                         <div className="flex items-center gap-3">
@@ -510,24 +511,22 @@ export default function OfferingsPage() {
         )}
 
         {/* ── CTA ───────────────────────────────────────────────── */}
-        <div
-          className="rounded-2xl p-8 text-center"
-          style={{
-            background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-bg) 100%)',
-            border: '1px solid rgb(var(--color-accent-rgb) / 0.25)',
-          }}
-        >
-          <div className="text-4xl mb-3">🤝</div>
-          <h3 className="text-2xl font-bold text-white mb-2">{t('offerings.impactTitle')}</h3>
-          <p className="text-gray-400 text-sm max-w-lg mx-auto mb-6">{t('offerings.impactDesc')}</p>
-          <Link
-            href="/charity"
-            className="inline-flex items-center gap-2 text-brand-accent font-semibold text-sm hover:text-brand-accent/70 transition-colors"
-          >
-            {t('offerings.learnAbout', { partner: IMPACT_PARTNER.name })}{' '}
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+        <GlassCard variant="featured" padding="lg">
+          <div className="text-center">
+            <div className="text-4xl mb-phi-3">🤝</div>
+            <h3 className="text-phi-xl font-bold text-white mb-2">{t('offerings.impactTitle')}</h3>
+            <p className="text-gray-400 text-sm max-w-lg mx-auto mb-6">
+              {t('offerings.impactDesc')}
+            </p>
+            <Link
+              href="/charity"
+              className="inline-flex items-center gap-2 text-brand-accent font-semibold text-sm hover:text-brand-accent/70 transition-colors"
+            >
+              {t('offerings.learnAbout', { partner: IMPACT_PARTNER.name })}{' '}
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </GlassCard>
       </div>
     </div>
   )

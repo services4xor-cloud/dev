@@ -37,6 +37,8 @@ import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { useJourney } from '@/lib/hooks/use-journey'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 import type { FilterCategory, PathListItem } from '@/types/domain'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -155,7 +157,7 @@ export default function VenturesPage() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 leading-tight">
+          <h1 className="text-phi-xl sm:text-phi-2xl md:text-phi-3xl font-bold text-white mb-2 leading-phi-tight">
             {myFlag}{' '}
             {pioneerTypeInfo ? (
               <>
@@ -192,7 +194,7 @@ export default function VenturesPage() {
         </div>
       </section>
 
-      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 pb-20 space-y-8">
+      <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 pb-20 space-y-phi-6 ambient-glow">
         {/* ── Loading skeleton ─────────────────────────────────────────── */}
         {loading && (
           <div className="space-y-4 animate-pulse">
@@ -266,10 +268,10 @@ export default function VenturesPage() {
                 {t('ventures.seeAll')} <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-phi-3 reveal-stagger">
               {visibleSafaris.map((pkg) => (
                 <Link key={pkg.id} href={`/experiences/${pkg.id}`}>
-                  <div className="bg-gray-900/60 border border-brand-primary/30 rounded-xl overflow-hidden hover:border-brand-accent/40 transition-all duration-200 h-full group">
+                  <GlassCard hover padding="none" className="overflow-hidden h-full group">
                     <div
                       className="h-28 flex items-center justify-center text-4xl"
                       style={{ background: 'var(--gradient-experience)' }}
@@ -282,12 +284,12 @@ export default function VenturesPage() {
                             ? '🏡'
                             : '🎭'}
                     </div>
-                    <div className="p-3">
-                      <h3 className="font-bold text-white text-sm leading-tight mb-1 group-hover:text-brand-accent transition-colors">
+                    <div className="p-phi-3">
+                      <h3 className="font-bold text-white text-phi-sm leading-tight mb-1 group-hover:text-brand-accent transition-colors">
                         {pkg.name}
                       </h3>
                       <div className="flex items-center justify-between">
-                        <span className="font-black text-white text-sm">
+                        <span className="font-black text-white text-phi-sm">
                           {formatPackagePrice(pkg)}
                         </span>
                         <span className="text-gray-500 text-[10px] flex items-center gap-1">
@@ -296,7 +298,7 @@ export default function VenturesPage() {
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </GlassCard>
                 </Link>
               ))}
             </div>
@@ -366,15 +368,9 @@ export default function VenturesPage() {
 
         {/* ── CTA ─────────────────────────────────────────────────────── */}
         {!loading && (
-          <div
-            className="rounded-xl p-6 text-center"
-            style={{
-              background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-bg) 100%)',
-              border: '1px solid rgb(var(--color-accent-rgb) / 0.25)',
-            }}
-          >
+          <GlassCard variant="featured" padding="lg" className="text-center">
             <Globe className="w-6 h-6 text-brand-accent mx-auto mb-3" />
-            <h3 className="text-xl font-bold text-white mb-1">{t('ventures.areYouAnchor')}</h3>
+            <h3 className="text-phi-xl font-bold text-white mb-1">{t('ventures.areYouAnchor')}</h3>
             <p className="text-gray-400 text-xs mb-4 max-w-md mx-auto">{t('ventures.anchorCta')}</p>
             <Link
               href="/anchors/post-path"
@@ -382,7 +378,7 @@ export default function VenturesPage() {
             >
               {t('ventures.postPath')}
             </Link>
-          </div>
+          </GlassCard>
         )}
       </div>
     </div>
@@ -421,13 +417,12 @@ function PathCard({
 
   return (
     <Link href={`/ventures/${path.id}`}>
-      <div
-        className={`group flex items-start gap-3 p-4 rounded-xl border transition-all duration-200 hover:scale-[1.003] hover:shadow-lg ${
-          featured
-            ? 'bg-brand-primary/20 border-brand-accent/30 hover:border-brand-accent/60'
-            : isLocal
-              ? 'bg-gray-900/80 border-brand-primary/40 hover:border-brand-accent/30'
-              : 'bg-gray-900/40 border-gray-800/50 hover:border-brand-primary/40'
+      <GlassCard
+        variant={featured ? 'featured' : 'default'}
+        hover
+        padding="sm"
+        className={`group flex items-start gap-phi-3 ${
+          isLocal && !featured ? 'border-brand-primary/40' : ''
         }`}
       >
         {/* Icon + country flag */}
@@ -518,7 +513,7 @@ function PathCard({
             </div>
           )}
         </div>
-      </div>
+      </GlassCard>
     </Link>
   )
 }

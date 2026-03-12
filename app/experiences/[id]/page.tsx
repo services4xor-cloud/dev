@@ -20,6 +20,8 @@ import { VOCAB } from '@/lib/vocabulary'
 import MpesaModal from '@/components/MpesaModal'
 import { IMPACT_PARTNER } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 // ── Engagement helpers ──────────────────────────────────────────────
 // Deterministic "random" values seeded by package ID for consistency
@@ -337,22 +339,24 @@ export default function ExperiencePage() {
             </span>
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">{pkg.name}</h1>
+          <h1 className="text-phi-2xl md:text-phi-3xl font-bold mb-3 leading-phi-tight">
+            {pkg.name}
+          </h1>
           <p className="text-gray-300 text-lg mb-phi-5">
             {t('exp.byProvider', { name: pkg.provider })}
           </p>
 
           {/* Quick stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-              <div className="flex items-center gap-2 text-gray-300 text-xs mb-1">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-phi-3 reveal-stagger">
+            <div className="glass-subtle rounded-xl p-phi-3">
+              <div className="flex items-center gap-2 text-gray-300 text-phi-xs mb-1">
                 <Clock size={14} />
                 {t('exp.duration')}
               </div>
               <div className="text-white font-semibold">{pkg.duration}</div>
             </div>
-            <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-              <div className="flex items-center gap-2 text-gray-300 text-xs mb-1">
+            <div className="glass-subtle rounded-xl p-phi-3">
+              <div className="flex items-center gap-2 text-gray-300 text-phi-xs mb-1">
                 <Users size={14} />
                 {t('exp.maxPioneers')}
               </div>
@@ -360,27 +364,27 @@ export default function ExperiencePage() {
                 {t('exp.guests', { count: String(pkg.maxGuests) })}
               </div>
             </div>
-            <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-              <div className="flex items-center gap-2 text-gray-300 text-xs mb-1">
+            <div className="glass-subtle rounded-xl p-phi-3">
+              <div className="flex items-center gap-2 text-gray-300 text-phi-xs mb-1">
                 <MapPin size={14} />
                 {t('exp.destination')}
               </div>
-              <div className="text-white font-semibold text-sm">{pkg.destination}</div>
+              <div className="text-white font-semibold text-phi-sm">{pkg.destination}</div>
             </div>
-            <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-              <div className="text-gray-300 text-xs mb-1">{t('exp.startingFrom')}</div>
-              <div className="text-white font-bold text-xl">{formatPackagePrice(pkg)}</div>
+            <div className="glass-subtle rounded-xl p-phi-3">
+              <div className="text-gray-300 text-phi-xs mb-1">{t('exp.startingFrom')}</div>
+              <div className="text-white font-bold text-phi-xl">{formatPackagePrice(pkg)}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-phi-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-5xl mx-auto px-4 py-phi-6 ambient-glow">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-phi-6">
           {/* Main content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Highlights */}
-            <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
+            <section className="glass p-phi-5">
               <h2 className="text-lg font-bold text-white mb-phi-4">{t('exp.whyThisVenture')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {pkg.highlights.map((highlight, i) => (
@@ -395,7 +399,7 @@ export default function ExperiencePage() {
             </section>
 
             {/* Included / Excluded */}
-            <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
+            <section className="glass p-phi-5">
               <h2 className="text-lg font-bold text-white mb-phi-5">{t('exp.whatsIncluded')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
@@ -443,7 +447,7 @@ export default function ExperiencePage() {
             </section>
 
             {/* Itinerary */}
-            <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
+            <section className="glass p-phi-5">
               <h2 className="text-lg font-bold text-white mb-4">{t('exp.itinerary')}</h2>
               <div className="space-y-3">
                 {pkg.days.map((day, i) => (
@@ -485,7 +489,7 @@ export default function ExperiencePage() {
 
             {/* Optional Activities */}
             {pkg.optionalActivities && pkg.optionalActivities.length > 0 && (
-              <section className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm p-phi-5">
+              <section className="glass p-phi-5">
                 <h2 className="text-lg font-bold text-white mb-4">{t('exp.optionalExtras')}</h2>
                 <div className="space-y-3">
                   {pkg.optionalActivities.map((activity, i) => (
@@ -509,7 +513,7 @@ export default function ExperiencePage() {
 
           {/* ── Booking sidebar ──────────────────────────────────────── */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-md p-phi-5 sticky top-6">
+            <div className="glass-strong p-phi-5 sticky top-6">
               {/* Price */}
               <div className="text-center mb-4">
                 <div className="text-3xl font-bold text-white">{formatPackagePrice(pkg)}</div>
@@ -660,32 +664,32 @@ export default function ExperiencePage() {
         {/* More Ventures */}
         {related.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-xl font-bold text-white mb-phi-5">{t('exp.moreVentures')}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <h2 className="text-phi-xl font-bold text-white mb-phi-5">{t('exp.moreVentures')}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-phi-3 reveal-stagger">
               {related.map((relPkg) => (
                 <Link key={relPkg.id} href={`/experiences/${relPkg.id}`}>
-                  <div className="bg-gray-900/60 rounded-2xl border border-brand-primary/30 shadow-sm hover:shadow-md hover:border-gray-700 transition-all duration-200 overflow-hidden h-full">
+                  <GlassCard hover padding="none" className="overflow-hidden h-full">
                     <div className="bg-gradient-to-br from-gray-800 to-brand-primary/30 h-28 flex items-center justify-center text-4xl">
                       {TYPE_EMOJI[relPkg.type] ?? '🌍'}
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-white text-sm mb-1 leading-tight">
+                    <div className="p-phi-3">
+                      <h3 className="font-semibold text-white text-phi-sm mb-1 leading-tight">
                         {relPkg.name}
                       </h3>
-                      <div className="flex items-center gap-1 text-xs text-gray-400 mb-2">
+                      <div className="flex items-center gap-1 text-phi-xs text-gray-400 mb-2">
                         <MapPin size={11} />
                         {relPkg.destination}
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-brand-accent text-sm">
+                        <span className="font-bold text-brand-accent text-phi-sm">
                           {formatPackagePrice(relPkg)}
                         </span>
-                        <span className="text-brand-accent text-xs font-semibold">
+                        <span className="text-brand-accent text-phi-xs font-semibold">
                           {VOCAB.chapter_open} →
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </GlassCard>
                 </Link>
               ))}
             </div>

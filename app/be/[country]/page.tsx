@@ -5,17 +5,19 @@ import Link from 'next/link'
 import { COUNTRIES } from '@/lib/countries'
 import { BRAND_NAME } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 type CountryConfig = (typeof COUNTRIES)[keyof typeof COUNTRIES]
 
 // Sector emoji mapping — single source of truth in lib/emoji-map.ts
 import { getSectorEmoji } from '@/lib/emoji-map'
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function CountryStatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
-      <div className="text-2xl font-bold text-brand-accent">{value}</div>
-      <div className="text-sm text-white/80 mt-1">{label}</div>
+    <div className="glass-subtle rounded-xl p-phi-3 text-center">
+      <div className="text-phi-xl font-bold text-brand-accent">{value}</div>
+      <div className="text-phi-sm text-white/80 mt-1">{label}</div>
     </div>
   )
 }
@@ -37,7 +39,7 @@ function SectorCard({ sector }: { sector: CountryConfig['featuredSectors'][numbe
   return (
     <Link
       href={`/ventures?sector=${sector.id}`}
-      className="group bg-white/5 hover:bg-white/15 border border-white/10 hover:border-brand-accent/50 rounded-xl p-5 transition-all duration-200"
+      className="group glass-subtle rounded-xl p-phi-4 transition-all duration-200 hover:shadow-lg hover:shadow-brand-accent/10 hover:-translate-y-0.5"
     >
       <div className="text-3xl mb-3">{emoji}</div>
       <h3 className="font-semibold text-white group-hover:text-brand-accent transition-colors">
@@ -116,12 +118,12 @@ export default function BeCountryPage() {
           <div className="mb-6">
             <span className="text-7xl">{country.flag}</span>
           </div>
-          <div className="text-brand-accent font-black text-5xl md:text-7xl tracking-tight mb-4">
+          <div className="text-brand-accent font-black text-phi-4xl md:text-phi-5xl tracking-tight mb-phi-3 gradient-text">
             {country.brandName}
           </div>
 
           {/* Hero tagline */}
-          <h1 className="text-white text-2xl md:text-4xl font-bold mb-4 leading-tight">
+          <h1 className="text-white text-phi-xl md:text-phi-3xl font-bold mb-phi-3 leading-phi-tight">
             {country.heroTagline}
           </h1>
 
@@ -169,18 +171,18 @@ export default function BeCountryPage() {
       </section>
 
       {/* ── STATS BAR ────────────────────────────────────────────────────── */}
-      <section className="bg-[#2a0a10] border-y border-white/10 py-8 px-4">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="bg-[#2a0a10] border-y border-white/10 py-phi-6 px-4 ambient-glow">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-phi-3 reveal-stagger">
           {country.statsBar.map((stat, i) => (
-            <StatCard key={i} label={stat.label} value={stat.value} />
+            <CountryStatCard key={i} label={stat.label} value={stat.value} />
           ))}
         </div>
       </section>
 
       {/* ── PAYMENT METHODS ──────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-brand-surface-elevated">
+      <section className="py-phi-7 px-4 bg-brand-surface-elevated">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-brand-accent font-bold text-2xl md:text-3xl mb-2">
+          <h2 className="text-brand-accent font-bold text-phi-xl md:text-phi-2xl mb-2">
             {t('beCountry.payTitle')}
           </h2>
           <p className="text-white/60 mb-8">{t('beCountry.payDesc')}</p>
@@ -193,15 +195,15 @@ export default function BeCountryPage() {
       </section>
 
       {/* ── FEATURED SECTORS ─────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-gradient-to-b from-brand-surface-elevated to-[#0d0507]">
+      <section className="py-phi-7 px-4 bg-gradient-to-b from-brand-surface-elevated to-[#0d0507]">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-white font-bold text-2xl md:text-3xl mb-2">
+          <div className="text-center mb-phi-6">
+            <h2 className="text-white font-bold text-phi-xl md:text-phi-2xl mb-2">
               {t('beCountry.sectorsTitle', { country: country.name })}
             </h2>
             <p className="text-white/60">{t('beCountry.sectorsDesc')}</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-phi-3 reveal-stagger">
             {country.featuredSectors.map((sector) => (
               <SectorCard key={sector.id} sector={sector} />
             ))}
@@ -210,9 +212,9 @@ export default function BeCountryPage() {
       </section>
 
       {/* ── POPULAR SEARCHES ─────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-[#0d0507]">
+      <section className="py-phi-7 px-4 bg-[#0d0507]">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-white font-bold text-2xl md:text-3xl mb-2">
+          <h2 className="text-white font-bold text-phi-xl md:text-phi-2xl mb-2">
             {t('beCountry.popularTitle')}
           </h2>
           <p className="text-white/60 mb-8">
@@ -233,10 +235,10 @@ export default function BeCountryPage() {
       </section>
 
       {/* ── CROSS-ROUTES SECTION ─────────────────────────────────────────── */}
-      <section className="py-20 px-4 bg-gradient-to-br from-brand-primary/40 to-[#1a0505] border-t border-white/10">
+      <section className="py-phi-8 px-4 bg-gradient-to-br from-brand-primary/40 to-[#1a0505] border-t border-white/10">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="text-4xl mb-4">🧭</div>
-          <h2 className="text-brand-accent font-bold text-2xl md:text-3xl mb-3">
+          <div className="text-phi-3xl mb-phi-3">🧭</div>
+          <h2 className="text-brand-accent font-bold text-phi-xl md:text-phi-2xl mb-3">
             {t('beCountry.crossTitle', { country: country.name })}
           </h2>
           <p className="text-white/70 text-lg mb-8">{t('beCountry.crossDesc')}</p>

@@ -9,6 +9,8 @@ import { detectCountryFromTimezone } from '@/lib/geo'
 import { saveIdentityFlags, getVenturesUrl } from '@/lib/identity-flags'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 // ─── Confetti Component ───────────────────────────────────────────────────────
 function ConfettiBlast() {
@@ -230,9 +232,9 @@ export default function OnboardingPage() {
         {/* ── STEP 1: Pioneer Type ── */}
         {step === 1 && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.whatKind')}</h1>
-            <p className="text-gray-400 mb-8">{t('onboarding.pickOne')}</p>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <h1 className="text-phi-2xl font-bold text-white mb-2">{t('onboarding.whatKind')}</h1>
+            <p className="text-gray-400 mb-phi-5">{t('onboarding.pickOne')}</p>
+            <div className="grid grid-cols-2 gap-phi-3 sm:grid-cols-3 reveal-stagger">
               {(
                 Object.entries(PIONEER_TYPES) as [
                   PioneerType,
@@ -279,7 +281,7 @@ export default function OnboardingPage() {
         {/* ── STEP 2: Current Country ── */}
         {step === 2 && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.whereNow')}</h1>
+            <h1 className="text-phi-2xl font-bold text-white mb-2">{t('onboarding.whereNow')}</h1>
             {detectedCountryInfo && fromCountry === detectedCountry && (
               <div className="flex items-center gap-2 mb-4 p-3 bg-brand-primary/20 rounded-xl border border-brand-accent/30">
                 <span className="text-xl">{detectedCountryInfo.flag}</span>
@@ -335,9 +337,9 @@ export default function OnboardingPage() {
         {/* ── STEP 3: Destinations ── */}
         {step === 3 && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.whereTo')}</h1>
-            <p className="text-gray-400 mb-6">{t('onboarding.selectDestinations')}</p>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <h1 className="text-phi-2xl font-bold text-white mb-2">{t('onboarding.whereTo')}</h1>
+            <p className="text-gray-400 mb-phi-5">{t('onboarding.selectDestinations')}</p>
+            <div className="grid grid-cols-1 gap-phi-3 sm:grid-cols-2 reveal-stagger">
               {COUNTRY_OPTIONS.map((dest) => {
                 const isSelected = toCountries.includes(dest.code)
                 const badge = CORRIDOR_BADGE[dest.corridorStrength]
@@ -411,7 +413,7 @@ export default function OnboardingPage() {
         {/* ── STEP 4: Skills ── */}
         {step === 4 && pioneerType && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.whatSkills')}</h1>
+            <h1 className="text-phi-2xl font-bold text-white mb-2">{t('onboarding.whatSkills')}</h1>
             <p className="text-gray-400 mb-2">{t('onboarding.selectSkills')}</p>
             {skills.length < 3 && (
               <p className="text-sm text-brand-accent mb-4">
@@ -495,8 +497,10 @@ export default function OnboardingPage() {
         {/* ── STEP 5: Headline & Contact ── */}
         {step === 5 && (
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">{t('onboarding.chapterTitle')}</h1>
-            <p className="text-gray-400 mb-6">{t('onboarding.headlineFirst')}</p>
+            <h1 className="text-phi-2xl font-bold text-white mb-2">
+              {t('onboarding.chapterTitle')}
+            </h1>
+            <p className="text-gray-400 mb-phi-5">{t('onboarding.headlineFirst')}</p>
 
             <div className="space-y-5">
               <div>

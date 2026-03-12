@@ -24,6 +24,8 @@ import { COUNTRY_OPTIONS, CORRIDOR_BADGE, type CountryOption } from '@/lib/count
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { useJourney } from '@/lib/hooks/use-journey'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types & constants
@@ -123,7 +125,7 @@ export default function CompassPage() {
           background: 'linear-gradient(to bottom, var(--color-primary) 0%, var(--color-bg) 60%)',
         }}
       >
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-sm font-medium mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-phi-sm font-medium mb-phi-5">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent" />
@@ -140,7 +142,7 @@ export default function CompassPage() {
             unoptimized
           />
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl 3xl:text-7xl font-bold text-white mb-3 leading-tight">
+        <h1 className="text-phi-2xl sm:text-phi-3xl md:text-phi-4xl xl:text-phi-5xl font-bold text-white mb-3 leading-phi-tight gradient-text">
           {t('compass.ready')}
           <br />
           <span className="text-brand-accent">{t('compass.letsFind')}</span>
@@ -149,7 +151,7 @@ export default function CompassPage() {
       </div>
 
       {/* Step progress bar */}
-      <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-6">
+      <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-phi-5">
         <div className="flex items-start">
           {STEP_LABELS.map((label, i) => {
             const s = i + 1
@@ -189,7 +191,7 @@ export default function CompassPage() {
       </div>
 
       {/* Step content */}
-      <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 pb-48">
+      <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 pb-48 ambient-glow">
         {loading ? (
           <div className="animate-pulse space-y-6">
             <SkeletonBlock h="h-16" />
@@ -215,7 +217,7 @@ export default function CompassPage() {
             {/* STEP 2 — Origin confirmation */}
             {step === 2 && (
               <div className="space-y-5 animate-[fadeIn_0.3s_ease]">
-                <div className="bg-gray-900/80 border border-brand-primary/30 rounded-2xl p-phi-5">
+                <GlassCard padding="md">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
                       🌍
@@ -271,7 +273,7 @@ export default function CompassPage() {
                   )}
 
                   <p className="text-gray-400 text-sm">{t('compass.locationHint')}</p>
-                </div>
+                </GlassCard>
                 {/* Fixed bottom nav */}
                 <div className="fixed bottom-0 left-0 right-0 bg-brand-bg/95 backdrop-blur border-t border-brand-accent/10 z-40">
                   <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
@@ -292,7 +294,7 @@ export default function CompassPage() {
             {/* STEP 3 — Pioneer type */}
             {step === 3 && (
               <div className="animate-[fadeIn_0.3s_ease]">
-                <div className="bg-gray-900/80 border border-brand-primary/30 rounded-2xl p-phi-5 mb-5">
+                <GlassCard padding="md" className="mb-5">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-full bg-brand-primary/50 flex items-center justify-center text-xl">
                       ✦
@@ -306,7 +308,7 @@ export default function CompassPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-phi-3 reveal-stagger">
                     {(
                       Object.entries(PIONEER_TYPES) as [
                         PioneerType,
@@ -316,19 +318,19 @@ export default function CompassPage() {
                       <button
                         key={key}
                         onClick={() => handlePioneerSelect(key)}
-                        className="bg-gray-800/60 border border-gray-700 hover:border-brand-accent/50 hover:bg-gray-800 rounded-xl p-4 text-center transition-all duration-200 group"
+                        className="glass-subtle rounded-xl p-phi-3 text-center transition-all duration-200 group hover:shadow-lg hover:shadow-brand-accent/10 hover:-translate-y-0.5"
                       >
-                        <div className="text-3xl mb-2">{type.icon}</div>
-                        <div className="text-white font-semibold text-sm group-hover:text-brand-accent transition-colors mb-1">
+                        <div className="text-phi-2xl mb-2">{type.icon}</div>
+                        <div className="text-white font-semibold text-phi-sm group-hover:text-brand-accent transition-colors mb-1">
                           {type.label}
                         </div>
-                        <div className="text-gray-400 text-xs leading-relaxed">
+                        <div className="text-gray-400 text-phi-xs leading-relaxed">
                           {type.description}
                         </div>
                       </button>
                     ))}
                   </div>
-                </div>
+                </GlassCard>
                 {/* Fixed bottom nav */}
                 <div className="fixed bottom-0 left-0 right-0 bg-brand-bg/95 backdrop-blur border-t border-brand-accent/10 z-40">
                   <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
@@ -347,7 +349,7 @@ export default function CompassPage() {
             {/* STEP 4 — Route result */}
             {step === 4 && primaryDestination && pioneerType && (
               <div className="animate-[fadeIn_0.3s_ease] space-y-4">
-                <div className="bg-gradient-to-br from-gray-900 to-gray-900/80 border border-brand-accent/30 rounded-2xl p-phi-5">
+                <GlassCard variant="featured" padding="md">
                   <div className="text-xs text-brand-accent font-semibold uppercase tracking-widest mb-4">
                     {t('compass.yourRoute')}
                   </div>
@@ -399,8 +401,8 @@ export default function CompassPage() {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                    <div className="bg-gray-800/60 rounded-xl p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-phi-3 mb-phi-5 reveal-stagger">
+                    <div className="glass-subtle rounded-xl p-phi-3">
                       <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">
                         {t('compass.visaRoute')}
                       </div>
@@ -408,7 +410,7 @@ export default function CompassPage() {
                         {primaryDestination.visa}
                       </div>
                     </div>
-                    <div className="bg-gray-800/60 rounded-xl p-4">
+                    <div className="glass-subtle rounded-xl p-phi-3">
                       <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
                         {t('compass.payments')}
                       </div>
@@ -423,7 +425,7 @@ export default function CompassPage() {
                         ))}
                       </div>
                     </div>
-                    <div className="bg-gray-800/60 rounded-xl p-4">
+                    <div className="glass-subtle rounded-xl p-phi-3">
                       <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
                         {t('compass.topSectors')}
                       </div>
@@ -444,7 +446,7 @@ export default function CompassPage() {
                   >
                     {VOCAB.pioneer_join} — {t('compass.seeOpenPaths')}
                   </Link>
-                </div>
+                </GlassCard>
 
                 <div className="text-center">
                   <button

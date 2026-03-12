@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { Users, Search, Database } from 'lucide-react'
 import { useThreads } from '@/lib/hooks/use-threads'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
 import type { ThreadType } from '@/lib/threads'
 
 // ─── Filter config ───────────────────────────────────────────────────────────
@@ -62,7 +63,7 @@ export default function ThreadsPage() {
         }}
       >
         <div className="max-w-4xl mx-auto">
-          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+          <h1 className="font-display text-phi-2xl sm:text-phi-3xl md:text-phi-4xl font-bold text-white mb-phi-3">
             {t('threads.heroTitle')
               .split('{accent}')
               .map((part, i) => {
@@ -76,10 +77,12 @@ export default function ThreadsPage() {
                 )
               })}
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-8">{t('threads.heroDesc')}</p>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-phi-5">
+            {t('threads.heroDesc')}
+          </p>
 
           {/* Search */}
-          <div className="max-w-md mx-auto relative mb-8">
+          <div className="max-w-md mx-auto relative mb-phi-5">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
