@@ -29,9 +29,9 @@ export const COUNTRY_ROUTES: Record<
 > = {
   'KE-DE': {
     targetCountries: ['DE'],
-    primarySectors: ['Safari & Wildlife', 'Eco-Tourism', 'Healthcare', 'Technology'],
+    primarySectors: ['Healthcare', 'Technology', 'Hospitality', 'Cultural Exchange', 'Education'],
     visaNote:
-      'Schengen visa required. Germany has high demand for Kenyan professionals in healthcare and tech.',
+      'Schengen visa required. Germany has high demand for Kenyan professionals in healthcare and tech. Active bilateral agreements for skilled worker recruitment.',
     paymentMethods: ['M-Pesa', 'SEPA', 'Wise'],
     strength: 'direct',
   },
@@ -45,8 +45,7 @@ export const COUNTRY_ROUTES: Record<
   'KE-AE': {
     targetCountries: ['AE'],
     primarySectors: ['Hospitality', 'Logistics', 'Construction', 'Domestic Work'],
-    visaNote:
-      'UAE employment visa through employer. High demand for Kenyan hospitality workers.',
+    visaNote: 'UAE employment visa through employer. High demand for Kenyan hospitality workers.',
     paymentMethods: ['M-Pesa', 'Bank Transfer', 'Western Union'],
     strength: 'direct',
   },
@@ -60,18 +59,75 @@ export const COUNTRY_ROUTES: Record<
   'KE-CA': {
     targetCountries: ['CA'],
     primarySectors: ['Healthcare', 'Technology', 'Hospitality', 'Agriculture'],
-    visaNote:
-      'Canada Express Entry. Kenyan professionals well-regarded in Canadian market.',
+    visaNote: 'Canada Express Entry. Kenyan professionals well-regarded in Canadian market.',
     paymentMethods: ['M-Pesa', 'Bank Transfer', 'Wise'],
     strength: 'partner',
   },
   'DE-KE': {
     targetCountries: ['KE'],
-    primarySectors: ['Safari & Wildlife', 'Eco-Tourism', 'Charity & NGO'],
+    primarySectors: [
+      'Safari & Wildlife',
+      'Eco-Tourism',
+      'Charity & NGO',
+      'Cultural Exchange',
+      'Healthcare Training',
+    ],
     visaNote:
-      'No visa for tourism/volunteering up to 90 days. Ideal for eco-tourism ventures.',
+      'No visa for tourism/volunteering up to 90 days. Ideal for eco-tourism ventures and professional exchange.',
     paymentMethods: ['SEPA', 'PayPal', 'Stripe', 'M-Pesa'],
     strength: 'direct',
+  },
+  'DE-CH': {
+    targetCountries: ['CH'],
+    primarySectors: ['Healthcare', 'Finance & Banking', 'Hospitality', 'Technology'],
+    visaNote: 'EU/EFTA bilateral agreement. Germans can work in Switzerland with L/B permit.',
+    paymentMethods: ['SEPA', 'TWINT', 'Bank Transfer'],
+    strength: 'direct',
+  },
+  'CH-DE': {
+    targetCountries: ['DE'],
+    primarySectors: ['Technology', 'Finance & Banking', 'Automotive', 'Pharma'],
+    visaNote: 'EU/EFTA bilateral agreement. Swiss citizens have free movement in Germany.',
+    paymentMethods: ['SEPA', 'TWINT', 'Bank Transfer'],
+    strength: 'direct',
+  },
+  'CH-KE': {
+    targetCountries: ['KE'],
+    primarySectors: ['Charity & NGO', 'Eco-Tourism', 'Cultural Exchange', 'Education'],
+    visaNote: 'No visa for tourism up to 90 days. Switzerland has strong NGO presence in Kenya.',
+    paymentMethods: ['TWINT', 'Wise', 'Stripe', 'M-Pesa'],
+    strength: 'partner',
+  },
+  'GB-KE': {
+    targetCountries: ['KE'],
+    primarySectors: ['Charity & NGO', 'Education', 'Safari & Wildlife', 'Cultural Exchange'],
+    visaNote:
+      'No visa for tourism up to 90 days. Strong UK-Kenya historical ties and volunteer networks.',
+    paymentMethods: ['Bank Transfer', 'PayPal', 'Wise', 'M-Pesa'],
+    strength: 'direct',
+  },
+  'FR-KE': {
+    targetCountries: ['KE'],
+    primarySectors: ['Cultural Exchange', 'Hospitality', 'Safari & Wildlife', 'Education'],
+    visaNote:
+      'No visa for tourism up to 90 days. French development cooperation active in East Africa.',
+    paymentMethods: ['SEPA', 'Wise', 'PayPal', 'M-Pesa'],
+    strength: 'partner',
+  },
+  'KE-FR': {
+    targetCountries: ['FR'],
+    primarySectors: ['Hospitality', 'Healthcare', 'Education', 'Fashion & Design'],
+    visaNote: 'Schengen visa required. Growing Kenyan diaspora in France, particularly in Paris.',
+    paymentMethods: ['M-Pesa', 'SEPA', 'Wise'],
+    strength: 'emerging',
+  },
+  'KE-CH': {
+    targetCountries: ['CH'],
+    primarySectors: ['Healthcare', 'Hospitality', 'Technology', 'Finance & Banking'],
+    visaNote:
+      'Swiss work permit required. High demand for healthcare workers. Strong NGO sector connection.',
+    paymentMethods: ['M-Pesa', 'TWINT', 'Wise'],
+    strength: 'partner',
   },
   'NG-KE': {
     targetCountries: ['KE'],
@@ -83,8 +139,7 @@ export const COUNTRY_ROUTES: Record<
   'ZA-KE': {
     targetCountries: ['KE'],
     primarySectors: ['Finance & Banking', 'Technology', 'Retail'],
-    visaNote:
-      'EAC agreement. South Africa-Kenya business corridor well-established.',
+    visaNote: 'EAC agreement. South Africa-Kenya business corridor well-established.',
     paymentMethods: ['M-Pesa', 'EFT', 'Flutterwave'],
     strength: 'partner',
   },
@@ -117,6 +172,6 @@ export function getRouteInfo(from: string, to: string) {
 
 export function getRecommendedRoutes(fromCountry: string): string[] {
   return Object.keys(COUNTRY_ROUTES)
-    .filter(k => k.startsWith(fromCountry))
-    .map(k => k.split('-')[1])
+    .filter((k) => k.startsWith(fromCountry))
+    .map((k) => k.split('-')[1])
 }

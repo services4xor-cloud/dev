@@ -23,7 +23,7 @@ import GlassCard from '@/components/ui/GlassCard'
 import StatCard from '@/components/ui/StatCard'
 import { SkeletonDashboard } from '@/components/Skeleton'
 import JourneyProgress from '@/components/JourneyProgress'
-import { useProfileSync } from '@/lib/hooks/use-profile-sync'
+import { useProfileSync, type DimensionPriority } from '@/lib/hooks/use-profile-sync'
 
 // ─── Tab definitions ────────────────────────────────────────────────────────
 
@@ -98,6 +98,7 @@ export default function MePage() {
   const [activeTab, setActiveTab] = useState<TabId>('Dashboard')
   const [mounted, setMounted] = useState(false)
   const { saving, lastSaved, pioneerId, saveProfile } = useProfileSync()
+  const [priorities, setPriorities] = useState<Record<string, DimensionPriority>>({})
 
   // Auto-save identity dimensions to DB when they change
   const syncIdentity = useCallback(() => {
@@ -111,6 +112,7 @@ export default function MePage() {
       culture: identity.culture ?? '',
       crafts: identity.craft,
       city: identity.city ?? '',
+      priorities,
     })
   }, [
     identity.country,
@@ -122,6 +124,7 @@ export default function MePage() {
     identity.culture,
     identity.craft,
     identity.city,
+    priorities,
     saveProfile,
   ])
 
@@ -138,6 +141,7 @@ export default function MePage() {
     identity.culture,
     identity.craft.length,
     identity.city,
+    priorities,
   ])
 
   // Real data from API
@@ -172,6 +176,18 @@ export default function MePage() {
   const [editBio, setEditBio] = useState('')
   const [craftSearch, setCraftSearch] = useState('')
 
+  // Dimension keys for priority selector
+  const DIMENSION_KEYS = [
+    { key: 'language', icon: '🗣', labelKey: 'me.dimLanguage' },
+    { key: 'craft', icon: '🔧', labelKey: 'me.dimCraft' },
+    { key: 'faith', icon: '🙏', labelKey: 'me.dimFaith' },
+    { key: 'reach', icon: '🌐', labelKey: 'me.dimReach' },
+    { key: 'culture', icon: '🌿', labelKey: 'me.dimCulture' },
+    { key: 'interests', icon: '❤️', labelKey: 'me.dimInterests' },
+    { key: 'location', icon: '📍', labelKey: 'me.dimLocation' },
+    { key: 'market', icon: '📊', labelKey: 'me.dimMarket' },
+  ] as const
+
   useEffect(() => {
     setMounted(true)
 
@@ -195,7 +211,12 @@ export default function MePage() {
     fetch('/api/profile')
       .then((r) => r.json())
       .then((data) => {
-        if (data.success && data.data) setUserProfile(data.data)
+        if (data.success && data.data) {
+          setUserProfile(data.data)
+          if (data.data.profile?.priorities) {
+            setPriorities(data.data.profile.priorities as Record<string, DimensionPriority>)
+          }
+        }
       })
       .catch(() => {})
   }, [])
@@ -718,6 +739,48 @@ export default function MePage() {
             </div>
           </div>
           <p className="text-xs text-white/30">{t('me.marketDescription')}</p>
+        </GlassCard>
+
+        {/* 9. Priorities — what matters most */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-1">
+            <span className="mr-1">⚡</span> {t('me.priorities')}
+          </label>
+          <p className="text-xs text-white/30 mb-phi-3">{t('me.prioritiesDescription')}</p>
+          <div className="space-y-2">
+            {DIMENSION_KEYS.map(({ key, icon, labelKey }) => {
+              const current = priorities[key] ?? 'medium'
+              return (
+                <div key={key} className="flex items-center justify-between gap-3">
+                  <span className="text-phi-sm text-white/70 min-w-[100px]">
+                    {icon} {t(labelKey)}
+                  </span>
+                  <div className="flex gap-1">
+                    {(['high', 'medium', 'low'] as const).map((level) => (
+                      <button
+                        key={level}
+                        type="button"
+                        onClick={() => {
+                          setPriorities((prev) => ({ ...prev, [key]: level }))
+                        }}
+                        className={`px-2.5 py-0.5 rounded-full text-phi-xs font-medium transition-all ${
+                          current === level
+                            ? level === 'high'
+                              ? 'bg-green-500/20 text-green-400 border border-green-500/40'
+                              : level === 'medium'
+                                ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/40'
+                                : 'bg-white/10 text-white/50 border border-white/20'
+                            : 'bg-white/5 text-white/25 border border-transparent hover:bg-white/10 hover:text-white/40'
+                        }`}
+                      >
+                        {t(`me.priority${level.charAt(0).toUpperCase() + level.slice(1)}`)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </GlassCard>
 
         {/* Bio */}

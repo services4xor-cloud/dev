@@ -22,6 +22,7 @@ const profileSchema = z.object({
   faith: z.array(z.string()).max(5).optional(),
   culture: z.string().max(100).optional().or(z.literal('')),
   crafts: z.array(z.string()).max(30).optional(),
+  priorities: z.record(z.enum(['high', 'medium', 'low'])).optional(),
 })
 
 /** Generate a unique Pioneer ID like "BE-KE-7X3M" */
@@ -71,6 +72,7 @@ export async function GET(_req: NextRequest) {
             faith: true,
             culture: true,
             crafts: true,
+            priorities: true,
           },
         },
       },
@@ -145,6 +147,7 @@ export async function PATCH(req: NextRequest) {
     if (data.faith !== undefined) profileFields.faith = data.faith
     if (data.culture !== undefined) profileFields.culture = data.culture || null
     if (data.crafts !== undefined) profileFields.crafts = data.crafts
+    if (data.priorities !== undefined) profileFields.priorities = data.priorities
 
     // Update user-level fields
     if (Object.keys(userFields).length > 0) {
@@ -179,6 +182,7 @@ export async function PATCH(req: NextRequest) {
             faith: true,
             culture: true,
             crafts: true,
+            priorities: true,
             city: true,
             skills: true,
           },

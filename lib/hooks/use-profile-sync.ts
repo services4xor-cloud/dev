@@ -3,6 +3,8 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { useSession } from 'next-auth/react'
 
+export type DimensionPriority = 'high' | 'medium' | 'low'
+
 interface ProfileData {
   name?: string
   country?: string
@@ -17,6 +19,7 @@ interface ProfileData {
   bio?: string
   headline?: string
   skills?: string[]
+  priorities?: Record<string, DimensionPriority>
 }
 
 interface ProfileResponse {
@@ -36,6 +39,7 @@ interface ProfileResponse {
       faith: string[]
       culture: string | null
       crafts: string[]
+      priorities: Record<string, DimensionPriority> | null
       city: string | null
       skills: string[]
     } | null
