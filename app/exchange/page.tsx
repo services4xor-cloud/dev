@@ -3,12 +3,11 @@
 /**
  * Exchange — Smart feed of People + Opportunities
  *
- * Ranked by matching engine based on the Pioneer's identity:
- *   - Language overlap → shared languages score higher
- *   - Interest overlap → shared categories score higher
- *   - Sorted by combined score descending
+ * People are AI agent personas scored via the 8-dimension engine.
+ * Opportunities come from mock venture paths.
  *
- * Filters: type (All / People / Opportunities), sector, language
+ * Filters: type (All / People / Opportunities), sector
+ * Sorted by dimension score descending.
  */
 
 import { useState, useMemo, useEffect } from 'react'
@@ -20,149 +19,14 @@ import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
+import { generateAllAgents, type AgentPersona } from '@/lib/agents'
+import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
+import { getSignalsForRegion } from '@/lib/market-data'
 import ExchangeCard, { type ExchangeCardData } from '@/components/ExchangeCard'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
 
-// ─── Mock Exchange People ───────────────────────────────────────────
-
-interface MockPerson {
-  id: string
-  name: string
-  country: string
-  flag: string
-  languages: string[]
-  skills: string[]
-  mode: 'explorer' | 'host'
-  sector: string
-  sectorIcon: string
-  city: string
-}
-
-const MOCK_EXCHANGE_PEOPLE: MockPerson[] = [
-  {
-    id: 'ex-p1',
-    name: 'Amara Osei',
-    country: 'KE',
-    flag: '🇰🇪',
-    languages: ['English', 'Swahili'],
-    skills: ['Wildlife knowledge', 'Photography', 'Guest relations'],
-    mode: 'explorer',
-    sector: 'Safari & Wildlife',
-    sectorIcon: '🦁',
-    city: 'Nairobi',
-  },
-  {
-    id: 'ex-p2',
-    name: 'Lukas Schneider',
-    country: 'DE',
-    flag: '🇩🇪',
-    languages: ['German', 'English'],
-    skills: ['Engineering', 'AutoCAD', 'Project Management'],
-    mode: 'host',
-    sector: 'Engineering',
-    sectorIcon: '🔧',
-    city: 'Munich',
-  },
-  {
-    id: 'ex-p3',
-    name: 'Priya Sharma',
-    country: 'IN',
-    flag: '🇮🇳',
-    languages: ['Hindi', 'English'],
-    skills: ['Nursing', 'Healthcare', 'First Aid'],
-    mode: 'explorer',
-    sector: 'Health & Wellness',
-    sectorIcon: '❤️',
-    city: 'Mumbai',
-  },
-  {
-    id: 'ex-p4',
-    name: 'Fatuma Ali',
-    country: 'KE',
-    flag: '🇰🇪',
-    languages: ['Swahili', 'English', 'Arabic'],
-    skills: ['Community outreach', 'Teaching', 'Healthcare'],
-    mode: 'explorer',
-    sector: 'Community',
-    sectorIcon: '🤝',
-    city: 'Mombasa',
-  },
-  {
-    id: 'ex-p5',
-    name: 'James Mwangi',
-    country: 'KE',
-    flag: '🇰🇪',
-    languages: ['English', 'Swahili'],
-    skills: ['Security operations', 'Risk assessment', 'Emergency response'],
-    mode: 'host',
-    sector: 'Engineering',
-    sectorIcon: '🔧',
-    city: 'Nairobi',
-  },
-  {
-    id: 'ex-p6',
-    name: 'Sophie Dubois',
-    country: 'FR',
-    flag: '🇫🇷',
-    languages: ['French', 'English'],
-    skills: ['Fashion', 'Graphic design', 'Brand development'],
-    mode: 'host',
-    sector: 'Art & Fashion',
-    sectorIcon: '🎨',
-    city: 'Paris',
-  },
-  {
-    id: 'ex-p7',
-    name: 'David Kiprop',
-    country: 'KE',
-    flag: '🇰🇪',
-    languages: ['English', 'Swahili'],
-    skills: ['Video production', 'TikTok', 'Photography'],
-    mode: 'explorer',
-    sector: 'Media & Content',
-    sectorIcon: '📱',
-    city: 'Nairobi',
-  },
-  {
-    id: 'ex-p8',
-    name: 'Chen Wei',
-    country: 'TH',
-    flag: '🇹🇭',
-    languages: ['English'],
-    skills: ['React', 'Node.js', 'Cloud', 'API design'],
-    mode: 'host',
-    sector: 'Technology',
-    sectorIcon: '💻',
-    city: 'Bangkok',
-  },
-  {
-    id: 'ex-p9',
-    name: 'Aisha Mohammed',
-    country: 'NG',
-    flag: '🇳🇬',
-    languages: ['English', 'Hausa', 'Yoruba'],
-    skills: ['Agriculture', 'Farm Management', 'Export'],
-    mode: 'explorer',
-    sector: 'Agriculture',
-    sectorIcon: '🌿',
-    city: 'Lagos',
-  },
-  {
-    id: 'ex-p10',
-    name: 'Marco Rossi',
-    country: 'CH',
-    flag: '🇨🇭',
-    languages: ['German', 'English', 'French'],
-    skills: ['Finance', 'Private Banking', 'Hospitality'],
-    mode: 'host',
-    sector: 'Trade & Investment',
-    sectorIcon: '💰',
-    city: 'Zurich',
-  },
-]
-
-// ─── Scoring helpers ────────────────────────────────────────────────
+// ─── Helpers ────────────────────────────────────────────────────────
 
 /** Resolve language codes to display names */
 function langCodeToName(code: string): string {
@@ -170,50 +34,58 @@ function langCodeToName(code: string): string {
   return lang ? lang.name : code
 }
 
-/** Score a person against user identity */
-function scorePerson(
-  person: MockPerson,
-  userLangs: string[],
-  userInterests: string[]
-): number {
-  let score = 30 // base
-
-  // Language overlap (up to 40 pts)
-  const userLangNames = userLangs.map(langCodeToName)
-  const sharedLangs = person.languages.filter((l) =>
-    userLangNames.some((ul) => ul.toLowerCase() === l.toLowerCase())
-  )
-  score += Math.min(40, sharedLangs.length * 20)
-
-  // Interest/sector overlap (up to 30 pts)
-  const sectorMatch = EXCHANGE_CATEGORIES.find(
-    (c) => c.label === person.sector || c.id === person.sector.toLowerCase()
-  )
-  if (sectorMatch && userInterests.includes(sectorMatch.id)) {
-    score += 30
-  } else {
-    // Partial: check skill overlap
-    const sharedSkills = person.skills.filter((s) =>
-      userInterests.some((ui) => {
-        const cat = EXCHANGE_CATEGORIES.find((c) => c.id === ui)
-        return cat && cat.label.toLowerCase().includes(s.toLowerCase())
-      })
-    )
-    score += Math.min(15, sharedSkills.length * 5)
+/** Build DimensionProfile from user identity */
+function identityToProfile(identity: {
+  country: string
+  city?: string
+  languages: string[]
+  interests: string[]
+  faith?: string
+  craft?: string[]
+  reach?: string[]
+  culture?: string
+}): DimensionProfile {
+  return {
+    country: identity.country,
+    city: identity.city,
+    languages: identity.languages,
+    faith: (identity as Record<string, unknown>).faith as string | undefined,
+    craft: ((identity as Record<string, unknown>).craft as string[]) ?? [],
+    interests: identity.interests,
+    reach: ((identity as Record<string, unknown>).reach as string[]) ?? [],
+    culture: (identity as Record<string, unknown>).culture as string | undefined,
+    isHuman: true,
   }
+}
 
-  return Math.min(100, score)
+/** Build DimensionProfile from an AI agent */
+function agentToProfile(agent: AgentPersona): DimensionProfile {
+  return {
+    country: agent.country,
+    city: agent.city,
+    languages: agent.languages,
+    faith: agent.faith,
+    craft: agent.craft,
+    interests: agent.interests,
+    reach: agent.reach,
+    culture: agent.culture,
+    isHuman: false,
+  }
+}
+
+/** Map agent's primary interest to an exchange category */
+function agentSector(agent: AgentPersona): { label: string; icon: string } {
+  if (agent.interests.length > 0) {
+    const cat = EXCHANGE_CATEGORIES.find((c) => c.id === agent.interests[0])
+    if (cat) return { label: cat.label, icon: cat.icon }
+  }
+  return { label: 'General', icon: '🌐' }
 }
 
 /** Score an opportunity against user identity */
-function scoreOpportunity(
-  path: (typeof MOCK_VENTURE_PATHS)[0],
-  userLangs: string[],
-  userInterests: string[]
-): number {
-  let score = 25 // base
+function scoreOpportunity(path: (typeof MOCK_VENTURE_PATHS)[0], userInterests: string[]): number {
+  let score = 25
 
-  // Tag overlap with interest categories (up to 40 pts)
   const interestLabels = userInterests
     .map((id) => EXCHANGE_CATEGORIES.find((c) => c.id === id))
     .filter(Boolean)
@@ -226,22 +98,14 @@ function scoreOpportunity(
   )
   score += Math.min(40, tagMatches.length * 15)
 
-  // Category match boost
   const catMatch = EXCHANGE_CATEGORIES.find((c) => {
     const catLower = c.label.toLowerCase()
     return (
-      catLower.includes(path.category.toLowerCase()) ||
-      path.category.toLowerCase().includes(c.id)
+      catLower.includes(path.category.toLowerCase()) || path.category.toLowerCase().includes(c.id)
     )
   })
-  if (catMatch && userInterests.includes(catMatch.id)) {
-    score += 20
-  }
-
-  // Featured boost
+  if (catMatch && userInterests.includes(catMatch.id)) score += 20
   if (path.isFeatured) score += 10
-
-  // Remote bonus
   if (path.isRemote) score += 5
 
   return Math.min(100, score)
@@ -267,41 +131,58 @@ export default function ExchangePage() {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [sectorFilter, setSectorFilter] = useState<string>('all')
 
-  // Resolve user language codes → names for display matching
-  const userLangNames = useMemo(
-    () => identity.languages.map(langCodeToName),
-    [identity.languages]
-  )
+  // Resolve user language codes to names for display
+  const userLangNames = useMemo(() => identity.languages.map(langCodeToName), [identity.languages])
+
+  // Generate and score AI agents (memoized)
+  const scoredAgents = useMemo(() => {
+    const allAgents = generateAllAgents()
+    const meProfile = identityToProfile(identity)
+    const signals = getSignalsForRegion(identity.country)
+
+    return allAgents
+      .map((agent) => {
+        const themProfile = agentToProfile(agent)
+        const dimScore = scoreDimensions(meProfile, themProfile, signals)
+        // Normalize 0-110 to 0-100
+        const displayScore = Math.min(100, Math.round((dimScore.total / 110) * 100))
+        return { agent, score: displayScore }
+      })
+      .sort((a, b) => b.score - a.score)
+  }, [identity])
 
   // Build scored feed items
   const feedItems = useMemo(() => {
     const items: { type: 'person' | 'opportunity'; data: ExchangeCardData; score: number }[] = []
 
-    // Score people
+    // Add AI agent people
     if (typeFilter !== 'opportunities') {
-      for (const person of MOCK_EXCHANGE_PEOPLE) {
-        const score = scorePerson(person, identity.languages, identity.interests)
+      for (const { agent, score } of scoredAgents) {
+        const sector = agentSector(agent)
 
         // Sector filter
         if (sectorFilter !== 'all') {
           const cat = EXCHANGE_CATEGORIES.find((c) => c.id === sectorFilter)
-          if (cat && cat.label !== person.sector) continue
+          if (cat && !agent.interests.includes(sectorFilter)) continue
         }
+
+        const typeBadge = agent.type === 'ai' ? '🤖 AI' : '✨ Human'
+        const countryName =
+          COUNTRY_OPTIONS.find((c) => c.code === agent.country)?.name ?? agent.country
 
         items.push({
           type: 'person',
           score,
           data: {
-            id: person.id,
-            title: person.name,
-            subtitle: `${person.city}, ${COUNTRY_OPTIONS.find((c) => c.code === person.country)?.name ?? person.country}`,
-            flag: person.flag,
-            languages: person.languages,
-            skills: person.skills,
+            id: agent.id,
+            title: agent.name,
+            subtitle: `${typeBadge} · ${agent.city}, ${countryName}`,
+            flag: agent.avatar,
+            languages: agent.languages.map(langCodeToName),
+            skills: agent.craft.slice(0, 3),
             matchScore: score,
-            mode: person.mode,
-            sector: person.sector,
-            sectorIcon: person.sectorIcon,
+            sector: sector.label,
+            sectorIcon: sector.icon,
           },
         })
       }
@@ -310,7 +191,7 @@ export default function ExchangePage() {
     // Score opportunities
     if (typeFilter !== 'people') {
       for (const path of MOCK_VENTURE_PATHS) {
-        const score = scoreOpportunity(path, identity.languages, identity.interests)
+        const score = scoreOpportunity(path, identity.interests)
 
         // Sector filter
         if (sectorFilter !== 'all') {
@@ -331,7 +212,7 @@ export default function ExchangePage() {
             title: path.title,
             subtitle: `${path.anchorName} · ${path.location}`,
             flag: COUNTRY_OPTIONS.find((c) => c.code === path.country)?.flag,
-            languages: [], // Opportunities don't have languages
+            languages: [],
             skills: path.tags,
             matchScore: score,
             sector: path.category,
@@ -343,7 +224,7 @@ export default function ExchangePage() {
 
     // Sort by score descending
     return items.sort((a, b) => b.score - a.score)
-  }, [typeFilter, sectorFilter, identity.languages, identity.interests])
+  }, [typeFilter, sectorFilter, identity.interests, scoredAgents])
 
   // Don't render until identity is checked
   if (!hasCompletedDiscovery) {

@@ -1,13 +1,19 @@
 /**
  * Graph Data Engine — builds the network graph for /world
  *
- * Transforms identity + mock data into nodes and edges
+ * Transforms identity + AI agent data into nodes and edges
  * for the SVG network visualization.
+ *
+ * Person nodes are scored using the 8-dimension scoring engine
+ * against deterministic AI agent personas (~700 across 193 countries).
  */
 
-import { MOCK_VENTURE_PATHS, MOCK_THREADS, MOCK_ALL_PIONEERS } from '@/data/mock'
+import { MOCK_VENTURE_PATHS, MOCK_THREADS } from '@/data/mock'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
+import { generateAllAgents, type AgentPersona } from '@/lib/agents'
+import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
+import { getSignalsForRegion } from '@/lib/market-data'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -35,6 +41,10 @@ interface Identity {
   interests: string[]
   mode: 'explorer' | 'host'
   city?: string
+  faith?: string
+  craft?: string[]
+  reach?: string[]
+  culture?: string
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────
@@ -45,15 +55,53 @@ function scoreRing(score: number): 1 | 2 | 3 {
   return 3
 }
 
-/** Score a person node based on language overlap with the user */
-function scorePerson(
-  personLangs: string[],
-  userLangs: string[]
-): { score: number; edgeType: GraphEdge['type'] } {
-  if (userLangs.length === 0) return { score: 40, edgeType: 'location' }
-  const overlap = personLangs.filter((l) => userLangs.includes(l))
-  const score = Math.min(100, Math.round((overlap.length / Math.max(userLangs.length, 1)) * 80) + 20)
-  return { score, edgeType: overlap.length > 0 ? 'language' : 'location' }
+/** Cached agents — generated once per session */
+let _cachedAgents: AgentPersona[] | null = null
+function getCachedAgents(): AgentPersona[] {
+  if (!_cachedAgents) _cachedAgents = generateAllAgents()
+  return _cachedAgents
+}
+
+/** Build a DimensionProfile from the user's identity */
+function identityToProfile(identity: Identity): DimensionProfile {
+  return {
+    country: identity.country,
+    city: identity.city,
+    languages: identity.languages,
+    faith: identity.faith,
+    craft: identity.craft ?? [],
+    interests: identity.interests,
+    reach: identity.reach ?? [],
+    culture: identity.culture,
+    isHuman: true,
+  }
+}
+
+/** Build a DimensionProfile from an AI agent */
+function agentToProfile(agent: AgentPersona): DimensionProfile {
+  return {
+    country: agent.country,
+    city: agent.city,
+    languages: agent.languages,
+    faith: agent.faith,
+    craft: agent.craft,
+    interests: agent.interests,
+    reach: agent.reach,
+    culture: agent.culture,
+    isHuman: false,
+  }
+}
+
+/** Determine primary edge type from dimension score breakdown */
+function primaryEdgeType(breakdown: {
+  language: number
+  craft: number
+  location: number
+}): GraphEdge['type'] {
+  if (breakdown.language >= breakdown.craft && breakdown.language >= breakdown.location)
+    return 'language'
+  if (breakdown.craft >= breakdown.location) return 'skill'
+  return 'location'
 }
 
 /** Score an opportunity node based on interest overlap */
@@ -80,7 +128,9 @@ function scoreOpportunity(
     .map((id) => EXCHANGE_CATEGORIES.find((c) => c.id === id)?.label?.toLowerCase() ?? '')
     .filter(Boolean)
   const tagMatch = pathTags.some((tag) =>
-    interestLabels.some((label) => label.includes(tag.toLowerCase()) || tag.toLowerCase().includes(label))
+    interestLabels.some(
+      (label) => label.includes(tag.toLowerCase()) || tag.toLowerCase().includes(label)
+    )
   )
 
   let score = 30
@@ -113,7 +163,20 @@ function scoreCommunity(
 
   // Language thread matching user languages
   if (thread.type === 'language') {
-    const langCode = thread.slug === 'swahili' ? 'sw' : thread.slug === 'deutsch' ? 'de' : thread.slug === 'english' ? 'en' : thread.slug === 'french' ? 'fr' : thread.slug === 'arabic' ? 'ar' : thread.slug === 'hindi' ? 'hi' : null
+    const langCode =
+      thread.slug === 'swahili'
+        ? 'sw'
+        : thread.slug === 'deutsch'
+          ? 'de'
+          : thread.slug === 'english'
+            ? 'en'
+            : thread.slug === 'french'
+              ? 'fr'
+              : thread.slug === 'arabic'
+                ? 'ar'
+                : thread.slug === 'hindi'
+                  ? 'hi'
+                  : null
     if (langCode && userLangs.includes(langCode)) {
       score += 40
       edgeType = 'language'
@@ -141,42 +204,35 @@ export function buildGraph(identity: Identity): { nodes: GraphNode[]; edges: Gra
   }
   nodes.push(youNode)
 
-  // ── People nodes from mock pioneers ───────────────────────────────
-  // Infer languages from country codes for mock pioneers
-  const countryLangs: Record<string, string[]> = {
-    KE: ['en', 'sw'],
-    DE: ['de', 'en'],
-    GB: ['en'],
-    US: ['en'],
-    FR: ['fr', 'en'],
-    ZA: ['en', 'zu'],
-    NG: ['en', 'ha', 'yo'],
-  }
+  // ── People nodes from AI agents (scored via 8-dimension engine) ──
+  const meProfile = identityToProfile(identity)
+  const marketSignals = getSignalsForRegion(identity.country)
+  const allAgents = getCachedAgents()
 
-  const personNodes = MOCK_ALL_PIONEERS
-    .filter((p) => p.status === 'Active')
-    .map((p) => {
-      const personLangs = [
-        ...(countryLangs[p.from] ?? ['en']),
-        ...(countryLangs[p.to] ?? []),
-      ]
-      const { score, edgeType } = scorePerson(personLangs, identity.languages)
+  const personNodes = allAgents
+    .map((agent) => {
+      const themProfile = agentToProfile(agent)
+      const dimScore = scoreDimensions(meProfile, themProfile, marketSignals)
+      // Normalize 0-110 → 0-100 for display
+      const displayScore = Math.min(100, Math.round((dimScore.total / 110) * 100))
+      const edgeType = primaryEdgeType(dimScore.breakdown)
+      const typeBadge = agent.type === 'ai' ? '🤖' : '✨'
       return {
         node: {
-          id: `person-${p.id}`,
+          id: `person-${agent.id}`,
           type: 'person' as const,
-          label: p.name,
-          sublabel: `${p.type} — ${p.from} to ${p.to}`,
-          icon: '👤',
-          score,
-          ring: scoreRing(score),
+          label: agent.name,
+          sublabel: `${typeBadge} ${agent.city}, ${agent.country}`,
+          icon: agent.avatar,
+          score: displayScore,
+          ring: scoreRing(displayScore),
         },
         edgeType,
-        score,
+        score: displayScore,
       }
     })
     .sort((a, b) => b.score - a.score)
-    .slice(0, 6)
+    .slice(0, 10)
 
   for (const { node, edgeType, score } of personNodes) {
     nodes.push(node)
@@ -189,14 +245,9 @@ export function buildGraph(identity: Identity): { nodes: GraphNode[]; edges: Gra
   }
 
   // ── Opportunity nodes from venture paths ──────────────────────────
-  const oppNodes = MOCK_VENTURE_PATHS
-    .slice(0, 20)
+  const oppNodes = MOCK_VENTURE_PATHS.slice(0, 20)
     .map((p) => {
-      const { score, edgeType } = scoreOpportunity(
-        p.category,
-        p.tags,
-        identity.interests
-      )
+      const { score, edgeType } = scoreOpportunity(p.category, p.tags, identity.interests)
       return {
         node: {
           id: `opp-${p.id}`,
@@ -225,8 +276,7 @@ export function buildGraph(identity: Identity): { nodes: GraphNode[]; edges: Gra
   }
 
   // ── Community nodes from threads ──────────────────────────────────
-  const communityNodes = MOCK_THREADS
-    .filter((t) => t.active)
+  const communityNodes = MOCK_THREADS.filter((t) => t.active)
     .map((t) => {
       const { score, edgeType } = scoreCommunity(
         t,
