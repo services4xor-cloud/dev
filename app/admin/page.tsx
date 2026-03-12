@@ -14,6 +14,9 @@ import {
   MOCK_ENV_VARS as ENV_VARS,
 } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
+import StatCard from '@/components/ui/StatCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -104,38 +107,36 @@ function OverviewTab() {
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-phi-3 reveal-stagger">
         {stats.map((stat) => (
-          <div
+          <StatCard
             key={stat.label}
-            className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 text-center"
-          >
-            <div className="text-2xl mb-1">{stat.icon}</div>
-            <div className="text-2xl font-bold text-white">{stat.value}</div>
-            <div className="text-gray-400 text-xs mt-1">{stat.label}</div>
-          </div>
+            label={stat.label}
+            value={stat.value}
+            icon={<span className="text-phi-xl">{stat.icon}</span>}
+          />
         ))}
       </div>
 
       {/* Revenue Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-gradient-to-r from-brand-primary to-brand-primary-light border border-brand-accent/20 rounded-xl p-5">
-          <p className="text-gray-300 text-sm">{t('admin.revenueThisMonth')}</p>
-          <p className="text-3xl font-bold text-brand-accent mt-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-phi-3">
+        <GlassCard variant="featured" padding="md">
+          <p className="text-phi-sm text-gray-300">{t('admin.revenueThisMonth')}</p>
+          <p className="text-phi-3xl font-bold text-brand-accent mt-1">
             KES {PLATFORM_STATS.revenueKES.toLocaleString('en-US')}
           </p>
-        </div>
-        <div className="bg-brand-surface-elevated border border-brand-accent/30 rounded-xl p-5">
-          <p className="text-gray-300 text-sm">{t('admin.mpesaTransactions')}</p>
-          <p className="text-3xl font-bold text-brand-accent mt-1">
+        </GlassCard>
+        <GlassCard padding="md">
+          <p className="text-phi-sm text-gray-300">{t('admin.mpesaTransactions')}</p>
+          <p className="text-phi-3xl font-bold text-brand-accent mt-1">
             {t('admin.pending', { count: String(PLATFORM_STATS.mpesaPending) })}
           </p>
-          <p className="text-gray-400 text-xs mt-1">{t('admin.checkMpesa')}</p>
-        </div>
+          <p className="text-phi-xs text-gray-400 mt-1">{t('admin.checkMpesa')}</p>
+        </GlassCard>
       </div>
 
       {/* Recent Signups */}
-      <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-5">
+      <div className="glass p-phi-5">
         <h3 className="text-brand-accent font-semibold mb-4">{t('admin.recentSignups')}</h3>
         <div className="space-y-3">
           {RECENT_PIONEERS.map((p) => (
@@ -165,7 +166,7 @@ function OverviewTab() {
       </div>
 
       {/* Recent Chapters */}
-      <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-5">
+      <div className="glass p-phi-5">
         <h3 className="text-brand-accent font-semibold mb-4">{t('admin.recentChapters')}</h3>
         <div className="space-y-3">
           {RECENT_CHAPTERS.map((ch, i) => (
@@ -193,7 +194,7 @@ function OverviewTab() {
       </div>
 
       {/* System Health */}
-      <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-5">
+      <div className="glass p-phi-5">
         <h3 className="text-brand-accent font-semibold mb-4">{t('admin.systemHealth')}</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
@@ -265,7 +266,7 @@ function PioneersTab() {
         ))}
       </div>
 
-      <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl overflow-hidden">
+      <GlassCard padding="none" className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -323,7 +324,7 @@ function PioneersTab() {
             </tbody>
           </table>
         </div>
-      </div>
+      </GlassCard>
     </div>
   )
 }
@@ -335,7 +336,7 @@ function AnchorsTab() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl overflow-hidden">
+      <GlassCard padding="none" className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -391,7 +392,7 @@ function AnchorsTab() {
             </tbody>
           </table>
         </div>
-      </div>
+      </GlassCard>
     </div>
   )
 }
@@ -412,7 +413,7 @@ function PathsTab() {
         </button>
       </div>
 
-      <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl overflow-hidden">
+      <GlassCard padding="none" className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -452,7 +453,7 @@ function PathsTab() {
             </tbody>
           </table>
         </div>
-      </div>
+      </GlassCard>
     </div>
   )
 }
@@ -495,10 +496,7 @@ function SocialTab() {
         <h3 className="text-brand-accent font-semibold mb-3">{t('admin.platformConnections')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {SOCIAL_PLATFORMS.map((platform) => (
-            <div
-              key={platform.name}
-              className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 flex items-center justify-between"
-            >
+            <div key={platform.name} className="glass p-phi-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="text-xl">{platform.icon}</span>
                 <div>
@@ -529,10 +527,7 @@ function SocialTab() {
         <h3 className="text-brand-accent font-semibold mb-3">{t('admin.postQueue')}</h3>
         <div className="space-y-3">
           {MOCK_SOCIAL_QUEUE.map((post) => (
-            <div
-              key={post.id}
-              className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 flex items-start justify-between gap-3"
-            >
+            <div key={post.id} className="glass p-phi-3 flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs text-brand-accent font-medium">{post.platform}</span>
@@ -571,7 +566,7 @@ function SettingsTab() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-5">
+      <div className="glass p-phi-5">
         <h3 className="text-brand-accent font-semibold mb-4">{t('admin.envVars')}</h3>
         <div className="space-y-2">
           {ENV_VARS.map((ev) => (
@@ -597,7 +592,7 @@ function SettingsTab() {
         </div>
       </div>
 
-      <div className="bg-brand-surface-elevated border border-brand-accent/20 rounded-xl p-5">
+      <div className="glass p-5">
         <h3 className="text-brand-accent font-semibold mb-3">{t('admin.setupGuides')}</h3>
         <ul className="space-y-2 text-sm text-gray-300">
           <li>

@@ -16,6 +16,9 @@ import { Plus, Eye, Users, Bell, BarChart3, Radio, Target, Zap } from 'lucide-re
 import { PIONEER_TYPES, PATH_CATEGORIES, type PioneerType } from '@/lib/vocabulary'
 import { SkeletonDashboard } from '@/components/Skeleton'
 import StatusBadge from '@/components/StatusBadge'
+import GlassCard from '@/components/ui/GlassCard'
+import StatCard from '@/components/ui/StatCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 import {
   MOCK_ANCHOR,
   MOCK_PATHS,
@@ -71,28 +74,24 @@ function PathsTab() {
   return (
     <div className="space-y-6">
       {/* Quick stats row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {[
-          {
-            label: t('anchor.activePaths'),
-            value: 3,
-            icon: <Radio className="w-4 h-4" />,
-            accent: true,
-          },
-          { label: t('anchor.totalChapters'), value: 47, icon: <Users className="w-4 h-4" /> },
-          { label: t('anchor.pioneersMatched'), value: 12, icon: <Target className="w-4 h-4" /> },
-          { label: t('anchor.views7d'), value: 284, icon: <Eye className="w-4 h-4" /> },
-        ].map((s) => (
-          <div key={s.label} className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <div
-              className={`flex items-center gap-2 text-sm mb-1 ${s.accent ? 'text-brand-accent' : 'text-gray-400'}`}
-            >
-              {s.icon}
-              {s.label}
-            </div>
-            <div className="text-2xl font-bold text-white">{s.value}</div>
-          </div>
-        ))}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-phi-3">
+        <StatCard
+          label={t('anchor.activePaths')}
+          value={3}
+          icon={<Radio className="w-4 h-4" />}
+          accent
+        />
+        <StatCard
+          label={t('anchor.totalChapters')}
+          value={47}
+          icon={<Users className="w-4 h-4" />}
+        />
+        <StatCard
+          label={t('anchor.pioneersMatched')}
+          value={12}
+          icon={<Target className="w-4 h-4" />}
+        />
+        <StatCard label={t('anchor.views7d')} value={284} icon={<Eye className="w-4 h-4" />} />
       </div>
 
       {/* Path list */}
@@ -113,10 +112,7 @@ function PathsTab() {
           const cat = PATH_CATEGORIES.find((c) => c.id === path.category)
 
           return (
-            <div
-              key={path.id}
-              className="bg-gray-800 rounded-xl border border-gray-700 p-4 hover:border-gray-600 transition-colors"
-            >
+            <GlassCard key={path.id} hover padding="sm">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-gray-700 flex items-center justify-center text-lg shrink-0">
                   {cat?.icon || '🌍'}
@@ -146,7 +142,7 @@ function PathsTab() {
                   {t('anchor.toggle')}
                 </button>
               </div>
-            </div>
+            </GlassCard>
           )
         })}
 
@@ -160,7 +156,7 @@ function PathsTab() {
       </div>
 
       {/* Recent activity */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+      <GlassCard padding="sm">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-3">
           <Zap className="w-4 h-4 text-brand-accent" />
           {t('anchor.recentChapters')}
@@ -182,7 +178,7 @@ function PathsTab() {
             </div>
           ))}
         </div>
-      </div>
+      </GlassCard>
     </div>
   )
 }
@@ -249,10 +245,7 @@ function ChaptersTab() {
         {visible.map((chapter) => {
           const status = chapterStatuses[chapter.id]
           return (
-            <div
-              key={chapter.id}
-              className="bg-gray-800 rounded-xl border border-gray-700 p-4 hover:border-gray-600 transition-colors"
-            >
+            <GlassCard key={chapter.id} hover padding="sm">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg shrink-0">
                   {PIONEER_TYPES[chapter.type].icon}
@@ -309,7 +302,7 @@ function ChaptersTab() {
                   <div className="text-xs text-gray-400">{t('anchor.match')}</div>
                 </div>
               </div>
-            </div>
+            </GlassCard>
           )
         })}
       </div>
@@ -324,7 +317,7 @@ function InsightsTab() {
   return (
     <div className="space-y-6">
       {/* Compass recommendations */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+      <GlassCard padding="sm">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-3">
           <Target className="w-4 h-4 text-brand-accent" />
           {t('anchor.compassRecs')}
@@ -354,10 +347,10 @@ function InsightsTab() {
             </div>
           ))}
         </div>
-      </div>
+      </GlassCard>
 
       {/* Best performing paths */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+      <GlassCard padding="sm">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-3">
           <BarChart3 className="w-4 h-4 text-brand-accent" />
           {t('anchor.pathPerformance')}
@@ -393,7 +386,7 @@ function InsightsTab() {
               )
             })}
         </div>
-      </div>
+      </GlassCard>
     </div>
   )
 }
@@ -413,7 +406,7 @@ export default function AnchorDashboardPage() {
   return (
     <div className="min-h-screen bg-brand-bg">
       {/* Top bar */}
-      <div className="bg-gray-900 border-b border-gray-700/50">
+      <div className="glass-subtle border-b border-brand-accent/10">
         <div className="max-w-6xl mx-auto px-4 xl:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -474,7 +467,7 @@ export default function AnchorDashboardPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 xl:px-8 py-6">
+      <SectionLayout size="sm">
         {loading ? (
           <SkeletonDashboard />
         ) : (
@@ -484,7 +477,7 @@ export default function AnchorDashboardPage() {
             {activeTab === 'insights' && <InsightsTab />}
           </>
         )}
-      </div>
+      </SectionLayout>
     </div>
   )
 }

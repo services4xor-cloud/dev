@@ -15,6 +15,9 @@ import { useTranslation } from '@/lib/hooks/use-translation'
 import StatusBadge from '@/components/StatusBadge'
 import JourneyProgress from '@/components/JourneyProgress'
 import { SkeletonDashboard } from '@/components/Skeleton'
+import GlassCard from '@/components/ui/GlassCard'
+import StatCard from '@/components/ui/StatCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 import {
   MOCK_CURRENT_PIONEER,
   MOCK_CHAPTERS as CHAPTERS_DATA,
@@ -54,20 +57,11 @@ function CompassTab() {
   return (
     <div className="space-y-6">
       {/* Quick stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {[
-          { label: t('pioneer.compassRoute'), value: pioneer.route, accent: true },
-          { label: t('pioneer.profile'), value: `${pioneer.profileComplete}%` },
-          { label: t('pioneer.openChapters'), value: CHAPTERS.length },
-          { label: t('pioneer.newMatches'), value: 3, accent: true },
-        ].map((s) => (
-          <div key={s.label} className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <div className={`text-xs mb-1 ${s.accent ? 'text-brand-accent' : 'text-gray-400'}`}>
-              {s.label}
-            </div>
-            <div className="text-xl font-bold text-white truncate">{s.value}</div>
-          </div>
-        ))}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-phi-3">
+        <StatCard label={t('pioneer.compassRoute')} value={pioneer.route || '—'} accent />
+        <StatCard label={t('pioneer.profile')} value={`${pioneer.profileComplete}%`} />
+        <StatCard label={t('pioneer.openChapters')} value={CHAPTERS.length} />
+        <StatCard label={t('pioneer.newMatches')} value={3} accent />
       </div>
 
       {/* Top matched paths */}
@@ -75,30 +69,28 @@ function CompassTab() {
         <h3 className="text-white font-semibold mb-3">{t('pioneer.topPaths')}</h3>
         <div className="space-y-3">
           {TOP_PATHS.map((path, i) => (
-            <Link
-              key={path.id}
-              href={`/ventures/${path.id}`}
-              className="flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl p-4 hover:border-gray-600 transition-colors group"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="text-white font-semibold text-sm group-hover:text-brand-accent transition-colors">
-                  {path.title}
+            <Link key={path.id} href={`/ventures/${path.id}`} className="block">
+              <GlassCard hover padding="sm" className="flex items-center gap-3 group">
+                <div className="flex-1 min-w-0">
+                  <div className="text-white font-semibold text-sm group-hover:text-brand-accent transition-colors">
+                    {path.title}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-0.5">
+                    {path.anchorName} · {path.location}
+                  </div>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {path.requiredSkills.slice(0, 3).map((skill) => (
+                      <span
+                        key={skill}
+                        className="text-xs px-2 py-0.5 bg-gray-700 text-gray-300 rounded-full border border-gray-600"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <div className="text-xs text-gray-400 mt-0.5">
-                  {path.anchorName} · {path.location}
-                </div>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {path.requiredSkills.slice(0, 3).map((skill) => (
-                    <span
-                      key={skill}
-                      className="text-xs px-2 py-0.5 bg-gray-700 text-gray-300 rounded-full border border-gray-600"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <MatchScore score={MATCH_SCORES[i]} />
+                <MatchScore score={MATCH_SCORES[i]} />
+              </GlassCard>
             </Link>
           ))}
         </div>
@@ -145,10 +137,7 @@ function ChaptersTab() {
   return (
     <div className="space-y-3">
       {CHAPTERS.map((chapter) => (
-        <div
-          key={chapter.id}
-          className="bg-gray-800 border border-gray-700 rounded-xl p-4 hover:border-gray-600 transition-colors"
-        >
+        <GlassCard key={chapter.id} hover padding="sm">
           <div className="flex items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
@@ -161,7 +150,7 @@ function ChaptersTab() {
             </div>
             <MatchScore score={chapter.matchScore} />
           </div>
-        </div>
+        </GlassCard>
       ))}
     </div>
   )
@@ -182,7 +171,7 @@ function ReferralsTab() {
   return (
     <div className="space-y-6">
       {/* Referral code */}
-      <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <GlassCard padding="md">
         <p className="text-gray-400 text-sm mb-2">{t('pioneer.yourReferralCode')}</p>
         <div className="flex items-center gap-3">
           <code className="text-xl font-mono font-bold text-brand-accent bg-gray-900 px-4 py-2 rounded-lg">
@@ -195,10 +184,10 @@ function ReferralsTab() {
             {copied ? t('pioneer.copied') : t('pioneer.copy')}
           </button>
         </div>
-      </div>
+      </GlassCard>
 
       {/* Incentive */}
-      <div className="bg-gray-800 border border-green-500/30 rounded-xl p-4 flex items-center gap-4">
+      <GlassCard padding="sm" className="flex items-center gap-4 !border-green-500/30">
         <span className="text-3xl">💰</span>
         <div>
           <p className="text-green-400 font-bold text-sm">
@@ -206,27 +195,13 @@ function ReferralsTab() {
           </p>
           <p className="text-gray-400 text-xs">{t('pioneer.referralIncentive')}</p>
         </div>
-      </div>
+      </GlassCard>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          { label: t('pioneer.referrals'), value: 3 },
-          { label: t('pioneer.placements'), value: 1 },
-          { label: t('pioneer.earned'), value: 'KES 5,000', accent: true },
-        ].map((s) => (
-          <div
-            key={s.label}
-            className="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center"
-          >
-            <div
-              className={`text-2xl font-bold ${'accent' in s ? 'text-brand-accent' : 'text-white'}`}
-            >
-              {s.value}
-            </div>
-            <div className="text-gray-400 text-xs mt-1">{s.label}</div>
-          </div>
-        ))}
+      <div className="grid grid-cols-3 gap-phi-3">
+        <StatCard label={t('pioneer.referrals')} value={3} />
+        <StatCard label={t('pioneer.placements')} value={1} />
+        <StatCard label={t('pioneer.earned')} value="KES 5,000" accent />
       </div>
 
       {/* Share */}
@@ -275,7 +250,7 @@ export default function PioneerDashboard() {
   return (
     <div className="min-h-screen bg-brand-bg">
       {/* Top bar */}
-      <div className="bg-gray-900 border-b border-gray-700/50">
+      <div className="glass-subtle border-b border-brand-accent/10">
         <div className="max-w-6xl mx-auto px-4 xl:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -325,18 +300,20 @@ export default function PioneerDashboard() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 xl:px-8 py-6 space-y-6">
-        {loading ? (
-          <SkeletonDashboard />
-        ) : (
-          <>
-            <JourneyProgress />
-            {activeTab === 'compass' && <CompassTab />}
-            {activeTab === 'chapters' && <ChaptersTab />}
-            {activeTab === 'referrals' && <ReferralsTab />}
-          </>
-        )}
-      </div>
+      <SectionLayout size="sm">
+        <div className="space-y-phi-5">
+          {loading ? (
+            <SkeletonDashboard />
+          ) : (
+            <>
+              <JourneyProgress />
+              {activeTab === 'compass' && <CompassTab />}
+              {activeTab === 'chapters' && <ChaptersTab />}
+              {activeTab === 'referrals' && <ReferralsTab />}
+            </>
+          )}
+        </div>
+      </SectionLayout>
     </div>
   )
 }

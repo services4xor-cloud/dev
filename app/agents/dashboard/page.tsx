@@ -24,6 +24,9 @@ import {
 } from 'lucide-react'
 import StatusBadge from '@/components/StatusBadge'
 import { SkeletonDashboard } from '@/components/Skeleton'
+import GlassCard from '@/components/ui/GlassCard'
+import StatCard from '@/components/ui/StatCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 import { BRAND_NAME } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
 
@@ -197,10 +200,7 @@ function DemandFeedTab() {
       </div>
 
       {MOCK_DEMAND.map((demand) => (
-        <div
-          key={demand.id}
-          className="bg-gray-800 rounded-xl border border-gray-700 p-4 hover:border-gray-600 transition-colors"
-        >
+        <GlassCard key={demand.id} hover padding="sm">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-lg bg-gray-700 flex items-center justify-center text-lg shrink-0">
               {COUNTRY_FLAGS[demand.country] || '\uD83C\uDF0D'}
@@ -264,7 +264,7 @@ function DemandFeedTab() {
               <span className="text-xs text-gray-400">{demand.posted}</span>
             </div>
           </div>
-        </div>
+        </GlassCard>
       ))}
     </div>
   )
@@ -293,22 +293,21 @@ function ForwardsTab() {
   return (
     <div className="space-y-5">
       {/* Funnel stats */}
-      <div className="grid grid-cols-5 gap-2">
+      <div className="grid grid-cols-5 gap-phi-3">
         {(['SENT', 'CLICKED', 'SIGNED_UP', 'APPLIED', 'PLACED'] as const).map((step) => (
-          <div key={step} className="bg-gray-800 rounded-xl border border-gray-700 p-3 text-center">
-            <div className="text-xl font-bold text-white">{statusCounts[step] || 0}</div>
-            <div className="text-xs text-gray-400 mt-0.5">{t(FUNNEL_I18N[step])}</div>
-          </div>
+          <StatCard
+            key={step}
+            label={t(FUNNEL_I18N[step])}
+            value={statusCounts[step] || 0}
+            accent={step === 'PLACED'}
+          />
         ))}
       </div>
 
       {/* Forward list */}
       <div className="space-y-3">
         {MOCK_FORWARDS.map((forward) => (
-          <div
-            key={forward.id}
-            className="bg-gray-800 rounded-xl border border-gray-700 p-4 hover:border-gray-600 transition-colors"
-          >
+          <GlassCard key={forward.id} hover padding="sm">
             <div className="flex items-center justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -330,7 +329,7 @@ function ForwardsTab() {
                 </div>
               )}
             </div>
-          </div>
+          </GlassCard>
         ))}
       </div>
     </div>
@@ -346,44 +345,32 @@ function EarningsTab() {
   return (
     <div className="space-y-6">
       {/* Earnings overview */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {[
-          {
-            label: t('agentDash.totalEarnings'),
-            value: `KES ${profile.totalEarnings.toLocaleString()}`,
-            icon: <DollarSign className="w-4 h-4" />,
-            accent: true,
-          },
-          {
-            label: t('agentDash.placements'),
-            value: profile.totalPlacements,
-            icon: <Users className="w-4 h-4" />,
-          },
-          {
-            label: t('agentDash.totalForwards'),
-            value: profile.totalForwards,
-            icon: <Send className="w-4 h-4" />,
-          },
-          {
-            label: t('agentDash.conversionRate'),
-            value: `${((profile.totalPlacements / profile.totalForwards) * 100).toFixed(1)}%`,
-            icon: <TrendingUp className="w-4 h-4" />,
-          },
-        ].map((s) => (
-          <div key={s.label} className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <div
-              className={`flex items-center gap-2 text-sm mb-1 ${s.accent ? 'text-brand-accent' : 'text-gray-400'}`}
-            >
-              {s.icon}
-              {s.label}
-            </div>
-            <div className="text-2xl font-bold text-white">{s.value}</div>
-          </div>
-        ))}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-phi-3">
+        <StatCard
+          label={t('agentDash.totalEarnings')}
+          value={`KES ${profile.totalEarnings.toLocaleString()}`}
+          icon={<DollarSign className="w-4 h-4" />}
+          accent
+        />
+        <StatCard
+          label={t('agentDash.placements')}
+          value={profile.totalPlacements}
+          icon={<Users className="w-4 h-4" />}
+        />
+        <StatCard
+          label={t('agentDash.totalForwards')}
+          value={profile.totalForwards}
+          icon={<Send className="w-4 h-4" />}
+        />
+        <StatCard
+          label={t('agentDash.conversionRate')}
+          value={`${((profile.totalPlacements / profile.totalForwards) * 100).toFixed(1)}%`}
+          icon={<TrendingUp className="w-4 h-4" />}
+        />
       </div>
 
       {/* Commission structure */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-5">
+      <GlassCard padding="md">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-4">
           <DollarSign className="w-4 h-4 text-brand-accent" />
           {t('agentDash.commissionStructure')}
@@ -408,10 +395,10 @@ function EarningsTab() {
             </span>
           </div>
         </div>
-      </div>
+      </GlassCard>
 
       {/* Placement history */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-5">
+      <GlassCard padding="md">
         <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-4">
           <TrendingUp className="w-4 h-4 text-brand-accent" />
           {t('agentDash.successfulPlacements')}
@@ -439,7 +426,7 @@ function EarningsTab() {
             ))}
           </div>
         )}
-      </div>
+      </GlassCard>
     </div>
   )
 }
@@ -461,7 +448,7 @@ export default function AgentDashboardPage() {
   return (
     <div className="min-h-screen bg-brand-bg">
       {/* Top bar */}
-      <div className="bg-gray-900 border-b border-gray-700/50">
+      <div className="glass-subtle border-b border-brand-accent/10">
         <div className="max-w-6xl mx-auto px-4 xl:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -524,7 +511,7 @@ export default function AgentDashboardPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 xl:px-8 py-6">
+      <SectionLayout size="sm">
         {loading ? (
           <SkeletonDashboard />
         ) : (
@@ -534,7 +521,7 @@ export default function AgentDashboardPage() {
             {activeTab === 'earnings' && <EarningsTab />}
           </>
         )}
-      </div>
+      </SectionLayout>
     </div>
   )
 }

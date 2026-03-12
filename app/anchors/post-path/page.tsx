@@ -27,6 +27,7 @@ import {
   POST_PATH_STEPS as STEPS,
 } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
 
 // ─── Derived ──────────────────────────────────────────────────────────────────
 
@@ -91,7 +92,7 @@ function StepBasics({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">{t('postPath.nameYourPath')}</h2>
+        <h2 className="text-phi-2xl font-bold text-white">{t('postPath.nameYourPath')}</h2>
         <p className="text-gray-400 mt-1">{t('postPath.nameDesc')}</p>
       </div>
 
@@ -221,7 +222,7 @@ function StepDescription({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">{t('postPath.tellStory')}</h2>
+        <h2 className="text-phi-2xl font-bold text-white">{t('postPath.tellStory')}</h2>
         <p className="text-gray-400 mt-1">{t('postPath.tellStoryDesc')}</p>
       </div>
 
@@ -327,7 +328,7 @@ function StepSkills({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">{t('postPath.whatSkills')}</h2>
+        <h2 className="text-phi-2xl font-bold text-white">{t('postPath.whatSkills')}</h2>
         <p className="text-gray-400 mt-1">{t('postPath.whatSkillsDesc')}</p>
       </div>
 
@@ -437,7 +438,7 @@ function StepPioneers({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-white">{t('postPath.whoIsFor')}</h2>
+        <h2 className="text-phi-2xl font-bold text-white">{t('postPath.whoIsFor')}</h2>
         <p className="text-gray-400 mt-1">{t('postPath.whoIsForDesc')}</p>
       </div>
 
@@ -528,7 +529,7 @@ function StepCompensation({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">{t('postPath.whatPay')}</h2>
+        <h2 className="text-phi-2xl font-bold text-white">{t('postPath.whatPay')}</h2>
         <p className="text-gray-400 mt-1">{t('postPath.whatPayDesc')}</p>
       </div>
 
@@ -650,12 +651,12 @@ function StepPreview({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">{t('postPath.reviewPath')}</h2>
+        <h2 className="text-phi-2xl font-bold text-white">{t('postPath.reviewPath')}</h2>
         <p className="text-gray-400 mt-1">{t('postPath.reviewPathDesc')}</p>
       </div>
 
       {/* Path preview card */}
-      <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
+      <GlassCard variant="featured" padding="none" className="overflow-hidden">
         {/* Header */}
         <div className="p-6 border-b border-gray-700">
           <div className="flex items-start gap-4">
@@ -789,7 +790,7 @@ function StepPreview({
             )}
           </div>
         </div>
-      </div>
+      </GlassCard>
 
       {/* Publish CTA */}
       <div className="bg-gradient-to-r from-brand-primary/40 to-brand-primary/40 rounded-2xl border border-brand-accent/30 p-6 text-center">
@@ -885,7 +886,7 @@ export default function PostPathPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center p-6 ambient-glow">
         <div className="text-center max-w-md">
           <div className="w-20 h-20 rounded-full bg-green-900/50 border-2 border-green-500 flex items-center justify-center mx-auto mb-6">
             <Check className="w-10 h-10 text-green-400" />
@@ -920,9 +921,9 @@ export default function PostPathPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-brand-bg">
       {/* Top nav */}
-      <nav className="sticky top-16 z-40 bg-gray-900/90 backdrop-blur-md border-b border-gray-700/50">
+      <nav className="sticky top-16 z-40 glass-subtle border-b border-brand-accent/10">
         <div className="max-w-3xl mx-auto px-4 h-16 flex items-center gap-4">
           <Link
             href="/anchors/dashboard"

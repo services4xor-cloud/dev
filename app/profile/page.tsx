@@ -17,6 +17,7 @@ import {
 import { SKILLS_SUGGESTIONS, MOCK_PROFILE, BRAND_NAME } from '@/data/mock'
 import HeroSection from '@/components/HeroSection'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
 
 export default function ProfilePage() {
   const { t } = useTranslation()
@@ -57,7 +58,7 @@ export default function ProfilePage() {
 
       <div className="max-w-3xl 3xl:max-w-5xl mx-auto px-4 py-8">
         {/* Completion bar */}
-        <div className="bg-gray-900/60 rounded-2xl p-4 shadow-sm border border-brand-primary/30 mb-6">
+        <GlassCard padding="sm" className="mb-phi-5">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-300">{t('profile.completeness')}</span>
             <span className="text-sm font-bold text-brand-accent">
@@ -71,10 +72,10 @@ export default function ProfilePage() {
             />
           </div>
           <p className="text-xs text-gray-400 mt-2">{t('profile.completeHint')}</p>
-        </div>
+        </GlassCard>
 
         {/* Avatar */}
-        <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 mb-4">
+        <GlassCard padding="md" className="mb-phi-3">
           <h2 className="font-bold text-white mb-4">{t('profile.photo')}</h2>
           <div className="flex items-center gap-6">
             <div className="relative">
@@ -95,10 +96,10 @@ export default function ProfilePage() {
               </button>
             </div>
           </div>
-        </div>
+        </GlassCard>
 
         {/* Basic info */}
-        <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 mb-4">
+        <GlassCard padding="md" className="mb-phi-3">
           <h2 className="font-bold text-white mb-4">{t('profile.basicInfo')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -174,10 +175,10 @@ export default function ProfilePage() {
               className="input w-full"
             />
           </div>
-        </div>
+        </GlassCard>
 
         {/* Skills */}
-        <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 mb-6">
+        <GlassCard padding="md" className="mb-phi-5">
           <h2 className="font-bold text-white mb-4">{t('profile.skills')}</h2>
           <div className="flex flex-wrap gap-2 mb-3">
             {skills.map((skill) => (
@@ -226,7 +227,7 @@ export default function ProfilePage() {
                 </button>
               ))}
           </div>
-        </div>
+        </GlassCard>
 
         {/* Save button */}
         <button
