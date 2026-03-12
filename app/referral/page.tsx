@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { Gift, Copy, Check, Users, DollarSign, Share2, ArrowRight, Star } from 'lucide-react'
 import { REFERRAL, BRAND_NAME, REFERRAL_BONUS } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 export default function ReferralPage() {
   const { t } = useTranslation()
@@ -20,13 +22,13 @@ export default function ReferralPage() {
   return (
     <div className="min-h-screen bg-brand-bg">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-brand-primary to-brand-bg text-white py-20 px-4">
+      <div className="bg-gradient-to-br from-brand-primary to-brand-bg text-white py-phi-8 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <Gift className="w-16 h-16 mx-auto mb-4 opacity-90" />
-          <h1 className="text-4xl md:text-5xl font-black mb-4">
+          <h1 className="text-phi-3xl md:text-phi-4xl font-black mb-4 gradient-text">
             {t('referral.heroTitle', { bonus: REFERRAL_BONUS })}
           </h1>
-          <p className="text-xl text-gray-300 max-w-xl mx-auto">
+          <p className="text-phi-xl text-gray-300 max-w-xl mx-auto">
             {t('referral.heroDesc', {
               brand: BRAND_NAME,
               bonus: REFERRAL_BONUS,
@@ -36,10 +38,10 @@ export default function ReferralPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-16 space-y-16">
+      <SectionLayout ambient maxWidth="max-w-4xl" className="space-y-16">
         {/* Referral link */}
-        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-primary/30 text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">{t('referral.linkTitle')}</h2>
+        <GlassCard padding="lg" className="text-center">
+          <h2 className="text-phi-xl font-bold text-white mb-2">{t('referral.linkTitle')}</h2>
           <p className="text-gray-400 mb-6">{t('referral.linkDesc')}</p>
 
           <div className="flex items-center gap-3 bg-brand-bg rounded-xl p-4 border border-brand-primary/30 mb-4">
@@ -74,23 +76,23 @@ export default function ReferralPage() {
               {t('referral.shareTwitter')}
             </button>
           </div>
-        </div>
+        </GlassCard>
 
         {/* How it works */}
         <div>
-          <h2 className="text-2xl font-bold text-white text-center mb-8">
+          <h2 className="text-phi-xl font-bold text-white text-center mb-8">
             {t('referral.howTitle')}
           </h2>
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-4 gap-phi-5 reveal-stagger">
             {REFERRAL.steps.map((step, i) => (
               <div key={step.n} className="relative">
-                <div className="bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30 h-full">
+                <GlassCard hover className="h-full">
                   <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center text-white font-bold mb-4">
                     {step.n}
                   </div>
                   <h3 className="font-semibold text-white mb-2">{step.title}</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">{step.desc}</p>
-                </div>
+                  <p className="text-phi-sm text-gray-400 leading-relaxed">{step.desc}</p>
+                </GlassCard>
                 {i < REFERRAL.steps.length - 1 && (
                   <ArrowRight className="hidden md:block absolute top-1/2 -right-3 w-5 h-5 text-gray-300 z-10" />
                 )}
@@ -100,7 +102,7 @@ export default function ReferralPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-3 gap-phi-5 reveal-stagger">
           {REFERRAL.stats.map((stat, i) => {
             const icons = [Users, DollarSign, Star]
             const colors = [
@@ -110,18 +112,15 @@ export default function ReferralPage() {
             ]
             const Icon = icons[i] ?? Star
             return (
-              <div
-                key={stat.label}
-                className="bg-gray-900/60 rounded-2xl p-6 text-center shadow-sm border border-brand-primary/30"
-              >
+              <GlassCard key={stat.label} hover className="text-center">
                 <div
                   className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 ${colors[i]}`}
                 >
                   <Icon className="w-6 h-6" />
                 </div>
-                <div className="text-2xl font-black text-white">{stat.value}</div>
-                <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
-              </div>
+                <div className="text-phi-xl font-black text-white">{stat.value}</div>
+                <div className="text-phi-sm text-gray-400 mt-1">{stat.label}</div>
+              </GlassCard>
             )
           })}
         </div>
@@ -133,7 +132,7 @@ export default function ReferralPage() {
             {t('referral.ctaBtn')}
           </Link>
         </div>
-      </div>
+      </SectionLayout>
     </div>
   )
 }

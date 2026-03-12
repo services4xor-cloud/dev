@@ -16,6 +16,8 @@ import { SAFARI_PACKAGES, formatPackagePrice } from '@/lib/safari-packages'
 import { useIdentity } from '@/lib/identity-context'
 import { COUNTRIES, type CountryCode } from '@/lib/countries'
 import IdentitySwitcher from '@/components/IdentitySwitcher'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 import {
   COUNTRY_GREETINGS,
   ROTATING_FLAGS,
@@ -272,212 +274,200 @@ export default function HomePage() {
       </section>
 
       {/* ── 2. WHAT IS THE BENETWORK ─────────────────────────────────────────── */}
-      <section className="py-24" style={{ background: 'var(--color-bg)' }}>
-        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
-          <div className="text-center mb-16">
-            <p
-              className="text-sm font-semibold uppercase tracking-widest mb-3"
-              style={{ color: 'var(--color-accent)' }}
-            >
-              {t('network.label')}
-            </p>
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
-              {t('network.headline')}
-            </h2>
-            <p className="text-gray-300 max-w-xl mx-auto">{t('network.subtitle')}</p>
-          </div>
+      <SectionLayout size="lg" ambient className="bg-brand-bg">
+        <div className="text-center mb-16">
+          <p
+            className="text-phi-sm font-semibold uppercase tracking-widest mb-3"
+            style={{ color: 'var(--color-accent)' }}
+          >
+            {t('network.label')}
+          </p>
+          <h2 className="font-display text-phi-2xl md:text-phi-4xl font-bold text-white mb-4">
+            {t('network.headline')}
+          </h2>
+          <p className="text-gray-300 max-w-xl mx-auto">{t('network.subtitle')}</p>
+        </div>
 
-          <div className="grid md:grid-cols-3 gap-6 3xl:gap-8">
-            {BENETWORK_PILLARS.map((pillar) => (
+        <div className="grid md:grid-cols-3 gap-phi-5 3xl:gap-phi-6 reveal-stagger">
+          {BENETWORK_PILLARS.map((pillar) => (
+            <GlassCard key={pillar.for} hover padding="lg" className="flex flex-col">
               <div
-                key={pillar.for}
-                className="rounded-3xl p-8 flex flex-col border"
+                className="w-14 h-14 rounded-2xl flex items-center justify-center text-phi-2xl mb-5 border"
                 style={{
-                  background: 'rgb(var(--color-primary-rgb) / 0.20)',
-                  borderColor: 'rgb(var(--color-accent-rgb) / 0.30)',
+                  background: 'var(--color-primary)',
+                  borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
                 }}
               >
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-5 border"
+                {pillar.icon}
+              </div>
+              <div
+                className="text-phi-xs font-bold uppercase tracking-widest mb-1"
+                style={{ color: 'var(--color-accent)' }}
+              >
+                {pillar.for}
+              </div>
+              <div className="text-gray-400 text-phi-xs mb-4">{pillar.subtitle}</div>
+              <p className="text-gray-300 text-phi-sm leading-relaxed flex-1 mb-6">{pillar.desc}</p>
+              <Link
+                href={pillar.href}
+                className="flex items-center justify-center gap-2 text-phi-sm font-bold text-white rounded-xl px-5 py-3 transition-all hover:scale-[1.02] active:scale-[0.98] w-full"
+                style={{
+                  background:
+                    'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                  border: '1px solid rgb(var(--color-accent-rgb) / 0.30)',
+                  boxShadow: '0 4px 16px rgb(var(--color-primary-rgb) / 0.25)',
+                }}
+              >
+                {pillar.cta} &rarr;
+              </Link>
+            </GlassCard>
+          ))}
+        </div>
+      </SectionLayout>
+
+      {/* ── 3. COMPASS CTA — Unified entry into the Compass wizard ──────────── */}
+      <SectionLayout
+        size="lg"
+        maxWidth="max-w-4xl"
+        className="bg-gradient-to-b from-gray-900 to-brand-bg"
+      >
+        <GlassCard variant="featured" padding="lg" className="text-center">
+          {/* Compass icon */}
+          <div
+            className="w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center text-phi-2xl border"
+            style={{
+              background: 'var(--color-primary)',
+              borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
+            }}
+          >
+            🧭
+          </div>
+
+          <h2 className="font-display text-phi-2xl md:text-phi-3xl font-bold text-white mb-4">
+            {t('compass.headline')}
+          </h2>
+          <p className="text-gray-400 mb-8 max-w-lg mx-auto">{t('compass.subtitle')}</p>
+
+          {/* How it works — visual steps */}
+          <div className="flex items-center justify-center gap-2 md:gap-4 mb-10 text-phi-xs md:text-phi-sm">
+            {[
+              { num: 1, label: t('compass.step1') },
+              { num: 2, label: t('compass.step2') },
+              { num: 3, label: t('compass.step3') },
+            ].map((s, i) => (
+              <div key={s.num} className="flex items-center gap-2 md:gap-3">
+                {i > 0 && <span className="text-gray-700 hidden sm:inline">&#8594;</span>}
+                <span
+                  className="w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-bold shrink-0"
                   style={{
-                    background: 'var(--color-primary)',
                     borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
+                    color: 'var(--color-accent)',
                   }}
                 >
-                  {pillar.icon}
-                </div>
-                <div
-                  className="text-xs font-bold uppercase tracking-widest mb-1"
-                  style={{ color: 'var(--color-accent)' }}
-                >
-                  {pillar.for}
-                </div>
-                <div className="text-gray-400 text-xs mb-4">{pillar.subtitle}</div>
-                <p className="text-gray-300 text-sm leading-relaxed flex-1 mb-6">{pillar.desc}</p>
-                <Link
-                  href={pillar.href}
-                  className="flex items-center justify-center gap-2 text-sm font-bold text-white rounded-xl px-5 py-3 transition-all hover:scale-[1.02] active:scale-[0.98] w-full"
-                  style={{
-                    background:
-                      'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
-                    border: '1px solid rgb(var(--color-accent-rgb) / 0.30)',
-                    boxShadow: '0 4px 16px rgb(var(--color-primary-rgb) / 0.25)',
-                  }}
-                >
-                  {pillar.cta} &rarr;
-                </Link>
+                  {s.num}
+                </span>
+                <span className="text-gray-300">{s.label}</span>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ── 3. COMPASS CTA — Unified entry into the Compass wizard ──────────── */}
-      <section className="py-24 bg-gradient-to-b from-gray-900 to-brand-bg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-gray-800/50 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm text-center">
-            {/* Compass icon */}
-            <div
-              className="w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center text-3xl border"
-              style={{
-                background: 'var(--color-primary)',
-                borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
-              }}
-            >
-              🧭
-            </div>
+          {/* Auto-detected origin hint */}
+          {detectedOption && (
+            <p className="text-gray-500 text-phi-sm mb-6">
+              <span className="text-phi-lg mr-1">{detectedOption.flag}</span>
+              {t('compass.originHint', { country: detectedOption.name })}
+            </p>
+          )}
 
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
-              {t('compass.headline')}
-            </h2>
-            <p className="text-gray-400 mb-8 max-w-lg mx-auto">{t('compass.subtitle')}</p>
-
-            {/* How it works — visual steps */}
-            <div className="flex items-center justify-center gap-2 md:gap-4 mb-10 text-xs md:text-sm">
-              {[
-                { num: 1, label: t('compass.step1') },
-                { num: 2, label: t('compass.step2') },
-                { num: 3, label: t('compass.step3') },
-              ].map((s, i) => (
-                <div key={s.num} className="flex items-center gap-2 md:gap-3">
-                  {i > 0 && <span className="text-gray-700 hidden sm:inline">&#8594;</span>}
-                  <span
-                    className="w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-bold shrink-0"
-                    style={{
-                      borderColor: 'rgb(var(--color-accent-rgb) / 0.50)',
-                      color: 'var(--color-accent)',
-                    }}
-                  >
-                    {s.num}
-                  </span>
-                  <span className="text-gray-300">{s.label}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Auto-detected origin hint */}
-            {detectedOption && (
-              <p className="text-gray-500 text-sm mb-6">
-                <span className="text-lg mr-1">{detectedOption.flag}</span>
-                {t('compass.originHint', { country: detectedOption.name })}
-              </p>
-            )}
-
-            <Link
-              href={compassHref}
-              className="inline-flex items-center justify-center gap-3 text-white font-bold text-lg rounded-full px-12 py-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              style={{
-                background:
-                  'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
-                border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
-                boxShadow: '0 8px 24px rgb(var(--color-primary-rgb) / 0.35)',
-              }}
-            >
-              <span>{t('hero.startCompass')}</span>
-              <span className="text-xl">&#10148;</span>
-            </Link>
-          </div>
-        </div>
-      </section>
+          <Link
+            href={compassHref}
+            className="inline-flex items-center justify-center gap-3 text-white font-bold text-phi-lg rounded-full px-12 py-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            style={{
+              background:
+                'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+              border: '1px solid rgb(var(--color-accent-rgb) / 0.40)',
+              boxShadow: '0 8px 24px rgb(var(--color-primary-rgb) / 0.35)',
+            }}
+          >
+            <span>{t('hero.startCompass')}</span>
+            <span className="text-phi-xl">&#10148;</span>
+          </Link>
+        </GlassCard>
+      </SectionLayout>
 
       {/* ── 4. EXPERIENCES STRIP (identity-driven) ────────────────────────────── */}
       {activeCountry === 'KE' && (
-        <section className="py-24 bg-gradient-to-b from-brand-bg to-brand-primary/20">
-          <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
-            <div className="text-center mb-12">
-              <p className="text-brand-accent text-sm font-semibold uppercase tracking-widest mb-3">
-                {t('experiences.label', { country: countryConfig?.name ?? 'Safari' })}
-              </p>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
-                {t('experiences.headline', { country: countryName })}
-              </h2>
-              <p className="text-gray-400 max-w-xl mx-auto">
-                {t('experiences.subtitle', { brandName })}
-              </p>
-            </div>
+        <SectionLayout size="lg" className="bg-gradient-to-b from-brand-bg to-brand-primary/20">
+          <div className="text-center mb-12">
+            <p className="text-brand-accent text-phi-sm font-semibold uppercase tracking-widest mb-3">
+              {t('experiences.label', { country: countryConfig?.name ?? 'Safari' })}
+            </p>
+            <h2 className="font-display text-phi-2xl md:text-phi-3xl font-bold text-white mb-4">
+              {t('experiences.headline', { country: countryName })}
+            </h2>
+            <p className="text-gray-400 max-w-xl mx-auto">
+              {t('experiences.subtitle', { brandName })}
+            </p>
+          </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              {EXPERIENCE_PACKAGES.map((pkg) => (
-                <div
-                  key={pkg.id}
-                  className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden group hover:-translate-y-1 transition-transform"
-                >
-                  {/* Image placeholder with gradient */}
-                  <div className="h-44 bg-gradient-to-br from-brand-primary to-[#2a0a0f] flex items-center justify-center relative">
-                    <span className="text-6xl opacity-60">
-                      {pkg.type === 'deep_sea_fishing'
-                        ? '🐟'
-                        : pkg.type === 'wildlife_safari'
-                          ? '🦁'
-                          : '🌿'}
+          <div className="grid md:grid-cols-3 gap-phi-5 reveal-stagger">
+            {EXPERIENCE_PACKAGES.map((pkg) => (
+              <GlassCard key={pkg.id} hover padding="none" className="overflow-hidden group">
+                {/* Image placeholder with gradient */}
+                <div className="h-44 bg-gradient-to-br from-brand-primary to-[#2a0a0f] flex items-center justify-center relative">
+                  <span className="text-6xl opacity-60">
+                    {pkg.type === 'deep_sea_fishing'
+                      ? '🐟'
+                      : pkg.type === 'wildlife_safari'
+                        ? '🦁'
+                        : '🌿'}
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
+                </div>
+
+                <div className="p-phi-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-phi-xs font-bold uppercase tracking-widest text-brand-accent bg-brand-accent/10 rounded-full px-3 py-1">
+                      {pkg.duration}
                     </span>
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
+                    <span className="text-phi-xs text-gray-400">{pkg.destination}</span>
                   </div>
-
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-xs font-bold uppercase tracking-widest text-brand-accent bg-brand-accent/10 rounded-full px-3 py-1">
-                        {pkg.duration}
-                      </span>
-                      <span className="text-xs text-gray-400">{pkg.destination}</span>
-                    </div>
-                    <h3 className="font-display text-lg font-bold text-white mb-1">{pkg.name}</h3>
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                      {pkg.highlights[0]} · {pkg.highlights[1]}
-                    </p>
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <div
-                            className="font-bold text-xl"
-                            style={{ color: 'var(--color-accent)' }}
-                          >
-                            {formatPackagePrice(pkg)}
-                          </div>
-                          {pkg.priceNote && (
-                            <div className="text-gray-400 text-xs">{pkg.priceNote}</div>
-                          )}
+                  <h3 className="font-display text-phi-lg font-bold text-white mb-1">{pkg.name}</h3>
+                  <p className="text-gray-400 text-phi-sm mb-4 line-clamp-2">
+                    {pkg.highlights[0]} · {pkg.highlights[1]}
+                  </p>
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <div
+                          className="font-bold text-phi-xl"
+                          style={{ color: 'var(--color-accent)' }}
+                        >
+                          {formatPackagePrice(pkg)}
                         </div>
+                        {pkg.priceNote && (
+                          <div className="text-gray-400 text-phi-xs">{pkg.priceNote}</div>
+                        )}
                       </div>
-                      <Link
-                        href={`/experiences/${pkg.id}`}
-                        className="block w-full text-center text-sm font-bold text-white rounded-xl px-4 py-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
-                        style={{
-                          background:
-                            'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
-                          border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
-                          boxShadow: '0 4px 16px rgb(var(--color-primary-rgb) / 0.3)',
-                        }}
-                      >
-                        {t('experiences.book')}
-                      </Link>
                     </div>
+                    <Link
+                      href={`/experiences/${pkg.id}`}
+                      className="block w-full text-center text-phi-sm font-bold text-white rounded-xl px-4 py-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                      style={{
+                        background:
+                          'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                        border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
+                        boxShadow: '0 4px 16px rgb(var(--color-primary-rgb) / 0.3)',
+                      }}
+                    >
+                      {t('experiences.book')}
+                    </Link>
                   </div>
                 </div>
-              ))}
-            </div>
+              </GlassCard>
+            ))}
           </div>
-        </section>
+        </SectionLayout>
       )}
 
       {/* ── 6. IMPACT PARTNER BANNER ─────────────────────────────────────────── */}
@@ -528,18 +518,20 @@ export default function HomePage() {
       </section>
 
       {/* ── 7. BECOUNTRY EXPANSION ───────────────────────────────────────────── */}
-      <section className="py-24 bg-brand-bg">
-        <div className="max-w-5xl mx-auto px-4 text-center">
+      <SectionLayout size="lg" maxWidth="max-w-5xl" className="bg-brand-bg">
+        <div className="text-center">
           <p
-            className="text-sm font-semibold uppercase tracking-widest mb-4"
+            className="text-phi-sm font-semibold uppercase tracking-widest mb-4"
             style={{ color: 'var(--color-accent)' }}
           >
             {t('network.label')}
           </p>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-phi-2xl md:text-phi-4xl font-bold text-white mb-4">
             {t('expansion.headline', { brandName })}
           </h2>
-          <p className="text-gray-400 text-lg mb-12 max-w-xl mx-auto">{t('expansion.subtitle')}</p>
+          <p className="text-gray-400 text-phi-lg mb-12 max-w-xl mx-auto">
+            {t('expansion.subtitle')}
+          </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
             {BE_COUNTRIES.map((c) => (
@@ -582,7 +574,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 text-phi-sm">
             {BE_COUNTRIES.filter((c) => c.status !== 'live')
               .slice(0, 5)
               .map((c) => c.name)
@@ -590,19 +582,25 @@ export default function HomePage() {
             · and beyond
           </p>
         </div>
-      </section>
+      </SectionLayout>
 
       {/* ── 7. ANCHOR SECTION ────────────────────────────────────────────────── */}
-      <section className="py-24 bg-gradient-to-b from-brand-bg to-gray-900">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+      <SectionLayout
+        size="lg"
+        maxWidth="max-w-4xl"
+        className="bg-gradient-to-b from-brand-bg to-gray-900"
+      >
+        <div className="text-center">
           <div className="text-6xl mb-6">&#127970;</div>
-          <p className="text-gray-400 text-sm font-semibold uppercase tracking-widest mb-3">
+          <p className="text-gray-400 text-phi-sm font-semibold uppercase tracking-widest mb-3">
             {t('anchors.label')}
           </p>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-phi-2xl md:text-phi-4xl font-bold text-white mb-4">
             {t('anchors.headline')}
           </h2>
-          <p className="text-gray-400 text-lg mb-4 max-w-2xl mx-auto">{t('anchors.subtitle')}</p>
+          <p className="text-gray-400 text-phi-lg mb-4 max-w-2xl mx-auto">
+            {t('anchors.subtitle')}
+          </p>
           <p className="text-gray-400 mb-10">
             Post a Path. Find Pioneers. Pay with{' '}
             {countryConfig?.paymentMethods
@@ -636,56 +634,51 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-      </section>
+      </SectionLayout>
 
       {/* ── 10. TESTIMONIALS ─────────────────────────────────────────────────── */}
-      <section className="py-24 bg-gray-900">
-        <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
-          <div className="text-center mb-14">
-            <p
-              className="text-sm font-semibold uppercase tracking-widest mb-3"
-              style={{ color: 'var(--color-accent)' }}
-            >
-              {t('testimonials.label')}
-            </p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
-              {t('testimonials.headline')}
-            </h2>
-          </div>
+      <SectionLayout size="lg" className="bg-gray-900">
+        <div className="text-center mb-14">
+          <p
+            className="text-phi-sm font-semibold uppercase tracking-widest mb-3"
+            style={{ color: 'var(--color-accent)' }}
+          >
+            {t('testimonials.label')}
+          </p>
+          <h2 className="font-display text-phi-2xl md:text-phi-3xl font-bold text-white">
+            {t('testimonials.headline')}
+          </h2>
+        </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t) => (
+        <div className="grid md:grid-cols-3 gap-phi-5 reveal-stagger">
+          {TESTIMONIALS.map((t) => (
+            <GlassCard key={t.name} hover className="flex flex-col">
               <div
-                key={t.name}
-                className="bg-gray-800/40 border border-white/5 rounded-3xl p-7 flex flex-col"
+                className="text-phi-3xl font-display mb-4"
+                style={{ color: 'var(--color-accent)' }}
               >
+                &ldquo;
+              </div>
+              <p className="text-gray-300 text-phi-sm leading-relaxed flex-1 mb-6">{t.quote}</p>
+              <div className="flex items-center gap-3">
                 <div
-                  className="text-4xl font-display mb-4"
-                  style={{ color: 'var(--color-accent)' }}
+                  className={`w-10 h-10 ${t.avatarBg} rounded-full flex items-center justify-center text-white text-phi-xs font-bold`}
                 >
-                  &ldquo;
+                  {t.avatar}
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed flex-1 mb-6">{t.quote}</p>
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-10 h-10 ${t.avatarBg} rounded-full flex items-center justify-center text-white text-xs font-bold`}
-                  >
-                    {t.avatar}
+                <div>
+                  <div className="text-white font-bold text-phi-sm">
+                    {t.name} {t.flag}
                   </div>
-                  <div>
-                    <div className="text-white font-bold text-sm">
-                      {t.name} {t.flag}
-                    </div>
-                    <div className="text-gray-400 text-xs">
-                      {t.from} · {t.type}
-                    </div>
+                  <div className="text-gray-400 text-phi-xs">
+                    {t.from} · {t.type}
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </GlassCard>
+          ))}
         </div>
-      </section>
+      </SectionLayout>
 
       {/* ── 11. PAYMENT TRUST STRIP ──────────────────────────────────────────── */}
       <section className="py-12 bg-brand-bg border-y border-white/5">

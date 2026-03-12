@@ -13,6 +13,8 @@ import {
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { COUNTRIES } from '@/lib/countries'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 const ICON_MAP: Record<string, typeof Briefcase> = { Briefcase, Star, Crown }
 
@@ -45,17 +47,17 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-brand-bg">
-      <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8 py-16">
+      <SectionLayout size="md" ambient>
         {/* Hero */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-brand-primary/30 text-brand-accent px-4 py-2 rounded-full text-sm font-medium mb-4 border border-brand-accent/20">
+          <div className="inline-flex items-center gap-2 bg-brand-primary/30 text-brand-accent px-4 py-2 rounded-full text-phi-sm font-medium mb-4 border border-brand-accent/20">
             <Globe className="w-4 h-4" />
             {t('pricing.badge')}
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl 3xl:text-6xl font-black text-white mb-4">
+          <h1 className="text-phi-2xl sm:text-phi-3xl md:text-phi-4xl 3xl:text-phi-5xl font-black text-white mb-4 gradient-text">
             {t('pricing.title')}
           </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">{t('pricing.subtitle')}</p>
+          <p className="text-phi-xl text-gray-400 max-w-2xl mx-auto">{t('pricing.subtitle')}</p>
 
           {/* Currency selector */}
           <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
@@ -76,20 +78,18 @@ export default function PricingPage() {
         </div>
 
         {/* Plans */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-phi-5 mb-16 reveal-stagger">
           {PRICING_PLANS.map((plan) => {
             const Icon = ICON_MAP[plan.icon] ?? Briefcase
             const planKey = plan.name.toLowerCase() as 'basic' | 'featured' | 'premium'
             const priceDisplay = formatPlanPrice(planKey, currency)
 
             return (
-              <div
+              <GlassCard
                 key={plan.name}
-                className={`bg-gray-900/60 rounded-2xl p-6 shadow-sm border-2 transition-transform hover:-translate-y-1 relative ${
-                  plan.popular
-                    ? 'border-brand-accent/50 shadow-lg shadow-brand-accent/5'
-                    : 'border-brand-primary/30'
-                }`}
+                variant={plan.popular ? 'featured' : 'default'}
+                hover
+                className="relative"
               >
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-accent text-brand-bg text-xs font-bold px-3 py-1 rounded-full">
@@ -107,12 +107,12 @@ export default function PricingPage() {
                   />
                 </div>
 
-                <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-                <p className="text-gray-400 text-sm mt-1 mb-4">{plan.description}</p>
+                <h3 className="text-phi-xl font-bold text-white">{plan.name}</h3>
+                <p className="text-gray-400 text-phi-sm mt-1 mb-4">{plan.description}</p>
 
                 <div className="mb-6">
-                  <div className="text-3xl font-black text-white">{priceDisplay}</div>
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-phi-2xl font-black text-white">{priceDisplay}</div>
+                  <div className="text-gray-400 text-phi-sm">
                     {planKey === 'basic' ? t('pricing.forever') : t('pricing.perMonth')}
                   </div>
                 </div>
@@ -138,19 +138,19 @@ export default function PricingPage() {
                 >
                   {t(PLAN_CTA_KEY[plan.name] ?? 'pricing.postFree')}
                 </Link>
-              </div>
+              </GlassCard>
             )
           })}
         </div>
 
         {/* Agent Commission */}
-        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-accent/20 mb-16">
-          <div className="flex flex-col md:flex-row items-center gap-6">
+        <GlassCard variant="featured" padding="lg" className="mb-16">
+          <div className="flex flex-col md:flex-row items-center gap-phi-5">
             <div className="w-16 h-16 rounded-2xl bg-brand-primary/50 flex items-center justify-center flex-shrink-0">
               <Zap className="w-8 h-8 text-brand-accent" />
             </div>
             <div className="text-center md:text-left">
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-phi-xl font-bold text-white mb-2">
                 {t('pricing.agentTitle', { rate: agentRate })}
               </h2>
               <p className="text-gray-400">{t('pricing.agentDesc', { rate: agentRate })}</p>
@@ -162,12 +162,12 @@ export default function PricingPage() {
               {t('pricing.agentCta')}
             </Link>
           </div>
-        </div>
+        </GlassCard>
 
         {/* Payment Methods */}
-        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-primary/30 mb-16">
+        <GlassCard padding="lg" className="mb-16">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-white">{t('pricing.paymentTitle')}</h2>
+            <h2 className="text-phi-xl font-bold text-white">{t('pricing.paymentTitle')}</h2>
             <p className="text-gray-400 mt-2">{t('pricing.paymentSubtitle')}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
@@ -182,12 +182,12 @@ export default function PricingPage() {
               </div>
             ))}
           </div>
-        </div>
+        </GlassCard>
 
         {/* For Pioneers */}
-        <div className="bg-gradient-to-r from-brand-primary to-brand-primary-light rounded-2xl p-8 text-white text-center border border-brand-accent/20">
+        <GlassCard variant="featured" padding="lg" className="text-center">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-80" />
-          <h2 className="text-2xl font-bold mb-2">{t('pricing.pioneersTitle')}</h2>
+          <h2 className="text-phi-xl font-bold text-white mb-2">{t('pricing.pioneersTitle')}</h2>
           <p className="opacity-90 max-w-lg mx-auto mb-6">{t('pricing.pioneersDesc')}</p>
           <Link
             href="/signup?role=pioneer"
@@ -195,8 +195,8 @@ export default function PricingPage() {
           >
             {t('pricing.pioneersCta')}
           </Link>
-        </div>
-      </div>
+        </GlassCard>
+      </SectionLayout>
     </div>
   )
 }

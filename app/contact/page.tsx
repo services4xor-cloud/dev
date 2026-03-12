@@ -5,6 +5,8 @@ import { Mail, Phone, MapPin, MessageSquare, CheckCircle, Globe } from 'lucide-r
 import { CONTACT, BRAND_NAME } from '@/data/mock'
 import HeroSection from '@/components/HeroSection'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 export default function ContactPage() {
   const { t } = useTranslation()
@@ -44,10 +46,11 @@ export default function ContactPage() {
         title={t('contact.title')}
         subtitle={t('contact.subtitle', { brand: BRAND_NAME, time: CONTACT.responseTime })}
         icon={<MessageSquare className="w-14 h-14 text-brand-accent mx-auto" />}
+        gradientTitle
       />
 
-      <div className="max-w-4xl 3xl:max-w-6xl mx-auto px-4 xl:px-8 py-12">
-        <div className="grid md:grid-cols-3 gap-8">
+      <SectionLayout ambient maxWidth="max-w-4xl 3xl:max-w-6xl">
+        <div className="grid md:grid-cols-3 gap-phi-6">
           {/* Contact info */}
           <div className="space-y-6">
             {[
@@ -93,11 +96,11 @@ export default function ContactPage() {
           </div>
 
           {/* Contact form */}
-          <div className="md:col-span-2 bg-gray-900/60 rounded-2xl p-6 shadow-sm border border-brand-primary/30">
+          <GlassCard padding="lg" className="md:col-span-2">
             {sent ? (
               <div className="text-center py-8">
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">{t('contact.sent')}</h3>
+                <h3 className="text-phi-xl font-bold text-white mb-2">{t('contact.sent')}</h3>
                 <p className="text-gray-400">{t('contact.sentDesc')}</p>
               </div>
             ) : (
@@ -170,9 +173,9 @@ export default function ContactPage() {
                 </button>
               </form>
             )}
-          </div>
+          </GlassCard>
         </div>
-      </div>
+      </SectionLayout>
     </div>
   )
 }

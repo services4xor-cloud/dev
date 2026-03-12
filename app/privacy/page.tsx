@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { BRAND_NAME, CONTACT, LEGAL } from '@/data/mock/config'
 import HeroSection from '@/components/HeroSection'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionLayout from '@/components/ui/SectionLayout'
 
 export const metadata = {
   title: `Privacy Policy — ${BRAND_NAME}`,
@@ -15,13 +17,14 @@ export default function PrivacyPage() {
         subtitle={`Last updated: ${LEGAL.privacyLastUpdated}`}
         icon={
           <div className="w-14 h-14 bg-brand-primary/60 rounded-2xl flex items-center justify-center mx-auto border border-brand-accent/20">
-            <span className="text-2xl">🔒</span>
+            <span className="text-phi-xl">🔒</span>
           </div>
         }
+        gradientTitle
       />
 
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        <div className="bg-gray-900/60 rounded-2xl p-8 shadow-sm border border-brand-primary/30 prose prose-invert prose-sm max-w-none">
+      <SectionLayout ambient maxWidth="max-w-3xl">
+        <GlassCard padding="lg" className="prose prose-invert prose-sm max-w-none">
           <h2>1. Data We Collect</h2>
           <p>When you use {BRAND_NAME}, we collect:</p>
           <ul>
@@ -80,8 +83,8 @@ export default function PrivacyPage() {
               {CONTACT.emailPrivacy}
             </a>
           </p>
-        </div>
-      </div>
+        </GlassCard>
+      </SectionLayout>
     </div>
   )
 }
