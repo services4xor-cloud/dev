@@ -38,6 +38,14 @@ interface Identity {
   interests: string[]
   /** Explorer discovers experiences, Host offers them */
   mode: 'explorer' | 'host'
+  /** Faith/spiritual dimension */
+  faith?: string
+  /** Profession/skill tags */
+  craft: string[]
+  /** Mobility/capability tags */
+  reach: string[]
+  /** Optional ethnic/cultural identity */
+  culture?: string
 }
 
 interface IdentityContextValue {
@@ -69,6 +77,14 @@ interface IdentityContextValue {
   setMode: (mode: 'explorer' | 'host') => void
   /** Set user's city */
   setCity: (city: string) => void
+  /** Set faith/spiritual dimension */
+  setFaith: (faith: string | undefined) => void
+  /** Set profession/skill tags */
+  setCraft: (craft: string[]) => void
+  /** Set mobility/capability tags */
+  setReach: (reach: string[]) => void
+  /** Set ethnic/cultural identity */
+  setCulture: (culture: string | undefined) => void
 }
 
 // ─── Default ────────────────────────────────────────────────────────
@@ -100,6 +116,8 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     languages: [],
     interests: [],
     mode: 'explorer',
+    craft: [],
+    reach: [],
   })
 
   // Hydrate from localStorage on mount, or auto-detect from browser
@@ -123,6 +141,8 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
           if (!parsed.mode) {
             parsed.mode = 'explorer'
           }
+          if (!Array.isArray(parsed.craft)) parsed.craft = []
+          if (!Array.isArray(parsed.reach)) parsed.reach = []
           setIdentity(parsed)
         }
       }
@@ -142,6 +162,8 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
             languages: [],
             interests: [],
             mode: 'explorer',
+            craft: [],
+            reach: [],
           })
         }
       } catch {
@@ -195,6 +217,10 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       interests: prev.interests,
       mode: prev.mode,
       city: prev.city,
+      faith: prev.faith,
+      craft: prev.craft,
+      reach: prev.reach,
+      culture: prev.culture,
     }))
   }, [])
 
@@ -205,6 +231,8 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       languages: [],
       interests: [],
       mode: 'explorer',
+      craft: [],
+      reach: [],
     })
   }, [])
 
@@ -224,13 +252,30 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     setIdentity((prev) => ({ ...prev, city }))
   }, [])
 
+  const setFaith = useCallback((faith: string | undefined) => {
+    setIdentity((prev) => ({ ...prev, faith }))
+  }, [])
+
+  const setCraft = useCallback((craft: string[]) => {
+    setIdentity((prev) => ({ ...prev, craft }))
+  }, [])
+
+  const setReach = useCallback((reach: string[]) => {
+    setIdentity((prev) => ({ ...prev, reach }))
+  }, [])
+
+  const setCulture = useCallback((culture: string | undefined) => {
+    setIdentity((prev) => ({ ...prev, culture }))
+  }, [])
+
   // Localized names — thread brand overrides country brand when active
   const countryName = getLocalizedCountryName(identity.country, identity.language)
   const brandName =
     identity.threadBrandName || BRAND_NAME_OVERRIDES[identity.country] || `Be${countryName}`
 
   // Discovery is complete when user has selected at least one language and one interest
-  const hasCompletedDiscovery = identity.languages.length > 0 && identity.interests.length > 0
+  const hasCompletedDiscovery =
+    identity.languages.length > 0 && identity.interests.length > 0 && identity.craft.length > 0
 
   // Helper to localize any country code in the user's current language
   const localizeCountry = useCallback(
@@ -255,6 +300,10 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         setInterests,
         setMode,
         setCity,
+        setFaith,
+        setCraft,
+        setReach,
+        setCulture,
       }}
     >
       {children}
@@ -276,6 +325,8 @@ export function useIdentity(): IdentityContextValue {
         languages: [],
         interests: [],
         mode: 'explorer' as const,
+        craft: [],
+        reach: [],
       },
       countryName: fallbackName,
       brandName: BRAND_NAME_OVERRIDES[DEFAULT_COUNTRY] || `Be${fallbackName}`,
@@ -290,6 +341,10 @@ export function useIdentity(): IdentityContextValue {
       setInterests: () => {},
       setMode: () => {},
       setCity: () => {},
+      setFaith: () => {},
+      setCraft: () => {},
+      setReach: () => {},
+      setCulture: () => {},
     }
   }
   return ctx
