@@ -1,7 +1,87 @@
 'use client'
 
 import Link from 'next/link'
-import { MEDIA_PATHS, MEDIA_FEATURED_PROJECTS, MEDIA_PLATFORMS } from '@/data/mock'
+// ─── Static content for media vertical ──────────────────────────────────────
+
+const MEDIA_PATHS = [
+  {
+    emoji: '🎬',
+    title: 'Video / Documentary',
+    description:
+      "Documentary films, social media content, corporate video, NGO impact documentaries. Your landscapes deserve the world's screens.",
+    sectors: ['Documentary', 'Corporate', 'NGO', 'Social Media'],
+    earning: 'From $400/project',
+  },
+  {
+    emoji: '📸',
+    title: 'Photography',
+    description:
+      'Wildlife, fashion, events, real estate. Brands pay top dollar for authentic imagery that resonates globally.',
+    sectors: ['Wildlife', 'Fashion', 'Events', 'Real Estate'],
+    earning: 'From $80/day',
+  },
+  {
+    emoji: '✍️',
+    title: 'Content Writing',
+    description:
+      'Travel blogs, brand stories, social media management. Your words can take someone around the world before they book a flight.',
+    sectors: ['Travel Blogs', 'Brand Stories', 'Social Media'],
+    earning: 'From $200/month',
+  },
+  {
+    emoji: '🎵',
+    title: 'Music & Audio',
+    description:
+      'Soundtracks, podcast production, voice-over for brands. The sounds of culture, heard everywhere.',
+    sectors: ['Soundtracks', 'Podcasts', 'Voice-Over'],
+    earning: 'From $150/project',
+  },
+]
+
+const MEDIA_FEATURED_PROJECTS = [
+  {
+    title: 'Documentary Series',
+    client: 'Commissioned by international travel brand',
+    description:
+      'A multi-part documentary capturing wildlife, culture, and conservation stories for global audiences.',
+    needs: ['Videographer', 'Editor', 'Guide-Narrator'],
+    status: 'Seeking Pioneers',
+    flag: '🌍',
+    value: 'From $1,800',
+  },
+  {
+    title: 'Digital Campaign',
+    client: 'Tech Brand Team',
+    description:
+      'Content creators needed for a digital campaign celebrating innovation and everyday heroes.',
+    needs: ['Content Creator x3', 'Social Media Manager'],
+    status: 'Applications Open',
+    flag: '🚀',
+    value: 'From $450/creator',
+  },
+  {
+    title: 'Resort Social Media',
+    client: 'Luxury Lodge',
+    description:
+      'Full-time Instagram and TikTok manager needed for a luxury resort. Remote + occasional on-site.',
+    needs: ['Instagram Manager', 'TikTok Creator'],
+    status: 'Urgent',
+    flag: '🌊',
+    value: 'From $650/month',
+  },
+]
+
+const MEDIA_PLATFORMS = [
+  { name: 'Instagram', emoji: '📸' },
+  { name: 'TikTok', emoji: '🎵' },
+  { name: 'Facebook', emoji: '👥' },
+  { name: 'Twitter/X', emoji: '✖️' },
+  { name: 'LinkedIn', emoji: '💼' },
+  { name: 'YouTube', emoji: '▶️' },
+  { name: 'WhatsApp', emoji: '💬' },
+  { name: 'Pinterest', emoji: '📌' },
+  { name: 'Telegram', emoji: '✈️' },
+]
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
 

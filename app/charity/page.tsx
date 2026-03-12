@@ -2,15 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import {
-  IMPACT_STATS,
-  PILLARS,
-  STORIES,
-  PARTNER_TYPES,
-  BRAND_NAME,
-  LEGAL,
-  IMPACT_PARTNER,
-} from '@/data/mock'
+import { IMPACT_STATS, PILLARS, STORIES, PARTNER_TYPES } from '@/data/mock'
+import { BRAND_NAME, LEGAL, IMPACT_PARTNER } from '@/lib/platform-config'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'

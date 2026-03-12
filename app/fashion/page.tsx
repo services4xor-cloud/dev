@@ -1,7 +1,82 @@
 'use client'
 
 import Link from 'next/link'
-import { FASHION_PATHS, FASHION_PARTNER_ANCHORS, FASHION_PROTECTIONS } from '@/data/mock'
+// ─── Static content for fashion vertical ────────────────────────────────────
+
+const FASHION_PATHS = [
+  {
+    id: 1,
+    title: 'Catalog Model for Tourism Board',
+    type: 'Model',
+    rate: 'From $80/day',
+    description:
+      'Represent your country in international tourism campaigns. Professional photoshoots in iconic landscapes.',
+    tags: ['Photoshoot', 'Tourism', 'Commercial'],
+    emoji: '👗',
+  },
+  {
+    id: 2,
+    title: 'Textile Designer at Fashion Week',
+    type: 'Designer',
+    rate: 'From $450/month',
+    description:
+      'Sketch to stitch. Design collections featuring authentic cultural prints for fashion showcases.',
+    tags: ['Textile', 'Cultural Prints', 'Fashion Week'],
+    emoji: '✂️',
+  },
+  {
+    id: 3,
+    title: 'Brand Photographer (Remote Possible)',
+    type: 'Creative',
+    rate: 'From $600/month',
+    description:
+      'Capture brand stories for fashion houses. Portfolio building, creative direction, remote-friendly.',
+    tags: ['Photography', 'Branding', 'Remote'],
+    emoji: '📸',
+  },
+]
+
+const FASHION_PARTNER_ANCHORS = [
+  {
+    name: 'Tourism Boards',
+    focus: 'International tourism campaigns targeting global markets',
+    logo: '🌍',
+  },
+  {
+    name: 'Fashion Week Events',
+    focus: 'Premier fashion showcases — designers to global stage',
+    logo: '👑',
+  },
+  {
+    name: 'Local Fabric Producers',
+    focus: 'Authentic cultural print production and distribution',
+    logo: '🎨',
+  },
+]
+
+const FASHION_PROTECTIONS = [
+  {
+    icon: '📄',
+    title: 'Contracts First',
+    description: 'All contracts reviewed by Pioneer before any shoot begins. No surprises.',
+  },
+  {
+    icon: '💰',
+    title: 'Pioneer Sets Rates',
+    description: 'You name your rate. Anchor matches it. No exploitation, no race to the bottom.',
+  },
+  {
+    icon: '🛡️',
+    title: 'Chaperone Service',
+    description:
+      'A BeNetwork chaperone available for every shoot. Never alone if you prefer not to be.',
+  },
+  {
+    icon: '✅',
+    title: 'All Work Compensated',
+    description: 'No unpaid "test" shoots. Every call, every fitting, every shoot is paid work.',
+  },
+]
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
 

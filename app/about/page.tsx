@@ -21,9 +21,8 @@ import {
   ABOUT_PAYMENT_METHODS as PAYMENT_METHODS,
   ABOUT_STATS as STATS,
   ABOUT_VOCAB_ITEMS as VOCAB_ITEMS,
-  BRAND_NAME,
-  IMPACT_PARTNER,
 } from '@/data/mock'
+import { BRAND_NAME, IMPACT_PARTNER } from '@/lib/platform-config'
 
 export default function AboutPage() {
   const { completeAction } = useJourney()

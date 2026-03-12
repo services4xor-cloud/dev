@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { FOOTER_COLUMNS } from '@/lib/nav-structure'
-import { BRAND_NAME, CONTACT, LEGAL } from '@/data/mock'
+import { BRAND_NAME, CONTACT, LEGAL } from '@/lib/platform-config'
 import { VOCAB } from '@/lib/vocabulary'
 
 // ── Component ──────────────────────────────────────────────────────

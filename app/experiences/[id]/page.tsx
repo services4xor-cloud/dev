@@ -18,7 +18,7 @@ import {
 import { SAFARI_PACKAGES, getPackageById, formatPackagePrice } from '@/lib/safari-packages'
 import { VOCAB } from '@/lib/vocabulary'
 import MpesaModal from '@/components/MpesaModal'
-import { IMPACT_PARTNER } from '@/data/mock'
+import { IMPACT_PARTNER } from '@/lib/platform-config'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'

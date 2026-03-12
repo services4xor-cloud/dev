@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Mail, Phone, MapPin, MessageSquare, CheckCircle, Globe } from 'lucide-react'
-import { CONTACT, BRAND_NAME } from '@/data/mock'
+import { CONTACT, BRAND_NAME } from '@/lib/platform-config'
 import HeroSection from '@/components/HeroSection'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import GlassCard from '@/components/ui/GlassCard'

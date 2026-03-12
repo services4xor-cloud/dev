@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
 import { LANGUAGE_REGISTRY, COUNTRY_OPTIONS, type LanguageCode } from '@/lib/country-selector'
 import { getCategoriesByIds } from '@/lib/exchange-categories'
-import { MOCK_CHAPTERS, MOCK_CURRENT_PIONEER } from '@/data/mock'
-import { MOCK_VENTURE_PATHS } from '@/data/mock'
+// Real data fetched from API routes (chapters, paths, profile)
 import {
   FAITH_OPTIONS,
   REACH_OPTIONS,
@@ -79,12 +78,63 @@ export default function MePage() {
   const [activeTab, setActiveTab] = useState<TabId>('Dashboard')
   const [mounted, setMounted] = useState(false)
 
+  // Real data from API
+  const [dbChapters, setDbChapters] = useState<
+    Array<{
+      id: string
+      pathId: string
+      status: string
+      createdAt: string
+      path?: { title: string; company: string }
+    }>
+  >([])
+  const [dbPaths, setDbPaths] = useState<
+    Array<{
+      id: string
+      title: string
+      company: string
+      anchorName?: string
+      location: string
+      sector: string | null
+      skills: string[]
+      createdAt: string
+    }>
+  >([])
+  const [userProfile, setUserProfile] = useState<{
+    name?: string
+    referralCode?: string
+  } | null>(null)
+
   // Form state for Profile tab
   const [editCity, setEditCity] = useState(identity.city ?? '')
   const [editBio, setEditBio] = useState('')
 
   useEffect(() => {
     setMounted(true)
+
+    // Fetch chapters (user's exchanges) — requires auth
+    fetch('/api/chapters')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success && data.data) setDbChapters(data.data)
+      })
+      .catch(() => {})
+
+    // Fetch paths for host offerings tab
+    fetch('/api/paths?limit=20&status=OPEN')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.paths) setDbPaths(data.paths)
+      })
+      .catch(() => {})
+
+    // Fetch user profile
+    fetch('/api/profile')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success && data.data) setUserProfile(data.data)
+      })
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -129,7 +179,11 @@ export default function MePage() {
   const allTabs = [...modeTabs, ...SHARED_TABS]
   const userInterests = getCategoriesByIds(identity.interests)
   const flag = getCountryFlag(identity.country)
-  const initials = MOCK_CURRENT_PIONEER.name
+  // Derive display name from profile or identity
+  const displayName = userProfile?.name || identity.city || countryName || 'Pioneer'
+  const referralCode =
+    userProfile?.referralCode || `BE-${displayName.replace(/\s+/g, '').toUpperCase().slice(0, 6)}`
+  const initials = displayName
     .split(' ')
     .map((n) => n[0])
     .join('')
@@ -173,28 +227,26 @@ export default function MePage() {
   }
 
   function renderExchanges() {
-    if (MOCK_CHAPTERS.length === 0) {
+    if (dbChapters.length === 0) {
       return (
         <GlassCard variant="subtle" padding="lg">
           <p className="text-center text-white/60">No exchanges yet</p>
+          <p className="text-phi-sm text-white/40 mt-phi-1 text-center">
+            Open a Chapter on a Path to start your journey
+          </p>
         </GlassCard>
       )
     }
     return (
       <div className="space-y-phi-3">
-        {MOCK_CHAPTERS.map((ch) => (
+        {dbChapters.map((ch) => (
           <GlassCard key={ch.id} hover padding="md">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-white font-medium">{ch.pathTitle}</h3>
-                <p className="text-phi-sm text-white/50">{ch.anchorName}</p>
+                <h3 className="text-white font-medium">{ch.path?.title ?? 'Path'}</h3>
+                <p className="text-phi-sm text-white/50">{ch.path?.company ?? 'Unknown Anchor'}</p>
               </div>
-              <div className="flex items-center gap-phi-3">
-                <span className="text-phi-sm text-brand-accent font-medium">
-                  {ch.matchScore}% match
-                </span>
-                <StatusBadge status={ch.status} />
-              </div>
+              <StatusBadge status={ch.status} />
             </div>
           </GlassCard>
         ))}
@@ -212,9 +264,7 @@ export default function MePage() {
         <GlassCard variant="subtle" padding="md">
           <p className="text-phi-sm text-white/60">
             Your referral code:{' '}
-            <span className="text-brand-accent font-mono font-medium">
-              {MOCK_CURRENT_PIONEER.referralCode}
-            </span>
+            <span className="text-brand-accent font-mono font-medium">{referralCode}</span>
           </p>
         </GlassCard>
       </div>
@@ -222,25 +272,49 @@ export default function MePage() {
   }
 
   function renderOfferings() {
-    const hostPaths = MOCK_VENTURE_PATHS.slice(0, 4)
+    if (dbPaths.length === 0) {
+      return (
+        <GlassCard variant="subtle" padding="lg">
+          <div className="text-center py-phi-7">
+            <p className="text-phi-2xl mb-phi-2">📋</p>
+            <p className="text-white/60">No offerings yet</p>
+            <p className="text-phi-sm text-white/40 mt-phi-1">Post a Path to start hosting</p>
+          </div>
+        </GlassCard>
+      )
+    }
     return (
       <div className="space-y-phi-3">
-        {hostPaths.map((p) => (
-          <GlassCard key={p.id} hover padding="md">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-phi-3">
-                <span className="text-xl">{p.icon}</span>
-                <div>
-                  <h3 className="text-white font-medium">{p.title}</h3>
-                  <p className="text-phi-sm text-white/50">
-                    {p.anchorName} &middot; {p.location}
-                  </p>
+        {dbPaths.slice(0, 6).map((p) => {
+          const icon =
+            p.sector === 'tech'
+              ? '💻'
+              : p.sector === 'healthcare'
+                ? '🏥'
+                : p.sector === 'safari'
+                  ? '🦁'
+                  : p.sector === 'hospitality'
+                    ? '🏨'
+                    : p.sector === 'finance'
+                      ? '💰'
+                      : '📡'
+          return (
+            <GlassCard key={p.id} hover padding="md">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-phi-3">
+                  <span className="text-xl">{icon}</span>
+                  <div>
+                    <h3 className="text-white font-medium">{p.title}</h3>
+                    <p className="text-phi-sm text-white/50">
+                      {p.anchorName || p.company} &middot; {p.location}
+                    </p>
+                  </div>
                 </div>
+                <span className="text-phi-sm text-white/40">{p.skills.slice(0, 2).join(', ')}</span>
               </div>
-              <span className="text-phi-sm text-white/40">{p.posted}</span>
-            </div>
-          </GlassCard>
-        ))}
+            </GlassCard>
+          )
+        })}
       </div>
     )
   }
@@ -562,9 +636,7 @@ export default function MePage() {
           </div>
 
           {/* Name */}
-          <h1 className="text-phi-2xl font-bold text-white mb-phi-1">
-            {MOCK_CURRENT_PIONEER.name}
-          </h1>
+          <h1 className="text-phi-2xl font-bold text-white mb-phi-1">{displayName}</h1>
 
           {/* Location */}
           <p className="text-white/60 mb-phi-2">

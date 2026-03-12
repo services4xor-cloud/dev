@@ -13,7 +13,7 @@ import {
   Landmark,
   Lock,
 } from 'lucide-react'
-import { CONTACT, BRAND_NAME, LEGAL, IMPACT_PARTNER } from '@/data/mock'
+import { CONTACT, BRAND_NAME, LEGAL, IMPACT_PARTNER } from '@/lib/platform-config'
 import { DIVISIONS, OPERATING_COUNTRIES, SHARE_BLOCKS } from '@/data/mock'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import GlassCard from '@/components/ui/GlassCard'

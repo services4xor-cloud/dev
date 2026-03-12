@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { REFERRAL, REFERRAL_BONUS, BRAND_NAME } from '@/data/mock'
+import { REFERRAL, REFERRAL_BONUS, BRAND_NAME } from '@/lib/platform-config'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
 
