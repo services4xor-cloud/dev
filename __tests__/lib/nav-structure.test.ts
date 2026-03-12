@@ -29,11 +29,11 @@ import {
 } from '@/lib/nav-structure'
 
 describe('Nav Structure — public links (logged out)', () => {
-  it('exports PUBLIC_NAV_LINKS with about and pricing', () => {
+  it('exports PUBLIC_NAV_LINKS with core public routes', () => {
     expect(PUBLIC_NAV_LINKS.length).toBeGreaterThanOrEqual(2)
     const hrefs = PUBLIC_NAV_LINKS.map((l) => l.href)
     expect(hrefs).toContain('/about')
-    expect(hrefs).toContain('/pricing')
+    expect(hrefs).toContain('/exchange')
   })
 
   it('every public link has href, label, icon, and aria', () => {
@@ -50,8 +50,8 @@ describe('Nav Structure — main links (logged in)', () => {
   it('exports MAIN_NAV_LINKS with 4 core routes', () => {
     expect(MAIN_NAV_LINKS.length).toBe(4)
     const hrefs = MAIN_NAV_LINKS.map((l) => l.href)
-    expect(hrefs).toContain('/world')
     expect(hrefs).toContain('/exchange')
+    expect(hrefs).toContain('/compass')
     expect(hrefs).toContain('/messages')
     expect(hrefs).toContain('/me')
   })
@@ -124,8 +124,8 @@ describe('Nav Structure — legacy exports exist', () => {
 })
 
 describe('Nav Structure — footer columns', () => {
-  it('exports FOOTER_COLUMNS with 4 columns', () => {
-    expect(FOOTER_COLUMNS.length).toBe(4)
+  it('exports FOOTER_COLUMNS with 3 columns', () => {
+    expect(FOOTER_COLUMNS.length).toBe(3)
   })
 
   it('each column has title and links', () => {
@@ -135,11 +135,14 @@ describe('Nav Structure — footer columns', () => {
     }
   })
 
-  it('includes referral and media links', () => {
+  it('includes essential page links', () => {
     const allHrefs = FOOTER_COLUMNS.flatMap((c) => c.links.map((l) => l.href))
-    expect(allHrefs).toContain('/referral')
-    expect(allHrefs).toContain('/media')
-    expect(allHrefs).toContain('/fashion')
+    // Core pages always in footer
+    expect(allHrefs).toContain('/about')
+    expect(allHrefs).toContain('/contact')
+    expect(allHrefs).toContain('/pricing')
+    // Note: referral/media/fashion pages exist but were removed from footer nav
+    // They can be re-added when sector-specific Gates are launched
   })
 
   it('FOOTER_LINKS is flat array of all column links', () => {
