@@ -113,7 +113,9 @@ function emailHeader(brandName = 'BeKenya', tagline = 'Find where you belong. Go
   </div>`
 }
 
-function emailFooter(unsubscribeText = 'You received this because you signed up at bekenya.com.'): string {
+function emailFooter(
+  unsubscribeText = 'You received this because you signed up at bekenya.com.'
+): string {
   return `<div class="footer">
     <p class="footer-brand">BeKenya</p>
     <p class="footer-links">
@@ -258,9 +260,11 @@ export const EMAIL_TEMPLATES: Record<
           ${data.status === 'accepted' ? 'Accepted!' : data.status === 'reviewing' ? 'Under Review' : 'Update'}
         </div>
         <h1 class="h1">
-          ${data.status === 'accepted'
-            ? `Congratulations, ${data.pioneerName || 'Pioneer'}!`
-            : `Update on your chapter, ${data.pioneerName || 'Pioneer'}`}
+          ${
+            data.status === 'accepted'
+              ? `Congratulations, ${data.pioneerName || 'Pioneer'}!`
+              : `Update on your chapter, ${data.pioneerName || 'Pioneer'}`
+          }
         </h1>
         <p class="p">
           ${data.anchorName || 'The Anchor'} has reviewed your chapter for
@@ -453,18 +457,26 @@ export const EMAIL_TEMPLATES: Record<
           </div>
         </div>
 
-        ${data.topPathTitle ? `
+        ${
+          data.topPathTitle
+            ? `
         <div class="info-card">
           <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">Top Match This Week</p>
           <p style="font-size:16px;font-weight:700;color:#111827;margin:0 0 4px;">${data.topPathTitle}</p>
           <p style="font-size:13px;color:#5C0A14;margin:0;">${data.topPathAnchor || ''} &bull; ${data.topPathScore || '—'}% match</p>
-        </div>` : ''}
+        </div>`
+            : ''
+        }
 
-        ${data.platformJobCount ? `
+        ${
+          data.platformJobCount
+            ? `
         <p class="p">
           <span class="highlight">${data.platformJobCount}</span> new opportunities were posted on the platform this week.
           Your Compass is continuously scanning for the best matches.
-        </p>` : ''}
+        </p>`
+            : ''
+        }
 
         <div class="cta-block">
           <a href="${data.digestUrl || 'https://bekenya.com/compass'}" class="cta-btn">
@@ -598,14 +610,8 @@ export async function sendEmail(
 
   // Development fallback — log to console when Resend key not set
   if (!process.env.RESEND_API_KEY) {
-    console.log('─────────────────────────────────────────────')
-    console.log('[Email MOCK] Would send:')
-    console.log('  To:      ', to)
-    console.log('  From:    ', from)
-    console.log('  Template:', template)
-    console.log('  Subject: ', subject)
-    console.log('  Data:    ', data)
-    console.log('─────────────────────────────────────────────')
+    // eslint-disable-next-line no-console
+    console.log(`[Email MOCK] ${template} → ${to} | Subject: ${subject}`)
     return {
       success: true,
       id: `mock-${Date.now()}`,
@@ -635,9 +641,8 @@ export async function sendEmail(
       return { success: false, error: `Resend API error: ${res.status}` }
     }
 
-    const result = await res.json() as { id?: string }
+    const result = (await res.json()) as { id?: string }
     return { success: true, id: result.id, mock: false }
-
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown send error'
     console.error('[Email] Send failed:', message)
@@ -765,10 +770,7 @@ export async function sendDonationReceipt(
 }
 
 /** Send password reset email */
-export async function sendPasswordReset(
-  email: string,
-  resetToken: string
-): Promise<EmailResult> {
+export async function sendPasswordReset(email: string, resetToken: string): Promise<EmailResult> {
   const resetUrl = `https://bekenya.com/auth/reset?token=${resetToken}`
   return sendEmail(email, 'password_reset', { email, resetUrl })
 }
