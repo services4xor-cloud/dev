@@ -12,8 +12,8 @@ Run at the start of a planning session, when reviewing strategy, or when the use
 ## Vision Stack
 
 ```
-Mission: Reverse colonial economic flows — people in the Global South
-         move, work, and thrive on their own terms.
+Mission: Identity-first life-routing for everyone. People define who
+         they are and connect to paths, people, and experiences that match.
 
 Scale:   Be[Country] → Be[Tribe] → Be[Location]
          One codebase, infinite identities.

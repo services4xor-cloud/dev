@@ -7,7 +7,7 @@
 
 ## Mission
 
-Reverse colonial economic flows. Every Pioneer placed, every safari booked, every KES 50 to UTAMADUNI is structural change.
+Identity-first life-routing for everyone. Every Pioneer placed, every experience booked, every connection made is structural change.
 
 **5-year vision:** 1M Pioneers routed. 50 countries. $50M+ value to African communities.
 

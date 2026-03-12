@@ -12,7 +12,7 @@
 
 Be[Country] is an **identity-first life-routing platform**. Not a job board. A compass.
 
-**The deeper mission:** Reverse colonial economic flows. Empower people in the Global South to move, contribute, and thrive — through open trade, fair compensation, and direct connections.
+**The deeper mission:** Connect everyone to paths, people, and experiences that match their identity — through open trade, fair compensation, and direct connections.
 
 **Scale vision:** Be[Country] → Be[Tribe] → Be[Location]. One codebase serves countries (BeKenya), tribes (BeMaasai), and locations (BeNairobi). Architecture supports all three levels from day one. Currently live as **BeKenya**.
 

@@ -291,15 +291,15 @@ const CONTENT: Record<string, ContentDict> = {
     'about.badge': 'Identity-first life-routing platform',
     'about.heroTitle': 'Work should be for {accent}everyone.{/accent}',
     'about.heroDesc':
-      'BeNetwork reverses colonial economic flows through open trade, fair compensation, and direct country-to-country connections. No intermediaries. No gatekeepers.',
+      'BeNetwork is an identity-first life-routing platform for everyone — connecting people to paths, opportunities, and experiences through open trade, fair compensation, and direct connections.',
     'about.startCompass': 'Start My Compass',
     'about.postPath': 'Post a Path',
     'about.mission': 'Our Mission',
-    'about.missionTitle': 'Reverse the flow. {accent}Build the corridor.{/accent}',
+    'about.missionTitle': 'Define who you are. {accent}Find where you belong.{/accent}',
     'about.missionDesc':
-      'BeNetwork reverses colonial economic flows. People in the Global South move, work, and thrive on their own terms.',
+      'BeNetwork connects everyone to paths, people, and experiences that match their identity. Country, tribe, language, craft, faith — you define it, we route it.',
     'about.missionP1':
-      'For centuries, value has flowed one way — out of Africa, out of the Global South, into the hands of intermediaries and gatekeepers. BeNetwork is the corridor in the opposite direction.',
+      'People everywhere deserve direct access to opportunities that match who they are. BeNetwork removes intermediaries and gatekeepers, building corridors that connect identities across 50+ countries.',
     'about.missionP2':
       'We connect Pioneers directly with Anchors across 50+ countries. Payments flow through M-Pesa, Flutterwave, and local rails — not through foreign banks. Routes are built on real visa corridors, not wishful thinking.',
     'about.howItWorks': 'How It Works',
@@ -1266,13 +1266,13 @@ const CONTENT: Record<string, ContentDict> = {
     'about.badge': 'Identitäts-basierte Lebensrouting-Plattform',
     'about.heroTitle': 'Arbeit sollte für {accent}alle{/accent} sein.',
     'about.heroDesc':
-      'BeNetwork kehrt koloniale Wirtschaftsströme um — durch offenen Handel, faire Vergütung und direkte Verbindungen zwischen Ländern.',
+      'BeNetwork ist eine identitätsbasierte Lebensrouting-Plattform für alle — sie verbindet Menschen mit Pfaden, Möglichkeiten und Erfahrungen durch offenen Handel, faire Vergütung und direkte Verbindungen.',
     'about.startCompass': 'Meinen Kompass starten',
     'about.postPath': 'Einen Pfad posten',
     'about.mission': 'Unsere Mission',
-    'about.missionTitle': 'Den Strom umkehren. {accent}Den Korridor bauen.{/accent}',
+    'about.missionTitle': 'Definiere wer du bist. {accent}Finde wohin du gehörst.{/accent}',
     'about.missionP1':
-      'Seit Jahrhunderten fließt der Wert in eine Richtung — aus Afrika, aus dem Globalen Süden, in die Hände von Vermittlern und Torwächtern. BeNetwork ist der Korridor in die andere Richtung.',
+      'Jeder Mensch verdient direkten Zugang zu Möglichkeiten, die zu seiner Identität passen. BeNetwork entfernt Vermittler und Torwächter und baut Korridore, die Identitäten in 50+ Ländern verbinden.',
     'about.missionP2':
       'Wir verbinden Pioniere direkt mit Ankern in 50+ Ländern. Zahlungen fließen über M-Pesa, Flutterwave und lokale Kanäle — nicht über ausländische Banken.',
     'about.values': 'Unsere Werte',
@@ -2171,13 +2171,13 @@ const CONTENT: Record<string, ContentDict> = {
     'about.badge': 'Jukwaa la kuongoza maisha kwa utambulisho',
     'about.heroTitle': 'Kazi inapaswa kuwa ya {accent}kila mtu.{/accent}',
     'about.heroDesc':
-      'BeNetwork inabadilisha mtiririko wa kiuchumi wa kikoloni kupitia biashara huru, malipo ya haki, na uhusiano wa moja kwa moja kati ya nchi.',
+      'BeNetwork ni jukwaa la kuongoza maisha kwa utambulisho kwa kila mtu — linaunganisha watu na njia, fursa, na uzoefu kupitia biashara huru, malipo ya haki, na uhusiano wa moja kwa moja.',
     'about.startCompass': 'Anza Dira Yangu',
     'about.postPath': 'Weka Njia',
     'about.mission': 'Misheni Yetu',
-    'about.missionTitle': 'Badilisha mtiririko. {accent}Jenga korrido.{/accent}',
+    'about.missionTitle': 'Jieleze wewe ni nani. {accent}Pata mahali unapohusika.{/accent}',
     'about.missionP1':
-      'Kwa karne nyingi, thamani imekuwa ikitiririka upande mmoja — kutoka Afrika, kutoka Kusini mwa Ulimwengu. BeNetwork ni korrido katika upande wa pili.',
+      'Kila mtu anastahili kupata fursa zinazofanana na utambulisho wao moja kwa moja. BeNetwork inaondoa wasuluhishi na walinzi, na kujenga korido zinazounganisha utambulisho katika nchi 50+.',
     'about.missionP2':
       'Tunaunganisha Waanzilishi moja kwa moja na Nanga katika nchi 50+. Malipo yanapitia M-Pesa, Flutterwave, na njia za ndani.',
     'about.values': 'Maadili Yetu',
