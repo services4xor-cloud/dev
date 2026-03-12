@@ -10,6 +10,12 @@ import {
   MOCK_THREADS,
   COUNTRY_GREETINGS,
   ECO_TOURISM_OFFERINGS,
+  MOCK_ALL_ANCHORS,
+  MOCK_ALL_PATHS,
+  MOCK_ALL_PIONEERS,
+  MOCK_RECENT_PIONEERS,
+  MOCK_RECENT_CHAPTERS,
+  MOCK_CHANNEL_MESSAGES,
 } from '@/data/mock'
 
 const TARGET_COUNTRIES = ['KE', 'DE', 'CH', 'TH']
@@ -109,5 +115,83 @@ describe('ECO_TOURISM_OFFERINGS country coverage', () => {
       expect(offering.priceUSD).toBeGreaterThan(0)
       expect(offering.impactNote).toBeTruthy()
     })
+  })
+})
+
+// ─── Cross-reference consistency ─────────────────────────────────────
+
+describe('Admin data cross-references', () => {
+  it('all pioneer names in RECENT_CHAPTERS exist in ALL_PIONEERS', () => {
+    const pioneerNames = new Set(MOCK_ALL_PIONEERS.map((p) => p.name))
+    MOCK_RECENT_CHAPTERS.forEach((ch) => {
+      expect(pioneerNames.has(ch.pioneer)).toBe(true)
+    })
+  })
+
+  it('all pioneer names in RECENT_PIONEERS exist in ALL_PIONEERS', () => {
+    const allNames = new Set(MOCK_ALL_PIONEERS.map((p) => p.name))
+    MOCK_RECENT_PIONEERS.forEach((rp) => {
+      expect(allNames.has(rp.name)).toBe(true)
+    })
+  })
+
+  it('all anchors in RECENT_CHAPTERS exist in ALL_ANCHORS', () => {
+    const anchorNames = new Set(MOCK_ALL_ANCHORS.map((a) => a.name))
+    MOCK_RECENT_CHAPTERS.forEach((ch) => {
+      expect(anchorNames.has(ch.anchor)).toBe(true)
+    })
+  })
+
+  it('all anchors in ALL_PATHS exist in ALL_ANCHORS (or known short forms)', () => {
+    const anchorNames = new Set(MOCK_ALL_ANCHORS.map((a) => a.name))
+    // KCC is a known abbreviation for Kenyatta Conference Centre
+    const knownShortForms = new Set(['KCC'])
+    MOCK_ALL_PATHS.forEach((path) => {
+      const exists = anchorNames.has(path.anchor) || knownShortForms.has(path.anchor)
+      expect(exists).toBe(true)
+    })
+  })
+
+  it('no duplicate IDs in ALL_PIONEERS', () => {
+    const ids = MOCK_ALL_PIONEERS.map((p) => p.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('no duplicate IDs in ALL_ANCHORS', () => {
+    const ids = MOCK_ALL_ANCHORS.map((a) => a.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('no duplicate IDs in ALL_PATHS', () => {
+    const ids = MOCK_ALL_PATHS.map((p) => p.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('no duplicate IDs in VENTURE_PATHS', () => {
+    const ids = MOCK_VENTURE_PATHS.map((p) => p.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+})
+
+describe('Messages data quality', () => {
+  it('every channel has at least 2 messages', () => {
+    for (const [channel, messages] of Object.entries(MOCK_CHANNEL_MESSAGES)) {
+      expect(messages.length).toBeGreaterThanOrEqual(2)
+    }
+  })
+
+  it('no duplicate message IDs within a channel', () => {
+    for (const [, messages] of Object.entries(MOCK_CHANNEL_MESSAGES)) {
+      const ids = messages.map((m) => m.id)
+      expect(new Set(ids).size).toBe(ids.length)
+    }
+  })
+
+  it('message authors have non-empty names', () => {
+    for (const [, messages] of Object.entries(MOCK_CHANNEL_MESSAGES)) {
+      messages.forEach((msg) => {
+        expect(msg.author.trim()).not.toBe('')
+      })
+    }
   })
 })

@@ -69,6 +69,22 @@ export const MOCK_ALL_ANCHORS: Anchor[] = [
     totalChapters: 5,
     verified: false,
   },
+  {
+    id: 'a7',
+    name: 'Kenyatta Conference Centre',
+    country: 'KE',
+    openPaths: 2,
+    totalChapters: 3,
+    verified: true,
+  },
+  {
+    id: 'a8',
+    name: 'Safari & Wild Media',
+    country: 'KE',
+    openPaths: 3,
+    totalChapters: 7,
+    verified: true,
+  },
 ]
 
 // ─── All Paths (Admin view) ──────────────────────────────────────────────────
@@ -127,7 +143,7 @@ export const MOCK_ALL_PATHS: AdminPath[] = [
   {
     id: 'pt6',
     title: 'Security Operations Lead',
-    anchor: 'KCC',
+    anchor: 'Kenyatta Conference Centre',
     type: 'Guardian',
     chapters: 3,
     matchAvg: 65,
