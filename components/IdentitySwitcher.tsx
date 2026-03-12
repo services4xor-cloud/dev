@@ -212,7 +212,7 @@ export default function IdentitySwitcher({
           <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-brand-accent/10" />
           <div className="relative px-4 pt-4 pb-3">
             <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2">
-              Active Identity
+              {t('nav.activeIdentity')}
             </p>
             <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/5 border border-brand-accent/20">
               <span className="text-xl shrink-0">{currentOpt.flag}</span>
@@ -231,7 +231,7 @@ export default function IdentitySwitcher({
                 </div>
               </div>
               <div className="flex flex-col items-center">
-                <span className="text-[9px] text-green-400/70 font-medium">Active</span>
+                <span className="text-[9px] text-green-400/70 font-medium">{t('nav.active')}</span>
                 <span className="w-2 h-2 rounded-full bg-green-400/70 mt-0.5" />
               </div>
             </div>
@@ -242,7 +242,7 @@ export default function IdentitySwitcher({
       {/* ── Ranked countries ──────────────────────────── */}
       <div className="px-4 pb-3">
         <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2 px-1">
-          Switch Identity
+          {t('nav.switchIdentity')}
         </p>
         <div className="space-y-0.5">
           {ranked.map((c) => (
@@ -327,14 +327,14 @@ export default function IdentitySwitcher({
           onClick={onClose}
           className="text-[11px] font-medium text-white/30 hover:text-brand-accent transition-colors"
         >
-          Browse communities
+          {t('nav.browseCommunitiesFull')}
         </Link>
         <Link
           href="/me"
           onClick={onClose}
           className="text-[11px] font-medium text-white/30 hover:text-brand-accent transition-colors"
         >
-          Edit identity
+          {t('nav.editIdentity')}
         </Link>
       </div>
     </div>

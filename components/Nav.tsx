@@ -8,6 +8,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { Menu, X, LogIn, ArrowRight, LogOut, Bell, Target } from 'lucide-react'
 import { PUBLIC_NAV_LINKS, MAIN_NAV_LINKS, LOGIN_LINK } from '@/lib/nav-structure'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import DynamicLogo from '@/components/DynamicLogo'
@@ -23,6 +24,7 @@ export default function Nav() {
   const focusRef = useRef<HTMLDivElement>(null)
 
   const { identity, hasCompletedDiscovery, brandName, setFocusTopic } = useIdentity()
+  const { t } = useTranslation()
   const currentCountry = COUNTRY_OPTIONS.find((c) => c.code === identity.country)
   const instanceCountry = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase()
   const detectedLocation = identity.detectedLocation
@@ -118,7 +120,7 @@ export default function Nav() {
     <header>
       {/* Skip link */}
       <a href="#main-content" className="skip-to-content focus:not-sr-only">
-        Skip to main content
+        {t('nav.skipToContent')}
       </a>
 
       <nav
@@ -235,8 +237,8 @@ export default function Nav() {
                   <Target className="w-3.5 h-3.5" />
                   {identity.focusTopic
                     ? (EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)?.label ??
-                      'Focus')
-                    : 'Focus'}
+                      t('home.focus'))
+                    : t('home.focus')}
                 </button>
                 {focusOpen && (
                   <div className="absolute right-0 mt-2 w-56 rounded-xl border border-white/10 bg-brand-surface/95 backdrop-blur-lg shadow-xl py-2 z-50">
@@ -249,7 +251,7 @@ export default function Nav() {
                         }}
                         className="w-full px-4 py-2 text-left text-phi-sm text-white/60 hover:bg-white/5 hover:text-white transition-all"
                       >
-                        ✕ Clear Focus
+                        ✕ {t('nav.clearFocus')}
                       </button>
                     )}
                     {EXCHANGE_CATEGORIES.map((cat) => (
@@ -344,7 +346,7 @@ export default function Nav() {
                                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
                                focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
                   >
-                    <span>Begin</span>
+                    <span>{t('nav.begin')}</span>
                     <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                   </Link>
                 </>
@@ -421,7 +423,7 @@ export default function Nav() {
             {hasCompletedDiscovery && (
               <div className="pt-3 pb-1">
                 <div className="px-4 pb-2 text-[11px] font-semibold uppercase tracking-wider text-white/30">
-                  Topic Focus
+                  {t('nav.topicFocus')}
                 </div>
                 <div className="flex flex-wrap gap-1.5 px-4">
                   {identity.focusTopic && (
@@ -430,7 +432,7 @@ export default function Nav() {
                       onClick={() => setFocusTopic(undefined)}
                       className="px-3 py-1.5 rounded-lg text-[12px] font-medium text-white/50 border border-white/10 hover:bg-white/5 transition-all"
                     >
-                      ✕ Clear
+                      ✕ {t('nav.clear')}
                     </button>
                   )}
                   {EXCHANGE_CATEGORIES.map((cat) => (
@@ -495,7 +497,7 @@ export default function Nav() {
                                text-white/50 hover:text-white hover:border-white/20 font-medium transition-all"
                   >
                     <LogOut className="w-4 h-4" />
-                    Sign Out
+                    {t('nav.signOut')}
                   </button>
                 </>
               ) : (
@@ -520,7 +522,7 @@ export default function Nav() {
                                active:scale-[0.98] transition-all duration-200
                                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                   >
-                    <span>Begin</span>
+                    <span>{t('nav.begin')}</span>
                     <ArrowRight className="w-5 h-5" aria-hidden="true" />
                   </Link>
                 </>
