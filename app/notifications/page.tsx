@@ -419,7 +419,7 @@ export default function NotificationsPage() {
         <div className="mt-12 pt-6 border-t border-white/10 text-center">
           <p className="text-gray-500 text-sm">
             Manage your notification preferences in{' '}
-            <Link href="/profile" className="text-brand-accent hover:underline">
+            <Link href="/me" className="text-brand-accent hover:underline">
               profile settings
             </Link>
           </p>

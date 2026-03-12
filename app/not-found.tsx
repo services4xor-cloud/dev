@@ -64,7 +64,7 @@ export default function NotFound() {
             Return to Compass
           </Link>
           <Link
-            href="/ventures"
+            href="/exchange"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold border border-brand-accent/40 text-brand-accent hover:bg-brand-accent/10 transition-all"
           >
             Explore Ventures <ArrowRight className="w-4 h-4" />

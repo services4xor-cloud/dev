@@ -60,7 +60,7 @@ export default function ThreadDetailPage() {
           <h1 className="text-2xl font-bold text-white mb-2">{t('thread.notFoundTitle')}</h1>
           <p className="text-gray-400 mb-6">{t('thread.notFoundDesc')}</p>
           <Link
-            href="/threads"
+            href="/messages"
             className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -85,7 +85,7 @@ export default function ThreadDetailPage() {
         <div className="max-w-6xl mx-auto px-4 xl:px-8 pt-8 pb-16">
           {/* Back */}
           <Link
-            href="/threads"
+            href="/messages"
             className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />

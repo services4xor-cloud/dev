@@ -146,7 +146,7 @@ export default function PricingPage() {
               <p className="text-gray-400">{t('pricing.agentDesc', { rate: agentRate })}</p>
             </div>
             <Link
-              href="/agents"
+              href="/exchange"
               className="bg-brand-primary text-white font-bold px-6 py-3 rounded-xl hover:bg-brand-primary-light border border-brand-accent/30 transition-colors whitespace-nowrap"
             >
               {t('pricing.agentCta')}
