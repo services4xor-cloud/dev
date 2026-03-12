@@ -22,7 +22,7 @@ import { detectCountryFromTimezone } from '@/lib/geo'
 interface Identity {
   /** ISO country code (KE, DE, CH, etc.) */
   country: string
-  /** ISO 639-1 language code (en, de, sw, fr, etc.) */
+  /** ISO 639-1 language code (en, de, sw, fr, etc.) — display language */
   language: string
   /** Thread slug if viewing a specific thread (e.g. 'bemaasai') */
   threadSlug?: string
@@ -30,6 +30,14 @@ interface Identity {
   threadType?: string
   /** Thread brand name override (e.g. 'BeMaasai' when a tribe is active) */
   threadBrandName?: string
+  /** City the user is based in */
+  city?: string
+  /** Languages the user SPEAKS (distinct from display `language`) */
+  languages: string[]
+  /** Category IDs from exchange categories the user is interested in */
+  interests: string[]
+  /** Explorer discovers experiences, Host offers them */
+  mode: 'explorer' | 'host'
 }
 
 interface IdentityContextValue {
@@ -39,6 +47,8 @@ interface IdentityContextValue {
   countryName: string
   /** Brand name localized (e.g. "BeDeutschland" in German, "BeGermany" in English) */
   brandName: string
+  /** True when user has selected languages AND interests (discovery complete) */
+  hasCompletedDiscovery: boolean
   /** Set the active country (also resets language to country default) */
   setCountry: (code: string) => void
   /** Set the display language */
@@ -51,6 +61,14 @@ interface IdentityContextValue {
   reset: () => void
   /** Get any country's name in the current display language */
   localizeCountry: (countryCode: string) => string
+  /** Set spoken languages (not display language) */
+  setLanguages: (langs: string[]) => void
+  /** Set interest category IDs */
+  setInterests: (interests: string[]) => void
+  /** Set explorer/host mode */
+  setMode: (mode: 'explorer' | 'host') => void
+  /** Set user's city */
+  setCity: (city: string) => void
 }
 
 // ─── Default ────────────────────────────────────────────────────────
@@ -79,6 +97,9 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
   const [identity, setIdentity] = useState<Identity>({
     country: DEFAULT_COUNTRY,
     language: DEFAULT_LANGUAGE,
+    languages: [],
+    interests: [],
+    mode: 'explorer',
   })
 
   // Hydrate from localStorage on mount, or auto-detect from browser
@@ -89,9 +110,18 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       if (stored) {
         const parsed = JSON.parse(stored)
         if (parsed?.country) {
-          // Migrate old format (no language field) → add default language
+          // Migrate old format — add defaults for missing fields
           if (!parsed.language) {
             parsed.language = getDefaultLanguage(parsed.country)
+          }
+          if (!Array.isArray(parsed.languages)) {
+            parsed.languages = []
+          }
+          if (!Array.isArray(parsed.interests)) {
+            parsed.interests = []
+          }
+          if (!parsed.mode) {
+            parsed.mode = 'explorer'
           }
           setIdentity(parsed)
         }
@@ -106,7 +136,13 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         const browserLang = navigator.language?.split('-')[0] || 'en'
         const detected = detectCountryFromTimezone()
         if (detected) {
-          setIdentity({ country: detected, language: browserLang })
+          setIdentity({
+            country: detected,
+            language: browserLang,
+            languages: [],
+            interests: [],
+            mode: 'explorer',
+          })
         }
       } catch {
         // Ignore — use defaults
@@ -126,10 +162,15 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
   const setCountry = useCallback((code: string) => {
     const cc = code.toUpperCase()
     setIdentity((prev) => ({
+      ...prev,
       country: cc,
       // When changing country, keep current language unless switching to a country
       // where the current language isn't spoken — then reset to country default
       language: prev.language || getDefaultLanguage(cc),
+      // Clear thread when changing country
+      threadSlug: undefined,
+      threadType: undefined,
+      threadBrandName: undefined,
     }))
   }, [])
 
@@ -147,17 +188,49 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const clearThread = useCallback(() => {
-    setIdentity((prev) => ({ country: prev.country, language: prev.language }))
+    setIdentity((prev) => ({
+      country: prev.country,
+      language: prev.language,
+      languages: prev.languages,
+      interests: prev.interests,
+      mode: prev.mode,
+      city: prev.city,
+    }))
   }, [])
 
   const reset = useCallback(() => {
-    setIdentity({ country: DEFAULT_COUNTRY, language: DEFAULT_LANGUAGE })
+    setIdentity({
+      country: DEFAULT_COUNTRY,
+      language: DEFAULT_LANGUAGE,
+      languages: [],
+      interests: [],
+      mode: 'explorer',
+    })
+  }, [])
+
+  const setLanguages = useCallback((langs: string[]) => {
+    setIdentity((prev) => ({ ...prev, languages: langs }))
+  }, [])
+
+  const setInterests = useCallback((newInterests: string[]) => {
+    setIdentity((prev) => ({ ...prev, interests: newInterests }))
+  }, [])
+
+  const setMode = useCallback((newMode: 'explorer' | 'host') => {
+    setIdentity((prev) => ({ ...prev, mode: newMode }))
+  }, [])
+
+  const setCity = useCallback((city: string) => {
+    setIdentity((prev) => ({ ...prev, city }))
   }, [])
 
   // Localized names — thread brand overrides country brand when active
   const countryName = getLocalizedCountryName(identity.country, identity.language)
   const brandName =
     identity.threadBrandName || BRAND_NAME_OVERRIDES[identity.country] || `Be${countryName}`
+
+  // Discovery is complete when user has selected at least one language and one interest
+  const hasCompletedDiscovery = identity.languages.length > 0 && identity.interests.length > 0
 
   // Helper to localize any country code in the user's current language
   const localizeCountry = useCallback(
@@ -171,12 +244,17 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         identity,
         countryName,
         brandName,
+        hasCompletedDiscovery,
         setCountry,
         setLanguage,
         setThread,
         clearThread,
         reset,
         localizeCountry,
+        setLanguages,
+        setInterests,
+        setMode,
+        setCity,
       }}
     >
       {children}
@@ -192,15 +270,26 @@ export function useIdentity(): IdentityContextValue {
     // Graceful fallback when used outside provider (e.g. in API routes)
     const fallbackName = getLocalizedCountryName(DEFAULT_COUNTRY, DEFAULT_LANGUAGE)
     return {
-      identity: { country: DEFAULT_COUNTRY, language: DEFAULT_LANGUAGE },
+      identity: {
+        country: DEFAULT_COUNTRY,
+        language: DEFAULT_LANGUAGE,
+        languages: [],
+        interests: [],
+        mode: 'explorer' as const,
+      },
       countryName: fallbackName,
       brandName: BRAND_NAME_OVERRIDES[DEFAULT_COUNTRY] || `Be${fallbackName}`,
+      hasCompletedDiscovery: false,
       setCountry: () => {},
       setLanguage: () => {},
       setThread: () => {},
       clearThread: () => {},
       reset: () => {},
       localizeCountry: (cc: string) => getLocalizedCountryName(cc, DEFAULT_LANGUAGE),
+      setLanguages: () => {},
+      setInterests: () => {},
+      setMode: () => {},
+      setCity: () => {},
     }
   }
   return ctx
