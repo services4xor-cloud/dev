@@ -11,7 +11,16 @@ import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
-import { ArrowRight, Globe, Sparkles, Users, MapPin, Zap } from 'lucide-react'
+import {
+  ArrowRight,
+  Globe,
+  Sparkles,
+  Users,
+  MapPin,
+  Zap,
+  MessageCircle,
+  Shield,
+} from 'lucide-react'
 import { useIdentity } from '@/lib/identity-context'
 import WowHero from '@/components/WowHero'
 import Discovery from '@/components/Discovery'
@@ -337,8 +346,84 @@ export default function HomePage() {
               </span>
             </div>
           )}
+
+          {/* Account nudge — only show if not signed in */}
+          {!session && (
+            <div className="mt-6 flex items-center gap-3 rounded-xl bg-brand-primary/20 border border-brand-primary/30 px-5 py-3">
+              <Shield className="w-5 h-5 text-brand-accent shrink-0" />
+              <div className="flex-1">
+                <p className="text-white text-phi-sm font-medium">Save your identity</p>
+                <p className="text-white/40 text-phi-xs">
+                  Your profile is stored locally. Create an account to keep it across devices.
+                </p>
+              </div>
+              <Link
+                href="/signup"
+                className="shrink-0 px-4 py-1.5 rounded-lg bg-brand-accent text-white text-phi-xs font-bold hover:opacity-90 transition-opacity"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
         </div>
       </section>
+
+      {/* ── What to do next ── */}
+      <SectionLayout size="lg" className="mb-2">
+        <h2 className="text-phi-lg font-bold text-white mb-4 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-brand-accent" />
+          What to do next
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <Link href="/exchange" className="block group">
+            <GlassCard
+              variant="subtle"
+              padding="md"
+              className="group-hover:border-brand-accent/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🤝</span>
+                <div>
+                  <p className="text-white font-semibold text-phi-sm">Browse the Exchange</p>
+                  <p className="text-white/40 text-phi-xs">Find people and paths matched to you</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+          <Link href="/messages" className="block group">
+            <GlassCard
+              variant="subtle"
+              padding="md"
+              className="group-hover:border-brand-accent/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">💬</span>
+                <div>
+                  <p className="text-white font-semibold text-phi-sm">Chat with Pioneers</p>
+                  <p className="text-white/40 text-phi-xs">Start conversations with your matches</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+          <Link href="/me" className="block group">
+            <GlassCard
+              variant="subtle"
+              padding="md"
+              className="group-hover:border-brand-accent/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">✏️</span>
+                <div>
+                  <p className="text-white font-semibold text-phi-sm">Refine Your Identity</p>
+                  <p className="text-white/40 text-phi-xs">
+                    Add faith, craft, culture for better matches
+                  </p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+        </div>
+      </SectionLayout>
 
       {/* ── Top Matched People ── */}
       <SectionLayout size="lg">
@@ -371,8 +456,8 @@ export default function HomePage() {
                 key={agent.id}
                 variant={isHovered ? 'featured' : 'subtle'}
                 padding="md"
-                className={`cursor-pointer transition-all duration-300 ${isHovered ? 'scale-[1.02] shadow-lg shadow-brand-accent/10' : ''}`}
-                onClick={() => router.push('/exchange')}
+                className={`group cursor-pointer transition-all duration-300 ${isHovered ? 'scale-[1.02] shadow-lg shadow-brand-accent/10' : ''}`}
+                onClick={() => router.push(`/messages?dm=${agent.id}`)}
                 onMouseEnter={() => setHoveredAgent(agent.id)}
                 onMouseLeave={() => setHoveredAgent(null)}
               >
@@ -434,6 +519,12 @@ export default function HomePage() {
                     </div>
                   </div>
                 )}
+
+                {/* Chat CTA */}
+                <div className="mt-3 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-brand-accent/10 text-brand-accent text-xs font-medium group-hover:bg-brand-accent/20 transition-colors">
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  Start Conversation
+                </div>
               </GlassCard>
             )
           })}
