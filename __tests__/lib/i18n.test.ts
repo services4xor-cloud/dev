@@ -1370,6 +1370,83 @@ describe('i18n — post path wizard', () => {
   })
 })
 
+describe('i18n — admin dashboard', () => {
+  const adminKeys = [
+    'admin.title',
+    'admin.badge',
+    'admin.backToSite',
+    'admin.pioneerView',
+    'admin.mockWarning',
+    'admin.tabOverview',
+    'admin.tabPioneers',
+    'admin.tabAnchors',
+    'admin.tabPaths',
+    'admin.tabSocial',
+    'admin.tabSettings',
+    'admin.pioneers',
+    'admin.anchors',
+    'admin.openPaths',
+    'admin.chapters',
+    'admin.venturesBooked',
+    'admin.revenueThisMonth',
+    'admin.mpesaTransactions',
+    'admin.pending',
+    'admin.recentSignups',
+    'admin.recentChapters',
+    'admin.systemHealth',
+    'admin.name',
+    'admin.type',
+    'admin.route',
+    'admin.skills',
+    'admin.joined',
+    'admin.actions',
+    'admin.view',
+    'admin.message',
+    'admin.deactivate',
+    'admin.anchor',
+    'admin.country',
+    'admin.totalChapters',
+    'admin.verified',
+    'admin.verifiedLabel',
+    'admin.pendingLabel',
+    'admin.verify',
+    'admin.pathTitle',
+    'admin.matchAvg',
+    'admin.status',
+    'admin.posted',
+    'admin.pauseAllOpen',
+    'admin.archiveOld',
+    'admin.platformConnections',
+    'admin.testPost',
+    'admin.postQueue',
+    'admin.retry',
+    'admin.live',
+    'admin.notSet',
+    'admin.envVars',
+    'admin.set',
+    'admin.missing',
+    'admin.setupGuides',
+  ]
+
+  it('English has all admin keys', () => {
+    for (const key of adminKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all admin keys', () => {
+    for (const key of adminKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all admin keys', () => {
+    for (const key of adminKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()

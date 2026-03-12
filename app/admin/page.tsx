@@ -13,6 +13,7 @@ import {
   MOCK_SOCIAL_QUEUE,
   MOCK_ENV_VARS as ENV_VARS,
 } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -59,20 +60,52 @@ function ChapterStatusBadge({ status }: { status: string }) {
   )
 }
 
+// ─── Tab types + i18n ────────────────────────────────────────────────────────
+
+type AdminTab = 'overview' | 'pioneers' | 'anchors' | 'paths' | 'social' | 'settings'
+
+const TAB_KEYS: AdminTab[] = ['overview', 'pioneers', 'anchors', 'paths', 'social', 'settings']
+
+const TAB_I18N: Record<AdminTab, string> = {
+  overview: 'admin.tabOverview',
+  pioneers: 'admin.tabPioneers',
+  anchors: 'admin.tabAnchors',
+  paths: 'admin.tabPaths',
+  social: 'admin.tabSocial',
+  settings: 'admin.tabSettings',
+}
+
+const TAB_ICONS: Record<AdminTab, string> = {
+  overview: '📊',
+  pioneers: '👤',
+  anchors: '⚓',
+  paths: '🗺️',
+  social: '📱',
+  settings: '⚙️',
+}
+
 // ─── Tab: Overview ────────────────────────────────────────────────────────────
 
 function OverviewTab() {
+  const { t } = useTranslation()
+
+  const stats = [
+    {
+      label: t('admin.pioneers'),
+      value: PLATFORM_STATS.pioneers.toLocaleString('en-US'),
+      icon: '👤',
+    },
+    { label: t('admin.anchors'), value: PLATFORM_STATS.anchors, icon: '⚓' },
+    { label: t('admin.openPaths'), value: PLATFORM_STATS.openPaths, icon: '🗺️' },
+    { label: t('admin.chapters'), value: PLATFORM_STATS.chapters, icon: '📖' },
+    { label: t('admin.venturesBooked'), value: PLATFORM_STATS.venturesBooked, icon: '🌍' },
+  ]
+
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        {[
-          { label: 'Pioneers', value: PLATFORM_STATS.pioneers.toLocaleString('en-US'), icon: '👤' },
-          { label: 'Anchors', value: PLATFORM_STATS.anchors, icon: '⚓' },
-          { label: 'Open Paths', value: PLATFORM_STATS.openPaths, icon: '🗺️' },
-          { label: 'Chapters', value: PLATFORM_STATS.chapters, icon: '📖' },
-          { label: 'Ventures Booked', value: PLATFORM_STATS.venturesBooked, icon: '🌍' },
-        ].map((stat) => (
+        {stats.map((stat) => (
           <div
             key={stat.label}
             className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-4 text-center"
@@ -87,23 +120,23 @@ function OverviewTab() {
       {/* Revenue Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="bg-gradient-to-r from-brand-primary to-brand-primary-light border border-brand-accent/20 rounded-xl p-5">
-          <p className="text-gray-300 text-sm">Revenue This Month</p>
+          <p className="text-gray-300 text-sm">{t('admin.revenueThisMonth')}</p>
           <p className="text-3xl font-bold text-brand-accent mt-1">
             KES {PLATFORM_STATS.revenueKES.toLocaleString('en-US')}
           </p>
         </div>
         <div className="bg-brand-surface-elevated border border-brand-accent/30 rounded-xl p-5">
-          <p className="text-gray-300 text-sm">M-Pesa Transactions</p>
+          <p className="text-gray-300 text-sm">{t('admin.mpesaTransactions')}</p>
           <p className="text-3xl font-bold text-brand-accent mt-1">
-            {PLATFORM_STATS.mpesaPending} pending
+            {t('admin.pending', { count: String(PLATFORM_STATS.mpesaPending) })}
           </p>
-          <p className="text-gray-400 text-xs mt-1">Check M-Pesa sandbox dashboard</p>
+          <p className="text-gray-400 text-xs mt-1">{t('admin.checkMpesa')}</p>
         </div>
       </div>
 
       {/* Recent Signups */}
       <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-5">
-        <h3 className="text-brand-accent font-semibold mb-4">Recent Pioneer Signups</h3>
+        <h3 className="text-brand-accent font-semibold mb-4">{t('admin.recentSignups')}</h3>
         <div className="space-y-3">
           {RECENT_PIONEERS.map((p) => (
             <div
@@ -133,7 +166,7 @@ function OverviewTab() {
 
       {/* Recent Chapters */}
       <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-5">
-        <h3 className="text-brand-accent font-semibold mb-4">Recent Chapters</h3>
+        <h3 className="text-brand-accent font-semibold mb-4">{t('admin.recentChapters')}</h3>
         <div className="space-y-3">
           {RECENT_CHAPTERS.map((ch, i) => (
             <div
@@ -161,7 +194,7 @@ function OverviewTab() {
 
       {/* System Health */}
       <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-5">
-        <h3 className="text-brand-accent font-semibold mb-4">System Health</h3>
+        <h3 className="text-brand-accent font-semibold mb-4">{t('admin.systemHealth')}</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { name: 'Database', icon: '🗄️', status: 'warning', msg: 'Not connected' },
@@ -191,6 +224,7 @@ function OverviewTab() {
 // ─── Tab: Pioneers ────────────────────────────────────────────────────────────
 
 function PioneersTab() {
+  const { t } = useTranslation()
   const [filter, setFilter] = useState('All')
   const filters = [
     'All',
@@ -236,13 +270,13 @@ function PioneersTab() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-brand-primary/30">
-                <th className="text-left p-4 text-gray-400 font-medium">Name</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Type</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Route</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Skills</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Chapters</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Joined</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Actions</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.name')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.type')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.route')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.skills')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.chapters')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.joined')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -273,9 +307,15 @@ function PioneersTab() {
                   <td className="p-4 text-gray-400 text-xs">{p.joined}</td>
                   <td className="p-4">
                     <div className="flex gap-2">
-                      <button className="text-xs text-brand-accent hover:underline">View</button>
-                      <button className="text-xs text-blue-400 hover:underline">Message</button>
-                      <button className="text-xs text-red-400 hover:underline">Deactivate</button>
+                      <button className="text-xs text-brand-accent hover:underline">
+                        {t('admin.view')}
+                      </button>
+                      <button className="text-xs text-blue-400 hover:underline">
+                        {t('admin.message')}
+                      </button>
+                      <button className="text-xs text-red-400 hover:underline">
+                        {t('admin.deactivate')}
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -291,6 +331,8 @@ function PioneersTab() {
 // ─── Tab: Anchors ─────────────────────────────────────────────────────────────
 
 function AnchorsTab() {
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-4">
       <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl overflow-hidden">
@@ -298,12 +340,14 @@ function AnchorsTab() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-brand-primary/30">
-                <th className="text-left p-4 text-gray-400 font-medium">Anchor</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Country</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Open Paths</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Total Chapters</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Verified</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Actions</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.anchor')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.country')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.openPaths')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">
+                  {t('admin.totalChapters')}
+                </th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.verified')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -318,18 +362,28 @@ function AnchorsTab() {
                   <td className="p-4 text-gray-300">{a.totalChapters}</td>
                   <td className="p-4">
                     {a.verified ? (
-                      <span className="text-green-400 text-xs font-semibold">✓ Verified</span>
+                      <span className="text-green-400 text-xs font-semibold">
+                        {t('admin.verifiedLabel')}
+                      </span>
                     ) : (
-                      <span className="text-brand-accent text-xs font-semibold">⚠ Pending</span>
+                      <span className="text-brand-accent text-xs font-semibold">
+                        {t('admin.pendingLabel')}
+                      </span>
                     )}
                   </td>
                   <td className="p-4">
                     <div className="flex gap-2">
                       {!a.verified && (
-                        <button className="text-xs text-green-400 hover:underline">Verify</button>
+                        <button className="text-xs text-green-400 hover:underline">
+                          {t('admin.verify')}
+                        </button>
                       )}
-                      <button className="text-xs text-brand-accent hover:underline">View</button>
-                      <button className="text-xs text-blue-400 hover:underline">Message</button>
+                      <button className="text-xs text-brand-accent hover:underline">
+                        {t('admin.view')}
+                      </button>
+                      <button className="text-xs text-blue-400 hover:underline">
+                        {t('admin.message')}
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -345,14 +399,16 @@ function AnchorsTab() {
 // ─── Tab: Paths ───────────────────────────────────────────────────────────────
 
 function PathsTab() {
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-4">
       <div className="flex gap-3">
         <button className="text-xs border border-brand-accent/30 text-brand-accent px-3 py-1.5 rounded-lg hover:bg-brand-accent/10 transition-colors">
-          Pause All Open
+          {t('admin.pauseAllOpen')}
         </button>
         <button className="text-xs border border-red-500/30 text-red-400 px-3 py-1.5 rounded-lg hover:bg-red-900/20 transition-colors">
-          Archive Old (pre-2024)
+          {t('admin.archiveOld')}
         </button>
       </div>
 
@@ -361,13 +417,13 @@ function PathsTab() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-brand-primary/30">
-                <th className="text-left p-4 text-gray-400 font-medium">Path Title</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Anchor</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Type</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Chapters</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Match Avg</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Status</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Posted</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.pathTitle')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.anchor')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.type')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.chapters')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.matchAvg')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.status')}</th>
+                <th className="text-left p-4 text-gray-400 font-medium">{t('admin.posted')}</th>
               </tr>
             </thead>
             <tbody>
@@ -404,6 +460,7 @@ function PathsTab() {
 // ─── Tab: Social Media ────────────────────────────────────────────────────────
 
 function SocialTab() {
+  const { t } = useTranslation()
   const [testResult, setTestResult] = useState<string | null>(null)
 
   const sendTestPost = async (platform: string) => {
@@ -435,7 +492,7 @@ function SocialTab() {
 
       {/* Platform Status */}
       <div>
-        <h3 className="text-brand-accent font-semibold mb-3">Platform Connections</h3>
+        <h3 className="text-brand-accent font-semibold mb-3">{t('admin.platformConnections')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {SOCIAL_PLATFORMS.map((platform) => (
             <div
@@ -453,13 +510,13 @@ function SocialTab() {
                 <span
                   className={`text-xs px-2 py-0.5 rounded-full ${platform.connected ? 'bg-green-900/40 text-green-400' : 'bg-red-900/40 text-red-400'}`}
                 >
-                  {platform.connected ? '✓ Live' : '✗ Not set'}
+                  {platform.connected ? t('admin.live') : t('admin.notSet')}
                 </span>
                 <button
                   onClick={() => sendTestPost(platform.name)}
                   className="text-xs text-brand-accent hover:underline"
                 >
-                  Test post
+                  {t('admin.testPost')}
                 </button>
               </div>
             </div>
@@ -469,7 +526,7 @@ function SocialTab() {
 
       {/* Post Queue */}
       <div>
-        <h3 className="text-brand-accent font-semibold mb-3">Post Queue</h3>
+        <h3 className="text-brand-accent font-semibold mb-3">{t('admin.postQueue')}</h3>
         <div className="space-y-3">
           {MOCK_SOCIAL_QUEUE.map((post) => (
             <div
@@ -496,7 +553,7 @@ function SocialTab() {
               </div>
               {post.status === 'failed' && (
                 <button className="text-xs text-brand-accent hover:underline shrink-0">
-                  Retry
+                  {t('admin.retry')}
                 </button>
               )}
             </div>
@@ -510,10 +567,12 @@ function SocialTab() {
 // ─── Tab: Settings ─────────────────────────────────────────────────────────────
 
 function SettingsTab() {
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-6">
       <div className="bg-brand-surface-elevated border border-brand-primary/50 rounded-xl p-5">
-        <h3 className="text-brand-accent font-semibold mb-4">Environment Variables</h3>
+        <h3 className="text-brand-accent font-semibold mb-4">{t('admin.envVars')}</h3>
         <div className="space-y-2">
           {ENV_VARS.map((ev) => (
             <div
@@ -531,7 +590,7 @@ function SettingsTab() {
                     : 'bg-red-900/40 text-red-400'
                 }`}
               >
-                {ev.status === 'set' ? '✓ Set' : '✗ Missing'}
+                {ev.status === 'set' ? t('admin.set') : t('admin.missing')}
               </span>
             </div>
           ))}
@@ -539,7 +598,7 @@ function SettingsTab() {
       </div>
 
       <div className="bg-brand-surface-elevated border border-brand-accent/20 rounded-xl p-5">
-        <h3 className="text-brand-accent font-semibold mb-3">Setup Guides</h3>
+        <h3 className="text-brand-accent font-semibold mb-3">{t('admin.setupGuides')}</h3>
         <ul className="space-y-2 text-sm text-gray-300">
           <li>
             •{' '}
@@ -604,17 +663,9 @@ function SettingsTab() {
 
 // ─── Main Admin Dashboard ─────────────────────────────────────────────────────
 
-const TABS = [
-  { id: 'overview', label: '📊 Overview' },
-  { id: 'pioneers', label: '👤 Pioneers' },
-  { id: 'anchors', label: '⚓ Anchors' },
-  { id: 'paths', label: '🗺️ Paths' },
-  { id: 'social', label: '📱 Social Media' },
-  { id: 'settings', label: '⚙️ Settings' },
-]
-
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('overview')
+  const { t } = useTranslation()
+  const [activeTab, setActiveTab] = useState<AdminTab>('overview')
 
   return (
     <div className="min-h-screen bg-[#0a0005] text-white">
@@ -624,18 +675,18 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-3">
             <span className="text-2xl">🦁</span>
             <div>
-              <span className="text-lg font-bold text-brand-accent">BeNetwork</span>
+              <span className="text-lg font-bold text-brand-accent">{t('admin.title')}</span>
               <span className="ml-2 text-xs bg-brand-primary text-brand-accent border border-brand-accent/30 px-2 py-0.5 rounded-full">
-                Admin
+                {t('admin.badge')}
               </span>
             </div>
           </div>
           <div className="flex items-center gap-4 text-sm text-gray-400">
             <Link href="/" className="hover:text-white transition-colors">
-              ← Back to site
+              {t('admin.backToSite')}
             </Link>
             <Link href="/pioneers/dashboard" className="hover:text-white transition-colors">
-              Pioneer View
+              {t('admin.pioneerView')}
             </Link>
           </div>
         </div>
@@ -645,22 +696,22 @@ export default function AdminDashboard() {
         {/* Admin Warning Banner */}
         <div className="bg-brand-primary/30 border border-brand-accent/30 rounded-xl px-4 py-3 mb-6 text-sm text-brand-accent flex items-center gap-2">
           <span>⚠️</span>
-          <span>Admin dashboard — all data is mock until DATABASE_URL is configured</span>
+          <span>{t('admin.mockWarning')}</span>
         </div>
 
         {/* Tabs */}
         <div className="flex gap-2 flex-wrap mb-8 border-b border-brand-primary/30 pb-0">
-          {TABS.map((tab) => (
+          {TAB_KEYS.map((tab) => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              key={tab}
+              onClick={() => setActiveTab(tab)}
               className={`px-4 py-3 text-sm font-medium rounded-t-xl transition-all border-b-2 -mb-px ${
-                activeTab === tab.id
+                activeTab === tab
                   ? 'text-brand-accent border-brand-accent bg-brand-surface-elevated'
                   : 'text-gray-400 border-transparent hover:text-gray-200 hover:border-brand-primary'
               }`}
             >
-              {tab.label}
+              {TAB_ICONS[tab]} {t(TAB_I18N[tab])}
             </button>
           ))}
         </div>
