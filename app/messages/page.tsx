@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 // Threads fetched from real DB via /api/threads
@@ -381,7 +381,6 @@ function generateAgentResponse(
 }
 
 export default function MessagesPage() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const { identity, hasCompletedDiscovery } = useIdentity()
   const { t } = useTranslation()
