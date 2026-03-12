@@ -2452,3 +2452,17 @@ export function getAgentCountryCodes(): string[] {
 export function getAgentCountryData(code: string): CountryData | undefined {
   return COUNTRY_DATA[code]
 }
+
+/**
+ * Get cities for a country code.
+ */
+export function getCitiesForCountry(code: string): string[] {
+  return COUNTRY_DATA[code]?.cities ?? []
+}
+
+/**
+ * Get primary language codes for a country code.
+ */
+export function getLanguageCodesForCountry(code: string): string[] {
+  return COUNTRY_DATA[code]?.languages ?? []
+}

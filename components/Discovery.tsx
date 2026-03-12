@@ -5,9 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { WORLD_LANGUAGES } from '@/lib/world-data'
-
-// Convert Record to array for iteration
-const LANGUAGE_LIST = Object.values(WORLD_LANGUAGES)
+import { getCitiesForCountry, getLanguageCodesForCountry } from '@/lib/agents'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import {
   FAITH_OPTIONS,
@@ -15,6 +13,9 @@ import {
   REACH_OPTIONS,
   getCultureSuggestionsForCountry,
 } from '@/lib/dimensions'
+
+// Convert Record to array for iteration
+const LANGUAGE_LIST = Object.values(WORLD_LANGUAGES)
 
 // ─── Step Progress ───────────────────────────────────────────────────────────
 
@@ -91,16 +92,35 @@ function Step1({
 }) {
   const countryOption = COUNTRY_OPTIONS.find((c) => c.code === selectedCountry)
 
+  // Cities for the selected country
+  const countryCities = useMemo(() => getCitiesForCountry(selectedCountry), [selectedCountry])
+
+  // Country's primary language codes — these show first in the grid
+  const countryLangCodes = useMemo(
+    () => getLanguageCodesForCountry(selectedCountry),
+    [selectedCountry]
+  )
+
   const filteredLanguages = useMemo(() => {
-    if (!langSearch.trim()) return LANGUAGE_LIST
-    const q = langSearch.toLowerCase()
-    return LANGUAGE_LIST.filter(
-      (l) =>
-        l.name.toLowerCase().includes(q) ||
-        l.nativeName.toLowerCase().includes(q) ||
-        l.code.toLowerCase().includes(q)
-    )
-  }, [langSearch])
+    let list = LANGUAGE_LIST
+    if (langSearch.trim()) {
+      const q = langSearch.toLowerCase()
+      list = list.filter(
+        (l) =>
+          l.name.toLowerCase().includes(q) ||
+          l.nativeName.toLowerCase().includes(q) ||
+          l.code.toLowerCase().includes(q)
+      )
+    }
+    // Sort: country languages first, then alphabetical
+    return [...list].sort((a, b) => {
+      const aLocal = countryLangCodes.includes(a.code)
+      const bLocal = countryLangCodes.includes(b.code)
+      if (aLocal && !bLocal) return -1
+      if (!aLocal && bLocal) return 1
+      return a.name.localeCompare(b.name)
+    })
+  }, [langSearch, countryLangCodes])
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -138,16 +158,34 @@ function Step1({
         </div>
       </div>
 
-      {/* City input */}
+      {/* City input with suggestions */}
       <div className="glass-subtle p-4 mb-8">
         <label className="text-white/60 text-phi-xs block mb-2">Your city</label>
         <input
           type="text"
           value={editCity}
           onChange={(e) => onCityChange(e.target.value)}
-          placeholder="e.g., Nairobi, Berlin, Lagos..."
+          placeholder={
+            countryCities.length > 0
+              ? `e.g., ${countryCities.slice(0, 3).join(', ')}...`
+              : 'Enter your city...'
+          }
           className="w-full bg-transparent text-white text-phi-sm border-b border-white/10 pb-2 focus:outline-none focus:border-brand-accent/50 placeholder:text-white/20"
         />
+        {countryCities.length > 0 && !editCity && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {countryCities.map((city) => (
+              <button
+                key={city}
+                type="button"
+                onClick={() => onCityChange(city)}
+                className="px-3 py-1 rounded-full text-phi-xs text-white/50 border border-white/10 hover:border-brand-accent/40 hover:text-white/80 transition-all"
+              >
+                {city}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Language search */}
@@ -162,10 +200,11 @@ function Step1({
         />
       </div>
 
-      {/* Language grid */}
+      {/* Language grid — country languages appear first with badge */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 max-h-[360px] overflow-y-auto pr-1">
         {filteredLanguages.map((lang) => {
           const isSelected = selectedLanguages.includes(lang.code)
+          const isCountryLang = countryLangCodes.includes(lang.code)
           return (
             <button
               key={lang.code}
@@ -173,7 +212,9 @@ function Step1({
               className={`glass-subtle p-4 text-left transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
                 isSelected
                   ? 'border-brand-accent/60 bg-brand-accent/10'
-                  : 'border-transparent hover:border-white/10'
+                  : isCountryLang
+                    ? 'border-brand-primary/30 bg-brand-primary/5'
+                    : 'border-transparent hover:border-white/10'
               }`}
               style={
                 isSelected
@@ -184,7 +225,14 @@ function Step1({
                   : {}
               }
             >
-              <div className="font-bold text-white text-phi-sm">{lang.name}</div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-white text-phi-sm">{lang.name}</span>
+                {isCountryLang && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-primary/20 text-brand-accent/80">
+                    local
+                  </span>
+                )}
+              </div>
               <div className="text-white/40 text-phi-xs">{lang.nativeName}</div>
             </button>
           )
