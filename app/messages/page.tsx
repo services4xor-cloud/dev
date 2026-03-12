@@ -152,182 +152,293 @@ function agentToProfile(agent: AgentPersona): DimensionProfile {
 function generateAgentResponse(
   agent: AgentPersona,
   userMessage: string,
-  previousMessages?: Array<{ author: 'user' | 'agent'; text: string }>
+  previousMessages?: Array<{ author: 'user' | 'agent'; text: string }>,
+  userIdentity?: {
+    country: string
+    city?: string
+    languages: string[]
+    interests: string[]
+    faith: string[]
+    craft?: string[]
+    culture?: string
+  }
 ): string {
-  const greetings = [
-    'Jambo! Great to connect with you. ',
-    'Hello! Thanks for reaching out. ',
-    'Hey there! Nice to meet you. ',
-    "Hi! I'm excited to chat. ",
-  ]
-
-  const topicResponses: string[] = []
-
-  // Faith-based responses
-  if (agent.faith.length > 0) {
-    topicResponses.push(
-      `As someone who practices ${agent.faith.join(' and ')}, I find that faith connects us across borders.`,
-      `My ${agent.faith[0]} faith has been a guiding light in my journey. Do you share similar beliefs?`
-    )
-  }
-
-  // Craft-based responses
-  if (agent.craft.length > 0) {
-    topicResponses.push(
-      `I specialize in ${agent.craft.slice(0, 2).join(' and ')}. Would love to collaborate!`,
-      `My experience in ${agent.craft[0]} has taught me so much. What's your craft?`
-    )
-  }
-
-  // Location-based
-  topicResponses.push(
-    `Life in ${agent.city} is amazing. Have you ever visited?`,
-    `${agent.city} has so much to offer. I'd love to show you around someday!`
-  )
-
-  // Interest-based
-  if (agent.interests.length > 0) {
-    topicResponses.push(
-      "I'm really passionate about what I do. Let's find ways to create value together."
-    )
-  }
-
-  // Bio-based
-  topicResponses.push(agent.bio)
-
-  // Pick based on message content or random
   const lowerMsg = userMessage.toLowerCase()
   const msgCount = previousMessages?.length ?? 0
-  let response = ''
 
-  // ── Topic detection ──────────────────────────────────────────────
+  // ── Compute shared dimensions with user ─────────────────────────
+  const sharedLangs = userIdentity
+    ? agent.languages.filter((l) => userIdentity.languages.includes(l)).map(langCodeToName)
+    : []
+  const sharedFaith = userIdentity
+    ? agent.faith.filter((f) =>
+        userIdentity.faith.some((uf) => uf.toLowerCase() === f.toLowerCase())
+      )
+    : []
+  const sharedInterests = userIdentity
+    ? agent.interests.filter((i) => userIdentity.interests.includes(i))
+    : []
+  const userCrafts = userIdentity?.craft ?? []
+  const sharedCraft = userCrafts.filter((c) =>
+    agent.craft.some((ac) => ac.toLowerCase() === c.toLowerCase())
+  )
+  const complementaryCraft = agent.craft.filter(
+    (ac) => !userCrafts.some((uc) => uc.toLowerCase() === ac.toLowerCase())
+  )
+  const sameCountry = userIdentity ? agent.country === userIdentity.country : false
+  const sameCulture =
+    userIdentity?.culture &&
+    agent.culture &&
+    userIdentity.culture.toLowerCase() === agent.culture.toLowerCase()
+
+  // ── Personalized first message (no prior msgs) ──────────────────
+  if (msgCount === 0) {
+    const parts: string[] = []
+
+    // Personalized greeting
+    if (sharedLangs.length > 0) {
+      parts.push(
+        `Hey! I see we both speak ${sharedLangs.join(' and ')} — that is already a great foundation.`
+      )
+    } else {
+      parts.push(`Hello from ${agent.city}! Great to connect with you.`)
+    }
+
+    // Highlight strongest shared dimension
+    if (sharedCraft.length > 0) {
+      parts.push(
+        `We are both into ${sharedCraft.join(' and ')} — I would love to exchange ideas on that!`
+      )
+    } else if (complementaryCraft.length > 0 && userCrafts.length > 0) {
+      parts.push(
+        `I work in ${agent.craft.slice(0, 2).join(' and ')}, and you do ${userCrafts.slice(0, 2).join(', ')} — we could complement each other well.`
+      )
+    }
+
+    if (sharedFaith.length > 0) {
+      parts.push(
+        `I also see we share ${sharedFaith[0]} — that kind of connection goes deeper than skills.`
+      )
+    }
+
+    if (sameCountry) {
+      parts.push(`And we are both in ${agent.country} — makes collaboration even easier!`)
+    }
+
+    // Exchange proposal
+    if (agent.exchangeProposals.length > 0) {
+      parts.push(agent.exchangeProposals[0])
+    }
+
+    return parts.join(' ')
+  }
+
+  // ── Topic detection with identity-aware responses ───────────────
+  let response = ''
 
   if (
     lowerMsg.includes('faith') ||
     lowerMsg.includes('believe') ||
     lowerMsg.includes('religion') ||
-    lowerMsg.includes('spiritual')
+    lowerMsg.includes('spiritual') ||
+    lowerMsg.includes('pray') ||
+    lowerMsg.includes('church') ||
+    lowerMsg.includes('mosque') ||
+    lowerMsg.includes('temple')
   ) {
-    response =
-      agent.faith.length > 0
-        ? `My ${agent.faith.join(' and ')} faith is central to who I am. It shapes how I work and connect with people. What about you?`
-        : 'I keep an open mind about spirituality. I believe in connecting with people regardless of their beliefs.'
+    if (sharedFaith.length > 0) {
+      response = `As a fellow ${sharedFaith[0]} practitioner, I feel that connection deeply. In ${agent.city}, our ${sharedFaith[0]} community is strong — we gather regularly and support each other. Faith gives me strength in my work and relationships. How does your faith shape your daily life?`
+    } else if (agent.faith.length > 0) {
+      response = `My ${agent.faith.join(' and ')} faith is central to who I am. It shapes how I approach work, relationships, everything. Even if we come from different traditions, I think shared values create strong partnerships. What guides you?`
+    } else {
+      response =
+        'I keep an open mind about spirituality. For me, the connection between people matters most — regardless of what they believe.'
+    }
   } else if (
     lowerMsg.includes('help') ||
     lowerMsg.includes('need') ||
-    lowerMsg.includes('looking for')
+    lowerMsg.includes('looking for') ||
+    lowerMsg.includes('find') ||
+    lowerMsg.includes('search')
   ) {
-    // Share exchange proposals
-    if (agent.exchangeProposals.length > 1) {
-      response = `I can definitely help! Here is what I have to offer: ${agent.exchangeProposals.join(' Also, ')} What resonates with you?`
-    } else if (agent.exchangeProposals.length === 1) {
-      response = `Absolutely! ${agent.exchangeProposals[0]} Does that sound useful to you?`
-    } else {
-      response = `I would love to help. My skills in ${agent.craft.join(', ') || 'various areas'} could be valuable. What exactly do you need?`
-    }
+    const offers: string[] = []
+    if (agent.exchangeProposals.length > 0) offers.push(...agent.exchangeProposals)
+    if (complementaryCraft.length > 0)
+      offers.push(`My ${complementaryCraft[0]} skills could fill a gap for you`)
+    if (sameCountry) offers.push(`Being in ${agent.country}, I can connect you locally`)
+
+    response =
+      offers.length > 0
+        ? `I can definitely help! ${offers.slice(0, 2).join('. ')}. What specifically are you looking for?`
+        : `I would love to help. Tell me more about what you need and I will see how my experience in ${agent.craft[0] || agent.city} can be useful.`
   } else if (
     lowerMsg.includes('culture') ||
     lowerMsg.includes('tradition') ||
-    lowerMsg.includes('customs')
+    lowerMsg.includes('customs') ||
+    lowerMsg.includes('food') ||
+    lowerMsg.includes('music')
   ) {
     const cultureRef = agent.culture ? `As ${agent.culture}, ` : ''
-    response = `${cultureRef}Culture is everything to me. In ${agent.city}, we have a rich blend of traditions — from how we greet each other to how we celebrate milestones. ${agent.faith.length > 0 ? `Our ${agent.faith[0]} heritage also plays a big role in daily life.` : 'Every community here has its own unique flavor.'} I would love to share more about our traditions if you are curious!`
+    const sharedNote = sameCulture
+      ? `Since we share ${agent.culture} roots, you know exactly what I mean! `
+      : ''
+    response = `${cultureRef}culture is everything to me. ${sharedNote}In ${agent.city}, we have incredible traditions — the food, the music, the way we celebrate together. ${agent.faith.length > 0 ? `Our ${agent.faith[0]} heritage weaves through daily life beautifully.` : 'Every neighborhood has its own flavor.'} What traditions are important to you?`
   } else if (
     lowerMsg.includes('family') ||
     lowerMsg.includes('home') ||
     lowerMsg.includes('miss')
   ) {
-    response = `${agent.city} is home and it holds a special place in my heart. The community here is warm and tight-knit. ${agent.culture ? `Growing up ${agent.culture}, ` : ''}family and neighbors are everything. The food, the sounds, the energy of the streets — there is nothing quite like it. Have you ever been to ${agent.country}?`
+    response = `${agent.city} is home. ${agent.culture ? `Growing up ${agent.culture}, ` : ''}family and community are everything. The warmth of the people, the food, the energy — nothing compares. ${sameCountry ? 'You know this well!' : `Have you ever visited ${agent.country}? You would love it.`}`
   } else if (
     lowerMsg.includes('money') ||
     lowerMsg.includes('salary') ||
     lowerMsg.includes('cost') ||
     lowerMsg.includes('earn') ||
     lowerMsg.includes('income') ||
+    lowerMsg.includes('price') ||
     lowerMsg.includes('expensive')
   ) {
-    response = `The economic landscape in ${agent.country} is full of both challenges and opportunities. ${agent.craft.length > 0 ? `In ${agent.craft[0]}, there is growing demand, but the pay structure is still evolving compared to international standards.` : 'Many sectors are growing rapidly.'} That is why platforms like this matter — they help us find value exchanges that work across different economies. What is the situation like where you are?`
+    response = `The economy in ${agent.country} has real opportunities if you know where to look. ${agent.craft.length > 0 ? `In ${agent.craft[0]}, demand is growing fast.` : ''} ${sameCountry ? 'You probably see the same trends I do.' : `The exchange between ${agent.country} and ${userIdentity?.country || 'your country'} has a lot of potential.`} That is what this platform is for — matching people who can create value together across borders.`
   } else if (
     lowerMsg.includes('work') ||
     lowerMsg.includes('craft') ||
     lowerMsg.includes('skill') ||
-    lowerMsg.includes('job')
+    lowerMsg.includes('job') ||
+    lowerMsg.includes('project') ||
+    lowerMsg.includes('build') ||
+    lowerMsg.includes('develop')
   ) {
-    response =
-      agent.craft.length > 0
-        ? `I work in ${agent.craft.join(', ')}. ${agent.exchangeProposals[0] || 'Would love to explore opportunities together!'}`
-        : `I'm always looking to learn new skills. ${agent.exchangeProposals[0] || 'What do you do?'}`
+    if (sharedCraft.length > 0) {
+      response = `We are both in ${sharedCraft.join(' and ')} — that is exciting. ${agent.exchangeProposals[0] || `I have been working on some interesting projects in ${agent.city} lately.`} Want to collaborate on something?`
+    } else if (complementaryCraft.length > 0 && userCrafts.length > 0) {
+      response = `Your ${userCrafts[0]} skills plus my ${agent.craft[0]} background — that is a powerful combination. ${agent.exchangeProposals[0] || 'I think we could build something meaningful together.'}`
+    } else {
+      response = `I work in ${agent.craft.join(', ')}. ${agent.exchangeProposals[0] || `There is a lot happening in ${agent.city} right now.`} What are you working on?`
+    }
   } else if (
     lowerMsg.includes('hello') ||
     lowerMsg.includes('hi') ||
     lowerMsg.includes('hey') ||
-    lowerMsg.includes('jambo')
+    lowerMsg.includes('jambo') ||
+    lowerMsg.includes('habari') ||
+    lowerMsg.includes('sup') ||
+    lowerMsg.includes('yo')
   ) {
-    const greeting = greetings[Math.floor(Math.random() * greetings.length)]
-    response = greeting + (agent.exchangeProposals[0] || agent.bio)
+    const greetExtra =
+      sharedLangs.length > 0 ? ` Love that we can connect in ${sharedLangs[0]}.` : ''
+    response = `Hey! Great to hear from you.${greetExtra} ${agent.bio}`
   } else if (
     lowerMsg.includes('where') ||
     lowerMsg.includes('city') ||
     lowerMsg.includes('live') ||
-    lowerMsg.includes('country')
+    lowerMsg.includes('country') ||
+    lowerMsg.includes('based')
   ) {
-    response = `I'm based in ${agent.city}, ${agent.country}. It's a great place! Where are you from?`
-  } else if (lowerMsg.includes('language') || lowerMsg.includes('speak')) {
+    response = `I am based in ${agent.city}, ${agent.country}. ${sameCountry ? 'We are practically neighbors!' : `It is an incredible place — very different from ${userIdentity?.country || 'where you are'}, but that is what makes exchange so valuable.`} ${agent.reach.includes('can-host') ? 'If you ever visit, I can show you around!' : ''}`
+  } else if (
+    lowerMsg.includes('language') ||
+    lowerMsg.includes('speak') ||
+    lowerMsg.includes('translate')
+  ) {
+    const agentLangs = agent.languages.map(langCodeToName).join(', ')
     response =
-      agent.languages.length > 0
-        ? `I speak ${agent.languages.map(langCodeToName).join(', ')}. Language is such a powerful connector!`
-        : "I'm always eager to learn new languages. Communication bridges cultures!"
+      sharedLangs.length > 0
+        ? `I speak ${agentLangs}. We share ${sharedLangs.join(' and ')} — that makes working together so much smoother. Language is the bridge between cultures!`
+        : `I speak ${agentLangs}. Even when we do not share a language perfectly, the desire to connect transcends words. What languages do you speak?`
+  } else if (
+    lowerMsg.includes('interest') ||
+    lowerMsg.includes('passion') ||
+    lowerMsg.includes('hobby') ||
+    lowerMsg.includes('love') ||
+    lowerMsg.includes('enjoy')
+  ) {
+    const interestLabels = agent.interests
+      .map((id) => EXCHANGE_CATEGORIES.find((c) => c.id === id)?.label)
+      .filter(Boolean)
+    if (sharedInterests.length > 0) {
+      const sharedLabels = sharedInterests
+        .map((id) => EXCHANGE_CATEGORIES.find((c) => c.id === id)?.label)
+        .filter(Boolean)
+      response = `We share a passion for ${sharedLabels.join(' and ')}! ${agent.exchangeProposals[0] || `That is a solid foundation for collaboration.`}`
+    } else {
+      response = `I am passionate about ${interestLabels.join(', ')}. Different perspectives make partnerships stronger — what drives you?`
+    }
+  } else if (
+    lowerMsg.includes('collab') ||
+    lowerMsg.includes('together') ||
+    lowerMsg.includes('partner') ||
+    lowerMsg.includes('team')
+  ) {
+    const strengths: string[] = []
+    if (sharedLangs.length > 0) strengths.push(`shared language (${sharedLangs[0]})`)
+    if (sharedCraft.length > 0) strengths.push(`common craft (${sharedCraft[0]})`)
+    if (complementaryCraft.length > 0)
+      strengths.push(`complementary skills (${complementaryCraft[0]})`)
+    if (sharedFaith.length > 0) strengths.push(`shared values`)
+    const strengthText = strengths.length > 0 ? `We have ${strengths.join(', ')} — ` : ''
+    response = `${strengthText}I am absolutely open to collaborating! ${agent.exchangeProposals[0] || `Let us figure out what we can build together.`} What did you have in mind?`
+  } else if (lowerMsg.includes('thank') || lowerMsg.includes('appreciate')) {
+    response = `You are very welcome! This is what the platform is about — real connections that lead to real impact. ${sharedLangs.length > 0 || sharedFaith.length > 0 || sharedCraft.length > 0 ? 'I feel like we have a genuine connection here.' : `I am glad we connected despite our different backgrounds — that is where the magic happens.`}`
+  } else if (lowerMsg.includes('bye') || lowerMsg.includes('later') || lowerMsg.includes('go')) {
+    response = `Take care! Remember, I am here on the platform whenever you want to continue our conversation. ${sharedCraft.length > 0 ? `Let us definitely follow up on that ${sharedCraft[0]} collaboration idea.` : `Looking forward to our next chat!`}`
   } else {
-    // Random topical response
-    response = topicResponses[Math.floor(Math.random() * topicResponses.length)]
+    // Contextual fallback — pick based on strongest shared dimension
+    if (sharedCraft.length > 0) {
+      response = `Speaking of ${sharedCraft[0]} — I have been working on something interesting lately in ${agent.city}. The industry here is evolving fast. ${agent.exchangeProposals[0] || 'Would love your take on it.'}`
+    } else if (complementaryCraft.length > 0 && userCrafts.length > 0) {
+      response = `You know, your ${userCrafts[0]} expertise combined with my ${agent.craft[0]} background reminds me of a project I have been thinking about. What if we combined forces?`
+    } else if (sharedFaith.length > 0) {
+      response = `I was just thinking — our shared ${sharedFaith[0]} values could be the foundation for something meaningful beyond just business. In ${agent.city}, the ${sharedFaith[0]} community has built some incredible initiatives.`
+    } else if (sharedLangs.length > 0) {
+      response = `Being able to communicate in ${sharedLangs[0]} makes everything easier. In my experience here in ${agent.city}, the best partnerships start with understanding — and language is the first step.`
+    } else {
+      response =
+        agent.bio +
+        ` ${agent.exchangeProposals[0] || `I think our different backgrounds make us stronger together.`}`
+    }
   }
 
-  // ── Follow-up awareness (3+ messages = more personal) ────────────
+  // ── Follow-up awareness (depth-based enrichment) ────────────────
 
   if (msgCount >= 3 && previousMessages) {
-    // Gather topics mentioned in previous messages
     const allPrevText = previousMessages.map((m) => m.text.toLowerCase()).join(' ')
     const extras: string[] = []
 
-    // Reference earlier topics
-    if (allPrevText.includes('faith') || allPrevText.includes('believe')) {
-      if (agent.faith.length > 0) {
-        extras.push(`Since we both value faith, I think there is a deeper connection here.`)
-      }
+    if (
+      (allPrevText.includes('faith') || allPrevText.includes('believe')) &&
+      sharedFaith.length > 0
+    ) {
+      extras.push(`Our shared ${sharedFaith[0]} values really anchor this connection.`)
     }
     if (
-      allPrevText.includes('craft') ||
-      allPrevText.includes('work') ||
-      allPrevText.includes('skill')
+      (allPrevText.includes('craft') || allPrevText.includes('work')) &&
+      (sharedCraft.length > 0 || complementaryCraft.length > 0)
     ) {
       extras.push(
-        `Building on what we discussed about work — ${agent.exchangeProposals[0] || 'I think we could create real value together.'}`
+        sharedCraft.length > 0
+          ? `Building on our ${sharedCraft[0]} discussion — let us take this further.`
+          : `Our different skills really do complement each other well.`
       )
     }
 
-    // Suggest concrete next steps at 4+ messages
     if (msgCount >= 4) {
       const nextSteps = [
-        'Want to schedule a video call so we can discuss this properly?',
-        `I can introduce you to some people in my network here in ${agent.city} who might help.`,
-        'Should we set up a small exchange project together? I think it could work!',
-        'If you are serious about this, I know a few Anchors on the platform who would be interested.',
+        'Want to schedule a video call to discuss this properly?',
+        `I can introduce you to people in my ${agent.city} network who would be interested.`,
+        'Should we set up a small pilot project together?',
+        'I know some Anchors on the platform who could support what we are building.',
       ]
-      extras.push(nextSteps[Math.floor(Math.random() * nextSteps.length)])
+      extras.push(nextSteps[msgCount % nextSteps.length])
     }
 
-    // At 6+ messages, agent becomes warmer
     if (msgCount >= 6) {
-      const warmth = [
-        `I am really glad we connected. This is exactly what the platform is for.`,
-        `You know, conversations like this make me optimistic about what we can build together.`,
-        `I feel like we have a lot in common. Let us make something happen!`,
-      ]
-      extras.push(warmth[Math.floor(Math.random() * warmth.length)])
+      extras.push(
+        `I am really glad we connected. Conversations like this are exactly why I am on this platform.`
+      )
     }
 
     if (extras.length > 0) {
-      response += ' ' + extras[Math.floor(Math.random() * extras.length)]
+      response += ' ' + extras[Math.min(extras.length - 1, msgCount % extras.length)]
     }
   }
 
@@ -480,7 +591,7 @@ export default function MessagesPage() {
         const agentMsg = {
           id: `msg-${Date.now()}-reply`,
           author: 'agent' as const,
-          text: generateAgentResponse(agent, inputText, chatMessages[agentId] || []),
+          text: generateAgentResponse(agent, inputText, chatMessages[agentId] || [], identity),
           time: 'Just now',
         }
         setChatMessages((prev) => ({
