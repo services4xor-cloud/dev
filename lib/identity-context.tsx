@@ -38,6 +38,14 @@ interface Identity {
   interests: string[]
   /** Explorer discovers experiences, Host offers them */
   mode: 'explorer' | 'host'
+  /** Faith / spiritual tradition ID (from FAITH_OPTIONS) */
+  faith?: string
+  /** Skills / crafts the user practices */
+  craft: string[]
+  /** Geographic reach preferences (from REACH_OPTIONS) */
+  reach: string[]
+  /** Cultural identity or tradition */
+  culture?: string
 }
 
 interface IdentityContextValue {
@@ -69,6 +77,14 @@ interface IdentityContextValue {
   setMode: (mode: 'explorer' | 'host') => void
   /** Set user's city */
   setCity: (city: string) => void
+  /** Set faith / spiritual tradition */
+  setFaith: (faith: string) => void
+  /** Set craft / skills */
+  setCraft: (craft: string[]) => void
+  /** Set geographic reach */
+  setReach: (reach: string[]) => void
+  /** Set cultural identity */
+  setCulture: (culture: string) => void
 }
 
 // ─── Default ────────────────────────────────────────────────────────
@@ -100,6 +116,8 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     languages: [],
     interests: [],
     mode: 'explorer',
+    craft: [],
+    reach: [],
   })
 
   // Hydrate from localStorage on mount, or auto-detect from browser
@@ -123,6 +141,12 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
           if (!parsed.mode) {
             parsed.mode = 'explorer'
           }
+          if (!Array.isArray(parsed.craft)) {
+            parsed.craft = []
+          }
+          if (!Array.isArray(parsed.reach)) {
+            parsed.reach = []
+          }
           setIdentity(parsed)
         }
       }
@@ -142,6 +166,8 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
             languages: [],
             interests: [],
             mode: 'explorer',
+            craft: [],
+            reach: [],
           })
         }
       } catch {
@@ -195,6 +221,10 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       interests: prev.interests,
       mode: prev.mode,
       city: prev.city,
+      faith: prev.faith,
+      craft: prev.craft,
+      reach: prev.reach,
+      culture: prev.culture,
     }))
   }, [])
 
@@ -205,6 +235,8 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       languages: [],
       interests: [],
       mode: 'explorer',
+      craft: [],
+      reach: [],
     })
   }, [])
 
@@ -222,6 +254,22 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
 
   const setCity = useCallback((city: string) => {
     setIdentity((prev) => ({ ...prev, city }))
+  }, [])
+
+  const setFaith = useCallback((faith: string) => {
+    setIdentity((prev) => ({ ...prev, faith }))
+  }, [])
+
+  const setCraft = useCallback((craft: string[]) => {
+    setIdentity((prev) => ({ ...prev, craft }))
+  }, [])
+
+  const setReach = useCallback((reach: string[]) => {
+    setIdentity((prev) => ({ ...prev, reach }))
+  }, [])
+
+  const setCulture = useCallback((culture: string) => {
+    setIdentity((prev) => ({ ...prev, culture }))
   }, [])
 
   // Localized names — thread brand overrides country brand when active
@@ -255,6 +303,10 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         setInterests,
         setMode,
         setCity,
+        setFaith,
+        setCraft,
+        setReach,
+        setCulture,
       }}
     >
       {children}
@@ -276,6 +328,8 @@ export function useIdentity(): IdentityContextValue {
         languages: [],
         interests: [],
         mode: 'explorer' as const,
+        craft: [],
+        reach: [],
       },
       countryName: fallbackName,
       brandName: BRAND_NAME_OVERRIDES[DEFAULT_COUNTRY] || `Be${fallbackName}`,
@@ -290,6 +344,10 @@ export function useIdentity(): IdentityContextValue {
       setInterests: () => {},
       setMode: () => {},
       setCity: () => {},
+      setFaith: () => {},
+      setCraft: () => {},
+      setReach: () => {},
+      setCulture: () => {},
     }
   }
   return ctx
