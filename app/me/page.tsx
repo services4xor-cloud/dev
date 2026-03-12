@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
@@ -23,6 +23,7 @@ import GlassCard from '@/components/ui/GlassCard'
 import StatCard from '@/components/ui/StatCard'
 import { SkeletonDashboard } from '@/components/Skeleton'
 import JourneyProgress from '@/components/JourneyProgress'
+import { useProfileSync } from '@/lib/hooks/use-profile-sync'
 
 // ─── Tab definitions ────────────────────────────────────────────────────────
 
@@ -96,6 +97,48 @@ export default function MePage() {
 
   const [activeTab, setActiveTab] = useState<TabId>('Dashboard')
   const [mounted, setMounted] = useState(false)
+  const { saving, lastSaved, pioneerId, saveProfile } = useProfileSync()
+
+  // Auto-save identity dimensions to DB when they change
+  const syncIdentity = useCallback(() => {
+    saveProfile({
+      country: identity.country,
+      language: identity.language,
+      languages: identity.languages,
+      interests: identity.interests,
+      reach: identity.reach,
+      faith: identity.faith,
+      culture: identity.culture ?? '',
+      crafts: identity.craft,
+      city: identity.city ?? '',
+    })
+  }, [
+    identity.country,
+    identity.language,
+    identity.languages,
+    identity.interests,
+    identity.reach,
+    identity.faith,
+    identity.culture,
+    identity.craft,
+    identity.city,
+    saveProfile,
+  ])
+
+  // Trigger save when identity changes (after initial mount)
+  useEffect(() => {
+    if (mounted) syncIdentity()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    identity.country,
+    identity.language,
+    identity.interests.length,
+    identity.reach.length,
+    identity.faith.length,
+    identity.culture,
+    identity.craft.length,
+    identity.city,
+  ])
 
   // Real data from API
   const [dbChapters, setDbChapters] = useState<
@@ -797,11 +840,39 @@ export default function MePage() {
             ))}
           </div>
 
+          {/* Pioneer ID (shareable) */}
+          {pioneerId && (
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard.writeText(pioneerId)
+              }}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-xs font-mono mb-phi-2 hover:bg-brand-accent/20 transition-colors"
+              title={t('me.copyId')}
+            >
+              🆔 {pioneerId}
+              <span className="text-[9px] text-brand-accent/60 uppercase tracking-wider">
+                {t('me.tapToCopy')}
+              </span>
+            </button>
+          )}
+
           {/* Match count + dimension count */}
           <p className="text-phi-sm text-brand-accent">{t('me.connectedTo', { count: '42' })}</p>
           <p className="text-phi-sm text-white/40 mt-phi-1">
             {t('me.dimensionsActive', { count: String(activeDimensions) })}
           </p>
+
+          {/* Save indicator */}
+          {saving && (
+            <p className="text-[10px] text-white/30 mt-phi-1 flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-brand-accent/50 animate-pulse" />
+              {t('me.saving')}
+            </p>
+          )}
+          {!saving && lastSaved && (
+            <p className="text-[10px] text-white/20 mt-phi-1">✓ {t('me.saved')}</p>
+          )}
         </div>
 
         {/* ── Dimension Summary Card ───────────────────────────────────── */}

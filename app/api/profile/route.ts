@@ -2,20 +2,37 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
 import { logger } from '@/lib/logger'
 
 const profileSchema = z.object({
   name: z.string().min(2).max(100).optional(),
-  phone: z.string().min(9).max(20).optional(),
+  phone: z.string().min(9).max(20).optional().or(z.literal('')),
   bio: z.string().max(500).optional(),
   headline: z.string().max(100).optional(),
   city: z.string().max(100).optional(),
-  country: z.string().max(100).optional(),
+  country: z.string().length(2).optional(),
   linkedin: z.string().url().optional().or(z.literal('')),
   skills: z.array(z.string()).max(30).optional(),
+  // Identity dimensions
+  language: z.string().max(10).optional(),
+  languages: z.array(z.string()).max(20).optional(),
+  interests: z.array(z.string()).max(20).optional(),
+  reach: z.array(z.string()).max(10).optional(),
+  faith: z.array(z.string()).max(5).optional(),
+  culture: z.string().max(100).optional().or(z.literal('')),
+  crafts: z.array(z.string()).max(30).optional(),
 })
 
-// GET /api/profile — get current user's profile
+/** Generate a unique Pioneer ID like "BE-KE-7X3M" */
+function generatePioneerId(country: string): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // No I/O/0/1 for clarity
+  let code = ''
+  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)]
+  return `BE-${country.toUpperCase()}-${code}`
+}
+
+// GET /api/profile — get current user's profile + identity dimensions
 export async function GET(_req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -23,8 +40,61 @@ export async function GET(_req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Login required' }, { status: 401 })
     }
 
-    // TODO: prisma.user.findUnique({ where: { id: session.user.id } })
-    return NextResponse.json({ success: true, data: null })
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        pioneerId: true,
+        name: true,
+        email: true,
+        phone: true,
+        country: true,
+        avatarUrl: true,
+        image: true,
+        role: true,
+        profile: {
+          select: {
+            headline: true,
+            bio: true,
+            pioneerType: true,
+            skills: true,
+            experience: true,
+            location: true,
+            city: true,
+            linkedinUrl: true,
+            videoUrl: true,
+            isPublic: true,
+            language: true,
+            languages: true,
+            interests: true,
+            reach: true,
+            faith: true,
+            culture: true,
+            crafts: true,
+          },
+        },
+      },
+    })
+
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 })
+    }
+
+    // Auto-generate pioneerId if missing
+    if (!user.pioneerId) {
+      let pioneerId = generatePioneerId(user.country)
+      for (let i = 0; i < 3; i++) {
+        try {
+          await db.user.update({ where: { id: user.id }, data: { pioneerId } })
+          user.pioneerId = pioneerId
+          break
+        } catch {
+          pioneerId = generatePioneerId(user.country)
+        }
+      }
+    }
+
+    return NextResponse.json({ success: true, data: user })
   } catch (err) {
     logger.error('GET /api/profile failed', { error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to fetch profile' }, { status: 500 })
@@ -54,12 +124,69 @@ export async function PATCH(req: NextRequest) {
       )
     }
 
-    // TODO: prisma.user.update({ where: { id: session.user.id }, data: parsed.data })
+    const data = parsed.data
 
-    return NextResponse.json({
-      success: true,
-      data: { ...parsed.data, updatedAt: new Date().toISOString() },
+    // Split: user-level vs profile-level fields
+    const userFields: Record<string, unknown> = {}
+    if (data.name !== undefined) userFields.name = data.name
+    if (data.phone !== undefined) userFields.phone = data.phone || null
+    if (data.country !== undefined) userFields.country = data.country
+
+    const profileFields: Record<string, unknown> = {}
+    if (data.bio !== undefined) profileFields.bio = data.bio || null
+    if (data.headline !== undefined) profileFields.headline = data.headline || null
+    if (data.city !== undefined) profileFields.city = data.city || null
+    if (data.linkedin !== undefined) profileFields.linkedinUrl = data.linkedin || null
+    if (data.skills !== undefined) profileFields.skills = data.skills
+    if (data.language !== undefined) profileFields.language = data.language
+    if (data.languages !== undefined) profileFields.languages = data.languages
+    if (data.interests !== undefined) profileFields.interests = data.interests
+    if (data.reach !== undefined) profileFields.reach = data.reach
+    if (data.faith !== undefined) profileFields.faith = data.faith
+    if (data.culture !== undefined) profileFields.culture = data.culture || null
+    if (data.crafts !== undefined) profileFields.crafts = data.crafts
+
+    // Update user-level fields
+    if (Object.keys(userFields).length > 0) {
+      await db.user.update({ where: { id: session.user.id }, data: userFields })
+    }
+
+    // Upsert profile (create if not exists)
+    if (Object.keys(profileFields).length > 0) {
+      await db.profile.upsert({
+        where: { userId: session.user.id },
+        create: { userId: session.user.id, ...profileFields },
+        update: profileFields,
+      })
+    }
+
+    // Return updated data
+    const updated = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        pioneerId: true,
+        name: true,
+        country: true,
+        profile: {
+          select: {
+            headline: true,
+            bio: true,
+            language: true,
+            languages: true,
+            interests: true,
+            reach: true,
+            faith: true,
+            culture: true,
+            crafts: true,
+            city: true,
+            skills: true,
+          },
+        },
+      },
     })
+
+    return NextResponse.json({ success: true, data: updated })
   } catch (err) {
     logger.error('PATCH /api/profile failed', { error: String(err) })
     return NextResponse.json({ success: false, error: 'Failed to update profile' }, { status: 500 })

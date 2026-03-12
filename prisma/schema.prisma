@@ -20,6 +20,7 @@ datasource db {
 
 model User {
   id            String    @id @default(cuid())
+  pioneerId     String?   @unique // Shareable public ID (e.g. "BE-KE-7X3M") for discovery
   email         String    @unique
   emailVerified DateTime?           // Required by @auth/prisma-adapter (Google OAuth sets this)
   name          String?
@@ -112,9 +113,20 @@ model Profile {
   skills      String[]
   experience  Int?     // Years of experience
   location    String?
+  city        String?
   linkedinUrl String?
   videoUrl    String?  // 30-second pitch video
   isPublic    Boolean  @default(true)
+
+  // ─── Identity dimensions (from onboarding / Me page) ──────
+  language    String   @default("en")     // Primary language code
+  languages   String[] // All spoken languages
+  interests   String[] // Exchange category IDs
+  reach       String[] // Reach option IDs (can-travel, can-host, etc.)
+  faith       String[] // Faith IDs (islam, christianity, etc.)
+  culture     String?  // Cultural identity (Maasai, Kikuyu, etc.)
+  crafts      String[] // Craft/skill tags
+
   updatedAt   DateTime @updatedAt
 }
 
