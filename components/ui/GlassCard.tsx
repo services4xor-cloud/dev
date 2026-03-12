@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
+import type { ReactNode, HTMLAttributes } from 'react'
 
-interface GlassCardProps {
+interface GlassCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'children'> {
   variant?: 'default' | 'featured' | 'subtle'
   hover?: boolean
   padding?: 'none' | 'sm' | 'md' | 'lg'
@@ -27,6 +27,7 @@ export default function GlassCard({
   padding = 'md',
   className = '',
   children,
+  ...rest
 }: GlassCardProps) {
   return (
     <div
@@ -35,6 +36,7 @@ export default function GlassCard({
           ? 'transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand-accent/10'
           : ''
       } ${className}`}
+      {...rest}
     >
       {children}
     </div>
