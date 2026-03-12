@@ -24,6 +24,7 @@ import StatCard from '@/components/ui/StatCard'
 import { SkeletonDashboard } from '@/components/Skeleton'
 import JourneyProgress from '@/components/JourneyProgress'
 import { useProfileSync, type DimensionPriority } from '@/lib/hooks/use-profile-sync'
+import { computeCompleteness } from '@/lib/profile-completeness'
 
 // ─── Tab definitions ────────────────────────────────────────────────────────
 
@@ -255,17 +256,11 @@ export default function MePage() {
     )
   }
 
+  // ─── Profile completeness (self-enrichment engine) ──────────────────
+  const completeness = computeCompleteness(identity, !!editBio, false)
+
   // ─── Dimension activity count ──────────────────────────────────────
-  const activeDimensions = [
-    identity.country, // location — always active
-    identity.languages.length > 0,
-    identity.faith.length > 0,
-    identity.craft.length > 0,
-    identity.interests.length > 0,
-    identity.reach.length > 0,
-    identity.culture,
-    true, // market — always computed
-  ].filter(Boolean).length
+  const activeDimensions = completeness.dimensions.filter((d) => d.filled).length
 
   const marketSignals = getSignalsForRegion(identity.country)
   const marketScore = getMarketScore(
@@ -292,10 +287,75 @@ export default function MePage() {
 
   function renderExplorerDashboard() {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-phi-4">
-        <StatCard label={t('me.connections')} value={12} icon={<span>🤝</span>} accent />
-        <StatCard label={t('me.matches')} value={42} icon={<span>🎯</span>} />
-        <StatCard label={t('me.active')} value={3} icon={<span>⚡</span>} />
+      <div className="space-y-phi-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-phi-4">
+          <StatCard label={t('me.connections')} value={12} icon={<span>🤝</span>} accent />
+          <StatCard label={t('me.matches')} value={42} icon={<span>🎯</span>} />
+          <StatCard label={t('me.active')} value={3} icon={<span>⚡</span>} />
+        </div>
+
+        {/* Profile completeness — self-enrichment motivator */}
+        {completeness.score < 100 && (
+          <GlassCard padding="md">
+            <div className="flex items-center gap-4">
+              {/* Circular score */}
+              <div className="relative w-14 h-14 flex-shrink-0">
+                <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.08)"
+                    strokeWidth="3"
+                  />
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke={
+                      completeness.score >= 80
+                        ? '#22c55e'
+                        : completeness.score >= 50
+                          ? '#C9A227'
+                          : '#ef4444'
+                    }
+                    strokeWidth="3"
+                    strokeDasharray={`${completeness.score}, 100`}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">
+                  {completeness.score}%
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-white font-medium text-phi-sm">
+                  {t('me.profileComplete', { score: String(completeness.score) })}
+                </p>
+                <p className="text-white/40 text-phi-xs mt-0.5">
+                  {completeness.matchBoost >= 1.2
+                    ? t('me.matchBoostMax')
+                    : completeness.matchBoost >= 1.0
+                      ? t('me.matchBoostGood')
+                      : t('me.matchBoostLow')}
+                </p>
+                {/* Unfilled dimensions as quick-fill chips */}
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {completeness.dimensions
+                    .filter((d) => !d.filled)
+                    .slice(0, 4)
+                    .map((d) => (
+                      <Link
+                        key={d.key}
+                        href={d.route}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/5 text-white/50 text-[10px] hover:bg-brand-accent/10 hover:text-brand-accent transition-colors border border-white/10"
+                      >
+                        {d.icon} {d.label}
+                      </Link>
+                    ))}
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        )}
       </div>
     )
   }
