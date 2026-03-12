@@ -1,5 +1,5 @@
 ---
-name: bekenya-business-review
+name: becountry-business-review
 description: Review BeKenya revenue model, pricing, conversion flows, and business metrics readiness.
 ---
 

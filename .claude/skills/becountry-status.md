@@ -1,5 +1,5 @@
 ---
-name: bekenya-status
+name: becountry-status
 description: Show full status of the BeKenya.com platform — DB health, deployed pages, auth state, email readiness, seed data, and test results.
 ---
 

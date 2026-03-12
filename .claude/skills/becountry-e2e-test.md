@@ -1,5 +1,5 @@
 ---
-name: bekenya-e2e-test
+name: becountry-e2e-test
 description: Run end-to-end scenario tests for BeKenya — walk through complete user journeys, verify flows connect, report broken paths.
 ---
 

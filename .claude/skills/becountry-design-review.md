@@ -1,5 +1,5 @@
 ---
-name: bekenya-design-review
+name: becountry-design-review
 description: Review BeKenya UI/UX — brand compliance, accessibility, responsive design, and visual consistency across pages.
 ---
 

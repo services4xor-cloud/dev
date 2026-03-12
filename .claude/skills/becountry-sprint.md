@@ -1,5 +1,5 @@
 ---
-name: bekenya-sprint
+name: becountry-sprint
 description: Agile sprint planning and coordination for BeKenya — reads ROADMAP-LIVE.md, identifies next priorities, creates sprint backlog.
 ---
 

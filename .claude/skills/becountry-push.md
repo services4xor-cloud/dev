@@ -1,5 +1,5 @@
 ---
-name: bekenya-push
+name: becountry-push
 description: Push BeKenya.com branch to GitHub and verify Vercel deployment — runs pre-push checks, commits, pushes, and monitors deploy.
 ---
 
