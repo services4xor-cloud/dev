@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 32 (2026-03-11)
+> Last updated: Session 48 (2026-03-12)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 614/614 ✅ (33 suites)                                      |
+| Jest tests        | 635/635 ✅ (35 suites)                                      |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
@@ -67,6 +67,25 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 48 (2026-03-12) — Test Coverage Sprint + Loading/Error/Not-Found Coverage
+
+Continued optimization loop. Focused on test coverage expansion and route boundary completeness.
+
+- [x] **Fixed 4 failing mock-barrel tests**: Corrected assertions for LEGAL (no URL fields), PRICING_PLANS (no id), COUNTRY_GREETINGS/SUGGESTED_SKILLS (Records not arrays)
+- [x] **76 new tests** (559→635, 35 suites):
+  - mock-barrel (38): validates all mock data barrel exports
+  - email (21): template rendering, mock fallback, convenience wrappers
+  - contact (17): schema validation, XSS escaping, boundary values
+  - bookings (16): payment methods, guest limits, ID generation
+  - chapters (7): pathId validation, coverLetter boundary
+  - profile (14): name/phone/bio boundaries, linkedin URL, skills limit
+- [x] **11 loading skeletons**: experiences, about, be/[country], charity, contact, pricing, login, signup, referral, offerings, plus 3 detail pages (experiences/[id], threads/[slug], ventures/[id])
+- [x] **6 error boundaries**: experiences, be/[country], threads, profile, experiences/[id], charity
+- [x] **2 not-found pages**: threads/[slug], ventures/[id]
+- [x] **3 metadata layouts**: privacy, admin, forgot-password
+- [x] **Coverage**: 21 loading.tsx, 14 error.tsx, 6 not-found.tsx, 22 layout.tsx
+- [x] Jest: 635/635 ✅ | TS: 0 errors | 35 suites | Clean build
 
 ### Session 47 (2026-03-12) — SEO, Accessibility, Image Optimization, API Hardening
 
