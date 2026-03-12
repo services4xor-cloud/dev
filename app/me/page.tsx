@@ -18,6 +18,8 @@ import { getMarketScore, getSignalsForRegion } from '@/lib/market-data'
 import ModeToggle from '@/components/ModeToggle'
 import GlassCard from '@/components/ui/GlassCard'
 import StatCard from '@/components/ui/StatCard'
+import { SkeletonDashboard } from '@/components/Skeleton'
+import JourneyProgress from '@/components/JourneyProgress'
 
 // ─── Tab definitions ────────────────────────────────────────────────────────
 
@@ -146,8 +148,10 @@ export default function MePage() {
 
   if (!mounted) {
     return (
-      <main className="min-h-screen bg-brand-bg flex items-center justify-center">
-        <div className="text-white/40">Loading...</div>
+      <main className="min-h-screen bg-brand-bg">
+        <div className="max-w-3xl mx-auto px-phi-4 py-phi-7">
+          <SkeletonDashboard />
+        </div>
       </main>
     )
   }
@@ -725,6 +729,11 @@ export default function MePage() {
             })}
           </div>
         </GlassCard>
+
+        {/* ── Journey Progress ──────────────────────────────────────── */}
+        <div className="mb-phi-5">
+          <JourneyProgress />
+        </div>
 
         {/* ── Mode Toggle ─────────────────────────────────────────────── */}
         <div className="flex justify-center mb-phi-7">

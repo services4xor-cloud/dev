@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -8,13 +8,19 @@ import { useSession, signOut } from 'next-auth/react'
 import { Menu, X, LogIn, ArrowRight, LogOut, Bell } from 'lucide-react'
 import { PUBLIC_NAV_LINKS, MAIN_NAV_LINKS, LOGIN_LINK } from '@/lib/nav-structure'
 import { useIdentity } from '@/lib/identity-context'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+import DynamicLogo from '@/components/DynamicLogo'
+import IdentitySwitcher from '@/components/IdentitySwitcher'
 
 // ─────────────────────────────────────────────────────────────────
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [identityOpen, setIdentityOpen] = useState(false)
+  const identityRef = useRef<HTMLDivElement>(null)
 
-  const { hasCompletedDiscovery, brandName } = useIdentity()
+  const { identity, hasCompletedDiscovery, brandName } = useIdentity()
+  const currentCountry = COUNTRY_OPTIONS.find((c) => c.code === identity.country)
   const { data: session, status } = useSession()
   const pathname = usePathname()
 
@@ -31,7 +37,21 @@ export default function Nav() {
   // Close on route change
   useEffect(() => {
     setMobileOpen(false)
+    setIdentityOpen(false)
   }, [pathname])
+
+  // Close identity switcher on click outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (identityRef.current && !identityRef.current.contains(e.target as Node)) {
+        setIdentityOpen(false)
+      }
+    }
+    if (identityOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [identityOpen])
 
   // Lock body scroll when mobile menu open
   useEffect(() => {
@@ -91,21 +111,48 @@ export default function Nav() {
 
         <div className="max-w-6xl 3xl:max-w-[1600px] mx-auto px-4 xl:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* ── Logo ────────────────────────────────── */}
-            <Link
-              href="/"
-              className="group flex items-center gap-2 shrink-0 rounded-lg
-                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
-                         focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
-              aria-label={`${brandName} — Home`}
-            >
-              <span className="font-bold text-[15px] tracking-wide">
-                <span className="text-brand-accent">Be</span>
-                <span className="text-white">
-                  {brandName.startsWith('Be') ? brandName.slice(2) : brandName}
+            {/* ── Logo + Identity Switcher ────────────────────────────────── */}
+            <div ref={identityRef} className="relative flex items-center gap-1 shrink-0">
+              <Link
+                href="/"
+                className="group flex items-center gap-2 shrink-0 rounded-lg
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
+                           focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
+                aria-label={`${brandName} — Home`}
+              >
+                <DynamicLogo icon={currentCountry?.flag ?? '🌍'} size={28} />
+                <span className="font-bold text-[15px] tracking-wide">
+                  <span className="text-brand-accent">Be</span>
+                  <span className="text-white">
+                    {brandName.startsWith('Be') ? brandName.slice(2) : brandName}
+                  </span>
                 </span>
-              </span>
-            </Link>
+              </Link>
+              {/* Identity switcher toggle */}
+              <button
+                type="button"
+                onClick={() => setIdentityOpen((v) => !v)}
+                aria-expanded={identityOpen}
+                aria-label="Switch identity"
+                className="p-1 rounded-md text-white/40 hover:text-white hover:bg-white/5 transition-all"
+              >
+                <svg
+                  className={`w-3.5 h-3.5 transition-transform ${identityOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {/* Identity switcher dropdown */}
+              <IdentitySwitcher
+                open={identityOpen}
+                onClose={() => setIdentityOpen(false)}
+                className="absolute top-full left-0 mt-2 z-50"
+              />
+            </div>
 
             {/* ── Desktop links ─────────────────────────────────── */}
             <ul className="hidden lg:flex items-center gap-0.5 list-none">

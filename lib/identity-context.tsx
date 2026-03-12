@@ -46,6 +46,8 @@ interface Identity {
   reach: string[]
   /** Optional ethnic/cultural identity */
   culture?: string
+  /** Active topic focus — filters all feeds when set */
+  focusTopic?: string
 }
 
 interface IdentityContextValue {
@@ -85,6 +87,8 @@ interface IdentityContextValue {
   setReach: (reach: string[]) => void
   /** Set ethnic/cultural identity */
   setCulture: (culture: string | undefined) => void
+  /** Set topic focus — filters Exchange, Messages, World by topic */
+  setFocusTopic: (topic: string | undefined) => void
 }
 
 // ─── Default ────────────────────────────────────────────────────────
@@ -272,6 +276,10 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     setIdentity((prev) => ({ ...prev, culture }))
   }, [])
 
+  const setFocusTopic = useCallback((focusTopic: string | undefined) => {
+    setIdentity((prev) => ({ ...prev, focusTopic }))
+  }, [])
+
   // Localized names — thread brand overrides country brand when active
   const countryName = getLocalizedCountryName(identity.country, identity.language)
   const brandName =
@@ -308,6 +316,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         setCraft,
         setReach,
         setCulture,
+        setFocusTopic,
       }}
     >
       {children}
@@ -350,6 +359,7 @@ export function useIdentity(): IdentityContextValue {
       setCraft: () => {},
       setReach: () => {},
       setCulture: () => {},
+      setFocusTopic: () => {},
     }
   }
   return ctx

@@ -21,7 +21,9 @@ datasource db {
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
+  emailVerified DateTime?           // Required by @auth/prisma-adapter (Google OAuth sets this)
   name          String?
+  image         String?             // Required by @auth/prisma-adapter (Google profile picture)
   phone         String?
   passwordHash  String?   // bcrypt hash for Credentials auth (null for OAuth-only)
   role          UserRole  @default(PIONEER)
@@ -32,6 +34,7 @@ model User {
 
   profile       Profile?
   accounts      Account[]         // OAuth providers (Google, etc.)
+  sessions      Session[]         // Required by @auth/prisma-adapter
   postedPaths   Path[]            // Anchors post Paths
   chapters      Chapter[]         // Pioneers open Chapters
   payments      Payment[]
@@ -70,6 +73,30 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@index([userId])
+}
+
+// ─── Session (NextAuth) ──────────────────────────────────────────────────────
+// Required by @auth/prisma-adapter even when using JWT strategy.
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+
+  @@index([userId])
+}
+
+// ─── VerificationToken (NextAuth) ────────────────────────────────────────────
+// Required by @auth/prisma-adapter for email verification flows.
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 // ─── Profile ─────────────────────────────────────────────────────────────────

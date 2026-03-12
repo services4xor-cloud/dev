@@ -15,6 +15,7 @@ import { useJourney } from '@/lib/hooks/use-journey'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
+import SectionHeader from '@/components/SectionHeader'
 import {
   ABOUT_VALUES as VALUES,
   ABOUT_SECTORS as SECTORS,
@@ -167,12 +168,11 @@ export default function AboutPage() {
 
       {/* Values */}
       <SectionLayout size="md" maxWidth="max-w-5xl 3xl:max-w-[1600px]">
-        <div className="text-center mb-12">
-          <div className="text-phi-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            {t('about.valuesSubtitle')}
-          </div>
-          <h2 className="text-phi-2xl md:text-phi-3xl font-bold">{t('about.valuesTitle')}</h2>
-        </div>
+        <SectionHeader
+          title={t('about.valuesTitle')}
+          subtitle={t('about.valuesSubtitle')}
+          className="mb-12"
+        />
         <div className="grid sm:grid-cols-2 gap-phi-5 reveal-stagger">
           {VALUES.map((v) => (
             <GlassCard key={v.title} hover>
@@ -188,12 +188,11 @@ export default function AboutPage() {
 
       {/* Sectors */}
       <SectionLayout size="md" maxWidth="max-w-5xl 3xl:max-w-[1600px]">
-        <div className="text-center mb-10">
-          <div className="text-phi-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            {t('about.sectors')}
-          </div>
-          <h2 className="text-phi-2xl md:text-phi-3xl font-bold">{t('about.sectorsTitle')}</h2>
-        </div>
+        <SectionHeader
+          title={t('about.sectorsTitle')}
+          subtitle={t('about.sectors')}
+          className="mb-10"
+        />
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 reveal-stagger">
           {SECTORS.map((s) => (
             <GlassCard
@@ -212,13 +211,11 @@ export default function AboutPage() {
 
       {/* Payment Rails */}
       <SectionLayout size="md" maxWidth="max-w-5xl 3xl:max-w-[1600px]">
-        <div className="text-center mb-10">
-          <div className="text-phi-xs font-semibold uppercase tracking-widest text-brand-accent mb-3">
-            {t('about.payments')}
-          </div>
-          <h2 className="text-phi-2xl font-bold mb-3">{t('about.paymentsTitle')}</h2>
-          <p className="text-gray-400">{t('about.paymentsDesc')}</p>
-        </div>
+        <SectionHeader
+          title={t('about.paymentsTitle')}
+          subtitle={t('about.paymentsDesc')}
+          className="mb-10"
+        />
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 reveal-stagger">
           {PAYMENT_METHODS.map((p) => (
             <GlassCard

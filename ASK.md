@@ -226,4 +226,28 @@ Paperclip logs cost per post
 
 **Status:** ✅ Skill `bex-mvc-enrichment` created. Enforced via skill on every page build.
 
+---
+
+## Google OAuth Setup Checklist (Session — 2026-03-12)
+
+**Code fix applied:** Added `emailVerified`, `image` fields to `User` model and added `Session` + `VerificationToken` models to `prisma/schema.prisma`. These are required by `@auth/prisma-adapter`.
+
+**Owner must do (human-only steps):**
+
+1. **Push schema to DB:** Run `npx prisma db push` to create the new columns/tables in Neon.
+
+2. **Google Cloud Console — Authorized redirect URIs:** Verify the following URIs are added in [Google Cloud Console](https://console.cloud.google.com/) > APIs & Services > Credentials > OAuth 2.0 Client ID:
+   - **Local:** `http://localhost:3000/api/auth/callback/google`
+   - **Production:** `https://dev-git-main-tobias-projects-81752e2c.vercel.app/api/auth/callback/google`
+   - (Plus any custom domain once set up)
+
+3. **Vercel environment variables:** Ensure these are set in Vercel project settings (not just `.env.local`):
+   - `GOOGLE_CLIENT_ID` — from Google Cloud Console
+   - `GOOGLE_CLIENT_SECRET` — from Google Cloud Console
+   - `NEXTAUTH_URL` — must be `https://dev-git-main-tobias-projects-81752e2c.vercel.app` (production URL, NOT localhost)
+   - `NEXTAUTH_SECRET` — any random 32+ char string (use `openssl rand -base64 32`)
+   - `DATABASE_URL` — Neon connection string
+
+4. **Google Cloud Console — OAuth consent screen:** Ensure app is in "Testing" mode with your test email added, OR published if ready for public access.
+
 _(All questions resolved. New questions go below this line.)_

@@ -25,6 +25,7 @@ import { getSignalsForRegion } from '@/lib/market-data'
 import ExchangeCard, { type ExchangeCardData } from '@/components/ExchangeCard'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
+import SectionHeader from '@/components/SectionHeader'
 
 // ─── Helpers ────────────────────────────────────────────────────────
 
@@ -301,10 +302,12 @@ export default function ExchangePage() {
           <ArrowLeft className="h-4 w-4" />
           Home
         </Link>
-        <h1 className="text-phi-2xl font-bold gradient-text">Exchange</h1>
-        <p className="mt-phi-1 text-phi-base text-white/60">
-          Pioneers and Paths matched to your identity
-        </p>
+        <SectionHeader
+          title="Exchange"
+          subtitle="Pioneers and Paths matched to your identity"
+          accent={false}
+          className="text-left mb-0"
+        />
       </div>
 
       {/* ── Filter bar ── */}
