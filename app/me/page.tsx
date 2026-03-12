@@ -26,6 +26,8 @@ import JourneyProgress from '@/components/JourneyProgress'
 import { useProfileSync, type DimensionPriority } from '@/lib/hooks/use-profile-sync'
 import { computeCompleteness } from '@/lib/profile-completeness'
 import StatHexagon from '@/components/StatHexagon'
+import { getRouteInfo } from '@/lib/compass'
+import { getCountryHighlights } from '@/lib/country-highlights'
 
 // ─── Tab definitions ────────────────────────────────────────────────────────
 
@@ -95,10 +97,12 @@ export default function MePage() {
     setCraft,
     setReach,
     setCulture,
+    setToCountries,
   } = useIdentity()
 
   const [activeTab, setActiveTab] = useState<TabId>('Dashboard')
   const [mounted, setMounted] = useState(false)
+  const [destSearch, setDestSearch] = useState('')
   const { saving, lastSaved, pioneerId, saveProfile } = useProfileSync()
   const [priorities, setPriorities] = useState<Record<string, DimensionPriority>>(() => {
     if (typeof window === 'undefined') return {}
@@ -1042,6 +1046,124 @@ export default function MePage() {
             className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors text-phi-sm"
           />
           <p className="text-xs text-white/30 mt-phi-1">{t('me.videoUrlHint')}</p>
+        </GlassCard>
+
+        {/* Destination Preferences */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">🌍</span> Where do you want to go?
+          </label>
+
+          {/* Selected destinations as removable pills */}
+          {identity.toCountries.length > 0 && (
+            <div className="flex flex-wrap gap-phi-2 mb-phi-3">
+              {identity.toCountries.map((code) => {
+                const name = localizeCountry(code)
+                const flag = COUNTRY_OPTIONS.find((c) => c.code === code)?.flag || ''
+                return (
+                  <span
+                    key={code}
+                    className="inline-flex items-center gap-1 px-phi-3 py-phi-1 rounded-full bg-brand-accent/15 text-brand-accent text-phi-sm border border-brand-accent/30"
+                  >
+                    {flag} {name}
+                    <button
+                      onClick={() => {
+                        const updated = identity.toCountries.filter((c) => c !== code)
+                        setToCountries(updated)
+                        saveProfile({ toCountries: updated })
+                      }}
+                      className="ml-1 text-white/40 hover:text-white transition-colors"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Search input */}
+          {identity.toCountries.length < 10 && (
+            <div className="relative">
+              <input
+                type="text"
+                value={destSearch}
+                onChange={(e) => setDestSearch(e.target.value)}
+                placeholder="Search countries..."
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors text-phi-sm"
+              />
+              {destSearch.length >= 2 && (
+                <div className="absolute z-10 w-full mt-1 bg-brand-surface border border-white/10 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                  {COUNTRY_OPTIONS.filter(
+                    (c) =>
+                      c.name.toLowerCase().includes(destSearch.toLowerCase()) &&
+                      c.code !== identity.country &&
+                      !identity.toCountries.includes(c.code)
+                  )
+                    .slice(0, 8)
+                    .map((c) => (
+                      <button
+                        key={c.code}
+                        onClick={() => {
+                          const updated = [...identity.toCountries, c.code]
+                          setToCountries(updated)
+                          saveProfile({ toCountries: updated })
+                          setDestSearch('')
+                        }}
+                        className="w-full text-left px-phi-3 py-phi-2 text-phi-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors flex items-center gap-2"
+                      >
+                        {c.flag} {c.name}
+                      </button>
+                    ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Route suggestions for selected destinations */}
+          {identity.toCountries.length > 0 && (
+            <div className="mt-phi-3 space-y-phi-2">
+              <p className="text-xs text-white/40">Route strength:</p>
+              {identity.toCountries.map((code) => {
+                const route = getRouteInfo(identity.country, code)
+                const name = localizeCountry(code)
+                const highlights = getCountryHighlights(code).slice(0, 2)
+                return (
+                  <div
+                    key={code}
+                    className="p-phi-2 rounded-lg bg-white/3 border border-white/5 text-phi-xs"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-white/70">
+                        {identity.country} → {code}: <strong className="text-white">{name}</strong>
+                      </span>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] ${
+                          route?.strength === 'direct'
+                            ? 'bg-green-500/20 text-green-400'
+                            : route?.strength === 'partner'
+                              ? 'bg-brand-accent/20 text-brand-accent'
+                              : 'bg-white/10 text-white/50'
+                        }`}
+                      >
+                        {route?.strength || 'emerging'}
+                      </span>
+                    </div>
+                    {route && (
+                      <p className="text-white/40 mt-1">
+                        {route.primarySectors.slice(0, 3).join(', ')}
+                      </p>
+                    )}
+                    {highlights.length > 0 && (
+                      <p className="text-white/30 mt-0.5">
+                        {highlights.map((h) => h.name).join(' · ')}
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </GlassCard>
       </div>
     )

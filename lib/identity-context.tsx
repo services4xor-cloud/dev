@@ -47,6 +47,8 @@ interface Identity {
   reach: string[]
   /** Optional ethnic/cultural identity */
   culture?: string
+  /** Target destination countries (ISO codes) the user wants to explore */
+  toCountries: string[]
   /** Auto-detected location from browser timezone (ISO country code) — separate from selected country */
   detectedLocation?: string
 }
@@ -88,6 +90,8 @@ interface IdentityContextValue {
   setReach: (reach: string[]) => void
   /** Set ethnic/cultural identity */
   setCulture: (culture: string | undefined) => void
+  /** Set target destination countries */
+  setToCountries: (countries: string[]) => void
   /** Set detected location (ISO country code from browser timezone) */
   setDetectedLocation: (code: string | undefined) => void
 }
@@ -124,6 +128,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     faith: [],
     craft: [],
     reach: [],
+    toCountries: [],
   })
 
   // Hydrate from localStorage on mount, or auto-detect from browser
@@ -150,6 +155,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
           if (!Array.isArray(parsed.faith)) parsed.faith = parsed.faith ? [parsed.faith] : []
           if (!Array.isArray(parsed.craft)) parsed.craft = []
           if (!Array.isArray(parsed.reach)) parsed.reach = []
+          if (!Array.isArray(parsed.toCountries)) parsed.toCountries = []
           setIdentity(parsed)
         }
       }
@@ -235,6 +241,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       craft: prev.craft,
       reach: prev.reach,
       culture: prev.culture,
+      toCountries: prev.toCountries,
       detectedLocation: prev.detectedLocation,
     }))
   }, [])
@@ -249,6 +256,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       faith: [],
       craft: [],
       reach: [],
+      toCountries: [],
     })
   }, [])
 
@@ -282,6 +290,10 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
 
   const setCulture = useCallback((culture: string | undefined) => {
     setIdentity((prev) => ({ ...prev, culture }))
+  }, [])
+
+  const setToCountries = useCallback((toCountries: string[]) => {
+    setIdentity((prev) => ({ ...prev, toCountries: toCountries.slice(0, 10) }))
   }, [])
 
   const setDetectedLocation = useCallback((detectedLocation: string | undefined) => {
@@ -324,6 +336,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         setCraft,
         setReach,
         setCulture,
+        setToCountries,
         setDetectedLocation,
       }}
     >
@@ -349,6 +362,7 @@ export function useIdentity(): IdentityContextValue {
         faith: [],
         craft: [],
         reach: [],
+        toCountries: [],
       },
       countryName: fallbackName,
       brandName: BRAND_NAME_OVERRIDES[DEFAULT_COUNTRY] || `Be${fallbackName}`,
@@ -367,6 +381,7 @@ export function useIdentity(): IdentityContextValue {
       setCraft: () => {},
       setReach: () => {},
       setCulture: () => {},
+      setToCountries: () => {},
       setDetectedLocation: () => {},
     }
   }

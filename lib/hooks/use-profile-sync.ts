@@ -15,6 +15,7 @@ interface ProfileData {
   faith?: string[]
   culture?: string
   crafts?: string[]
+  toCountries?: string[]
   city?: string
   bio?: string
   headline?: string
@@ -53,6 +54,7 @@ interface ProfileResponse {
       faith: string[]
       culture: string | null
       crafts: string[]
+      toCountries: string[]
       priorities: Record<string, DimensionPriority> | null
       city: string | null
       skills: string[]

@@ -128,6 +128,7 @@ model Profile {
   faith       String[] // Faith IDs (islam, christianity, etc.)
   culture     String?  // Cultural identity (Maasai, Kikuyu, etc.)
   crafts      String[] // Craft/skill tags
+  toCountries String[] // Target destination countries (ISO codes)
   priorities  Json?    // Dimension priority weights: { language: 'high', craft: 'high', ... }
 
   updatedAt   DateTime @updatedAt

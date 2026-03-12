@@ -30,6 +30,7 @@ const profileSchema = z.object({
   faith: z.array(z.string()).max(5).optional(),
   culture: z.string().max(100).optional().or(z.literal('')),
   crafts: z.array(z.string()).max(30).optional(),
+  toCountries: z.array(z.string().length(2)).max(10).optional(),
   priorities: z.record(z.enum(['high', 'medium', 'low'])).optional(),
 })
 
@@ -83,6 +84,7 @@ export async function GET(_req: NextRequest) {
             faith: true,
             culture: true,
             crafts: true,
+            toCountries: true,
             priorities: true,
           },
         },
@@ -164,6 +166,7 @@ export async function PATCH(req: NextRequest) {
     if (data.faith !== undefined) profileFields.faith = data.faith
     if (data.culture !== undefined) profileFields.culture = data.culture || null
     if (data.crafts !== undefined) profileFields.crafts = data.crafts
+    if (data.toCountries !== undefined) profileFields.toCountries = data.toCountries
     if (data.priorities !== undefined) profileFields.priorities = data.priorities
 
     // Update user-level fields
@@ -205,6 +208,7 @@ export async function PATCH(req: NextRequest) {
             faith: true,
             culture: true,
             crafts: true,
+            toCountries: true,
             priorities: true,
             city: true,
             skills: true,
