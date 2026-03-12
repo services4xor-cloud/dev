@@ -1,5 +1,5 @@
 /**
- * VOCABULARY.ts — Be[Network] platform language
+ * VOCABULARY.ts — Be[Network] Human Exchange Network language
  *
  * Global adoption-ready vocabulary. Each term is chosen for:
  *   - Universal comprehension across cultures
@@ -7,19 +7,23 @@
  *   - Clean translation into major languages
  *   - Distinctive brand identity (no generic "job" / "employer" terms)
  *
- * Pioneer  = person seeking their path    (de: Pionier, fr: Pionnier, sw: Painia)
- * Anchor   = org offering paths           (de: Anker, fr: Ancre, sw: Nanga)
- * Path     = opportunity / position       (de: Pfad, fr: Chemin, sw: Njia)
- * Chapter  = engagement / application     (de: Kapitel, fr: Chapitre, sw: Sura)
- * Venture  = experience + path combined   (de: Wagnis, fr: Aventure, sw: Ujasiri)
- * Compass  = smart routing system         (de: Kompass, fr: Boussole, sw: Dira)
- * Gate     = country entry point          (de: Tor, fr: Porte, sw: Lango)
- * Route    = country corridor             (de: Route, fr: Route, sw: Njia)
+ * Human Exchange Network vocabulary:
+ *   Explorer = mode: person seeking connections, opportunities, places
+ *   Host     = mode: person offering services, experiences, opportunities
+ *   Opportunity = what Hosts create (replaces Path)
+ *   Exchange = engagement between two humans (replaces Chapter)
+ *   Experience = venture/activity (replaces Venture)
+ *   Discovery = onboarding identity builder (replaces Compass)
+ *   Hub      = country entry point (replaces Gate)
+ *   Corridor = country-to-country connection (replaces Route)
+ *
+ * Legacy terms (Pioneer, Anchor, Path, etc.) kept for backward compatibility.
  *
  * NEVER use: job, employer, candidate, application, booking, tour, search
  */
 
 export const VOCAB = {
+  // ── Legacy (backward compat — will be removed in future cleanup) ──
   pioneer: { singular: 'Pioneer', plural: 'Pioneers', verb: 'pioneering' },
   anchor: { singular: 'Anchor', plural: 'Anchors', verb: 'anchoring' },
   path: { singular: 'Path', plural: 'Paths', verb: 'path opening' },
@@ -28,11 +32,25 @@ export const VOCAB = {
   gate: { singular: 'Gate', plural: 'Gates', verb: 'entering' },
   route: { singular: 'Route', plural: 'Routes', verb: 'routing' },
   compass: { singular: 'Compass', plural: 'Compasses', verb: 'navigating' },
-  anchor_in: 'Connect', // verb for anchors accepting pioneers
-  pioneer_join: 'Begin Your Path', // CTA for pioneers
-  chapter_open: 'Open This Chapter', // CTA for applying
+  anchor_in: 'Connect',
+  pioneer_join: 'Begin Your Path',
+  chapter_open: 'Open This Chapter',
+  // ── Human Exchange Network vocabulary ──
+  explorer: { singular: 'Explorer', plural: 'Explorers', verb: 'exploring' },
+  host: { singular: 'Host', plural: 'Hosts', verb: 'hosting' },
+  opportunity: { singular: 'Opportunity', plural: 'Opportunities', verb: 'offering' },
+  exchange: { singular: 'Exchange', plural: 'Exchanges', verb: 'exchanging' },
+  experience: { singular: 'Experience', plural: 'Experiences', verb: 'experiencing' },
+  discovery: { singular: 'Discovery', plural: 'Discoveries', verb: 'discovering' },
+  hub: { singular: 'Hub', plural: 'Hubs', verb: 'connecting' },
+  corridor: { singular: 'Corridor', plural: 'Corridors', verb: 'routing' },
+  // ── CTAs ──
   network_name: 'The BeNetwork',
-  tagline: 'Find where you belong. Go there.',
+  tagline: 'You are here. The world is connected to you.',
+  explorer_cta: 'Explore',
+  host_cta: 'Create Offering',
+  connect_cta: 'Connect',
+  discover_cta: 'Tell us who you are',
 } as const
 
 export type PioneerType =
