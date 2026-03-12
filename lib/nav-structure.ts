@@ -3,28 +3,14 @@
  *
  * Single source of truth for site-wide link structure.
  * Nav.tsx and Footer.tsx both import from here.
+ *
+ * Human Exchange Network architecture:
+ *   Logged out: logo + About + Pricing + [Sign In] + [Begin →]
+ *   Logged in:  logo + My World + Exchange + Messages + Me
  */
 
 import type { LucideIcon } from 'lucide-react'
-import {
-  Compass,
-  Map,
-  DollarSign,
-  Heart,
-  Info,
-  Building2,
-  Gift,
-  LayoutDashboard,
-  PlusSquare,
-  LogIn,
-  Globe,
-  Users,
-  Send,
-} from 'lucide-react'
-import { COUNTRIES } from '@/lib/countries'
-
-const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase() as keyof typeof COUNTRIES
-const brandName = `Be${COUNTRIES[CC]?.name ?? 'Country'}`
+import { DollarSign, Info, Globe, Map, Send, Users, LogIn } from 'lucide-react'
 
 export interface NavLink {
   href: string
@@ -38,117 +24,28 @@ export interface FooterLink {
   label: string
 }
 
-// ── Primary desktop nav links ──────────────────────────────────────
-export const PRIMARY_LINKS: NavLink[] = [
-  {
-    href: '/ventures',
-    label: 'Ventures',
-    icon: Map,
-    aria: 'Explore all paths and experiences',
-  },
-  {
-    href: '/compass',
-    label: 'Compass',
-    icon: Compass,
-    aria: 'Find your route across countries',
-  },
-  {
-    href: '/pricing',
-    label: 'Pricing',
-    icon: DollarSign,
-    aria: 'Anchor pricing plans',
-  },
+// ── New Human Exchange Network navigation ──────────────────
+export const PUBLIC_NAV_LINKS: NavLink[] = [
+  { href: '/about', label: 'About', icon: Info, aria: 'About the platform' },
+  { href: '/pricing', label: 'Pricing', icon: DollarSign, aria: 'Pricing plans' },
 ]
 
-// ── Pioneer-facing links (mobile nav "Explore" section) ────────────
-export const PIONEER_NAV_LINKS: NavLink[] = [
-  {
-    href: '/ventures',
-    label: 'Browse Ventures',
-    icon: Map,
-    aria: 'Explore all paths and experiences',
-  },
-  {
-    href: '/offerings',
-    label: 'Offerings',
-    icon: Globe,
-    aria: 'Country offerings — travel, work, business',
-  },
-  {
-    href: '/compass',
-    label: 'Find My Path',
-    icon: Compass,
-    aria: 'Smart route wizard',
-  },
-  {
-    href: '/threads',
-    label: 'Threads',
-    icon: Users,
-    aria: 'Identity-based communities',
-  },
-  {
-    href: '/charity',
-    label: 'Community',
-    icon: Heart,
-    aria: 'UTAMADUNI community impact',
-  },
+export const MAIN_NAV_LINKS: NavLink[] = [
+  { href: '/world', label: 'My World', icon: Globe, aria: 'Your network graph' },
+  { href: '/exchange', label: 'Exchange', icon: Map, aria: 'Browse people and opportunities' },
+  { href: '/messages', label: 'Messages', icon: Send, aria: 'Your conversations' },
+  { href: '/me', label: 'Me', icon: Users, aria: 'Your profile and settings' },
 ]
 
-// ── Anchor-facing links ────────────────────────────────────────────
-export const ANCHOR_NAV_LINKS: NavLink[] = [
-  {
-    href: '/anchors/dashboard',
-    label: 'Anchor Dashboard',
-    icon: LayoutDashboard,
-    aria: 'Manage your paths and chapters',
-  },
-  {
-    href: '/anchors/post-path',
-    label: 'Post a Path',
-    icon: PlusSquare,
-    aria: 'Create a new opportunity',
-  },
+export const FOOTER_LINKS: FooterLink[] = [
+  { href: '/about', label: 'About' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/charity', label: 'Community' },
+  { href: '/business', label: 'Business' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: '/contact', label: 'Contact' },
 ]
 
-// ── Agent-facing links ──────────────────────────────────────────────
-export const AGENT_NAV_LINKS: NavLink[] = [
-  {
-    href: '/agents/dashboard',
-    label: 'Agent Dashboard',
-    icon: LayoutDashboard,
-    aria: 'Manage your forwards and earnings',
-  },
-  {
-    href: '/agents',
-    label: 'Become an Agent',
-    icon: Send,
-    aria: 'Learn about the Agent programme',
-  },
-]
-
-// ── About / company links ──────────────────────────────────────────
-export const ABOUT_NAV_LINKS: NavLink[] = [
-  {
-    href: '/about',
-    label: 'About',
-    icon: Info,
-    aria: 'About the platform',
-  },
-  {
-    href: '/business',
-    label: 'Family Ltd',
-    icon: Building2,
-    aria: 'Business and legal structure',
-  },
-  {
-    href: '/referral',
-    label: 'Refer & Earn',
-    icon: Gift,
-    aria: 'Referral programme',
-  },
-]
-
-// ── Auth CTA link ──────────────────────────────────────────────────
 export const LOGIN_LINK: NavLink = {
   href: '/login',
   label: 'Sign In',
@@ -156,37 +53,15 @@ export const LOGIN_LINK: NavLink = {
   aria: 'Sign in to your account',
 }
 
-// ── Footer-specific column links ───────────────────────────────────
-export const FOOTER_PIONEER_LINKS: FooterLink[] = [
-  { href: '/ventures', label: 'Browse Ventures' },
-  { href: '/compass', label: 'Find My Path' },
-  { href: '/onboarding', label: 'Create Profile' },
-  { href: '/referral', label: 'Refer & Earn' },
-]
-
-export const FOOTER_ANCHOR_LINKS: FooterLink[] = [
-  { href: '/anchors/post-path', label: 'Post a Path' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/anchors/dashboard', label: 'Anchor Dashboard' },
-]
-
-export const FOOTER_AGENT_LINKS: FooterLink[] = [
-  { href: '/agents', label: 'Become an Agent' },
-  { href: '/agents/dashboard', label: 'Agent Dashboard' },
-]
-
-export const FOOTER_DISCOVER_LINKS: FooterLink[] = [
-  { href: '/offerings', label: 'Country Offerings' },
-  { href: '/experiences', label: 'Safari Experiences' },
-  { href: '/threads', label: 'Threads' },
-  { href: `/be/${CC.toLowerCase()}`, label: brandName },
-  { href: '/charity', label: 'UTAMADUNI' },
-  { href: '/media', label: 'Media & Stories' },
-]
-
-export const FOOTER_COMPANY_LINKS: FooterLink[] = [
-  { href: '/about', label: 'About' },
-  { href: '/business', label: `${brandName} Family Ltd` },
-  { href: '/contact', label: 'Contact' },
-  { href: '/privacy', label: 'Privacy Policy' },
-]
+// ── DEPRECATED: Legacy exports (kept for backward compat) ──
+// These will be removed in Phase 3 cleanup
+export const PRIMARY_LINKS = PUBLIC_NAV_LINKS
+export const PIONEER_NAV_LINKS = MAIN_NAV_LINKS
+export const ANCHOR_NAV_LINKS: NavLink[] = []
+export const AGENT_NAV_LINKS: NavLink[] = []
+export const ABOUT_NAV_LINKS = PUBLIC_NAV_LINKS
+export const FOOTER_PIONEER_LINKS: FooterLink[] = FOOTER_LINKS
+export const FOOTER_ANCHOR_LINKS: FooterLink[] = []
+export const FOOTER_AGENT_LINKS: FooterLink[] = []
+export const FOOTER_DISCOVER_LINKS: FooterLink[] = FOOTER_LINKS
+export const FOOTER_COMPANY_LINKS: FooterLink[] = FOOTER_LINKS
