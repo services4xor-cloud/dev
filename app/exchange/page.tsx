@@ -150,13 +150,6 @@ export default function ExchangePage() {
     }
   }, [hasCompletedDiscovery, router])
 
-  // Sync focusTopic from identity context to sector filter
-  useEffect(() => {
-    if (identity.focusTopic) {
-      setSectorFilter(identity.focusTopic)
-    }
-  }, [identity.focusTopic])
-
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [sectorFilter, setSectorFilter] = useState<string>('all')
   const [dbPaths, setDbPaths] = useState<
@@ -405,18 +398,6 @@ export default function ExchangePage() {
           ))}
         </select>
       </div>
-
-      {/* Focus mode banner */}
-      {identity.focusTopic && (
-        <div className="mb-phi-3 flex items-center gap-phi-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20 px-phi-4 py-phi-2">
-          <span className="text-phi-sm text-brand-accent font-medium">
-            🎯 {t('exchange.focus')}:{' '}
-            {EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)?.label ??
-              identity.focusTopic}
-          </span>
-          <span className="text-phi-xs text-white/40">{t('exchange.focusDesc')}</span>
-        </div>
-      )}
 
       {/* ── Results count ── */}
       <p className="mb-phi-3 text-phi-sm text-white/40">

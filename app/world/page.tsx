@@ -13,7 +13,6 @@ import { useRouter } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { buildGraph, type GraphNode } from '@/lib/graph'
-import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import NetworkGraph from '@/components/NetworkGraph'
 import GlassCard from '@/components/ui/GlassCard'
 
@@ -38,29 +37,7 @@ export default function WorldPage() {
 
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null)
 
-  const { nodes: allNodes, edges: allEdges } = useMemo(() => buildGraph(identity), [identity])
-
-  // Filter by focusTopic if set — keep "you" node always, boost matching nodes
-  const { nodes, edges } = useMemo(() => {
-    if (!identity.focusTopic) return { nodes: allNodes, edges: allEdges }
-
-    const focusCat = EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)
-    if (!focusCat) return { nodes: allNodes, edges: allEdges }
-
-    const focusLabel = focusCat.label.toLowerCase()
-
-    // Filter nodes: keep "you", keep nodes whose label/sublabel relates to focus
-    const filteredNodes = allNodes.filter((n) => {
-      if (n.type === 'you') return true
-      const text = `${n.label} ${n.sublabel}`.toLowerCase()
-      return text.includes(focusLabel) || n.score >= 60
-    })
-
-    const nodeIds = new Set(filteredNodes.map((n) => n.id))
-    const filteredEdges = allEdges.filter((e) => nodeIds.has(e.from) && nodeIds.has(e.to))
-
-    return { nodes: filteredNodes, edges: filteredEdges }
-  }, [allNodes, allEdges, identity.focusTopic])
+  const { nodes, edges } = useMemo(() => buildGraph(identity), [identity])
 
   function handleNodeClick(node: GraphNode) {
     setSelectedNode((prev) => (prev?.id === node.id ? null : node))
@@ -107,18 +84,6 @@ export default function WorldPage() {
           <h1 className="text-phi-7 font-bold gradient-text mb-2">{t('world.title')}</h1>
           <p className="text-white/50 text-phi-4 max-w-lg mx-auto">{t('world.subtitle')}</p>
         </div>
-
-        {/* Focus topic banner */}
-        {identity.focusTopic && (
-          <div className="mb-6 flex items-center justify-center gap-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20 px-4 py-2">
-            <span className="text-sm text-brand-accent font-medium">
-              🎯 {t('world.focus')}:{' '}
-              {EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)?.label ??
-                identity.focusTopic}
-            </span>
-            <span className="text-xs text-white/40">{t('world.focusDesc')}</span>
-          </div>
-        )}
 
         {/* Main layout: graph + side panel */}
         <div className="flex flex-col lg:flex-row gap-6 items-start">

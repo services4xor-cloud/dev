@@ -323,7 +323,7 @@ export default function IdentitySwitcher({
       {/* ── Footer ───────────────────────────────────── */}
       <div className="border-t border-white/5 px-4 py-2.5 flex items-center justify-between">
         <Link
-          href="/threads"
+          href="/exchange"
           onClick={onClose}
           className="text-[11px] font-medium text-white/30 hover:text-brand-accent transition-colors"
         >
