@@ -26,6 +26,7 @@ import {
   SUGGESTED_SKILLS,
   POST_PATH_STEPS as STEPS,
 } from '@/data/mock'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ─── Derived ──────────────────────────────────────────────────────────────────
 
@@ -34,6 +35,15 @@ const ORIGIN_COUNTRIES = COUNTRY_OPTIONS.map((c) => ({
   label: c.name,
   flag: c.flag,
 }))
+
+// ─── Path type i18n mapping ──────────────────────────────────────────────────
+
+const PATH_TYPE_KEYS = ['Full Path', 'Part Path', 'Seasonal Path'] as const
+const PATH_TYPE_I18N: Record<string, string> = {
+  'Full Path': 'postPath.fullPath',
+  'Part Path': 'postPath.partPath',
+  'Seasonal Path': 'postPath.seasonalPath',
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -76,32 +86,34 @@ function StepBasics({
   form: PathForm
   setForm: React.Dispatch<React.SetStateAction<PathForm>>
 }) {
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Name your Path</h2>
-        <p className="text-gray-400 mt-1">
-          Give it a title that resonates — Pioneers connect with what they feel.
-        </p>
+        <h2 className="text-2xl font-bold text-white">{t('postPath.nameYourPath')}</h2>
+        <p className="text-gray-400 mt-1">{t('postPath.nameDesc')}</p>
       </div>
 
       {/* Title */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Path Title *</label>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          {t('postPath.pathTitle')} *
+        </label>
         <input
           value={form.title}
           onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-          placeholder="e.g. Senior Wildlife Guide — Big Five Specialist"
+          placeholder={t('postPath.pathTitlePlaceholder')}
           className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent text-lg"
         />
-        <p className="text-xs text-gray-400 mt-1.5">
-          Be specific. Pioneers scan fast — a precise title wins.
-        </p>
+        <p className="text-xs text-gray-400 mt-1.5">{t('postPath.pathTitleHint')}</p>
       </div>
 
       {/* Category */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Path Category *</label>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          {t('postPath.pathCategory')} *
+        </label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {PATH_CATEGORIES.map((cat) => (
             <button
@@ -123,19 +135,21 @@ function StepBasics({
 
       {/* Path type */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Path Type *</label>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          {t('postPath.pathType')} *
+        </label>
         <div className="grid grid-cols-3 gap-3">
-          {['Full Path', 'Part Path', 'Seasonal Path'].map((t) => (
+          {PATH_TYPE_KEYS.map((pt) => (
             <button
-              key={t}
-              onClick={() => setForm((f) => ({ ...f, pathType: t }))}
+              key={pt}
+              onClick={() => setForm((f) => ({ ...f, pathType: pt }))}
               className={`p-3 rounded-xl border text-sm font-medium transition-all ${
-                form.pathType === t
+                form.pathType === pt
                   ? 'border-brand-accent bg-brand-primary/20 text-brand-accent'
                   : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
               }`}
             >
-              {t}
+              {t(PATH_TYPE_I18N[pt])}
             </button>
           ))}
         </div>
@@ -146,24 +160,24 @@ function StepBasics({
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">
             <MapPin className="w-3.5 h-3.5 inline mr-1" />
-            Location *
+            {t('postPath.location')} *
           </label>
           <input
             value={form.location}
             onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
-            placeholder="e.g. Laikipia, Kenya"
+            placeholder={t('postPath.locationPlaceholder')}
             className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">
             <Wifi className="w-3.5 h-3.5 inline mr-1" />
-            Remote Possible?
+            {t('postPath.remotePossible')}
           </label>
           <div className="flex gap-3 mt-1">
             {[
-              { val: false, label: 'On-site only' },
-              { val: true, label: 'Remote OK' },
+              { val: false, key: 'postPath.onSiteOnly' },
+              { val: true, key: 'postPath.remoteOk' },
             ].map((opt) => (
               <button
                 key={String(opt.val)}
@@ -174,7 +188,7 @@ function StepBasics({
                     : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
                 }`}
               >
-                {opt.label}
+                {t(opt.key)}
               </button>
             ))}
           </div>
@@ -193,6 +207,7 @@ function StepDescription({
   form: PathForm
   setForm: React.Dispatch<React.SetStateAction<PathForm>>
 }) {
+  const { t } = useTranslation()
   const [reqInput, setReqInput] = useState('')
 
   const addReq = () => {
@@ -206,15 +221,15 @@ function StepDescription({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Tell Pioneers the story</h2>
-        <p className="text-gray-400 mt-1">
-          Describe the path — what they will do, experience, and contribute.
-        </p>
+        <h2 className="text-2xl font-bold text-white">{t('postPath.tellStory')}</h2>
+        <p className="text-gray-400 mt-1">{t('postPath.tellStoryDesc')}</p>
       </div>
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Path Description *</label>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          {t('postPath.pathDescription')} *
+        </label>
         <textarea
           value={form.description}
           onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
@@ -224,22 +239,24 @@ Don't just list tasks — tell the story of this path."
           className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent min-h-[200px] resize-y text-sm leading-relaxed"
         />
         <div className="flex justify-between mt-1.5">
-          <p className="text-xs text-gray-400">
-            Minimum 100 characters. Compass uses this to match Pioneers.
-          </p>
-          <span className="text-xs text-gray-600">{form.description.length} chars</span>
+          <p className="text-xs text-gray-400">{t('postPath.descriptionHint')}</p>
+          <span className="text-xs text-gray-600">
+            {t('postPath.chars', { count: String(form.description.length) })}
+          </span>
         </div>
       </div>
 
       {/* Requirements */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Requirements</label>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          {t('postPath.requirements')}
+        </label>
         <div className="flex gap-2 mb-3">
           <input
             value={reqInput}
             onChange={(e) => setReqInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addReq())}
-            placeholder="e.g. Valid driver's licence, e.g. FGASA Level 2+"
+            placeholder={t('postPath.addReqPlaceholder')}
             className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent text-sm"
           />
           <button
@@ -247,7 +264,7 @@ Don't just list tasks — tell the story of this path."
             className="px-4 py-2.5 bg-gray-700 text-gray-200 rounded-xl text-sm font-medium hover:bg-gray-600 transition-colors border border-gray-600 flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
-            Add
+            {t('postPath.add')}
           </button>
         </div>
 
@@ -277,9 +294,7 @@ Don't just list tasks — tell the story of this path."
         )}
 
         {form.requirements.length === 0 && (
-          <p className="text-xs text-gray-600 italic">
-            No requirements added yet. Press Enter or click Add.
-          </p>
+          <p className="text-xs text-gray-600 italic">{t('postPath.noReqYet')}</p>
         )}
       </div>
     </div>
@@ -295,6 +310,7 @@ function StepSkills({
   form: PathForm
   setForm: React.Dispatch<React.SetStateAction<PathForm>>
 }) {
+  const { t } = useTranslation()
   const [skillInput, setSkillInput] = useState('')
 
   const addSkill = (skill: string) => {
@@ -311,21 +327,21 @@ function StepSkills({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">What does a great Pioneer bring?</h2>
-        <p className="text-gray-400 mt-1">
-          Add skills — Compass uses these to surface the best-fit Pioneers for your path.
-        </p>
+        <h2 className="text-2xl font-bold text-white">{t('postPath.whatSkills')}</h2>
+        <p className="text-gray-400 mt-1">{t('postPath.whatSkillsDesc')}</p>
       </div>
 
       {/* Skill input */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Add Skills</label>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          {t('postPath.addSkills')}
+        </label>
         <div className="flex gap-2">
           <input
             value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill(skillInput))}
-            placeholder="Type a skill and press Enter"
+            placeholder={t('postPath.typeSkill')}
             className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent text-sm"
           />
           <button
@@ -333,7 +349,7 @@ function StepSkills({
             className="px-4 py-2.5 bg-brand-accent text-white rounded-xl text-sm font-medium hover:opacity-90 transition-colors flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
-            Add
+            {t('postPath.add')}
           </button>
         </div>
       </div>
@@ -342,7 +358,7 @@ function StepSkills({
       {form.skills.length > 0 && (
         <div>
           <label className="block text-xs text-gray-400 mb-2 uppercase tracking-wide">
-            Selected Skills ({form.skills.length})
+            {t('postPath.selectedSkills', { count: String(form.skills.length) })}
           </label>
           <div className="flex flex-wrap gap-2">
             {form.skills.map((s) => (
@@ -361,8 +377,9 @@ function StepSkills({
         <div>
           <label className="block text-xs text-gray-400 mb-2 uppercase tracking-wide flex items-center gap-1.5">
             <Zap className="w-3 h-3 text-brand-accent" />
-            Suggested for{' '}
-            {PATH_CATEGORIES.find((c) => c.id === form.category)?.label || 'this path'}
+            {t('postPath.suggestedFor', {
+              category: PATH_CATEGORIES.find((c) => c.id === form.category)?.label || 'this path',
+            })}
           </label>
           <div className="flex flex-wrap gap-2">
             {notYetAdded.map((s) => (
@@ -381,7 +398,7 @@ function StepSkills({
 
       {form.skills.length === 0 && (
         <div className="p-4 bg-brand-primary/20 border border-brand-primary/30 rounded-xl text-sm text-brand-accent">
-          Add at least 1 skill so Compass can find the right Pioneers for this path.
+          {t('postPath.addOneSkill')}
         </div>
       )}
     </div>
@@ -397,11 +414,13 @@ function StepPioneers({
   form: PathForm
   setForm: React.Dispatch<React.SetStateAction<PathForm>>
 }) {
+  const { t } = useTranslation()
+
   const togglePioneerType = (type: PioneerType) => {
     setForm((f) => ({
       ...f,
       targetPioneerTypes: f.targetPioneerTypes.includes(type)
-        ? f.targetPioneerTypes.filter((t) => t !== type)
+        ? f.targetPioneerTypes.filter((pt) => pt !== type)
         : [...f.targetPioneerTypes, type],
     }))
   }
@@ -418,16 +437,16 @@ function StepPioneers({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-white">Who is this Path for?</h2>
-        <p className="text-gray-400 mt-1">Help Compass route the right Pioneers to your path.</p>
+        <h2 className="text-2xl font-bold text-white">{t('postPath.whoIsFor')}</h2>
+        <p className="text-gray-400 mt-1">{t('postPath.whoIsForDesc')}</p>
       </div>
 
       {/* Pioneer types */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-1">Pioneer Types</label>
-        <p className="text-xs text-gray-400 mb-3">
-          Select all types that are a good fit. Leave blank to accept all.
-        </p>
+        <label className="block text-sm font-medium text-gray-300 mb-1">
+          {t('postPath.pioneerTypes')}
+        </label>
+        <p className="text-xs text-gray-400 mb-3">{t('postPath.pioneerTypesHint')}</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {(Object.keys(PIONEER_TYPES) as PioneerType[]).map((type) => {
             const cfg = PIONEER_TYPES[type]
@@ -458,12 +477,9 @@ function StepPioneers({
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-2">
           <Globe className="w-4 h-4" />
-          Preferred Pioneer Origins
+          {t('postPath.preferredOrigins')}
         </label>
-        <p className="text-xs text-gray-400 mb-3">
-          Pioneers from these countries will be weighted higher in Compass routing. Leave blank for
-          global.
-        </p>
+        <p className="text-xs text-gray-400 mb-3">{t('postPath.preferredOriginsHint')}</p>
         <div className="flex flex-wrap gap-2">
           {ORIGIN_COUNTRIES.map((c) => {
             const selected = form.preferredOriginCountries.includes(c.code)
@@ -498,6 +514,8 @@ function StepCompensation({
   form: PathForm
   setForm: React.Dispatch<React.SetStateAction<PathForm>>
 }) {
+  const { t } = useTranslation()
+
   const togglePayment = (id: string) => {
     setForm((f) => ({
       ...f,
@@ -510,18 +528,18 @@ function StepCompensation({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">What does the path pay?</h2>
-        <p className="text-gray-400 mt-1">
-          Being transparent about compensation attracts committed Pioneers.
-        </p>
+        <h2 className="text-2xl font-bold text-white">{t('postPath.whatPay')}</h2>
+        <p className="text-gray-400 mt-1">{t('postPath.whatPayDesc')}</p>
       </div>
 
       {/* Salary range */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Compensation Range</label>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          {t('postPath.compensationRange')}
+        </label>
         <div className="grid sm:grid-cols-3 gap-3">
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Minimum</label>
+            <label className="block text-xs text-gray-400 mb-1">{t('postPath.minimum')}</label>
             <div className="relative">
               <Banknote className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -533,7 +551,7 @@ function StepCompensation({
             </div>
           </div>
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Maximum</label>
+            <label className="block text-xs text-gray-400 mb-1">{t('postPath.maximum')}</label>
             <div className="relative">
               <Banknote className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -545,7 +563,7 @@ function StepCompensation({
             </div>
           </div>
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Currency</label>
+            <label className="block text-xs text-gray-400 mb-1">{t('postPath.currency')}</label>
             <select
               value={form.currency}
               onChange={(e) => setForm((f) => ({ ...f, currency: e.target.value }))}
@@ -559,19 +577,15 @@ function StepCompensation({
             </select>
           </div>
         </div>
-        <p className="text-xs text-gray-400 mt-1.5">
-          Shown as a range. Leave blank to show &quot;Compensation discussed&quot;.
-        </p>
+        <p className="text-xs text-gray-400 mt-1.5">{t('postPath.compHint')}</p>
       </div>
 
       {/* Payment methods */}
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-2">
-          Payment Methods Accepted
+          {t('postPath.paymentMethods')}
         </label>
-        <p className="text-xs text-gray-400 mb-3">
-          How will this Pioneer be paid? Select all that apply.
-        </p>
+        <p className="text-xs text-gray-400 mb-3">{t('postPath.paymentMethodsHint')}</p>
         <div className="grid sm:grid-cols-2 gap-2">
           {PAYMENT_ACCEPTED.map((pm) => {
             const selected = form.paymentMethods.includes(pm.id)
@@ -615,23 +629,29 @@ function StepPreview({
   onSubmit: () => void
   submitting: boolean
 }) {
+  const { t } = useTranslation()
   const cat = PATH_CATEGORIES.find((c) => c.id === form.category)
 
   const compensationLabel = (() => {
-    if (!form.salaryMin && !form.salaryMax) return 'Discussed upon offer'
+    if (!form.salaryMin && !form.salaryMax) return t('postPath.compDiscussed')
     if (form.salaryMin && form.salaryMax)
       return `${form.currency} ${Number(form.salaryMin).toLocaleString()} – ${Number(form.salaryMax).toLocaleString()}`
-    if (form.salaryMin) return `From ${form.currency} ${Number(form.salaryMin).toLocaleString()}`
-    return `Up to ${form.currency} ${Number(form.salaryMax).toLocaleString()}`
+    if (form.salaryMin)
+      return t('postPath.compFrom', {
+        currency: form.currency,
+        amount: Number(form.salaryMin).toLocaleString(),
+      })
+    return t('postPath.compUpTo', {
+      currency: form.currency,
+      amount: Number(form.salaryMax).toLocaleString(),
+    })
   })()
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Review your Path</h2>
-        <p className="text-gray-400 mt-1">
-          This is how it will appear to Pioneers in the BeNetwork.
-        </p>
+        <h2 className="text-2xl font-bold text-white">{t('postPath.reviewPath')}</h2>
+        <p className="text-gray-400 mt-1">{t('postPath.reviewPathDesc')}</p>
       </div>
 
       {/* Path preview card */}
@@ -643,11 +663,13 @@ function StepPreview({
               {cat?.icon || '🌍'}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-white">{form.title || 'Path Title'}</h3>
+              <h3 className="text-xl font-bold text-white">
+                {form.title || t('postPath.pathTitle')}
+              </h3>
               <div className="flex flex-wrap gap-2 mt-2">
                 {form.pathType && (
                   <span className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded-full border border-gray-600">
-                    {form.pathType}
+                    {t(PATH_TYPE_I18N[form.pathType] ?? 'postPath.fullPath')}
                   </span>
                 )}
                 {cat && (
@@ -657,7 +679,7 @@ function StepPreview({
                 )}
                 {form.isRemote && (
                   <span className="text-xs px-2 py-1 bg-brand-primary/30 text-brand-accent rounded-full border border-brand-accent/30">
-                    Remote OK
+                    {t('postPath.remoteOk')}
                   </span>
                 )}
               </div>
@@ -680,7 +702,9 @@ function StepPreview({
         {/* Description */}
         {form.description && (
           <div className="p-6 border-b border-gray-700">
-            <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-2">About this Path</h4>
+            <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-2">
+              {t('postPath.aboutThisPath')}
+            </h4>
             <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap line-clamp-6">
               {form.description}
             </p>
@@ -690,7 +714,9 @@ function StepPreview({
         {/* Requirements */}
         {form.requirements.length > 0 && (
           <div className="p-6 border-b border-gray-700">
-            <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-3">Requirements</h4>
+            <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-3">
+              {t('postPath.requirements')}
+            </h4>
             <ul className="space-y-1.5">
               {form.requirements.map((r, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
@@ -705,7 +731,9 @@ function StepPreview({
         {/* Skills */}
         {form.skills.length > 0 && (
           <div className="p-6 border-b border-gray-700">
-            <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-3">Skills Needed</h4>
+            <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-3">
+              {t('postPath.skillsNeeded')}
+            </h4>
             <div className="flex flex-wrap gap-2">
               {form.skills.map((s) => (
                 <span
@@ -725,15 +753,15 @@ function StepPreview({
             {form.targetPioneerTypes.length > 0 && (
               <div>
                 <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                  Pioneer Types
+                  {t('postPath.pioneerTypes')}
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
-                  {form.targetPioneerTypes.map((t) => (
+                  {form.targetPioneerTypes.map((pt) => (
                     <span
-                      key={t}
+                      key={pt}
                       className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded-full border border-gray-600"
                     >
-                      {PIONEER_TYPES[t].icon} {PIONEER_TYPES[t].label}
+                      {PIONEER_TYPES[pt].icon} {PIONEER_TYPES[pt].label}
                     </span>
                   ))}
                 </div>
@@ -742,7 +770,7 @@ function StepPreview({
             {form.paymentMethods.length > 0 && (
               <div>
                 <h4 className="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                  Payment Methods
+                  {t('postPath.paymentMethods')}
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
                   {form.paymentMethods.map((p) => {
@@ -766,11 +794,8 @@ function StepPreview({
       {/* Publish CTA */}
       <div className="bg-gradient-to-r from-brand-primary/40 to-brand-primary/40 rounded-2xl border border-brand-accent/30 p-6 text-center">
         <Rocket className="w-8 h-8 text-brand-accent mx-auto mb-3" />
-        <h3 className="text-white font-bold text-lg mb-1">Ready to open this Path?</h3>
-        <p className="text-gray-400 text-sm mb-5">
-          Compass will immediately start matching Pioneers to your path. You&apos;ll see chapters
-          arriving in your dashboard.
-        </p>
+        <h3 className="text-white font-bold text-lg mb-1">{t('postPath.readyToOpen')}</h3>
+        <p className="text-gray-400 text-sm mb-5">{t('postPath.readyDesc')}</p>
         <button
           onClick={onSubmit}
           disabled={submitting}
@@ -779,12 +804,12 @@ function StepPreview({
           {submitting ? (
             <>
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Opening Path...
+              {t('postPath.openingPath')}
             </>
           ) : (
             <>
               <Rocket className="w-5 h-5" />
-              Open This Path
+              {t('postPath.openThisPath')}
             </>
           )}
         </button>
@@ -796,6 +821,7 @@ function StepPreview({
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function PostPathPage() {
+  const { t } = useTranslation()
   const [step, setStep] = useState(1)
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -864,10 +890,9 @@ export default function PostPathPage() {
           <div className="w-20 h-20 rounded-full bg-green-900/50 border-2 border-green-500 flex items-center justify-center mx-auto mb-6">
             <Check className="w-10 h-10 text-green-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Path is Open!</h1>
+          <h1 className="text-2xl font-bold text-white mb-2">{t('postPath.pathIsOpen')}</h1>
           <p className="text-gray-400 mb-6">
-            Compass is now routing Pioneers to <strong className="text-white">{form.title}</strong>.
-            You&apos;ll see chapters arriving shortly.
+            {t('postPath.compassRouting', { title: form.title })}
           </p>
           <div className="flex gap-3 justify-center">
             <Link
@@ -875,7 +900,7 @@ export default function PostPathPage() {
               className="px-5 py-3 bg-brand-accent text-white rounded-xl font-medium hover:opacity-90 transition-colors flex items-center gap-2"
             >
               <Users className="w-4 h-4" />
-              Go to Dashboard
+              {t('postPath.goToDashboard')}
             </Link>
             <button
               onClick={() => {
@@ -886,7 +911,7 @@ export default function PostPathPage() {
               className="px-5 py-3 bg-gray-800 text-gray-300 rounded-xl font-medium border border-gray-700 hover:bg-gray-700 transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
-              Open Another
+              {t('postPath.openAnother')}
             </button>
           </div>
         </div>
@@ -906,10 +931,8 @@ export default function PostPathPage() {
             <ChevronLeft className="w-5 h-5" />
           </Link>
           <div>
-            <div className="text-white font-semibold text-sm">Open a New Path</div>
-            <div className="text-xs text-gray-400">
-              Opening a Path is how Anchors build their tribe.
-            </div>
+            <div className="text-white font-semibold text-sm">{t('postPath.openNew')}</div>
+            <div className="text-xs text-gray-400">{t('postPath.subtitle')}</div>
           </div>
         </div>
       </nav>
@@ -973,13 +996,15 @@ export default function PostPathPage() {
                   className="btn-ghost btn-sm flex items-center gap-2"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  Back
+                  {t('postPath.back')}
                 </button>
               ) : (
                 <div />
               )}
 
-              <span className="text-xs text-gray-500 flex-1 text-center">Step {step} of 6</span>
+              <span className="text-xs text-gray-500 flex-1 text-center">
+                {t('postPath.stepOf', { step: String(step) })}
+              </span>
 
               <button
                 onClick={() => setStep((s) => s + 1)}
@@ -990,12 +1015,12 @@ export default function PostPathPage() {
               >
                 {step === 5 ? (
                   <>
-                    Preview Path
+                    {t('postPath.previewPath')}
                     <Eye className="w-4 h-4" />
                   </>
                 ) : (
                   <>
-                    Continue
+                    {t('postPath.continue')}
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

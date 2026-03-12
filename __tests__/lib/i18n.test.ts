@@ -1303,6 +1303,73 @@ describe('i18n — agent dashboard', () => {
   })
 })
 
+describe('i18n — post path wizard', () => {
+  const postPathKeys = [
+    'postPath.openNew',
+    'postPath.subtitle',
+    'postPath.stepOf',
+    'postPath.back',
+    'postPath.continue',
+    'postPath.previewPath',
+    'postPath.nameYourPath',
+    'postPath.pathTitle',
+    'postPath.pathCategory',
+    'postPath.pathType',
+    'postPath.fullPath',
+    'postPath.partPath',
+    'postPath.seasonalPath',
+    'postPath.location',
+    'postPath.remotePossible',
+    'postPath.onSiteOnly',
+    'postPath.remoteOk',
+    'postPath.tellStory',
+    'postPath.pathDescription',
+    'postPath.requirements',
+    'postPath.add',
+    'postPath.whatSkills',
+    'postPath.addSkills',
+    'postPath.selectedSkills',
+    'postPath.whoIsFor',
+    'postPath.pioneerTypes',
+    'postPath.preferredOrigins',
+    'postPath.whatPay',
+    'postPath.compensationRange',
+    'postPath.minimum',
+    'postPath.maximum',
+    'postPath.currency',
+    'postPath.compDiscussed',
+    'postPath.paymentMethods',
+    'postPath.reviewPath',
+    'postPath.aboutThisPath',
+    'postPath.skillsNeeded',
+    'postPath.readyToOpen',
+    'postPath.openThisPath',
+    'postPath.openingPath',
+    'postPath.pathIsOpen',
+    'postPath.compassRouting',
+    'postPath.goToDashboard',
+    'postPath.openAnother',
+  ]
+
+  it('English has all post path keys', () => {
+    for (const key of postPathKeys) {
+      expect(hasTranslation(key, 'en')).toBe(true)
+    }
+  })
+
+  it('German has all post path keys', () => {
+    for (const key of postPathKeys) {
+      expect(hasTranslation(key, 'de')).toBe(true)
+    }
+  })
+
+  it('Swahili has all post path keys', () => {
+    for (const key of postPathKeys) {
+      expect(hasTranslation(key, 'sw')).toBe(true)
+    }
+  })
+})
+
 describe('i18n — getAvailableLanguages()', () => {
   it('returns at least 10 languages', () => {
     const langs = getAvailableLanguages()
