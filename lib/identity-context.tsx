@@ -161,31 +161,25 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     }
 
     // Always detect location from timezone (separate from selected country)
+    // and set display language to match the detected country
     try {
       const detectedLoc = detectCountryFromTimezone()
       if (detectedLoc) {
-        setIdentity((prev) => ({ ...prev, detectedLocation: detectedLoc }))
+        const detectedLang = getDefaultLanguage(detectedLoc)
+        setIdentity((prev) => ({
+          ...prev,
+          detectedLocation: detectedLoc,
+          // If no identity stored yet, also set country + language
+          ...(stored
+            ? { language: detectedLang }
+            : {
+                country: detectedLoc,
+                language: detectedLang,
+              }),
+        }))
       }
     } catch {
       // Ignore — detectedLocation stays undefined
-    }
-
-    // If nothing stored, also use detected country as the selected country
-    if (!stored) {
-      try {
-        const browserLang = navigator.language?.split('-')[0] || 'en'
-        const detected = detectCountryFromTimezone()
-        if (detected) {
-          setIdentity((prev) => ({
-            ...prev,
-            country: detected,
-            language: browserLang,
-            detectedLocation: detected,
-          }))
-        }
-      } catch {
-        // Ignore — use defaults
-      }
     }
   }, [])
 
@@ -203,9 +197,9 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     setIdentity((prev) => ({
       ...prev,
       country: cc,
-      // When changing country, keep current language unless switching to a country
-      // where the current language isn't spoken — then reset to country default
-      language: prev.language || getDefaultLanguage(cc),
+      // Always switch display language to the country's default
+      // MVC: View language follows the Model's country selection
+      language: getDefaultLanguage(cc),
       // Clear thread when changing country
       threadSlug: undefined,
       threadType: undefined,
