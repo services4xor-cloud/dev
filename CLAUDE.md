@@ -7,7 +7,7 @@
 
 ## 1. Mission
 
-**Be[Country]** is an identity-first life-routing platform that reverses colonial economic flows. People in the Global South move, work, and thrive on their own terms.
+**Be[X]** is an identity-first life-routing platform for everyone. People define who they are — country, tribe, language, craft, faith — and the platform connects them to paths, people, and experiences that match their identity. Global South, Global North, everywhere in between.
 
 **Scale vision:** Be[X] where X = Country, Tribe, Ethnicity, Location, Resource, Skill — anything the user defines as important in their profile. One codebase, infinite identities. Start with countries (BeKenya), expand to tribes (BeMaasai), locations (BeNairobi), crafts (BeEngineer). Every deployment serves all countries and languages — the user's profile dimensions determine their Be[X] context.
 
@@ -209,7 +209,7 @@ Project: tobias-projects-81752e2c / dev
 
 ---
 
-## 13. Skill Ecosystem (20 skills)
+## 13. Skill Ecosystem (22 skills)
 
 Entry point: `becountry-process` — tells which skill to use for any task.
 

@@ -18,7 +18,7 @@ import { useIdentity } from '@/lib/identity-context'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
-import { MOCK_VENTURE_PATHS } from '@/data/mock'
+// Real paths fetched from /api/paths (Prisma → Neon PostgreSQL)
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
@@ -82,33 +82,51 @@ function agentSector(agent: AgentPersona): { label: string; icon: string } {
   return { label: 'General', icon: '🌐' }
 }
 
-/** Score an opportunity against user identity */
-function scoreOpportunity(path: (typeof MOCK_VENTURE_PATHS)[0], userInterests: string[]): number {
+/** Score a DB path opportunity against user identity */
+function scoreDbPath(
+  path: {
+    skills: string[]
+    sector: string | null
+    tier: string
+    isRemote: boolean
+    country: string
+  },
+  userInterests: string[],
+  userCountry: string
+): number {
   let score = 25
-
   const interestLabels = userInterests
     .map((id) => EXCHANGE_CATEGORIES.find((c) => c.id === id))
     .filter(Boolean)
     .map((c) => c!.label.toLowerCase())
 
-  const tagMatches = path.tags.filter((tag) =>
+  const skillMatches = path.skills.filter((skill) =>
     interestLabels.some(
-      (il) => il.includes(tag.toLowerCase()) || tag.toLowerCase().includes(il.split(' ')[0])
+      (il) => il.includes(skill.toLowerCase()) || skill.toLowerCase().includes(il.split(' ')[0])
     )
   )
-  score += Math.min(40, tagMatches.length * 15)
-
-  const catMatch = EXCHANGE_CATEGORIES.find((c) => {
-    const catLower = c.label.toLowerCase()
-    return (
-      catLower.includes(path.category.toLowerCase()) || path.category.toLowerCase().includes(c.id)
-    )
-  })
-  if (catMatch && userInterests.includes(catMatch.id)) score += 20
-  if (path.isFeatured) score += 10
+  score += Math.min(40, skillMatches.length * 15)
+  if (path.tier === 'FEATURED' || path.tier === 'PREMIUM') score += 10
   if (path.isRemote) score += 5
-
+  if (path.country === userCountry) score += 10
   return Math.min(100, score)
+}
+
+function sectorToIcon(sector: string | null): string {
+  switch (sector) {
+    case 'tech':
+      return '💻'
+    case 'healthcare':
+      return '🏥'
+    case 'safari':
+      return '🦁'
+    case 'hospitality':
+      return '🏨'
+    case 'finance':
+      return '💰'
+    default:
+      return '📡'
+  }
 }
 
 // ─── Filter types ───────────────────────────────────────────────────
@@ -130,6 +148,30 @@ export default function ExchangePage() {
 
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [sectorFilter, setSectorFilter] = useState<string>('all')
+  const [dbPaths, setDbPaths] = useState<
+    Array<{
+      id: string
+      title: string
+      company: string
+      anchorName?: string
+      location: string
+      country: string
+      sector: string | null
+      skills: string[]
+      isRemote: boolean
+      tier: string
+    }>
+  >([])
+
+  // Fetch real paths from DB
+  useEffect(() => {
+    fetch('/api/paths?limit=50&status=OPEN')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.paths) setDbPaths(data.paths)
+      })
+      .catch(() => {})
+  }, [])
 
   // Resolve user language codes to names for display
   const userLangNames = useMemo(() => identity.languages.map(langCodeToName), [identity.languages])
@@ -188,19 +230,19 @@ export default function ExchangePage() {
       }
     }
 
-    // Score opportunities
+    // Score opportunities from real DB
     if (typeFilter !== 'people') {
-      for (const path of MOCK_VENTURE_PATHS) {
-        const score = scoreOpportunity(path, identity.interests)
+      for (const path of dbPaths) {
+        const score = scoreDbPath(path, identity.interests, identity.country)
 
         // Sector filter
         if (sectorFilter !== 'all') {
           const cat = EXCHANGE_CATEGORIES.find((c) => c.id === sectorFilter)
           if (cat) {
             const catLower = cat.label.toLowerCase()
-            const pathCatLower = path.category.toLowerCase()
-            const tagMatch = path.tags.some((t) => catLower.includes(t.toLowerCase()))
-            if (!catLower.includes(pathCatLower) && !tagMatch) continue
+            const sectorLower = (path.sector || '').toLowerCase()
+            const skillMatch = path.skills.some((s) => catLower.includes(s.toLowerCase()))
+            if (!catLower.includes(sectorLower) && !skillMatch) continue
           }
         }
 
@@ -210,13 +252,13 @@ export default function ExchangePage() {
           data: {
             id: path.id,
             title: path.title,
-            subtitle: `${path.anchorName} · ${path.location}`,
+            subtitle: `${path.anchorName || path.company} · ${path.location}`,
             flag: COUNTRY_OPTIONS.find((c) => c.code === path.country)?.flag,
             languages: [],
-            skills: path.tags,
+            skills: path.skills.slice(0, 5),
             matchScore: score,
-            sector: path.category,
-            sectorIcon: path.icon,
+            sector: path.sector || 'general',
+            sectorIcon: sectorToIcon(path.sector),
           },
         })
       }
@@ -224,7 +266,7 @@ export default function ExchangePage() {
 
     // Sort by score descending
     return items.sort((a, b) => b.score - a.score)
-  }, [typeFilter, sectorFilter, identity.interests, scoredAgents])
+  }, [typeFilter, sectorFilter, identity.interests, identity.country, scoredAgents, dbPaths])
 
   // Don't render until identity is checked
   if (!hasCompletedDiscovery) {

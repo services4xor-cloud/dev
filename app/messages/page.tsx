@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
-import { MOCK_THREADS } from '@/data/mock'
+// Threads fetched from real DB via /api/threads
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
@@ -134,6 +134,29 @@ export default function MessagesPage() {
   const { identity, hasCompletedDiscovery } = useIdentity()
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
   const [showMobileContent, setShowMobileContent] = useState(false)
+  const [dbThreads, setDbThreads] = useState<
+    Array<{
+      slug: string
+      name: string
+      brandName: string
+      type: string
+      icon: string
+      tagline: string
+      description: string
+      memberCount: number
+      active: boolean
+    }>
+  >([])
+
+  // Fetch real threads from DB
+  useEffect(() => {
+    fetch('/api/threads')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.threads) setDbThreads(data.threads)
+      })
+      .catch(() => {})
+  }, [])
 
   // Auto-select DM when navigating from Connect action (e.g., /messages?dm=agent_123)
   const dmParam = searchParams.get('dm')
@@ -183,7 +206,7 @@ export default function MessagesPage() {
   }
 
   // Group threads by type for the sidebar
-  const threadsByType = MOCK_THREADS.reduce(
+  const threadsByType = dbThreads.reduce(
     (acc, thread) => {
       if (!thread.active) return acc
       const type = thread.type
@@ -191,7 +214,7 @@ export default function MessagesPage() {
       acc[type].push(thread)
       return acc
     },
-    {} as Record<string, typeof MOCK_THREADS>
+    {} as Record<string, (typeof dbThreads)[number][]>
   )
 
   // Display order for thread types
@@ -199,7 +222,7 @@ export default function MessagesPage() {
 
   const selectedThread =
     selectedSlug && !selectedSlug.startsWith('dm-')
-      ? MOCK_THREADS.find((t) => t.slug === selectedSlug)
+      ? dbThreads.find((t) => t.slug === selectedSlug)
       : null
 
   // Find selected AI agent for DM view

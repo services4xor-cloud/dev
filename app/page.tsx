@@ -7,7 +7,7 @@
  * Returning user: Rich dashboard with live matched agents, paths, and network preview
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
@@ -20,7 +20,7 @@ import SectionLayout from '@/components/ui/SectionLayout'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
-import { MOCK_VENTURE_PATHS } from '@/data/mock'
+// Real paths fetched from /api/paths (Prisma → Neon PostgreSQL)
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
@@ -76,7 +76,34 @@ export default function HomePage() {
   const { data: session } = useSession()
   const [showDiscovery, setShowDiscovery] = useState(false)
   const [hoveredAgent, setHoveredAgent] = useState<string | null>(null)
+  const [dbPaths, setDbPaths] = useState<
+    Array<{
+      id: string
+      title: string
+      company: string
+      anchorName?: string
+      location: string
+      country: string
+      sector: string | null
+      skills: string[]
+      isRemote: boolean
+      tier: string
+      salaryMin: number | null
+      salaryMax: number | null
+      currency: string
+    }>
+  >([])
   const router = useRouter()
+
+  // Fetch real paths from DB
+  useEffect(() => {
+    fetch('/api/paths?limit=20&status=OPEN')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.paths) setDbPaths(data.paths)
+      })
+      .catch(() => {}) // silent fail — empty paths is fine
+  }, [])
 
   // Top matched agents (computed only when Discovery is done)
   const topAgents = useMemo(() => {
@@ -96,29 +123,49 @@ export default function HomePage() {
       .slice(0, 6)
   }, [hasCompletedDiscovery, identity])
 
-  // Top venture paths scored
+  // Top venture paths scored against user identity
   const topPaths = useMemo(() => {
-    if (!hasCompletedDiscovery) return []
+    if (!hasCompletedDiscovery || dbPaths.length === 0) return []
     const interestLabels = identity.interests
       .map((id) => EXCHANGE_CATEGORIES.find((c) => c.id === id)?.label?.toLowerCase() ?? '')
       .filter(Boolean)
 
-    return MOCK_VENTURE_PATHS.slice(0, 20)
+    return dbPaths
       .map((path) => {
         let score = 25
-        const tagMatch = path.tags.some((tag) =>
+        const skillMatch = path.skills.some((skill) =>
           interestLabels.some(
-            (il) => il.includes(tag.toLowerCase()) || tag.toLowerCase().includes(il)
+            (il) => il.includes(skill.toLowerCase()) || skill.toLowerCase().includes(il)
           )
         )
-        if (tagMatch) score += 40
-        if (path.isFeatured) score += 15
+        if (skillMatch) score += 40
+        if (path.tier === 'FEATURED' || path.tier === 'PREMIUM') score += 15
         if (path.isRemote) score += 10
-        return { path, score: Math.min(100, score) }
+        if (path.country === identity.country) score += 10
+        // Map DB path to display shape
+        const displayPath = {
+          id: path.id,
+          title: path.title,
+          anchorName: path.anchorName || path.company,
+          location: path.location,
+          country: path.country,
+          icon:
+            path.sector === 'tech'
+              ? '💻'
+              : path.sector === 'healthcare'
+                ? '🏥'
+                : path.sector === 'safari'
+                  ? '🦁'
+                  : '📡',
+          tags: path.skills.slice(0, 5),
+          isRemote: path.isRemote,
+          isFeatured: path.tier !== 'BASIC',
+        }
+        return { path: displayPath, score: Math.min(100, score) }
       })
       .sort((a, b) => b.score - a.score)
       .slice(0, 4)
-  }, [hasCompletedDiscovery, identity.interests])
+  }, [hasCompletedDiscovery, identity.interests, identity.country, dbPaths])
 
   // ─── First-time visitor flow ──────────────────────────────────
   if (!hasCompletedDiscovery) {

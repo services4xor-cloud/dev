@@ -11,12 +11,12 @@
  */
 
 import { useParams, useRouter } from 'next/navigation'
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { ArrowLeft, Globe, MapPin, Briefcase, Star, MessageCircle, Zap, Send } from 'lucide-react'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
-import { MOCK_VENTURE_PATHS } from '@/data/mock'
+// Real paths fetched from /api/paths/[id] (Prisma → Neon PostgreSQL)
 import { generateAllAgents } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
@@ -88,8 +88,38 @@ export default function ExchangeDetailPage() {
     return { agent, score, breakdown: dimScore.breakdown }
   }, [id, identity])
 
-  // Find path from mock data
-  const path = MOCK_VENTURE_PATHS.find((p) => p.id === id)
+  // Fetch real path from DB
+  const [dbPath, setDbPath] = useState<{
+    id: string
+    title: string
+    company: string
+    description: string
+    location: string
+    country: string
+    isRemote: boolean
+    skills: string[]
+    sector: string | null
+    salaryMin: number | null
+    salaryMax: number | null
+    currency: string
+    status: string
+    tier: string
+    createdAt: string
+    anchor?: { name: string | null }
+    _count?: { chapters: number; savedBy: number }
+  } | null>(null)
+
+  useEffect(() => {
+    if (agentData) return // Skip fetch if it's an agent
+    fetch(`/api/paths/${id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success && data.path) setDbPath(data.path)
+      })
+      .catch(() => {})
+  }, [id, agentData])
+
+  const path = dbPath
 
   // Not found
   if (!agentData && !path) {
@@ -352,9 +382,28 @@ export default function ExchangeDetailPage() {
     )
   }
 
-  // ── Opportunity detail ──
+  // ── Opportunity detail (from real DB) ──
   if (path) {
     const countryInfo = COUNTRY_OPTIONS.find((c) => c.code === path.country)
+    const anchorName = path.anchor?.name || path.company
+    const salaryDisplay =
+      path.salaryMin || path.salaryMax
+        ? `${path.currency} ${(path.salaryMin || 0).toLocaleString()}${path.salaryMax ? ` - ${path.salaryMax.toLocaleString()}` : '+'}`
+        : 'Competitive'
+    const postedAgo = (() => {
+      const diff = Date.now() - new Date(path.createdAt).getTime()
+      const h = Math.floor(diff / 3600000)
+      if (h < 24) return `${h}h ago`
+      return `${Math.floor(h / 24)}d ago`
+    })()
+    const sectorIcon =
+      path.sector === 'tech'
+        ? '💻'
+        : path.sector === 'healthcare'
+          ? '🏥'
+          : path.sector === 'safari'
+            ? '🦁'
+            : '📡'
 
     return (
       <SectionLayout>
@@ -375,9 +424,9 @@ export default function ExchangeDetailPage() {
                   <span className="rounded-full border border-brand-accent/30 px-2 py-0.5 text-phi-xs text-brand-accent">
                     Path
                   </span>
-                  {path.isFeatured && (
+                  {(path.tier === 'FEATURED' || path.tier === 'PREMIUM') && (
                     <span className="rounded-full bg-brand-accent/20 px-2 py-0.5 text-phi-xs text-brand-accent">
-                      Featured
+                      {path.tier === 'PREMIUM' ? 'Premium' : 'Featured'}
                     </span>
                   )}
                   {path.isRemote && (
@@ -387,12 +436,12 @@ export default function ExchangeDetailPage() {
                   )}
                 </div>
                 <h1 className="text-phi-2xl font-bold text-white">
-                  {path.icon} {path.title}
+                  {sectorIcon} {path.title}
                 </h1>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-white/50">
                   <span className="flex items-center gap-1">
                     <Briefcase className="h-4 w-4" />
-                    {path.anchorName}
+                    {anchorName}
                   </span>
                   <span className="flex items-center gap-1">
                     <MapPin className="h-4 w-4" />
@@ -405,44 +454,58 @@ export default function ExchangeDetailPage() {
               <div className="mb-phi-5 grid grid-cols-2 gap-3">
                 <div className="glass-subtle rounded-lg p-3">
                   <p className="text-phi-xs text-white/40">Compensation</p>
-                  <p className="text-phi-sm font-semibold text-white">{path.salary}</p>
+                  <p className="text-phi-sm font-semibold text-white">{salaryDisplay}</p>
                 </div>
                 <div className="glass-subtle rounded-lg p-3">
                   <p className="text-phi-xs text-white/40">Posted</p>
-                  <p className="text-phi-sm font-semibold text-white">{path.posted}</p>
+                  <p className="text-phi-sm font-semibold text-white">{postedAgo}</p>
                 </div>
-                {path.pioneersNeeded && (
+                {path._count && path._count.chapters > 0 && (
                   <div className="glass-subtle rounded-lg p-3">
-                    <p className="text-phi-xs text-white/40">Pioneers Needed</p>
-                    <p className="text-phi-sm font-semibold text-white">{path.pioneersNeeded}</p>
+                    <p className="text-phi-xs text-white/40">Chapters Opened</p>
+                    <p className="text-phi-sm font-semibold text-white">{path._count.chapters}</p>
                   </div>
                 )}
-                <div className="glass-subtle rounded-lg p-3">
-                  <p className="text-phi-xs text-white/40">Category</p>
-                  <p className="text-phi-sm font-semibold text-white capitalize">{path.category}</p>
-                </div>
+                {path.sector && (
+                  <div className="glass-subtle rounded-lg p-3">
+                    <p className="text-phi-xs text-white/40">Sector</p>
+                    <p className="text-phi-sm font-semibold text-white capitalize">{path.sector}</p>
+                  </div>
+                )}
               </div>
 
-              {/* Tags */}
+              {/* Description */}
+              {path.description && (
+                <div className="mb-phi-5">
+                  <h2 className="mb-2 text-phi-base font-semibold text-white/70">
+                    About this Path
+                  </h2>
+                  <p className="text-white/60 text-phi-sm leading-relaxed whitespace-pre-line">
+                    {path.description}
+                  </p>
+                </div>
+              )}
+
+              {/* Skills */}
               <div>
                 <h2 className="mb-2 text-phi-base font-semibold text-white/70">Skills Required</h2>
                 <div className="flex flex-wrap gap-2">
-                  {path.tags.map((tag) => {
+                  {path.skills.map((skill) => {
                     const shared = (identity.craft ?? []).some(
                       (c) =>
-                        c.toLowerCase().includes(tag.toLowerCase()) ||
-                        tag.toLowerCase().includes(c.toLowerCase())
+                        c.toLowerCase().includes(skill.toLowerCase()) ||
+                        skill.toLowerCase().includes(c.toLowerCase())
                     )
                     return (
                       <span
-                        key={tag}
+                        key={skill}
                         className={`rounded-full px-3 py-1 text-phi-sm ${
                           shared
                             ? 'border border-brand-accent/50 bg-brand-accent/10 text-brand-accent'
                             : 'bg-white/5 text-white/50'
                         }`}
                       >
-                        {tag}
+                        {skill}
                       </span>
                     )
                   })}
@@ -468,7 +531,7 @@ export default function ExchangeDetailPage() {
 
             <GlassCard padding="md">
               <h3 className="text-phi-sm font-semibold text-white/70 mb-2">Posted by</h3>
-              <p className="text-white font-medium">{path.anchorName}</p>
+              <p className="text-white font-medium">{anchorName}</p>
               <p className="text-white/40 text-phi-xs mt-1">
                 {countryInfo?.flag} {path.location}
               </p>
