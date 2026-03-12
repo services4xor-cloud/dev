@@ -125,7 +125,6 @@ function getRankedCountries(
       }
     })
     .sort((a, b) => b.score - a.score)
-    .slice(0, 7) // Top 7 most relevant (+ current = 8 total)
 }
 
 // ─── Language tier type ─────────────────────────────────────────────
@@ -401,7 +400,7 @@ export default function IdentitySwitcher({
         <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2 mt-3 px-1">
           {t('nav.switchIdentity')}
         </p>
-        <div className="space-y-0.5 max-h-[280px] overflow-y-auto">
+        <div className="space-y-0.5 max-h-[50vh] overflow-y-auto">
           {ranked.map((c) => (
             <button
               key={c.code}
