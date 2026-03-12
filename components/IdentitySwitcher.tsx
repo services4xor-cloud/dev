@@ -240,23 +240,20 @@ export default function IdentitySwitcher({
   const { identity, setCountry, setLanguage, localizeCountry } = useIdentity()
   const { t } = useTranslation()
   const { trackCountryExplored } = useJourney()
-  const [langSearch, setLangSearch] = useState('')
+  const [search, setSearch] = useState('')
 
   if (!open) return null
 
   const currentOpt = COUNTRY_OPTIONS.find((c) => c.code === identity.country)
-  const ranked = getRankedCountries(identity.country, identity.language, localizeCountry)
-  const allLanguages = getCuratedLanguages(identity.country, identity.language)
+  const allRanked = getRankedCountries(identity.country, identity.language, localizeCountry)
 
-  // Filter languages by search query
-  const query = langSearch.trim().toLowerCase()
-  const languages = query
-    ? allLanguages.filter(
-        (l) => l.nativeName.toLowerCase().includes(query) || l.name.toLowerCase().includes(query)
+  // Filter countries by search query
+  const query = search.trim().toLowerCase()
+  const ranked = query
+    ? allRanked.filter(
+        (c) => c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query)
       )
-    : allLanguages
-
-  const showSearch = allLanguages.length > 12
+    : allRanked
 
   // Get tier label
   const tierLabel = (tier: TieredLanguage['tier']) => {
@@ -351,55 +348,39 @@ export default function IdentitySwitcher({
         </div>
       )}
 
-      {/* ── Language section (FIRST — language-first UX) ── */}
-      <div className="px-4 pt-2 pb-3 border-t border-white/5">
-        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2.5 px-1">
-          {t('nav.language') || 'Display Language'}
-        </p>
-
-        {/* Search input (shown when 12+ languages) */}
-        {showSearch && (
-          <div className="relative mb-2">
-            <svg
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25 pointer-events-none"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <input
-              type="text"
-              value={langSearch}
-              onChange={(e) => setLangSearch(e.target.value)}
-              placeholder="Search languages..."
-              data-testid="language-search"
-              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-white/5 border border-white/8
-                         text-[11px] text-white/70 placeholder-white/20
-                         focus:outline-none focus:border-brand-accent/30 focus:bg-white/8
-                         transition-all duration-200"
-            />
-          </div>
-        )}
-
-        <div className="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto">
-          {renderLanguageList()}
-          {query && languages.length === 0 && (
-            <p className="text-[10px] text-white/25 px-1 py-2">No languages match your search</p>
-          )}
-        </div>
-      </div>
-
-      {/* ── Ranked countries (SECOND) ──────────────────── */}
+      {/* ── Countries with search ──────────────────── */}
       <div className="px-4 pb-3 border-t border-white/5">
         <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2 mt-3 px-1">
           {t('nav.switchIdentity')}
         </p>
+
+        {/* Search input */}
+        <div className="relative mb-2">
+          <svg
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search countries..."
+            data-testid="country-search"
+            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-white/5 border border-white/8
+                       text-[11px] text-white/70 placeholder-white/20
+                       focus:outline-none focus:border-brand-accent/30 focus:bg-white/8
+                       transition-all duration-200"
+          />
+        </div>
         <div className="space-y-0.5 max-h-[50vh] overflow-y-auto">
           {ranked.map((c) => (
             <button
@@ -444,6 +425,11 @@ export default function IdentitySwitcher({
               </div>
             </button>
           ))}
+          {query && ranked.length === 0 && (
+            <p className="text-[10px] text-white/25 px-1 py-2">
+              No countries match &ldquo;{search}&rdquo;
+            </p>
+          )}
         </div>
       </div>
 
