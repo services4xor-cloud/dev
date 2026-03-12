@@ -203,22 +203,26 @@
 
   /* ── Glassmorphism ──────────────────────────────────────────── */
   .glass {
-    background: rgb(var(--color-surface-rgb) / 0.6);
+    @apply rounded-2xl;
+    background: rgb(var(--color-surface-2-rgb) / 0.6);
     backdrop-filter: blur(12px) saturate(1.5);
     -webkit-backdrop-filter: blur(12px) saturate(1.5);
-    border: 1px solid rgb(var(--color-accent-rgb) / 0.1);
+    border: 1px solid rgb(var(--color-accent-rgb) / 0.12);
   }
   .glass-strong {
+    @apply rounded-2xl;
     background: rgb(var(--color-surface-rgb) / 0.8);
     backdrop-filter: blur(20px) saturate(1.8);
     -webkit-backdrop-filter: blur(20px) saturate(1.8);
-    border: 1px solid rgb(var(--color-accent-rgb) / 0.15);
+    border: 1px solid rgb(var(--color-accent-rgb) / 0.2);
+    box-shadow: 0 0 30px rgb(var(--color-accent-rgb) / 0.05);
   }
   .glass-subtle {
-    background: rgb(var(--color-surface-rgb) / 0.3);
+    @apply rounded-xl;
+    background: rgb(var(--color-surface-2-rgb) / 0.3);
     backdrop-filter: blur(8px) saturate(1.2);
     -webkit-backdrop-filter: blur(8px) saturate(1.2);
-    border: 1px solid rgb(var(--color-accent-rgb) / 0.06);
+    border: 1px solid rgb(var(--color-accent-rgb) / 0.08);
   }
 
   /* ── Glow Effects ───────────────────────────────────────────── */
@@ -244,7 +248,7 @@
 
   /* ── Gradient Text ──────────────────────────────────────────── */
   .gradient-text {
-    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+    background: linear-gradient(135deg, #fff 30%, var(--color-accent) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -321,62 +325,55 @@
   }
 }
 
-/* ── Scroll Reveal + Stagger ──────────────────────────────────── */
+/* ── Scroll Reveal + Stagger (CSS-only) ──────────────────────── */
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity 0.6s ease-out,
-    transform 0.6s ease-out;
+  animation: revealUp 0.5s ease-out both;
 }
-.reveal.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 .reveal-stagger > * {
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity 0.5s ease-out,
-    transform 0.5s ease-out;
+  animation: revealUp 0.5s ease-out both;
 }
-.reveal-stagger.revealed > *:nth-child(1) {
-  transition-delay: 0ms;
+.reveal-stagger > *:nth-child(1) {
+  animation-delay: 0ms;
 }
-.reveal-stagger.revealed > *:nth-child(2) {
-  transition-delay: 80ms;
+.reveal-stagger > *:nth-child(2) {
+  animation-delay: 80ms;
 }
-.reveal-stagger.revealed > *:nth-child(3) {
-  transition-delay: 160ms;
+.reveal-stagger > *:nth-child(3) {
+  animation-delay: 160ms;
 }
-.reveal-stagger.revealed > *:nth-child(4) {
-  transition-delay: 240ms;
+.reveal-stagger > *:nth-child(4) {
+  animation-delay: 240ms;
 }
-.reveal-stagger.revealed > *:nth-child(5) {
-  transition-delay: 320ms;
+.reveal-stagger > *:nth-child(5) {
+  animation-delay: 320ms;
 }
-.reveal-stagger.revealed > *:nth-child(6) {
-  transition-delay: 400ms;
+.reveal-stagger > *:nth-child(6) {
+  animation-delay: 400ms;
 }
-.reveal-stagger.revealed > *:nth-child(7) {
-  transition-delay: 480ms;
+.reveal-stagger > *:nth-child(7) {
+  animation-delay: 480ms;
 }
-.reveal-stagger.revealed > *:nth-child(8) {
-  transition-delay: 560ms;
-}
-.reveal-stagger.revealed > * {
-  opacity: 1;
-  transform: translateY(0);
+.reveal-stagger > *:nth-child(8) {
+  animation-delay: 560ms;
 }
 
 /* ── Shimmer Loading ──────────────────────────────────────────── */
 .skeleton-shimmer {
   background: linear-gradient(
     90deg,
-    rgb(var(--color-surface-2-rgb) / 0.6) 25%,
-    rgb(var(--color-surface-2-rgb) / 0.9) 50%,
-    rgb(var(--color-surface-2-rgb) / 0.6) 75%
+    rgb(var(--color-surface-rgb)) 25%,
+    rgb(var(--color-accent-rgb) / 0.08) 50%,
+    rgb(var(--color-surface-rgb)) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
