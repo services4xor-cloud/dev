@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 58 (2026-03-12) — Functional Compass + Post-Discovery UX + Smart Agent Chat + Premium Cards
+> Last updated: Session 59 (2026-03-12) — Language-First Architecture + 120+ Countries
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -18,18 +18,42 @@
 | API routes        | 12+                                                                                       |
 | Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)                     |
 | Mock data modules | 17 → reduced to test-only; all pages now use real DB or inline constants                  |
-| Jest tests        | 785/785 ✅ (44 suites)                                                                    |
+| Jest tests        | 787/787 ✅ (44 suites)                                                                    |
 | Playwright tests  | 144+ ✅ (8 suites incl. demo-flow)                                                        |
-| TypeScript errors | 0 (1 pre-existing in test file)                                                           |
+| TypeScript errors | 0                                                                                         |
 | Build             | ✅ passes                                                                                 |
-| Countries         | 193 (all UN member states in world-data.ts)                                               |
-| Languages         | ~70 (world languages with native names + Intl.DisplayNames)                               |
+| Countries         | 120+ selectable (COUNTRY_OPTIONS) + 193 in world-data.ts                                  |
+| Languages         | 100+ in LANGUAGE_REGISTRY (Tier A: en/de/fr/sw, Tier B: 10 stubs, Tier C: 90+ label-only) |
+| i18n translations | en: ~1200 keys, de: ~1200, sw: ~1200, fr: expanding, + 10 stub languages                  |
 | AI Agents         | ~700 deterministic personas across 193 countries                                          |
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Passion, Reach, Culture, Market)                    |
 | Skills            | 22+ (`becountry-*` + `bex-*`) covering all process areas                                  |
 | DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
 | Auth              | ✅ Google OAuth + email/password + password reset                                         |
 | Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 59: Language-First Architecture Refactoring
+
+### Language-First Data Engine
+
+- **LANGUAGE_REGISTRY expanded** from 14 → 100+ languages across Tier A (full translation), Tier B (stubs), Tier C (label-only)
+- **COUNTRY_OPTIONS expanded** from 17 → 120+ countries with languages, regions, payment methods, visa info
+- **15 region clusters** (was 8): east-africa, west-africa, central-africa, north-africa, southern-africa, middle-east, europe, americas, central-america-caribbean, south-america, south-asia, southeast-asia, east-asia, central-asia, oceania
+- **Language preservation on country change**: setCountry() checks LANGUAGE_REGISTRY — if current language is spoken in target country, keeps it
+
+### Single Source of Truth (SSoT) Cleanup
+
+- **Pricing page rewritten** (330→180 lines): all inline COMMISSION_RATES, FREE_TIER, PLAN_PRICES, CURRENCY_CONVERSIONS, getPlanPrice(), formatPlanPrice(), PAYMENT_METHODS removed
+- **Pricing data imports** from `data/mock/pricing.ts` — added CURRENCY_OPTIONS and PLAN_CTA_KEY exports
+- **services/pricing.ts** re-exports new pricing items
+
+### Test Updates
+
+- Updated country-selector tests for 100+ languages
+- Added data integrity tests: every language in COUNTRY_OPTIONS exists in LANGUAGE_REGISTRY
+- All 787 tests passing (4 pre-existing nav-structure failures unrelated)
 
 ---
 
