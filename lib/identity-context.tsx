@@ -16,6 +16,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
 import { getLocalizedCountryName, getDefaultLanguage } from '@/lib/endonyms'
 import { detectCountryFromTimezone } from '@/lib/geo'
+import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -190,17 +191,23 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
 
   const setCountry = useCallback((code: string) => {
     const cc = code.toUpperCase()
-    setIdentity((prev) => ({
-      ...prev,
-      country: cc,
-      // Always switch display language to the country's default
-      // MVC: View language follows the Model's country selection
-      language: getDefaultLanguage(cc),
-      // Clear thread when changing country
-      threadSlug: undefined,
-      threadType: undefined,
-      threadBrandName: undefined,
-    }))
+    setIdentity((prev) => {
+      // Language-first: preserve current language if spoken in the target country
+      const currentLang = prev.language as LanguageCode
+      const langEntry = LANGUAGE_REGISTRY[currentLang]
+      const langSpokenInTarget = langEntry?.countries?.includes(cc) ?? false
+
+      return {
+        ...prev,
+        country: cc,
+        // Keep current language if it's spoken in the new country, else switch to default
+        language: langSpokenInTarget ? prev.language : getDefaultLanguage(cc),
+        // Clear thread when changing country
+        threadSlug: undefined,
+        threadType: undefined,
+        threadBrandName: undefined,
+      }
+    })
   }, [])
 
   const setLanguage = useCallback((code: string) => {

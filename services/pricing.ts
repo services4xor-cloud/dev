@@ -12,10 +12,14 @@ import {
   COMMISSION_RATES,
   FREE_TIER,
   CURRENCY_CONVERSIONS,
+  CURRENCY_OPTIONS,
+  PLAN_CTA_KEY,
   COUNTRY_PAYMENT_METHODS,
   getPlanPrice,
   formatPlanPrice,
 } from '@/data/mock/pricing'
+
+export { CURRENCY_OPTIONS, PLAN_CTA_KEY }
 
 export const pricingService = {
   /** Get all pricing plans */

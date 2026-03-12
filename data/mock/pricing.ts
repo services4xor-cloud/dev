@@ -119,13 +119,30 @@ export function getPlanPrice(plan: 'basic' | 'featured' | 'premium', currencyCod
 /** Format plan price with currency symbol */
 export function formatPlanPrice(
   plan: 'basic' | 'featured' | 'premium',
-  currencyCode: string
+  currencyCode: string,
+  freeLabel = 'Free'
 ): string {
   const price = getPlanPrice(plan, currencyCode)
-  if (price === 0) return 'Free'
+  if (price === 0) return freeLabel
   const conv = CURRENCY_CONVERSIONS[currencyCode]
   if (!conv) return `$${price}`
   return `${conv.symbol} ${price.toLocaleString()}/mo`
+}
+
+/** Currency selector options for pricing UI */
+export const CURRENCY_OPTIONS = [
+  { code: 'KES', flag: '🇰🇪', label: 'KES' },
+  { code: 'EUR', flag: '🇪🇺', label: 'EUR' },
+  { code: 'CHF', flag: '🇨🇭', label: 'CHF' },
+  { code: 'THB', flag: '🇹🇭', label: 'THB' },
+  { code: 'USD', flag: '🇺🇸', label: 'USD' },
+] as const
+
+/** Map plan name to i18n CTA key */
+export const PLAN_CTA_KEY: Record<string, string> = {
+  Basic: 'pricing.postFree',
+  Featured: 'pricing.goFeatured',
+  Premium: 'pricing.goPremium',
 }
 
 // ── Payment Methods ──────────────────────────────────────────────────
