@@ -2,6 +2,7 @@
 // Auto-detects user location, matches to target countries, shows relevant paths
 
 import { PioneerType } from './vocabulary'
+import { COUNTRIES, CountryCode } from './countries'
 
 export interface CompassReading {
   fromCountry: string // ISO2: detected origin
@@ -145,6 +146,84 @@ export const COUNTRY_ROUTES: Record<
   },
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Region mapping for visa / free-movement logic
+// ─────────────────────────────────────────────────────────────────────────────
+const COUNTRY_REGION: Record<string, string> = {
+  KE: 'East Africa',
+  UG: 'East Africa',
+  TZ: 'East Africa',
+  NG: 'West Africa',
+  GH: 'West Africa',
+  ZA: 'Southern Africa',
+  DE: 'Western Europe',
+  CH: 'Western Europe',
+  GB: 'Western Europe',
+  US: 'North America',
+  CA: 'North America',
+  AE: 'Middle East',
+  IN: 'South Asia',
+  TH: 'Southeast Asia',
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Adaptive route generation — derives routes from COUNTRIES config
+// ─────────────────────────────────────────────────────────────────────────────
+
+type RouteEntry = (typeof COUNTRY_ROUTES)[string]
+
+/**
+ * Generate an adaptive route for ANY country pair by deriving data from the
+ * COUNTRIES config.  Returns the curated COUNTRY_ROUTES entry when one exists,
+ * otherwise builds a route dynamically from sector overlap and payment config.
+ *
+ * Returns `null` when the two countries share zero sectors.
+ */
+export function generateRoute(from: string, to: string): RouteEntry | null {
+  // 1. If a curated route exists, prefer it
+  const curated = COUNTRY_ROUTES[getRouteKey(from, to)]
+  if (curated) return curated
+
+  // 2. Both countries must be in COUNTRIES config
+  const fromConfig = COUNTRIES[from as CountryCode]
+  const toConfig = COUNTRIES[to as CountryCode]
+  if (!fromConfig || !toConfig) return null
+
+  // 3. Derive sector names from featuredSectors
+  const fromSectors = fromConfig.featuredSectors.map((s) => s.name)
+  const toSectors = toConfig.featuredSectors.map((s) => s.name)
+
+  // Find overlapping sectors (case-insensitive for robustness)
+  const fromSet = new Set(fromSectors.map((s) => s.toLowerCase()))
+  const sharedSectors = toSectors.filter((s) => fromSet.has(s.toLowerCase()))
+
+  if (sharedSectors.length === 0) return null
+
+  // 4. Derive payment methods — unique names from both countries
+  const paymentNames = new Set<string>()
+  for (const pm of fromConfig.paymentMethods) paymentNames.add(pm.name)
+  for (const pm of toConfig.paymentMethods) paymentNames.add(pm.name)
+
+  // 5. Determine strength
+  const strength: 'partner' | 'emerging' = sharedSectors.length >= 3 ? 'partner' : 'emerging'
+
+  // 6. Visa note — same region → free movement hint, otherwise generic
+  const fromRegion = COUNTRY_REGION[from] ?? 'Other'
+  const toRegion = COUNTRY_REGION[to] ?? 'Other'
+  const visaNote =
+    fromRegion === toRegion
+      ? `Free movement — ${fromConfig.name} and ${toConfig.name} share the ${toRegion} region.`
+      : `${toConfig.name} visa required for ${fromConfig.name} nationals.`
+
+  return {
+    targetCountries: [to],
+    primarySectors: sharedSectors,
+    visaNote,
+    paymentMethods: Array.from(paymentNames),
+    strength,
+  }
+}
+
 // Geolocation → country code mapping (simplified)
 export async function detectCountryFromIP(): Promise<{
   country: string
@@ -167,11 +246,26 @@ export function getRouteKey(from: string, to: string): string {
 }
 
 export function getRouteInfo(from: string, to: string) {
-  return COUNTRY_ROUTES[getRouteKey(from, to)] || null
+  return COUNTRY_ROUTES[getRouteKey(from, to)] ?? generateRoute(from, to)
 }
 
 export function getRecommendedRoutes(fromCountry: string): string[] {
-  return Object.keys(COUNTRY_ROUTES)
-    .filter((k) => k.startsWith(fromCountry))
+  // Start with curated routes
+  const curated = Object.keys(COUNTRY_ROUTES)
+    .filter((k) => k.startsWith(`${fromCountry}-`))
     .map((k) => k.split('-')[1])
+
+  const seen = new Set(curated)
+
+  // Add generated routes for every other country in COUNTRIES
+  for (const code of Object.keys(COUNTRIES)) {
+    if (code === fromCountry || seen.has(code)) continue
+    const route = generateRoute(fromCountry, code)
+    if (route) {
+      curated.push(code)
+      seen.add(code)
+    }
+  }
+
+  return curated
 }
