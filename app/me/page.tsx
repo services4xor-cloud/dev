@@ -7,6 +7,14 @@ import { LANGUAGE_REGISTRY, COUNTRY_OPTIONS, type LanguageCode } from '@/lib/cou
 import { getCategoriesByIds } from '@/lib/exchange-categories'
 import { MOCK_CHAPTERS, MOCK_CURRENT_PIONEER } from '@/data/mock'
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
+import {
+  FAITH_OPTIONS,
+  REACH_OPTIONS,
+  DIMENSION_META,
+  getFaithOption,
+  getReachOption,
+} from '@/lib/dimensions'
+import { getMarketScore } from '@/lib/market-data'
 import ModeToggle from '@/components/ModeToggle'
 import GlassCard from '@/components/ui/GlassCard'
 import StatCard from '@/components/ui/StatCard'
@@ -41,7 +49,9 @@ function StatusBadge({ status }: { status: string }) {
     REJECTED: 'bg-red-900/60 text-red-300 border-red-700/40',
   }
   return (
-    <span className={`text-xs px-2 py-0.5 rounded-full border ${colors[status] ?? 'bg-white/10 text-white/60 border-white/20'}`}>
+    <span
+      className={`text-xs px-2 py-0.5 rounded-full border ${colors[status] ?? 'bg-white/10 text-white/60 border-white/20'}`}
+    >
       {status}
     </span>
   )
@@ -60,6 +70,10 @@ export default function MePage() {
     setLanguages,
     setInterests,
     setCity,
+    setFaith,
+    setCraft,
+    setReach,
+    setCulture,
   } = useIdentity()
 
   const [activeTab, setActiveTab] = useState<TabId>('Dashboard')
@@ -92,6 +106,26 @@ export default function MePage() {
       </main>
     )
   }
+
+  // ─── Dimension activity count ──────────────────────────────────────
+  const activeDimensions = [
+    identity.country, // location — always active
+    identity.languages.length > 0,
+    identity.faith,
+    identity.craft.length > 0,
+    identity.interests.length > 0,
+    identity.reach.length > 0,
+    identity.culture,
+    true, // market — always computed
+  ].filter(Boolean).length
+
+  const marketScore = getMarketScore({
+    country: identity.country,
+    languages: identity.languages,
+    craft: identity.craft,
+    interests: identity.interests,
+    reach: identity.reach,
+  })
 
   const modeTabs = identity.mode === 'explorer' ? EXPLORER_TABS : HOST_TABS
   const allTabs = [...modeTabs, ...SHARED_TABS]
@@ -242,11 +276,15 @@ export default function MePage() {
   }
 
   function renderProfile() {
+    const faithOption = identity.faith ? getFaithOption(identity.faith) : null
+
     return (
       <div className="space-y-phi-5">
-        {/* Location */}
+        {/* 1. Location */}
         <GlassCard padding="md">
-          <label className="block text-phi-sm text-white/60 mb-phi-1">City</label>
+          <label className="block text-phi-sm text-white/60 mb-phi-1">
+            <span className="mr-1">📍</span> Location
+          </label>
           <input
             type="text"
             value={editCity}
@@ -255,11 +293,17 @@ export default function MePage() {
             placeholder="e.g. Nairobi"
             className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors"
           />
+          <p className="text-xs text-white/30 mt-phi-1">
+            {flag} {localizeCountry(identity.country)}
+            {identity.city ? ` \u00b7 ${identity.city}` : ''}
+          </p>
         </GlassCard>
 
-        {/* Languages */}
+        {/* 2. Languages */}
         <GlassCard padding="md">
-          <label className="block text-phi-sm text-white/60 mb-phi-2">Languages you speak</label>
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">🗣️</span> Languages
+          </label>
           <div className="flex flex-wrap gap-phi-2">
             {identity.languages.map((code) => (
               <span
@@ -269,9 +313,7 @@ export default function MePage() {
                 {getLanguageName(code)}
                 <button
                   type="button"
-                  onClick={() =>
-                    setLanguages(identity.languages.filter((l) => l !== code))
-                  }
+                  onClick={() => setLanguages(identity.languages.filter((l) => l !== code))}
                   className="ml-1 text-brand-accent/60 hover:text-brand-accent"
                   aria-label={`Remove ${getLanguageName(code)}`}
                 >
@@ -279,12 +321,45 @@ export default function MePage() {
                 </button>
               </span>
             ))}
+            {identity.languages.length === 0 && (
+              <span className="text-phi-sm text-white/30 italic">No languages selected</span>
+            )}
           </div>
         </GlassCard>
 
-        {/* Interests */}
+        {/* 3. Craft */}
         <GlassCard padding="md">
-          <label className="block text-phi-sm text-white/60 mb-phi-2">Interests</label>
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">🛠️</span> Craft &amp; Skills
+          </label>
+          <div className="flex flex-wrap gap-phi-2">
+            {identity.craft.map((skill) => (
+              <span
+                key={skill}
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-brand-primary/20 text-white/90 border border-brand-primary/40 text-phi-sm"
+              >
+                {skill}
+                <button
+                  type="button"
+                  onClick={() => setCraft(identity.craft.filter((c) => c !== skill))}
+                  className="ml-1 text-white/40 hover:text-white"
+                  aria-label={`Remove ${skill}`}
+                >
+                  &times;
+                </button>
+              </span>
+            ))}
+            {identity.craft.length === 0 && (
+              <span className="text-phi-sm text-white/30 italic">No crafts added yet</span>
+            )}
+          </div>
+        </GlassCard>
+
+        {/* 4. Interests / Passion */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">❤️</span> Passion &amp; Interests
+          </label>
           <div className="flex flex-wrap gap-phi-2">
             {userInterests.map((cat) => (
               <span
@@ -295,15 +370,106 @@ export default function MePage() {
                 {cat.label}
                 <button
                   type="button"
-                  onClick={() =>
-                    setInterests(identity.interests.filter((i) => i !== cat.id))
-                  }
+                  onClick={() => setInterests(identity.interests.filter((i) => i !== cat.id))}
                   className="ml-1 text-white/40 hover:text-white"
                   aria-label={`Remove ${cat.label}`}
                 >
                   &times;
                 </button>
               </span>
+            ))}
+            {userInterests.length === 0 && (
+              <span className="text-phi-sm text-white/30 italic">No interests selected</span>
+            )}
+          </div>
+        </GlassCard>
+
+        {/* 5. Reach */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">🌐</span> Reach
+          </label>
+          <div className="flex flex-wrap gap-phi-2">
+            {identity.reach.map((id) => {
+              const opt = getReachOption(id)
+              return (
+                <span
+                  key={id}
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 text-white/80 border border-white/10 text-phi-sm"
+                >
+                  <span>{opt?.icon ?? '🌐'}</span>
+                  {opt?.label ?? id}
+                  <button
+                    type="button"
+                    onClick={() => setReach(identity.reach.filter((r) => r !== id))}
+                    className="ml-1 text-white/40 hover:text-white"
+                    aria-label={`Remove ${opt?.label ?? id}`}
+                  >
+                    &times;
+                  </button>
+                </span>
+              )
+            })}
+            {identity.reach.length === 0 && (
+              <span className="text-phi-sm text-white/30 italic">No reach preferences set</span>
+            )}
+          </div>
+        </GlassCard>
+
+        {/* 6. Faith */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">🙏</span> Faith
+          </label>
+          {faithOption ? (
+            <div className="flex items-center gap-phi-2">
+              <span className="text-lg">{faithOption.icon}</span>
+              <span className="text-white/80">{faithOption.label}</span>
+            </div>
+          ) : (
+            <span className="text-phi-sm text-white/30 italic">Not specified</span>
+          )}
+        </GlassCard>
+
+        {/* 7. Culture */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">🌿</span> Culture
+          </label>
+          {identity.culture ? (
+            <span className="text-white/80">{identity.culture}</span>
+          ) : (
+            <span className="text-phi-sm text-white/30 italic">Not specified</span>
+          )}
+        </GlassCard>
+
+        {/* 8. Market Score */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">📊</span> Market Relevance
+          </label>
+          <div className="flex items-center gap-phi-3 mb-phi-2">
+            <span className="text-phi-xl font-bold text-brand-accent">
+              {marketScore.total}/{marketScore.maxTotal}
+            </span>
+            <div className="flex-1">
+              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-brand-accent rounded-full transition-all duration-500"
+                  style={{ width: `${(marketScore.total / marketScore.maxTotal) * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-white/30">Based on real-world demand signals</p>
+          <div className="mt-phi-2 grid grid-cols-1 sm:grid-cols-2 gap-phi-1">
+            {marketScore.signals.map((s) => (
+              <div key={s.dimension} className="flex items-center justify-between text-xs">
+                <span className="text-white/50">{s.label}</span>
+                <span className="text-white/40">
+                  {s.score}/{s.maxScore}
+                </span>
+              </div>
             ))}
           </div>
         </GlassCard>
@@ -430,9 +596,55 @@ export default function MePage() {
             ))}
           </div>
 
-          {/* Match count */}
+          {/* Match count + dimension count */}
           <p className="text-phi-sm text-brand-accent">Connected to 42 people</p>
+          <p className="text-phi-sm text-white/40 mt-phi-1">
+            {activeDimensions}/8 dimensions active
+          </p>
         </div>
+
+        {/* ── Dimension Summary Card ───────────────────────────────────── */}
+        <GlassCard padding="md" className="mb-phi-5">
+          <div className="flex flex-wrap justify-center gap-phi-3">
+            {DIMENSION_META.map((dim) => {
+              const isActive = (() => {
+                switch (dim.key) {
+                  case 'location':
+                    return true
+                  case 'languages':
+                    return identity.languages.length > 0
+                  case 'faith':
+                    return !!identity.faith
+                  case 'craft':
+                    return identity.craft.length > 0
+                  case 'interests':
+                    return identity.interests.length > 0
+                  case 'reach':
+                    return identity.reach.length > 0
+                  case 'culture':
+                    return !!identity.culture
+                  case 'market':
+                    return true
+                  default:
+                    return false
+                }
+              })()
+              return (
+                <div
+                  key={dim.key}
+                  className={`flex flex-col items-center gap-1 px-2 py-1 rounded-lg transition-colors ${
+                    isActive ? 'text-brand-accent' : 'text-white/20'
+                  }`}
+                >
+                  <span className="text-lg">{dim.icon}</span>
+                  <span className="text-[10px] font-medium uppercase tracking-wider">
+                    {dim.label}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </GlassCard>
 
         {/* ── Mode Toggle ─────────────────────────────────────────────── */}
         <div className="flex justify-center mb-phi-7">
