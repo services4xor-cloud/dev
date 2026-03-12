@@ -14,7 +14,7 @@ import {
   getFaithOption,
   getReachOption,
 } from '@/lib/dimensions'
-import { getMarketScore } from '@/lib/market-data'
+import { getMarketScore, getSignalsForRegion } from '@/lib/market-data'
 import ModeToggle from '@/components/ModeToggle'
 import GlassCard from '@/components/ui/GlassCard'
 import StatCard from '@/components/ui/StatCard'
@@ -119,13 +119,11 @@ export default function MePage() {
     true, // market — always computed
   ].filter(Boolean).length
 
-  const marketScore = getMarketScore({
-    country: identity.country,
-    languages: identity.languages,
-    craft: identity.craft,
-    interests: identity.interests,
-    reach: identity.reach,
-  })
+  const marketSignals = getSignalsForRegion(identity.country)
+  const marketScore = getMarketScore(
+    { country: identity.country, craft: identity.craft, interests: identity.interests },
+    marketSignals
+  )
 
   const modeTabs = identity.mode === 'explorer' ? EXPLORER_TABS : HOST_TABS
   const allTabs = [...modeTabs, ...SHARED_TABS]

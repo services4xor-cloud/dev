@@ -250,3 +250,32 @@ export const CULTURE_SUGGESTIONS: Record<string, string[]> = {
 export function getCultureSuggestionsForCountry(code: string): string[] {
   return CULTURE_SUGGESTIONS[code.toUpperCase()] ?? []
 }
+
+// ─── Lookup helpers ──────────────────────────────────────────────────
+
+export function getFaithOption(id: string): FaithOption | undefined {
+  return FAITH_OPTIONS.find((f) => f.id === id)
+}
+
+export function getReachOption(id: string): ReachOption | undefined {
+  return REACH_OPTIONS.find((r) => r.id === id)
+}
+
+// ─── Dimension meta (for summary displays) ──────────────────────────
+
+export interface DimensionMeta {
+  key: string
+  label: string
+  icon: string
+}
+
+export const DIMENSION_META: DimensionMeta[] = [
+  { key: 'location', label: 'Location', icon: '📍' },
+  { key: 'languages', label: 'Languages', icon: '🗣️' },
+  { key: 'faith', label: 'Faith', icon: '🙏' },
+  { key: 'craft', label: 'Craft', icon: '🛠️' },
+  { key: 'interests', label: 'Passion', icon: '❤️' },
+  { key: 'reach', label: 'Reach', icon: '🌐' },
+  { key: 'culture', label: 'Culture', icon: '🌿' },
+  { key: 'market', label: 'Market', icon: '📊' },
+]
