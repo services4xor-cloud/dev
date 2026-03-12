@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { MapPin, Clock, DollarSign, Globe, Star } from 'lucide-react'
 import SkillChip from '@/components/ui/SkillChip'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 interface PathCardProps {
   id: string
@@ -37,6 +38,7 @@ export default function PathCard({
   isFeatured,
   tier,
 }: PathCardProps) {
+  const { t } = useTranslation()
   return (
     <Link
       href={`/ventures/${id}`}
@@ -58,7 +60,7 @@ export default function PathCard({
             {isFeatured && (
               <span className="badge-accent flex-shrink-0">
                 <Star className="w-3 h-3" fill="currentColor" />
-                Featured
+                {t('pathCard.featured')}
               </span>
             )}
           </div>
@@ -71,7 +73,7 @@ export default function PathCard({
             {isRemote && (
               <span className="flex items-center gap-1 text-phi-xs text-brand-accent">
                 <Globe className="w-3 h-3" />
-                Remote
+                {t('pathCard.remote')}
               </span>
             )}
             <span className="flex items-center gap-1 text-phi-xs text-gray-400">

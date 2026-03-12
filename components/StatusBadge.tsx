@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * StatusBadge — Reusable status pill/tag component
  *
@@ -11,80 +13,81 @@
  */
 
 import type { LucideIcon } from 'lucide-react'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 // ── Status → style mapping ────────────────────────────────────────────────────
 
-const STATUS_STYLES: Record<string, { label: string; className: string }> = {
+const STATUS_STYLES: Record<string, { i18nKey: string; className: string }> = {
   // Chapter statuses
   new: {
-    label: 'New',
+    i18nKey: 'status.new',
     className: 'bg-brand-primary/50 text-brand-accent border-brand-accent/50',
   },
   'under review': {
-    label: 'Under Review',
+    i18nKey: 'status.underReview',
     className: 'bg-blue-900/50 text-blue-400 border-blue-700/50',
   },
   reviewed: {
-    label: 'Reviewed',
+    i18nKey: 'status.reviewed',
     className: 'bg-blue-900/50 text-blue-400 border-blue-700/50',
   },
   shortlisted: {
-    label: 'Shortlisted',
+    i18nKey: 'status.shortlisted',
     className: 'bg-green-900/50 text-green-400 border-green-700/50',
   },
   offer: {
-    label: 'Offer',
+    i18nKey: 'status.offer',
     className: 'bg-brand-accent/20 text-brand-accent border-brand-accent/40',
   },
   declined: {
-    label: 'Declined',
+    i18nKey: 'status.declined',
     className: 'bg-gray-700/50 text-gray-400 border-gray-600/50',
   },
   // Path statuses
   open: {
-    label: 'Open',
+    i18nKey: 'status.open',
     className: 'bg-green-900/50 text-green-400 border-green-700/50',
   },
   paused: {
-    label: 'Paused',
+    i18nKey: 'status.paused',
     className: 'bg-brand-accent/10 text-brand-accent border-brand-accent/30',
   },
   closed: {
-    label: 'Closed',
+    i18nKey: 'status.closed',
     className: 'bg-gray-700/50 text-gray-400 border-gray-600/50',
   },
   // Forward statuses (Agent system)
   sent: {
-    label: 'Sent',
+    i18nKey: 'status.sent',
     className: 'bg-gray-700/50 text-gray-400 border-gray-600/50',
   },
   clicked: {
-    label: 'Clicked',
+    i18nKey: 'status.clicked',
     className: 'bg-blue-900/50 text-blue-400 border-blue-700/50',
   },
   signed_up: {
-    label: 'Signed Up',
+    i18nKey: 'status.signedUp',
     className: 'bg-brand-accent/10 text-brand-accent border-brand-accent/30',
   },
   applied: {
-    label: 'Applied',
+    i18nKey: 'status.applied',
     className: 'bg-purple-900/50 text-purple-400 border-purple-700/50',
   },
   placed: {
-    label: 'Placed',
+    i18nKey: 'status.placed',
     className: 'bg-green-900/50 text-green-400 border-green-700/50',
   },
   expired: {
-    label: 'Expired',
+    i18nKey: 'status.expired',
     className: 'bg-gray-700/50 text-gray-400 border-gray-600/50',
   },
   // Generic
   active: {
-    label: 'Active',
+    i18nKey: 'status.active',
     className: 'bg-green-900/50 text-green-400 border-green-700/50',
   },
   pending: {
-    label: 'Pending',
+    i18nKey: 'status.pending',
     className: 'bg-brand-accent/10 text-brand-accent border-brand-accent/30',
   },
 }
@@ -113,9 +116,10 @@ export default function StatusBadge({
   size = 'md',
   className = '',
 }: StatusBadgeProps) {
+  const { t } = useTranslation()
   const key = status.toLowerCase()
   const style = STATUS_STYLES[key]
-  const displayLabel = label ?? style?.label ?? status
+  const displayLabel = label ?? (style ? t(style.i18nKey) : status)
   const colorClass = style?.className ?? FALLBACK_STYLE
 
   const sizeClass = size === 'sm' ? 'px-1.5 py-0.5 text-[10px]' : 'px-2.5 py-1 text-xs'

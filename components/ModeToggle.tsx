@@ -1,11 +1,14 @@
 'use client'
 
+import { useTranslation } from '@/lib/hooks/use-translation'
+
 interface ModeToggleProps {
   mode: 'explorer' | 'host'
   onChange: (mode: 'explorer' | 'host') => void
 }
 
 export default function ModeToggle({ mode, onChange }: ModeToggleProps) {
+  const { t } = useTranslation()
   return (
     <div className="glass-subtle inline-flex rounded-full p-1 relative">
       {/* Sliding background indicator */}
@@ -24,7 +27,7 @@ export default function ModeToggle({ mode, onChange }: ModeToggleProps) {
         }`}
       >
         <span aria-hidden="true">🔍</span>
-        Explorer
+        {t('mode.explorer')}
       </button>
 
       <button
@@ -35,7 +38,7 @@ export default function ModeToggle({ mode, onChange }: ModeToggleProps) {
         }`}
       >
         <span aria-hidden="true">🏠</span>
-        Host
+        {t('mode.host')}
       </button>
     </div>
   )

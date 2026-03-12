@@ -1241,6 +1241,42 @@ const CONTENT: Record<string, ContentDict> = {
     'exchange.card.connectChat': '💬 Connect & Chat',
     'exchange.card.viewPath': 'View Path →',
 
+    // Cookie Consent
+    'cookie.title': 'We respect your privacy',
+    'cookie.description':
+      'We use essential cookies to make the platform work (session, identity preferences). Optional analytics cookies help us improve your experience. Read our',
+    'cookie.privacyLink': 'Privacy Policy',
+    'cookie.forDetails': 'for details.',
+    'cookie.essentialOnly': 'Essential Only',
+    'cookie.acceptAll': 'Accept All',
+
+    // Mode Toggle
+    'mode.explorer': 'Explorer',
+    'mode.host': 'Host',
+
+    // Status Badge
+    'status.new': 'New',
+    'status.underReview': 'Under Review',
+    'status.reviewed': 'Reviewed',
+    'status.shortlisted': 'Shortlisted',
+    'status.offer': 'Offer',
+    'status.declined': 'Declined',
+    'status.open': 'Open',
+    'status.paused': 'Paused',
+    'status.closed': 'Closed',
+    'status.sent': 'Sent',
+    'status.clicked': 'Clicked',
+    'status.signedUp': 'Signed Up',
+    'status.applied': 'Applied',
+    'status.placed': 'Placed',
+    'status.expired': 'Expired',
+    'status.active': 'Active',
+    'status.pending': 'Pending',
+
+    // Path Card
+    'pathCard.featured': 'Featured',
+    'pathCard.remote': 'Remote',
+
     // Footer
     'footer.builtWith': 'Built with purpose in Nairobi, Berlin, and Zurich',
     'footer.rights': 'All rights reserved',
@@ -2403,6 +2439,42 @@ const CONTENT: Record<string, ContentDict> = {
     'exchange.card.connectChat': '💬 Verbinden & Chatten',
     'exchange.card.viewPath': 'Weg ansehen →',
 
+    // Cookie Consent
+    'cookie.title': 'Wir respektieren Ihre Privatsphäre',
+    'cookie.description':
+      'Wir verwenden essentielle Cookies, damit die Plattform funktioniert (Sitzung, Identitätseinstellungen). Optionale Analyse-Cookies helfen uns, Ihre Erfahrung zu verbessern. Lesen Sie unsere',
+    'cookie.privacyLink': 'Datenschutzrichtlinie',
+    'cookie.forDetails': 'für Details.',
+    'cookie.essentialOnly': 'Nur Essentielle',
+    'cookie.acceptAll': 'Alle Akzeptieren',
+
+    // Mode Toggle
+    'mode.explorer': 'Entdecker',
+    'mode.host': 'Gastgeber',
+
+    // Status Badge
+    'status.new': 'Neu',
+    'status.underReview': 'In Prüfung',
+    'status.reviewed': 'Geprüft',
+    'status.shortlisted': 'Vorauswahl',
+    'status.offer': 'Angebot',
+    'status.declined': 'Abgelehnt',
+    'status.open': 'Offen',
+    'status.paused': 'Pausiert',
+    'status.closed': 'Geschlossen',
+    'status.sent': 'Gesendet',
+    'status.clicked': 'Angeklickt',
+    'status.signedUp': 'Registriert',
+    'status.applied': 'Beworben',
+    'status.placed': 'Platziert',
+    'status.expired': 'Abgelaufen',
+    'status.active': 'Aktiv',
+    'status.pending': 'Ausstehend',
+
+    // Path Card
+    'pathCard.featured': 'Empfohlen',
+    'pathCard.remote': 'Remote',
+
     // Footer
     'footer.builtWith': 'Mit Hingabe gebaut in Nairobi, Berlin und Zürich',
     'footer.rights': 'Alle Rechte vorbehalten',
@@ -3316,6 +3388,42 @@ const CONTENT: Record<string, ContentDict> = {
     'exchange.card.skillsNeeded': 'Ujuzi unaohitajika',
     'exchange.card.connectChat': '💬 Ungana & Zungumza',
     'exchange.card.viewPath': 'Tazama Njia →',
+
+    // Cookie Consent
+    'cookie.title': 'Tunaheshimu faragha yako',
+    'cookie.description':
+      'Tunatumia vidakuzi muhimu ili jukwaa lifanye kazi (kikao, mapendeleo ya utambulisho). Vidakuzi vya uchambuzi wa hiari hutusaidia kuboresha uzoefu wako. Soma yetu',
+    'cookie.privacyLink': 'Sera ya Faragha',
+    'cookie.forDetails': 'kwa maelezo.',
+    'cookie.essentialOnly': 'Muhimu Pekee',
+    'cookie.acceptAll': 'Kubali Zote',
+
+    // Mode Toggle
+    'mode.explorer': 'Mtafiti',
+    'mode.host': 'Mwenyeji',
+
+    // Status Badge
+    'status.new': 'Mpya',
+    'status.underReview': 'Inakaguliwa',
+    'status.reviewed': 'Imekaguliwa',
+    'status.shortlisted': 'Orodha Fupi',
+    'status.offer': 'Ofa',
+    'status.declined': 'Imekataliwa',
+    'status.open': 'Wazi',
+    'status.paused': 'Imesitishwa',
+    'status.closed': 'Imefungwa',
+    'status.sent': 'Imetumwa',
+    'status.clicked': 'Imebonyezwa',
+    'status.signedUp': 'Imejisajili',
+    'status.applied': 'Imeomba',
+    'status.placed': 'Imewekwa',
+    'status.expired': 'Imeisha',
+    'status.active': 'Hai',
+    'status.pending': 'Inasubiri',
+
+    // Path Card
+    'pathCard.featured': 'Iliyoangaziwa',
+    'pathCard.remote': 'Mbali',
 
     // Footer
     'footer.builtWith': 'Imejengwa kwa makusudi Nairobi, Berlin, na Zurich',

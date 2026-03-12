@@ -14,6 +14,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 const CONSENT_KEY = 'be-cookie-consent'
 
@@ -43,6 +44,7 @@ export function hasAnalyticsConsent(): boolean {
 }
 
 export default function CookieConsent() {
+  const { t } = useTranslation()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -80,14 +82,13 @@ export default function CookieConsent() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           {/* Text */}
           <div className="flex-1 min-w-0">
-            <p className="text-white text-sm font-medium mb-1">🍪 We respect your privacy</p>
+            <p className="text-white text-sm font-medium mb-1">🍪 {t('cookie.title')}</p>
             <p className="text-white/50 text-xs leading-relaxed">
-              We use essential cookies to make the platform work (session, identity preferences).
-              Optional analytics cookies help us improve your experience. Read our{' '}
+              {t('cookie.description')}{' '}
               <Link href="/privacy" className="text-brand-accent hover:underline">
-                Privacy Policy
+                {t('cookie.privacyLink')}
               </Link>{' '}
-              for details.
+              {t('cookie.forDetails')}
             </p>
           </div>
 
@@ -99,7 +100,7 @@ export default function CookieConsent() {
               className="px-4 py-2 rounded-lg text-xs font-medium text-white/60 border border-white/10
                          hover:bg-white/5 hover:text-white transition-colors duration-150"
             >
-              Essential Only
+              {t('cookie.essentialOnly')}
             </button>
             <button
               type="button"
@@ -111,7 +112,7 @@ export default function CookieConsent() {
                   'linear-gradient(135deg, var(--color-accent), var(--color-accent-light))',
               }}
             >
-              Accept All
+              {t('cookie.acceptAll')}
             </button>
           </div>
         </div>

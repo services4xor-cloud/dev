@@ -335,7 +335,7 @@ export default function SignupPage() {
                 <p className="text-xs text-center text-gray-400">
                   {t('auth.agreePrivacy')}{' '}
                   <Link href="/privacy" className="underline text-gray-400">
-                    Privacy Policy
+                    {t('footer.privacy')}
                   </Link>
                 </p>
               </form>
