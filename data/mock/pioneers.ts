@@ -65,17 +65,17 @@ export const MOCK_CHAPTERS: Chapter[] = [
 // ─── Admin: Recent Pioneer Signups ───────────────────────────────────────────
 
 export const MOCK_RECENT_PIONEERS = [
-  { id: 'p1', name: 'Amara Osei', country: 'KE → DE', type: 'Explorer', joined: '2024-03-08' },
+  { id: 'p1', name: 'Amara Osei', country: 'KE → DE', type: 'explorer', joined: '2024-03-08' },
   {
     id: 'p2',
     name: 'Priya Sharma',
     country: 'KE → GB',
-    type: 'Professional',
+    type: 'professional',
     joined: '2024-03-07',
   },
-  { id: 'p3', name: 'James Mwangi', country: 'KE → KE', type: 'Guardian', joined: '2024-03-07' },
-  { id: 'p4', name: 'Fatuma Ali', country: 'KE → DE', type: 'Healer', joined: '2024-03-06' },
-  { id: 'p5', name: 'David Kiprop', country: 'KE → US', type: 'Creator', joined: '2024-03-06' },
+  { id: 'p3', name: 'James Mwangi', country: 'KE → KE', type: 'guardian', joined: '2024-03-07' },
+  { id: 'p4', name: 'Fatuma Ali', country: 'KE → DE', type: 'healer', joined: '2024-03-06' },
+  { id: 'p5', name: 'David Kiprop', country: 'KE → US', type: 'creator', joined: '2024-03-06' },
 ]
 
 // ─── Admin: All Pioneers Table ───────────────────────────────────────────────
@@ -84,7 +84,7 @@ export const MOCK_ALL_PIONEERS: AdminPioneer[] = [
   {
     id: 'p1',
     name: 'Amara Osei',
-    type: 'Explorer',
+    type: 'explorer',
     from: 'KE',
     to: 'DE',
     skills: 5,
@@ -95,7 +95,7 @@ export const MOCK_ALL_PIONEERS: AdminPioneer[] = [
   {
     id: 'p2',
     name: 'Priya Sharma',
-    type: 'Professional',
+    type: 'professional',
     from: 'KE',
     to: 'GB',
     skills: 8,
@@ -106,7 +106,7 @@ export const MOCK_ALL_PIONEERS: AdminPioneer[] = [
   {
     id: 'p3',
     name: 'James Mwangi',
-    type: 'Guardian',
+    type: 'guardian',
     from: 'KE',
     to: 'KE',
     skills: 4,
@@ -117,7 +117,7 @@ export const MOCK_ALL_PIONEERS: AdminPioneer[] = [
   {
     id: 'p4',
     name: 'Fatuma Ali',
-    type: 'Healer',
+    type: 'healer',
     from: 'KE',
     to: 'DE',
     skills: 6,
@@ -128,7 +128,7 @@ export const MOCK_ALL_PIONEERS: AdminPioneer[] = [
   {
     id: 'p5',
     name: 'David Kiprop',
-    type: 'Creator',
+    type: 'creator',
     from: 'KE',
     to: 'US',
     skills: 7,
@@ -139,7 +139,7 @@ export const MOCK_ALL_PIONEERS: AdminPioneer[] = [
   {
     id: 'p6',
     name: 'Sarah Otieno',
-    type: 'Artisan',
+    type: 'artisan',
     from: 'KE',
     to: 'FR',
     skills: 3,
@@ -150,7 +150,7 @@ export const MOCK_ALL_PIONEERS: AdminPioneer[] = [
   {
     id: 'p7',
     name: 'Moses Kipchoge',
-    type: 'Explorer',
+    type: 'explorer',
     from: 'KE',
     to: 'ZA',
     skills: 2,

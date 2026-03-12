@@ -173,7 +173,7 @@ export interface PlatformStats {
 export interface AdminPioneer {
   id: string
   name: string
-  type: string
+  type: PioneerType
   from: string
   to: string
   skills: number
