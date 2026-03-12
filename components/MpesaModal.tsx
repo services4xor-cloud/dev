@@ -70,10 +70,20 @@ export default function MpesaModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+        role="presentation"
+        aria-hidden="true"
+      />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden">
+      <div
+        className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-label="M-Pesa payment"
+      >
         {/* Header */}
         <div className="bg-gradient-to-r from-green-600 to-green-500 p-6 text-white">
           <div className="flex items-center justify-between mb-2">
@@ -83,8 +93,12 @@ export default function MpesaModal({
               </div>
               <span className="font-bold text-lg">M-Pesa</span>
             </div>
-            <button onClick={onClose} className="text-white/70 hover:text-white">
-              <X className="w-5 h-5" />
+            <button
+              onClick={onClose}
+              className="text-white/70 hover:text-white"
+              aria-label="Close payment modal"
+            >
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
           <div className="text-3xl font-black">

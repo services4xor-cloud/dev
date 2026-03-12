@@ -159,7 +159,11 @@ export default function WizardShell({
           <div className={`${maxWidth} mx-auto px-4 py-4 flex items-center gap-3`}>
             {/* Back button */}
             {!isFirstStep ? (
-              <button onClick={handleBack} className="btn-ghost btn-sm">
+              <button
+                onClick={handleBack}
+                className="btn-ghost btn-sm"
+                aria-label="Go to previous step"
+              >
                 ← Back
               </button>
             ) : (

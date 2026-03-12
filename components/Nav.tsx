@@ -381,7 +381,12 @@ export default function Nav() {
         }`}
       >
         {/* Backdrop — instant opaque background, no blur delay */}
-        <div className="absolute inset-0 bg-brand-bg" onClick={() => setMobileOpen(false)} />
+        <div
+          className="absolute inset-0 bg-brand-bg"
+          onClick={() => setMobileOpen(false)}
+          role="presentation"
+          aria-hidden="true"
+        />
 
         {/* Content — below nav height */}
         <div className="relative h-full pt-[68px] overflow-y-auto">
