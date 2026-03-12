@@ -305,11 +305,20 @@ export function getLocalizedCountryName(countryCode: string, languageCode: strin
   const cc = countryCode.toUpperCase()
   const lc = languageCode.toLowerCase()
 
-  const countryNames = ENDONYMS[cc]
-  if (!countryNames) return cc
+  // Try Intl.DisplayNames first (zero maintenance, supports all languages)
+  try {
+    // Only use Intl if the locale is actually supported (avoids silent fallback to system default)
+    if (Intl.DisplayNames.supportedLocalesOf([lc]).length > 0) {
+      const displayNames = new Intl.DisplayNames([lc], { type: 'region' })
+      const name = displayNames.of(cc)
+      if (name && name !== cc) return name
+    }
+  } catch {
+    // Fall through to manual map
+  }
 
-  // Try exact language match, then English fallback
-  return countryNames[lc] ?? countryNames['en'] ?? cc
+  // Fallback to manual map for edge cases
+  return ENDONYMS[cc]?.[lc] ?? ENDONYMS[cc]?.['en'] ?? cc
 }
 
 /**
