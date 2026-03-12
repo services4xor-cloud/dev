@@ -273,6 +273,14 @@ export default function ExchangePage() {
             matchScore: score,
             sector: sector.label,
             sectorIcon: sector.icon,
+            // Extended dimensions from agent profile
+            faith: agent.faith,
+            reach: agent.reach,
+            culture: agent.culture,
+            interests: agent.interests.map((id: string) => {
+              const cat = EXCHANGE_CATEGORIES.find((c) => c.id === id)
+              return cat?.label ?? id
+            }),
           },
         })
       }

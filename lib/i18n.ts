@@ -372,6 +372,12 @@ const CONTENT: Record<string, ContentDict> = {
     'compass.directRoute': 'Direct Route',
     'compass.partnerRoute': 'Partner Route',
     'compass.emergingRoute': 'Emerging Route',
+    'compass.yourMatch': 'Your Profile Match',
+    'compass.youSpeak': 'You speak {languages} — spoken here',
+    'compass.craftMatch': 'Your craft aligns: {crafts}',
+    'compass.readyToTravel': "You're ready to travel",
+    'compass.canHost': 'You can host visitors',
+    'compass.marketSignals': 'market signals in this corridor',
 
     // IdentitySwitcher + Nav UI labels
     'nav.activeIdentity': 'Active Identity',
@@ -1673,6 +1679,12 @@ const CONTENT: Record<string, ContentDict> = {
     'compass.directRoute': 'Direkte Route',
     'compass.partnerRoute': 'Partner-Route',
     'compass.emergingRoute': 'Aufkommende Route',
+    'compass.yourMatch': 'Dein Profil-Match',
+    'compass.youSpeak': 'Du sprichst {languages} — hier gesprochen',
+    'compass.craftMatch': 'Dein Handwerk passt: {crafts}',
+    'compass.readyToTravel': 'Du bist reisebereit',
+    'compass.canHost': 'Du kannst Besucher aufnehmen',
+    'compass.marketSignals': 'Marktsignale in diesem Korridor',
 
     // IdentitySwitcher + Nav UI labels
     'nav.activeIdentity': 'Aktive Identität',
@@ -4254,6 +4266,12 @@ const CONTENT: Record<string, ContentDict> = {
     'compass.directRoute': 'Njia ya Moja kwa Moja',
     'compass.partnerRoute': 'Njia ya Mshirika',
     'compass.emergingRoute': 'Njia Inayoibuka',
+    'compass.yourMatch': 'Mechi Yako ya Wasifu',
+    'compass.youSpeak': 'Unazungumza {languages} — inazungumzwa hapa',
+    'compass.craftMatch': 'Ufundi wako unafaa: {crafts}',
+    'compass.readyToTravel': 'Uko tayari kusafiri',
+    'compass.canHost': 'Unaweza kukaribisha wageni',
+    'compass.marketSignals': 'ishara za soko katika ukanda huu',
 
     // IdentitySwitcher + Nav UI
     'nav.activeIdentity': 'Utambulisho Hai',
@@ -4667,6 +4685,12 @@ const CONTENT: Record<string, ContentDict> = {
     'compass.directRoute': 'Itinéraire Direct',
     'compass.partnerRoute': 'Itinéraire Partenaire',
     'compass.emergingRoute': 'Itinéraire Émergent',
+    'compass.yourMatch': 'Correspondance de Votre Profil',
+    'compass.youSpeak': 'Vous parlez {languages} — parlé ici',
+    'compass.craftMatch': 'Votre métier correspond : {crafts}',
+    'compass.readyToTravel': 'Vous êtes prêt à voyager',
+    'compass.canHost': 'Vous pouvez accueillir des visiteurs',
+    'compass.marketSignals': 'signaux de marché dans ce corridor',
 
     // IdentitySwitcher + Nav UI labels
     'nav.activeIdentity': 'Identité Active',

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
@@ -834,6 +834,7 @@ function Step5({
 
 export default function Discovery() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { t } = useTranslation()
   const {
     identity,
@@ -904,7 +905,9 @@ export default function Discovery() {
     setFaith(selectedFaith)
     if (selectedCulture) setCulture(selectedCulture)
     if (editCity) setCity(editCity)
-    router.push('/')
+    // Redirect to where user came from, or exchange feed
+    const returnTo = searchParams.get('returnTo') ?? '/exchange'
+    router.push(returnTo)
   }
 
   return (

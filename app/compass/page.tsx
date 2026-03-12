@@ -18,6 +18,8 @@ import {
 import { COUNTRY_ROUTES, getRecommendedRoutes } from '@/lib/compass'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import { LANGUAGE_REGISTRY, COUNTRY_OPTIONS, type LanguageCode } from '@/lib/country-selector'
+import { getSignalsForRegion } from '@/lib/market-data'
 
 /* ── Country flag emoji ───────────────────────────────────────────── */
 function flag(code: string) {
@@ -119,6 +121,55 @@ function RouteCard({
       />
     </button>
   )
+}
+
+/* ── Route dimension match helper ─────────────────────────────────── */
+function getRouteInsights(
+  routeKey: string,
+  identity: { languages: string[]; craft: string[]; interests: string[]; reach: string[] },
+  t: (key: string, vars?: Record<string, string>) => string
+): { icon: string; text: string }[] {
+  const [, to] = routeKey.split('-')
+  const route = COUNTRY_ROUTES[routeKey]
+  if (!route) return []
+  const insights: { icon: string; text: string }[] = []
+
+  // Language matches — check if user speaks any language of the target country
+  const targetCountry = COUNTRY_OPTIONS.find((c) => c.code === to)
+  const targetLangs = targetCountry?.languages ?? []
+  const sharedLangs = identity.languages.filter((l) => targetLangs.includes(l as LanguageCode))
+  if (sharedLangs.length > 0) {
+    const langNames = sharedLangs.map((c) => LANGUAGE_REGISTRY[c as LanguageCode]?.name ?? c)
+    insights.push({ icon: '🗣', text: t('compass.youSpeak', { languages: langNames.join(', ') }) })
+  }
+
+  // Craft/skill matches — check if user's crafts align with route sectors
+  const sectorLower = route.primarySectors.map((s) => s.toLowerCase())
+  const craftMatches = identity.craft.filter((c) =>
+    sectorLower.some((s) => s.includes(c.toLowerCase()) || c.toLowerCase().includes(s))
+  )
+  if (craftMatches.length > 0) {
+    insights.push({
+      icon: '🛠',
+      text: t('compass.craftMatch', { crafts: craftMatches.slice(0, 2).join(', ') }),
+    })
+  }
+
+  // Reach — can they travel?
+  if (identity.reach.includes('can-travel')) {
+    insights.push({ icon: '✈️', text: t('compass.readyToTravel') })
+  }
+  if (identity.reach.includes('can-host')) {
+    insights.push({ icon: '🏠', text: t('compass.canHost') })
+  }
+
+  // Market signals
+  const signals = getSignalsForRegion(to)
+  if (signals.length > 0) {
+    insights.push({ icon: '📊', text: `${signals.length} ${t('compass.marketSignals')}` })
+  }
+
+  return insights
 }
 
 /* ── Main Compass Page ────────────────────────────────────────────── */
@@ -302,6 +353,30 @@ export default function CompassPage() {
                     </div>
                   </div>
                 </div>
+                {/* Your Profile Match — personalized dimension insights */}
+                {(() => {
+                  const insights = getRouteInsights(selectedRoute!, identity, t)
+                  if (insights.length === 0) return null
+                  return (
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 p-2 rounded-lg bg-brand-primary/20">
+                        <Sparkles className="w-4 h-4 text-brand-accent" />
+                      </div>
+                      <div>
+                        <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
+                          {t('compass.yourMatch')}
+                        </p>
+                        <div className="space-y-1">
+                          {insights.map((ins, i) => (
+                            <p key={i} className="text-white/70 text-phi-sm">
+                              {ins.icon} {ins.text}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()}
               </div>
 
               {/* Right — CTAs */}

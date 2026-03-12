@@ -157,22 +157,22 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       // Ignore — use default
     }
 
-    // Always detect location from timezone (separate from selected country)
-    // and set display language to match the detected country
+    // Detect location from timezone (separate from selected country)
+    // Only set country + language if NO stored identity exists
     try {
       const detectedLoc = detectCountryFromTimezone()
       if (detectedLoc) {
-        const detectedLang = getDefaultLanguage(detectedLoc)
         setIdentity((prev) => ({
           ...prev,
           detectedLocation: detectedLoc,
-          // If no identity stored yet, also set country + language
-          ...(stored
-            ? { language: detectedLang }
-            : {
+          // Only auto-set country + language for brand-new users (no stored identity)
+          // If user already has stored identity, preserve their language choice
+          ...(!stored
+            ? {
                 country: detectedLoc,
-                language: detectedLang,
-              }),
+                language: getDefaultLanguage(detectedLoc),
+              }
+            : {}),
         }))
       }
     } catch {

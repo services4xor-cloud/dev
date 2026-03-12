@@ -232,7 +232,7 @@ export default function Nav() {
                 /* Not logged in: Sign In + Begin CTA */
                 <>
                   <Link
-                    href={LOGIN_LINK.href}
+                    href={`${LOGIN_LINK.href}?callbackUrl=${encodeURIComponent(pathname)}`}
                     aria-label={LOGIN_LINK.aria}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/50
                                hover:text-white transition-all duration-200
@@ -242,7 +242,7 @@ export default function Nav() {
                     {LOGIN_LINK.label}
                   </Link>
                   <Link
-                    href="/signup"
+                    href={`/signup?callbackUrl=${encodeURIComponent(pathname)}`}
                     aria-label="Begin your journey"
                     className="flex items-center gap-1.5 px-5 py-2 rounded-full text-[13px] font-bold text-white
                                bg-brand-primary hover:bg-brand-primary/90

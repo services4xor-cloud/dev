@@ -40,7 +40,9 @@ export default function SignupPage() {
 
   const searchParams = useSearchParams()
   const router = useRouter()
-  const callbackUrl = searchParams.get('callbackUrl') ?? '/onboarding'
+  // After signup: new users → onboarding. Returning destination stored for after onboarding.
+  const returnTo = searchParams.get('callbackUrl') ?? '/'
+  const callbackUrl = `/onboarding?returnTo=${encodeURIComponent(returnTo)}`
 
   // Pick up NextAuth error from redirect
   useEffect(() => {

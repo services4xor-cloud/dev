@@ -37,6 +37,11 @@ export interface ExchangeCardData {
   sector?: string
   /** Exchange category icon */
   sectorIcon?: string
+  /** ── Extended dimensions (connected to profile) ── */
+  faith?: string[]
+  reach?: string[]
+  culture?: string
+  interests?: string[]
 }
 
 interface ExchangeCardProps {
@@ -108,11 +113,11 @@ export default function ExchangeCard({
   }
 
   return (
-    <Link href={`/exchange/${data.id}`} className="block">
+    <Link href={`/exchange/${data.id}`} className="block h-full">
       <GlassCard
         hover
         padding="md"
-        className="group cursor-pointer transition-all duration-300 hover:shadow-brand-accent/10 hover:shadow-lg"
+        className="group cursor-pointer transition-all duration-300 hover:shadow-brand-accent/10 hover:shadow-lg h-full flex flex-col"
       >
         {/* ── Header: Type badge + Online indicator + Match score ── */}
         <div className="mb-phi-3 flex items-center justify-between">
@@ -239,6 +244,45 @@ export default function ExchangeCard({
             </div>
           </div>
         )}
+
+        {/* ── Extended dimensions (person cards only, when data present) ── */}
+        {type === 'person' &&
+        (data.faith?.length || data.reach?.length || data.culture || data.interests?.length) ? (
+          <div className="mb-phi-3 flex flex-wrap gap-1.5">
+            {data.culture && (
+              <span className="rounded-full px-phi-2 py-0.5 text-[10px] bg-white/5 text-white/50">
+                🌍 {data.culture}
+              </span>
+            )}
+            {data.faith?.map((f) => (
+              <span
+                key={f}
+                className="rounded-full px-phi-2 py-0.5 text-[10px] bg-white/5 text-white/50"
+              >
+                🙏 {f}
+              </span>
+            ))}
+            {data.reach?.map((r) => (
+              <span
+                key={r}
+                className="rounded-full px-phi-2 py-0.5 text-[10px] bg-white/5 text-white/50"
+              >
+                🌐 {r}
+              </span>
+            ))}
+            {data.interests?.slice(0, 3).map((i) => (
+              <span
+                key={i}
+                className="rounded-full px-phi-2 py-0.5 text-[10px] bg-white/5 text-white/50"
+              >
+                ❤️ {i}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        {/* Spacer pushes action button to bottom for equal-height cards */}
+        <div className="flex-grow" />
 
         {/* ── Action button ── */}
         <button
