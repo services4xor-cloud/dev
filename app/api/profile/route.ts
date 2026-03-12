@@ -13,7 +13,15 @@ const profileSchema = z.object({
   city: z.string().max(100).optional(),
   country: z.string().length(2).optional(),
   linkedin: z.string().url().optional().or(z.literal('')),
+  upworkUrl: z.string().url().optional().or(z.literal('')),
+  fiverrUrl: z.string().url().optional().or(z.literal('')),
+  videoUrl: z.string().url().optional().or(z.literal('')),
+  resumeUrl: z.string().url().optional().or(z.literal('')),
   skills: z.array(z.string()).max(30).optional(),
+  experience: z.number().int().min(0).max(50).optional(),
+  pioneerType: z
+    .enum(['explorer', 'professional', 'artisan', 'guardian', 'creator', 'healer'])
+    .optional(),
   // Identity dimensions
   language: z.string().max(10).optional(),
   languages: z.array(z.string()).max(20).optional(),
@@ -63,7 +71,10 @@ export async function GET(_req: NextRequest) {
             location: true,
             city: true,
             linkedinUrl: true,
+            upworkUrl: true,
+            fiverrUrl: true,
             videoUrl: true,
+            resumeUrl: true,
             isPublic: true,
             language: true,
             languages: true,
@@ -139,6 +150,12 @@ export async function PATCH(req: NextRequest) {
     if (data.headline !== undefined) profileFields.headline = data.headline || null
     if (data.city !== undefined) profileFields.city = data.city || null
     if (data.linkedin !== undefined) profileFields.linkedinUrl = data.linkedin || null
+    if (data.upworkUrl !== undefined) profileFields.upworkUrl = data.upworkUrl || null
+    if (data.fiverrUrl !== undefined) profileFields.fiverrUrl = data.fiverrUrl || null
+    if (data.videoUrl !== undefined) profileFields.videoUrl = data.videoUrl || null
+    if (data.resumeUrl !== undefined) profileFields.resumeUrl = data.resumeUrl || null
+    if (data.experience !== undefined) profileFields.experience = data.experience
+    if (data.pioneerType !== undefined) profileFields.pioneerType = data.pioneerType || null
     if (data.skills !== undefined) profileFields.skills = data.skills
     if (data.language !== undefined) profileFields.language = data.language
     if (data.languages !== undefined) profileFields.languages = data.languages
@@ -175,6 +192,12 @@ export async function PATCH(req: NextRequest) {
           select: {
             headline: true,
             bio: true,
+            pioneerType: true,
+            experience: true,
+            linkedinUrl: true,
+            upworkUrl: true,
+            fiverrUrl: true,
+            videoUrl: true,
             language: true,
             languages: true,
             interests: true,

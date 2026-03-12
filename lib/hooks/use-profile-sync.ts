@@ -20,6 +20,14 @@ interface ProfileData {
   headline?: string
   skills?: string[]
   priorities?: Record<string, DimensionPriority>
+  // Extended profile fields
+  experience?: number
+  pioneerType?: string
+  linkedin?: string
+  upworkUrl?: string
+  fiverrUrl?: string
+  videoUrl?: string
+  resumeUrl?: string
 }
 
 interface ProfileResponse {
@@ -32,6 +40,12 @@ interface ProfileResponse {
     profile: {
       headline: string | null
       bio: string | null
+      pioneerType: string | null
+      experience: number | null
+      linkedinUrl: string | null
+      upworkUrl: string | null
+      fiverrUrl: string | null
+      videoUrl: string | null
       language: string
       languages: string[]
       interests: string[]

@@ -25,6 +25,7 @@ import { SkeletonDashboard } from '@/components/Skeleton'
 import JourneyProgress from '@/components/JourneyProgress'
 import { useProfileSync, type DimensionPriority } from '@/lib/hooks/use-profile-sync'
 import { computeCompleteness } from '@/lib/profile-completeness'
+import StatHexagon from '@/components/StatHexagon'
 
 // ─── Tab definitions ────────────────────────────────────────────────────────
 
@@ -192,6 +193,13 @@ export default function MePage() {
   // Form state for Profile tab
   const [editCity, setEditCity] = useState(identity.city ?? '')
   const [editBio, setEditBio] = useState('')
+  const [editHeadline, setEditHeadline] = useState('')
+  const [editExperience, setEditExperience] = useState<number | ''>('')
+  const [editPioneerType, setEditPioneerType] = useState('')
+  const [editLinkedin, setEditLinkedin] = useState('')
+  const [editUpwork, setEditUpwork] = useState('')
+  const [editFiverr, setEditFiverr] = useState('')
+  const [editVideoUrl, setEditVideoUrl] = useState('')
   const [craftSearch, setCraftSearch] = useState('')
 
   // Dimension keys for priority selector
@@ -231,9 +239,18 @@ export default function MePage() {
       .then((data) => {
         if (data.success && data.data) {
           setUserProfile(data.data)
-          if (data.data.profile?.priorities) {
-            setPriorities(data.data.profile.priorities as Record<string, DimensionPriority>)
+          const p = data.data.profile
+          if (p?.priorities) {
+            setPriorities(p.priorities as Record<string, DimensionPriority>)
           }
+          if (p?.bio) setEditBio(p.bio)
+          if (p?.headline) setEditHeadline(p.headline)
+          if (p?.experience !== null && p?.experience !== undefined) setEditExperience(p.experience)
+          if (p?.pioneerType) setEditPioneerType(p.pioneerType)
+          if (p?.linkedinUrl) setEditLinkedin(p.linkedinUrl)
+          if (p?.upworkUrl) setEditUpwork(p.upworkUrl)
+          if (p?.fiverrUrl) setEditFiverr(p.fiverrUrl)
+          if (p?.videoUrl) setEditVideoUrl(p.videoUrl)
         }
       })
       .catch(() => {})
@@ -284,6 +301,18 @@ export default function MePage() {
     { country: identity.country, craft: identity.craft, interests: identity.interests },
     marketSignals
   )
+
+  // ─── Stat Hexagon breakdown (self-assessment from profile richness) ─────
+  const hexBreakdown = {
+    language: Math.min(20, (identity.languages?.length || 0) * 5),
+    market: Math.min(20, marketScore),
+    craft: Math.min(15, (identity.craft?.length || 0) * 3),
+    passion: Math.min(15, (identity.interests?.length || 0) * 3),
+    location: identity.city ? 10 : identity.country ? 5 : 0,
+    faith: Math.min(8, (identity.faith?.length || 0) * 4),
+    reach: Math.min(7, (identity.reach?.length || 0) * 2),
+    culture: identity.culture ? 5 : 0,
+  }
 
   const modeTabs = identity.mode === 'explorer' ? EXPLORER_TAB_IDS : HOST_TAB_IDS
   const allTabs = [...modeTabs, ...SHARED_TAB_IDS]
@@ -373,6 +402,26 @@ export default function MePage() {
             </div>
           </GlassCard>
         )}
+
+        {/* Stat Hexagon — identity dimension visualization */}
+        <GlassCard padding="md">
+          <h3 className="text-phi-sm text-white/60 mb-phi-2">Identity Balance</h3>
+          <div className="flex justify-center">
+            <StatHexagon
+              breakdown={hexBreakdown}
+              priorities={priorities as Record<string, 'high' | 'medium' | 'low'>}
+              onPriorityChange={(dim, priority) => {
+                const updated = { ...priorities, [dim]: priority }
+                setPriorities(updated)
+                saveProfile({ priorities: updated })
+              }}
+              className="max-w-[320px]"
+            />
+          </div>
+          <p className="text-xs text-white/30 text-center mt-phi-2">
+            Click dimension labels to adjust priority
+          </p>
+        </GlassCard>
       </div>
     )
   }
@@ -866,10 +915,133 @@ export default function MePage() {
           <textarea
             value={editBio}
             onChange={(e) => setEditBio(e.target.value)}
+            onBlur={() => saveProfile({ bio: editBio })}
             placeholder={t('me.bioPlaceholder')}
             rows={4}
             className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors resize-none"
           />
+        </GlassCard>
+
+        {/* Headline */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-1">
+            <span className="mr-1">✨</span> {t('me.headline')}
+          </label>
+          <input
+            type="text"
+            value={editHeadline}
+            onChange={(e) => setEditHeadline(e.target.value.slice(0, 100))}
+            onBlur={() => saveProfile({ headline: editHeadline })}
+            placeholder={t('me.headlinePlaceholder')}
+            maxLength={100}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors"
+          />
+          <p className="text-xs text-white/30 mt-phi-1">{editHeadline.length}/100</p>
+        </GlassCard>
+
+        {/* Pioneer Type */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">🧭</span> {t('me.pioneerType')}
+          </label>
+          <p className="text-xs text-white/40 mb-phi-2">{t('me.pioneerTypeDescription')}</p>
+          <div className="flex flex-wrap gap-phi-2">
+            {(
+              ['explorer', 'professional', 'artisan', 'guardian', 'creator', 'healer'] as const
+            ).map((type) => (
+              <button
+                key={type}
+                onClick={() => {
+                  setEditPioneerType(type)
+                  saveProfile({ pioneerType: type })
+                }}
+                className={`px-phi-3 py-phi-1 rounded-full text-phi-sm border transition-colors ${
+                  editPioneerType === type
+                    ? 'bg-brand-accent/20 text-brand-accent border-brand-accent/40'
+                    : 'bg-white/5 text-white/60 border-white/10 hover:border-white/30'
+                }`}
+              >
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </button>
+            ))}
+          </div>
+        </GlassCard>
+
+        {/* Experience */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-1">
+            <span className="mr-1">📈</span> {t('me.experience')}
+          </label>
+          <input
+            type="number"
+            min={0}
+            max={50}
+            value={editExperience}
+            onChange={(e) => setEditExperience(e.target.value === '' ? '' : Number(e.target.value))}
+            onBlur={() => {
+              if (editExperience !== '') saveProfile({ experience: Number(editExperience) })
+            }}
+            placeholder={t('me.experiencePlaceholder')}
+            className="w-32 bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors"
+          />
+        </GlassCard>
+
+        {/* External Profiles */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">🔗</span> {t('me.externalProfiles')}
+          </label>
+          <div className="space-y-phi-3">
+            <div>
+              <label className="text-xs text-white/40 mb-1 block">LinkedIn</label>
+              <input
+                type="url"
+                value={editLinkedin}
+                onChange={(e) => setEditLinkedin(e.target.value)}
+                onBlur={() => saveProfile({ linkedin: editLinkedin })}
+                placeholder="https://linkedin.com/in/..."
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors text-phi-sm"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-white/40 mb-1 block">Upwork</label>
+              <input
+                type="url"
+                value={editUpwork}
+                onChange={(e) => setEditUpwork(e.target.value)}
+                onBlur={() => saveProfile({ upworkUrl: editUpwork })}
+                placeholder="https://upwork.com/freelancers/..."
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors text-phi-sm"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-white/40 mb-1 block">Fiverr</label>
+              <input
+                type="url"
+                value={editFiverr}
+                onChange={(e) => setEditFiverr(e.target.value)}
+                onBlur={() => saveProfile({ fiverrUrl: editFiverr })}
+                placeholder="https://fiverr.com/..."
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors text-phi-sm"
+              />
+            </div>
+          </div>
+        </GlassCard>
+
+        {/* Video Introduction */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-1">
+            <span className="mr-1">🎥</span> {t('me.videoUrl')}
+          </label>
+          <input
+            type="url"
+            value={editVideoUrl}
+            onChange={(e) => setEditVideoUrl(e.target.value)}
+            onBlur={() => saveProfile({ videoUrl: editVideoUrl })}
+            placeholder={t('me.videoUrlPlaceholder')}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors text-phi-sm"
+          />
+          <p className="text-xs text-white/30 mt-phi-1">{t('me.videoUrlHint')}</p>
         </GlassCard>
       </div>
     )

@@ -115,6 +115,8 @@ model Profile {
   location    String?
   city        String?
   linkedinUrl String?
+  upworkUrl   String?
+  fiverrUrl   String?
   videoUrl    String?  // 30-second pitch video
   isPublic    Boolean  @default(true)
 
