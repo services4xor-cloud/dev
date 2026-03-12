@@ -152,6 +152,79 @@ describe('Mock Data — vertical page exports', () => {
   })
 })
 
+describe('Mock Data — admin extended exports', () => {
+  it('exports MOCK_RECENT_PIONEERS as non-empty array', () => {
+    expect(Array.isArray(MockData.MOCK_RECENT_PIONEERS)).toBe(true)
+    expect(MockData.MOCK_RECENT_PIONEERS.length).toBeGreaterThan(0)
+  })
+
+  it('every recent pioneer has name and country', () => {
+    for (const p of MockData.MOCK_RECENT_PIONEERS) {
+      expect(p.name).toBeTruthy()
+      expect(p.country).toBeTruthy()
+    }
+  })
+
+  it('exports MOCK_ALL_PIONEERS as non-empty array', () => {
+    expect(Array.isArray(MockData.MOCK_ALL_PIONEERS)).toBe(true)
+    expect(MockData.MOCK_ALL_PIONEERS.length).toBeGreaterThan(0)
+  })
+
+  it('every pioneer has id, name, type, from, to', () => {
+    for (const p of MockData.MOCK_ALL_PIONEERS) {
+      expect(p.id).toBeTruthy()
+      expect(p.name).toBeTruthy()
+      expect(p.type).toBeTruthy()
+      expect(p.from).toBeTruthy()
+      expect(p.to).toBeTruthy()
+    }
+  })
+
+  it('exports MOCK_RECENT_CHAPTERS as non-empty array', () => {
+    expect(Array.isArray(MockData.MOCK_RECENT_CHAPTERS)).toBe(true)
+    expect(MockData.MOCK_RECENT_CHAPTERS.length).toBeGreaterThan(0)
+  })
+
+  it('every chapter has pioneer, path, anchor, score, status', () => {
+    for (const ch of MockData.MOCK_RECENT_CHAPTERS) {
+      expect(ch.pioneer).toBeTruthy()
+      expect(ch.path).toBeTruthy()
+      expect(ch.anchor).toBeTruthy()
+      expect(ch.score).toBeGreaterThan(0)
+      expect(ch.status).toBeTruthy()
+    }
+  })
+
+  it('exports MOCK_SOCIAL_PLATFORMS as non-empty array', () => {
+    expect(MockData.MOCK_SOCIAL_PLATFORMS.length).toBeGreaterThan(0)
+  })
+
+  it('exports MOCK_SOCIAL_QUEUE as non-empty array', () => {
+    expect(MockData.MOCK_SOCIAL_QUEUE.length).toBeGreaterThan(0)
+  })
+
+  it('exports MOCK_ENV_VARS as non-empty array', () => {
+    expect(MockData.MOCK_ENV_VARS.length).toBeGreaterThan(0)
+  })
+})
+
+describe('Mock Data — messages exports', () => {
+  it('exports MOCK_CHANNEL_MESSAGES as non-empty record', () => {
+    expect(Object.keys(MockData.MOCK_CHANNEL_MESSAGES).length).toBeGreaterThan(0)
+  })
+
+  it('every channel has messages with id, author, text', () => {
+    for (const [, messages] of Object.entries(MockData.MOCK_CHANNEL_MESSAGES)) {
+      expect(messages.length).toBeGreaterThan(0)
+      for (const msg of messages) {
+        expect(msg.id).toBeTruthy()
+        expect(msg.author).toBeTruthy()
+        expect(msg.text).toBeTruthy()
+      }
+    }
+  })
+})
+
 describe('Mock Data — anchor dashboard exports', () => {
   it('exports MOCK_ANCHOR with required fields', () => {
     expect(MockData.MOCK_ANCHOR.name).toBeTruthy()
