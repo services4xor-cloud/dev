@@ -4,12 +4,11 @@
  * IdentitySwitcher — Smart identity dropdown
  *
  * Design principles:
- *   1. LANGUAGE-FIRST — language selection appears before country
+ *   1. COUNTRY-FIRST — ranked country list with languages shown per row
  *   2. CLEAR — always shows what's currently selected (country + language)
- *   3. TIERED — languages grouped: country → global/regional → local
- *   4. SEARCHABLE — filter input when 12+ languages
- *   5. NO DUPLICATION — each identity appears once
- *   6. VALUE-DRIVEN — shows currency, distance, corridor strength
+ *   3. SEARCHABLE — filter by country name, code, or language
+ *   4. NO DUPLICATION — each identity appears once
+ *   5. VALUE-DRIVEN — shows currency, distance, corridor strength
  *
  * Ranking algorithm (composite score):
  *   - Same language: +40 (journey collaboration)
@@ -129,108 +128,6 @@ function getRankedCountries(
     .sort((a, b) => b.score - a.score)
 }
 
-// ─── Language tier type ─────────────────────────────────────────────
-
-interface TieredLanguage {
-  code: string
-  nativeName: string
-  name: string
-  isCurrent: boolean
-  tier: 'country' | 'global-regional' | 'local'
-}
-
-/**
- * Get ALL languages from LANGUAGE_REGISTRY grouped into 3 tiers:
- *   1. Country languages — spoken in the selected country (highlighted)
- *   2. Global/Regional — digitalReach 'global' or 'regional'
- *   3. Local — digitalReach 'local'
- *
- * Current language is always pinned at the very top.
- * No duplicates between tiers.
- */
-function getCuratedLanguages(currentCountry: string, currentLanguage: string): TieredLanguage[] {
-  const countryLangs: TieredLanguage[] = []
-  const globalRegionalLangs: TieredLanguage[] = []
-  const localLangs: TieredLanguage[] = []
-  const seen = new Set<string>()
-
-  // Tier 1: Languages spoken in the user's country
-  for (const [code, lang] of Object.entries(LANGUAGE_REGISTRY)) {
-    if (lang.countries.includes(currentCountry)) {
-      countryLangs.push({
-        code,
-        nativeName: lang.nativeName,
-        name: lang.name,
-        isCurrent: code === currentLanguage,
-        tier: 'country',
-      })
-      seen.add(code)
-    }
-  }
-
-  // Tier 2: Global or regional reach (not already in tier 1)
-  for (const [code, lang] of Object.entries(LANGUAGE_REGISTRY)) {
-    if (seen.has(code)) continue
-    if (lang.digitalReach === 'global' || lang.digitalReach === 'regional') {
-      globalRegionalLangs.push({
-        code,
-        nativeName: lang.nativeName,
-        name: lang.name,
-        isCurrent: code === currentLanguage,
-        tier: 'global-regional',
-      })
-      seen.add(code)
-    }
-  }
-
-  // Tier 3: All remaining (local reach)
-  for (const [code, lang] of Object.entries(LANGUAGE_REGISTRY)) {
-    if (seen.has(code)) continue
-    localLangs.push({
-      code,
-      nativeName: lang.nativeName,
-      name: lang.name,
-      isCurrent: code === currentLanguage,
-      tier: 'local',
-    })
-    seen.add(code)
-  }
-
-  // Sort each tier alphabetically by nativeName
-  const sortAlpha = (a: TieredLanguage, b: TieredLanguage) =>
-    a.nativeName.localeCompare(b.nativeName)
-
-  countryLangs.sort(sortAlpha)
-  globalRegionalLangs.sort(sortAlpha)
-  localLangs.sort(sortAlpha)
-
-  // Combine all tiers
-  const all = [...countryLangs, ...globalRegionalLangs, ...localLangs]
-
-  // If current language wasn't captured in any tier, add it at the top
-  if (!seen.has(currentLanguage)) {
-    const lang = LANGUAGE_REGISTRY[currentLanguage as LanguageCode]
-    if (lang) {
-      all.unshift({
-        code: currentLanguage,
-        nativeName: lang.nativeName,
-        name: lang.name,
-        isCurrent: true,
-        tier: 'country',
-      })
-    }
-  }
-
-  // Pin current language at the very top
-  const currentIdx = all.findIndex((l) => l.isCurrent)
-  if (currentIdx > 0) {
-    const [current] = all.splice(currentIdx, 1)
-    all.unshift(current)
-  }
-
-  return all
-}
-
 // ─── Component ──────────────────────────────────────────────────────
 
 export default function IdentitySwitcher({
@@ -267,59 +164,6 @@ export default function IdentitySwitcher({
       )
     : allRanked
 
-  // Get tier label
-  const tierLabel = (tier: TieredLanguage['tier']) => {
-    switch (tier) {
-      case 'country':
-        return localizeCountry(identity.country)
-      case 'global-regional':
-        return 'Global & Regional'
-      case 'local':
-        return 'All Languages'
-    }
-  }
-
-  // Determine if we need tier dividers (only when not searching)
-  const renderLanguageList = () => {
-    let lastTier: TieredLanguage['tier'] | null = null
-
-    return languages.map((lang, idx) => {
-      const showTierHeader = !query && lang.tier !== lastTier && !lang.isCurrent
-      lastTier = lang.tier
-
-      return (
-        <div key={lang.code}>
-          {showTierHeader && idx > 0 && (
-            <div className="pt-2 pb-1 px-1">
-              <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/20">
-                {tierLabel(lang.tier)}
-              </p>
-            </div>
-          )}
-          <button
-            type="button"
-            role="menuitem"
-            data-testid={`identity-lang-${lang.code}`}
-            onClick={() => {
-              setLanguage(lang.code)
-              onClose()
-            }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200
-              ${
-                lang.isCurrent
-                  ? 'bg-brand-accent/15 text-brand-accent border border-brand-accent/30 shadow-sm shadow-brand-accent/10'
-                  : lang.tier === 'country'
-                    ? 'text-white/60 hover:text-white/90 hover:bg-white/8 border border-brand-accent/10 hover:border-brand-accent/25'
-                    : 'text-white/40 hover:text-white/80 hover:bg-white/5 border border-white/5 hover:border-white/10'
-              }`}
-          >
-            {lang.nativeName}
-          </button>
-        </div>
-      )
-    })
-  }
-
   return (
     <div
       role="menu"
@@ -343,7 +187,8 @@ export default function IdentitySwitcher({
                 </span>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-[10px] text-white/40">
-                    {allLanguages.find((l) => l.isCurrent)?.nativeName ?? identity.language}
+                    {LANGUAGE_REGISTRY[identity.language as LanguageCode]?.nativeName ??
+                      identity.language}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-white/20" />
                   <span className="text-[10px] font-mono text-brand-accent/60">
