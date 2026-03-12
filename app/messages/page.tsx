@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useMemo, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
 import { MOCK_THREADS } from '@/data/mock'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
@@ -130,17 +130,28 @@ function agentToProfile(agent: AgentPersona): DimensionProfile {
 
 export default function MessagesPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { identity, hasCompletedDiscovery } = useIdentity()
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
   const [showMobileContent, setShowMobileContent] = useState(false)
 
+  // Auto-select DM when navigating from Connect action (e.g., /messages?dm=agent_123)
+  const dmParam = searchParams.get('dm')
+  useEffect(() => {
+    if (dmParam) {
+      setSelectedSlug(`dm-${dmParam}`)
+      setShowMobileContent(true)
+    }
+  }, [dmParam])
+
   // Top-matched AI agents for Direct Messages section
+  // Includes the dm query param agent if not in top 5
   const topAgents = useMemo(() => {
     const allAgents = generateAllAgents()
     const meProfile = identityToProfile(identity)
     const signals = getSignalsForRegion(identity.country)
 
-    return allAgents
+    const scored = allAgents
       .map((agent) => {
         const themProfile = agentToProfile(agent)
         const dimScore = scoreDimensions(meProfile, themProfile, signals)
@@ -148,8 +159,22 @@ export default function MessagesPage() {
         return { agent, score: displayScore }
       })
       .sort((a, b) => b.score - a.score)
-      .slice(0, 5)
-  }, [identity])
+
+    const top5 = scored.slice(0, 5)
+
+    // If a dm param agent isn't in top 5, include them at the top
+    if (dmParam) {
+      const inTop5 = top5.some(({ agent }) => agent.id === dmParam)
+      if (!inTop5) {
+        const dmAgent = scored.find(({ agent }) => agent.id === dmParam)
+        if (dmAgent) {
+          return [dmAgent, ...top5]
+        }
+      }
+    }
+
+    return top5
+  }, [identity, dmParam])
 
   // Gate: redirect if discovery not complete
   if (!hasCompletedDiscovery) {

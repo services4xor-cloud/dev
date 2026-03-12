@@ -124,7 +124,7 @@ export default function ExchangeDetailPage() {
 
     const handleConnect = () => {
       setMessageSent(true)
-      setTimeout(() => router.push('/messages'), 1500)
+      setTimeout(() => router.push(`/messages?dm=${agent.id}`), 1500)
     }
 
     return (
