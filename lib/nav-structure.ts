@@ -10,7 +10,18 @@
  */
 
 import type { LucideIcon } from 'lucide-react'
-import { DollarSign, Info, Globe, Map, Send, Users, LogIn } from 'lucide-react'
+import {
+  DollarSign,
+  Info,
+  Globe,
+  Map,
+  Send,
+  Users,
+  LogIn,
+  Compass,
+  Heart,
+  Sparkles,
+} from 'lucide-react'
 
 export interface NavLink {
   href: string
@@ -24,15 +35,17 @@ export interface FooterLink {
   label: string
 }
 
-// ── New Human Exchange Network navigation ──────────────────
+// ── Human Exchange Network navigation ──────────────────
 export const PUBLIC_NAV_LINKS: NavLink[] = [
+  { href: '/exchange', label: 'Exchange', icon: Sparkles, aria: 'Browse people and opportunities' },
+  { href: '/ventures', label: 'Ventures', icon: Compass, aria: 'Explore ventures and experiences' },
   { href: '/about', label: 'About', icon: Info, aria: 'About the platform' },
-  { href: '/pricing', label: 'Pricing', icon: DollarSign, aria: 'Pricing plans' },
+  { href: '/charity', label: 'Charity', icon: Heart, aria: 'Community charity initiatives' },
 ]
 
 export const MAIN_NAV_LINKS: NavLink[] = [
   { href: '/world', label: 'My World', icon: Globe, aria: 'Your network graph' },
-  { href: '/exchange', label: 'Exchange', icon: Map, aria: 'Browse people and opportunities' },
+  { href: '/exchange', label: 'Exchange', icon: Sparkles, aria: 'Browse people and opportunities' },
   { href: '/messages', label: 'Messages', icon: Send, aria: 'Your conversations' },
   { href: '/me', label: 'Me', icon: Users, aria: 'Your profile and settings' },
 ]

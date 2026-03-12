@@ -12,7 +12,7 @@ export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
-  const { hasCompletedDiscovery } = useIdentity()
+  const { hasCompletedDiscovery, brandName } = useIdentity()
   const pathname = usePathname()
 
   // Scroll-aware background
@@ -82,11 +82,13 @@ export default function Nav() {
               className="group flex items-center gap-2 shrink-0 rounded-lg
                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent
                          focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
-              aria-label="Be[Country] — Home"
+              aria-label={`${brandName} — Home`}
             >
               <span className="font-bold text-[15px] tracking-wide">
                 <span className="text-brand-accent">Be</span>
-                <span className="text-white">Kenya</span>
+                <span className="text-white">
+                  {brandName.startsWith('Be') ? brandName.slice(2) : brandName}
+                </span>
               </span>
             </Link>
 
