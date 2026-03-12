@@ -1,6 +1,7 @@
 import { type NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import EmailProvider from 'next-auth/providers/email'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { compare } from 'bcryptjs'
 import { db } from '@/lib/db'
@@ -27,6 +28,22 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
     }),
+    // Magic link email — requires RESEND_API_KEY + DATABASE_URL
+    ...(hasDB && process.env.RESEND_API_KEY
+      ? [
+          EmailProvider({
+            server: {
+              host: 'smtp.resend.com',
+              port: 465,
+              auth: {
+                user: 'resend',
+                pass: process.env.RESEND_API_KEY,
+              },
+            },
+            from: process.env.EMAIL_FROM ?? 'BeNetwork <noreply@bekenya.com>',
+          }),
+        ]
+      : []),
     CredentialsProvider({
       name: 'Email',
       credentials: {

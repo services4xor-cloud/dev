@@ -500,12 +500,12 @@ export default function MePage() {
                 className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 text-white/80 border border-white/10 text-phi-sm"
               >
                 <span>{cat.icon}</span>
-                {cat.label}
+                {t(cat.i18nKey) || cat.label}
                 <button
                   type="button"
                   onClick={() => setInterests(identity.interests.filter((i) => i !== cat.id))}
                   className="ml-1 text-white/40 hover:text-white"
-                  aria-label={`Remove ${cat.label}`}
+                  aria-label={`Remove ${t(cat.i18nKey) || cat.label}`}
                 >
                   &times;
                 </button>
@@ -531,12 +531,12 @@ export default function MePage() {
                   className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 text-white/80 border border-white/10 text-phi-sm"
                 >
                   <span>{opt?.icon ?? '🌐'}</span>
-                  {opt?.label ?? id}
+                  {(opt?.labelKey ? t(opt.labelKey) : '') || opt?.label || id}
                   <button
                     type="button"
                     onClick={() => setReach(identity.reach.filter((r) => r !== id))}
                     className="ml-1 text-white/40 hover:text-white"
-                    aria-label={`Remove ${opt?.label ?? id}`}
+                    aria-label={`Remove ${(opt?.labelKey ? t(opt.labelKey) : '') || opt?.label || id}`}
                   >
                     &times;
                   </button>
@@ -559,7 +559,7 @@ export default function MePage() {
                   title={ro.description}
                 >
                   <span>{ro.icon}</span>
-                  {ro.label}
+                  {t(ro.labelKey) || ro.label}
                 </button>
               ))}
             </div>
@@ -580,12 +580,12 @@ export default function MePage() {
                   className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-brand-accent/10 text-brand-accent border border-brand-accent/30 text-phi-sm"
                 >
                   <span>{opt!.icon}</span>
-                  {opt!.label}
+                  {t(opt!.labelKey) || opt!.label}
                   <button
                     type="button"
                     onClick={() => setFaith(identity.faith.filter((f) => f !== opt!.id))}
                     className="ml-1 text-brand-accent/60 hover:text-brand-accent"
-                    aria-label={`Remove ${opt!.label}`}
+                    aria-label={`Remove ${t(opt!.labelKey) || opt!.label}`}
                   >
                     &times;
                   </button>
@@ -604,7 +604,7 @@ export default function MePage() {
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10 text-phi-xs hover:bg-white/10 hover:text-white/70 transition-colors"
                 >
                   <span>{fo.icon}</span>
-                  {fo.label}
+                  {t(fo.labelKey) || fo.label}
                 </button>
               ))}
             </div>

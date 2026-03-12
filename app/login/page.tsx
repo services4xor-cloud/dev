@@ -15,7 +15,7 @@ import { useState, useEffect } from 'react'
 import { signIn } from 'next-auth/react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, AlertCircle, Send } from 'lucide-react'
 import Image from 'next/image'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
@@ -37,6 +37,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
+  const [magicLinkLoading, setMagicLinkLoading] = useState(false)
+  const [magicLinkSent, setMagicLinkSent] = useState(false)
+  const [loginMode, setLoginMode] = useState<'password' | 'magic'>('password')
   const [error, setError] = useState<string | null>(null)
 
   const { brandName } = useIdentity()
@@ -84,6 +87,25 @@ export default function LoginPage() {
     }
   }
 
+  // ── Magic Link ──────────────────────────────────────────────────────
+  const handleMagicLink = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) {
+      setError(t('auth.enterEmail'))
+      return
+    }
+    setMagicLinkLoading(true)
+    setError(null)
+    const result = await signIn('email', { email, redirect: false, callbackUrl })
+    if (result?.error) {
+      setError(t('auth.errorMagicLink'))
+      setMagicLinkLoading(false)
+    } else {
+      setMagicLinkSent(true)
+      setMagicLinkLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4 ambient-glow">
       <div className="w-full max-w-md">
@@ -112,7 +134,7 @@ export default function LoginPage() {
             type="button"
             onClick={handleGoogle}
             disabled={googleLoading}
-            className="w-full flex items-center justify-center gap-3 border border-gray-700 rounded-xl py-3 px-4 font-medium text-gray-300 hover:bg-gray-800 transition-colors mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 border border-gray-700 rounded-xl py-3 px-4 font-medium text-gray-300 hover:bg-gray-800 transition-colors mb-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {googleLoading ? (
               <div className="w-5 h-5 border-2 border-gray-500 border-t-white rounded-full animate-spin" />
@@ -139,6 +161,21 @@ export default function LoginPage() {
             {googleLoading ? t('auth.connectingGoogle') : t('auth.continueGoogle')}
           </button>
 
+          {/* Apple SSO — coming soon */}
+          <button
+            type="button"
+            disabled
+            className="w-full flex items-center justify-center gap-3 border border-gray-700/50 rounded-xl py-3 px-4 font-medium text-gray-500 mb-6 cursor-not-allowed opacity-50 relative"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+            </svg>
+            {t('auth.continueApple')}
+            <span className="absolute right-3 text-[10px] uppercase tracking-wider text-gray-600">
+              {t('common.comingSoon')}
+            </span>
+          </button>
+
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-brand-primary/30" />
@@ -148,70 +185,166 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                {t('auth.email')}
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="input pl-10 w-full"
-                  required
-                  autoComplete="email"
-                />
+          {/* Magic link success state */}
+          {magicLinkSent ? (
+            <div className="text-center py-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-900/30 border border-green-700/50 flex items-center justify-center">
+                <Mail className="w-8 h-8 text-green-400" />
               </div>
+              <h3 className="text-lg font-semibold text-white mb-2">{t('auth.checkEmail')}</h3>
+              <p className="text-sm text-gray-400 mb-4">{t('auth.magicLinkSentTo', { email })}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setMagicLinkSent(false)
+                  setLoginMode('password')
+                }}
+                className="text-sm text-brand-accent hover:underline"
+              >
+                {t('auth.tryDifferentMethod')}
+              </button>
             </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-sm font-medium text-gray-300">
-                  {t('auth.password')}
-                </label>
-                <Link href="/forgot-password" className="text-sm text-brand-accent hover:underline">
-                  {t('auth.forgotPassword')}
-                </Link>
-              </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="input pl-10 pr-10 w-full"
-                  required
-                  autoComplete="current-password"
-                />
+          ) : (
+            <>
+              {/* Login mode toggle */}
+              <div className="flex rounded-lg bg-white/5 p-1 mb-4">
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  onClick={() => setLoginMode('password')}
+                  className={`flex-1 text-sm py-1.5 rounded-md transition-colors ${
+                    loginMode === 'password'
+                      ? 'bg-brand-primary/30 text-white font-medium'
+                      : 'text-gray-400 hover:text-gray-300'
+                  }`}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {t('auth.password')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLoginMode('magic')}
+                  className={`flex-1 text-sm py-1.5 rounded-md transition-colors ${
+                    loginMode === 'magic'
+                      ? 'bg-brand-primary/30 text-white font-medium'
+                      : 'text-gray-400 hover:text-gray-300'
+                  }`}
+                >
+                  {t('auth.magicLink')}
                 </button>
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full py-3 text-base mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="w-4 h-4 border-2 border-brand-bg/30 border-t-brand-bg rounded-full animate-spin" />
-                  {t('auth.signingIn')}
-                </span>
+              {loginMode === 'password' ? (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      {t('auth.email')}
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="input pl-10 w-full"
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-sm font-medium text-gray-300">
+                        {t('auth.password')}
+                      </label>
+                      <Link
+                        href="/forgot-password"
+                        className="text-sm text-brand-accent hover:underline"
+                      >
+                        {t('auth.forgotPassword')}
+                      </Link>
+                    </div>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="input pl-10 pr-10 w-full"
+                        required
+                        autoComplete="current-password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="btn-primary w-full py-3 text-base mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-brand-bg/30 border-t-brand-bg rounded-full animate-spin" />
+                        {t('auth.signingIn')}
+                      </span>
+                    ) : (
+                      t('common.signIn')
+                    )}
+                  </button>
+                </form>
               ) : (
-                t('common.signIn')
+                <form onSubmit={handleMagicLink} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      {t('auth.email')}
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="input pl-10 w-full"
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500">{t('auth.magicLinkDesc')}</p>
+                  <button
+                    type="submit"
+                    disabled={magicLinkLoading}
+                    className="btn-primary w-full py-3 text-base mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {magicLinkLoading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-brand-bg/30 border-t-brand-bg rounded-full animate-spin" />
+                        {t('auth.sendingLink')}
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2">
+                        <Send className="w-4 h-4" />
+                        {t('auth.sendMagicLink')}
+                      </span>
+                    )}
+                  </button>
+                </form>
               )}
-            </button>
-          </form>
+            </>
+          )}
         </GlassCard>
 
         <p className="text-center mt-phi-5 text-gray-400">

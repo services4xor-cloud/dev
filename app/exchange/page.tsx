@@ -393,7 +393,7 @@ export default function ExchangePage() {
           <option value="all">{t('exchange.allSectors')}</option>
           {EXCHANGE_CATEGORIES.map((cat) => (
             <option key={cat.id} value={cat.id}>
-              {cat.icon} {cat.label}
+              {cat.icon} {t(cat.i18nKey) || cat.label}
             </option>
           ))}
         </select>

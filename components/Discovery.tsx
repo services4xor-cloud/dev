@@ -457,8 +457,10 @@ function Step3({
               }
             >
               <div className="text-2xl mb-2">{cat.icon}</div>
-              <div className="font-bold text-white text-phi-sm">{cat.label}</div>
-              <div className="text-white/40 text-phi-xs line-clamp-1">{cat.description}</div>
+              <div className="font-bold text-white text-phi-sm">{t(cat.i18nKey) || cat.label}</div>
+              <div className="text-white/40 text-phi-xs line-clamp-1">
+                {t(cat.descKey) || cat.description}
+              </div>
             </button>
           )
         })}
@@ -487,8 +489,12 @@ function Step3({
                 }
               >
                 <div className="text-xl mb-1">{opt.icon}</div>
-                <div className="font-bold text-white text-phi-sm">{opt.label}</div>
-                <div className="text-white/40 text-phi-xs line-clamp-1">{opt.description}</div>
+                <div className="font-bold text-white text-phi-sm">
+                  {t(opt.labelKey) || opt.label}
+                </div>
+                <div className="text-white/40 text-phi-xs line-clamp-1">
+                  {t(opt.descKey) || opt.description}
+                </div>
               </button>
             )
           })}
@@ -587,7 +593,9 @@ function Step4({
               }
             >
               <span className="text-xl mr-2">{opt.icon}</span>
-              <span className="font-bold text-white text-phi-sm">{opt.label}</span>
+              <span className="font-bold text-white text-phi-sm">
+                {t(opt.labelKey) || opt.label}
+              </span>
             </button>
           )
         })}
@@ -839,7 +847,12 @@ export default function Discovery() {
     setCity,
   } = useIdentity()
 
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1)
+  const [step, _setStep] = useState<1 | 2 | 3 | 4 | 5>(1)
+  const setStep = (s: 1 | 2 | 3 | 4 | 5) => {
+    _setStep(s)
+    // Scroll to top when switching steps so content is visible
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
   const [selectedCountry, setSelectedCountry] = useState(identity.country)
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
   const [selectedInterests, setSelectedInterests] = useState<string[]>([])

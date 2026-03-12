@@ -22,19 +22,25 @@ export type FaithId =
 
 export interface FaithOption {
   id: FaithId
-  label: string
+  label: string // Fallback (English)
+  labelKey: string // i18n key
   icon: string
 }
 
 export const FAITH_OPTIONS: FaithOption[] = [
-  { id: 'islam', label: 'Islam', icon: '☪️' },
-  { id: 'christianity', label: 'Christianity', icon: '✝️' },
-  { id: 'secular', label: 'Secular / Non-religious', icon: '🌐' },
-  { id: 'hinduism', label: 'Hinduism', icon: '🕉️' },
-  { id: 'buddhism', label: 'Buddhism', icon: '☸️' },
-  { id: 'judaism', label: 'Judaism', icon: '✡️' },
-  { id: 'traditional', label: 'Traditional / Indigenous', icon: '🌿' },
-  { id: 'other', label: 'Other', icon: '🤍' },
+  { id: 'islam', label: 'Islam', labelKey: 'faith.islam', icon: '☪️' },
+  { id: 'christianity', label: 'Christianity', labelKey: 'faith.christianity', icon: '✝️' },
+  { id: 'secular', label: 'Secular / Non-religious', labelKey: 'faith.secular', icon: '🌐' },
+  { id: 'hinduism', label: 'Hinduism', labelKey: 'faith.hinduism', icon: '🕉️' },
+  { id: 'buddhism', label: 'Buddhism', labelKey: 'faith.buddhism', icon: '☸️' },
+  { id: 'judaism', label: 'Judaism', labelKey: 'faith.judaism', icon: '✡️' },
+  {
+    id: 'traditional',
+    label: 'Traditional / Indigenous',
+    labelKey: 'faith.traditional',
+    icon: '🌿',
+  },
+  { id: 'other', label: 'Other', labelKey: 'faith.other', icon: '🤍' },
 ]
 
 // ---------------------------------------------------------------------------
@@ -141,45 +147,59 @@ export type ReachId =
 
 export interface ReachOption {
   id: ReachId
-  label: string
+  label: string // Fallback (English)
+  labelKey: string // i18n key for label
+  descKey: string // i18n key for description
   icon: string
-  description: string
+  description: string // Fallback (English)
 }
 
 export const REACH_OPTIONS: ReachOption[] = [
   {
     id: 'can-travel',
     label: 'Can Travel',
+    labelKey: 'reach.canTravel',
+    descKey: 'reach.canTravel.desc',
     icon: '✈️',
     description: 'Willing and able to travel for opportunities',
   },
   {
     id: 'can-host',
     label: 'Can Host',
+    labelKey: 'reach.canHost',
+    descKey: 'reach.canHost.desc',
     icon: '🏠',
     description: 'Can provide accommodation or workspace for visitors',
   },
   {
     id: 'can-invest',
     label: 'Can Invest',
+    labelKey: 'reach.canInvest',
+    descKey: 'reach.canInvest.desc',
     icon: '💎',
     description: 'Has resources to invest in ventures or partnerships',
   },
   {
     id: 'digital-only',
     label: 'Digital Only',
+    labelKey: 'reach.digitalOnly',
+    descKey: 'reach.digitalOnly.desc',
     icon: '💻',
     description: 'Available for remote collaboration exclusively',
   },
   {
     id: 'can-mentor',
     label: 'Can Mentor',
+    labelKey: 'reach.canMentor',
+    descKey: 'reach.canMentor.desc',
     icon: '🎓',
     description: 'Experienced and willing to guide others',
   },
   {
     id: 'can-relocate',
     label: 'Can Relocate',
+    labelKey: 'reach.canRelocate',
+    descKey: 'reach.canRelocate.desc',
     icon: '🌍',
     description: 'Open to moving to a new country or city',
   },

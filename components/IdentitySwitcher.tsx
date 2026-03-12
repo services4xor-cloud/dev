@@ -230,8 +230,11 @@ export default function IdentitySwitcher({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
             placeholder="Search countries..."
             data-testid="country-search"
+            autoFocus
             className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-white/5 border border-white/8
                        text-[11px] text-white/70 placeholder-white/20
                        focus:outline-none focus:border-brand-accent/30 focus:bg-white/8
