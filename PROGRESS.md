@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 521/521 ✅ (29 suites)                                      |
+| Jest tests        | 614/614 ✅ (33 suites)                                      |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
