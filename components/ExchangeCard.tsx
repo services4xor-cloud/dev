@@ -112,9 +112,15 @@ export default function ExchangeCard({
         padding="md"
         className="group cursor-pointer transition-all duration-300 hover:shadow-brand-accent/10 hover:shadow-lg"
       >
-        {/* ── Header: Type badge + Match score ── */}
+        {/* ── Header: Type badge + Online indicator + Match score ── */}
         <div className="mb-phi-3 flex items-center justify-between">
           <div className="flex items-center gap-phi-2">
+            {type === 'person' && (
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+              </span>
+            )}
             <span
               className={`rounded-full px-phi-2 py-0.5 text-phi-xs font-medium ${
                 type === 'person'

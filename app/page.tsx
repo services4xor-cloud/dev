@@ -82,7 +82,7 @@ function agentToProfile(agent: AgentPersona): DimensionProfile {
 // ─── Component ──────────────────────────────────────────────────────
 
 export default function HomePage() {
-  const { identity, hasCompletedDiscovery, brandName } = useIdentity()
+  const { identity, hasCompletedDiscovery, brandName, localizeCountry } = useIdentity()
   const { data: session } = useSession()
   const [showDiscovery, setShowDiscovery] = useState(false)
   const [hoveredAgent, setHoveredAgent] = useState<string | null>(null)
@@ -261,6 +261,16 @@ export default function HomePage() {
   const userName = session?.user?.name ?? identity.city ?? 'Explorer'
   const countryFlag = COUNTRY_OPTIONS.find((c) => c.code === identity.country)?.flag ?? '🌍'
 
+  // Location-aware corridor detection
+  const instanceCountry = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase()
+  const detectedLoc = identity.detectedLocation
+  const isVisitingFromAbroad = detectedLoc && detectedLoc !== instanceCountry
+  const detectedCountryName = detectedLoc ? localizeCountry(detectedLoc) : ''
+  const detectedFlag = detectedLoc
+    ? (COUNTRY_OPTIONS.find((c) => c.code === detectedLoc)?.flag ?? '🌍')
+    : ''
+  const instanceCountryName = localizeCountry(instanceCountry)
+
   return (
     <main className="bg-brand-bg min-h-screen">
       {/* ── Hero: Welcome back ── */}
@@ -368,6 +378,36 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Location-aware corridor banner ── */}
+      {isVisitingFromAbroad && (
+        <SectionLayout size="lg" className="mb-2">
+          <GlassCard variant="subtle" padding="md">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{detectedFlag}</span>
+                <div>
+                  <p className="text-white font-semibold text-phi-sm">
+                    Visiting from {detectedCountryName}?
+                  </p>
+                  <p className="text-white/40 text-phi-xs">
+                    Explore the {instanceCountryName} &harr; {detectedCountryName} corridor &mdash;
+                    paths, agents, and opportunities connecting both countries.
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/compass"
+                className="shrink-0 flex items-center gap-2 px-5 py-2 rounded-full bg-brand-accent/10 text-brand-accent font-semibold text-phi-sm
+                           hover:bg-brand-accent/20 transition-all border border-brand-accent/20"
+              >
+                View Routes
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </GlassCard>
+        </SectionLayout>
+      )}
+
       {/* ── What to do next ── */}
       <SectionLayout size="lg" className="mb-2">
         <h2 className="text-phi-lg font-bold text-white mb-4 flex items-center gap-2">
@@ -375,6 +415,28 @@ export default function HomePage() {
           What to do next
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Corridor route card — shown first when visiting from abroad */}
+          {isVisitingFromAbroad && (
+            <Link href="/compass" className="block group">
+              <GlassCard
+                variant="subtle"
+                padding="md"
+                className="group-hover:border-brand-accent/30 transition-colors border-brand-accent/15"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🧭</span>
+                  <div>
+                    <p className="text-white font-semibold text-phi-sm">
+                      {instanceCountryName} &rarr; {detectedCountryName} Route
+                    </p>
+                    <p className="text-white/40 text-phi-xs">
+                      Explore your cross-border corridor in Compass
+                    </p>
+                  </div>
+                </div>
+              </GlassCard>
+            </Link>
+          )}
           <Link href="/exchange" className="block group">
             <GlassCard
               variant="subtle"
@@ -405,23 +467,26 @@ export default function HomePage() {
               </div>
             </GlassCard>
           </Link>
-          <Link href="/me" className="block group">
-            <GlassCard
-              variant="subtle"
-              padding="md"
-              className="group-hover:border-brand-accent/30 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">✏️</span>
-                <div>
-                  <p className="text-white font-semibold text-phi-sm">Refine Your Identity</p>
-                  <p className="text-white/40 text-phi-xs">
-                    Add faith, craft, culture for better matches
-                  </p>
+          {/* Hide "Refine Identity" when corridor card takes the slot */}
+          {!isVisitingFromAbroad && (
+            <Link href="/me" className="block group">
+              <GlassCard
+                variant="subtle"
+                padding="md"
+                className="group-hover:border-brand-accent/30 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">✏️</span>
+                  <div>
+                    <p className="text-white font-semibold text-phi-sm">Refine Your Identity</p>
+                    <p className="text-white/40 text-phi-xs">
+                      Add faith, craft, culture for better matches
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </GlassCard>
-          </Link>
+              </GlassCard>
+            </Link>
+          )}
         </div>
       </SectionLayout>
 

@@ -48,6 +48,8 @@ interface Identity {
   culture?: string
   /** Active topic focus — filters all feeds when set */
   focusTopic?: string
+  /** Auto-detected location from browser timezone (ISO country code) — separate from selected country */
+  detectedLocation?: string
 }
 
 interface IdentityContextValue {
@@ -89,6 +91,8 @@ interface IdentityContextValue {
   setCulture: (culture: string | undefined) => void
   /** Set topic focus — filters Exchange, Messages, World by topic */
   setFocusTopic: (topic: string | undefined) => void
+  /** Set detected location (ISO country code from browser timezone) */
+  setDetectedLocation: (code: string | undefined) => void
 }
 
 // ─── Default ────────────────────────────────────────────────────────
@@ -156,22 +160,28 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       // Ignore — use default
     }
 
-    // If nothing stored, detect from browser
+    // Always detect location from timezone (separate from selected country)
+    try {
+      const detectedLoc = detectCountryFromTimezone()
+      if (detectedLoc) {
+        setIdentity((prev) => ({ ...prev, detectedLocation: detectedLoc }))
+      }
+    } catch {
+      // Ignore — detectedLocation stays undefined
+    }
+
+    // If nothing stored, also use detected country as the selected country
     if (!stored) {
       try {
         const browserLang = navigator.language?.split('-')[0] || 'en'
         const detected = detectCountryFromTimezone()
         if (detected) {
-          setIdentity({
+          setIdentity((prev) => ({
+            ...prev,
             country: detected,
             language: browserLang,
-            languages: [],
-            interests: [],
-            mode: 'explorer',
-            faith: [],
-            craft: [],
-            reach: [],
-          })
+            detectedLocation: detected,
+          }))
         }
       } catch {
         // Ignore — use defaults
@@ -228,6 +238,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       craft: prev.craft,
       reach: prev.reach,
       culture: prev.culture,
+      detectedLocation: prev.detectedLocation,
     }))
   }, [])
 
@@ -280,6 +291,10 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     setIdentity((prev) => ({ ...prev, focusTopic }))
   }, [])
 
+  const setDetectedLocation = useCallback((detectedLocation: string | undefined) => {
+    setIdentity((prev) => ({ ...prev, detectedLocation }))
+  }, [])
+
   // Localized names — thread brand overrides country brand when active
   const countryName = getLocalizedCountryName(identity.country, identity.language)
   const brandName =
@@ -317,6 +332,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         setReach,
         setCulture,
         setFocusTopic,
+        setDetectedLocation,
       }}
     >
       {children}
@@ -360,6 +376,7 @@ export function useIdentity(): IdentityContextValue {
       setReach: () => {},
       setCulture: () => {},
       setFocusTopic: () => {},
+      setDetectedLocation: () => {},
     }
   }
   return ctx

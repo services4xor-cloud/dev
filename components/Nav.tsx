@@ -24,6 +24,13 @@ export default function Nav() {
 
   const { identity, hasCompletedDiscovery, brandName, setFocusTopic } = useIdentity()
   const currentCountry = COUNTRY_OPTIONS.find((c) => c.code === identity.country)
+  const instanceCountry = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE').toUpperCase()
+  const detectedLocation = identity.detectedLocation
+  const detectedCountry = detectedLocation
+    ? COUNTRY_OPTIONS.find((c) => c.code === detectedLocation)
+    : null
+  const instanceCountryData = COUNTRY_OPTIONS.find((c) => c.code === instanceCountry)
+  const showCorridor = detectedLocation && detectedLocation !== instanceCountry
   const { data: session, status } = useSession()
   const pathname = usePathname()
 
@@ -145,6 +152,19 @@ export default function Nav() {
                   </span>
                 </span>
               </Link>
+              {/* Corridor indicator — shown when detected location differs from instance */}
+              {showCorridor && (
+                <span
+                  className="hidden sm:inline-flex items-center gap-1 ml-1 px-2 py-0.5 rounded-full
+                             text-[11px] text-white/40 bg-white/5 border border-white/5"
+                  aria-label={`Visiting from ${detectedCountry?.name ?? detectedLocation}`}
+                  title={`Visiting from ${detectedCountry?.name ?? detectedLocation}`}
+                >
+                  <span>{detectedCountry?.flag ?? '📍'}</span>
+                  <span className="text-white/30">→</span>
+                  <span>{instanceCountryData?.flag ?? '🌍'}</span>
+                </span>
+              )}
               {/* Identity switcher toggle */}
               <button
                 type="button"
