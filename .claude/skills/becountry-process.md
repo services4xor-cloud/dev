@@ -27,12 +27,13 @@ USER REQUEST
     ├── "Build a feature"
     │     ├── 1. /becountry-architecture  (design check)
     │     ├── 2. /becountry-ux-workflow   (user flow design)
-    │     ├── 3. /becountry-implement     (build it — real DB, tests, sync)
+    │     ├── 3. /becountry-implement     (TDD: test first → build → verify)
     │     ├── 4. /becountry-ui-review     (visual/interaction check)
-    │     ├── 5. /becountry-testing       (automated tests)
+    │     ├── 5. /becountry-testing       (run full suite)
     │     ├── 6. /becountry-e2e-test      (full flow test)
-    │     ├── 7. /becountry-sync          (code ↔ docs ↔ skills)
-    │     └── 8. /becountry-push          (commit + deploy)
+    │     ├── 7. /becountry-cleanup       (boy scout rule — leave it cleaner)
+    │     ├── 8. /becountry-sync          (code ↔ docs ↔ skills)
+    │     └── 9. /becountry-push          (commit + deploy)
     │
     ├── "Review the product"
     │     ├── /becountry-design-review    (brand + design system)

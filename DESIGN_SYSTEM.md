@@ -52,13 +52,9 @@ border-brand-accent/30 → subtle gold border
 | Error   | `text-red-400`   | Error states       |
 | M-Pesa  | `bg-green-600`   | M-Pesa brand green |
 
-### NEVER Use
+### Text Readability
 
-```
-❌ #FF6B35, orange-*, amber-*, yellow-*
-❌ teal-*, cyan-*, indigo-*
-❌ text-gray-500 for readable text
-```
+All readable text must be `text-gray-400` or lighter (higher contrast).
 
 ---
 

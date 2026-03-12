@@ -5,7 +5,7 @@ description: Implementation workflow for Be[X] features — the build phase that
 
 # Be[X] Implementation Workflow
 
-> Builds features that actually work. Code first, docs follow, everything syncs.
+> Test-Driven Development. Test first, then build, then cleanup. Everything syncs.
 
 ## When to Use
 
@@ -13,16 +13,27 @@ description: Implementation workflow for Be[X] features — the build phase that
 - When building ANY new feature or fixing bugs
 - When wiring pages from mock data to real DB
 
-## Implementation Flow
+## Implementation Flow (TDD)
 
 ```
 1. UNDERSTAND → Read relevant .MD files + existing code
-2. IMPLEMENT  → Write code (real DB, not mock)
-3. TEST       → Write test, run it, fix failures
-4. VERIFY     → TypeScript clean, build passes
-5. SYNC       → Update docs/skills that reference changed code
-6. COMMIT     → Descriptive message, push to main
+2. TEST FIRST → Write failing test that defines expected behavior
+3. RUN TEST   → Verify it fails (red)
+4. IMPLEMENT  → Write minimal code to pass the test (green)
+5. RUN TEST   → Verify it passes
+6. REFACTOR   → Clean up, DRY, boy scout rule
+7. VERIFY     → TypeScript clean, full test suite, build passes
+8. SYNC       → Update docs/skills that reference changed code
+9. COMMIT     → Descriptive message, push to main
 ```
+
+## TDD Rules
+
+1. **No production code without a failing test first**
+2. **Write the simplest test that fails** — don't over-test upfront
+3. **Write the simplest code that passes** — refactor after green
+4. **Mock data for tests only** — real DB for production code
+5. **Run full suite before commit** — no broken tests shipped
 
 ## Code Standards
 

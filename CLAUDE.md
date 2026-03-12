@@ -79,14 +79,14 @@ Source: `lib/vocabulary.ts` — import `VOCAB`, never hardcode.
 
 ## 5. Build Rules
 
-1. **`'use client'`** at line 1 for any file with `onClick`, `useState`, `useEffect`
-2. **`prisma generate`** before `next build` (in `package.json`)
-3. **Mock data** in `data/mock/` — for tests only. Real app uses Prisma + Neon PostgreSQL
-4. **Country data** in `lib/country-selector.ts` ONLY — never inline
-5. **Brand colors** via Tailwind tokens — never `#FF6B35`, `orange-*`, `amber-*`, `yellow-*`
-6. **Nav/Footer links** in `lib/nav-structure.ts` — never inline
-7. **All design** from `DESIGN_SYSTEM.md` — no ad-hoc styling
-8. **KISS** — keep it simple, no over-engineering
+1. **TDD** — Test first, then implement, then refactor. No production code without a test
+2. **Boy Scout Rule** — Leave code cleaner than you found it. Every feature ends with cleanup
+3. **`'use client'`** at line 1 for any file with `onClick`, `useState`, `useEffect`
+4. **`prisma generate`** before `next build` (in `package.json`)
+5. **Mock data** in `data/mock/` — for tests only. Real app uses Prisma + Neon PostgreSQL
+6. **Brand colors** via Tailwind design tokens from `DESIGN_SYSTEM.md`
+7. **Data sources** — single source of truth per domain (see `lib/` modules)
+8. **KISS** — keep it simple, no over-engineering. DRY. YAGNI
 
 ---
 
@@ -97,7 +97,6 @@ Primary:    #5C0A14  → bg-brand-primary, btn-primary
 Accent:     #C9A227  → text-brand-accent, border-brand-accent/30
 Background: #0A0A0F  → bg-brand-bg
 Surface:    #111118  → bg-brand-surface
-NEVER:      #FF6B35, orange-*, amber-*, yellow-*
 ```
 
 Full rules → **`DESIGN_SYSTEM.md`**
