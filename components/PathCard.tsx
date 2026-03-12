@@ -1,13 +1,8 @@
 'use client'
 
-/**
- * PathCard — BeNetwork dark-theme card for a Path (formerly "job")
- * Links to /ventures/[id] — the unified Ventures feed.
- * Props kept identical for backward compatibility — callers can rename gradually.
- */
-
 import Link from 'next/link'
 import { MapPin, Clock, DollarSign, Globe, Star } from 'lucide-react'
+import SkillChip from '@/components/ui/SkillChip'
 
 interface PathCardProps {
   id: string
@@ -45,50 +40,46 @@ export default function PathCard({
   return (
     <Link
       href={`/ventures/${id}`}
-      className={`block rounded-2xl p-5 border-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/30 ${
-        isFeatured
-          ? 'bg-brand-primary/20 border-brand-accent/40 hover:border-brand-accent/70'
-          : 'bg-gray-900/60 border-brand-primary/30 hover:border-brand-accent/30'
+      className={`block p-phi-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand-accent/10 ${
+        isFeatured ? 'glass-strong gradient-border' : 'glass'
       }`}
     >
-      <div className="flex items-start gap-4">
-        {/* Logo */}
-        <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center text-xl flex-shrink-0 border border-gray-700">
+      <div className="flex items-start gap-phi-4">
+        <div className="w-12 h-12 glass-subtle rounded-xl flex items-center justify-center text-xl flex-shrink-0">
           {logo}
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start justify-between gap-phi-2">
             <div>
               <h3 className="font-semibold text-white truncate">{title}</h3>
-              <p className="text-sm text-gray-400">{company}</p>
+              <p className="text-phi-sm text-gray-400">{company}</p>
             </div>
             {isFeatured && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-brand-accent/10 text-brand-accent border border-brand-accent/20 flex-shrink-0">
+              <span className="badge-accent flex-shrink-0">
                 <Star className="w-3 h-3" fill="currentColor" />
                 Featured
               </span>
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2 mt-2">
-            <span className="flex items-center gap-1 text-xs text-gray-400">
+          <div className="flex flex-wrap gap-phi-2 mt-phi-2">
+            <span className="flex items-center gap-1 text-phi-xs text-gray-400">
               <MapPin className="w-3 h-3" />
               {location}
             </span>
             {isRemote && (
-              <span className="flex items-center gap-1 text-xs text-brand-accent">
+              <span className="flex items-center gap-1 text-phi-xs text-brand-accent">
                 <Globe className="w-3 h-3" />
                 Remote
               </span>
             )}
-            <span className="flex items-center gap-1 text-xs text-gray-400">
+            <span className="flex items-center gap-1 text-phi-xs text-gray-400">
               <Clock className="w-3 h-3" />
               {posted}
             </span>
             {salaryMin && (
-              <span className="flex items-center gap-1 text-xs text-brand-accent font-medium">
+              <span className="flex items-center gap-1 text-phi-xs text-brand-accent font-medium">
                 <DollarSign className="w-3 h-3" />
                 {currency} {(salaryMin / 1000).toFixed(0)}k
                 {salaryMax ? `–${(salaryMax / 1000).toFixed(0)}k` : '+'}
@@ -96,20 +87,11 @@ export default function PathCard({
             )}
           </div>
 
-          <div className="flex flex-wrap gap-1 mt-2">
+          <div className="flex flex-wrap gap-phi-1 mt-phi-2">
             {skills.slice(0, 4).map((skill) => (
-              <span
-                key={skill}
-                className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700"
-              >
-                {skill}
-              </span>
+              <SkillChip key={skill} label={skill} />
             ))}
-            {skills.length > 4 && (
-              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">
-                +{skills.length - 4}
-              </span>
-            )}
+            {skills.length > 4 && <SkillChip label={`+${skills.length - 4}`} variant="muted" />}
           </div>
         </div>
       </div>

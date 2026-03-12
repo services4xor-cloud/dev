@@ -1,37 +1,20 @@
-/**
- * Shared hero gradient section used across all public pages.
- *
- * Provides consistent branding with the gradient from brand-primary to brand-bg
- * and optional radial glow overlay. Supports icon, badge, title, and subtitle.
- *
- * Usage:
- *   <HeroSection title="About" subtitle="Our story" />
- *   <HeroSection title="Contact" subtitle="Get in touch" icon={<Mail />} badge="24h response" />
- */
-
 import type { ReactNode } from 'react'
 
 interface HeroSectionProps {
-  /** Page title (h1) */
   title: string
-  /** Optional subtitle text below the title */
   subtitle?: string
-  /** Optional icon rendered above the title */
   icon?: ReactNode
-  /** Optional badge text rendered as a pill above the title */
   badge?: string
-  /** Optional badge icon (rendered before badge text) */
   badgeIcon?: ReactNode
-  /** Vertical padding size: 'sm' (py-16), 'md' (py-20), 'lg' (py-28) */
   size?: 'sm' | 'md' | 'lg'
-  /** Optional children rendered below the subtitle */
   children?: ReactNode
+  gradientTitle?: boolean
 }
 
 const PADDING = {
-  sm: 'py-16',
-  md: 'py-20',
-  lg: 'py-28',
+  sm: 'py-phi-7',
+  md: 'py-phi-8',
+  lg: 'py-phi-9',
 } as const
 
 export default function HeroSection({
@@ -42,33 +25,44 @@ export default function HeroSection({
   badgeIcon,
   size = 'md',
   children,
+  gradientTitle = false,
 }: HeroSectionProps) {
   return (
     <section
       className={`relative bg-gradient-to-b from-brand-primary to-brand-bg ${PADDING[size]} text-center overflow-hidden`}
     >
-      {/* Radial glow overlay */}
+      {/* Ambient radial glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.08),transparent_70%)]" />
 
-      <div className="relative max-w-3xl mx-auto px-4">
-        {/* Optional badge */}
+      {/* Subtle floating particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-brand-accent/20 rounded-full animate-pulse-slow" />
+        <div className="absolute top-1/3 right-1/3 w-0.5 h-0.5 bg-brand-accent/15 rounded-full animate-pulse-slow [animation-delay:1s]" />
+        <div className="absolute bottom-1/3 left-1/2 w-0.5 h-0.5 bg-brand-accent/10 rounded-full animate-pulse-slow [animation-delay:2s]" />
+      </div>
+
+      <div className="relative max-w-3xl mx-auto px-4 reveal-stagger">
         {badge && (
-          <div className="inline-flex items-center gap-2 bg-brand-primary/30 text-brand-accent px-4 py-2 rounded-full text-sm font-medium mb-4 border border-brand-accent/20">
+          <div className="inline-flex items-center gap-2 glass-subtle px-phi-4 py-phi-2 text-phi-sm font-medium mb-phi-4 text-brand-accent">
             {badgeIcon}
             {badge}
           </div>
         )}
 
-        {/* Optional icon */}
-        {icon && <div className="mb-5">{icon}</div>}
+        {icon && <div className="mb-phi-4">{icon}</div>}
 
-        {/* Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3">{title}</h1>
+        <h1
+          className={`font-display text-phi-2xl sm:text-phi-3xl md:text-phi-4xl font-black leading-phi-tight mb-phi-3 ${
+            gradientTitle ? 'gradient-text' : 'text-white'
+          }`}
+        >
+          {title}
+        </h1>
 
-        {/* Subtitle */}
-        {subtitle && <p className="text-gray-300 text-lg max-w-xl mx-auto">{subtitle}</p>}
+        {subtitle && (
+          <p className="text-gray-300 text-phi-lg max-w-xl mx-auto leading-phi">{subtitle}</p>
+        )}
 
-        {/* Optional children below subtitle */}
         {children}
       </div>
     </section>
