@@ -5,119 +5,75 @@
 
 ---
 
-## Priority Order
+## Status
 
-| #   | Task              | Time   | Unlocks              |
-| --- | ----------------- | ------ | -------------------- |
-| 1   | Database (Neon)   | 10 min | Everything with data |
-| 2   | NEXTAUTH_SECRET   | 1 min  | Auth security        |
-| 3   | Google OAuth      | 15 min | Google Sign-In       |
-| 4   | Resend email      | 5 min  | Email notifications  |
-| 5   | M-Pesa sandbox    | 20 min | Payment testing      |
-| 6   | Stripe test keys  | 10 min | International cards  |
-| 7   | Domain            | 15 min | Production URL       |
-| 8   | M-Pesa production | 2–4 wk | Real payments        |
-
----
-
-## 1. Database (Neon — free)
-
-1. https://neon.tech → Sign up → Create Project `bekenya` → EU Central
-2. Copy connection string
-3. Add to Vercel → Settings → Environment Variables:
-   ```
-   DATABASE_URL = postgresql://...
-   ```
-4. Run: `npx prisma db push`
+| #   | Task                          | Status   | Notes                                         |
+| --- | ----------------------------- | -------- | --------------------------------------------- |
+| 1   | Database (Neon)               | ✅ DONE  | Schema pushed, 15 tables live                 |
+| 2   | NEXTAUTH_SECRET               | ✅ DONE  | Set in .env                                   |
+| 3   | Google OAuth credentials      | ✅ DONE  | Client ID + Secret in .env                    |
+| 4   | Resend email API key          | ✅ DONE  | `re_...` key in .env                          |
+| 5   | Push env vars to Vercel       | ✅ DONE  | All env vars live on Vercel                   |
+| 6   | **Google OAuth redirect URI** | ⏳ YOU   | Add production callback URL in Google Console |
+| 7   | M-Pesa sandbox                | 🔜 LATER | Needed for KE payments                        |
+| 8   | Stripe test keys              | 🔜 LATER | Needed for INT payments                       |
+| 9   | Domain (bekenya.com)          | 🔜 LATER | Buy + DNS                                     |
+| 10  | M-Pesa production             | 🔜 LATER | Requires KE business registration (2-4 weeks) |
 
 ---
 
-## 2. Auth Secret
+## ⏳ Task 5: Push env vars to Vercel (5 min)
 
-```bash
-openssl rand -base64 32
-```
+All credentials exist locally in `.env`. They need to be added to Vercel for production:
 
-Add to Vercel:
+1. Go to https://vercel.com → Project `dev` → Settings → Environment Variables
+2. Add these (copy values from your `.env` file):
 
 ```
-NEXTAUTH_SECRET = (value)
-NEXTAUTH_URL = https://your-url.vercel.app
+DATABASE_URL          = (your Neon connection string)
+NEXTAUTH_SECRET       = (your secret)
+NEXTAUTH_URL          = https://dev-git-main-tobias-projects-81752e2c.vercel.app
+GOOGLE_CLIENT_ID      = (your Google client ID)
+GOOGLE_CLIENT_SECRET  = (your Google client secret)
+RESEND_API_KEY        = (your Resend key)
+NEXT_PUBLIC_COUNTRY_CODE = KE
 ```
 
----
-
-## 3. Google OAuth
-
-1. https://console.cloud.google.com → Create project → OAuth consent → Credentials → OAuth Client ID
-2. Redirect URIs:
-   ```
-   http://localhost:3000/api/auth/callback/google
-   https://your-url.vercel.app/api/auth/callback/google
-   ```
-3. Add to Vercel:
-   ```
-   GOOGLE_CLIENT_ID = (value)
-   GOOGLE_CLIENT_SECRET = (value)
-   ```
+3. Redeploy: push any commit or click "Redeploy" in Vercel dashboard.
 
 ---
 
-## 4. Email (Resend — free 3K/month)
+## ⏳ Task 6: Google OAuth redirect URI (2 min)
 
-1. https://resend.com → API Keys → Create → Copy `re_...`
-2. Add to Vercel: `RESEND_API_KEY = re_...`
+1. Go to https://console.cloud.google.com → APIs & Services → Credentials → your OAuth Client
+2. Under "Authorized redirect URIs", add:
+   ```
+   https://dev-git-main-tobias-projects-81752e2c.vercel.app/api/auth/callback/google
+   ```
+   (`http://localhost:3000/api/auth/callback/google` should already be there)
+3. Save.
 
 ---
 
-## 5. M-Pesa Sandbox (free)
+## 🔜 Later Tasks
+
+### M-Pesa Sandbox
 
 1. https://developer.safaricom.co.ke → My Apps → Create (Lipa na M-Pesa Sandbox)
-2. Add to Vercel:
-   ```
-   MPESA_CONSUMER_KEY = (value)
-   MPESA_CONSUMER_SECRET = (value)
-   MPESA_BUSINESS_SHORT_CODE = 174379
-   MPESA_PASSKEY = bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919
-   MPESA_ENVIRONMENT = sandbox
-   MPESA_CALLBACK_URL = https://your-url.vercel.app/api/mpesa/callback
-   ```
+2. Add to Vercel: `MPESA_CONSUMER_KEY`, `MPESA_CONSUMER_SECRET`, etc.
 
-Test phone: `254708374149`
-
----
-
-## 6. Stripe (test keys)
+### Stripe Test Keys
 
 1. https://stripe.com → Developers → API Keys
-2. Webhook: `https://your-url.vercel.app/api/stripe/webhook`
-3. Add to Vercel:
-   ```
-   STRIPE_SECRET_KEY = sk_test_...
-   STRIPE_WEBHOOK_SECRET = whsec_...
-   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = pk_test_...
-   ```
+2. Add to Vercel: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 
----
-
-## 7. Domain
+### Domain
 
 Buy `bekenya.com` → Vercel Settings → Domains → Add DNS records.
 
----
+### M-Pesa Production (2–4 weeks)
 
-## 8. M-Pesa Production (2–4 weeks)
-
-Requires: Kenyan business registration, Safaricom Till/Paybill, bank account, KRA PIN. Apply at https://developer.safaricom.co.ke/docs#going-live
-
----
-
-## Optional
-
-- **Analytics:** `NEXT_PUBLIC_GA_ID = G-XXXXXXXXXX`
-- **SMS:** Africa's Talking API
-- **WhatsApp:** Meta Cloud API
-- **Social:** Instagram, TikTok, Twitter, LinkedIn, Telegram API keys
+Requires: Kenyan business registration, Safaricom Till/Paybill, bank account, KRA PIN.
 
 ---
 
@@ -125,11 +81,10 @@ Requires: Kenyan business registration, Safaricom Till/Paybill, bank account, KR
 
 ```bash
 npm install
-cp .env.example .env.local
 npx prisma generate
 npm run dev  # http://localhost:3000
 ```
 
 ---
 
-_Last updated: Session 20 (2026-03-11)_
+_Last updated: Session 58 (2026-03-12)_
