@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { WORLD_LANGUAGES } from '@/lib/world-data'
 import { getCitiesForCountry, getLanguageCodesForCountry } from '@/lib/agents'
@@ -79,6 +80,7 @@ function Step1({
   onCityChange,
   onLangSearchChange,
   onNext,
+  t,
 }: {
   selectedCountry: string
   selectedLanguages: string[]
@@ -89,6 +91,7 @@ function Step1({
   onCityChange: (city: string) => void
   onLangSearchChange: (q: string) => void
   onNext: () => void
+  t: (key: string, vars?: Record<string, string>) => string
 }) {
   const countryOption = COUNTRY_OPTIONS.find((c) => c.code === selectedCountry)
 
@@ -125,11 +128,9 @@ function Step1({
   return (
     <div className="max-w-2xl mx-auto">
       <h2 className="text-phi-2xl md:text-phi-3xl font-bold text-white text-center mb-3">
-        You + Your World
+        {t('discovery.step1.title')}
       </h2>
-      <p className="text-white/60 text-center mb-8">
-        Where are you based, and what languages do you speak?
-      </p>
+      <p className="text-white/60 text-center mb-8">{t('discovery.step1.subtitle')}</p>
 
       {/* Country display + change */}
       <div className="glass-subtle p-5 mb-4 flex items-center justify-between">
@@ -137,7 +138,7 @@ function Step1({
           <span className="text-2xl">{countryOption?.flag || '\uD83C\uDF0D'}</span>
           <div>
             <div className="text-white font-bold">{countryOption?.name || 'Unknown'}</div>
-            <div className="text-white/40 text-phi-xs">Detected from your timezone</div>
+            <div className="text-white/40 text-phi-xs">{t('discovery.step1.detected')}</div>
           </div>
         </div>
         <div className="relative">
@@ -160,15 +161,17 @@ function Step1({
 
       {/* City input with suggestions */}
       <div className="glass-subtle p-4 mb-8">
-        <label className="text-white/60 text-phi-xs block mb-2">Your city</label>
+        <label className="text-white/60 text-phi-xs block mb-2">
+          {t('discovery.step1.yourCity')}
+        </label>
         <input
           type="text"
           value={editCity}
           onChange={(e) => onCityChange(e.target.value)}
           placeholder={
             countryCities.length > 0
-              ? `e.g., ${countryCities.slice(0, 3).join(', ')}...`
-              : 'Enter your city...'
+              ? `${countryCities.slice(0, 3).join(', ')}...`
+              : t('discovery.step1.enterCity')
           }
           className="w-full bg-transparent text-white text-phi-sm border-b border-white/10 pb-2 focus:outline-none focus:border-brand-accent/50 placeholder:text-white/20"
         />
@@ -189,13 +192,13 @@ function Step1({
       </div>
 
       {/* Language search */}
-      <p className="text-white/80 font-semibold mb-3">Select your languages</p>
+      <p className="text-white/80 font-semibold mb-3">{t('discovery.step1.selectLanguages')}</p>
       <div className="mb-4">
         <input
           type="text"
           value={langSearch}
           onChange={(e) => onLangSearchChange(e.target.value)}
-          placeholder="Search languages..."
+          placeholder={t('discovery.step1.searchLanguages')}
           className="w-full bg-brand-surface text-white text-phi-sm rounded-lg px-4 py-3 border border-white/10 focus:outline-none focus:border-brand-accent/50 placeholder:text-white/30"
         />
       </div>
@@ -229,7 +232,7 @@ function Step1({
                 <span className="font-bold text-white text-phi-sm">{lang.name}</span>
                 {isCountryLang && (
                   <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-primary/20 text-brand-accent/80">
-                    local
+                    {t('discovery.step1.local')}
                   </span>
                 )}
               </div>
@@ -239,7 +242,7 @@ function Step1({
         })}
         {filteredLanguages.length === 0 && (
           <div className="col-span-full text-center text-white/40 py-8 text-phi-sm">
-            No languages match &ldquo;{langSearch}&rdquo;
+            {t('discovery.step1.noMatch', { query: langSearch })}
           </div>
         )}
       </div>
@@ -248,8 +251,12 @@ function Step1({
       {selectedLanguages.length > 0 && (
         <div className="text-center mb-8">
           <p className="text-brand-accent text-phi-sm font-medium">
-            You speak {selectedLanguages.length} language
-            {selectedLanguages.length !== 1 ? 's' : ''}
+            {t(
+              selectedLanguages.length !== 1
+                ? 'discovery.step1.speakCountPlural'
+                : 'discovery.step1.speakCount',
+              { count: String(selectedLanguages.length) }
+            )}
           </p>
         </div>
       )}
@@ -263,7 +270,7 @@ function Step1({
             selectedLanguages.length > 0 ? nextBtnActive : 'btn-disabled'
           }`}
         >
-          Next &#x2192;
+          {t('discovery.nav.next')} &#x2192;
         </button>
       </div>
     </div>
@@ -280,6 +287,7 @@ function Step2({
   onCraftSearchChange,
   onNext,
   onBack,
+  t,
 }: {
   selectedCrafts: string[]
   craftSearch: string
@@ -288,6 +296,7 @@ function Step2({
   onCraftSearchChange: (q: string) => void
   onNext: () => void
   onBack: () => void
+  t: (key: string, vars?: Record<string, string>) => string
 }) {
   const suggestions = useMemo(() => {
     if (!craftSearch.trim()) return []
@@ -312,9 +321,9 @@ function Step2({
   return (
     <div className="max-w-2xl mx-auto">
       <h2 className="text-phi-2xl md:text-phi-3xl font-bold text-white text-center mb-3">
-        What do you do?
+        {t('discovery.step2.title')}
       </h2>
-      <p className="text-white/60 text-center mb-8">Add your skills and profession (1&ndash;5)</p>
+      <p className="text-white/60 text-center mb-8">{t('discovery.step2.subtitle')}</p>
 
       {/* Input */}
       <div className="relative mb-4">
@@ -323,7 +332,7 @@ function Step2({
           value={craftSearch}
           onChange={(e) => onCraftSearchChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type a skill or profession..."
+          placeholder={t('discovery.step2.placeholder')}
           disabled={selectedCrafts.length >= 5}
           className="w-full bg-brand-surface text-white text-phi-sm rounded-lg px-4 py-3 border border-white/10 focus:outline-none focus:border-brand-accent/50 placeholder:text-white/30 disabled:opacity-40"
         />
@@ -375,15 +384,15 @@ function Step2({
       {/* Feedback */}
       <div className="text-center mb-8">
         <p className="text-white/40 text-phi-xs">
-          {selectedCrafts.length}/5 selected
-          {selectedCrafts.length === 0 && ' \u2014 type to search or add your own'}
+          {t('discovery.step2.selected', { count: String(selectedCrafts.length) })}
+          {selectedCrafts.length === 0 && t('discovery.step2.hint')}
         </p>
       </div>
 
       {/* Nav */}
       <div className="flex justify-center gap-4">
         <button onClick={onBack} className="btn-ghost px-8 py-4 rounded-full text-phi-lg">
-          &#x2190; Back
+          &#x2190; {t('discovery.nav.back')}
         </button>
         <button
           onClick={onNext}
@@ -392,7 +401,7 @@ function Step2({
             selectedCrafts.length > 0 ? nextBtnActive : 'btn-disabled'
           }`}
         >
-          Next &#x2192;
+          {t('discovery.nav.next')} &#x2192;
         </button>
       </div>
     </div>
@@ -408,6 +417,7 @@ function Step3({
   onToggleReach,
   onNext,
   onBack,
+  t,
 }: {
   selectedInterests: string[]
   selectedReach: string[]
@@ -415,13 +425,14 @@ function Step3({
   onToggleReach: (id: string) => void
   onNext: () => void
   onBack: () => void
+  t: (key: string, vars?: Record<string, string>) => string
 }) {
   return (
     <div className="max-w-2xl mx-auto">
       <h2 className="text-phi-2xl md:text-phi-3xl font-bold text-white text-center mb-3">
-        What matters to you?
+        {t('discovery.step3.title')}
       </h2>
-      <p className="text-white/60 text-center mb-8">Pick up to 5 areas that interest you most.</p>
+      <p className="text-white/60 text-center mb-8">{t('discovery.step3.subtitle')}</p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
         {EXCHANGE_CATEGORIES.map((cat) => {
@@ -455,7 +466,7 @@ function Step3({
 
       {/* Reach capabilities */}
       <div className="mb-8">
-        <p className="text-white/80 font-semibold mb-3">How can you connect?</p>
+        <p className="text-white/80 font-semibold mb-3">{t('discovery.step3.reach')}</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {REACH_OPTIONS.map((opt) => {
             const isSelected = selectedReach.includes(opt.id)
@@ -487,16 +498,21 @@ function Step3({
       {/* Live feedback */}
       <div className="text-center mb-8">
         <p className="text-brand-accent text-phi-sm font-medium">
-          {selectedInterests.length} interest{selectedInterests.length !== 1 ? 's' : ''} selected
+          {t(
+            selectedInterests.length !== 1
+              ? 'discovery.step3.interestCountPlural'
+              : 'discovery.step3.interestCount',
+            { count: String(selectedInterests.length) }
+          )}
           {selectedReach.length > 0 &&
-            ` \u00b7 ${selectedReach.length} reach mode${selectedReach.length !== 1 ? 's' : ''}`}
+            ` · ${t(selectedReach.length !== 1 ? 'discovery.step3.reachCountPlural' : 'discovery.step3.reachCount', { count: String(selectedReach.length) })}`}
         </p>
       </div>
 
       {/* Nav */}
       <div className="flex justify-center gap-4">
         <button onClick={onBack} className="btn-ghost px-8 py-4 rounded-full text-phi-lg">
-          &#x2190; Back
+          &#x2190; {t('discovery.nav.back')}
         </button>
         <button
           onClick={onNext}
@@ -505,7 +521,7 @@ function Step3({
             selectedInterests.length > 0 ? nextBtnActive : 'btn-disabled'
           }`}
         >
-          Next &#x2192;
+          {t('discovery.nav.next')} &#x2192;
         </button>
       </div>
     </div>
@@ -522,6 +538,7 @@ function Step4({
   onCultureChange,
   onNext,
   onBack,
+  t,
 }: {
   selectedCountry: string
   selectedFaith: string[]
@@ -530,6 +547,7 @@ function Step4({
   onCultureChange: (val: string) => void
   onNext: () => void
   onBack: () => void
+  t: (key: string, vars?: Record<string, string>) => string
 }) {
   const cultureSuggestions = useMemo(
     () => getCultureSuggestionsForCountry(selectedCountry),
@@ -539,16 +557,16 @@ function Step4({
   return (
     <div className="max-w-2xl mx-auto">
       <h2 className="text-phi-2xl md:text-phi-3xl font-bold text-white text-center mb-2">
-        Who you are
+        {t('discovery.step4.title')}
       </h2>
       <div className="flex justify-center mb-8">
         <span className="text-white/30 text-phi-xs border border-white/10 rounded-full px-3 py-1">
-          optional
+          {t('discovery.step4.optional')}
         </span>
       </div>
 
       {/* Faith grid */}
-      <p className="text-white/80 font-semibold mb-3">Faith or belief</p>
+      <p className="text-white/80 font-semibold mb-3">{t('discovery.step4.faith')}</p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
         {FAITH_OPTIONS.map((opt) => {
           const isSelected = selectedFaith.includes(opt.id)
@@ -576,12 +594,12 @@ function Step4({
       </div>
 
       {/* Culture input */}
-      <p className="text-white/80 font-semibold mb-3">Culture or ethnicity</p>
+      <p className="text-white/80 font-semibold mb-3">{t('discovery.step4.culture')}</p>
       <input
         type="text"
         value={selectedCulture}
         onChange={(e) => onCultureChange(e.target.value)}
-        placeholder="e.g., Maasai, Yoruba, Bavarian..."
+        placeholder={t('discovery.step4.culturePlaceholder')}
         className="w-full bg-brand-surface text-white text-phi-sm rounded-lg px-4 py-3 border border-white/10 focus:outline-none focus:border-brand-accent/50 placeholder:text-white/30 mb-3"
       />
       {cultureSuggestions.length > 0 && (
@@ -601,19 +619,19 @@ function Step4({
       {/* Nav */}
       <div className="flex justify-center gap-4 mt-8">
         <button onClick={onBack} className="btn-ghost px-8 py-4 rounded-full text-phi-lg">
-          &#x2190; Back
+          &#x2190; {t('discovery.nav.back')}
         </button>
         <button
           onClick={onNext}
           className="btn-ghost px-8 py-4 rounded-full text-phi-lg font-medium text-white/60 hover:text-white"
         >
-          Skip &#x2192;
+          {t('discovery.nav.skip')} &#x2192;
         </button>
         <button
           onClick={onNext}
           className={`px-8 py-4 rounded-full text-phi-lg font-bold transition-all duration-200 ${nextBtnActive}`}
         >
-          Next &#x2192;
+          {t('discovery.nav.next')} &#x2192;
         </button>
       </div>
     </div>
@@ -631,6 +649,7 @@ function Step5({
   reachCount,
   hasFaith,
   hasCulture,
+  t,
 }: {
   onComplete: () => void
   onBack: () => void
@@ -640,6 +659,7 @@ function Step5({
   reachCount: number
   hasFaith: boolean
   hasCulture: boolean
+  t: (key: string, vars?: Record<string, string>) => string
 }) {
   // Node positions in a concentric layout around center
   const nodes = useMemo(() => {
@@ -660,20 +680,20 @@ function Step5({
 
   // Dimension summary
   const dimensions = [
-    { label: 'Languages', value: languageCount, active: languageCount > 0 },
-    { label: 'Crafts', value: craftCount, active: craftCount > 0 },
-    { label: 'Interests', value: interestCount, active: interestCount > 0 },
-    { label: 'Reach', value: reachCount, active: reachCount > 0 },
-    { label: 'Faith', value: hasFaith ? 1 : 0, active: hasFaith },
-    { label: 'Culture', value: hasCulture ? 1 : 0, active: hasCulture },
+    { label: t('discovery.step5.languages'), value: languageCount, active: languageCount > 0 },
+    { label: t('discovery.step5.crafts'), value: craftCount, active: craftCount > 0 },
+    { label: t('discovery.step5.interests'), value: interestCount, active: interestCount > 0 },
+    { label: t('discovery.step5.reachLabel'), value: reachCount, active: reachCount > 0 },
+    { label: t('discovery.step5.faithLabel'), value: hasFaith ? 1 : 0, active: hasFaith },
+    { label: t('discovery.step5.cultureLabel'), value: hasCulture ? 1 : 0, active: hasCulture },
   ]
 
   return (
     <div className="max-w-2xl mx-auto text-center">
       <h2 className="text-phi-2xl md:text-phi-3xl font-bold text-white mb-3">
-        Your Network Appears
+        {t('discovery.step5.title')}
       </h2>
-      <p className="text-white/60 mb-8">This is your world. Explore it.</p>
+      <p className="text-white/60 mb-8">{t('discovery.step5.subtitle')}</p>
 
       {/* Animated SVG network */}
       <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] mx-auto mb-8">
@@ -724,17 +744,17 @@ function Step5({
             fontWeight="700"
             fontFamily="sans-serif"
           >
-            YOU
+            {t('discovery.step5.you')}
           </text>
 
           {/* Legend */}
           <circle cx="30" cy="370" r="5" fill="var(--color-accent)" opacity="0.8" />
           <text x="42" y="374" fill="white" opacity="0.5" fontSize="10" fontFamily="sans-serif">
-            People
+            {t('discovery.step5.people')}
           </text>
           <circle cx="110" cy="370" r="5" fill="var(--color-primary-light)" opacity="0.8" />
           <text x="122" y="374" fill="white" opacity="0.5" fontSize="10" fontFamily="sans-serif">
-            Opportunities
+            {t('discovery.step5.opportunities')}
           </text>
         </svg>
       </div>
@@ -764,7 +784,7 @@ function Step5({
       {/* CTAs */}
       <div className="flex justify-center gap-4">
         <button onClick={onBack} className="btn-ghost px-8 py-4 rounded-full text-phi-lg">
-          &#x2190; Back
+          &#x2190; {t('discovery.nav.back')}
         </button>
         <button
           onClick={onComplete}
@@ -773,7 +793,7 @@ function Step5({
                      border border-[rgb(var(--color-accent-rgb)/0.4)]
                      shadow-[0_8px_32px_rgb(var(--color-primary-rgb)/0.40)]"
         >
-          Enter My World &#x2192;
+          {t('discovery.step5.enter')} &#x2192;
         </button>
       </div>
 
@@ -806,6 +826,7 @@ function Step5({
 
 export default function Discovery() {
   const router = useRouter()
+  const { t } = useTranslation()
   const {
     identity,
     setCountry,
@@ -888,6 +909,7 @@ export default function Discovery() {
           onCityChange={setEditCity}
           onLangSearchChange={setLangSearch}
           onNext={() => setStep(2)}
+          t={t}
         />
       )}
 
@@ -900,6 +922,7 @@ export default function Discovery() {
           onCraftSearchChange={setCraftSearch}
           onNext={() => setStep(3)}
           onBack={() => setStep(1)}
+          t={t}
         />
       )}
 
@@ -911,6 +934,7 @@ export default function Discovery() {
           onToggleReach={toggleReach}
           onNext={() => setStep(4)}
           onBack={() => setStep(2)}
+          t={t}
         />
       )}
 
@@ -927,6 +951,7 @@ export default function Discovery() {
           onCultureChange={setSelectedCulture}
           onNext={() => setStep(5)}
           onBack={() => setStep(3)}
+          t={t}
         />
       )}
 
@@ -940,6 +965,7 @@ export default function Discovery() {
           reachCount={selectedReach.length}
           hasFaith={selectedFaith.length > 0}
           hasCulture={!!selectedCulture}
+          t={t}
         />
       )}
     </section>
