@@ -1,38 +1,79 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 50 (2026-03-12) — Human Exchange Network redesign
+> Last updated: Session 51 (2026-03-12) — World Dimensions + AI Agent Network
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
 
 ## Current State
 
-| Metric            | Value                                                       |
-| ----------------- | ----------------------------------------------------------- |
-| Phase             | 3 (Human Exchange Network) — full platform redesign         |
-| Branch            | `main` (direct push)                                        |
-| Deploy            | Vercel auto on push                                         |
-| Core Routes       | 5: `/` (Landing+Discovery), `/world`, `/exchange`, `/messages`, `/me` |
-| Supporting Routes | `/be/[code]`, `/exchange/[id]`, + info pages                |
-| API routes        | 12+                                                         |
-| Library modules   | 23 (+ exchange-categories, graph, identity extensions)      |
-| Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 671/671 ✅ (38 suites)                                      |
-| Playwright tests  | 124+ ✅ (may need updates for new routes)                   |
-| TypeScript errors | 0                                                           |
-| Build             | ✅ passes                                                   |
-| Countries config  | 13 (16 in selector, +CH)                                    |
-| Languages         | 14 (+9 world languages in i18n)                             |
-| i18n languages    | 14 (en, de, sw, fr, ar, hi, zh, es, pt, ru, ja, ko, tr, id) |
+| Metric            | Value                                                                           |
+| ----------------- | ------------------------------------------------------------------------------- |
+| Phase             | 4 (World Dimensions + AI Agents)                                                |
+| Branch            | `main` (direct push)                                                            |
+| Deploy            | Vercel auto on push                                                             |
+| Core Routes       | 5: `/` (Landing+Discovery), `/world`, `/exchange`, `/messages`, `/me`           |
+| Supporting Routes | `/be/[code]`, `/exchange/[id]`, `/referral`, `/media`, `/fashion`, + info pages |
+| API routes        | 12+                                                                             |
+| Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)           |
+| Mock data modules | 17 (incl. config.ts, threads.ts)                                                |
+| Jest tests        | 785/785 ✅ (44 suites)                                                          |
+| Playwright tests  | 124+ ✅ (may need updates for new routes)                                       |
+| TypeScript errors | 0 (1 pre-existing in test file)                                                 |
+| Build             | ✅ passes                                                                       |
+| Countries         | 193 (all UN member states in world-data.ts)                                     |
+| Languages         | ~70 (world languages with native names + Intl.DisplayNames)                     |
+| AI Agents         | ~700 deterministic personas across 193 countries                                |
+| Identity dims     | 8 (Location, Languages, Faith, Craft, Passion, Reach, Culture, Market)          |
 
 ---
 
-## 🔥 Session 50: Human Exchange Network Redesign
+## 🔥 Session 51: World Dimensions + AI Agent Network
+
+Massive expansion: 193 countries, ~70 languages, 8 identity dimensions, ~700 AI agents, 8-dimension scoring engine.
+
+### New Libraries (Wave 1-2)
+
+- **`lib/world-data.ts`** (2900 lines) — All 193 countries + ~70 languages with Intl.DisplayNames
+- **`lib/dimensions.ts`** — Faith options, craft suggestions, reach modes, culture registry, DIMENSION_META
+- **`lib/market-data.ts`** — 30+ real-world market signals, getMarketScore(), getSignalsForRegion()
+- **`lib/dimension-scoring.ts`** — 8-dimension scoring: Location(10), Languages(20), Faith(8), Craft(15), Passion(15), Reach(7), Culture(5), Market(20) = 110 max
+- **`lib/agents.ts`** (2450 lines) — Deterministic AI agent generation for all 193 countries, 3-10 per country
+- **`lib/endonyms.ts`** — Upgraded to use Intl.DisplayNames with manual fallback
+- **`lib/identity-context.tsx`** — Extended with faith, craft[], reach[], culture dimensions
+
+### UI Updates (Wave 3-4)
+
+- **Discovery.tsx** expanded from 3→5 steps: Location+Languages → Craft → Interests+Reach → Faith+Culture → Network Preview
+- **Footer.tsx** rewritten with 4-column grid (Explore/Connect/Community/Company)
+- **`/referral`** page restored with human premium messaging
+- **`/media`** + **`/fashion`** pages restored as exchange category landings
+- **`/world`** graph now uses AI agents scored by 8 dimensions (top 10 shown)
+- **`/exchange`** feed now shows ~700 AI agents ranked by dimension match score
+- **`/messages`** shows top-matched AI agent DMs with exchange proposal starters
+- **`/me`** Profile tab shows all 8 dimensions with Market Relevance bar (0-20)
+
+### Architecture
+
+- **Complementary > Mirror scoring:** Software engineer + designer scores higher than two engineers
+- **Human Premium:** Real humans get ✨ badge + 10 match score bonus over AI agents
+- **Market dimension:** Platform-pushed, not user-declared — real-world economic signals
+- **Intl.DisplayNames:** Browser-native localization replaces manual country/language maps
+
+### Tests
+
+- 785 tests across 44 suites (was 671/38)
+- world-data: 80 tests, dimensions: 48, market-data: 28, scoring: 16, agents: 40, identity: 8, nav: updated
+
+---
+
+## Session 50: Human Exchange Network Redesign
 
 Complete platform transformation from job-board to Human Exchange Network.
 
 ### New Architecture
+
 - **Identity Context** extended with languages[], interests[], mode (explorer/host), city, hasCompletedDiscovery
 - **5 Core Routes:** Landing+Discovery (`/`), My World (`/world`), Exchange (`/exchange`), Messages (`/messages`), Me (`/me`)
 - **New Components:** WowHero, Discovery (3-step), NetworkGraph (SVG), ExchangeCard, ModeToggle
