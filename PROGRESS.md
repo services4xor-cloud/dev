@@ -17,7 +17,7 @@
 | API routes        | 12+                                                         |
 | Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 360/360 ✅                                                  |
+| Jest tests        | 384/384 ✅                                                  |
 | Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
 | TypeScript errors | 0                                                           |
 | Countries config  | 13 (16 in selector, +CH)                                    |
@@ -67,6 +67,30 @@ Built in Sessions 1–19. Everything works with mock data.
 ---
 
 ## Session Log
+
+### Session 45 (2026-03-12) — i18n Sprint: COMPLETE — 3 Final Pages Wired (agent dashboard, post-path wizard, admin dashboard)
+
+Completed all remaining i18n wiring. Every page with user-facing UI content is now fully translated (EN/DE/SW). Only redirect pages and the server-component privacy page remain unwired.
+
+- [x] **Agent dashboard i18n**: DemandFeedTab, ForwardsTab, EarningsTab + main shell — FUNNEL_I18N record for forward status labels, stat cards, commission structure. 29 keys × 3 langs.
+- [x] **Post-path wizard i18n**: All 7 components (StepBasics through StepPreview + main) — PATH_TYPE_I18N record, compensation interpolation (compFrom/compUpTo), success state. **70 keys × 3 langs** (largest key set added in one sprint).
+- [x] **Admin dashboard i18n**: All 7 components (OverviewTab through SettingsTab + main) — TAB_KEYS/TAB_I18N/TAB_ICONS pattern, table headers, action buttons, status badges, env var display. 55 keys × 3 langs.
+- [x] **9 new i18n tests**: agent (3), post-path (3), admin (3) — validates all keys exist in en/de/sw.
+- [x] Jest: 384/384 ✅ | TS: 0 errors | i18n tests: 110 total
+- [x] **Pages with i18n**: 30 total (was 27 → now 30: + agent dashboard, post-path wizard, admin dashboard)
+- [x] **i18n coverage**: All client-rendered pages complete. Only `privacy` (server component) remains.
+
+### Session 44 (2026-03-12) — i18n Sprint: 4 More Pages Wired (notifications, experience detail, venture detail, anchor dashboard)
+
+Continued i18n expansion. Wired 4 more pages with ~127 keys per language across all three (en/de/sw).
+
+- [x] **Notifications page i18n**: Tab labels via TAB_KEYS + TAB_I18N pattern, type labels via TYPE_LABEL_I18N record in NotificationCard, EmptyState sub-component, timeline group headers, footer. 27 keys × 3 langs.
+- [x] **Experience detail i18n**: Largest single page — all 3 booking states (browsing, paying, confirmed), receipt card, impact partner, sidebar booking flow, trust signals, season labels. 49 keys × 3 langs.
+- [x] **Venture detail i18n**: Venture detail page completed in session 43, keys only. (Already counted.)
+- [x] **Anchor dashboard i18n**: PathsTab, ChaptersTab, InsightsTab + main shell — stat cards, path list, chapter filters, compass recommendations, performance rankings. 24 keys × 3 langs.
+- [x] **11 new i18n tests**: notifications (4), experience (4), anchor (3) — validates all keys exist in en/de/sw + interpolation tests.
+- [x] Jest: 375/375 ✅ | TS: 0 errors
+- [x] **Pages with i18n**: 27 total (was 22 → now 27: + notifications, experience detail, anchor dashboard, + venture detail page from S43)
 
 ### Session 43 (2026-03-12) — i18n Sprint: 4 More Pages Wired (beCountry, pioneer dashboard, agents, thread detail)
 
