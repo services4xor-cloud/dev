@@ -8,6 +8,11 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: '**.vercel.app' },
+      // OAuth provider profile pictures
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+      { protocol: 'https', hostname: '**.fbcdn.net' },
+      { protocol: 'https', hostname: '**.twimg.com' },
     ],
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',

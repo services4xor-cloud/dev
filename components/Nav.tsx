@@ -298,7 +298,6 @@ export default function Nav() {
                         width={22}
                         height={22}
                         className="rounded-full"
-                        unoptimized
                       />
                     ) : (
                       <UserIcon className="w-4 h-4" aria-hidden="true" />
@@ -510,7 +509,6 @@ export default function Nav() {
                         width={24}
                         height={24}
                         className="rounded-full"
-                        unoptimized
                       />
                     ) : (
                       <UserIcon className="w-4 h-4" />
