@@ -5,9 +5,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
-import { Menu, X, LogIn, ArrowRight, LogOut, Bell } from 'lucide-react'
+import { Menu, X, LogIn, ArrowRight, LogOut, Bell, Target } from 'lucide-react'
 import { PUBLIC_NAV_LINKS, MAIN_NAV_LINKS, LOGIN_LINK } from '@/lib/nav-structure'
 import { useIdentity } from '@/lib/identity-context'
+import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import DynamicLogo from '@/components/DynamicLogo'
 import IdentitySwitcher from '@/components/IdentitySwitcher'
@@ -17,9 +18,11 @@ export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [identityOpen, setIdentityOpen] = useState(false)
+  const [focusOpen, setFocusOpen] = useState(false)
   const identityRef = useRef<HTMLDivElement>(null)
+  const focusRef = useRef<HTMLDivElement>(null)
 
-  const { identity, hasCompletedDiscovery, brandName } = useIdentity()
+  const { identity, hasCompletedDiscovery, brandName, setFocusTopic } = useIdentity()
   const currentCountry = COUNTRY_OPTIONS.find((c) => c.code === identity.country)
   const { data: session, status } = useSession()
   const pathname = usePathname()
@@ -38,6 +41,7 @@ export default function Nav() {
   useEffect(() => {
     setMobileOpen(false)
     setIdentityOpen(false)
+    setFocusOpen(false)
   }, [pathname])
 
   // Close identity switcher on click outside
@@ -52,6 +56,19 @@ export default function Nav() {
       return () => document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [identityOpen])
+
+  // Close focus dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (focusRef.current && !focusRef.current.contains(e.target as Node)) {
+        setFocusOpen(false)
+      }
+    }
+    if (focusOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [focusOpen])
 
   // Lock body scroll when mobile menu open
   useEffect(() => {
@@ -120,8 +137,8 @@ export default function Nav() {
                            focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
                 aria-label={`${brandName} — Home`}
               >
-                <DynamicLogo icon={currentCountry?.flag ?? '🌍'} size={28} />
-                <span className="font-bold text-[15px] tracking-wide">
+                <DynamicLogo icon={currentCountry?.flag ?? '🌍'} size={34} />
+                <span className="font-bold text-[17px] tracking-wide">
                   <span className="text-brand-accent">Be</span>
                   <span className="text-white">
                     {brandName.startsWith('Be') ? brandName.slice(2) : brandName}
@@ -179,6 +196,65 @@ export default function Nav() {
                 )
               })}
             </ul>
+
+            {/* ── Topic Focus selector (desktop) ─────────────────── */}
+            {hasCompletedDiscovery && (
+              <div ref={focusRef} className="relative hidden lg:block">
+                <button
+                  type="button"
+                  onClick={() => setFocusOpen((v) => !v)}
+                  aria-expanded={focusOpen}
+                  aria-label="Select topic focus"
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all
+                    ${
+                      identity.focusTopic
+                        ? 'bg-brand-accent/10 text-brand-accent border border-brand-accent/30'
+                        : 'text-white/50 hover:text-white hover:bg-white/5'
+                    }`}
+                >
+                  <Target className="w-3.5 h-3.5" />
+                  {identity.focusTopic
+                    ? (EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)?.label ??
+                      'Focus')
+                    : 'Focus'}
+                </button>
+                {focusOpen && (
+                  <div className="absolute right-0 mt-2 w-56 rounded-xl border border-white/10 bg-brand-surface/95 backdrop-blur-lg shadow-xl py-2 z-50">
+                    {identity.focusTopic && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFocusTopic(undefined)
+                          setFocusOpen(false)
+                        }}
+                        className="w-full px-4 py-2 text-left text-phi-sm text-white/60 hover:bg-white/5 hover:text-white transition-all"
+                      >
+                        ✕ Clear Focus
+                      </button>
+                    )}
+                    {EXCHANGE_CATEGORIES.map((cat) => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => {
+                          setFocusTopic(cat.id)
+                          setFocusOpen(false)
+                        }}
+                        className={`w-full px-4 py-2 text-left text-phi-sm flex items-center gap-2 transition-all
+                          ${
+                            identity.focusTopic === cat.id
+                              ? 'text-brand-accent bg-brand-accent/10'
+                              : 'text-white/70 hover:bg-white/5 hover:text-white'
+                          }`}
+                      >
+                        <span>{cat.icon}</span>
+                        <span>{cat.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* ── Desktop auth area ─────────────────────────────── */}
             <div className="hidden lg:flex items-center gap-2">
@@ -320,6 +396,44 @@ export default function Nav() {
                 </Link>
               )
             })}
+
+            {/* Mobile topic focus selector */}
+            {hasCompletedDiscovery && (
+              <div className="pt-3 pb-1">
+                <div className="px-4 pb-2 text-[11px] font-semibold uppercase tracking-wider text-white/30">
+                  Topic Focus
+                </div>
+                <div className="flex flex-wrap gap-1.5 px-4">
+                  {identity.focusTopic && (
+                    <button
+                      type="button"
+                      onClick={() => setFocusTopic(undefined)}
+                      className="px-3 py-1.5 rounded-lg text-[12px] font-medium text-white/50 border border-white/10 hover:bg-white/5 transition-all"
+                    >
+                      ✕ Clear
+                    </button>
+                  )}
+                  {EXCHANGE_CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => {
+                        setFocusTopic(cat.id)
+                        setMobileOpen(false)
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all
+                        ${
+                          identity.focusTopic === cat.id
+                            ? 'bg-brand-accent/10 text-brand-accent border border-brand-accent/30'
+                            : 'text-white/60 border border-white/10 hover:bg-white/5 hover:text-white'
+                        }`}
+                    >
+                      {cat.icon} {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Mobile auth area */}
             <div className="pt-4 mx-1 space-y-2.5">

@@ -1,14 +1,29 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 // Threads fetched from real DB via /api/threads
+import { MOCK_THREADS } from '@/data/mock'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
+import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
+import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import GlassCard from '@/components/ui/GlassCard'
+
+/** Resolve a language code to its human-readable name */
+function langCodeToName(code: string): string {
+  const lang = LANGUAGE_REGISTRY[code as LanguageCode]
+  return lang ? lang.name : code
+}
+
+/** Resolve an exchange category ID to its label and icon */
+function categoryInfo(id: string): { label: string; icon: string } {
+  const cat = EXCHANGE_CATEGORIES.find((c) => c.id === id)
+  return cat ? { label: cat.label, icon: cat.icon } : { label: id, icon: '📌' }
+}
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -133,12 +148,120 @@ function agentToProfile(agent: AgentPersona): DimensionProfile {
   }
 }
 
+/** Generate a contextual response from an agent based on their persona */
+function generateAgentResponse(agent: AgentPersona, userMessage: string): string {
+  const greetings = [
+    'Jambo! Great to connect with you. ',
+    'Hello! Thanks for reaching out. ',
+    'Hey there! Nice to meet you. ',
+    "Hi! I'm excited to chat. ",
+  ]
+
+  const topicResponses: string[] = []
+
+  // Faith-based responses
+  if (agent.faith.length > 0) {
+    topicResponses.push(
+      `As someone who practices ${agent.faith.join(' and ')}, I find that faith connects us across borders.`,
+      `My ${agent.faith[0]} faith has been a guiding light in my journey. Do you share similar beliefs?`
+    )
+  }
+
+  // Craft-based responses
+  if (agent.craft.length > 0) {
+    topicResponses.push(
+      `I specialize in ${agent.craft.slice(0, 2).join(' and ')}. Would love to collaborate!`,
+      `My experience in ${agent.craft[0]} has taught me so much. What's your craft?`
+    )
+  }
+
+  // Location-based
+  topicResponses.push(
+    `Life in ${agent.city} is amazing. Have you ever visited?`,
+    `${agent.city} has so much to offer. I'd love to show you around someday!`
+  )
+
+  // Interest-based
+  if (agent.interests.length > 0) {
+    topicResponses.push(
+      "I'm really passionate about what I do. Let's find ways to create value together."
+    )
+  }
+
+  // Bio-based
+  topicResponses.push(agent.bio)
+
+  // Pick based on message content or random
+  const lowerMsg = userMessage.toLowerCase()
+  let response = ''
+
+  if (
+    lowerMsg.includes('faith') ||
+    lowerMsg.includes('believe') ||
+    lowerMsg.includes('religion') ||
+    lowerMsg.includes('spiritual')
+  ) {
+    response =
+      agent.faith.length > 0
+        ? `My ${agent.faith.join(' and ')} faith is central to who I am. It shapes how I work and connect with people. What about you?`
+        : 'I keep an open mind about spirituality. I believe in connecting with people regardless of their beliefs.'
+  } else if (
+    lowerMsg.includes('work') ||
+    lowerMsg.includes('craft') ||
+    lowerMsg.includes('skill') ||
+    lowerMsg.includes('job')
+  ) {
+    response =
+      agent.craft.length > 0
+        ? `I work in ${agent.craft.join(', ')}. ${agent.exchangeProposals[0] || 'Would love to explore opportunities together!'}`
+        : `I'm always looking to learn new skills. ${agent.exchangeProposals[0] || 'What do you do?'}`
+  } else if (
+    lowerMsg.includes('hello') ||
+    lowerMsg.includes('hi') ||
+    lowerMsg.includes('hey') ||
+    lowerMsg.includes('jambo')
+  ) {
+    const greeting = greetings[Math.floor(Math.random() * greetings.length)]
+    response = greeting + (agent.exchangeProposals[0] || agent.bio)
+  } else if (
+    lowerMsg.includes('where') ||
+    lowerMsg.includes('city') ||
+    lowerMsg.includes('live') ||
+    lowerMsg.includes('country')
+  ) {
+    response = `I'm based in ${agent.city}, ${agent.country}. It's a great place! Where are you from?`
+  } else if (lowerMsg.includes('language') || lowerMsg.includes('speak')) {
+    response =
+      agent.languages.length > 0
+        ? `I speak ${agent.languages.map(langCodeToName).join(', ')}. Language is such a powerful connector!`
+        : "I'm always eager to learn new languages. Communication bridges cultures!"
+  } else {
+    // Random topical response
+    response = topicResponses[Math.floor(Math.random() * topicResponses.length)]
+  }
+
+  return response
+}
+
 export default function MessagesPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { identity, hasCompletedDiscovery } = useIdentity()
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
   const [showMobileContent, setShowMobileContent] = useState(false)
+  const [chatMessages, setChatMessages] = useState<
+    Record<
+      string,
+      Array<{
+        id: string
+        author: 'user' | 'agent'
+        text: string
+        time: string
+      }>
+    >
+  >({})
+  const [chatInput, setChatInput] = useState('')
+  const chatEndRef = useRef<HTMLDivElement>(null)
   const [dbThreads, setDbThreads] = useState<
     Array<{
       slug: string
@@ -153,14 +276,46 @@ export default function MessagesPage() {
     }>
   >([])
 
-  // Fetch real threads from DB
+  // Fetch real threads from DB, fallback to mock data for demo
   useEffect(() => {
     fetch('/api/threads')
       .then((r) => r.json())
       .then((data) => {
-        if (data.threads) setDbThreads(data.threads)
+        if (data.threads && data.threads.length > 0) {
+          setDbThreads(data.threads)
+        } else {
+          // Fallback: use mock data when DB is empty
+          setDbThreads(
+            MOCK_THREADS.map((t) => ({
+              slug: t.slug,
+              name: t.name,
+              brandName: t.brandName,
+              type: t.type,
+              icon: t.icon,
+              tagline: t.tagline ?? '',
+              description: t.description ?? '',
+              memberCount: t.memberCount ?? 0,
+              active: t.active ?? true,
+            }))
+          )
+        }
       })
-      .catch(() => {})
+      .catch(() => {
+        // API failed — use mock data
+        setDbThreads(
+          MOCK_THREADS.map((t) => ({
+            slug: t.slug,
+            name: t.name,
+            brandName: t.brandName,
+            type: t.type,
+            icon: t.icon,
+            tagline: t.tagline ?? '',
+            description: t.description ?? '',
+            memberCount: t.memberCount ?? 0,
+            active: t.active ?? true,
+          }))
+        )
+      })
   }, [])
 
   // Auto-select DM when navigating from Connect action (e.g., /messages?dm=agent_123)
@@ -203,6 +358,48 @@ export default function MessagesPage() {
 
     return top5
   }, [identity, dmParam])
+
+  // Auto-scroll to bottom when new chat messages arrive
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [chatMessages])
+
+  // Send a message and get an agent response
+  const handleSendMessage = (agentId: string, agent: AgentPersona) => {
+    if (!chatInput.trim()) return
+
+    const userMsg = {
+      id: `msg-${Date.now()}`,
+      author: 'user' as const,
+      text: chatInput.trim(),
+      time: 'Just now',
+    }
+
+    setChatMessages((prev) => ({
+      ...prev,
+      [agentId]: [...(prev[agentId] || []), userMsg],
+    }))
+
+    const inputText = chatInput.trim()
+    setChatInput('')
+
+    // Agent responds after a short delay (simulating typing)
+    setTimeout(
+      () => {
+        const agentMsg = {
+          id: `msg-${Date.now()}-reply`,
+          author: 'agent' as const,
+          text: generateAgentResponse(agent, inputText),
+          time: 'Just now',
+        }
+        setChatMessages((prev) => ({
+          ...prev,
+          [agentId]: [...(prev[agentId] || []), agentMsg],
+        }))
+      },
+      800 + Math.random() * 1200
+    )
+  }
 
   // Gate: show guidance if discovery not complete
   if (!hasCompletedDiscovery) {
@@ -427,7 +624,11 @@ export default function MessagesPage() {
               {selectedAgent.agent.craft.map((c) => (
                 <span
                   key={c}
-                  className="rounded-full bg-white/5 px-phi-2 py-0.5 text-phi-xs text-white/50"
+                  className={`rounded-full px-phi-2 py-0.5 text-phi-xs ${
+                    identity.craft?.includes(c)
+                      ? 'border border-brand-accent/40 bg-brand-accent/10 text-brand-accent'
+                      : 'bg-white/5 text-white/50'
+                  }`}
                 >
                   {c}
                 </span>
@@ -435,6 +636,193 @@ export default function MessagesPage() {
             </div>
           </div>
         )}
+
+        {/* Faith / Beliefs */}
+        {selectedAgent.agent.faith.length > 0 && (
+          <div className="pt-phi-3">
+            <p className="mb-phi-2 text-phi-xs font-semibold uppercase tracking-wider text-white/30">
+              Faith &amp; Beliefs
+            </p>
+            <div className="flex flex-wrap gap-phi-1">
+              {selectedAgent.agent.faith.map((f) => {
+                const shared = identity.faith.includes(f)
+                return (
+                  <span
+                    key={f}
+                    className={`rounded-full px-phi-2 py-0.5 text-phi-xs ${
+                      shared
+                        ? 'border border-brand-accent/40 bg-brand-accent/10 text-brand-accent'
+                        : 'bg-white/5 text-white/50'
+                    }`}
+                  >
+                    {shared && '✦ '}🙏 {f}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Languages */}
+        {selectedAgent.agent.languages.length > 0 && (
+          <div className="pt-phi-3">
+            <p className="mb-phi-2 text-phi-xs font-semibold uppercase tracking-wider text-white/30">
+              Languages
+            </p>
+            <div className="flex flex-wrap gap-phi-1">
+              {selectedAgent.agent.languages.map((l) => {
+                const shared = identity.languages.includes(l)
+                return (
+                  <span
+                    key={l}
+                    className={`rounded-full px-phi-2 py-0.5 text-phi-xs ${
+                      shared
+                        ? 'border border-brand-accent/40 bg-brand-accent/10 text-brand-accent'
+                        : 'bg-white/5 text-white/50'
+                    }`}
+                  >
+                    {shared && '✦ '}🗣 {langCodeToName(l)}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Interests */}
+        {selectedAgent.agent.interests.length > 0 && (
+          <div className="pt-phi-3">
+            <p className="mb-phi-2 text-phi-xs font-semibold uppercase tracking-wider text-white/30">
+              Interests
+            </p>
+            <div className="flex flex-wrap gap-phi-1">
+              {selectedAgent.agent.interests.map((i) => {
+                const shared = identity.interests.includes(i)
+                const { label, icon } = categoryInfo(i)
+                return (
+                  <span
+                    key={i}
+                    className={`rounded-full px-phi-2 py-0.5 text-phi-xs ${
+                      shared
+                        ? 'border border-brand-accent/40 bg-brand-accent/10 text-brand-accent'
+                        : 'bg-white/5 text-white/50'
+                    }`}
+                  >
+                    {shared && '✦ '}
+                    {icon} {label}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Shared dimensions summary */}
+        {(() => {
+          const sharedLangs = selectedAgent.agent.languages.filter((l) =>
+            identity.languages.includes(l)
+          )
+          const sharedFaith = selectedAgent.agent.faith.filter((f) => identity.faith.includes(f))
+          const sharedInterests = selectedAgent.agent.interests.filter((i) =>
+            identity.interests.includes(i)
+          )
+          const sharedCraft = selectedAgent.agent.craft.filter((c) =>
+            (identity.craft ?? []).includes(c)
+          )
+          const totalShared =
+            sharedLangs.length + sharedFaith.length + sharedInterests.length + sharedCraft.length
+
+          if (totalShared === 0) return null
+          return (
+            <GlassCard
+              variant="subtle"
+              padding="sm"
+              className="mt-phi-3 border border-brand-accent/20"
+            >
+              <p className="mb-phi-1 text-phi-xs font-semibold uppercase tracking-wider text-brand-accent">
+                What You Share
+              </p>
+              <div className="space-y-1">
+                {sharedLangs.length > 0 && (
+                  <p className="text-phi-xs text-white/60">
+                    🗣 Languages: {sharedLangs.map(langCodeToName).join(', ')}
+                  </p>
+                )}
+                {sharedFaith.length > 0 && (
+                  <p className="text-phi-xs text-white/60">🙏 Faith: {sharedFaith.join(', ')}</p>
+                )}
+                {sharedInterests.length > 0 && (
+                  <p className="text-phi-xs text-white/60">
+                    💡 Interests: {sharedInterests.map((i) => categoryInfo(i).label).join(', ')}
+                  </p>
+                )}
+                {sharedCraft.length > 0 && (
+                  <p className="text-phi-xs text-white/60">🛠 Crafts: {sharedCraft.join(', ')}</p>
+                )}
+              </div>
+            </GlassCard>
+          )
+        })()}
+
+        {/* Your Identity card */}
+        <div className="mt-phi-5 rounded-xl border border-white/10 bg-white/[0.03] p-phi-3">
+          <div className="mb-phi-2 flex items-center justify-between">
+            <p className="text-phi-xs font-semibold uppercase tracking-wider text-white/40">
+              Your Identity
+            </p>
+            <Link href="/me" className="text-phi-xs text-brand-accent hover:underline">
+              Edit &rarr;
+            </Link>
+          </div>
+          <div className="space-y-1">
+            {identity.languages.length > 0 && (
+              <p className="text-phi-xs text-white/50">
+                🗣 {identity.languages.map(langCodeToName).join(', ')}
+              </p>
+            )}
+            {identity.faith.length > 0 && (
+              <p className="text-phi-xs text-white/50">🙏 {identity.faith.join(', ')}</p>
+            )}
+            {identity.interests.length > 0 && (
+              <p className="text-phi-xs text-white/50">
+                💡 {identity.interests.map((i) => categoryInfo(i).label).join(', ')}
+              </p>
+            )}
+            {(identity.craft ?? []).length > 0 && (
+              <p className="text-phi-xs text-white/50">🛠 {(identity.craft ?? []).join(', ')}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Live chat messages */}
+        {(chatMessages[selectedAgent.agent.id] || []).map((msg) => (
+          <div
+            key={msg.id}
+            className={`flex items-start gap-phi-3 ${msg.author === 'user' ? 'flex-row-reverse' : ''}`}
+          >
+            <div
+              className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-phi-sm ${
+                msg.author === 'user' ? 'bg-brand-primary' : 'bg-brand-surface'
+              }`}
+            >
+              {msg.author === 'user' ? '👤' : selectedAgent.agent.avatar}
+            </div>
+            <GlassCard
+              variant={msg.author === 'user' ? 'featured' : 'subtle'}
+              padding="sm"
+              className="min-w-0 max-w-[80%]"
+            >
+              <div className="mb-phi-1 flex items-baseline gap-phi-2">
+                <span className="text-phi-sm font-medium text-white">
+                  {msg.author === 'user' ? 'You' : `🤖 ${selectedAgent.agent.name}`}
+                </span>
+                <span className="text-phi-xs text-white/30">{msg.time}</span>
+              </div>
+              <p className="text-phi-sm text-white/70">{msg.text}</p>
+            </GlassCard>
+          </div>
+        ))}
+        <div ref={chatEndRef} />
       </div>
 
       {/* Message input bar */}
@@ -442,13 +830,20 @@ export default function MessagesPage() {
         <div className="glass-subtle flex items-center gap-phi-2 rounded-lg px-phi-3 py-phi-2">
           <input
             type="text"
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                handleSendMessage(selectedAgent.agent.id, selectedAgent.agent)
+              }
+            }}
             placeholder={`Message ${selectedAgent.agent.name}...`}
             className="flex-1 bg-transparent text-phi-sm text-white placeholder-white/30 outline-none"
-            disabled
           />
           <button
-            className="flex-shrink-0 text-white/30 transition-colors hover:text-brand-accent"
-            disabled
+            onClick={() => handleSendMessage(selectedAgent.agent.id, selectedAgent.agent)}
+            className="flex-shrink-0 text-brand-accent transition-colors hover:text-brand-accent/80"
             aria-label="Send message"
           >
             <svg

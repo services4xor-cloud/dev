@@ -33,6 +33,7 @@ export default function DynamicLogo({ icon, size = 28, className = '' }: Dynamic
       className={className}
       role="img"
       aria-hidden="true"
+      style={{ filter: 'drop-shadow(0 0 6px rgba(201, 162, 39, 0.3))' }}
     >
       {/* Background circle — brand primary */}
       <circle cx={size / 2} cy={size / 2} r={size / 2} fill="var(--color-primary, #5C0A14)" />

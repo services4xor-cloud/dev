@@ -21,6 +21,7 @@ import { generateAllAgents, type AgentPersona } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
 // Real paths fetched from /api/paths (Prisma → Neon PostgreSQL)
+import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
@@ -95,14 +96,64 @@ export default function HomePage() {
   >([])
   const router = useRouter()
 
-  // Fetch real paths from DB
+  // Fetch real paths from DB, fallback to mock data for demo
   useEffect(() => {
     fetch('/api/paths?limit=20&status=OPEN')
       .then((r) => r.json())
       .then((data) => {
-        if (data.paths) setDbPaths(data.paths)
+        if (data.paths && data.paths.length > 0) {
+          setDbPaths(data.paths)
+        } else {
+          // Fallback: use mock data when DB is empty
+          setDbPaths(
+            MOCK_VENTURE_PATHS.slice(0, 20).map((p) => ({
+              id: p.id,
+              title: p.title,
+              company: p.anchorName,
+              anchorName: p.anchorName,
+              location: p.location,
+              country: p.country ?? 'KE',
+              sector:
+                p.category === 'professional'
+                  ? 'tech'
+                  : p.category === 'explorer'
+                    ? 'safari'
+                    : p.category,
+              skills: p.tags,
+              isRemote: p.isRemote,
+              tier: p.isFeatured ? 'FEATURED' : 'BASIC',
+              salaryMin: null,
+              salaryMax: null,
+              currency: 'KES',
+            }))
+          )
+        }
       })
-      .catch(() => {}) // silent fail — empty paths is fine
+      .catch(() => {
+        // API failed — use mock data
+        setDbPaths(
+          MOCK_VENTURE_PATHS.slice(0, 20).map((p) => ({
+            id: p.id,
+            title: p.title,
+            company: p.anchorName,
+            anchorName: p.anchorName,
+            location: p.location,
+            country: p.country ?? 'KE',
+            sector:
+              p.category === 'professional'
+                ? 'tech'
+                : p.category === 'explorer'
+                  ? 'safari'
+                  : p.category,
+            skills: p.tags,
+            isRemote: p.isRemote,
+            tier: p.isFeatured ? 'FEATURED' : 'BASIC',
+            salaryMin: null,
+            salaryMax: null,
+            currency: 'KES',
+          }))
+        )
+      })
   }, [])
 
   // Top matched agents (computed only when Discovery is done)

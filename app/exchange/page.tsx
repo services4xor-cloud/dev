@@ -19,6 +19,7 @@ import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 // Real paths fetched from /api/paths (Prisma → Neon PostgreSQL)
+import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
@@ -147,6 +148,13 @@ export default function ExchangePage() {
     }
   }, [hasCompletedDiscovery, router])
 
+  // Sync focusTopic from identity context to sector filter
+  useEffect(() => {
+    if (identity.focusTopic) {
+      setSectorFilter(identity.focusTopic)
+    }
+  }, [identity.focusTopic])
+
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [sectorFilter, setSectorFilter] = useState<string>('all')
   const [dbPaths, setDbPaths] = useState<
@@ -164,14 +172,58 @@ export default function ExchangePage() {
     }>
   >([])
 
-  // Fetch real paths from DB
+  // Fetch real paths from DB, fallback to mock data for demo
   useEffect(() => {
     fetch('/api/paths?limit=50&status=OPEN')
       .then((r) => r.json())
       .then((data) => {
-        if (data.paths) setDbPaths(data.paths)
+        if (data.paths && data.paths.length > 0) {
+          setDbPaths(data.paths)
+        } else {
+          // Fallback: use mock data when DB is empty
+          setDbPaths(
+            MOCK_VENTURE_PATHS.map((p) => ({
+              id: p.id,
+              title: p.title,
+              company: p.anchorName,
+              anchorName: p.anchorName,
+              location: p.location,
+              country: p.country ?? 'KE',
+              sector:
+                p.category === 'professional'
+                  ? 'tech'
+                  : p.category === 'explorer'
+                    ? 'safari'
+                    : p.category,
+              skills: p.tags,
+              isRemote: p.isRemote,
+              tier: p.isFeatured ? 'FEATURED' : 'BASIC',
+            }))
+          )
+        }
       })
-      .catch(() => {})
+      .catch(() => {
+        // API failed — use mock data
+        setDbPaths(
+          MOCK_VENTURE_PATHS.map((p) => ({
+            id: p.id,
+            title: p.title,
+            company: p.anchorName,
+            anchorName: p.anchorName,
+            location: p.location,
+            country: p.country ?? 'KE',
+            sector:
+              p.category === 'professional'
+                ? 'tech'
+                : p.category === 'explorer'
+                  ? 'safari'
+                  : p.category,
+            skills: p.tags,
+            isRemote: p.isRemote,
+            tier: p.isFeatured ? 'FEATURED' : 'BASIC',
+          }))
+        )
+      })
   }, [])
 
   // Resolve user language codes to names for display
@@ -350,6 +402,20 @@ export default function ExchangePage() {
           ))}
         </select>
       </div>
+
+      {/* Focus mode banner */}
+      {identity.focusTopic && (
+        <div className="mb-phi-3 flex items-center gap-phi-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20 px-phi-4 py-phi-2">
+          <span className="text-phi-sm text-brand-accent font-medium">
+            🎯 Focus:{' '}
+            {EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)?.label ??
+              identity.focusTopic}
+          </span>
+          <span className="text-phi-xs text-white/40">
+            Showing results filtered by your focus topic
+          </span>
+        </div>
+      )}
 
       {/* ── Results count ── */}
       <p className="mb-phi-3 text-phi-sm text-white/40">

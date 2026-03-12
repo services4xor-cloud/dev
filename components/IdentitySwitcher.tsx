@@ -203,29 +203,46 @@ export default function IdentitySwitcher({
     <div
       role="menu"
       data-testid="identity-switcher"
-      className={`${widthClass} rounded-xl bg-[#16161e] border border-white/10 shadow-2xl shadow-black/60 overflow-hidden ${className}`}
+      className={`${widthClass} rounded-2xl bg-[#12121a]/95 backdrop-blur-xl border border-white/8 shadow-2xl shadow-black/80 overflow-hidden ${className}`}
     >
       {/* ── Current (always visible, highlighted) ────── */}
       {currentOpt && (
-        <div className="px-3 pt-3 pb-2">
-          <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20">
-            <span className="text-lg shrink-0">{currentOpt.flag}</span>
-            <div className="flex-1 min-w-0">
-              <span className="text-[13px] font-semibold text-brand-accent">
-                {localizeCountry(identity.country)}
-              </span>
+        <div className="relative overflow-hidden">
+          {/* Gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-brand-accent/10" />
+          <div className="relative px-4 pt-4 pb-3">
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2">
+              Active Identity
+            </p>
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/5 border border-brand-accent/20">
+              <span className="text-xl shrink-0">{currentOpt.flag}</span>
+              <div className="flex-1 min-w-0">
+                <span className="text-[14px] font-bold text-white">
+                  Be{localizeCountry(identity.country)}
+                </span>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-[10px] text-white/40">
+                    {languages.find((l) => l.isCurrent)?.nativeName ?? identity.language}
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-white/20" />
+                  <span className="text-[10px] font-mono text-brand-accent/60">
+                    {currentOpt.currency}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-[9px] text-green-400/70 font-medium">Active</span>
+                <span className="w-2 h-2 rounded-full bg-green-400/70 mt-0.5" />
+              </div>
             </div>
-            <span className="text-[10px] font-mono text-brand-accent/60">
-              {currentOpt.currency}
-            </span>
           </div>
         </div>
       )}
 
       {/* ── Ranked countries ──────────────────────────── */}
-      <div className="px-3 pb-2">
-        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/30 mb-1.5 px-1">
-          {t('nav.nearby') || 'Relevant'}
+      <div className="px-4 pb-3">
+        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2 px-1">
+          Switch Identity
         </p>
         <div className="space-y-0.5">
           {ranked.map((c) => (
@@ -239,41 +256,47 @@ export default function IdentitySwitcher({
                 trackCountryExplored(c.code)
                 onClose()
               }}
-              className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-left hover:bg-white/5 transition-all duration-150 group"
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left
+                         hover:bg-white/5 hover:border-white/10 border border-transparent
+                         transition-all duration-200 group"
             >
-              <span className="text-base shrink-0">{c.flag}</span>
+              <span className="text-lg shrink-0 group-hover:scale-110 transition-transform">
+                {c.flag}
+              </span>
               <div className="flex-1 min-w-0">
-                <span className="text-[13px] font-medium text-white/80 group-hover:text-white transition-colors">
-                  {c.name}
-                </span>
-                {/* Tags — why this country is relevant */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[13px] font-semibold text-white/80 group-hover:text-white transition-colors">
+                    Be{c.name}
+                  </span>
+                </div>
                 {c.tags.length > 0 && (
-                  <span className="ml-1.5 text-[9px] text-white/25">{c.tags.join(' · ')}</span>
+                  <div className="flex gap-1 mt-0.5">
+                    {c.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[9px] px-1.5 py-0.5 rounded-full bg-white/5 text-white/30"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 )}
               </div>
-              {/* Flight hours — distance context */}
-              <span className="text-[9px] text-white/20 shrink-0 tabular-nums">
-                {c.flightHours}h
-              </span>
-              {/* Currency */}
-              <span
-                className={`text-[10px] font-mono shrink-0 ${
-                  c.currency === currentOpt?.currency ? 'text-green-400/50' : 'text-white/25'
-                }`}
-              >
-                {c.currency}
-              </span>
+              <div className="text-right shrink-0">
+                <span className="text-[10px] font-mono text-white/25 block">{c.currency}</span>
+                <span className="text-[9px] text-white/15">{c.flightHours}h</span>
+              </div>
             </button>
           ))}
         </div>
       </div>
 
       {/* ── Language section ──────────────────────────── */}
-      <div className="px-3 pt-1 pb-3 border-t border-white/5">
-        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/30 mb-2 mt-2 px-1">
-          🗣️ {t('nav.language') || 'Language'}
+      <div className="px-4 pt-2 pb-3 border-t border-white/5">
+        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2.5 px-1">
+          {t('nav.language') || 'Display Language'}
         </p>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1.5">
           {languages.map((lang) => (
             <button
               key={lang.code}
@@ -284,11 +307,11 @@ export default function IdentitySwitcher({
                 setLanguage(lang.code)
                 onClose()
               }}
-              className={`px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-all duration-150
+              className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200
                 ${
                   lang.isCurrent
-                    ? 'bg-brand-accent/12 text-brand-accent border border-brand-accent/20'
-                    : 'text-white/50 hover:text-white hover:bg-white/6 border border-white/5'
+                    ? 'bg-brand-accent/15 text-brand-accent border border-brand-accent/30 shadow-sm shadow-brand-accent/10'
+                    : 'text-white/40 hover:text-white/80 hover:bg-white/5 border border-white/5 hover:border-white/10'
                 }`}
             >
               {lang.nativeName}
@@ -298,13 +321,20 @@ export default function IdentitySwitcher({
       </div>
 
       {/* ── Footer ───────────────────────────────────── */}
-      <div className="border-t border-white/5 px-3 py-2">
+      <div className="border-t border-white/5 px-4 py-2.5 flex items-center justify-between">
         <Link
           href="/threads"
           onClick={onClose}
-          className="text-[11px] font-medium text-brand-accent/50 hover:text-brand-accent transition-colors"
+          className="text-[11px] font-medium text-white/30 hover:text-brand-accent transition-colors"
         >
-          {t('nav.browseThreads') || 'Browse all threads →'}
+          Browse communities
+        </Link>
+        <Link
+          href="/me"
+          onClick={onClose}
+          className="text-[11px] font-medium text-white/30 hover:text-brand-accent transition-colors"
+        >
+          Edit identity
         </Link>
       </div>
     </div>
