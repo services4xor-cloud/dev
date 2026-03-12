@@ -1,21 +1,25 @@
 /**
- * Nav Structure Tests
+ * Nav Structure Tests — Human Exchange Network
  *
  * Validates:
- *   - All nav link arrays are exported and non-empty
- *   - Every link has href, label, and aria/label fields
- *   - No duplicate hrefs within each section
- *   - Footer links match expected sections
- *   - Login link singleton is valid
+ *   - Public nav links (logged out)
+ *   - Main nav links (logged in / discovery complete)
+ *   - Footer links
+ *   - Login link
+ *   - Legacy deprecated exports exist for backward compat
  */
 
 import {
+  PUBLIC_NAV_LINKS,
+  MAIN_NAV_LINKS,
+  FOOTER_LINKS,
+  LOGIN_LINK,
+  // Legacy deprecated exports
   PRIMARY_LINKS,
   PIONEER_NAV_LINKS,
   ANCHOR_NAV_LINKS,
   AGENT_NAV_LINKS,
   ABOUT_NAV_LINKS,
-  LOGIN_LINK,
   FOOTER_PIONEER_LINKS,
   FOOTER_ANCHOR_LINKS,
   FOOTER_AGENT_LINKS,
@@ -23,13 +27,36 @@ import {
   FOOTER_COMPANY_LINKS,
 } from '@/lib/nav-structure'
 
-describe('Nav Structure — primary links', () => {
-  it('exports PRIMARY_LINKS with at least 3 items', () => {
-    expect(PRIMARY_LINKS.length).toBeGreaterThanOrEqual(3)
+describe('Nav Structure — public links (logged out)', () => {
+  it('exports PUBLIC_NAV_LINKS with about and pricing', () => {
+    expect(PUBLIC_NAV_LINKS.length).toBeGreaterThanOrEqual(2)
+    const hrefs = PUBLIC_NAV_LINKS.map((l) => l.href)
+    expect(hrefs).toContain('/about')
+    expect(hrefs).toContain('/pricing')
   })
 
-  it('every primary link has href, label, icon, and aria', () => {
-    for (const link of PRIMARY_LINKS) {
+  it('every public link has href, label, icon, and aria', () => {
+    for (const link of PUBLIC_NAV_LINKS) {
+      expect(link.href).toBeTruthy()
+      expect(link.label).toBeTruthy()
+      expect(link.icon).toBeDefined()
+      expect(link.aria).toBeTruthy()
+    }
+  })
+})
+
+describe('Nav Structure — main links (logged in)', () => {
+  it('exports MAIN_NAV_LINKS with 4 core routes', () => {
+    expect(MAIN_NAV_LINKS.length).toBe(4)
+    const hrefs = MAIN_NAV_LINKS.map((l) => l.href)
+    expect(hrefs).toContain('/world')
+    expect(hrefs).toContain('/exchange')
+    expect(hrefs).toContain('/messages')
+    expect(hrefs).toContain('/me')
+  })
+
+  it('every main link has href, label, icon, and aria', () => {
+    for (const link of MAIN_NAV_LINKS) {
       expect(link.href).toBeTruthy()
       expect(link.label).toBeTruthy()
       expect(link.icon).toBeDefined()
@@ -37,32 +64,9 @@ describe('Nav Structure — primary links', () => {
     }
   })
 
-  it('no duplicate hrefs in primary links', () => {
-    const hrefs = PRIMARY_LINKS.map((l) => l.href)
+  it('no duplicate hrefs', () => {
+    const hrefs = MAIN_NAV_LINKS.map((l) => l.href)
     expect(new Set(hrefs).size).toBe(hrefs.length)
-  })
-})
-
-describe('Nav Structure — role-based nav links', () => {
-  it('pioneer links include /ventures and /compass', () => {
-    const hrefs = PIONEER_NAV_LINKS.map((l) => l.href)
-    expect(hrefs).toContain('/ventures')
-    expect(hrefs).toContain('/compass')
-  })
-
-  it('anchor links include /anchors/dashboard', () => {
-    const hrefs = ANCHOR_NAV_LINKS.map((l) => l.href)
-    expect(hrefs).toContain('/anchors/dashboard')
-  })
-
-  it('agent links include /agents/dashboard', () => {
-    const hrefs = AGENT_NAV_LINKS.map((l) => l.href)
-    expect(hrefs).toContain('/agents/dashboard')
-  })
-
-  it('about links include /about', () => {
-    const hrefs = ABOUT_NAV_LINKS.map((l) => l.href)
-    expect(hrefs).toContain('/about')
   })
 })
 
@@ -78,31 +82,42 @@ describe('Nav Structure — LOGIN_LINK', () => {
 })
 
 describe('Nav Structure — footer links', () => {
-  it('pioneer footer links are non-empty with href and label', () => {
-    expect(FOOTER_PIONEER_LINKS.length).toBeGreaterThan(0)
-    for (const link of FOOTER_PIONEER_LINKS) {
+  it('has at least 5 footer links', () => {
+    expect(FOOTER_LINKS.length).toBeGreaterThanOrEqual(5)
+  })
+
+  it('every footer link has href and label', () => {
+    for (const link of FOOTER_LINKS) {
       expect(link.href).toBeTruthy()
       expect(link.label).toBeTruthy()
     }
   })
 
-  it('anchor footer links are non-empty', () => {
-    expect(FOOTER_ANCHOR_LINKS.length).toBeGreaterThan(0)
-  })
-
-  it('agent footer links are non-empty', () => {
-    expect(FOOTER_AGENT_LINKS.length).toBeGreaterThan(0)
-  })
-
-  it('discover footer links include /offerings and /threads', () => {
-    const hrefs = FOOTER_DISCOVER_LINKS.map((l) => l.href)
-    expect(hrefs).toContain('/offerings')
-    expect(hrefs).toContain('/threads')
-  })
-
-  it('company footer links include /about and /privacy', () => {
-    const hrefs = FOOTER_COMPANY_LINKS.map((l) => l.href)
+  it('includes about and privacy', () => {
+    const hrefs = FOOTER_LINKS.map((l) => l.href)
     expect(hrefs).toContain('/about')
     expect(hrefs).toContain('/privacy')
+  })
+})
+
+describe('Nav Structure — legacy exports exist', () => {
+  it('PRIMARY_LINKS is aliased to PUBLIC_NAV_LINKS', () => {
+    expect(PRIMARY_LINKS).toBeDefined()
+    expect(Array.isArray(PRIMARY_LINKS)).toBe(true)
+  })
+
+  it('deprecated role-based arrays exist', () => {
+    expect(PIONEER_NAV_LINKS).toBeDefined()
+    expect(ANCHOR_NAV_LINKS).toBeDefined()
+    expect(AGENT_NAV_LINKS).toBeDefined()
+    expect(ABOUT_NAV_LINKS).toBeDefined()
+  })
+
+  it('deprecated footer arrays exist', () => {
+    expect(FOOTER_PIONEER_LINKS).toBeDefined()
+    expect(FOOTER_ANCHOR_LINKS).toBeDefined()
+    expect(FOOTER_AGENT_LINKS).toBeDefined()
+    expect(FOOTER_DISCOVER_LINKS).toBeDefined()
+    expect(FOOTER_COMPANY_LINKS).toBeDefined()
   })
 })

@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 49 (2026-03-12)
+> Last updated: Session 50 (2026-03-12) — Human Exchange Network redesign
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -10,19 +10,40 @@
 
 | Metric            | Value                                                       |
 | ----------------- | ----------------------------------------------------------- |
-| Phase             | 2 (BeKenya Live) — DB live, KE/DE/CH seeded                 |
+| Phase             | 3 (Human Exchange Network) — full platform redesign         |
 | Branch            | `main` (direct push)                                        |
 | Deploy            | Vercel auto on push                                         |
-| Pages             | 20+                                                         |
+| Core Routes       | 5: `/` (Landing+Discovery), `/world`, `/exchange`, `/messages`, `/me` |
+| Supporting Routes | `/be/[code]`, `/exchange/[id]`, + info pages                |
 | API routes        | 12+                                                         |
-| Library modules   | 21 (incl. auth, hooks, threads, geo, emoji-map)             |
+| Library modules   | 23 (+ exchange-categories, graph, identity extensions)      |
 | Mock data modules | 17 (incl. config.ts, threads.ts)                            |
-| Jest tests        | 673/673 ✅ (38 suites)                                      |
-| Playwright tests  | 124+ ✅ (+ agent, journey, consistency suites)              |
+| Jest tests        | 671/671 ✅ (38 suites)                                      |
+| Playwright tests  | 124+ ✅ (may need updates for new routes)                   |
 | TypeScript errors | 0                                                           |
+| Build             | ✅ passes                                                   |
 | Countries config  | 13 (16 in selector, +CH)                                    |
 | Languages         | 14 (+9 world languages in i18n)                             |
 | i18n languages    | 14 (en, de, sw, fr, ar, hi, zh, es, pt, ru, ja, ko, tr, id) |
+
+---
+
+## 🔥 Session 50: Human Exchange Network Redesign
+
+Complete platform transformation from job-board to Human Exchange Network.
+
+### New Architecture
+- **Identity Context** extended with languages[], interests[], mode (explorer/host), city, hasCompletedDiscovery
+- **5 Core Routes:** Landing+Discovery (`/`), My World (`/world`), Exchange (`/exchange`), Messages (`/messages`), Me (`/me`)
+- **New Components:** WowHero, Discovery (3-step), NetworkGraph (SVG), ExchangeCard, ModeToggle
+- **New Data:** exchange-categories.ts (12 categories), graph.ts (network graph builder)
+- **Updated Nav:** 4-item logged-in (World/Exchange/Messages/Me), 2-item logged-out (About/Pricing)
+- **Updated Footer:** Single row of 6 links
+- **Updated Vocabulary:** Explorer/Host/Opportunity/Exchange terms alongside legacy Pioneer/Anchor/Path/Chapter
+- **Redirects:** All old routes (/compass, /ventures, /onboarding, etc.) redirect to new destinations
+- **Deleted:** /agents, /fashion, /media, /referral, /signup, /forgot-password pages
+- **Info pages** updated with new vocabulary
+- **Tests** updated: 671/671 pass
 
 ---
 
