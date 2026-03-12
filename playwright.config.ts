@@ -33,6 +33,9 @@ export const PAGES = [
   '/contact',
   '/login',
   '/signup',
+  '/exchange',
+  '/messages',
+  '/me',
   '/not-found-test', // triggers 404
 ] as const
 
@@ -91,6 +94,14 @@ export default defineConfig({
     {
       name: 'consistency',
       testMatch: '**/consistency.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEWPORTS.desktop,
+      },
+    },
+    {
+      name: 'demo-flow',
+      testMatch: '**/demo-flow.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         viewport: VIEWPORTS.desktop,

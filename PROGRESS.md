@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 56 (2026-03-12) — DB Wiring + Consistency Sweep + Auto-Scrum Skills
+> Last updated: Session 57 (2026-03-12) — Demo Ready + Live Chat + E2E Flow + Playwright Tests
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -19,7 +19,7 @@
 | Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)                     |
 | Mock data modules | 17 → reduced to test-only; all pages now use real DB or inline constants                  |
 | Jest tests        | 785/785 ✅ (44 suites)                                                                    |
-| Playwright tests  | 124+ ✅ (may need updates for new routes)                                                 |
+| Playwright tests  | 144+ ✅ (8 suites incl. demo-flow)                                                        |
 | TypeScript errors | 0 (1 pre-existing in test file)                                                           |
 | Build             | ✅ passes                                                                                 |
 | Countries         | 193 (all UN member states in world-data.ts)                                               |
@@ -30,6 +30,57 @@
 | DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
 | Auth              | ✅ Google OAuth + email/password + password reset                                         |
 | Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 57: Demo Ready + Live Chat + E2E Flow + Playwright Tests
+
+Full demo readiness sprint — every page populated, live agent chat, complete Pioneer journey.
+
+### Demo-Ready Features
+
+- **Mock data fallback** on all main pages (Exchange, Homepage, Messages) — when DB/API returns empty, mock data fills the UI
+- **Live agent chat** — `generateAgentResponse()` generates contextual replies based on agent persona (faith, craft, location, interests, culture)
+- **Conversation depth** — agents respond differently at 3/4/6+ messages (references earlier topics, suggests next steps, warmer tone)
+- **Premium IdentitySwitcher** — gradient header, "Be" prefix on countries, pill badges, hover effects, gold glow logo
+- **DynamicLogo gold glow** — drop-shadow for brand emphasis
+- **Logo size increase** — 28→34px, brand text 15→17px
+
+### Focus Topic System
+
+- **Nav Focus dropdown** — desktop category picker + mobile pill buttons
+- **Exchange focusTopic sync** — identity.focusTopic drives sector filter automatically
+- **Homepage filtering** — topAgents and topPaths filter by focusTopic
+- **World page filtering** — graph nodes filtered/prioritized by focusTopic with banner
+- **Focus banner** on Exchange + World pages when topic active
+
+### E2E Flow: Exchange → Connect → Messages → Chat
+
+- **ExchangeCard Connect button** — person cards navigate to `/messages?dm={agentId}`
+- **Messages DM panel** — shows agent beliefs (faith), languages, interests, shared traits
+- **Chat input + auto-scroll** — real-time message exchange with agent persona responses
+- **World node → DM** — clicking person nodes in World navigates to DM chat
+
+### Identity Editing (/me)
+
+- All 8 identity dimensions editable inline
+- Faith: multi-select add/remove badges
+- Culture: removable badge + country-specific suggestions
+- Craft: searchable add with autocomplete
+- Reach: tappable option buttons with descriptions
+
+### Playwright E2E Tests
+
+- New `demo-flow.spec.ts` — 20+ tests covering complete Pioneer journey
+- Tests: Discovery, Exchange (filters, cards, Connect), Messages (threads, DM, chat), Focus Topic, Identity Profile, Navigation
+- Added `/exchange`, `/messages`, `/me` to smoke test page list
+- Added `demo-flow` project to playwright config
+
+### Test Results
+
+- **Jest:** 785/785 ✅ (44 suites)
+- **TypeScript:** 0 errors
+- **Playwright:** demo-flow suite added (20+ tests)
 
 ---
 
