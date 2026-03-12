@@ -19,6 +19,7 @@ import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { MOCK_PROFILE } from '@/data/mock'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
 
 type Role = 'PIONEER' | 'ANCHOR'
 
@@ -114,19 +115,19 @@ export default function SignupPage() {
   const roleLabel = role === 'PIONEER' ? t('nav.pioneer') : t('common.anchor')
 
   return (
-    <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4 py-8 ambient-glow">
       <div className="w-full max-w-lg">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-phi-5">
           <Link href="/" className="inline-flex items-center gap-2">
             <Image src="/logo.svg" alt={brandName} width={40} height={40} unoptimized />
-            <span className="text-2xl font-bold text-brand-accent">{brandName}</span>
+            <span className="text-phi-xl font-bold text-brand-accent">{brandName}</span>
           </Link>
-          <h1 className="mt-4 text-2xl font-bold text-white">{t('auth.createAccount')}</h1>
-          <p className="mt-1 text-gray-400">{t('auth.freeForever')}</p>
+          <h1 className="mt-4 text-phi-2xl font-bold text-white">{t('auth.createAccount')}</h1>
+          <p className="mt-1 text-phi-sm text-gray-400">{t('auth.freeForever')}</p>
         </div>
 
-        <div className="bg-gray-900/60 rounded-2xl shadow-sm border border-brand-primary/30 p-8">
+        <GlassCard padding="lg">
           {/* Error banner */}
           {error && (
             <div className="flex items-start gap-2 p-3 mb-6 rounded-xl bg-red-900/30 border border-red-800/50 text-red-300 text-sm">
@@ -230,7 +231,7 @@ export default function SignupPage() {
                   <div className="w-full border-t border-brand-primary/30" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-gray-900/60 px-3 text-gray-400">
+                  <span className="bg-brand-surface px-3 text-gray-400">
                     {t('auth.orFillDetails')}
                   </span>
                 </div>
@@ -341,9 +342,9 @@ export default function SignupPage() {
               </form>
             </>
           )}
-        </div>
+        </GlassCard>
 
-        <p className="text-center mt-6 text-gray-400">
+        <p className="text-center mt-phi-5 text-gray-400">
           {t('auth.alreadyHaveAccount')}{' '}
           <Link href="/login" className="text-brand-accent font-semibold hover:underline">
             {t('auth.signInLink')}

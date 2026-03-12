@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Mail, ArrowLeft, CheckCircle } from 'lucide-react'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation()
@@ -21,21 +22,21 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
+    <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4 ambient-glow">
       <div className="w-full max-w-md">
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 text-brand-accent/60 hover:text-brand-accent text-sm mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-brand-accent/60 hover:text-brand-accent text-phi-sm mb-phi-5 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           {t('forgotPassword.backToSignIn')}
         </Link>
 
-        <div className="bg-gray-900/60 border border-brand-primary/30 rounded-2xl p-8">
+        <GlassCard padding="lg">
           {sent ? (
             <div className="text-center">
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
-              <h2 className="text-xl font-bold text-white mb-2">
+              <h2 className="text-phi-lg font-bold text-white mb-2">
                 {t('forgotPassword.checkEmail')}
               </h2>
               <p className="text-gray-400 text-sm">{t('forgotPassword.sentDesc', { email })}</p>
@@ -43,7 +44,9 @@ export default function ForgotPasswordPage() {
           ) : (
             <>
               <div className="mb-6">
-                <h1 className="text-2xl font-bold text-white mb-1">{t('forgotPassword.title')}</h1>
+                <h1 className="text-phi-2xl font-bold text-white mb-1">
+                  {t('forgotPassword.title')}
+                </h1>
                 <p className="text-gray-400 text-sm">{t('forgotPassword.desc')}</p>
               </div>
 
@@ -60,7 +63,7 @@ export default function ForgotPasswordPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
                       required
-                      className="w-full bg-gray-900 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent transition-colors"
+                      className="input pl-10 w-full"
                     />
                   </div>
                 </div>
@@ -68,21 +71,16 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 rounded-xl font-bold text-white transition-all disabled:opacity-60"
-                  style={{
-                    background:
-                      'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
-                    border: '1px solid rgb(var(--color-accent-rgb) / 0.35)',
-                  }}
+                  className="btn-primary w-full py-3 font-bold disabled:opacity-60"
                 >
                   {loading ? t('forgotPassword.sending') : t('forgotPassword.sendLink')}
                 </button>
               </form>
             </>
           )}
-        </div>
+        </GlassCard>
 
-        <p className="text-center text-gray-600 text-sm mt-4">
+        <p className="text-center text-gray-400 text-phi-sm mt-phi-3">
           {t('forgotPassword.noAccount')}{' '}
           <Link
             href="/signup"

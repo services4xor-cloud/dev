@@ -19,6 +19,7 @@ import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import GlassCard from '@/components/ui/GlassCard'
 
 // Map NextAuth error codes to i18n keys
 const ERROR_KEYS: Record<string, string> = {
@@ -84,20 +85,20 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
+    <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4 ambient-glow">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-phi-5">
           <Link href="/" className="inline-flex items-center gap-2">
             <Image src="/logo.svg" alt={brandName} width={40} height={40} unoptimized />
-            <span className="text-2xl font-bold text-brand-accent">{brandName}</span>
+            <span className="text-phi-xl font-bold text-brand-accent">{brandName}</span>
           </Link>
-          <h1 className="mt-4 text-2xl font-bold text-white">{t('auth.welcomeBack')}</h1>
-          <p className="mt-1 text-gray-400">{t('auth.signInAccount')}</p>
+          <h1 className="mt-4 text-phi-2xl font-bold text-white">{t('auth.welcomeBack')}</h1>
+          <p className="mt-1 text-phi-sm text-gray-400">{t('auth.signInAccount')}</p>
         </div>
 
         {/* Card */}
-        <div className="bg-gray-900/60 rounded-2xl shadow-sm border border-brand-primary/30 p-8">
+        <GlassCard padding="lg">
           {/* Error banner */}
           {error && (
             <div className="flex items-start gap-2 p-3 mb-6 rounded-xl bg-red-900/30 border border-red-800/50 text-red-300 text-sm">
@@ -143,7 +144,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-brand-primary/30" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-gray-900/60 px-3 text-gray-400">{t('auth.orSignInEmail')}</span>
+              <span className="bg-brand-surface px-3 text-gray-400">{t('auth.orSignInEmail')}</span>
             </div>
           </div>
 
@@ -211,9 +212,9 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-        </div>
+        </GlassCard>
 
-        <p className="text-center mt-6 text-gray-400">
+        <p className="text-center mt-phi-5 text-gray-400">
           {t('auth.newTo', { brandName })}{' '}
           <Link href="/signup" className="text-brand-accent font-semibold hover:underline">
             {t('auth.createFreeAccount')}
