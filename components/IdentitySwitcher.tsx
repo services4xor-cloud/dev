@@ -232,7 +232,7 @@ export default function IdentitySwitcher({
             onChange={(e) => setSearch(e.target.value)}
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => e.stopPropagation()}
-            placeholder="Search countries..."
+            placeholder={t('nav.searchCountries')}
             data-testid="country-search"
             autoFocus
             className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-white/5 border border-white/8
