@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Filter, Users, Briefcase } from 'lucide-react'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
@@ -140,6 +141,7 @@ type TypeFilter = 'all' | 'people' | 'opportunities'
 export default function ExchangePage() {
   const router = useRouter()
   const { identity, hasCompletedDiscovery } = useIdentity()
+  const { t } = useTranslation()
 
   // Redirect if discovery not complete
   useEffect(() => {
@@ -327,16 +329,17 @@ export default function ExchangePage() {
       <SectionLayout>
         <div className="text-center py-phi-7">
           <p className="text-phi-2xl mb-phi-3">🌍</p>
-          <h2 className="text-phi-xl font-bold text-white mb-phi-2">Set Up Your Identity First</h2>
+          <h2 className="text-phi-xl font-bold text-white mb-phi-2">
+            {t('exchange.setupIdentity')}
+          </h2>
           <p className="text-white/60 mb-phi-5 max-w-md mx-auto">
-            Select your languages on the homepage to unlock the Exchange and start connecting with
-            people and paths.
+            {t('exchange.setupIdentityDesc')}
           </p>
           <Link
             href="/"
             className="inline-block bg-brand-accent text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-colors"
           >
-            Go to Discovery &rarr;
+            {t('exchange.goDiscovery')} &rarr;
           </Link>
         </div>
       </SectionLayout>
@@ -352,11 +355,11 @@ export default function ExchangePage() {
           className="mb-phi-3 inline-flex items-center gap-phi-1 text-phi-sm text-white/50 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Home
+          {t('exchange.home')}
         </Link>
         <SectionHeader
-          title="Exchange"
-          subtitle="Pioneers and Paths matched to your identity"
+          title={t('exchange.title')}
+          subtitle={t('exchange.subtitle')}
           accent={false}
           className="text-left mb-0"
         />
@@ -368,9 +371,9 @@ export default function ExchangePage() {
         <div className="flex gap-phi-2 overflow-x-auto pb-1">
           {(
             [
-              { id: 'all', label: 'All', icon: Filter },
-              { id: 'people', label: 'People', icon: Users },
-              { id: 'opportunities', label: 'Paths', icon: Briefcase },
+              { id: 'all', label: t('exchange.all'), icon: Filter },
+              { id: 'people', label: t('exchange.people'), icon: Users },
+              { id: 'opportunities', label: t('exchange.paths'), icon: Briefcase },
             ] as const
           ).map(({ id, label, icon: Icon }) => (
             <button
@@ -394,7 +397,7 @@ export default function ExchangePage() {
           onChange={(e) => setSectorFilter(e.target.value)}
           className="rounded-lg border border-white/10 bg-brand-surface px-phi-3 py-phi-2 text-phi-sm text-white outline-none focus:border-brand-accent/50"
         >
-          <option value="all">All Sectors</option>
+          <option value="all">{t('exchange.allSectors')}</option>
           {EXCHANGE_CATEGORIES.map((cat) => (
             <option key={cat.id} value={cat.id}>
               {cat.icon} {cat.label}
@@ -407,19 +410,17 @@ export default function ExchangePage() {
       {identity.focusTopic && (
         <div className="mb-phi-3 flex items-center gap-phi-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20 px-phi-4 py-phi-2">
           <span className="text-phi-sm text-brand-accent font-medium">
-            🎯 Focus:{' '}
+            🎯 {t('exchange.focus')}:{' '}
             {EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)?.label ??
               identity.focusTopic}
           </span>
-          <span className="text-phi-xs text-white/40">
-            Showing results filtered by your focus topic
-          </span>
+          <span className="text-phi-xs text-white/40">{t('exchange.focusDesc')}</span>
         </div>
       )}
 
       {/* ── Results count ── */}
       <p className="mb-phi-3 text-phi-sm text-white/40">
-        {feedItems.length} {feedItems.length === 1 ? 'result' : 'results'}
+        {feedItems.length} {feedItems.length === 1 ? t('exchange.result') : t('exchange.results')}
       </p>
 
       {/* ── Feed grid ── */}
@@ -437,10 +438,8 @@ export default function ExchangePage() {
         </div>
       ) : (
         <GlassCard padding="lg" className="text-center">
-          <p className="text-phi-lg text-white/50">No matches found</p>
-          <p className="mt-phi-1 text-phi-sm text-white/30">
-            Try changing your filters or updating your interests
-          </p>
+          <p className="text-phi-lg text-white/50">{t('exchange.noMatches')}</p>
+          <p className="mt-phi-1 text-phi-sm text-white/30">{t('exchange.noMatchesDesc')}</p>
         </GlassCard>
       )}
     </SectionLayout>

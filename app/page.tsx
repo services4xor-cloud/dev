@@ -22,6 +22,7 @@ import {
   Shield,
 } from 'lucide-react'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import WowHero from '@/components/WowHero'
 import Discovery from '@/components/Discovery'
 import GlassCard from '@/components/ui/GlassCard'
@@ -83,6 +84,7 @@ function agentToProfile(agent: AgentPersona): DimensionProfile {
 
 export default function HomePage() {
   const { identity, hasCompletedDiscovery, brandName, localizeCountry } = useIdentity()
+  const { t } = useTranslation()
   const { data: session } = useSession()
   const [showDiscovery, setShowDiscovery] = useState(false)
   const [hoveredAgent, setHoveredAgent] = useState<string | null>(null)
@@ -289,11 +291,13 @@ export default function HomePage() {
                 {countryFlag} {brandName}
               </p>
               <h1 className="text-phi-3xl md:text-phi-4xl font-bold text-white mb-2">
-                Welcome back, {userName.split(' ')[0]}
+                {t('home.welcomeBack', { name: userName.split(' ')[0] })}
               </h1>
               <p className="text-white/50 text-phi-base max-w-lg">
-                {topAgents.length} people matched to your identity across{' '}
-                {new Set(topAgents.map((a) => a.agent.country)).size} countries
+                {t('home.matchedAcross', {
+                  count: String(topAgents.length),
+                  countries: String(new Set(topAgents.map((a) => a.agent.country)).size),
+                })}
               </p>
             </div>
             <div className="flex gap-3">
@@ -304,7 +308,7 @@ export default function HomePage() {
                            border border-[rgb(var(--color-accent-rgb)/0.3)]"
               >
                 <Globe className="w-4 h-4" />
-                My World
+                {t('home.myWorld')}
               </Link>
               <Link
                 href="/exchange"
@@ -312,7 +316,7 @@ export default function HomePage() {
                            hover:bg-white/10 transition-all border border-white/10"
               >
                 <Sparkles className="w-4 h-4" />
-                Exchange
+                {t('home.exchange')}
               </Link>
             </div>
           </div>
@@ -350,7 +354,7 @@ export default function HomePage() {
           {identity.focusTopic && (
             <div className="mt-3 flex items-center gap-2">
               <span className="px-3 py-1 rounded-full text-xs bg-brand-accent/15 text-brand-accent border border-brand-accent/30 flex items-center gap-1.5">
-                Focus:{' '}
+                {t('home.focus')}:{' '}
                 {EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)?.label ??
                   identity.focusTopic}
               </span>
@@ -362,16 +366,14 @@ export default function HomePage() {
             <div className="mt-6 flex items-center gap-3 rounded-xl bg-brand-primary/20 border border-brand-primary/30 px-5 py-3">
               <Shield className="w-5 h-5 text-brand-accent shrink-0" />
               <div className="flex-1">
-                <p className="text-white text-phi-sm font-medium">Save your identity</p>
-                <p className="text-white/40 text-phi-xs">
-                  Your profile is stored locally. Create an account to keep it across devices.
-                </p>
+                <p className="text-white text-phi-sm font-medium">{t('home.saveIdentity')}</p>
+                <p className="text-white/40 text-phi-xs">{t('home.saveIdentityDesc')}</p>
               </div>
               <Link
                 href="/signup"
                 className="shrink-0 px-4 py-1.5 rounded-lg bg-brand-accent text-white text-phi-xs font-bold hover:opacity-90 transition-opacity"
               >
-                Sign Up
+                {t('home.signUp')}
               </Link>
             </div>
           )}
@@ -387,11 +389,13 @@ export default function HomePage() {
                 <span className="text-2xl">{detectedFlag}</span>
                 <div>
                   <p className="text-white font-semibold text-phi-sm">
-                    Visiting from {detectedCountryName}?
+                    {t('home.visitingFrom', { country: detectedCountryName })}
                   </p>
                   <p className="text-white/40 text-phi-xs">
-                    Explore the {instanceCountryName} &harr; {detectedCountryName} corridor &mdash;
-                    paths, agents, and opportunities connecting both countries.
+                    {t('home.visitingFromDesc', {
+                      from: instanceCountryName,
+                      to: detectedCountryName,
+                    })}
                   </p>
                 </div>
               </div>
@@ -400,7 +404,7 @@ export default function HomePage() {
                 className="shrink-0 flex items-center gap-2 px-5 py-2 rounded-full bg-brand-accent/10 text-brand-accent font-semibold text-phi-sm
                            hover:bg-brand-accent/20 transition-all border border-brand-accent/20"
               >
-                View Routes
+                {t('home.viewRoutes')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -412,7 +416,7 @@ export default function HomePage() {
       <SectionLayout size="lg" className="mb-2">
         <h2 className="text-phi-lg font-bold text-white mb-4 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-brand-accent" />
-          What to do next
+          {t('home.whatNext')}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* Corridor route card — shown first when visiting from abroad */}
@@ -427,11 +431,12 @@ export default function HomePage() {
                   <span className="text-2xl">🧭</span>
                   <div>
                     <p className="text-white font-semibold text-phi-sm">
-                      {instanceCountryName} &rarr; {detectedCountryName} Route
+                      {t('home.corridorRoute', {
+                        from: instanceCountryName,
+                        to: detectedCountryName,
+                      })}
                     </p>
-                    <p className="text-white/40 text-phi-xs">
-                      Explore your cross-border corridor in Compass
-                    </p>
+                    <p className="text-white/40 text-phi-xs">{t('home.corridorRouteDesc')}</p>
                   </div>
                 </div>
               </GlassCard>
@@ -446,8 +451,8 @@ export default function HomePage() {
               <div className="flex items-center gap-3">
                 <span className="text-2xl">🤝</span>
                 <div>
-                  <p className="text-white font-semibold text-phi-sm">Browse the Exchange</p>
-                  <p className="text-white/40 text-phi-xs">Find people and paths matched to you</p>
+                  <p className="text-white font-semibold text-phi-sm">{t('home.browseExchange')}</p>
+                  <p className="text-white/40 text-phi-xs">{t('home.browseExchangeDesc')}</p>
                 </div>
               </div>
             </GlassCard>
@@ -461,8 +466,8 @@ export default function HomePage() {
               <div className="flex items-center gap-3">
                 <span className="text-2xl">💬</span>
                 <div>
-                  <p className="text-white font-semibold text-phi-sm">Chat with Pioneers</p>
-                  <p className="text-white/40 text-phi-xs">Start conversations with your matches</p>
+                  <p className="text-white font-semibold text-phi-sm">{t('home.chatPioneers')}</p>
+                  <p className="text-white/40 text-phi-xs">{t('home.chatPioneersDesc')}</p>
                 </div>
               </div>
             </GlassCard>
@@ -478,10 +483,10 @@ export default function HomePage() {
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">✏️</span>
                   <div>
-                    <p className="text-white font-semibold text-phi-sm">Refine Your Identity</p>
-                    <p className="text-white/40 text-phi-xs">
-                      Add faith, craft, culture for better matches
+                    <p className="text-white font-semibold text-phi-sm">
+                      {t('home.refineIdentity')}
                     </p>
+                    <p className="text-white/40 text-phi-xs">{t('home.refineIdentityDesc')}</p>
                   </div>
                 </div>
               </GlassCard>
@@ -496,17 +501,15 @@ export default function HomePage() {
           <div>
             <h2 className="text-phi-xl font-bold text-white flex items-center gap-2">
               <Users className="w-5 h-5 text-brand-accent" />
-              Your Top Matches
+              {t('home.topMatches')}
             </h2>
-            <p className="text-white/40 text-phi-sm mt-1">
-              People scored by your 8 identity dimensions
-            </p>
+            <p className="text-white/40 text-phi-sm mt-1">{t('home.topMatchesDesc')}</p>
           </div>
           <Link
             href="/exchange"
             className="text-brand-accent text-phi-sm hover:underline flex items-center gap-1"
           >
-            See all <ArrowRight className="w-3.5 h-3.5" />
+            {t('home.seeAll')} <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -555,24 +558,24 @@ export default function HomePage() {
                 <div className="flex flex-wrap gap-1.5">
                   {breakdown.language > 0 && (
                     <span className="px-2 py-0.5 rounded text-[10px] bg-brand-accent/10 text-brand-accent/80">
-                      🗣 Language +{breakdown.language}
+                      {t('home.languagePlus', { score: String(breakdown.language) })}
                     </span>
                   )}
                   {breakdown.craft > 0 && (
                     <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-900/40 text-emerald-400/80">
-                      🔧 Craft +{breakdown.craft}
+                      {t('home.craftPlus', { score: String(breakdown.craft) })}
                     </span>
                   )}
                   {breakdown.location > 0 && (
                     <span className="px-2 py-0.5 rounded text-[10px] bg-blue-900/40 text-blue-400/80">
-                      📍 Location +{breakdown.location}
+                      {t('home.locationPlus', { score: String(breakdown.location) })}
                     </span>
                   )}
                 </div>
 
                 {agent.languages.filter((l) => identity.languages.includes(l)).length > 0 && (
                   <div className="mt-2 pt-2 border-t border-white/5">
-                    <p className="text-white/30 text-[10px] mb-1">Shared languages</p>
+                    <p className="text-white/30 text-[10px] mb-1">{t('home.sharedLanguages')}</p>
                     <div className="flex gap-1">
                       {agent.languages
                         .filter((l) => identity.languages.includes(l))
@@ -588,7 +591,7 @@ export default function HomePage() {
                 {/* Chat CTA */}
                 <div className="mt-3 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-brand-accent/10 text-brand-accent text-xs font-medium group-hover:bg-brand-accent/20 transition-colors">
                   <MessageCircle className="w-3.5 h-3.5" />
-                  Start Conversation
+                  {t('home.startConversation')}
                 </div>
               </GlassCard>
             )
@@ -603,17 +606,15 @@ export default function HomePage() {
             <div>
               <h2 className="text-phi-xl font-bold text-white flex items-center gap-2">
                 <Zap className="w-5 h-5 text-brand-accent" />
-                Paths For You
+                {t('home.pathsForYou')}
               </h2>
-              <p className="text-white/40 text-phi-sm mt-1">
-                Opportunities matched to your interests and craft
-              </p>
+              <p className="text-white/40 text-phi-sm mt-1">{t('home.pathsForYouDesc')}</p>
             </div>
             <Link
               href="/exchange"
               className="text-brand-accent text-phi-sm hover:underline flex items-center gap-1"
             >
-              See all <ArrowRight className="w-3.5 h-3.5" />
+              {t('home.seeAll')} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
@@ -659,16 +660,16 @@ export default function HomePage() {
       <SectionLayout size="lg" className="mt-4 mb-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Countries', value: '193', icon: '🌍', color: 'text-brand-accent' },
+            { label: t('home.countries'), value: '193', icon: '🌍', color: 'text-brand-accent' },
             {
-              label: 'you speak',
+              label: t('home.youSpeak'),
               value: `${identity.languages.length}`,
               icon: '🗣',
               color: 'text-emerald-400',
             },
-            { label: 'AI Agents', value: '700+', icon: '🤖', color: 'text-blue-400' },
+            { label: t('home.aiAgents'), value: '700+', icon: '🤖', color: 'text-blue-400' },
             {
-              label: 'top match',
+              label: t('home.topMatch'),
               value: topAgents[0] ? `${topAgents[0].score}%` : '—',
               icon: '⚡',
               color: 'text-brand-accent',
@@ -692,11 +693,8 @@ export default function HomePage() {
           }}
         />
         <div className="max-w-2xl mx-auto text-center px-4 relative z-10">
-          <h2 className="text-phi-2xl font-bold text-white mb-3">Your world is growing</h2>
-          <p className="text-white/50 text-phi-base mb-8">
-            Every dimension you share opens new connections. Explore your full network graph or
-            browse the exchange.
-          </p>
+          <h2 className="text-phi-2xl font-bold text-white mb-3">{t('home.worldGrowing')}</h2>
+          <p className="text-white/50 text-phi-base mb-8">{t('home.worldGrowingDesc')}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/world"
@@ -705,7 +703,7 @@ export default function HomePage() {
                          border border-[rgb(var(--color-accent-rgb)/0.3)] shadow-[0_8px_24px_rgb(var(--color-primary-rgb)/0.3)]"
             >
               <Globe className="w-5 h-5" />
-              Enter My World
+              {t('home.enterMyWorld')}
             </Link>
             <Link
               href="/me"
@@ -713,7 +711,7 @@ export default function HomePage() {
                          hover:bg-white/10 transition-all border border-white/10"
             >
               <MapPin className="w-5 h-5" />
-              Edit Identity
+              {t('home.editIdentity')}
             </Link>
           </div>
         </div>

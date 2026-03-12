@@ -11,21 +11,31 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
+import { useTranslation } from '@/lib/hooks/use-translation'
 import { buildGraph, type GraphNode } from '@/lib/graph'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import NetworkGraph from '@/components/NetworkGraph'
 import GlassCard from '@/components/ui/GlassCard'
 
-const TYPE_BADGES: Record<GraphNode['type'], { label: string; className: string }> = {
-  you: { label: 'You', className: 'bg-brand-accent/20 text-brand-accent' },
-  person: { label: 'Pioneer', className: 'bg-brand-accent/20 text-brand-accent' },
-  opportunity: { label: 'Path', className: 'bg-brand-primary/40 text-white' },
-  community: { label: 'Community', className: 'bg-emerald-900/60 text-emerald-300' },
+const TYPE_BADGE_STYLES: Record<GraphNode['type'], string> = {
+  you: 'bg-brand-accent/20 text-brand-accent',
+  person: 'bg-brand-accent/20 text-brand-accent',
+  opportunity: 'bg-brand-primary/40 text-white',
+  community: 'bg-emerald-900/60 text-emerald-300',
 }
 
 export default function WorldPage() {
   const router = useRouter()
   const { identity, hasCompletedDiscovery } = useIdentity()
+  const { t } = useTranslation()
+
+  const typeBadgeLabels: Record<GraphNode['type'], string> = {
+    you: t('world.you'),
+    person: t('world.pioneer'),
+    opportunity: t('world.path'),
+    community: t('world.community'),
+  }
+
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null)
 
   const { nodes: allNodes, edges: allEdges } = useMemo(() => buildGraph(identity), [identity])
@@ -76,16 +86,13 @@ export default function WorldPage() {
       <main className="min-h-screen bg-brand-bg flex items-center justify-center">
         <div className="text-center py-16 px-4">
           <p className="text-phi-2xl mb-4">🌍</p>
-          <h2 className="text-phi-xl font-bold text-white mb-3">Set Up Your Identity First</h2>
-          <p className="text-white/60 mb-6 max-w-md mx-auto">
-            Select your languages on the homepage to unlock your World network and start connecting
-            with people, paths, and communities.
-          </p>
+          <h2 className="text-phi-xl font-bold text-white mb-3">{t('world.setupIdentity')}</h2>
+          <p className="text-white/60 mb-6 max-w-md mx-auto">{t('world.setupIdentityDesc')}</p>
           <Link
             href="/"
             className="inline-block bg-brand-accent text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-colors"
           >
-            Go to Discovery &rarr;
+            {t('world.goDiscovery')} &rarr;
           </Link>
         </div>
       </main>
@@ -97,21 +104,19 @@ export default function WorldPage() {
       <div className="max-w-7xl mx-auto px-4 pt-8 pb-16">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-phi-7 font-bold gradient-text mb-2">My World</h1>
-          <p className="text-white/50 text-phi-4 max-w-lg mx-auto">
-            Your network of people, paths, and communities — scored by relevance to your identity.
-          </p>
+          <h1 className="text-phi-7 font-bold gradient-text mb-2">{t('world.title')}</h1>
+          <p className="text-white/50 text-phi-4 max-w-lg mx-auto">{t('world.subtitle')}</p>
         </div>
 
         {/* Focus topic banner */}
         {identity.focusTopic && (
           <div className="mb-6 flex items-center justify-center gap-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20 px-4 py-2">
             <span className="text-sm text-brand-accent font-medium">
-              🎯 Focus:{' '}
+              🎯 {t('world.focus')}:{' '}
               {EXCHANGE_CATEGORIES.find((c) => c.id === identity.focusTopic)?.label ??
                 identity.focusTopic}
             </span>
-            <span className="text-xs text-white/40">Showing your most relevant connections</span>
+            <span className="text-xs text-white/40">{t('world.focusDesc')}</span>
           </div>
         )}
 
@@ -130,9 +135,9 @@ export default function WorldPage() {
               <GlassCard variant="featured" padding="md" className="sticky top-24">
                 {/* Type badge */}
                 <span
-                  className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-3 ${TYPE_BADGES[selectedNode.type].className}`}
+                  className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-3 ${TYPE_BADGE_STYLES[selectedNode.type]}`}
                 >
-                  {TYPE_BADGES[selectedNode.type].label}
+                  {typeBadgeLabels[selectedNode.type]}
                 </span>
 
                 {/* Name */}
@@ -168,19 +173,17 @@ export default function WorldPage() {
                   className="w-full btn-primary py-2.5 rounded-lg text-sm font-medium"
                 >
                   {selectedNode.type === 'person'
-                    ? 'View Profile'
+                    ? t('world.viewProfile')
                     : selectedNode.type === 'opportunity'
-                      ? 'View Path'
-                      : 'View Community'}
+                      ? t('world.viewPath')
+                      : t('world.viewCommunity')}
                 </button>
               </GlassCard>
             ) : (
               <GlassCard variant="subtle" padding="md">
                 <div className="text-center py-8">
-                  <p className="text-white/30 text-phi-4 mb-2">Select a node</p>
-                  <p className="text-white/20 text-phi-3">
-                    Click on any node in the graph to see details and take action.
-                  </p>
+                  <p className="text-white/30 text-phi-4 mb-2">{t('world.selectNode')}</p>
+                  <p className="text-white/20 text-phi-3">{t('world.selectNodeDesc')}</p>
                 </div>
               </GlassCard>
             )}
@@ -189,17 +192,17 @@ export default function WorldPage() {
             <div className="mt-4 grid grid-cols-3 gap-2">
               {[
                 {
-                  label: 'People',
+                  label: t('world.people'),
                   count: nodes.filter((n) => n.type === 'person').length,
                   color: 'text-brand-accent',
                 },
                 {
-                  label: 'Paths',
+                  label: t('world.paths'),
                   count: nodes.filter((n) => n.type === 'opportunity').length,
                   color: 'text-brand-primary-light',
                 },
                 {
-                  label: 'Communities',
+                  label: t('world.communities'),
                   count: nodes.filter((n) => n.type === 'community').length,
                   color: 'text-emerald-400',
                 },

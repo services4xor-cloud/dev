@@ -17,26 +17,7 @@ import {
 } from 'lucide-react'
 import { COUNTRY_ROUTES, getRecommendedRoutes } from '@/lib/compass'
 import { useIdentity } from '@/lib/identity-context'
-
-/* ── Country name lookup ──────────────────────────────────────────── */
-const COUNTRY_NAMES: Record<string, string> = {
-  KE: 'Kenya',
-  DE: 'Germany',
-  GB: 'United Kingdom',
-  AE: 'United Arab Emirates',
-  US: 'United States',
-  CA: 'Canada',
-  NG: 'Nigeria',
-  ZA: 'South Africa',
-  TZ: 'Tanzania',
-  UG: 'Uganda',
-  RW: 'Rwanda',
-  GH: 'Ghana',
-  FR: 'France',
-  NL: 'Netherlands',
-  IN: 'India',
-  CH: 'Switzerland',
-}
+import { useTranslation } from '@/lib/hooks/use-translation'
 
 /* ── Country flag emoji ───────────────────────────────────────────── */
 function flag(code: string) {
@@ -49,16 +30,20 @@ function flag(code: string) {
 
 /* ── Strength badge ───────────────────────────────────────────────── */
 function StrengthBadge({ strength }: { strength: string }) {
+  const { t } = useTranslation()
   const config = {
     direct: {
-      label: 'Direct Route',
+      label: t('compass.directRoute'),
       color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
     },
     partner: {
-      label: 'Partner Route',
+      label: t('compass.partnerRoute'),
       color: 'bg-brand-accent/20 text-brand-accent border-brand-accent/30',
     },
-    emerging: { label: 'Emerging Route', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+    emerging: {
+      label: t('compass.emergingRoute'),
+      color: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    },
   }[strength] || { label: strength, color: 'bg-white/10 text-white/60 border-white/10' }
 
   return (
@@ -81,10 +66,11 @@ function RouteCard({
   selected: boolean
   onClick: () => void
 }) {
+  const { localizeCountry } = useIdentity()
   const route = COUNTRY_ROUTES[routeKey]
   if (!route) return null
   const [from, to] = routeKey.split('-')
-  const toName = COUNTRY_NAMES[to] || to
+  const toName = localizeCountry(to)
 
   return (
     <button
@@ -137,9 +123,10 @@ function RouteCard({
 
 /* ── Main Compass Page ────────────────────────────────────────────── */
 export default function CompassPage() {
-  const { identity } = useIdentity()
+  const { identity, localizeCountry } = useIdentity()
+  const { t } = useTranslation()
   const originCountry = identity.country || 'KE'
-  const originName = COUNTRY_NAMES[originCountry] || originCountry
+  const originName = localizeCountry(originCountry)
 
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null)
 
@@ -168,20 +155,19 @@ export default function CompassPage() {
         <div className="relative max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-phi-xs font-medium mb-6">
             <Compass className="w-4 h-4" />
-            Route Compass
+            {t('compass.title')}
           </div>
           <h1 className="text-phi-2xl md:text-phi-3xl font-bold text-white mb-3">
-            Find Your Route
+            {t('compass.pageHeadline')}
           </h1>
           <p className="text-white/50 text-phi-base max-w-xl mx-auto">
-            Discover the best corridors for your skills, languages, and goals. Each Route connects
-            you to Paths, Pioneers, and opportunities abroad.
+            {t('compass.pageSubtitle')}
           </p>
 
           {/* Origin badge */}
           <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-surface border border-white/[0.06]">
             <MapPin className="w-4 h-4 text-brand-accent" />
-            <span className="text-white/60 text-phi-sm">Your origin:</span>
+            <span className="text-white/60 text-phi-sm">{t('compass.yourOrigin')}:</span>
             <span className="text-white font-bold text-phi-sm">
               {flag(originCountry)} {originName}
             </span>
@@ -195,8 +181,12 @@ export default function CompassPage() {
           <section className="mb-12">
             <div className="flex items-center gap-2 mb-4">
               <Plane className="w-5 h-5 text-brand-accent" />
-              <h2 className="text-phi-lg font-bold text-white">Routes from {originName}</h2>
-              <span className="text-white/30 text-phi-sm">({outboundKeys.length} corridors)</span>
+              <h2 className="text-phi-lg font-bold text-white">
+                {t('compass.routesFrom', { country: originName })}
+              </h2>
+              <span className="text-white/30 text-phi-sm">
+                ({t('compass.corridors', { count: String(outboundKeys.length) })})
+              </span>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {outboundKeys.map((key) => (
@@ -216,8 +206,12 @@ export default function CompassPage() {
           <section className="mb-12">
             <div className="flex items-center gap-2 mb-4">
               <Globe className="w-5 h-5 text-emerald-400" />
-              <h2 className="text-phi-lg font-bold text-white">Routes to {originName}</h2>
-              <span className="text-white/30 text-phi-sm">({inboundKeys.length} corridors)</span>
+              <h2 className="text-phi-lg font-bold text-white">
+                {t('compass.routesTo', { country: originName })}
+              </h2>
+              <span className="text-white/30 text-phi-sm">
+                ({t('compass.corridors', { count: String(inboundKeys.length) })})
+              </span>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {inboundKeys.map((key) => (
@@ -246,8 +240,7 @@ export default function CompassPage() {
                     <StrengthBadge strength={selectedRouteData.strength} />
                   </div>
                   <h3 className="text-phi-lg font-bold text-white">
-                    {COUNTRY_NAMES[selectedRoute!.split('-')[0]]} →{' '}
-                    {COUNTRY_NAMES[selectedTo] || selectedTo}
+                    {localizeCountry(selectedRoute!.split('-')[0])} → {localizeCountry(selectedTo)}
                   </h3>
                 </div>
 
@@ -258,7 +251,7 @@ export default function CompassPage() {
                   </div>
                   <div>
                     <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
-                      Visa Info
+                      {t('compass.visaInfo')}
                     </p>
                     <p className="text-white/80 text-phi-sm leading-relaxed">
                       {selectedRouteData.visaNote}
@@ -273,7 +266,7 @@ export default function CompassPage() {
                   </div>
                   <div>
                     <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
-                      Payment Methods
+                      {t('compass.paymentMethods')}
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {selectedRouteData.paymentMethods.map((m) => (
@@ -295,7 +288,7 @@ export default function CompassPage() {
                   </div>
                   <div>
                     <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
-                      Top Sectors
+                      {t('compass.topSectors')}
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {selectedRouteData.primarySectors.map((s) => (
@@ -318,21 +311,21 @@ export default function CompassPage() {
                   className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-brand-accent text-white font-bold text-phi-sm hover:opacity-90 transition-opacity"
                 >
                   <Briefcase className="w-4 h-4" />
-                  Explore Paths
+                  {t('compass.explorePaths')}
                 </Link>
                 <Link
                   href="/messages"
                   className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/[0.06] border border-white/[0.06] text-white font-medium text-phi-sm hover:bg-white/10 transition-colors"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  Find Pioneers
+                  {t('compass.findPioneers')}
                 </Link>
                 <Link
                   href={`/be/${selectedTo.toLowerCase()}`}
                   className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/[0.04] border border-white/[0.04] text-white/60 text-phi-sm hover:text-white hover:bg-white/[0.06] transition-colors"
                 >
                   <Globe className="w-4 h-4" />
-                  View {COUNTRY_NAMES[selectedTo] || selectedTo} Gate
+                  {t('compass.viewGate', { country: localizeCountry(selectedTo) })}
                 </Link>
               </div>
             </div>
@@ -343,16 +336,15 @@ export default function CompassPage() {
         {outboundKeys.length === 0 && inboundKeys.length === 0 && (
           <div className="text-center py-16">
             <p className="text-phi-2xl mb-4">🧭</p>
-            <h2 className="text-phi-lg font-bold text-white mb-2">No routes mapped yet</h2>
+            <h2 className="text-phi-lg font-bold text-white mb-2">{t('compass.noRoutes')}</h2>
             <p className="text-white/50 text-phi-sm mb-6 max-w-md mx-auto">
-              Routes for {originName} are being mapped. In the meantime, explore Paths on the
-              Exchange or connect with Pioneers.
+              {t('compass.noRoutesDesc', { country: originName })}
             </p>
             <Link
               href="/exchange"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-accent text-white font-bold hover:opacity-90 transition-opacity"
             >
-              Explore Exchange <ArrowRight className="w-4 h-4" />
+              {t('compass.exploreExchange')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         )}
