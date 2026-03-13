@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { BRAND_NAME, LEGAL, IMPACT_PARTNER } from '@/lib/platform-config'
+import { BRAND_NAME, LEGAL, IMPACT_PARTNER, CONTACT } from '@/lib/platform-config'
+import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 
-// ─── Static Charity Data (inlined from mock) ────────────────────────────────
+// ─── Kenya-specific Charity Data ────────────────────────────────────────────
 
 const IMPACT_STATS = [
   { number: '500+', label: 'Youth Trained', icon: '🎓' },
@@ -143,6 +144,7 @@ type DonationAmount = 10 | 25 | 50 | 100 | 'custom'
 
 export default function CharityPage() {
   const { t } = useTranslation()
+  const { identity } = useIdentity()
   const [donationAmount, setDonationAmount] = useState<DonationAmount>(25)
   const [customAmount, setCustomAmount] = useState<string>('')
   const [paymentTab, setPaymentTab] = useState<'mpesa' | 'card'>('mpesa')
@@ -150,6 +152,155 @@ export default function CharityPage() {
 
   const PRESET_AMOUNTS: DonationAmount[] = [10, 25, 50, 100]
 
+  // Country has a named impact partner (e.g. KE → UTAMADUNI)?
+  const hasPartner = IMPACT_PARTNER.name !== 'Community Partner'
+
+  // ── For countries without a specific partner: community-driven impact page ──
+  if (!hasPartner) {
+    return (
+      <div className="min-h-screen bg-brand-bg">
+        {/* Hero */}
+        <div className="bg-gradient-to-br from-brand-primary via-brand-primary to-gray-900 text-white">
+          <div className="max-w-5xl 3xl:max-w-[1600px] mx-auto px-4 pt-20 pb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-brand-accent text-sm font-medium mb-8">
+              <span>💚</span>
+              <span>Community Impact</span>
+            </div>
+            <h1 className="text-phi-3xl md:text-phi-4xl font-black tracking-tight mb-3 text-white">
+              Impact starts with you
+            </h1>
+            <p className="text-phi-xl text-white/70 max-w-2xl leading-relaxed mb-8">
+              Every {BRAND_NAME} transaction plants a seed. Propose an impact initiative for your
+              community — the network votes on where funds flow.
+            </p>
+          </div>
+        </div>
+
+        {/* How it works */}
+        <SectionLayout>
+          <div className="text-center mb-12">
+            <h2 className="text-phi-2xl font-bold text-white mb-3">How Community Impact Works</h2>
+            <p className="text-gray-400 max-w-xl mx-auto">
+              {BRAND_NAME} directs a share of every transaction to community initiatives — chosen by
+              the Pioneers themselves.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-phi-4 mb-phi-7">
+            <GlassCard variant="subtle" hover>
+              <div className="text-center">
+                <div className="w-16 h-16 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-phi-2xl mx-auto mb-4">
+                  📝
+                </div>
+                <h3 className="font-bold text-white mb-2">1. Propose</h3>
+                <p className="text-gray-400 text-phi-sm">
+                  Submit an impact initiative — education, conservation, empowerment, culture.
+                  Anything that helps your community grow.
+                </p>
+              </div>
+            </GlassCard>
+            <GlassCard variant="subtle" hover>
+              <div className="text-center">
+                <div className="w-16 h-16 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-phi-2xl mx-auto mb-4">
+                  🗳️
+                </div>
+                <h3 className="font-bold text-white mb-2">2. Vote</h3>
+                <p className="text-gray-400 text-phi-sm">
+                  Pioneers vote on which initiatives receive funding. The community decides where
+                  the money flows.
+                </p>
+              </div>
+            </GlassCard>
+            <GlassCard variant="subtle" hover>
+              <div className="text-center">
+                <div className="w-16 h-16 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-phi-2xl mx-auto mb-4">
+                  🌱
+                </div>
+                <h3 className="font-bold text-white mb-2">3. Impact</h3>
+                <p className="text-gray-400 text-phi-sm">
+                  Funded initiatives report progress. Every Pioneer can see exactly where their
+                  contribution went.
+                </p>
+              </div>
+            </GlassCard>
+          </div>
+        </SectionLayout>
+
+        {/* Existing partner: UTAMADUNI in Kenya */}
+        <SectionLayout className="bg-gray-900/30">
+          <div className="text-center mb-10">
+            <h2 className="text-phi-2xl font-bold text-white mb-3">Active Partners</h2>
+            <p className="text-gray-400">
+              Impact initiatives already funded by the {BRAND_NAME} network
+            </p>
+          </div>
+          <div className="max-w-md mx-auto">
+            <GlassCard variant="featured" hover padding="lg">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="text-phi-2xl">🇰🇪</span>
+                <div>
+                  <h3 className="text-white font-bold text-phi-lg">UTAMADUNI CBO</h3>
+                  <p className="text-gray-400 text-phi-sm">
+                    Kenya — Education, Conservation, Empowerment
+                  </p>
+                </div>
+              </div>
+              <p className="text-gray-300 text-phi-sm mb-4">
+                UTAMADUNI is our founding impact partner in Kenya. 5% of every BeKenya transaction
+                supports youth training, conservation, and cultural preservation.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {['Education', 'Conservation', "Women's Empowerment", 'Culture'].map((p) => (
+                  <span
+                    key={p}
+                    className="text-xs px-2.5 py-1 rounded-full bg-brand-accent/10 text-brand-accent border border-brand-accent/30"
+                  >
+                    {p}
+                  </span>
+                ))}
+              </div>
+            </GlassCard>
+          </div>
+        </SectionLayout>
+
+        {/* CTA: Become a Partner / Propose Initiative */}
+        <SectionLayout>
+          <div className="max-w-xl mx-auto text-center">
+            <h2 className="text-phi-2xl font-bold text-white mb-3">
+              Start an initiative in your community
+            </h2>
+            <p className="text-gray-400 mb-8">
+              Know an organisation doing great work? Want to propose a new impact initiative?
+              We&apos;re looking for community partners in every country.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/contact"
+                className="inline-block bg-brand-accent text-white font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-colors"
+              >
+                Propose an Initiative
+              </Link>
+              <a
+                href={`mailto:${CONTACT.email}?subject=Impact%20Partner%20Proposal`}
+                className="inline-block bg-white/5 border border-white/20 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/10 transition-colors"
+              >
+                Contact Us
+              </a>
+            </div>
+          </div>
+        </SectionLayout>
+
+        {/* Legal footer */}
+        <div className="bg-gray-900/30 py-6 text-center border-t border-brand-primary/30">
+          <p className="text-gray-400 text-phi-sm max-w-2xl mx-auto px-4">
+            {BRAND_NAME} is operated by {LEGAL.companyName}. Community impact initiatives are
+            managed transparently with full reporting.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // ── For countries WITH a specific partner (e.g. Kenya → UTAMADUNI) ──
   return (
     <div className="min-h-screen bg-brand-bg">
       {/* Hero */}
