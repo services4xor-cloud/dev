@@ -135,6 +135,7 @@ export default function MePage() {
       culture: identity.culture ?? '',
       crafts: identity.craft,
       city: identity.city ?? '',
+      toCountries: identity.toCountries,
       priorities,
     })
   }, [
@@ -147,6 +148,7 @@ export default function MePage() {
     identity.culture,
     identity.craft,
     identity.city,
+    identity.toCountries,
     priorities,
     saveProfile,
   ])
@@ -164,6 +166,7 @@ export default function MePage() {
     identity.culture,
     identity.craft.length,
     identity.city,
+    identity.toCountries.length,
     priorities,
   ])
 

@@ -51,6 +51,8 @@ interface Identity {
   toCountries: string[]
   /** Auto-detected location from browser timezone (ISO country code) — separate from selected country */
   detectedLocation?: string
+  /** True once the 5-step discovery wizard has been completed — never resets even if languages emptied */
+  discoveryCompleted?: boolean
 }
 
 interface IdentityContextValue {
@@ -94,6 +96,8 @@ interface IdentityContextValue {
   setToCountries: (countries: string[]) => void
   /** Set detected location (ISO country code from browser timezone) */
   setDetectedLocation: (code: string | undefined) => void
+  /** Mark discovery wizard as completed (one-way latch, never resets) */
+  markDiscoveryCompleted: () => void
 }
 
 // ─── Default ────────────────────────────────────────────────────────
@@ -243,11 +247,12 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       culture: prev.culture,
       toCountries: prev.toCountries,
       detectedLocation: prev.detectedLocation,
+      discoveryCompleted: prev.discoveryCompleted,
     }))
   }, [])
 
   const reset = useCallback(() => {
-    setIdentity({
+    setIdentity((prev) => ({
       country: DEFAULT_COUNTRY,
       language: DEFAULT_LANGUAGE,
       languages: [],
@@ -257,7 +262,9 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
       craft: [],
       reach: [],
       toCountries: [],
-    })
+      // Preserve discovery flag — user shouldn't re-do wizard after reset
+      discoveryCompleted: prev.discoveryCompleted,
+    }))
   }, [])
 
   const setLanguages = useCallback((langs: string[]) => {
@@ -300,14 +307,19 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
     setIdentity((prev) => ({ ...prev, detectedLocation }))
   }, [])
 
+  const markDiscoveryCompleted = useCallback(() => {
+    setIdentity((prev) => ({ ...prev, discoveryCompleted: true }))
+  }, [])
+
   // Localized names — thread brand overrides country brand when active
   const countryName = getLocalizedCountryName(identity.country, identity.language)
   const brandName =
     identity.threadBrandName || BRAND_NAME_OVERRIDES[identity.country] || `Be${countryName}`
 
-  // Discovery is complete when user has selected at least one language
-  // (interests and craft enrich the experience but don't block navigation)
-  const hasCompletedDiscovery = identity.languages.length > 0
+  // Discovery is complete once the wizard has been run (persistent flag)
+  // OR if user has languages set (backwards compat for existing users)
+  const hasCompletedDiscovery =
+    identity.discoveryCompleted === true || identity.languages.length > 0
 
   // Helper to localize any country code in the user's current language
   const localizeCountry = useCallback(
@@ -338,6 +350,7 @@ export function IdentityProvider({ children }: { children: ReactNode }) {
         setCulture,
         setToCountries,
         setDetectedLocation,
+        markDiscoveryCompleted,
       }}
     >
       {children}
@@ -383,6 +396,7 @@ export function useIdentity(): IdentityContextValue {
       setCulture: () => {},
       setToCountries: () => {},
       setDetectedLocation: () => {},
+      markDiscoveryCompleted: () => {},
     }
   }
   return ctx

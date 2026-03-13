@@ -68,6 +68,66 @@ function StepIndicator({ current }: { current: 1 | 2 | 3 | 4 | 5 }) {
 const nextBtnActive =
   'bg-brand-primary text-white hover:scale-[1.02] active:scale-[0.98] border border-[rgb(var(--color-accent-rgb)/0.4)] shadow-[0_8px_24px_rgb(var(--color-primary-rgb)/0.35)]'
 
+// ─── Sticky Nav Bar ─────────────────────────────────────────────────────────
+
+function StickyNav({
+  step,
+  canProceed,
+  isOptional,
+  onBack,
+  onNext,
+  onComplete,
+  t,
+}: {
+  step: number
+  canProceed: boolean
+  isOptional?: boolean
+  onBack?: () => void
+  onNext: () => void
+  onComplete?: () => void
+  t: (key: string) => string
+}) {
+  const isLast = step === 5
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
+      <div
+        className="pointer-events-auto py-4 px-6"
+        style={{
+          background: 'linear-gradient(to top, var(--color-bg) 60%, transparent)',
+        }}
+      >
+        <div className="max-w-2xl mx-auto flex justify-center gap-4">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="btn-ghost px-6 py-3 sm:px-8 sm:py-4 rounded-full text-phi-base sm:text-phi-lg"
+            >
+              &#x2190; {t('discovery.nav.back')}
+            </button>
+          )}
+          {isOptional && !isLast && (
+            <button
+              onClick={onNext}
+              className="btn-ghost px-6 py-3 sm:px-8 sm:py-4 rounded-full text-phi-base sm:text-phi-lg font-medium text-white/60 hover:text-white"
+            >
+              {t('discovery.nav.skip')} &#x2192;
+            </button>
+          )}
+          <button
+            onClick={isLast ? onComplete : onNext}
+            disabled={!canProceed && !isOptional}
+            className={`px-6 py-3 sm:px-8 sm:py-4 rounded-full text-phi-base sm:text-phi-lg font-bold transition-all duration-200 ${
+              canProceed || isOptional ? nextBtnActive : 'btn-disabled'
+            }`}
+          >
+            {isLast ? t('discovery.step5.enter') : t('discovery.nav.next')} &#x2192;
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Step 1: Where & How ────────────────────────────────────────────────────
 
 function Step1({
@@ -260,19 +320,6 @@ function Step1({
           </p>
         </div>
       )}
-
-      {/* Next */}
-      <div className="flex justify-center">
-        <button
-          onClick={onNext}
-          disabled={selectedLanguages.length === 0}
-          className={`px-8 py-4 rounded-full text-phi-lg font-bold transition-all duration-200 ${
-            selectedLanguages.length > 0 ? nextBtnActive : 'btn-disabled'
-          }`}
-        >
-          {t('discovery.nav.next')} &#x2192;
-        </button>
-      </div>
     </div>
   )
 }
@@ -388,22 +435,6 @@ function Step2({
           {selectedCrafts.length === 0 && t('discovery.step2.hint')}
         </p>
       </div>
-
-      {/* Nav */}
-      <div className="flex justify-center gap-4">
-        <button onClick={onBack} className="btn-ghost px-8 py-4 rounded-full text-phi-lg">
-          &#x2190; {t('discovery.nav.back')}
-        </button>
-        <button
-          onClick={onNext}
-          disabled={selectedCrafts.length === 0}
-          className={`px-8 py-4 rounded-full text-phi-lg font-bold transition-all duration-200 ${
-            selectedCrafts.length > 0 ? nextBtnActive : 'btn-disabled'
-          }`}
-        >
-          {t('discovery.nav.next')} &#x2192;
-        </button>
-      </div>
     </div>
   )
 }
@@ -514,22 +545,6 @@ function Step3({
             ` · ${t(selectedReach.length !== 1 ? 'discovery.step3.reachCountPlural' : 'discovery.step3.reachCount', { count: String(selectedReach.length) })}`}
         </p>
       </div>
-
-      {/* Nav */}
-      <div className="flex justify-center gap-4">
-        <button onClick={onBack} className="btn-ghost px-8 py-4 rounded-full text-phi-lg">
-          &#x2190; {t('discovery.nav.back')}
-        </button>
-        <button
-          onClick={onNext}
-          disabled={selectedInterests.length === 0}
-          className={`px-8 py-4 rounded-full text-phi-lg font-bold transition-all duration-200 ${
-            selectedInterests.length > 0 ? nextBtnActive : 'btn-disabled'
-          }`}
-        >
-          {t('discovery.nav.next')} &#x2192;
-        </button>
-      </div>
     </div>
   )
 }
@@ -623,25 +638,6 @@ function Step4({
           ))}
         </div>
       )}
-
-      {/* Nav */}
-      <div className="flex justify-center gap-4 mt-8">
-        <button onClick={onBack} className="btn-ghost px-8 py-4 rounded-full text-phi-lg">
-          &#x2190; {t('discovery.nav.back')}
-        </button>
-        <button
-          onClick={onNext}
-          className="btn-ghost px-8 py-4 rounded-full text-phi-lg font-medium text-white/60 hover:text-white"
-        >
-          {t('discovery.nav.skip')} &#x2192;
-        </button>
-        <button
-          onClick={onNext}
-          className={`px-8 py-4 rounded-full text-phi-lg font-bold transition-all duration-200 ${nextBtnActive}`}
-        >
-          {t('discovery.nav.next')} &#x2192;
-        </button>
-      </div>
     </div>
   )
 }
@@ -789,21 +785,7 @@ function Step5({
         ))}
       </div>
 
-      {/* CTAs */}
-      <div className="flex justify-center gap-4">
-        <button onClick={onBack} className="btn-ghost px-8 py-4 rounded-full text-phi-lg">
-          &#x2190; {t('discovery.nav.back')}
-        </button>
-        <button
-          onClick={onComplete}
-          className="bg-brand-primary text-white px-8 py-4 rounded-full text-phi-lg font-bold
-                     hover:scale-[1.02] active:scale-[0.98] transition-all duration-200
-                     border border-[rgb(var(--color-accent-rgb)/0.4)]
-                     shadow-[0_8px_32px_rgb(var(--color-primary-rgb)/0.40)]"
-        >
-          {t('discovery.step5.enter')} &#x2192;
-        </button>
-      </div>
+      {/* Nav handled by StickyNav */}
 
       {/* CSS for step 5 animations */}
       <style jsx>{`
@@ -846,6 +828,7 @@ export default function Discovery() {
     setFaith,
     setCulture,
     setCity,
+    markDiscoveryCompleted,
   } = useIdentity()
 
   const [step, _setStep] = useState<1 | 2 | 3 | 4 | 5>(1)
@@ -905,13 +888,31 @@ export default function Discovery() {
     setFaith(selectedFaith)
     if (selectedCulture) setCulture(selectedCulture)
     if (editCity) setCity(editCity)
+    // Mark discovery as permanently completed (won't reset if languages emptied later)
+    markDiscoveryCompleted()
     // Redirect to where user came from, or exchange feed
     const returnTo = searchParams.get('returnTo') ?? '/exchange'
     router.push(returnTo)
   }
 
+  // Determine if current step allows proceeding
+  const canProceed =
+    step === 1
+      ? selectedLanguages.length > 0
+      : step === 2
+        ? selectedCrafts.length > 0
+        : step === 3
+          ? selectedInterests.length > 0
+          : step === 4
+            ? true // optional step
+            : true // step 5 always ready
+
+  const stepBack = step === 1 ? undefined : () => setStep((step - 1) as 1 | 2 | 3 | 4 | 5)
+
+  const stepNext = step === 5 ? handleComplete : () => setStep((step + 1) as 1 | 2 | 3 | 4 | 5)
+
   return (
-    <section className="min-h-screen bg-brand-bg py-16 px-4">
+    <section className="min-h-screen bg-brand-bg py-16 px-4 pb-28">
       <StepIndicator current={step} />
 
       {step === 1 && (
@@ -984,6 +985,16 @@ export default function Discovery() {
           t={t}
         />
       )}
+
+      <StickyNav
+        step={step}
+        canProceed={canProceed}
+        isOptional={step === 4}
+        onBack={stepBack}
+        onNext={stepNext}
+        onComplete={handleComplete}
+        t={t}
+      />
     </section>
   )
 }
