@@ -18,7 +18,7 @@
 | API routes        | 12+                                                                                       |
 | Library modules   | 30 (+ semantic-skills.ts — 68 skills × 12 languages)                                      |
 | Mock data modules | 17 (+ messages.ts); admin data deduplicated, all pages import from barrel                 |
-| Jest tests        | 881/881 ✅ (46 suites)                                                                    |
+| Jest tests        | 872/872 ✅ (46 suites)                                                                    |
 | Playwright tests  | 144+ ✅ (8 suites incl. demo-flow)                                                        |
 | TypeScript errors | 0                                                                                         |
 | Build             | ✅ passes                                                                                 |
@@ -35,6 +35,18 @@
 ---
 
 ## 🔥 Session 67: BTW Feedback + Deep Cleanup (-1,460 lines)
+
+### Hardcode Elimination + More Dead Code (-358 lines)
+
+- **Replaced all hardcoded KES/en_US** with country-aware config from `COUNTRIES`:
+  - `page.tsx`: currency + country fallback use `DEPLOY_CURRENCY`/`CC`
+  - `admin`: revenue display uses deployment currency
+  - `experiences/[id]`: price selection prioritizes deployment currency
+  - `layout.tsx`: OG locale derived from country config
+  - `pricing/layout.tsx`: metadata uses deployment currency
+  - `notifications`: referral reward uses deployment currency
+- **Deleted 4 more unused files** (-290 lines): `StatusBadge`, `SkillChip`, `use-prefill` hook, `pricing` service
+- **Removed** unused `SKILLS_BY_TYPE` barrel export, pricing service tests
 
 ### Deep Codebase Cleanup
 
