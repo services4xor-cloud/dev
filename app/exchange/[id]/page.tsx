@@ -235,7 +235,7 @@ export default function ExchangeDetailPage() {
           <h1 className="text-phi-xl font-bold text-white">{t('exchangeDetail.notFound')}</h1>
           <p className="mt-phi-2 text-white/50">{t('exchangeDetail.notFoundDesc')}</p>
           <button
-            onClick={() => router.back()}
+            onClick={() => (window.history.length > 1 ? router.back() : router.push('/exchange'))}
             className="mt-phi-4 inline-flex items-center gap-phi-1 text-brand-accent hover:text-brand-accent/80 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -263,7 +263,7 @@ export default function ExchangeDetailPage() {
     return (
       <SectionLayout>
         <button
-          onClick={() => router.back()}
+          onClick={() => (window.history.length > 1 ? router.back() : router.push('/exchange'))}
           className="mb-phi-4 inline-flex items-center gap-phi-1 text-phi-sm text-white/50 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -531,7 +531,7 @@ export default function ExchangeDetailPage() {
     return (
       <SectionLayout>
         <button
-          onClick={() => router.back()}
+          onClick={() => (window.history.length > 1 ? router.back() : router.push('/exchange'))}
           className="mb-phi-4 inline-flex items-center gap-phi-1 text-phi-sm text-white/50 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />

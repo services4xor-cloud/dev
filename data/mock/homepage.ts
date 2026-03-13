@@ -63,7 +63,7 @@ export const BENETWORK_PILLARS = [
     subtitle: '(Safaris, marine, eco-experiences)',
     desc: "Kenya's wildest ventures — deep sea fishing, Maasai Mara, Tsavo. Book an experience that changes you.",
     cta: 'Browse Ventures',
-    href: '/ventures',
+    href: '/exchange',
     gradient: 'from-[#5C0A14] to-[#3a0710]',
     accent: 'text-[#C9A227]',
   },

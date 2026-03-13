@@ -75,12 +75,12 @@ export function getCompassUrl(): string {
 /** Build Ventures URL pre-filtered from saved flags */
 export function getVenturesUrl(): string {
   const flags = loadIdentityFlags()
-  if (!flags) return '/ventures'
+  if (!flags) return '/exchange'
   const params = new URLSearchParams()
   if (flags.fromCountry) params.set('from', flags.fromCountry)
   if (flags.toCountries.length > 0) params.set('to', flags.toCountries.join(','))
   if (flags.pioneerType) params.set('type', flags.pioneerType)
-  return `/ventures?${params.toString()}`
+  return `/exchange?${params.toString()}`
 }
 
 // ─── Clear ───────────────────────────────────────────────────────────────────

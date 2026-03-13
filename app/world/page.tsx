@@ -50,7 +50,7 @@ export default function WorldPage() {
         router.push(`/messages?dm=${node.id.replace('person-', '')}`)
         break
       case 'opportunity':
-        router.push('/ventures')
+        router.push('/exchange')
         break
       case 'community':
         router.push('/messages')

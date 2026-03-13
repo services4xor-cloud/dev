@@ -133,7 +133,7 @@ export const JOURNEY_STAGES: JourneyStageConfig[] = [
     label: 'Engage',
     psychology: 'Purpose-driven action + Personalization',
     uxPattern: 'Compass wizard, personalized routes, smart matching',
-    pages: ['/compass', '/ventures', '/experiences/[id]'],
+    pages: ['/compass', '/exchange', '/experiences/[id]'],
     conversionGoal: 'Complete wizard or open a Chapter',
   },
   {

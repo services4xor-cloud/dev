@@ -84,6 +84,59 @@ export default function JourneyProgress() {
     [xpState.level, completedQuestIds]
   )
 
+  // Compute progress counts for each quest based on journey state
+  const questProgress = useMemo(() => {
+    const progress: Record<string, number> = {}
+    if (typeof window === 'undefined') return progress
+
+    let journeyState: {
+      completedActions?: string[]
+      savedPaths?: string[]
+      openedChapters?: string[]
+      joinedThreads?: string[]
+      exploredCountries?: string[]
+    } = {}
+    try {
+      journeyState = JSON.parse(localStorage.getItem('be-journey') || '{}')
+    } catch {
+      /* ignore */
+    }
+
+    const completed = new Set(journeyState.completedActions || [])
+
+    // Map triggers to countable progress
+    const triggerCounts: Record<string, number> = {
+      SET_IDENTITY: completed.has('set_identity') ? 1 : 0,
+      COMPLETE_DISCOVERY: completed.has('set_identity') && completed.has('visit_ventures') ? 1 : 0,
+      SET_DESTINATIONS: completed.has('set_identity') ? 1 : 0,
+      COMPLETE_PROFILE: completed.has('complete_profile') ? 1 : 0,
+      VIEW_PATH: [
+        completed.has('visit_ventures'),
+        completed.has('explore_3_paths'),
+        completed.has('explore_experience'),
+      ].filter(Boolean).length,
+      DISCOVER_EXPERIENCE: completed.has('explore_experience') ? 1 : 0,
+      SEND_MESSAGE: [completed.has('join_first_thread'), completed.has('join_3_threads')].filter(
+        Boolean
+      ).length,
+      ADD_FRIEND: [
+        completed.has('join_first_thread'),
+        completed.has('join_3_threads'),
+        completed.has('refer_friend'),
+      ].filter(Boolean).length,
+      APPLY_PATH: [completed.has('open_first_chapter'), completed.has('open_3_chapters')].filter(
+        Boolean
+      ).length,
+    }
+
+    for (const quest of getQuestsForLevel(xpState.level)) {
+      progress[quest.id] = Math.min(triggerCounts[quest.trigger] ?? 0, quest.targetCount)
+    }
+
+    return progress
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [xpState.level, totalXp, completedCount])
+
   const nextQuest = useMemo(
     () => getNextQuest(xpState.level, completedQuestIds),
     [xpState.level, completedQuestIds]
@@ -277,9 +330,16 @@ export default function JourneyProgress() {
                 </div>
                 <div className="mt-2 flex items-center gap-2">
                   <div className="h-1.5 flex-1 bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-brand-accent rounded-full" style={{ width: '0%' }} />
+                    <div
+                      className="h-full bg-brand-accent rounded-full transition-all duration-500"
+                      style={{
+                        width: `${Math.min(100, ((questProgress[nextQuest.id] ?? 0) / nextQuest.targetCount) * 100)}%`,
+                      }}
+                    />
                   </div>
-                  <span className="text-xs text-gray-400">0/{nextQuest.targetCount}</span>
+                  <span className="text-xs text-gray-400">
+                    {questProgress[nextQuest.id] ?? 0}/{nextQuest.targetCount}
+                  </span>
                 </div>
               </div>
 
@@ -292,31 +352,48 @@ export default function JourneyProgress() {
                         {categoryLabels[category]}
                       </div>
                       <div className="grid gap-1.5">
-                        {quests.map((q) => (
-                          <div
-                            key={q.id}
-                            className={`flex items-center gap-3 px-3 py-2 rounded-lg border transition-colors ${
-                              q.id === nextQuest.id
-                                ? 'bg-brand-accent/10 border-brand-accent/30'
-                                : q.unlockLevel <= xpState.level
-                                  ? 'bg-white/[0.02] border-white/10 hover:border-white/20'
-                                  : 'bg-white/[0.01] border-white/5 opacity-50'
-                            }`}
-                          >
-                            <span className="text-base">{q.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <div className="text-white text-xs font-medium truncate">
-                                {q.title}
+                        {quests.map((q) => {
+                          const qProgress = questProgress[q.id] ?? 0
+                          const qPct = Math.min(100, (qProgress / q.targetCount) * 100)
+                          return (
+                            <div
+                              key={q.id}
+                              className={`flex items-center gap-3 px-3 py-2 rounded-lg border transition-colors ${
+                                q.id === nextQuest.id
+                                  ? 'bg-brand-accent/10 border-brand-accent/30'
+                                  : q.unlockLevel <= xpState.level
+                                    ? 'bg-white/[0.02] border-white/10 hover:border-white/20'
+                                    : 'bg-white/[0.01] border-white/5 opacity-50'
+                              }`}
+                            >
+                              <span className="text-base">{q.icon}</span>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-white text-xs font-medium truncate">
+                                  {q.title}
+                                </div>
+                                <div className="text-gray-400 text-[10px] truncate">
+                                  {q.description}
+                                </div>
+                                {qProgress > 0 && qPct < 100 && (
+                                  <div className="mt-1 flex items-center gap-1.5">
+                                    <div className="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
+                                      <div
+                                        className="h-full bg-brand-accent/60 rounded-full transition-all"
+                                        style={{ width: `${qPct}%` }}
+                                      />
+                                    </div>
+                                    <span className="text-[9px] text-gray-500">
+                                      {qProgress}/{q.targetCount}
+                                    </span>
+                                  </div>
+                                )}
                               </div>
-                              <div className="text-gray-400 text-[10px] truncate">
-                                {q.description}
-                              </div>
+                              <span className="text-brand-accent text-[10px] font-bold whitespace-nowrap">
+                                +{q.bonusXP}
+                              </span>
                             </div>
-                            <span className="text-brand-accent text-[10px] font-bold whitespace-nowrap">
-                              +{q.bonusXP}
-                            </span>
-                          </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     </div>
                   ))}

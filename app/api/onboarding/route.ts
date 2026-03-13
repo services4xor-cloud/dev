@@ -198,7 +198,7 @@ export async function POST(req: NextRequest) {
       matchCount: strongMatches.length,
       topMatch: matches[0] ?? null,
       welcomeMessage: welcomeMessages[data.pioneerType] ?? 'Welcome to the BeNetwork, Pioneer!',
-      nextStep: '/ventures',
+      nextStep: '/exchange',
       whatsAppQueued: Boolean(data.phone),
     },
     { status: 201 }

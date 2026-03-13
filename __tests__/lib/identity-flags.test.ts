@@ -106,8 +106,8 @@ describe('Identity Flags — URL builders', () => {
     expect(getCompassUrl()).toBe('/compass?from=KE')
   })
 
-  it('getVenturesUrl returns /ventures when no flags', () => {
-    expect(getVenturesUrl()).toBe('/ventures')
+  it('getVenturesUrl returns /exchange when no flags', () => {
+    expect(getVenturesUrl()).toBe('/exchange')
   })
 
   it('getVenturesUrl includes from, to, and type params', () => {

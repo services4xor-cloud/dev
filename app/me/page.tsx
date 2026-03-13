@@ -746,24 +746,23 @@ export default function MePage() {
             )}
           </div>
           {/* Available interest categories to add */}
-          {EXCHANGE_CATEGORIES.filter((c) => !identity.interests.includes(c.id)).length > 0 &&
-            identity.interests.length < 5 && (
-              <div className="flex flex-wrap gap-phi-1 mt-phi-3">
-                {EXCHANGE_CATEGORIES.filter((c) => !identity.interests.includes(c.id))
-                  .slice(0, 8)
-                  .map((cat) => (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setInterests([...identity.interests, cat.id])}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10 text-phi-xs hover:bg-white/10 hover:text-white/70 transition-colors"
-                    >
-                      <span>{cat.icon}</span>
-                      {t(cat.i18nKey) || cat.label}
-                    </button>
-                  ))}
-              </div>
-            )}
+          {EXCHANGE_CATEGORIES.filter((c) => !identity.interests.includes(c.id)).length > 0 && (
+            <div className="flex flex-wrap gap-phi-1 mt-phi-3">
+              {EXCHANGE_CATEGORIES.filter((c) => !identity.interests.includes(c.id))
+                .slice(0, 8)
+                .map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setInterests([...identity.interests, cat.id])}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10 text-phi-xs hover:bg-white/10 hover:text-white/70 transition-colors"
+                  >
+                    <span>{cat.icon}</span>
+                    {t(cat.i18nKey) || cat.label}
+                  </button>
+                ))}
+            </div>
+          )}
         </GlassCard>
 
         {/* 5. Reach */}
