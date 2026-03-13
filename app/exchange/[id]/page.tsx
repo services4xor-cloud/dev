@@ -12,18 +12,30 @@
 
 import { useParams, useRouter } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
-import { ArrowLeft, Globe, MapPin, Briefcase, Star, MessageCircle, Zap, Send } from 'lucide-react'
+import {
+  ArrowLeft,
+  Globe,
+  MapPin,
+  Briefcase,
+  Star,
+  MessageCircle,
+  Zap,
+  Send,
+  CheckCircle,
+} from 'lucide-react'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 // Real paths fetched from /api/paths/[id] (Prisma → Neon PostgreSQL)
+import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { generateAllAgents } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
+import { useXPContext } from '@/components/XPProvider'
 
 // ─── Helpers ────────────────────────────────────────────────────────
 
@@ -62,8 +74,18 @@ export default function ExchangeDetailPage() {
   const router = useRouter()
   const { identity, hasCompletedDiscovery } = useIdentity()
   const { t } = useTranslation()
+  const { awardXP } = useXPContext()
   const id = params.id as string
   const [messageSent, setMessageSent] = useState(false)
+  const [applying, setApplying] = useState(false)
+  const [applied, setApplied] = useState(false)
+  const [applyError, setApplyError] = useState('')
+
+  // Award XP for viewing a path
+  useEffect(() => {
+    awardXP('VIEW_PATH')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   // Find agent from the real system
   const agentData = useMemo(() => {
@@ -113,12 +135,69 @@ export default function ExchangeDetailPage() {
 
   useEffect(() => {
     if (agentData) return // Skip fetch if it's an agent
+    // Try DB first, fallback to mock data
     fetch(`/api/paths/${id}`)
       .then((r) => r.json())
       .then((data) => {
-        if (data.success && data.path) setDbPath(data.path)
+        if (data.success && data.path) {
+          setDbPath(data.path)
+        } else {
+          // Fallback: check mock data
+          const mock = MOCK_VENTURE_PATHS.find((p) => p.id === id)
+          if (mock) {
+            setDbPath({
+              id: mock.id,
+              title: mock.title,
+              company: mock.anchorName,
+              description: `${mock.title} at ${mock.anchorName}. Located in ${mock.location}. ${mock.tags.join(', ')} skills required.`,
+              location: mock.location,
+              country: mock.country ?? 'KE',
+              isRemote: mock.isRemote,
+              skills: mock.tags,
+              sector:
+                mock.category === 'professional'
+                  ? 'tech'
+                  : mock.category === 'explorer'
+                    ? 'safari'
+                    : mock.category,
+              salaryMin: null,
+              salaryMax: null,
+              currency: 'USD',
+              status: 'OPEN',
+              tier: mock.isFeatured ? 'FEATURED' : 'BASIC',
+              createdAt: new Date().toISOString(),
+            })
+          }
+        }
       })
-      .catch(() => {})
+      .catch(() => {
+        // API failed — try mock
+        const mock = MOCK_VENTURE_PATHS.find((p) => p.id === id)
+        if (mock) {
+          setDbPath({
+            id: mock.id,
+            title: mock.title,
+            company: mock.anchorName,
+            description: `${mock.title} at ${mock.anchorName}. Located in ${mock.location}. ${mock.tags.join(', ')} skills required.`,
+            location: mock.location,
+            country: mock.country ?? 'KE',
+            isRemote: mock.isRemote,
+            skills: mock.tags,
+            sector:
+              mock.category === 'professional'
+                ? 'tech'
+                : mock.category === 'explorer'
+                  ? 'safari'
+                  : mock.category,
+            salaryMin: null,
+            salaryMax: null,
+            currency: 'USD',
+            status: 'OPEN',
+            tier: mock.isFeatured ? 'FEATURED' : 'BASIC',
+            createdAt: new Date().toISOString(),
+          })
+        }
+      })
   }, [id, agentData])
 
   const path = dbPath
@@ -543,16 +622,65 @@ export default function ExchangeDetailPage() {
           {/* Sidebar */}
           <div className="space-y-4">
             <GlassCard padding="md">
-              <button
-                onClick={() => router.push('/messages')}
-                className="w-full flex items-center justify-center gap-2 rounded-lg border border-brand-accent/40 py-3 text-phi-base font-semibold text-brand-accent transition-all hover:bg-brand-accent/10 active:scale-[0.98] mb-2"
-              >
-                <Send className="w-4 h-4" />
-                {t('exchangeDetail.applyForPath')}
-              </button>
-              <p className="text-center text-phi-xs text-white/30">
-                {t('exchangeDetail.opensConversationAnchor')}
-              </p>
+              {applied ? (
+                <div className="text-center py-2">
+                  <CheckCircle className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
+                  <p className="text-emerald-400 font-semibold text-phi-sm">Chapter opened!</p>
+                  <p className="text-white/40 text-phi-xs mt-1">
+                    The Anchor will review your profile.
+                  </p>
+                  <Link
+                    href="/me"
+                    className="mt-3 inline-block text-brand-accent text-phi-xs hover:underline"
+                  >
+                    View in My Exchanges →
+                  </Link>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={async () => {
+                      setApplying(true)
+                      setApplyError('')
+                      try {
+                        const res = await fetch('/api/chapters', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            pathId: path.id,
+                            pathSkills: path.skills,
+                            pathSectors: path.sector ? [path.sector] : [],
+                            userCrafts: identity.craft ?? [],
+                            userInterests: identity.interests,
+                          }),
+                        })
+                        const data = await res.json()
+                        if (data.success) {
+                          setApplied(true)
+                          awardXP('APPLY_PATH')
+                        } else {
+                          setApplyError(data.error || 'Could not apply. Please log in first.')
+                        }
+                      } catch {
+                        setApplyError('Network error. Please try again.')
+                      } finally {
+                        setApplying(false)
+                      }
+                    }}
+                    disabled={applying}
+                    className="w-full flex items-center justify-center gap-2 rounded-lg bg-brand-primary py-3 text-phi-base font-semibold text-white transition-all hover:bg-brand-primary/80 active:scale-[0.98] mb-2 disabled:opacity-50"
+                  >
+                    <Send className="w-4 h-4" />
+                    {applying ? 'Opening Chapter...' : t('exchangeDetail.applyForPath')}
+                  </button>
+                  {applyError && (
+                    <p className="text-center text-phi-xs text-red-400 mt-1">{applyError}</p>
+                  )}
+                  <p className="text-center text-phi-xs text-white/30">
+                    Opens a Chapter — the Anchor reviews your profile
+                  </p>
+                </>
+              )}
             </GlassCard>
 
             <GlassCard padding="md">

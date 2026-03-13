@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { hash } from 'bcryptjs'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 import { sendEmail } from '@/lib/email'
@@ -8,19 +7,18 @@ import { logger } from '@/lib/logger'
 const registerSchema = z.object({
   name: z.string().min(1, 'Name is required').max(200),
   email: z.string().email('Invalid email address').max(320),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters')
-    .max(128, 'Password must be at most 128 characters'),
   country: z.string().max(10).optional(),
   role: z.enum(['PIONEER', 'ANCHOR']).optional(),
   phone: z.string().max(20).optional(),
 })
 
 /**
- * POST /api/auth/register — Create a new account
+ * POST /api/auth/register — Pre-register a user with role
  *
- * Creates user with hashed password, then client signs in via NextAuth.
+ * No password. Users authenticate via Google OAuth or Magic Link.
+ * This route is used when we need to create a user record with a specific
+ * role before the magic link flow completes (PrismaAdapter auto-creates
+ * users on magic link, but doesn't set role).
  */
 export async function POST(req: NextRequest) {
   let body: unknown
@@ -38,7 +36,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const { name, email, password, country, role, phone } = parsed.data
+  const { name, email, country, role, phone } = parsed.data
 
   try {
     // Check if user already exists
@@ -50,15 +48,11 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Hash password (10 rounds)
-    const passwordHash = await hash(password, 10)
-
-    // Create user
+    // Create user (no password — auth via magic link or Google)
     const user = await db.user.create({
       data: {
         name,
         email,
-        passwordHash,
         country: country ?? (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE'),
         role: role === 'ANCHOR' ? 'ANCHOR' : 'PIONEER',
         phone: phone ?? null,

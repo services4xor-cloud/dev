@@ -28,6 +28,7 @@ import { computeCompleteness } from '@/lib/profile-completeness'
 import StatHexagon from '@/components/StatHexagon'
 import { getRouteInfo } from '@/lib/compass'
 import { getCountryHighlights } from '@/lib/country-highlights'
+import { useXPContext } from '@/components/XPProvider'
 
 // ─── Tab definitions ────────────────────────────────────────────────────────
 
@@ -100,10 +101,11 @@ export default function MePage() {
     setToCountries,
   } = useIdentity()
 
-  const [activeTab, setActiveTab] = useState<TabId>('Dashboard')
+  const [activeTab, setActiveTab] = useState<TabId>('Profile')
   const [mounted, setMounted] = useState(false)
   const [destSearch, setDestSearch] = useState('')
   const { saving, lastSaved, pioneerId, saveProfile } = useProfileSync()
+  const { totalXP, level, levelName, progressToNext, awardXP } = useXPContext()
   const [priorities, setPriorities] = useState<Record<string, DimensionPriority>>(() => {
     if (typeof window === 'undefined') return {}
     try {
@@ -155,7 +157,11 @@ export default function MePage() {
 
   // Trigger save when identity changes (after initial mount)
   useEffect(() => {
-    if (mounted) syncIdentity()
+    if (mounted) {
+      syncIdentity()
+      // Award one-time XP for setting identity (idempotent via API)
+      awardXP('SET_IDENTITY')
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     identity.country,
@@ -409,26 +415,6 @@ export default function MePage() {
             </div>
           </GlassCard>
         )}
-
-        {/* Stat Hexagon — identity dimension visualization */}
-        <GlassCard padding="md">
-          <h3 className="text-phi-sm text-white/60 mb-phi-2">Identity Balance</h3>
-          <div className="flex justify-center">
-            <StatHexagon
-              breakdown={hexBreakdown}
-              priorities={priorities as Record<string, 'high' | 'medium' | 'low'>}
-              onPriorityChange={(dim, priority) => {
-                const updated = { ...priorities, [dim]: priority }
-                setPriorities(updated)
-                saveProfile({ priorities: updated })
-              }}
-              className="max-w-[320px]"
-            />
-          </div>
-          <p className="text-xs text-white/30 text-center mt-phi-2">
-            Click dimension labels to adjust priority
-          </p>
-        </GlassCard>
       </div>
     )
   }
@@ -1294,9 +1280,8 @@ export default function MePage() {
             </button>
           )}
 
-          {/* Match count + dimension count */}
-          <p className="text-phi-sm text-brand-accent">{t('me.connectedTo', { count: '42' })}</p>
-          <p className="text-phi-sm text-white/40 mt-phi-1">
+          {/* Dimension count */}
+          <p className="text-phi-sm text-white/40">
             {t('me.dimensionsActive', { count: String(activeDimensions) })}
           </p>
 
@@ -1310,7 +1295,59 @@ export default function MePage() {
           {!saving && lastSaved && (
             <p className="text-[10px] text-white/20 mt-phi-1">✓ {t('me.saved')}</p>
           )}
+
+          {/* ── XP Progress Bar ──────────────────────────────────────── */}
+          <div className="mt-phi-3 w-full max-w-xs mx-auto">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-semibold text-brand-accent">
+                Lv.{level} — {levelName}
+              </span>
+              <span className="text-[10px] text-white/40 font-mono">{totalXP} XP</span>
+            </div>
+            <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-brand-accent/80 to-brand-accent transition-all duration-700"
+                style={{ width: `${Math.round(progressToNext * 100)}%` }}
+              />
+            </div>
+          </div>
         </div>
+
+        {/* ── Next Steps (contextual prompts) ─────────────────────────── */}
+        {(() => {
+          const steps: Array<{ text: string; href: string }> = []
+          if (identity.languages.length === 0)
+            steps.push({
+              text: 'Add your languages to find matching pioneers',
+              href: '/?discover=true',
+            })
+          if (identity.interests.length === 0)
+            steps.push({ text: 'Select your interests to discover paths', href: '/?discover=true' })
+          if (identity.craft.length === 0)
+            steps.push({
+              text: 'Set your craft to attract the right opportunities',
+              href: '/?discover=true',
+            })
+          if (steps.length === 0)
+            steps.push({
+              text: 'Explore the Exchange to find people and opportunities',
+              href: '/exchange',
+            })
+          return steps.length > 0 ? (
+            <div className="mb-phi-4 space-y-phi-1">
+              {steps.slice(0, 2).map((s) => (
+                <a
+                  key={s.text}
+                  href={s.href}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-accent/5 border border-brand-accent/15 text-brand-accent text-xs hover:bg-brand-accent/10 transition-colors"
+                >
+                  <span className="text-sm">→</span>
+                  {s.text}
+                </a>
+              ))}
+            </div>
+          ) : null
+        })()}
 
         {/* ── Dimension Summary Card ───────────────────────────────────── */}
         <GlassCard padding="md" className="mb-phi-5">
@@ -1353,6 +1390,25 @@ export default function MePage() {
               )
             })}
           </div>
+        </GlassCard>
+
+        {/* ── Stat Hexagon — always visible ───────────────────────── */}
+        <GlassCard padding="md" className="mb-phi-5">
+          <div className="flex justify-center">
+            <StatHexagon
+              breakdown={hexBreakdown}
+              priorities={priorities as Record<string, 'high' | 'medium' | 'low'>}
+              onPriorityChange={(dim, priority) => {
+                const updated = { ...priorities, [dim]: priority }
+                setPriorities(updated)
+                saveProfile({ priorities: updated })
+              }}
+              className="max-w-[320px]"
+            />
+          </div>
+          <p className="text-xs text-white/30 text-center mt-phi-2">
+            Click dimension labels to adjust priority
+          </p>
         </GlassCard>
 
         {/* ── Journey Progress ──────────────────────────────────────── */}

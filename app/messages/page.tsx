@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 // Threads fetched from real DB via /api/threads
@@ -17,6 +18,39 @@ import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 import GlassCard from '@/components/ui/GlassCard'
 import { useTranslation } from '@/lib/hooks/use-translation'
+
+// ─── Real conversation types ────────────────────────────────────────
+interface RealConversation {
+  id: string
+  otherParticipants: Array<{
+    id: string
+    name: string | null
+    image: string | null
+    avatarUrl: string | null
+    country: string
+  }>
+  lastMessage: {
+    content: string
+    senderId: string
+    read: boolean
+    createdAt: string
+  } | null
+  lastMessageAt: string | null
+}
+
+interface RealMessage {
+  id: string
+  content: string
+  senderId: string
+  read: boolean
+  createdAt: string
+  sender: {
+    id: string
+    name: string | null
+    image: string | null
+    avatarUrl: string | null
+  }
+}
 
 /** Resolve a language code to its human-readable name */
 function langCodeToName(code: string): string {
@@ -382,6 +416,7 @@ function generateAgentResponse(
 
 export default function MessagesPage() {
   const searchParams = useSearchParams()
+  const { data: session } = useSession()
   const { identity, hasCompletedDiscovery } = useIdentity()
   const { t } = useTranslation()
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
@@ -399,6 +434,13 @@ export default function MessagesPage() {
   >({})
   const [chatInput, setChatInput] = useState('')
   const chatEndRef = useRef<HTMLDivElement>(null)
+
+  // ── Real DM state ──────────────────────────────────────────────────
+  const [realConversations, setRealConversations] = useState<RealConversation[]>([])
+  const [realMessages, setRealMessages] = useState<RealMessage[]>([])
+  const [realMsgInput, setRealMsgInput] = useState('')
+  const [sendingReal, setSendingReal] = useState(false)
+  const realChatEndRef = useRef<HTMLDivElement>(null)
   const [dbThreads, setDbThreads] = useState<
     Array<{
       slug: string
@@ -457,12 +499,94 @@ export default function MessagesPage() {
 
   // Auto-select DM when navigating from Connect action (e.g., /messages?dm=agent_123)
   const dmParam = searchParams.get('dm')
+  // Real user DM — ?user=userId opens/creates a real conversation
+  const userParam = searchParams.get('user')
+
   useEffect(() => {
     if (dmParam) {
       setSelectedSlug(`dm-${dmParam}`)
       setShowMobileContent(true)
     }
   }, [dmParam])
+
+  // Fetch real conversations
+  const fetchConversations = useCallback(async () => {
+    if (!session?.user) return
+    try {
+      const res = await fetch('/api/conversations')
+      const data = await res.json()
+      if (data.conversations) setRealConversations(data.conversations)
+    } catch {
+      /* silent */
+    }
+  }, [session?.user])
+
+  useEffect(() => {
+    fetchConversations()
+  }, [fetchConversations])
+
+  // Handle ?user= param — create/find conversation with that user
+  useEffect(() => {
+    if (!userParam || !session?.user) return
+    fetch('/api/conversations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: userParam }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.conversation) {
+          setSelectedSlug(`real-${data.conversation.id}`)
+          setShowMobileContent(true)
+          fetchConversations()
+        }
+      })
+      .catch(() => {})
+  }, [userParam, session?.user, fetchConversations])
+
+  // Fetch messages for selected real conversation
+  const selectedRealConvId = selectedSlug?.startsWith('real-')
+    ? selectedSlug.replace('real-', '')
+    : null
+
+  useEffect(() => {
+    if (!selectedRealConvId) return
+    fetch(`/api/conversations/${selectedRealConvId}/messages`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.messages) setRealMessages(data.messages)
+      })
+      .catch(() => {})
+  }, [selectedRealConvId])
+
+  // Auto-scroll real chat
+  useEffect(() => {
+    realChatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [realMessages])
+
+  // Send real message
+  const handleSendRealMessage = async () => {
+    if (!realMsgInput.trim() || !selectedRealConvId || sendingReal) return
+    const content = realMsgInput.trim()
+    setRealMsgInput('')
+    setSendingReal(true)
+
+    try {
+      const res = await fetch(`/api/conversations/${selectedRealConvId}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content }),
+      })
+      const data = await res.json()
+      if (data.message) {
+        setRealMessages((prev) => [...prev, data.message])
+        fetchConversations() // Update sidebar last message
+      }
+    } catch {
+      /* silent */
+    }
+    setSendingReal(false)
+  }
 
   // Top-matched AI agents for Direct Messages section
   // Includes the dm query param agent if not in top 5
@@ -640,10 +764,67 @@ export default function MessagesPage() {
         )
       })}
 
-      {/* Direct Messages — AI agent conversation starters */}
+      {/* Real Direct Messages */}
+      {realConversations.length > 0 && (
+        <div className="mt-phi-5 border-t border-white/10 pt-phi-3">
+          <h3 className="mb-phi-2 px-phi-3 text-phi-xs font-semibold uppercase tracking-wider text-white/40">
+            Direct Messages
+          </h3>
+          <div className="space-y-px">
+            {realConversations.map((conv) => {
+              const other = conv.otherParticipants[0]
+              if (!other) return null
+              const isUnread =
+                conv.lastMessage &&
+                !conv.lastMessage.read &&
+                conv.lastMessage.senderId !== session?.user?.id
+              return (
+                <button
+                  key={conv.id}
+                  onClick={() => handleSelectChannel(`real-${conv.id}`)}
+                  className={`flex w-full items-center gap-phi-2 px-phi-3 py-phi-2 text-left transition-all duration-200 hover:bg-white/5 ${
+                    selectedSlug === `real-${conv.id}`
+                      ? 'glass-subtle border-l-2 border-brand-accent bg-white/5'
+                      : 'border-l-2 border-transparent'
+                  }`}
+                >
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-brand-primary text-phi-sm text-white">
+                    {other.name?.[0]?.toUpperCase() ?? '?'}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className={`truncate text-phi-sm font-medium ${
+                        isUnread
+                          ? 'text-white font-bold'
+                          : selectedSlug === `real-${conv.id}`
+                            ? 'text-brand-accent'
+                            : 'text-white/80'
+                      }`}
+                    >
+                      {other.name ?? 'Pioneer'}
+                    </p>
+                    {conv.lastMessage && (
+                      <p
+                        className={`truncate text-phi-xs ${isUnread ? 'text-white/60' : 'text-white/30'}`}
+                      >
+                        {conv.lastMessage.content.slice(0, 50)}
+                      </p>
+                    )}
+                  </div>
+                  {isUnread && (
+                    <div className="h-2 w-2 rounded-full bg-brand-accent flex-shrink-0" />
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* AI Agent Conversations */}
       <div className="mt-phi-5 border-t border-white/10 pt-phi-3">
         <h3 className="mb-phi-2 px-phi-3 text-phi-xs font-semibold uppercase tracking-wider text-white/40">
-          {t('messages.directMessages')}
+          🤖 AI Agents
         </h3>
         {topAgents.length > 0 ? (
           <div className="space-y-px">
@@ -1002,7 +1183,133 @@ export default function MessagesPage() {
     </div>
   ) : null
 
-  const contentPanel = selectedThread ? (
+  // ── Real DM content panel ──────────────────────────────────────
+  const selectedRealConv = selectedRealConvId
+    ? realConversations.find((c) => c.id === selectedRealConvId)
+    : null
+
+  const realDmPanel = selectedRealConv
+    ? (() => {
+        const other = selectedRealConv.otherParticipants[0]
+        return (
+          <div className="flex h-full flex-col">
+            {/* Header */}
+            <div className="flex items-center gap-phi-3 border-b border-white/10 px-phi-5 py-phi-3">
+              <button
+                onClick={handleBackToList}
+                className="mr-phi-1 text-white/60 transition-colors hover:text-white md:hidden"
+                aria-label="Back"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-primary text-white font-bold">
+                {other?.name?.[0]?.toUpperCase() ?? '?'}
+              </div>
+              <div>
+                <h2 className="text-phi-base font-semibold text-white">
+                  {other?.name ?? 'Pioneer'}
+                </h2>
+                <p className="text-phi-xs text-white/50">{other?.country}</p>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 space-y-phi-3 overflow-y-auto px-phi-5 py-phi-5">
+              {realMessages.length === 0 && (
+                <div className="py-phi-7 text-center">
+                  <p className="text-phi-sm text-white/30">Start the conversation!</p>
+                </div>
+              )}
+              {realMessages.map((msg) => {
+                const isMe = msg.senderId === session?.user?.id
+                return (
+                  <div
+                    key={msg.id}
+                    className={`flex items-start gap-phi-3 ${isMe ? 'flex-row-reverse' : ''}`}
+                  >
+                    <div
+                      className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-phi-sm ${
+                        isMe ? 'bg-brand-primary' : 'bg-brand-surface'
+                      }`}
+                    >
+                      {isMe ? '👤' : (other?.name?.[0]?.toUpperCase() ?? '?')}
+                    </div>
+                    <GlassCard
+                      variant={isMe ? 'featured' : 'subtle'}
+                      padding="sm"
+                      className="min-w-0 max-w-[80%]"
+                    >
+                      <div className="mb-phi-1 flex items-baseline gap-phi-2">
+                        <span className="text-phi-sm font-medium text-white">
+                          {isMe ? t('messages.you') : (msg.sender.name ?? 'Pioneer')}
+                        </span>
+                        <span className="text-phi-xs text-white/30">
+                          {new Date(msg.createdAt).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      </div>
+                      <p className="text-phi-sm text-white/70">{msg.content}</p>
+                    </GlassCard>
+                  </div>
+                )
+              })}
+              <div ref={realChatEndRef} />
+            </div>
+
+            {/* Input bar */}
+            <div className="border-t border-white/10 px-phi-5 py-phi-3">
+              <div className="glass-subtle flex items-center gap-phi-2 rounded-lg px-phi-3 py-phi-2">
+                <input
+                  type="text"
+                  value={realMsgInput}
+                  onChange={(e) => setRealMsgInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault()
+                      handleSendRealMessage()
+                    }
+                  }}
+                  placeholder={t('messages.messagePlaceholder', { name: other?.name ?? 'Pioneer' })}
+                  className="flex-1 bg-transparent text-phi-sm text-white placeholder-white/30 outline-none"
+                />
+                <button
+                  onClick={handleSendRealMessage}
+                  disabled={sendingReal || !realMsgInput.trim()}
+                  className="flex-shrink-0 text-brand-accent transition-colors hover:text-brand-accent/80 disabled:opacity-30"
+                  aria-label="Send message"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      })()
+    : null
+
+  const contentPanel = selectedRealConv ? (
+    realDmPanel
+  ) : selectedThread ? (
     <div className="flex h-full flex-col">
       {/* Channel header */}
       <div className="flex items-center gap-phi-3 border-b border-white/10 px-phi-5 py-phi-3">

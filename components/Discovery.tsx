@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useIdentity } from '@/lib/identity-context'
+import { useXPContext } from '@/components/XPProvider'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { WORLD_LANGUAGES } from '@/lib/world-data'
@@ -830,6 +831,7 @@ export default function Discovery() {
     setCity,
     markDiscoveryCompleted,
   } = useIdentity()
+  const { awardXP } = useXPContext()
 
   const [step, _setStep] = useState<1 | 2 | 3 | 4 | 5>(1)
   const setStep = (s: 1 | 2 | 3 | 4 | 5) => {
@@ -890,6 +892,8 @@ export default function Discovery() {
     if (editCity) setCity(editCity)
     // Mark discovery as permanently completed (won't reset if languages emptied later)
     markDiscoveryCompleted()
+    // Award XP for completing discovery (one-time action)
+    awardXP('COMPLETE_DISCOVERY')
     // Redirect to where user came from, or exchange feed
     const returnTo = searchParams.get('returnTo') ?? '/exchange'
     router.push(returnTo)

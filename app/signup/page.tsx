@@ -4,18 +4,18 @@
  * Signup Page — Two-step registration
  *
  * Step 1: Choose role (Pioneer / Anchor)
- * Step 2: Google OAuth or email/password registration
+ * Step 2: Google OAuth or Magic Link (via Resend)
  *
+ * No passwords. Magic link auto-creates users via PrismaAdapter.
  * All text driven by useTranslation() for multi-language support.
  */
 
 import { useState, useEffect } from 'react'
 import { signIn } from 'next-auth/react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Users, Building2, Check, AlertCircle } from 'lucide-react'
+import { Users, Building2, Check, AlertCircle, Mail, Send } from 'lucide-react'
 import Image from 'next/image'
-import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import GlassCard from '@/components/ui/GlassCard'
@@ -23,23 +23,17 @@ import GlassCard from '@/components/ui/GlassCard'
 type Role = 'PIONEER' | 'ANCHOR'
 
 export default function SignupPage() {
-  const { identity, brandName } = useIdentity()
+  const { brandName } = useIdentity()
   const { t } = useTranslation()
   const [role, setRole] = useState<Role>('PIONEER')
   const [step, setStep] = useState<1 | 2>(1)
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    phone: '',
-    country: identity.country || 'KE',
-  })
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('')
   const [googleLoading, setGoogleLoading] = useState(false)
+  const [magicLinkLoading, setMagicLinkLoading] = useState(false)
+  const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const searchParams = useSearchParams()
-  const router = useRouter()
   // After signup: new users → onboarding. Returning destination stored for after onboarding.
   const returnTo = searchParams.get('callbackUrl') ?? '/'
   const callbackUrl = `/onboarding?returnTo=${encodeURIComponent(returnTo)}`
@@ -65,51 +59,22 @@ export default function SignupPage() {
     await signIn('google', { callbackUrl })
   }
 
-  // ── Email/Password Registration ───────────────────────────────────
-  const handleSubmit = async (e: React.FormEvent) => {
+  // ── Magic Link ──────────────────────────────────────────────────────
+  const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
+    if (!email) {
+      setError(t('auth.enterEmail'))
+      return
+    }
+    setMagicLinkLoading(true)
     setError(null)
-
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-          country: form.country,
-          role,
-          phone: form.phone || undefined,
-        }),
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.error ?? t('auth.somethingWrong'))
-        setLoading(false)
-        return
-      }
-
-      const signInResult = await signIn('credentials', {
-        email: form.email,
-        password: form.password,
-        redirect: false,
-      })
-
-      if (signInResult?.error) {
-        setError(t('auth.somethingWrong'))
-        setLoading(false)
-        return
-      }
-
-      router.push(callbackUrl)
-      router.refresh()
-    } catch {
-      setError(t('auth.somethingWrong'))
-      setLoading(false)
+    const result = await signIn('email', { email, redirect: false, callbackUrl })
+    if (result?.error) {
+      setError(t('auth.errorMagicLink'))
+      setMagicLinkLoading(false)
+    } else {
+      setMagicLinkSent(true)
+      setMagicLinkLoading(false)
     }
   }
 
@@ -233,114 +198,75 @@ export default function SignupPage() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="bg-brand-surface px-3 text-gray-400">
-                    {t('auth.orFillDetails')}
+                    {t('auth.orSignInEmail')}
                   </span>
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              {/* Magic link success state */}
+              {magicLinkSent ? (
+                <div className="text-center py-6">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-900/30 border border-green-700/50 flex items-center justify-center">
+                    <Mail className="w-8 h-8 text-green-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">{t('auth.checkEmail')}</h3>
+                  <p className="text-sm text-gray-400 mb-4">
+                    {t('auth.magicLinkSentTo', { email })}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setMagicLinkSent(false)}
+                    className="text-sm text-brand-accent hover:underline"
+                  >
+                    {t('auth.tryDifferentMethod')}
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleMagicLink} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">
-                      {t('auth.fullName')}
+                      {t('auth.email')}
                     </label>
-                    <input
-                      type="text"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder="John Kamau"
-                      className="input w-full"
-                      required
-                      autoComplete="name"
-                    />
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="input pl-10 w-full"
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
-                      {t('auth.country')}
-                    </label>
-                    <select
-                      value={form.country}
-                      onChange={(e) => setForm({ ...form, country: e.target.value })}
-                      className="input w-full"
-                    >
-                      {COUNTRY_OPTIONS.map((c) => (
-                        <option key={c.code} value={c.code}>
-                          {c.flag} {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+                  <p className="text-xs text-gray-500">{t('auth.magicLinkDesc')}</p>
+                  <button
+                    type="submit"
+                    disabled={magicLinkLoading}
+                    className="btn-primary w-full py-3 text-base mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {magicLinkLoading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-brand-bg/30 border-t-brand-bg rounded-full animate-spin" />
+                        {t('auth.sendingLink')}
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2">
+                        <Send className="w-4 h-4" />
+                        {t('auth.createAccountFree')}
+                      </span>
+                    )}
+                  </button>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    {t('auth.email')}
-                  </label>
-                  <input
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    placeholder="you@example.com"
-                    className="input w-full"
-                    required
-                    autoComplete="email"
-                  />
-                </div>
-
-                {form.country === 'KE' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
-                      {t('auth.phoneOptional')}
-                    </label>
-                    <input
-                      type="tel"
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      placeholder="07XX XXX XXX"
-                      className="input w-full"
-                      autoComplete="tel"
-                    />
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    {t('auth.password')}
-                  </label>
-                  <input
-                    type="password"
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    placeholder={t('auth.minChars')}
-                    className="input w-full"
-                    minLength={8}
-                    required
-                    autoComplete="new-password"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn-primary w-full py-3 text-base mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <div className="w-4 h-4 border-2 border-brand-bg/30 border-t-brand-bg rounded-full animate-spin" />
-                      {t('auth.creatingAccount')}
-                    </span>
-                  ) : (
-                    t('auth.createAccountFree')
-                  )}
-                </button>
-
-                <p className="text-xs text-center text-gray-400">
-                  {t('auth.agreePrivacy')}{' '}
-                  <Link href="/privacy" className="underline text-gray-400">
-                    {t('footer.privacy')}
-                  </Link>
-                </p>
-              </form>
+                  <p className="text-xs text-center text-gray-400">
+                    {t('auth.agreePrivacy')}{' '}
+                    <Link href="/privacy" className="underline text-gray-400">
+                      {t('footer.privacy')}
+                    </Link>
+                  </p>
+                </form>
+              )}
             </>
           )}
         </GlassCard>

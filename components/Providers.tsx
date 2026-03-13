@@ -10,11 +10,14 @@
 
 import { SessionProvider } from 'next-auth/react'
 import { IdentityProvider } from '@/lib/identity-context'
+import { XPProvider } from '@/components/XPProvider'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <IdentityProvider>{children}</IdentityProvider>
+      <IdentityProvider>
+        <XPProvider>{children}</XPProvider>
+      </IdentityProvider>
     </SessionProvider>
   )
 }

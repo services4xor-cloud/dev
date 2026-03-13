@@ -45,6 +45,11 @@ model User {
   savedPaths    SavedPath[]
   forwards      Forward[]         // Agent forwards paths to workers
   agentProfile  AgentProfile?     // Agent-specific profile (territory, commission)
+  conversations Conversation[]    @relation("ConversationParticipants")
+  sentMessages  Message[]
+  sentFriendships     Friendship[] @relation("SentFriendships")
+  receivedFriendships Friendship[] @relation("ReceivedFriendships")
+  xpEvents      XPEvent[]
 }
 
 enum UserRole {
@@ -130,6 +135,7 @@ model Profile {
   crafts      String[] // Craft/skill tags
   toCountries String[] // Target destination countries (ISO codes)
   priorities  Json?    // Dimension priority weights: { language: 'high', craft: 'high', ... }
+  totalXP     Int      @default(0) // Cached XP total for fast reads
 
   updatedAt   DateTime @updatedAt
 }
@@ -456,4 +462,70 @@ model SocialPost {
   @@index([status])
   @@index([countryCode])
   @@index([scheduledFor])
+}
+
+// ─── Conversations ────────────────────────────────────────────────────────────
+// Direct message conversations between two or more Pioneers.
+
+model Conversation {
+  id            String    @id @default(cuid())
+  participants  User[]    @relation("ConversationParticipants")
+  messages      Message[]
+  lastMessage   String?
+  lastMessageAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// ─── Messages ─────────────────────────────────────────────────────────────────
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id])
+  content        String       @db.Text
+  read           Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+  @@index([senderId])
+}
+
+// ─── Friendships ──────────────────────────────────────────────────────────────
+// Pioneer-to-Pioneer connections. Directional: from → to, with status.
+
+model Friendship {
+  id        String           @id @default(cuid())
+  fromId    String
+  from      User             @relation("SentFriendships", fields: [fromId], references: [id])
+  toId      String
+  to        User             @relation("ReceivedFriendships", fields: [toId], references: [id])
+  status    FriendshipStatus @default(PENDING)
+  createdAt DateTime         @default(now())
+
+  @@unique([fromId, toId])
+  @@index([toId])
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+// ─── XP Events ────────────────────────────────────────────────────────────────
+// Tracks XP awards for gamification. Each event = one XP action.
+
+model XPEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String   // XP action key (e.g. "VIEW_PATH", "COMPLETE_DISCOVERY")
+  points    Int
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, action])
 }

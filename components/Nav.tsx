@@ -19,6 +19,8 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [identityOpen, setIdentityOpen] = useState(false)
   const identityRef = useRef<HTMLDivElement>(null)
+  const [unreadMessages, setUnreadMessages] = useState(0)
+  const [pendingFriends, setPendingFriends] = useState(0)
 
   const { identity, hasCompletedDiscovery, brandName } = useIdentity()
   const { t } = useTranslation()
@@ -27,6 +29,31 @@ export default function Nav() {
   const pathname = usePathname()
 
   const isAuthenticated = status === 'authenticated' && !!session?.user
+
+  // Fetch notification counts
+  useEffect(() => {
+    if (!isAuthenticated) return
+    // Unread messages
+    fetch('/api/conversations')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.conversations) {
+          const unread = data.conversations.filter(
+            (c: { lastMessage?: { read: boolean; senderId: string } }) =>
+              c.lastMessage && !c.lastMessage.read && c.lastMessage.senderId !== session?.user?.id
+          ).length
+          setUnreadMessages(unread)
+        }
+      })
+      .catch(() => {})
+    // Pending friend requests
+    fetch('/api/friends?pending=true')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.friends) setPendingFriends(data.friends.length)
+      })
+      .catch(() => {})
+  }, [isAuthenticated, session?.user?.id, pathname])
 
   // Scroll-aware background
   useEffect(() => {
@@ -160,6 +187,12 @@ export default function Nav() {
             <ul className="hidden lg:flex items-center gap-0.5 list-none">
               {navLinks.map((link) => {
                 const Icon = link.icon
+                const badgeCount =
+                  link.href === '/messages'
+                    ? unreadMessages
+                    : link.href === '/me'
+                      ? pendingFriends
+                      : 0
                 return (
                   <li key={link.href}>
                     <Link
@@ -170,6 +203,11 @@ export default function Nav() {
                     >
                       <Icon className="w-3.5 h-3.5" aria-hidden="true" />
                       {link.label}
+                      {badgeCount > 0 && (
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-accent text-[10px] font-bold text-brand-bg">
+                          {badgeCount > 9 ? '9+' : badgeCount}
+                        </span>
+                      )}
                       {isActive(link.href) && (
                         <span
                           className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-brand-accent"
