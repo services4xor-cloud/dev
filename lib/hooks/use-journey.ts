@@ -127,7 +127,7 @@ const ALL_ACTIONS: Omit<JourneyAction, 'completed'>[] = [
     description: 'Browse available paths',
     xp: 15,
     stage: 'arrival',
-    route: '/ventures',
+    route: '/exchange',
   },
   {
     id: 'visit_about',
@@ -145,7 +145,7 @@ const ALL_ACTIONS: Omit<JourneyAction, 'completed'>[] = [
     description: 'Click into path details',
     xp: 30,
     stage: 'discovery',
-    route: '/ventures',
+    route: '/exchange',
   },
   {
     id: 'explore_experience',
@@ -178,7 +178,7 @@ const ALL_ACTIONS: Omit<JourneyAction, 'completed'>[] = [
     description: 'Fill in skills, bio, experience',
     xp: 50,
     stage: 'preparation',
-    route: '/onboarding',
+    route: '/me',
   },
   {
     id: 'save_first_path',
@@ -186,7 +186,7 @@ const ALL_ACTIONS: Omit<JourneyAction, 'completed'>[] = [
     description: 'Bookmark a path for later',
     xp: 20,
     stage: 'preparation',
-    route: '/ventures',
+    route: '/exchange',
   },
   {
     id: 'upload_resume',
@@ -194,7 +194,7 @@ const ALL_ACTIONS: Omit<JourneyAction, 'completed'>[] = [
     description: 'Add your CV or video pitch',
     xp: 30,
     stage: 'preparation',
-    route: '/profile',
+    route: '/me',
   },
 
   // First Step
@@ -204,7 +204,7 @@ const ALL_ACTIONS: Omit<JourneyAction, 'completed'>[] = [
     description: 'Apply to a path',
     xp: 60,
     stage: 'first_step',
-    route: '/ventures',
+    route: '/exchange',
   },
   {
     id: 'join_first_thread',
@@ -247,7 +247,7 @@ const ALL_ACTIONS: Omit<JourneyAction, 'completed'>[] = [
     description: 'Apply to multiple paths',
     xp: 60,
     stage: 'momentum',
-    route: '/ventures',
+    route: '/exchange',
   },
   {
     id: 'get_shortlisted',

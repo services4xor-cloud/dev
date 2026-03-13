@@ -32,6 +32,7 @@ import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { generateAllAgents } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
+import { resolveSkillId, areSkillsEquivalent } from '@/lib/semantic-skills'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
@@ -80,6 +81,7 @@ export default function ExchangeDetailPage() {
   const [applying, setApplying] = useState(false)
   const [applied, setApplied] = useState(false)
   const [applyError, setApplyError] = useState('')
+  const [loading, setLoading] = useState(true)
 
   // Award XP for viewing a path
   useEffect(() => {
@@ -134,7 +136,39 @@ export default function ExchangeDetailPage() {
   } | null>(null)
 
   useEffect(() => {
-    if (agentData) return // Skip fetch if it's an agent
+    if (agentData) {
+      setLoading(false)
+      return
+    }
+
+    const mockFallback = (pathId: string) => {
+      const mock = MOCK_VENTURE_PATHS.find((p) => p.id === pathId)
+      if (mock) {
+        setDbPath({
+          id: mock.id,
+          title: mock.title,
+          company: mock.anchorName,
+          description: `${mock.title} at ${mock.anchorName}. Located in ${mock.location}. ${mock.tags.join(', ')} skills required.`,
+          location: mock.location,
+          country: mock.country ?? 'KE',
+          isRemote: mock.isRemote,
+          skills: mock.tags,
+          sector:
+            mock.category === 'professional'
+              ? 'tech'
+              : mock.category === 'explorer'
+                ? 'safari'
+                : mock.category,
+          salaryMin: null,
+          salaryMax: null,
+          currency: 'USD',
+          status: 'OPEN',
+          tier: mock.isFeatured ? 'FEATURED' : 'BASIC',
+          createdAt: new Date().toISOString(),
+        })
+      }
+    }
+
     // Try DB first, fallback to mock data
     fetch(`/api/paths/${id}`)
       .then((r) => r.json())
@@ -142,80 +176,69 @@ export default function ExchangeDetailPage() {
         if (data.success && data.path) {
           setDbPath(data.path)
         } else {
-          // Fallback: check mock data
-          const mock = MOCK_VENTURE_PATHS.find((p) => p.id === id)
-          if (mock) {
-            setDbPath({
-              id: mock.id,
-              title: mock.title,
-              company: mock.anchorName,
-              description: `${mock.title} at ${mock.anchorName}. Located in ${mock.location}. ${mock.tags.join(', ')} skills required.`,
-              location: mock.location,
-              country: mock.country ?? 'KE',
-              isRemote: mock.isRemote,
-              skills: mock.tags,
-              sector:
-                mock.category === 'professional'
-                  ? 'tech'
-                  : mock.category === 'explorer'
-                    ? 'safari'
-                    : mock.category,
-              salaryMin: null,
-              salaryMax: null,
-              currency: 'USD',
-              status: 'OPEN',
-              tier: mock.isFeatured ? 'FEATURED' : 'BASIC',
-              createdAt: new Date().toISOString(),
-            })
-          }
+          mockFallback(id)
         }
       })
       .catch(() => {
-        // API failed — try mock
-        const mock = MOCK_VENTURE_PATHS.find((p) => p.id === id)
-        if (mock) {
-          setDbPath({
-            id: mock.id,
-            title: mock.title,
-            company: mock.anchorName,
-            description: `${mock.title} at ${mock.anchorName}. Located in ${mock.location}. ${mock.tags.join(', ')} skills required.`,
-            location: mock.location,
-            country: mock.country ?? 'KE',
-            isRemote: mock.isRemote,
-            skills: mock.tags,
-            sector:
-              mock.category === 'professional'
-                ? 'tech'
-                : mock.category === 'explorer'
-                  ? 'safari'
-                  : mock.category,
-            salaryMin: null,
-            salaryMax: null,
-            currency: 'USD',
-            status: 'OPEN',
-            tier: mock.isFeatured ? 'FEATURED' : 'BASIC',
-            createdAt: new Date().toISOString(),
-          })
-        }
+        mockFallback(id)
       })
+      .finally(() => setLoading(false))
   }, [id, agentData])
 
   const path = dbPath
 
-  // Not found
+  // Show skeleton while loading path data
+  if (loading && !agentData) {
+    return (
+      <SectionLayout>
+        <div className="mb-phi-4 h-4 w-32 bg-white/5 rounded animate-pulse" />
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-4">
+            <GlassCard padding="lg">
+              <div className="space-y-4 animate-pulse">
+                <div className="h-6 w-24 bg-white/5 rounded-full" />
+                <div className="h-8 w-3/4 bg-white/5 rounded" />
+                <div className="h-4 w-1/2 bg-white/5 rounded" />
+                <div className="h-32 bg-white/5 rounded-lg mt-6" />
+                <div className="flex gap-2 mt-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-7 w-20 bg-white/5 rounded-full" />
+                  ))}
+                </div>
+              </div>
+            </GlassCard>
+          </div>
+          <div className="space-y-4">
+            <GlassCard padding="md">
+              <div className="space-y-3 animate-pulse">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i}>
+                    <div className="h-3 w-full bg-white/5 rounded mb-1" />
+                    <div className="h-1.5 bg-white/5 rounded-full" />
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+          </div>
+        </div>
+      </SectionLayout>
+    )
+  }
+
+  // Not found (only after loading completes)
   if (!agentData && !path) {
     return (
       <SectionLayout>
         <div className="py-phi-7 text-center">
           <h1 className="text-phi-xl font-bold text-white">{t('exchangeDetail.notFound')}</h1>
           <p className="mt-phi-2 text-white/50">{t('exchangeDetail.notFoundDesc')}</p>
-          <Link
-            href="/exchange"
+          <button
+            onClick={() => router.back()}
             className="mt-phi-4 inline-flex items-center gap-phi-1 text-brand-accent hover:text-brand-accent/80 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             {t('exchangeDetail.backToExchange')}
-          </Link>
+          </button>
         </div>
       </SectionLayout>
     )
@@ -227,10 +250,7 @@ export default function ExchangeDetailPage() {
     const countryInfo = COUNTRY_OPTIONS.find((c) => c.code === agent.country)
     const sharedLangs = agent.languages.filter((l) => identity.languages.includes(l))
     const sharedCraft = agent.craft.filter((c) =>
-      (identity.craft ?? []).some(
-        (uc) =>
-          uc.toLowerCase().includes(c.toLowerCase()) || c.toLowerCase().includes(uc.toLowerCase())
-      )
+      (identity.craft ?? []).some((uc) => areSkillsEquivalent(uc, c))
     )
 
     const handleConnect = () => {
@@ -240,13 +260,13 @@ export default function ExchangeDetailPage() {
 
     return (
       <SectionLayout>
-        <Link
-          href="/exchange"
+        <button
+          onClick={() => router.back()}
           className="mb-phi-4 inline-flex items-center gap-phi-1 text-phi-sm text-white/50 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           {t('exchangeDetail.backToExchange')}
-        </Link>
+        </button>
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main content */}
@@ -508,13 +528,13 @@ export default function ExchangeDetailPage() {
 
     return (
       <SectionLayout>
-        <Link
-          href="/exchange"
+        <button
+          onClick={() => router.back()}
           className="mb-phi-4 inline-flex items-center gap-phi-1 text-phi-sm text-white/50 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           {t('exchangeDetail.backToExchange')}
-        </Link>
+        </button>
 
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
@@ -596,11 +616,7 @@ export default function ExchangeDetailPage() {
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   {path.skills.map((skill) => {
-                    const shared = (identity.craft ?? []).some(
-                      (c) =>
-                        c.toLowerCase().includes(skill.toLowerCase()) ||
-                        skill.toLowerCase().includes(c.toLowerCase())
-                    )
+                    const shared = (identity.craft ?? []).some((c) => areSkillsEquivalent(c, skill))
                     return (
                       <span
                         key={skill}

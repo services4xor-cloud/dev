@@ -38,17 +38,46 @@ export default function JourneyProgress() {
   // XP level system for quest unlocking
   const xpState = useMemo(() => getXPLevel(totalXp), [totalXp])
 
-  // For now, derive completed quest IDs from journey completed actions
-  // TODO: sync quest completions to dedicated storage when backend is ready
+  // Derive completed quest IDs from journey completed actions and XP state
   const completedQuestIds = useMemo(() => {
     const ids: string[] = []
-    const ca = completedCount // proxy: use completed action count to estimate
-    // Map journey actions to quest completions
-    if (completedCount > 0) {
-      // Check specific actions from journey state
+    const completed = new Set(
+      typeof window !== 'undefined'
+        ? JSON.parse(localStorage.getItem('be-journey') || '{}').completedActions || []
+        : []
+    )
+
+    // Map quest triggers → journey action completions
+    const triggerMap: Record<string, string[]> = {
+      SET_IDENTITY: ['set_identity'],
+      COMPLETE_DISCOVERY: ['set_identity', 'visit_ventures'],
+      SET_DESTINATIONS: ['set_identity'],
+      COMPLETE_PROFILE: ['complete_profile'],
+      VIEW_PATH: ['visit_ventures', 'explore_3_paths'],
+      DISCOVER_EXPERIENCE: ['explore_experience'],
+      SEND_MESSAGE: ['join_first_thread'],
+      ADD_FRIEND: ['join_first_thread', 'join_3_threads'],
+      APPLY_PATH: ['open_first_chapter', 'open_3_chapters'],
     }
-    return ids
-  }, [completedCount])
+
+    for (const quest of getQuestsForLevel(xpState.level)) {
+      const journeyActions = triggerMap[quest.trigger] || []
+      // Quest is complete if the relevant journey actions are done
+      // OR if we have enough XP to imply completion (for one-time quests)
+      const relevantCompleted = journeyActions.filter((a) => completed.has(a))
+      if (relevantCompleted.length >= quest.targetCount) {
+        ids.push(quest.id)
+      }
+    }
+
+    // Also mark quests complete based on XP thresholds
+    if (totalXp >= 20) ids.push('complete-identity')
+    if (totalXp >= 70) ids.push('complete-discovery')
+    if (totalXp >= 85) ids.push('set-destinations')
+    if (completedCount >= 8) ids.push('complete-profile')
+
+    return Array.from(new Set(ids))
+  }, [totalXp, completedCount, xpState.level])
 
   const activeQuests = useMemo(
     () => getQuestsForLevel(xpState.level).filter((q) => !completedQuestIds.includes(q.id)),

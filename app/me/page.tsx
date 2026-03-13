@@ -1223,7 +1223,7 @@ export default function MePage() {
               {t('me.redoDiscoveryHint') || 'Want to start fresh? Redo the discovery process.'}
             </p>
             <Link
-              href="/onboarding?redo=true"
+              href="/?discover=true"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 text-white/60 border border-white/10 text-phi-sm hover:bg-white/10 hover:text-white transition-colors"
             >
               {t('me.redoDiscovery') || 'Redo Discovery'}
@@ -1391,36 +1391,51 @@ export default function MePage() {
 
         {/* ── Next Steps (contextual prompts) ─────────────────────────── */}
         {(() => {
-          const steps: Array<{ text: string; href: string }> = []
+          const steps: Array<{ text: string; action?: () => void; href?: string }> = []
           if (identity.languages.length === 0)
             steps.push({
-              text: 'Add your languages to find matching pioneers',
-              href: '/?discover=true',
+              text: t('me.nextStepLanguages') || 'Add your languages to find matching pioneers',
+              action: () => setActiveTab('Profile'),
             })
           if (identity.interests.length === 0)
-            steps.push({ text: 'Select your interests to discover paths', href: '/?discover=true' })
+            steps.push({
+              text: t('me.nextStepInterests') || 'Select your interests to discover paths',
+              action: () => setActiveTab('Profile'),
+            })
           if (identity.craft.length === 0)
             steps.push({
-              text: 'Set your craft to attract the right opportunities',
-              href: '/?discover=true',
+              text: t('me.nextStepCraft') || 'Set your craft to attract the right opportunities',
+              action: () => setActiveTab('Profile'),
             })
           if (steps.length === 0)
             steps.push({
-              text: 'Explore the Exchange to find people and opportunities',
+              text:
+                t('me.nextStepExplore') || 'Explore the Exchange to find people and opportunities',
               href: '/exchange',
             })
           return steps.length > 0 ? (
             <div className="mb-phi-4 space-y-phi-1">
-              {steps.slice(0, 2).map((s) => (
-                <a
-                  key={s.text}
-                  href={s.href}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-accent/5 border border-brand-accent/15 text-brand-accent text-xs hover:bg-brand-accent/10 transition-colors"
-                >
-                  <span className="text-sm">→</span>
-                  {s.text}
-                </a>
-              ))}
+              {steps.slice(0, 2).map((s) =>
+                s.action ? (
+                  <button
+                    key={s.text}
+                    onClick={s.action}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-accent/5 border border-brand-accent/15 text-brand-accent text-xs hover:bg-brand-accent/10 transition-colors text-left"
+                  >
+                    <span className="text-sm">→</span>
+                    {s.text}
+                  </button>
+                ) : (
+                  <Link
+                    key={s.text}
+                    href={s.href!}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-accent/5 border border-brand-accent/15 text-brand-accent text-xs hover:bg-brand-accent/10 transition-colors"
+                  >
+                    <span className="text-sm">→</span>
+                    {s.text}
+                  </Link>
+                )
+              )}
             </div>
           ) : null
         })()}

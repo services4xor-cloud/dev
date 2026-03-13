@@ -10,7 +10,7 @@
  * Sorted by dimension score descending.
  */
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Filter, Users, Briefcase } from 'lucide-react'
 import Link from 'next/link'
@@ -168,6 +168,21 @@ export default function ExchangePage() {
 
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [sectorFilter, setSectorFilter] = useState<string>('all')
+  const [mounted, setMounted] = useState(false)
+  const [visibleCount, setVisibleCount] = useState(20)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(20)
+  }, [typeFilter, sectorFilter])
+
+  const loadMore = useCallback(() => {
+    setVisibleCount((prev) => prev + 20)
+  }, [])
   const [dbPaths, setDbPaths] = useState<
     Array<{
       id: string
@@ -253,7 +268,7 @@ export default function ExchangePage() {
         // Normalize 0-110 to 0-100, then apply completeness matchBoost
         const rawDisplay = Math.min(100, Math.round((dimScore.total / 110) * 100))
         const displayScore = Math.min(100, Math.round(rawDisplay * completeness.matchBoost))
-        return { agent, score: displayScore }
+        return { agent, score: displayScore, breakdown: dimScore.breakdown }
       })
       .sort((a, b) => b.score - a.score)
   }, [identity, priorities, completeness.matchBoost])
@@ -264,7 +279,7 @@ export default function ExchangePage() {
 
     // Add AI agent people
     if (typeFilter !== 'opportunities') {
-      for (const { agent, score } of scoredAgents) {
+      for (const { agent, score, breakdown } of scoredAgents) {
         const sector = agentSector(agent)
 
         // Sector filter
@@ -298,6 +313,7 @@ export default function ExchangePage() {
               const cat = EXCHANGE_CATEGORIES.find((c) => c.id === id)
               return cat?.label ?? id
             }),
+            matchBreakdown: breakdown,
           },
         })
       }
@@ -430,18 +446,54 @@ export default function ExchangePage() {
       </p>
 
       {/* ── Feed grid ── */}
-      {feedItems.length > 0 ? (
+      {!mounted ? (
         <div className="grid gap-phi-4 sm:grid-cols-2">
-          {feedItems.map((item) => (
-            <ExchangeCard
-              key={`${item.type}-${item.data.id}`}
-              type={item.type}
-              data={item.data}
-              userLanguages={userLangNames}
-              userInterests={identity.interests}
-            />
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className="bg-brand-surface border border-white/10 rounded-xl p-5 animate-pulse"
+            >
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-white/5" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-3/4 bg-white/5 rounded" />
+                  <div className="h-3 w-1/2 bg-white/5 rounded" />
+                </div>
+                <div className="h-8 w-12 bg-white/5 rounded-lg" />
+              </div>
+              <div className="flex gap-1.5 mt-3">
+                {[1, 2, 3].map((j) => (
+                  <div key={j} className="h-6 w-16 bg-white/5 rounded-full" />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
+      ) : feedItems.length > 0 ? (
+        <>
+          <div className="grid gap-phi-4 sm:grid-cols-2">
+            {feedItems.slice(0, visibleCount).map((item) => (
+              <ExchangeCard
+                key={`${item.type}-${item.data.id}`}
+                type={item.type}
+                data={item.data}
+                userLanguages={userLangNames}
+                userInterests={identity.interests}
+              />
+            ))}
+          </div>
+          {visibleCount < feedItems.length && (
+            <div className="mt-phi-5 text-center">
+              <button
+                onClick={loadMore}
+                className="px-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/60 text-phi-sm hover:bg-white/10 hover:text-white transition-colors"
+              >
+                {t('exchange.loadMore') || 'Load more'} ({feedItems.length - visibleCount}{' '}
+                remaining)
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <GlassCard padding="lg" className="text-center">
           <p className="text-phi-lg text-white/50">{t('exchange.noMatches')}</p>
