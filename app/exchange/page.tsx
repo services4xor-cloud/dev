@@ -11,12 +11,14 @@
  */
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft, Filter, Users, Briefcase } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
+import { ArrowLeft, Filter, Users, Briefcase, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
+import { areSkillsEquivalent } from '@/lib/semantic-skills'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 // Real paths fetched from /api/paths (Prisma → Neon PostgreSQL)
@@ -87,7 +89,7 @@ function agentSector(agent: AgentPersona): { label: string; icon: string } {
   return { label: 'General', icon: '🌐' }
 }
 
-/** Score a DB path opportunity against user identity */
+/** Score a DB path opportunity against user identity, with breakdown */
 function scoreDbPath(
   path: {
     skills: string[]
@@ -97,24 +99,49 @@ function scoreDbPath(
     country: string
   },
   userInterests: string[],
+  userCraft: string[],
   userCountry: string
-): number {
-  let score = 25
+): { score: number; breakdown: ExchangeCardData['matchBreakdown'] & object } {
+  let craftScore = 0
+  let locationScore = 0
+  let marketScore = 0
+
+  // Semantic skill matching against user craft
+  const skillMatches = path.skills.filter((skill) =>
+    userCraft.some((uc) => areSkillsEquivalent(uc, skill))
+  )
+  craftScore = Math.min(40, skillMatches.length * 15)
+
+  // Sector / interest matching
   const interestLabels = userInterests
     .map((id) => EXCHANGE_CATEGORIES.find((c) => c.id === id))
     .filter(Boolean)
     .map((c) => c!.label.toLowerCase())
-
-  const skillMatches = path.skills.filter((skill) =>
-    interestLabels.some(
-      (il) => il.includes(skill.toLowerCase()) || skill.toLowerCase().includes(il.split(' ')[0])
-    )
+  const sectorMatch = interestLabels.some(
+    (il) =>
+      (path.sector || '').toLowerCase().includes(il) ||
+      il.includes((path.sector || '').toLowerCase())
   )
-  score += Math.min(40, skillMatches.length * 15)
-  if (path.tier === 'FEATURED' || path.tier === 'PREMIUM') score += 10
-  if (path.isRemote) score += 5
-  if (path.country === userCountry) score += 10
-  return Math.min(100, score)
+  if (sectorMatch) marketScore += 15
+
+  if (path.tier === 'FEATURED' || path.tier === 'PREMIUM') marketScore += 10
+  if (path.isRemote) marketScore += 5
+  if (path.country === userCountry) locationScore = 15
+
+  const total = Math.min(100, 25 + craftScore + locationScore + marketScore)
+  return {
+    score: total,
+    breakdown: {
+      craft: craftScore,
+      location: locationScore,
+      market: marketScore,
+      language: 0,
+      passion: 0,
+      faith: 0,
+      reach: 0,
+      culture: 0,
+    },
+  }
 }
 
 function sectorToIcon(sector: string | null): string {
@@ -141,9 +168,77 @@ type TypeFilter = 'all' | 'people' | 'opportunities'
 // ─── Component ──────────────────────────────────────────────────────
 
 export default function ExchangePage() {
+  return (
+    <Suspense fallback={<ExchangeSkeleton />}>
+      <ExchangeInner />
+    </Suspense>
+  )
+}
+
+/** Skeleton shown while Suspense resolves useSearchParams */
+function ExchangeSkeleton() {
+  return (
+    <SectionLayout>
+      <div className="mb-phi-5">
+        <div className="h-4 w-24 bg-white/5 rounded mb-phi-3" />
+        <div className="h-8 w-64 bg-white/5 rounded mb-2" />
+        <div className="h-4 w-96 bg-white/5 rounded" />
+      </div>
+      <div className="grid gap-phi-4 sm:grid-cols-2">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div
+            key={i}
+            className="bg-brand-surface border border-white/10 rounded-xl p-5 animate-pulse"
+          >
+            <div className="flex items-start gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-white/5" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-3/4 bg-white/5 rounded" />
+                <div className="h-3 w-1/2 bg-white/5 rounded" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </SectionLayout>
+  )
+}
+
+/** Text search: does `query` match any field of an agent? */
+function agentMatchesQuery(agent: AgentPersona, query: string): boolean {
+  const q = query.toLowerCase()
+  if (agent.name.toLowerCase().includes(q)) return true
+  if (agent.city.toLowerCase().includes(q)) return true
+  if (agent.craft.some((c) => c.toLowerCase().includes(q))) return true
+  if (agent.craft.some((c) => areSkillsEquivalent(q, c))) return true
+  if (agent.interests.some((i) => i.toLowerCase().includes(q))) return true
+  if (agent.bio.toLowerCase().includes(q)) return true
+  return false
+}
+
+/** Text search: does `query` match any field of a path? */
+function pathMatchesQuery(
+  path: { title: string; company: string; skills: string[]; sector: string | null },
+  query: string
+): boolean {
+  const q = query.toLowerCase()
+  if (path.title.toLowerCase().includes(q)) return true
+  if (path.company.toLowerCase().includes(q)) return true
+  if (path.skills.some((s) => s.toLowerCase().includes(q))) return true
+  if (path.skills.some((s) => areSkillsEquivalent(q, s))) return true
+  if (path.sector?.toLowerCase().includes(q)) return true
+  return false
+}
+
+function ExchangeInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { identity, hasCompletedDiscovery } = useIdentity()
   const { t } = useTranslation()
+
+  // Read query params from needs "Find matching people" button
+  const urlSkills = searchParams.get('skills') // comma-separated category IDs
+  const urlQuery = searchParams.get('q') // free-text search
 
   // Redirect if discovery not complete
   useEffect(() => {
@@ -166,8 +261,10 @@ export default function ExchangePage() {
   // Compute profile completeness for match boost
   const completeness = useMemo(() => computeCompleteness(identity, false, false), [identity])
 
-  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
-  const [sectorFilter, setSectorFilter] = useState<string>('all')
+  // Initialize filters from URL params (needs flow)
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>(urlSkills ? 'people' : 'all')
+  const [sectorFilter, setSectorFilter] = useState<string>(urlSkills?.split(',')[0] || 'all')
+  const [textSearch, setTextSearch] = useState(urlQuery || '')
   const [mounted, setMounted] = useState(false)
   const [visibleCount, setVisibleCount] = useState(20)
 
@@ -178,7 +275,7 @@ export default function ExchangePage() {
   // Reset visible count when filters change
   useEffect(() => {
     setVisibleCount(20)
-  }, [typeFilter, sectorFilter])
+  }, [typeFilter, sectorFilter, textSearch])
 
   const loadMore = useCallback(() => {
     setVisibleCount((prev) => prev + 20)
@@ -277,10 +374,15 @@ export default function ExchangePage() {
   const feedItems = useMemo(() => {
     const items: { type: 'person' | 'opportunity'; data: ExchangeCardData; score: number }[] = []
 
+    const query = textSearch.trim()
+
     // Add AI agent people
     if (typeFilter !== 'opportunities') {
       for (const { agent, score, breakdown } of scoredAgents) {
         const sector = agentSector(agent)
+
+        // Text search filter
+        if (query && !agentMatchesQuery(agent, query)) continue
 
         // Sector filter
         if (sectorFilter !== 'all') {
@@ -322,7 +424,15 @@ export default function ExchangePage() {
     // Score opportunities from real DB
     if (typeFilter !== 'people') {
       for (const path of dbPaths) {
-        const score = scoreDbPath(path, identity.interests, identity.country)
+        // Text search filter
+        if (query && !pathMatchesQuery(path, query)) continue
+
+        const { score, breakdown } = scoreDbPath(
+          path,
+          identity.interests,
+          identity.craft ?? [],
+          identity.country
+        )
 
         // Sector filter
         if (sectorFilter !== 'all') {
@@ -346,6 +456,7 @@ export default function ExchangePage() {
             languages: [],
             skills: path.skills.slice(0, 5),
             matchScore: score,
+            matchBreakdown: breakdown,
             sector: path.sector || 'general',
             sectorIcon: sectorToIcon(path.sector),
           },
@@ -355,7 +466,16 @@ export default function ExchangePage() {
 
     // Sort by score descending
     return items.sort((a, b) => b.score - a.score)
-  }, [typeFilter, sectorFilter, identity.interests, identity.country, scoredAgents, dbPaths])
+  }, [
+    typeFilter,
+    sectorFilter,
+    textSearch,
+    identity.interests,
+    identity.craft,
+    identity.country,
+    scoredAgents,
+    dbPaths,
+  ])
 
   // Guide user to set up identity if not done
   if (!hasCompletedDiscovery) {
@@ -440,9 +560,34 @@ export default function ExchangePage() {
         </select>
       </div>
 
+      {/* ── Search bar ── */}
+      <div className="mb-phi-4 relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+        <input
+          type="text"
+          value={textSearch}
+          onChange={(e) => setTextSearch(e.target.value)}
+          placeholder={t('exchange.searchPlaceholder') || 'Search by name, skill, or keyword...'}
+          className="w-full bg-brand-surface border border-white/10 rounded-lg py-2.5 pl-10 pr-10 text-phi-sm text-white placeholder:text-white/30 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/30 transition-colors"
+        />
+        {textSearch && (
+          <button
+            onClick={() => setTextSearch('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
       {/* ── Results count ── */}
       <p className="mb-phi-3 text-phi-sm text-white/40">
         {feedItems.length} {feedItems.length === 1 ? t('exchange.result') : t('exchange.results')}
+        {textSearch && (
+          <span className="ml-1">
+            {t('exchange.searchingFor') || 'for'} &ldquo;{textSearch}&rdquo;
+          </span>
+        )}
       </p>
 
       {/* ── Feed grid ── */}

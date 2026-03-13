@@ -34,20 +34,20 @@
 
 ---
 
-## 🔥 Session 66: UX Flow Fix, Semantic Matching, Lazy Loading
+## 🔥 Session 66: UX Flow, Semantic Matching, Payments, Needs, Search
 
 ### Not-Found Flash Fixed
 
 - Exchange detail (`/exchange/[id]`) now shows skeleton while fetching path data
 - "Not found" only appears after fetch completes — no more flash
-- Extracted mock fallback into shared `mockFallback()` function
 
-### Semantic Skill Matching in Exchange
+### Semantic Skill Matching Everywhere
 
-- Exchange detail craft matching now uses `areSkillsEquivalent()` (not string includes)
-- Path skills matching also uses semantic matching
+- Exchange detail craft matching uses `areSkillsEquivalent()` (not string includes)
+- ExchangeCard shared skills use semantic matching
+- Path opportunity scoring uses semantic `areSkillsEquivalent()` for craft matching
 - "Softwareentwicklung" correctly highlights as match for "Software Development"
-- Match breakdown now passed to ExchangeCard — dimension scores visible in feed
+- Match breakdown now passed to ExchangeCard for both people AND opportunity cards
 
 ### Navigation Cleanup
 
@@ -67,6 +67,22 @@
 - Quest completion now derived from journey actions + XP thresholds
 - `completedQuestIds` actually populated (was empty TODO before)
 - XP-based quest auto-completion (e.g., 20+ XP → identity quest done)
+
+### Payment System
+
+- `POST /api/payments` — unified payment API using PaymentPlug system, stores in DB
+- `GET /api/payments` — lists user's payments with pagination
+- `PaymentCheckout` component — auto-selects payment method by country (M-Pesa / SEPA / Stripe)
+- Wired into exchange detail page for premium paths (shows checkout when `salaryMin` exists)
+
+### Needs Definition + Search Flow
+
+- "What do you need?" section on Me page with 8 category chips, text input, urgency selector
+- `lib/needs.ts` — Need interface, NEED_CATEGORIES (8 categories × 4 languages), `matchNeedToProfile()` scoring
+- Needs "Find matching people" button navigates to `/exchange?skills=...&q=...`
+- Exchange page now reads `?skills=` and `?q=` query params, pre-sets filters + text search
+- Full text search bar on exchange feed — searches names, skills (semantic), bios, sectors
+- Suspense boundary wrapping `useSearchParams()` per Next.js App Router requirements
 
 ---
 
