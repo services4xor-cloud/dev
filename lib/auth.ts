@@ -2,6 +2,7 @@ import { type NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import EmailProvider from 'next-auth/providers/email'
 import { PrismaAdapter } from '@auth/prisma-adapter'
+import { Resend } from 'resend'
 import { db } from '@/lib/db'
 
 /**
@@ -9,12 +10,63 @@ import { db } from '@/lib/db'
  *
  * Adapter: PrismaAdapter stores Account (OAuth links) in Neon.
  * Strategy: JWT — no DB round-trip per request.
- * Providers: Google OAuth + Magic Link (via Resend).
+ * Providers: Google OAuth + Magic Link (via Resend HTTP API).
  *
  * NOTE: Only use adapter when DATABASE_URL is set, otherwise Google OAuth
  * will silently fail when trying to write Account records to a cold/missing DB.
  */
 const hasDB = !!process.env.DATABASE_URL
+const resendKey = process.env.RESEND_API_KEY
+
+/**
+ * Custom magic link sender using Resend HTTP API (not SMTP).
+ * More reliable, better error messages, no timeout issues.
+ */
+async function sendMagicLink({
+  identifier: email,
+  url,
+}: {
+  identifier: string
+  url: string
+  provider: { from: string }
+}) {
+  if (!resendKey) throw new Error('RESEND_API_KEY not configured')
+  const resend = new Resend(resendKey)
+  const fromAddress = process.env.EMAIL_FROM ?? 'BeNetwork <services4xor@gmail.com>'
+
+  const { error } = await resend.emails.send({
+    from: fromAddress,
+    to: email,
+    subject: 'Sign in to BeNetwork',
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
+        <div style="text-align: center; margin-bottom: 32px;">
+          <h1 style="color: #5C0A14; font-size: 24px; margin: 0;">BeNetwork</h1>
+        </div>
+        <p style="color: #333; font-size: 16px; line-height: 1.5;">
+          Click below to sign in to your account. This link expires in 24 hours.
+        </p>
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${url}" style="background: #5C0A14; color: #C9A227; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
+            Sign in to BeNetwork
+          </a>
+        </div>
+        <p style="color: #888; font-size: 13px; line-height: 1.4;">
+          If you didn't request this email, you can safely ignore it.
+        </p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+        <p style="color: #aaa; font-size: 11px; text-align: center;">
+          BeNetwork — Identity-first life routing
+        </p>
+      </div>
+    `,
+  })
+
+  if (error) {
+    console.error('[auth] Resend magic link error:', JSON.stringify(error))
+    throw new Error(`Magic link failed: ${error.message}`)
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   // Only wire PrismaAdapter if we have a DB — otherwise NextAuth works in
@@ -27,18 +79,12 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
     }),
     // Magic link email — requires RESEND_API_KEY + DATABASE_URL
-    ...(hasDB && process.env.RESEND_API_KEY
+    // Uses Resend HTTP API (not SMTP) for reliability
+    ...(hasDB && resendKey
       ? [
           EmailProvider({
-            server: {
-              host: 'smtp.resend.com',
-              port: 465,
-              auth: {
-                user: 'resend',
-                pass: process.env.RESEND_API_KEY,
-              },
-            },
-            from: process.env.EMAIL_FROM ?? 'BeNetwork <noreply@bekenya.com>',
+            sendVerificationRequest: sendMagicLink,
+            from: process.env.EMAIL_FROM ?? 'BeNetwork <onboarding@resend.dev>',
           }),
         ]
       : []),
