@@ -4,7 +4,7 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import CookieConsent from '@/components/CookieConsent'
 import Providers from '@/components/Providers'
-import { BRAND_NAME, LEGAL } from '@/data/mock/config'
+import { BRAND_NAME, LEGAL } from '@/lib/platform-config'
 import { COUNTRY_META } from '@/lib/countries'
 import './globals.css'
 

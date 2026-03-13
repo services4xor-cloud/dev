@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BRAND_NAME, CONTACT, LEGAL } from '@/data/mock/config'
+import { BRAND_NAME, CONTACT, LEGAL } from '@/lib/platform-config'
 import HeroSection from '@/components/HeroSection'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'

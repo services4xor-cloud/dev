@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { getPackageById } from '@/lib/safari-packages'
-import { BRAND_NAME } from '@/data/mock/config'
+import { BRAND_NAME } from '@/lib/platform-config'
 
 interface Props {
   params: { id: string }

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { BRAND_NAME } from '@/data/mock/config'
+import { BRAND_NAME } from '@/lib/platform-config'
 
 export const metadata: Metadata = {
   title: `Threads — ${BRAND_NAME}`,

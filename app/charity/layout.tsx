@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { BRAND_NAME, IMPACT_PARTNER } from '@/data/mock/config'
+import { BRAND_NAME, IMPACT_PARTNER } from '@/lib/platform-config'
 
 export const metadata: Metadata = {
   title: `${IMPACT_PARTNER.name} — Community Impact`,
