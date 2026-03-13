@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Compass,
@@ -197,6 +197,148 @@ export default function CompassPage() {
 
   const selectedRouteData = selectedRoute ? COUNTRY_ROUTES[selectedRoute] : null
   const selectedTo = selectedRoute ? selectedRoute.split('-')[1] : null
+  const isOutbound = selectedRoute ? outboundKeys.includes(selectedRoute) : false
+
+  // Auto-scroll to detail panel when route is selected
+  const detailRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (selectedRoute && detailRef.current) {
+      detailRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [selectedRoute])
+
+  /* ── Detail panel (rendered inline after the right section) ── */
+  const detailPanel = selectedRouteData && selectedTo && (
+    <div
+      ref={detailRef}
+      className="rounded-2xl border border-brand-accent/20 bg-gradient-to-br from-brand-surface to-brand-primary/10 p-6 md:p-8 mt-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300"
+    >
+      <div className="flex flex-col md:flex-row md:items-start gap-6">
+        {/* Left — Info */}
+        <div className="flex-1 space-y-5">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-phi-xl">{flag(selectedRoute!.split('-')[0])}</span>
+              <ArrowRight className="w-5 h-5 text-brand-accent" />
+              <span className="text-phi-xl">{flag(selectedTo)}</span>
+              <StrengthBadge strength={selectedRouteData.strength} />
+            </div>
+            <h3 className="text-phi-lg font-bold text-white">
+              {localizeCountry(selectedRoute!.split('-')[0])} → {localizeCountry(selectedTo)}
+            </h3>
+          </div>
+
+          {/* Visa */}
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 p-2 rounded-lg bg-emerald-500/10">
+              <Shield className="w-4 h-4 text-emerald-400" />
+            </div>
+            <div>
+              <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
+                {t('compass.visaInfo')}
+              </p>
+              <p className="text-white/80 text-phi-sm leading-relaxed">
+                {selectedRouteData.visaNote}
+              </p>
+            </div>
+          </div>
+
+          {/* Payment */}
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 p-2 rounded-lg bg-brand-accent/10">
+              <CreditCard className="w-4 h-4 text-brand-accent" />
+            </div>
+            <div>
+              <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
+                {t('compass.paymentMethods')}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {selectedRouteData.paymentMethods.map((m) => (
+                  <span
+                    key={m}
+                    className="px-2.5 py-1 bg-white/[0.06] rounded-lg text-phi-xs text-white/70 border border-white/[0.06]"
+                  >
+                    {m}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Sectors */}
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 p-2 rounded-lg bg-blue-500/10">
+              <Briefcase className="w-4 h-4 text-blue-400" />
+            </div>
+            <div>
+              <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
+                {t('compass.topSectors')}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {selectedRouteData.primarySectors.map((s) => (
+                  <span
+                    key={s}
+                    className="px-2.5 py-1 bg-white/[0.06] rounded-lg text-phi-xs text-white/70 border border-white/[0.06]"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Your Profile Match — personalized dimension insights */}
+          {(() => {
+            const insights = getRouteInsights(selectedRoute!, identity, t)
+            if (insights.length === 0) return null
+            return (
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 p-2 rounded-lg bg-brand-primary/20">
+                  <Sparkles className="w-4 h-4 text-brand-accent" />
+                </div>
+                <div>
+                  <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
+                    {t('compass.yourMatch')}
+                  </p>
+                  <div className="space-y-1">
+                    {insights.map((ins, i) => (
+                      <p key={i} className="text-white/70 text-phi-sm">
+                        {ins.icon} {ins.text}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
+        </div>
+
+        {/* Right — CTAs */}
+        <div className="flex flex-col gap-3 md:w-56 shrink-0">
+          <Link
+            href={`/exchange?focus=${selectedRouteData.primarySectors[0]?.toLowerCase().replace(/\s+/g, '-') || ''}`}
+            className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-brand-accent text-white font-bold text-phi-sm hover:opacity-90 transition-opacity"
+          >
+            <Briefcase className="w-4 h-4" />
+            {t('compass.explorePaths')}
+          </Link>
+          <Link
+            href="/messages"
+            className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/[0.06] border border-white/[0.06] text-white font-medium text-phi-sm hover:bg-white/10 transition-colors"
+          >
+            <MessageCircle className="w-4 h-4" />
+            {t('compass.findPioneers')}
+          </Link>
+          <Link
+            href={`/be/${selectedTo.toLowerCase()}`}
+            className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/[0.04] border border-white/[0.04] text-white/60 text-phi-sm hover:text-white hover:bg-white/[0.06] transition-colors"
+          >
+            <Globe className="w-4 h-4" />
+            {t('compass.viewGate', { country: localizeCountry(selectedTo) })}
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
 
   return (
     <main className="min-h-screen bg-brand-bg">
@@ -249,6 +391,8 @@ export default function CompassPage() {
                 />
               ))}
             </div>
+            {/* Detail panel appears inline after outbound grid */}
+            {isOutbound && detailPanel}
           </section>
         )}
 
@@ -274,136 +418,8 @@ export default function CompassPage() {
                 />
               ))}
             </div>
-          </section>
-        )}
-
-        {/* Selected Route Detail Panel */}
-        {selectedRouteData && selectedTo && (
-          <section className="rounded-2xl border border-brand-accent/20 bg-gradient-to-br from-brand-surface to-brand-primary/10 p-6 md:p-8 mb-12 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="flex flex-col md:flex-row md:items-start gap-6">
-              {/* Left — Info */}
-              <div className="flex-1 space-y-5">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-phi-xl">{flag(selectedRoute!.split('-')[0])}</span>
-                    <ArrowRight className="w-5 h-5 text-brand-accent" />
-                    <span className="text-phi-xl">{flag(selectedTo)}</span>
-                    <StrengthBadge strength={selectedRouteData.strength} />
-                  </div>
-                  <h3 className="text-phi-lg font-bold text-white">
-                    {localizeCountry(selectedRoute!.split('-')[0])} → {localizeCountry(selectedTo)}
-                  </h3>
-                </div>
-
-                {/* Visa */}
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 p-2 rounded-lg bg-emerald-500/10">
-                    <Shield className="w-4 h-4 text-emerald-400" />
-                  </div>
-                  <div>
-                    <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
-                      {t('compass.visaInfo')}
-                    </p>
-                    <p className="text-white/80 text-phi-sm leading-relaxed">
-                      {selectedRouteData.visaNote}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Payment */}
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 p-2 rounded-lg bg-brand-accent/10">
-                    <CreditCard className="w-4 h-4 text-brand-accent" />
-                  </div>
-                  <div>
-                    <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
-                      {t('compass.paymentMethods')}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedRouteData.paymentMethods.map((m) => (
-                        <span
-                          key={m}
-                          className="px-2.5 py-1 bg-white/[0.06] rounded-lg text-phi-xs text-white/70 border border-white/[0.06]"
-                        >
-                          {m}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sectors */}
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 p-2 rounded-lg bg-blue-500/10">
-                    <Briefcase className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
-                      {t('compass.topSectors')}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedRouteData.primarySectors.map((s) => (
-                        <span
-                          key={s}
-                          className="px-2.5 py-1 bg-white/[0.06] rounded-lg text-phi-xs text-white/70 border border-white/[0.06]"
-                        >
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                {/* Your Profile Match — personalized dimension insights */}
-                {(() => {
-                  const insights = getRouteInsights(selectedRoute!, identity, t)
-                  if (insights.length === 0) return null
-                  return (
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5 p-2 rounded-lg bg-brand-primary/20">
-                        <Sparkles className="w-4 h-4 text-brand-accent" />
-                      </div>
-                      <div>
-                        <p className="text-white/40 text-phi-xs font-medium uppercase tracking-wider mb-1">
-                          {t('compass.yourMatch')}
-                        </p>
-                        <div className="space-y-1">
-                          {insights.map((ins, i) => (
-                            <p key={i} className="text-white/70 text-phi-sm">
-                              {ins.icon} {ins.text}
-                            </p>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })()}
-              </div>
-
-              {/* Right — CTAs */}
-              <div className="flex flex-col gap-3 md:w-56 shrink-0">
-                <Link
-                  href={`/exchange?focus=${selectedRouteData.primarySectors[0]?.toLowerCase().replace(/\s+/g, '-') || ''}`}
-                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-brand-accent text-white font-bold text-phi-sm hover:opacity-90 transition-opacity"
-                >
-                  <Briefcase className="w-4 h-4" />
-                  {t('compass.explorePaths')}
-                </Link>
-                <Link
-                  href="/messages"
-                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/[0.06] border border-white/[0.06] text-white font-medium text-phi-sm hover:bg-white/10 transition-colors"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  {t('compass.findPioneers')}
-                </Link>
-                <Link
-                  href={`/be/${selectedTo.toLowerCase()}`}
-                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/[0.04] border border-white/[0.04] text-white/60 text-phi-sm hover:text-white hover:bg-white/[0.06] transition-colors"
-                >
-                  <Globe className="w-4 h-4" />
-                  {t('compass.viewGate', { country: localizeCountry(selectedTo) })}
-                </Link>
-              </div>
-            </div>
+            {/* Detail panel appears inline after inbound grid */}
+            {!isOutbound && detailPanel}
           </section>
         )}
 
