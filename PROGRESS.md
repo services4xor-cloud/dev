@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 66 (2026-03-13) — Semantic Matching, Payments, Needs, Search, UX Polish
+> Last updated: Session 67 (2026-03-13) — BTW Feedback: Quests, Navigation, Interests
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -31,6 +31,38 @@
 | DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
 | Auth              | ✅ Google OAuth + email/password + password reset                                         |
 | Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 67: BTW Feedback Fixes — Quests, Navigation, Interests
+
+### Quest Progress Now Live
+
+- Quest progress bars computed from actual journey state (were hardcoded at 0%)
+- Individual quest cards show progress indicator when partially complete
+- Quest board auto-refreshes when XP or completions change
+
+### Interest Cap Removed
+
+- Profile interests no longer capped at 5 — Pioneers can add unlimited interests/passions
+
+### Navigation Cleanup
+
+- Fixed 5 more stale `/ventures` routes → `/exchange` (world, homepage, onboarding API, threads, identity-flags)
+- Back navigation fallback: `router.back()` now falls back to `/exchange` if no browser history
+- Updated test assertions to match new `/exchange` URLs
+
+### Files Changed (9)
+
+- `components/JourneyProgress.tsx` — quest progress computation + UI
+- `app/me/page.tsx` — removed interest cap
+- `app/exchange/[id]/page.tsx` — safer back navigation
+- `app/world/page.tsx` — `/ventures` → `/exchange`
+- `lib/identity-flags.ts` — `/ventures` → `/exchange`
+- `lib/threads.ts` — `/ventures` → `/exchange`
+- `data/mock/homepage.ts` — `/ventures` → `/exchange`
+- `app/api/onboarding/route.ts` — `/ventures` → `/exchange`
+- `__tests__/lib/identity-flags.test.ts` — test assertion updated
 
 ---
 
