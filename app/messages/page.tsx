@@ -12,10 +12,15 @@ import {
   type MockMessage,
 } from '@/data/mock'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
-import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
+import {
+  scoreDimensions,
+  identityToProfile,
+  agentToProfile,
+  type DimensionProfile,
+} from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
-import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
+import { langCodeToName } from '@/lib/country-selector'
 import { areSkillsEquivalent } from '@/lib/semantic-skills'
 import GlassCard from '@/components/ui/GlassCard'
 import { useTranslation } from '@/lib/hooks/use-translation'
@@ -53,12 +58,6 @@ interface RealMessage {
   }
 }
 
-/** Resolve a language code to its human-readable name */
-function langCodeToName(code: string): string {
-  const lang = LANGUAGE_REGISTRY[code as LanguageCode]
-  return lang ? lang.name : code
-}
-
 /** Resolve an exchange category ID to its label and icon */
 function categoryInfo(id: string): { label: string; icon: string } {
   const cat = EXCHANGE_CATEGORIES.find((c) => c.id === id)
@@ -78,45 +77,6 @@ const TYPE_LABEL_KEYS: Record<string, string> = {
 }
 
 // ── Component ────────────────────────────────────────────────────────
-
-/** Build DimensionProfile from user identity */
-function identityToProfile(identity: {
-  country: string
-  city?: string
-  languages: string[]
-  interests: string[]
-  faith: string[]
-  craft?: string[]
-  reach?: string[]
-  culture?: string
-}): DimensionProfile {
-  return {
-    country: identity.country,
-    city: identity.city,
-    languages: identity.languages,
-    faith: identity.faith,
-    craft: identity.craft ?? [],
-    interests: identity.interests,
-    reach: identity.reach ?? [],
-    culture: identity.culture,
-    isHuman: true,
-  }
-}
-
-/** Build DimensionProfile from agent */
-function agentToProfile(agent: AgentPersona): DimensionProfile {
-  return {
-    country: agent.country,
-    city: agent.city,
-    languages: agent.languages,
-    faith: agent.faith,
-    craft: agent.craft,
-    interests: agent.interests,
-    reach: agent.reach,
-    culture: agent.culture,
-    isHuman: false,
-  }
-}
 
 /** Generate a contextual response from an agent based on their persona and conversation history */
 function generateAgentResponse(

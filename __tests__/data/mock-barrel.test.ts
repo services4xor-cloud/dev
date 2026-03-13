@@ -39,35 +39,8 @@ describe('Mock Data — barrel export completeness', () => {
   })
 })
 
-describe('Mock Data — config exports', () => {
-  it('exports BRAND_NAME as a Be* string', () => {
-    expect(MockData.BRAND_NAME).toMatch(/^Be/)
-  })
-
-  it('exports BRAND_TAGLINE as non-empty string', () => {
-    expect(MockData.BRAND_TAGLINE.length).toBeGreaterThan(5)
-  })
-
-  it('exports BRAND_MISSION as non-empty string', () => {
-    expect(MockData.BRAND_MISSION.length).toBeGreaterThan(10)
-  })
-
-  it('exports IMPACT_PARTNER with required fields', () => {
-    expect(MockData.IMPACT_PARTNER.name).toBeTruthy()
-    expect(MockData.IMPACT_PARTNER.contributionAmount).toBeTruthy()
-    expect(MockData.IMPACT_PARTNER.pillars.length).toBeGreaterThan(0)
-  })
-
-  it('exports CONTACT with email and phone', () => {
-    expect(MockData.CONTACT.email).toMatch(/@/)
-    expect(MockData.CONTACT.phone).toBeTruthy()
-  })
-
-  it('exports LEGAL with company registration fields', () => {
-    expect(MockData.LEGAL.companyName).toBeTruthy()
-    expect(MockData.LEGAL.incorporationNumber).toBeTruthy()
-  })
-})
+// Config exports moved to @/lib/platform-config (canonical source)
+// Tested in __tests__/lib/platform-config.test.ts
 
 describe('Mock Data — pricing exports', () => {
   it('exports PRICING_PLANS as non-empty array', () => {

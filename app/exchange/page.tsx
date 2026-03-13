@@ -17,11 +17,15 @@ import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { areSkillsEquivalent } from '@/lib/semantic-skills'
-import { COUNTRY_OPTIONS } from '@/lib/country-selector'
-import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
+import { COUNTRY_OPTIONS, langCodeToName } from '@/lib/country-selector'
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
-import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
+import {
+  scoreDimensions,
+  identityToProfile,
+  agentToProfile,
+  type DimensionProfile,
+} from '@/lib/dimension-scoring'
 import { computeCompleteness } from '@/lib/profile-completeness'
 import type { DimensionPriority } from '@/lib/hooks/use-profile-sync'
 import { getSignalsForRegion } from '@/lib/market-data'
@@ -35,48 +39,6 @@ import SectionLayout from '@/components/ui/SectionLayout'
 const MIN_MATCH_SCORE = 25
 
 // ─── Helpers ────────────────────────────────────────────────────────
-
-function langCodeToName(code: string): string {
-  const lang = LANGUAGE_REGISTRY[code as LanguageCode]
-  return lang ? lang.name : code
-}
-
-function identityToProfile(identity: {
-  country: string
-  city?: string
-  languages: string[]
-  interests: string[]
-  faith: string[]
-  craft?: string[]
-  reach?: string[]
-  culture?: string
-}): DimensionProfile {
-  return {
-    country: identity.country,
-    city: identity.city,
-    languages: identity.languages,
-    faith: identity.faith,
-    craft: identity.craft ?? [],
-    interests: identity.interests,
-    reach: identity.reach ?? [],
-    culture: identity.culture,
-    isHuman: true,
-  }
-}
-
-function agentToProfile(agent: AgentPersona): DimensionProfile {
-  return {
-    country: agent.country,
-    city: agent.city,
-    languages: agent.languages,
-    faith: agent.faith,
-    craft: agent.craft,
-    interests: agent.interests,
-    reach: agent.reach,
-    culture: agent.culture,
-    isHuman: false,
-  }
-}
 
 function agentSector(agent: AgentPersona): { label: string; icon: string } {
   if (agent.interests.length > 0) {

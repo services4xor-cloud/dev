@@ -4,9 +4,8 @@
  * Validates:
  *   - Public nav links (logged out)
  *   - Main nav links (logged in / discovery complete)
- *   - Footer links
+ *   - Footer links + columns
  *   - Login link
- *   - Legacy deprecated exports exist for backward compat
  */
 
 import {
@@ -15,17 +14,6 @@ import {
   FOOTER_LINKS,
   FOOTER_COLUMNS,
   LOGIN_LINK,
-  // Legacy deprecated exports
-  PRIMARY_LINKS,
-  PIONEER_NAV_LINKS,
-  ANCHOR_NAV_LINKS,
-  AGENT_NAV_LINKS,
-  ABOUT_NAV_LINKS,
-  FOOTER_PIONEER_LINKS,
-  FOOTER_ANCHOR_LINKS,
-  FOOTER_AGENT_LINKS,
-  FOOTER_DISCOVER_LINKS,
-  FOOTER_COMPANY_LINKS,
 } from '@/lib/nav-structure'
 
 describe('Nav Structure — public links (logged out)', () => {
@@ -101,28 +89,6 @@ describe('Nav Structure — footer links', () => {
   })
 })
 
-describe('Nav Structure — legacy exports exist', () => {
-  it('PRIMARY_LINKS is aliased to PUBLIC_NAV_LINKS', () => {
-    expect(PRIMARY_LINKS).toBeDefined()
-    expect(Array.isArray(PRIMARY_LINKS)).toBe(true)
-  })
-
-  it('deprecated role-based arrays exist', () => {
-    expect(PIONEER_NAV_LINKS).toBeDefined()
-    expect(ANCHOR_NAV_LINKS).toBeDefined()
-    expect(AGENT_NAV_LINKS).toBeDefined()
-    expect(ABOUT_NAV_LINKS).toBeDefined()
-  })
-
-  it('deprecated footer arrays exist', () => {
-    expect(FOOTER_PIONEER_LINKS).toBeDefined()
-    expect(FOOTER_ANCHOR_LINKS).toBeDefined()
-    expect(FOOTER_AGENT_LINKS).toBeDefined()
-    expect(FOOTER_DISCOVER_LINKS).toBeDefined()
-    expect(FOOTER_COMPANY_LINKS).toBeDefined()
-  })
-})
-
 describe('Nav Structure — footer columns', () => {
   it('exports FOOTER_COLUMNS with 3 columns', () => {
     expect(FOOTER_COLUMNS.length).toBe(3)
@@ -137,12 +103,9 @@ describe('Nav Structure — footer columns', () => {
 
   it('includes essential page links', () => {
     const allHrefs = FOOTER_COLUMNS.flatMap((c) => c.links.map((l) => l.href))
-    // Core pages always in footer
     expect(allHrefs).toContain('/about')
     expect(allHrefs).toContain('/contact')
     expect(allHrefs).toContain('/pricing')
-    // Note: referral/media/fashion pages exist but were removed from footer nav
-    // They can be re-added when sector-specific Gates are launched
   })
 
   it('FOOTER_LINKS is flat array of all column links', () => {

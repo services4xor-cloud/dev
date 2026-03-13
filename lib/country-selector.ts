@@ -3553,3 +3553,9 @@ export function getGroupedByLanguage(): { language: Language; countries: Country
     .filter((g) => g.countries.length > 0)
     .sort((a, b) => b.countries.length - a.countries.length)
 }
+
+/** Resolve a language ISO code to its display name */
+export function langCodeToName(code: string): string {
+  const lang = LANGUAGE_REGISTRY[code as LanguageCode]
+  return lang ? lang.name : code
+}

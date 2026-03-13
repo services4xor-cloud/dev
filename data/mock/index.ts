@@ -78,19 +78,6 @@ export {
   type EcoTourismOffering,
   type TradeCorridor,
 } from './offerings'
-export {
-  BRAND_NAME,
-  BRAND_TAGLINE,
-  BRAND_MISSION,
-  IMPACT_PARTNER,
-  UTAMADUNI_SHARE,
-  UTAMADUNI_AMOUNT,
-  REFERRAL_BONUS,
-  CONTACT,
-  LEGAL,
-  REFERRAL,
-  MOCK_PROFILE,
-  PAYMENT_BADGES,
-} from './config'
+// Config re-exports removed — import directly from '@/lib/platform-config'
 export { MOCK_THREADS } from './threads'
 export { MOCK_CHANNEL_MESSAGES, type MockMessage } from './messages'

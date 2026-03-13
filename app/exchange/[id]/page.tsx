@@ -26,11 +26,11 @@ import {
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
-import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
+import { COUNTRY_OPTIONS, langCodeToName } from '@/lib/country-selector'
 // Real paths fetched from /api/paths/[id] (Prisma → Neon PostgreSQL)
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { generateAllAgents } from '@/lib/agents'
-import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
+import { scoreDimensions, identityToProfile, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
 import { resolveSkillId, areSkillsEquivalent } from '@/lib/semantic-skills'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
@@ -38,36 +38,6 @@ import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
 import { useXPContext } from '@/components/XPProvider'
 import PaymentCheckout from '@/components/PaymentCheckout'
-
-// ─── Helpers ────────────────────────────────────────────────────────
-
-function langName(code: string): string {
-  const lang = LANGUAGE_REGISTRY[code as LanguageCode]
-  return lang ? lang.name : code
-}
-
-function identityToProfile(identity: {
-  country: string
-  city?: string
-  languages: string[]
-  interests: string[]
-  faith: string[]
-  craft?: string[]
-  reach?: string[]
-  culture?: string
-}): DimensionProfile {
-  return {
-    country: identity.country,
-    city: identity.city,
-    languages: identity.languages,
-    faith: identity.faith,
-    craft: identity.craft ?? [],
-    interests: identity.interests,
-    reach: identity.reach ?? [],
-    culture: identity.culture,
-    isHuman: true,
-  }
-}
 
 // ─── Component ──────────────────────────────────────────────────────
 
@@ -346,7 +316,7 @@ export default function ExchangeDetailPage() {
                         }`}
                       >
                         <Globe className="h-3.5 w-3.5" />
-                        {langName(code)}
+                        {langCodeToName(code)}
                         {shared && <Star className="h-3 w-3" />}
                       </span>
                     )
@@ -465,7 +435,7 @@ export default function ExchangeDetailPage() {
                       key={l}
                       className="px-2.5 py-1 rounded-full text-phi-xs bg-brand-accent/10 text-brand-accent border border-brand-accent/20"
                     >
-                      {langName(l)}
+                      {langCodeToName(l)}
                     </span>
                   ))}
                 </div>

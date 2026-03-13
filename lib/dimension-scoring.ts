@@ -391,3 +391,53 @@ export function scoreDimensions(
     highlights,
   }
 }
+
+// ─── Profile Builders ───────────────────────────────────────────────────────
+
+/** Build DimensionProfile from user identity (localStorage/context shape) */
+export function identityToProfile(identity: {
+  country: string
+  city?: string
+  languages: string[]
+  interests: string[]
+  faith: string[]
+  craft?: string[]
+  reach?: string[]
+  culture?: string
+}): DimensionProfile {
+  return {
+    country: identity.country,
+    city: identity.city,
+    languages: identity.languages,
+    faith: identity.faith,
+    craft: identity.craft ?? [],
+    interests: identity.interests,
+    reach: identity.reach ?? [],
+    culture: identity.culture,
+    isHuman: true,
+  }
+}
+
+/** Build DimensionProfile from an AI agent persona */
+export function agentToProfile(agent: {
+  country: string
+  city: string
+  languages: string[]
+  faith: string[]
+  craft: string[]
+  interests: string[]
+  reach: string[]
+  culture?: string
+}): DimensionProfile {
+  return {
+    country: agent.country,
+    city: agent.city,
+    languages: agent.languages,
+    faith: agent.faith,
+    craft: agent.craft,
+    interests: agent.interests,
+    reach: agent.reach,
+    culture: agent.culture,
+    isHuman: false,
+  }
+}

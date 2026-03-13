@@ -28,58 +28,18 @@ import Discovery from '@/components/Discovery'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
-import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
+import {
+  scoreDimensions,
+  identityToProfile,
+  agentToProfile,
+  type DimensionProfile,
+} from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
 // Real paths fetched from /api/paths (Prisma → Neon PostgreSQL)
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { areSkillsEquivalent } from '@/lib/semantic-skills'
-import { COUNTRY_OPTIONS } from '@/lib/country-selector'
-import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
-
-// ─── Helpers ────────────────────────────────────────────────────────
-
-function langName(code: string): string {
-  const lang = LANGUAGE_REGISTRY[code as LanguageCode]
-  return lang ? lang.name : code
-}
-
-function identityToProfile(identity: {
-  country: string
-  city?: string
-  languages: string[]
-  interests: string[]
-  faith: string[]
-  craft?: string[]
-  reach?: string[]
-  culture?: string
-}): DimensionProfile {
-  return {
-    country: identity.country,
-    city: identity.city,
-    languages: identity.languages,
-    faith: identity.faith,
-    craft: identity.craft ?? [],
-    interests: identity.interests,
-    reach: identity.reach ?? [],
-    culture: identity.culture,
-    isHuman: true,
-  }
-}
-
-function agentToProfile(agent: AgentPersona): DimensionProfile {
-  return {
-    country: agent.country,
-    city: agent.city,
-    languages: agent.languages,
-    faith: agent.faith,
-    craft: agent.craft,
-    interests: agent.interests,
-    reach: agent.reach,
-    culture: agent.culture,
-    isHuman: false,
-  }
-}
+import { COUNTRY_OPTIONS, langCodeToName } from '@/lib/country-selector'
 
 // ─── Component ──────────────────────────────────────────────────────
 
@@ -317,7 +277,7 @@ export default function HomePage() {
                 key={lang}
                 className="px-3 py-1 rounded-full text-xs bg-brand-accent/10 text-brand-accent border border-brand-accent/20"
               >
-                {langName(lang)}
+                {langCodeToName(lang)}
               </span>
             ))}
             {identity.craft?.slice(0, 3).map((c) => (
@@ -560,7 +520,7 @@ export default function HomePage() {
                         .filter((l) => identity.languages.includes(l))
                         .map((l) => (
                           <span key={l} className="text-brand-accent text-[11px]">
-                            {langName(l)}
+                            {langCodeToName(l)}
                           </span>
                         ))}
                     </div>
