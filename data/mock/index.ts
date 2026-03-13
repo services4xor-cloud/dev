@@ -21,7 +21,6 @@ export {
   MOCK_SOCIAL_QUEUE,
   MOCK_ENV_VARS,
 } from './admin'
-export { SKILLS_BY_TYPE } from './skills'
 export {
   PRICING_PLANS,
   PAYMENT_METHODS,

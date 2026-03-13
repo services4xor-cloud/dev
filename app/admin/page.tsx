@@ -14,6 +14,7 @@ import {
   MOCK_RECENT_CHAPTERS as RECENT_CHAPTERS,
   MOCK_ALL_PIONEERS as ALL_PIONEERS,
 } from '@/data/mock'
+import { COUNTRIES } from '@/lib/countries'
 import GlassCard from '@/components/ui/GlassCard'
 import StatCard from '@/components/ui/StatCard'
 import SectionLayout from '@/components/ui/SectionLayout'
@@ -123,7 +124,9 @@ function OverviewTab() {
         <GlassCard variant="featured" padding="md">
           <p className="text-phi-sm text-gray-300">{t('admin.revenueThisMonth')}</p>
           <p className="text-phi-3xl font-bold text-brand-accent mt-1">
-            KES {PLATFORM_STATS.revenueKES.toLocaleString('en-US')}
+            {COUNTRIES[(process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE') as keyof typeof COUNTRIES]
+              ?.currency ?? 'KES'}{' '}
+            {PLATFORM_STATS.revenueKES.toLocaleString()}
           </p>
         </GlassCard>
         <GlassCard padding="md">

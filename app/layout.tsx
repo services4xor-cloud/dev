@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 import CookieConsent from '@/components/CookieConsent'
 import Providers from '@/components/Providers'
 import { BRAND_NAME, LEGAL } from '@/lib/platform-config'
-import { COUNTRY_META } from '@/lib/countries'
+import { COUNTRIES, COUNTRY_META } from '@/lib/countries'
 import './globals.css'
 
 // ── Fonts ──────────────────────────────────────────────────────────
@@ -65,7 +65,10 @@ export const metadata: Metadata = {
 
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: (
+      COUNTRIES[(process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE') as keyof typeof COUNTRIES]?.locale ??
+      'en-KE'
+    ).replace('-', '_'),
     url: siteUrl,
     siteName: `${meta.brandName} — The BeNetwork`,
     title: meta.title,

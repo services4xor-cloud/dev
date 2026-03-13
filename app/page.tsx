@@ -35,6 +35,10 @@ import {
   type DimensionProfile,
 } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
+import { COUNTRIES } from '@/lib/countries'
+
+const CC = (process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE') as keyof typeof COUNTRIES
+const DEPLOY_CURRENCY = COUNTRIES[CC]?.currency ?? 'KES'
 // Real paths fetched from /api/paths (Prisma → Neon PostgreSQL)
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
@@ -84,7 +88,7 @@ export default function HomePage() {
               company: p.anchorName,
               anchorName: p.anchorName,
               location: p.location,
-              country: p.country ?? 'KE',
+              country: p.country ?? CC,
               sector:
                 p.category === 'professional'
                   ? 'tech'
@@ -96,7 +100,7 @@ export default function HomePage() {
               tier: p.isFeatured ? 'FEATURED' : 'BASIC',
               salaryMin: null,
               salaryMax: null,
-              currency: 'KES',
+              currency: DEPLOY_CURRENCY,
             }))
           )
         }
@@ -110,7 +114,7 @@ export default function HomePage() {
             company: p.anchorName,
             anchorName: p.anchorName,
             location: p.location,
-            country: p.country ?? 'KE',
+            country: p.country ?? CC,
             sector:
               p.category === 'professional'
                 ? 'tech'
@@ -122,7 +126,7 @@ export default function HomePage() {
             tier: p.isFeatured ? 'FEATURED' : 'BASIC',
             salaryMin: null,
             salaryMax: null,
-            currency: 'KES',
+            currency: DEPLOY_CURRENCY,
           }))
         )
       })

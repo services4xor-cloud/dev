@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { useIdentity } from '@/lib/identity-context'
+import { COUNTRIES } from '@/lib/countries'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
 
@@ -127,7 +128,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
     category: 'system',
     icon: '🏅',
     title: 'Referral Reward Earned',
-    description: 'KES 5,000 earned — James Mwangi found his path through your referral code.',
+    description: `${COUNTRIES[(process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE') as keyof typeof COUNTRIES]?.currency ?? 'KES'} 5,000 earned — James Mwangi found his path through your referral code.`,
     timeAgo: '2 weeks ago',
     read: true,
     link: '/referral',

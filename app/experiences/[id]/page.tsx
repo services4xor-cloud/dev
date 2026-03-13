@@ -19,6 +19,7 @@ import { SAFARI_PACKAGES, getPackageById, formatPackagePrice } from '@/lib/safar
 import { VOCAB } from '@/lib/vocabulary'
 import MpesaModal from '@/components/MpesaModal'
 import { IMPACT_PARTNER } from '@/lib/platform-config'
+import { COUNTRIES } from '@/lib/countries'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
@@ -130,8 +131,16 @@ export default function ExperiencePage() {
   }
 
   const hasFessyMarkup = pkg.markup && pkg.markup > 0
-  // Use the package's KES price directly; fallback to first available price
-  const totalPrice = pkg.priceKES ?? pkg.priceEUR ?? pkg.priceUSD ?? 0
+  // Use the deployment country's currency price; fallback chain
+  const deployCurrency =
+    COUNTRIES[(process.env.NEXT_PUBLIC_COUNTRY_CODE || 'KE') as keyof typeof COUNTRIES]?.currency ??
+    'KES'
+  const totalPrice =
+    deployCurrency === 'EUR'
+      ? (pkg.priceEUR ?? pkg.priceUSD ?? pkg.priceKES ?? 0)
+      : deployCurrency === 'USD'
+        ? (pkg.priceUSD ?? pkg.priceEUR ?? pkg.priceKES ?? 0)
+        : (pkg.priceKES ?? pkg.priceEUR ?? pkg.priceUSD ?? 0)
 
   // ── Booking handlers ────────────────────────────────────────────
   function handleBookClick() {
