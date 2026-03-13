@@ -402,19 +402,19 @@ export default function MePage() {
                       ? t('me.matchBoostGood')
                       : t('me.matchBoostLow')}
                 </p>
-                {/* Unfilled dimensions as quick-fill chips */}
+                {/* Unfilled dimensions as quick-fill chips — navigate to Profile tab */}
                 <div className="flex flex-wrap gap-1 mt-2">
                   {completeness.dimensions
                     .filter((d) => !d.filled)
                     .slice(0, 4)
                     .map((d) => (
-                      <Link
+                      <button
                         key={d.key}
-                        href={d.route}
+                        onClick={() => setActiveTab('Profile')}
                         className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/5 text-white/50 text-[10px] hover:bg-brand-accent/10 hover:text-brand-accent transition-colors border border-white/10"
                       >
-                        {d.icon} {d.label}
-                      </Link>
+                        {d.icon} + {d.label}
+                      </button>
                     ))}
                 </div>
               </div>
@@ -1446,10 +1446,26 @@ export default function MePage() {
             </button>
           )}
 
-          {/* Dimension count */}
-          <p className="text-phi-sm text-white/40">
-            {t('me.dimensionsActive', { count: String(activeDimensions) })}
-          </p>
+          {/* Completeness bar + dimension count */}
+          <div className="flex items-center gap-2 mt-phi-1">
+            <div className="w-24 h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${completeness.score}%`,
+                  background:
+                    completeness.score >= 80
+                      ? '#22c55e'
+                      : completeness.score >= 50
+                        ? '#C9A227'
+                        : '#ef4444',
+                }}
+              />
+            </div>
+            <p className="text-phi-sm text-white/40">
+              {completeness.score}% · {activeDimensions}/{completeness.dimensions.length}
+            </p>
+          </div>
 
           {/* Save indicator */}
           {saving && (

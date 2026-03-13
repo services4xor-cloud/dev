@@ -20,6 +20,7 @@ import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { LANGUAGE_REGISTRY, COUNTRY_OPTIONS, type LanguageCode } from '@/lib/country-selector'
 import { getSignalsForRegion } from '@/lib/market-data'
+import { areSkillsEquivalent } from '@/lib/semantic-skills'
 
 /* ── Country flag emoji ───────────────────────────────────────────── */
 function flag(code: string) {
@@ -146,7 +147,9 @@ function getRouteInsights(
   // Craft/skill matches — check if user's crafts align with route sectors
   const sectorLower = route.primarySectors.map((s) => s.toLowerCase())
   const craftMatches = identity.craft.filter((c) =>
-    sectorLower.some((s) => s.includes(c.toLowerCase()) || c.toLowerCase().includes(s))
+    sectorLower.some(
+      (s) => areSkillsEquivalent(c, s) || s.includes(c.toLowerCase()) || c.toLowerCase().includes(s)
+    )
   )
   if (craftMatches.length > 0) {
     insights.push({
