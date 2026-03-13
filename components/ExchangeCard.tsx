@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import GlassCard from '@/components/ui/GlassCard'
 import { useTranslation } from '@/lib/hooks/use-translation'
+import { areSkillsEquivalent } from '@/lib/semantic-skills'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -111,11 +112,7 @@ export default function ExchangeCard({
     userLanguages.some((ul) => ul.toLowerCase() === lang.toLowerCase())
 
   const isSharedSkill = (skill: string) =>
-    userInterests.some(
-      (ui) =>
-        ui.toLowerCase().includes(skill.toLowerCase()) ||
-        skill.toLowerCase().includes(ui.toLowerCase())
-    )
+    userInterests.some((ui) => areSkillsEquivalent(ui, skill))
   const sharedSkills = data.skills.filter(isSharedSkill)
 
   // Build "why you match" reasons (for both person and opportunity cards)
