@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 63 (2026-03-12) — Full-Night Sprint: Identity, Profile, Routes, Data, Links
+> Last updated: Session 65 (2026-03-13) — Semantic Skills, Profile Expand, Quests, Nav Fixes
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -16,9 +16,9 @@
 | Core Routes       | 7: `/` `/world` `/exchange` `/messages` `/me` `/notifications` `/exchange/[id]`           |
 | Supporting Routes | `/be/[code]` `/signup` `/login` `/forgot-password` `/referral` `/media` `/fashion` + info |
 | API routes        | 12+                                                                                       |
-| Library modules   | 29 (+ world-data, dimensions, market-data, dimension-scoring, agents)                     |
+| Library modules   | 30 (+ semantic-skills.ts — 68 skills × 12 languages)                                      |
 | Mock data modules | 18 (+ messages.ts); admin data deduplicated, all pages import from barrel                 |
-| Jest tests        | 838/838 ✅ (45 suites)                                                                    |
+| Jest tests        | 901/901 ✅ (47 suites)                                                                    |
 | Playwright tests  | 144+ ✅ (8 suites incl. demo-flow)                                                        |
 | TypeScript errors | 0                                                                                         |
 | Build             | ✅ passes                                                                                 |
@@ -31,6 +31,52 @@
 | DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
 | Auth              | ✅ Google OAuth + email/password + password reset                                         |
 | Email             | ✅ Resend (password reset emails)                                                         |
+
+---
+
+## 🔥 Session 65: Semantic Skills, Profile Expand, Quests, Nav Fixes
+
+### Semantic Skill Matching (MVC Model Layer)
+
+- Created `lib/semantic-skills.ts` — 68 skills with canonical IDs across 12 languages
+- Each skill has: en, de, fr, sw translations + aliases (Softwareentwicklung, coding, ML, etc.)
+- Functions: `resolveSkillId()`, `areSkillsEquivalent()`, `searchSkills()`, `getAllLabelsForLang()`
+- Integrated into `dimension-scoring.ts` — `scoreCraft()` now uses semantic matching
+- "Softwareentwicklung" (DE) now correctly matches "Software Development" (EN)
+
+### Profile Expandability
+
+- Languages section: added search input + filtered suggestions to add more languages
+- Interests section: added available categories grid to pick from (max 5)
+- Added "Redo Discovery" button at bottom of profile page → `/onboarding?redo=true`
+
+### Navigation & Loading Fixes
+
+- Fixed ventures/[id] "not found" flash: separate `notFound` state, only shows after confirmed absence
+- Fixed chain redirect: `/experiences` → `/exchange` directly (was going through `/ventures`)
+
+### Gamification Quest System
+
+- Added 13 quests across 4 categories: onboarding (4), exploration (3), connection (3), growth (3)
+- Quests unlock progressively with levels, guide pioneers through platform features
+- Helper functions: `getQuestsForLevel()`, `getNextQuest()`, `getQuestsByCategory()`
+- JourneyProgress component: shows active quests + next recommended quest
+
+### Match Score Context
+
+- ExchangeCard now shows top 3 matching dimensions with icons below score bar
+- Match reasons extended to both person and opportunity cards
+
+### Route Audit & Fixes
+
+- Linked 5 orphaned pages in footer: /world, /fashion, /media, /referral, /be/KE
+- Added referral page link from /me dashboard
+- Identified /forgot-password as orphaned (passwordless auth) — left as-is
+
+### Tests
+
+- 901/901 Jest tests pass (47 suites, +63 new tests)
+- New test suites: semantic-skills.test.ts (39 tests), xp.test.ts (24 tests)
 
 ---
 
