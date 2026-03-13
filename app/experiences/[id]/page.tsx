@@ -130,7 +130,8 @@ export default function ExperiencePage() {
   }
 
   const hasFessyMarkup = pkg.markup && pkg.markup > 0
-  const totalPrice = pkg.priceKES ?? (pkg.priceEUR ? pkg.priceEUR * 165 : (pkg.priceUSD ?? 0) * 130)
+  // Use the package's KES price directly; fallback to first available price
+  const totalPrice = pkg.priceKES ?? pkg.priceEUR ?? pkg.priceUSD ?? 0
 
   // ── Booking handlers ────────────────────────────────────────────
   function handleBookClick() {

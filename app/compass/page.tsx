@@ -318,7 +318,7 @@ export default function CompassPage() {
         {/* Right — CTAs */}
         <div className="flex flex-col gap-3 md:w-56 shrink-0">
           <Link
-            href={`/exchange?focus=${selectedRouteData.primarySectors[0]?.toLowerCase().replace(/\s+/g, '-') || ''}`}
+            href={`/exchange?q=${encodeURIComponent(selectedRouteData.primarySectors[0] || '')}`}
             className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-brand-accent text-white font-bold text-phi-sm hover:opacity-90 transition-opacity"
           >
             <Briefcase className="w-4 h-4" />

@@ -38,7 +38,7 @@ function SectorCard({ sector }: { sector: CountryConfig['featuredSectors'][numbe
   const emoji = sector.emoji || getSectorEmoji(sector.name)
   return (
     <Link
-      href={`/exchange?sector=${sector.id}`}
+      href={`/exchange?q=${encodeURIComponent(sector.name)}`}
       className="group glass-subtle rounded-xl p-phi-4 transition-all duration-200 hover:shadow-lg hover:shadow-brand-accent/10 hover:-translate-y-0.5"
     >
       <div className="text-3xl mb-3">{emoji}</div>

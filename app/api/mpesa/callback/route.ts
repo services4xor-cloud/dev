@@ -72,9 +72,9 @@ async function sendWhatsAppConfirmation(
 
   const payload = buildWhatsAppPayload(waPhone, 'safari_booking_confirmation', 'en_US', [
     'Your Safari Booking', // {{1}} package name
-    new Date().toLocaleDateString('en-KE', { dateStyle: 'full' }), // {{2}} date
+    new Date().toLocaleDateString('en', { dateStyle: 'full' }), // {{2}} date
     '1', // {{3}} guests — real value would come from booking DB lookup
-    'Nairobi — confirm with guide', // {{4}} meeting point
+    'Confirm with guide', // {{4}} meeting point — TODO: from booking record
     `KES ${Number(details.amount).toLocaleString('en-US')}`, // {{5}} total paid
     bookingRef, // {{6}} booking ref
   ])

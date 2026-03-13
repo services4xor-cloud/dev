@@ -1,19 +1,17 @@
 'use client'
 
 /**
- * Exchange — Smart feed of People + Opportunities
+ * Exchange — Profile-driven matching feed
  *
- * People are AI agent personas scored via the 8-dimension engine.
- * Opportunities come from mock venture paths.
- *
- * Filters: type (All / People / Opportunities), sector
- * Sorted by dimension score descending.
+ * Shows people and opportunities scored against YOUR profile.
+ * No manual filters — the 8-dimension engine does the matching.
+ * Only shows results that actually match (score > 25%).
  */
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
-import { ArrowLeft, Filter, Users, Briefcase, Search, X } from 'lucide-react'
+import { ArrowLeft, Search, X, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
@@ -21,7 +19,6 @@ import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { areSkillsEquivalent } from '@/lib/semantic-skills'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
-// Real paths fetched from /api/paths (Prisma → Neon PostgreSQL)
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { generateAllAgents, type AgentPersona } from '@/lib/agents'
 import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
@@ -31,17 +28,19 @@ import { getSignalsForRegion } from '@/lib/market-data'
 import ExchangeCard, { type ExchangeCardData } from '@/components/ExchangeCard'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
-import SectionHeader from '@/components/SectionHeader'
+
+// ─── Constants ─────────────────────────────────────────────────────
+
+/** Minimum match score to show in feed (0-100) */
+const MIN_MATCH_SCORE = 25
 
 // ─── Helpers ────────────────────────────────────────────────────────
 
-/** Resolve language codes to display names */
 function langCodeToName(code: string): string {
   const lang = LANGUAGE_REGISTRY[code as LanguageCode]
   return lang ? lang.name : code
 }
 
-/** Build DimensionProfile from user identity */
 function identityToProfile(identity: {
   country: string
   city?: string
@@ -65,7 +64,6 @@ function identityToProfile(identity: {
   }
 }
 
-/** Build DimensionProfile from an AI agent */
 function agentToProfile(agent: AgentPersona): DimensionProfile {
   return {
     country: agent.country,
@@ -80,7 +78,6 @@ function agentToProfile(agent: AgentPersona): DimensionProfile {
   }
 }
 
-/** Map agent's primary interest to an exchange category */
 function agentSector(agent: AgentPersona): { label: string; icon: string } {
   if (agent.interests.length > 0) {
     const cat = EXCHANGE_CATEGORIES.find((c) => c.id === agent.interests[0])
@@ -89,7 +86,6 @@ function agentSector(agent: AgentPersona): { label: string; icon: string } {
   return { label: 'General', icon: '🌐' }
 }
 
-/** Score a DB path opportunity against user identity, with breakdown */
 function scoreDbPath(
   path: {
     skills: string[]
@@ -106,13 +102,11 @@ function scoreDbPath(
   let locationScore = 0
   let marketScore = 0
 
-  // Semantic skill matching against user craft
   const skillMatches = path.skills.filter((skill) =>
     userCraft.some((uc) => areSkillsEquivalent(uc, skill))
   )
   craftScore = Math.min(40, skillMatches.length * 15)
 
-  // Sector / interest matching
   const interestLabels = userInterests
     .map((id) => EXCHANGE_CATEGORIES.find((c) => c.id === id))
     .filter(Boolean)
@@ -123,7 +117,6 @@ function scoreDbPath(
       il.includes((path.sector || '').toLowerCase())
   )
   if (sectorMatch) marketScore += 15
-
   if (path.tier === 'FEATURED' || path.tier === 'PREMIUM') marketScore += 10
   if (path.isRemote) marketScore += 5
   if (path.country === userCountry) locationScore = 15
@@ -161,9 +154,29 @@ function sectorToIcon(sector: string | null): string {
   }
 }
 
-// ─── Filter types ───────────────────────────────────────────────────
+function agentMatchesQuery(agent: AgentPersona, query: string): boolean {
+  const q = query.toLowerCase()
+  if (agent.name.toLowerCase().includes(q)) return true
+  if (agent.city.toLowerCase().includes(q)) return true
+  if (agent.craft.some((c) => c.toLowerCase().includes(q))) return true
+  if (agent.craft.some((c) => areSkillsEquivalent(q, c))) return true
+  if (agent.interests.some((i) => i.toLowerCase().includes(q))) return true
+  if (agent.bio.toLowerCase().includes(q)) return true
+  return false
+}
 
-type TypeFilter = 'all' | 'people' | 'opportunities'
+function pathMatchesQuery(
+  path: { title: string; company: string; skills: string[]; sector: string | null },
+  query: string
+): boolean {
+  const q = query.toLowerCase()
+  if (path.title.toLowerCase().includes(q)) return true
+  if (path.company.toLowerCase().includes(q)) return true
+  if (path.skills.some((s) => s.toLowerCase().includes(q))) return true
+  if (path.skills.some((s) => areSkillsEquivalent(q, s))) return true
+  if (path.sector?.toLowerCase().includes(q)) return true
+  return false
+}
 
 // ─── Component ──────────────────────────────────────────────────────
 
@@ -175,7 +188,6 @@ export default function ExchangePage() {
   )
 }
 
-/** Skeleton shown while Suspense resolves useSearchParams */
 function ExchangeSkeleton() {
   return (
     <SectionLayout>
@@ -204,41 +216,13 @@ function ExchangeSkeleton() {
   )
 }
 
-/** Text search: does `query` match any field of an agent? */
-function agentMatchesQuery(agent: AgentPersona, query: string): boolean {
-  const q = query.toLowerCase()
-  if (agent.name.toLowerCase().includes(q)) return true
-  if (agent.city.toLowerCase().includes(q)) return true
-  if (agent.craft.some((c) => c.toLowerCase().includes(q))) return true
-  if (agent.craft.some((c) => areSkillsEquivalent(q, c))) return true
-  if (agent.interests.some((i) => i.toLowerCase().includes(q))) return true
-  if (agent.bio.toLowerCase().includes(q)) return true
-  return false
-}
-
-/** Text search: does `query` match any field of a path? */
-function pathMatchesQuery(
-  path: { title: string; company: string; skills: string[]; sector: string | null },
-  query: string
-): boolean {
-  const q = query.toLowerCase()
-  if (path.title.toLowerCase().includes(q)) return true
-  if (path.company.toLowerCase().includes(q)) return true
-  if (path.skills.some((s) => s.toLowerCase().includes(q))) return true
-  if (path.skills.some((s) => areSkillsEquivalent(q, s))) return true
-  if (path.sector?.toLowerCase().includes(q)) return true
-  return false
-}
-
 function ExchangeInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { identity, hasCompletedDiscovery } = useIdentity()
   const { t } = useTranslation()
 
-  // Read query params from needs "Find matching people" button
-  const urlSkills = searchParams.get('skills') // comma-separated category IDs
-  const urlQuery = searchParams.get('q') // free-text search
+  const urlQuery = searchParams.get('q') || ''
 
   // Redirect if discovery not complete
   useEffect(() => {
@@ -247,7 +231,7 @@ function ExchangeInner() {
     }
   }, [hasCompletedDiscovery, router])
 
-  // Load user priorities from localStorage (saved by Me page / profile sync)
+  // Load user priorities from localStorage
   const [priorities, setPriorities] = useState<Record<string, DimensionPriority>>({})
   useEffect(() => {
     try {
@@ -258,13 +242,9 @@ function ExchangeInner() {
     }
   }, [])
 
-  // Compute profile completeness for match boost
   const completeness = useMemo(() => computeCompleteness(identity, false, false), [identity])
 
-  // Initialize filters from URL params (needs flow)
-  const [typeFilter, setTypeFilter] = useState<TypeFilter>(urlSkills ? 'people' : 'all')
-  const [sectorFilter, setSectorFilter] = useState<string>(urlSkills?.split(',')[0] || 'all')
-  const [textSearch, setTextSearch] = useState(urlQuery || '')
+  const [textSearch, setTextSearch] = useState(urlQuery)
   const [mounted, setMounted] = useState(false)
   const [visibleCount, setVisibleCount] = useState(20)
 
@@ -272,14 +252,15 @@ function ExchangeInner() {
     setMounted(true)
   }, [])
 
-  // Reset visible count when filters change
   useEffect(() => {
     setVisibleCount(20)
-  }, [typeFilter, sectorFilter, textSearch])
+  }, [textSearch])
 
   const loadMore = useCallback(() => {
     setVisibleCount((prev) => prev + 20)
   }, [])
+
+  // Fetch real paths from DB
   const [dbPaths, setDbPaths] = useState<
     Array<{
       id: string
@@ -295,7 +276,6 @@ function ExchangeInner() {
     }>
   >([])
 
-  // Fetch real paths from DB, fallback to mock data for demo
   useEffect(() => {
     fetch('/api/paths?limit=50&status=OPEN')
       .then((r) => r.json())
@@ -303,7 +283,6 @@ function ExchangeInner() {
         if (data.paths && data.paths.length > 0) {
           setDbPaths(data.paths)
         } else {
-          // Fallback: use mock data when DB is empty
           setDbPaths(
             MOCK_VENTURE_PATHS.map((p) => ({
               id: p.id,
@@ -326,7 +305,6 @@ function ExchangeInner() {
         }
       })
       .catch(() => {
-        // API failed — use mock data
         setDbPaths(
           MOCK_VENTURE_PATHS.map((p) => ({
             id: p.id,
@@ -349,10 +327,32 @@ function ExchangeInner() {
       })
   }, [])
 
-  // Resolve user language codes to names for display
   const userLangNames = useMemo(() => identity.languages.map(langCodeToName), [identity.languages])
 
-  // Generate and score AI agents (memoized)
+  const userCountryName = useMemo(
+    () => COUNTRY_OPTIONS.find((c) => c.code === identity.country)?.name ?? '',
+    [identity.country]
+  )
+
+  // Build profile summary for the header
+  const profileSummary = useMemo(() => {
+    const parts: string[] = []
+    const countryName = COUNTRY_OPTIONS.find((c) => c.code === identity.country)?.name
+    if (countryName) parts.push(countryName)
+    if (identity.languages.length > 0) {
+      parts.push(identity.languages.slice(0, 3).map(langCodeToName).join(', '))
+    }
+    if (identity.interests.length > 0) {
+      const labels = identity.interests
+        .slice(0, 2)
+        .map((id) => EXCHANGE_CATEGORIES.find((c) => c.id === id)?.label)
+        .filter(Boolean)
+      if (labels.length > 0) parts.push(labels.join(', '))
+    }
+    return parts
+  }, [identity.country, identity.languages, identity.interests])
+
+  // Generate and score all agents
   const scoredAgents = useMemo(() => {
     const allAgents = generateAllAgents()
     const meProfile = identityToProfile(identity)
@@ -362,120 +362,90 @@ function ExchangeInner() {
       .map((agent) => {
         const themProfile = agentToProfile(agent)
         const dimScore = scoreDimensions(meProfile, themProfile, signals, priorities)
-        // Normalize 0-110 to 0-100, then apply completeness matchBoost
         const rawDisplay = Math.min(100, Math.round((dimScore.total / 110) * 100))
         const displayScore = Math.min(100, Math.round(rawDisplay * completeness.matchBoost))
-        return { agent, score: displayScore, breakdown: dimScore.breakdown }
+        return {
+          agent,
+          score: displayScore,
+          breakdown: dimScore.breakdown,
+          highlights: dimScore.highlights,
+        }
       })
+      .filter((a) => a.score >= MIN_MATCH_SCORE) // Only keep real matches
       .sort((a, b) => b.score - a.score)
   }, [identity, priorities, completeness.matchBoost])
 
-  // Build scored feed items
+  // Build feed items — profile-driven, no manual filters
   const feedItems = useMemo(() => {
     const items: { type: 'person' | 'opportunity'; data: ExchangeCardData; score: number }[] = []
-
     const query = textSearch.trim()
 
-    // Add AI agent people
-    if (typeFilter !== 'opportunities') {
-      for (const { agent, score, breakdown } of scoredAgents) {
-        const sector = agentSector(agent)
+    // Add matched agents
+    for (const { agent, score, breakdown } of scoredAgents) {
+      if (query && !agentMatchesQuery(agent, query)) continue
 
-        // Text search filter
-        if (query && !agentMatchesQuery(agent, query)) continue
+      const sector = agentSector(agent)
+      const countryName =
+        COUNTRY_OPTIONS.find((c) => c.code === agent.country)?.name ?? agent.country
 
-        // Sector filter
-        if (sectorFilter !== 'all') {
-          const cat = EXCHANGE_CATEGORIES.find((c) => c.id === sectorFilter)
-          if (cat && !agent.interests.includes(sectorFilter)) continue
-        }
-
-        const typeBadge = agent.type === 'ai' ? '🤖 AI' : '✨ Human'
-        const countryName =
-          COUNTRY_OPTIONS.find((c) => c.code === agent.country)?.name ?? agent.country
-
-        items.push({
-          type: 'person',
-          score,
-          data: {
-            id: agent.id,
-            title: agent.name,
-            subtitle: `${typeBadge} · ${agent.city}, ${countryName}`,
-            flag: agent.avatar,
-            languages: agent.languages.map(langCodeToName),
-            skills: agent.craft.slice(0, 3),
-            matchScore: score,
-            sector: sector.label,
-            sectorIcon: sector.icon,
-            // Extended dimensions from agent profile
-            faith: agent.faith,
-            reach: agent.reach,
-            culture: agent.culture,
-            interests: agent.interests.map((id: string) => {
-              const cat = EXCHANGE_CATEGORIES.find((c) => c.id === id)
-              return cat?.label ?? id
-            }),
-            matchBreakdown: breakdown,
-          },
-        })
-      }
+      items.push({
+        type: 'person',
+        score,
+        data: {
+          id: agent.id,
+          title: agent.name,
+          subtitle: `${agent.city}, ${countryName}`,
+          flag: agent.avatar,
+          languages: agent.languages.map(langCodeToName),
+          skills: agent.craft.slice(0, 3),
+          matchScore: score,
+          sector: sector.label,
+          sectorIcon: sector.icon,
+          faith: agent.faith,
+          reach: agent.reach,
+          culture: agent.culture,
+          interests: agent.interests.map((id: string) => {
+            const cat = EXCHANGE_CATEGORIES.find((c) => c.id === id)
+            return cat?.label ?? id
+          }),
+          matchBreakdown: breakdown,
+        },
+      })
     }
 
-    // Score opportunities from real DB
-    if (typeFilter !== 'people') {
-      for (const path of dbPaths) {
-        // Text search filter
-        if (query && !pathMatchesQuery(path, query)) continue
+    // Add opportunities from DB
+    for (const path of dbPaths) {
+      if (query && !pathMatchesQuery(path, query)) continue
 
-        const { score, breakdown } = scoreDbPath(
-          path,
-          identity.interests,
-          identity.craft ?? [],
-          identity.country
-        )
+      const { score, breakdown } = scoreDbPath(
+        path,
+        identity.interests,
+        identity.craft ?? [],
+        identity.country
+      )
 
-        // Sector filter
-        if (sectorFilter !== 'all') {
-          const cat = EXCHANGE_CATEGORIES.find((c) => c.id === sectorFilter)
-          if (cat) {
-            const catLower = cat.label.toLowerCase()
-            const sectorLower = (path.sector || '').toLowerCase()
-            const skillMatch = path.skills.some((s) => catLower.includes(s.toLowerCase()))
-            if (!catLower.includes(sectorLower) && !skillMatch) continue
-          }
-        }
+      if (score < MIN_MATCH_SCORE) continue
 
-        items.push({
-          type: 'opportunity',
-          score,
-          data: {
-            id: path.id,
-            title: path.title,
-            subtitle: `${path.anchorName || path.company} · ${path.location}`,
-            flag: COUNTRY_OPTIONS.find((c) => c.code === path.country)?.flag,
-            languages: [],
-            skills: path.skills.slice(0, 5),
-            matchScore: score,
-            matchBreakdown: breakdown,
-            sector: path.sector || 'general',
-            sectorIcon: sectorToIcon(path.sector),
-          },
-        })
-      }
+      items.push({
+        type: 'opportunity',
+        score,
+        data: {
+          id: path.id,
+          title: path.title,
+          subtitle: `${path.anchorName || path.company} · ${path.location}`,
+          flag: COUNTRY_OPTIONS.find((c) => c.code === path.country)?.flag,
+          languages: [],
+          skills: path.skills.slice(0, 5),
+          matchScore: score,
+          matchBreakdown: breakdown,
+          sector: path.sector || 'general',
+          sectorIcon: sectorToIcon(path.sector),
+        },
+      })
     }
 
-    // Sort by score descending
     return items.sort((a, b) => b.score - a.score)
-  }, [
-    typeFilter,
-    sectorFilter,
-    textSearch,
-    identity.interests,
-    identity.craft,
-    identity.country,
-    scoredAgents,
-    dbPaths,
-  ])
+  }, [textSearch, identity.interests, identity.craft, identity.country, scoredAgents, dbPaths])
 
   // Guide user to set up identity if not done
   if (!hasCompletedDiscovery) {
@@ -502,65 +472,56 @@ function ExchangeInner() {
 
   return (
     <SectionLayout>
-      {/* ── Header ── */}
+      {/* ── Back link ── */}
+      <Link
+        href="/"
+        className="mb-phi-3 inline-flex items-center gap-phi-1 text-phi-sm text-white/50 hover:text-white transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        {t('exchange.home')}
+      </Link>
+
+      {/* ── Profile-driven header ── */}
       <div className="mb-phi-5">
-        <Link
-          href="/"
-          className="mb-phi-3 inline-flex items-center gap-phi-1 text-phi-sm text-white/50 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t('exchange.home')}
-        </Link>
-        <SectionHeader
-          title={t('exchange.title')}
-          subtitle={t('exchange.subtitle')}
-          accent={false}
-          className="text-left mb-0"
-        />
+        <h1 className="text-phi-2xl font-bold text-white mb-phi-2">
+          {t('exchange.yourMatches') || 'Your Matches'}
+        </h1>
+        <p className="text-phi-base text-white/50 mb-phi-3">
+          {t('exchange.matchedBasedOn') || 'Matched based on your profile'}
+        </p>
+
+        {/* Profile chips — what the algorithm is matching against */}
+        {profileSummary.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-phi-3">
+            {profileSummary.map((part) => (
+              <span
+                key={part}
+                className="rounded-full px-3 py-1 text-phi-xs bg-brand-primary/20 text-white/70 border border-brand-primary/30"
+              >
+                {part}
+              </span>
+            ))}
+            {(identity.craft?.length ?? 0) > 0 && (
+              <span className="rounded-full px-3 py-1 text-phi-xs bg-brand-accent/10 text-brand-accent/80 border border-brand-accent/20">
+                {identity.craft!.slice(0, 2).join(', ')}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Profile completeness nudge */}
+        {completeness.score < 70 && (
+          <Link
+            href="/me"
+            className="inline-flex items-center gap-2 text-phi-sm text-brand-accent/80 hover:text-brand-accent transition-colors"
+          >
+            Complete your profile for better matches ({completeness.score}% complete)
+            <ChevronRight className="h-3.5 w-3.5" />
+          </Link>
+        )}
       </div>
 
-      {/* ── Filter bar ── */}
-      <div className="mb-phi-5 flex flex-col gap-phi-3 sm:flex-row sm:items-center">
-        {/* Type filter pills */}
-        <div className="flex gap-phi-2 overflow-x-auto pb-1">
-          {(
-            [
-              { id: 'all', label: t('exchange.all'), icon: Filter },
-              { id: 'people', label: t('exchange.people'), icon: Users },
-              { id: 'opportunities', label: t('exchange.paths'), icon: Briefcase },
-            ] as const
-          ).map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => setTypeFilter(id)}
-              className={`flex items-center gap-phi-1 whitespace-nowrap rounded-full px-phi-3 py-phi-1 text-phi-sm font-medium transition-all ${
-                typeFilter === id
-                  ? 'bg-brand-primary text-white'
-                  : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Sector dropdown */}
-        <select
-          value={sectorFilter}
-          onChange={(e) => setSectorFilter(e.target.value)}
-          className="rounded-lg border border-white/10 bg-brand-surface px-phi-3 py-phi-2 text-phi-sm text-white outline-none focus:border-brand-accent/50"
-        >
-          <option value="all">{t('exchange.allSectors')}</option>
-          {EXCHANGE_CATEGORIES.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.icon} {t(cat.i18nKey) || cat.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* ── Search bar ── */}
+      {/* ── Search (only filter — algorithm handles the rest) ── */}
       <div className="mb-phi-4 relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
         <input
@@ -582,12 +543,8 @@ function ExchangeInner() {
 
       {/* ── Results count ── */}
       <p className="mb-phi-3 text-phi-sm text-white/40">
-        {feedItems.length} {feedItems.length === 1 ? t('exchange.result') : t('exchange.results')}
-        {textSearch && (
-          <span className="ml-1">
-            {t('exchange.searchingFor') || 'for'} &ldquo;{textSearch}&rdquo;
-          </span>
-        )}
+        {feedItems.length} {feedItems.length === 1 ? 'match' : 'matches'}
+        {textSearch && <span className="ml-1">for &ldquo;{textSearch}&rdquo;</span>}
       </p>
 
       {/* ── Feed grid ── */}
@@ -624,6 +581,7 @@ function ExchangeInner() {
                 data={item.data}
                 userLanguages={userLangNames}
                 userInterests={identity.interests}
+                userCountryName={userCountryName}
               />
             ))}
           </div>
@@ -641,8 +599,24 @@ function ExchangeInner() {
         </>
       ) : (
         <GlassCard padding="lg" className="text-center">
-          <p className="text-phi-lg text-white/50">{t('exchange.noMatches')}</p>
-          <p className="mt-phi-1 text-phi-sm text-white/30">{t('exchange.noMatchesDesc')}</p>
+          <p className="text-phi-lg text-white/50">
+            {textSearch
+              ? `No matches for "${textSearch}"`
+              : t('exchange.noMatches') || 'No matches yet'}
+          </p>
+          <p className="mt-phi-2 text-phi-sm text-white/30">
+            {textSearch
+              ? 'Try a different search term'
+              : 'Complete your profile to find people who match your interests, language, and beliefs'}
+          </p>
+          {!textSearch && (
+            <Link
+              href="/me"
+              className="mt-phi-4 inline-block bg-brand-accent text-white font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition-colors text-phi-sm"
+            >
+              Complete your profile
+            </Link>
+          )}
         </GlassCard>
       )}
     </SectionLayout>

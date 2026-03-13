@@ -63,6 +63,8 @@ interface ExchangeCardProps {
   userLanguages: string[]
   /** Current user's interests — shared ones get accent highlight */
   userInterests: string[]
+  /** Current user's country name — for "same country" match reason */
+  userCountryName?: string
   onAction?: () => void
 }
 
@@ -100,6 +102,7 @@ export default function ExchangeCard({
   data,
   userLanguages,
   userInterests,
+  userCountryName,
   onAction,
 }: ExchangeCardProps) {
   const router = useRouter()
@@ -126,9 +129,8 @@ export default function ExchangeCard({
       `🔧 ${sharedSkills.length} ${sharedSkills.length > 1 ? t('exchange.card.commonSkills') : t('exchange.card.commonSkill')}`
     )
   if (data.matchScore >= 80) matchReasons.push(`⚡ ${t('exchange.card.highCompatibility')}`)
-  if (type === 'person') {
-    if (data.subtitle.includes(', KE') || data.subtitle.includes('Kenya'))
-      matchReasons.push(`📍 ${t('exchange.card.sameCountry')}`)
+  if (type === 'person' && userCountryName && data.subtitle.includes(userCountryName)) {
+    matchReasons.push(`📍 ${t('exchange.card.sameCountry')}`)
   }
 
   return (
