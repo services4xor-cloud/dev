@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 65 (2026-03-13) — Semantic Skills, Profile Expand, Quests, Nav Fixes
+> Last updated: Session 66 (2026-03-13) — UX Flow Fix, Semantic Matching, Lazy Loading
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -34,7 +34,43 @@
 
 ---
 
-## 🔥 Session 65: Semantic Skills, Profile Expand, Quests, Nav Fixes
+## 🔥 Session 66: UX Flow Fix, Semantic Matching, Lazy Loading
+
+### Not-Found Flash Fixed
+
+- Exchange detail (`/exchange/[id]`) now shows skeleton while fetching path data
+- "Not found" only appears after fetch completes — no more flash
+- Extracted mock fallback into shared `mockFallback()` function
+
+### Semantic Skill Matching in Exchange
+
+- Exchange detail craft matching now uses `areSkillsEquivalent()` (not string includes)
+- Path skills matching also uses semantic matching
+- "Softwareentwicklung" correctly highlights as match for "Software Development"
+- Match breakdown now passed to ExchangeCard — dimension scores visible in feed
+
+### Navigation Cleanup
+
+- Back buttons use `router.back()` for clean browser history
+- Next Steps prompts navigate to Profile tab (inline edit) instead of discovery
+- Redo Discovery links to `/?discover=true` (not broken `/onboarding?redo=true`)
+- Journey action routes fixed: `/ventures` → `/exchange`, `/onboarding` → `/me`
+
+### Lazy Loading & Pagination
+
+- Exchange feed shows skeleton grid on first mount before data renders
+- Feed paginated: shows 20 items, "Load more" button for rest
+- Prevents rendering 700+ agent cards at once
+
+### Quest Progress Tracking
+
+- Quest completion now derived from journey actions + XP thresholds
+- `completedQuestIds` actually populated (was empty TODO before)
+- XP-based quest auto-completion (e.g., 20+ XP → identity quest done)
+
+---
+
+## Session 65: Semantic Skills, Profile Expand, Quests, Nav Fixes
 
 ### Semantic Skill Matching (MVC Model Layer)
 
