@@ -95,6 +95,7 @@ export default function VentureDetailPage() {
   const [path, setPath] = useState<DbPath | null>(null)
   const [similarPaths, setSimilarPaths] = useState<DbPath[]>([])
   const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
 
   // Fetch path from real DB
   useEffect(() => {
@@ -114,9 +115,11 @@ export default function VentureDetailPage() {
           if (simData.paths) {
             setSimilarPaths(simData.paths.filter((p: DbPath) => p.id !== pathId).slice(0, 3))
           }
+        } else {
+          setNotFound(true)
         }
       } catch {
-        // silent fail
+        setNotFound(true)
       } finally {
         setLoading(false)
       }
@@ -132,7 +135,7 @@ export default function VentureDetailPage() {
     )
   }
 
-  if (!path) {
+  if (notFound) {
     return (
       <div className="min-h-screen bg-brand-bg flex items-center justify-center">
         <div className="text-center">
@@ -147,6 +150,14 @@ export default function VentureDetailPage() {
             {t('venture.browseAll')}
           </Link>
         </div>
+      </div>
+    )
+  }
+
+  if (!path) {
+    return (
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
       </div>
     )
   }

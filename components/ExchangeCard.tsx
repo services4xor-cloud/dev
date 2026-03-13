@@ -42,6 +42,17 @@ export interface ExchangeCardData {
   reach?: string[]
   culture?: string
   interests?: string[]
+  /** Optional dimension score breakdown from the matching engine */
+  matchBreakdown?: {
+    language: number
+    craft: number
+    passion: number
+    location: number
+    faith: number
+    reach: number
+    culture: number
+    market: number
+  }
 }
 
 interface ExchangeCardProps {
@@ -55,6 +66,17 @@ interface ExchangeCardProps {
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────
+
+const DIMENSION_ICONS: Record<string, string> = {
+  language: '\u{1F5E3}',
+  craft: '\u{1F527}',
+  passion: '\u2764\uFE0F',
+  location: '\u{1F4CD}',
+  faith: '\u{1F64F}',
+  reach: '\u{1F310}',
+  culture: '\u{1F33F}',
+  market: '\u{1F4CA}',
+}
 
 function getScoreColor(score: number): string {
   if (score >= 80) return 'text-green-400'
@@ -96,18 +118,18 @@ export default function ExchangeCard({
     )
   const sharedSkills = data.skills.filter(isSharedSkill)
 
-  // Build "why you match" reasons
+  // Build "why you match" reasons (for both person and opportunity cards)
   const matchReasons: string[] = []
+  if (sharedLangs.length > 0)
+    matchReasons.push(
+      `🗣 ${sharedLangs.length} ${sharedLangs.length > 1 ? t('exchange.card.sharedLanguages') : t('exchange.card.sharedLanguage')}`
+    )
+  if (sharedSkills.length > 0)
+    matchReasons.push(
+      `🔧 ${sharedSkills.length} ${sharedSkills.length > 1 ? t('exchange.card.commonSkills') : t('exchange.card.commonSkill')}`
+    )
+  if (data.matchScore >= 80) matchReasons.push(`⚡ ${t('exchange.card.highCompatibility')}`)
   if (type === 'person') {
-    if (sharedLangs.length > 0)
-      matchReasons.push(
-        `🗣 ${sharedLangs.length} ${sharedLangs.length > 1 ? t('exchange.card.sharedLanguages') : t('exchange.card.sharedLanguage')}`
-      )
-    if (sharedSkills.length > 0)
-      matchReasons.push(
-        `🔧 ${sharedSkills.length} ${sharedSkills.length > 1 ? t('exchange.card.commonSkills') : t('exchange.card.commonSkill')}`
-      )
-    if (data.matchScore >= 80) matchReasons.push(`⚡ ${t('exchange.card.highCompatibility')}`)
     if (data.subtitle.includes(', KE') || data.subtitle.includes('Kenya'))
       matchReasons.push(`📍 ${t('exchange.card.sameCountry')}`)
   }
@@ -165,6 +187,22 @@ export default function ExchangeCard({
           </div>
         </div>
 
+        {/* ── Dimension breakdown (top 3 scoring dimensions) ── */}
+        {data.matchBreakdown && (
+          <div className="flex flex-wrap gap-1 mt-1 mb-phi-2">
+            {Object.entries(data.matchBreakdown)
+              .filter(([, v]) => v > 0)
+              .sort(([, a], [, b]) => b - a)
+              .slice(0, 3)
+              .map(([key, value]) => (
+                <span key={key} className="text-[9px] text-white/30">
+                  {DIMENSION_ICONS[key]}
+                  {value}
+                </span>
+              ))}
+          </div>
+        )}
+
         {/* ── Title + Subtitle ── */}
         <div className="mb-phi-2">
           <h3 className="text-phi-lg font-semibold text-white group-hover:text-brand-accent transition-colors">
@@ -174,8 +212,8 @@ export default function ExchangeCard({
           <p className="mt-0.5 text-phi-sm text-white/50">{data.subtitle}</p>
         </div>
 
-        {/* ── Why you match (person cards only) ── */}
-        {type === 'person' && matchReasons.length > 0 && (
+        {/* ── Why you match ── */}
+        {matchReasons.length > 0 && (
           <div className="mb-phi-2 flex flex-wrap gap-1.5">
             {matchReasons.map((reason) => (
               <span

@@ -50,6 +50,9 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
       { href: '/compass', label: 'Compass' },
       { href: '/exchange', label: 'Exchange' },
       { href: '/messages', label: 'Messages' },
+      { href: '/world', label: 'World Map' },
+      { href: '/fashion', label: 'Fashion' },
+      { href: '/media', label: 'Media' },
     ],
   },
   {
@@ -57,6 +60,8 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
     links: [
       { href: '/charity', label: 'Charity' },
       { href: '/contact', label: 'Contact' },
+      { href: '/referral', label: 'Referral' },
+      { href: '/be/KE', label: 'Gates' },
     ],
   },
   {

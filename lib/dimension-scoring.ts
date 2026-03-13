@@ -11,6 +11,7 @@
  */
 
 import { getMarketScore, type MarketSignal } from './market-data'
+import { resolveSkillId } from './semantic-skills'
 import type { DimensionPriority } from './hooks/use-profile-sync'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -170,12 +171,45 @@ function scoreMarket(
   return { score, highlight: `Market demand in ${them.country}: ${score}/20` }
 }
 
+/** Semantic-aware intersect: matches skills by string OR canonical skill ID */
+function semanticIntersect(a: string[], b: string[]): string[] {
+  const result: string[] = []
+  const usedB = new Set<number>()
+
+  for (const skillA of a) {
+    const idA = resolveSkillId(skillA)
+    for (let i = 0; i < b.length; i++) {
+      if (usedB.has(i)) continue
+      const idB = resolveSkillId(b[i])
+      // Match if same string (case-insensitive) OR same canonical ID
+      if (lower(skillA) === lower(b[i]) || (idA && idB && idA === idB)) {
+        result.push(skillA)
+        usedB.add(i)
+        break
+      }
+    }
+  }
+  return result
+}
+
+/** Semantic-aware complement: skills in theirs that are NOT in mine (by string or ID) */
+function semanticComplement(mine: string[], theirs: string[]): string[] {
+  return theirs.filter((skill) => {
+    const id = resolveSkillId(skill)
+    const isShared = mine.some((m) => {
+      const mId = resolveSkillId(m)
+      return lower(m) === lower(skill) || (mId && id && mId === id)
+    })
+    return !isShared
+  })
+}
+
 function scoreCraft(
   me: DimensionProfile,
   them: DimensionProfile
 ): { score: number; highlight: string | null } {
-  const shared = intersect(me.craft, them.craft)
-  const complementary = complement(me.craft, them.craft)
+  const shared = semanticIntersect(me.craft, them.craft)
+  const complementary = semanticComplement(me.craft, them.craft)
   const score = Math.min(15, shared.length * 2 + complementary.length * 4)
   if (score === 0) return { score: 0, highlight: null }
   const parts: string[] = []

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useIdentity } from '@/lib/identity-context'
 import { useTranslation } from '@/lib/hooks/use-translation'
 import { LANGUAGE_REGISTRY, COUNTRY_OPTIONS, type LanguageCode } from '@/lib/country-selector'
-import { getCategoriesByIds } from '@/lib/exchange-categories'
+import { getCategoriesByIds, EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 // Real data fetched from API routes (chapters, paths, profile)
 import {
   FAITH_OPTIONS,
@@ -214,6 +214,7 @@ export default function MePage() {
   const [editFiverr, setEditFiverr] = useState('')
   const [editVideoUrl, setEditVideoUrl] = useState('')
   const [craftSearch, setCraftSearch] = useState('')
+  const [langSearch, setLangSearch] = useState('')
 
   // Dimension keys for priority selector
   const DIMENSION_KEYS = [
@@ -482,6 +483,12 @@ export default function MePage() {
             <span className="text-brand-accent font-mono font-medium">{referralCode}</span>
           </p>
         </GlassCard>
+        <Link
+          href="/referral"
+          className="inline-flex items-center gap-1 text-brand-accent hover:text-brand-accent-light text-phi-sm transition-colors mt-phi-2"
+        >
+          View full referral page &rarr;
+        </Link>
       </div>
     )
   }
@@ -608,6 +615,41 @@ export default function MePage() {
               <span className="text-phi-sm text-white/30 italic">{t('me.noLanguages')}</span>
             )}
           </div>
+          {/* Add languages */}
+          <div className="mt-phi-3">
+            <input
+              type="text"
+              value={langSearch}
+              onChange={(e) => setLangSearch(e.target.value)}
+              placeholder={t('me.langSearchPlaceholder') || 'Search languages...'}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-phi-sm text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors mb-phi-2"
+            />
+            {langSearch.length >= 2 && (
+              <div className="flex flex-wrap gap-phi-1">
+                {Object.entries(LANGUAGE_REGISTRY)
+                  .filter(
+                    ([code, lang]) =>
+                      (lang.nativeName.toLowerCase().includes(langSearch.toLowerCase()) ||
+                        lang.name.toLowerCase().includes(langSearch.toLowerCase())) &&
+                      !identity.languages.includes(code as LanguageCode)
+                  )
+                  .slice(0, 8)
+                  .map(([code, lang]) => (
+                    <button
+                      key={code}
+                      type="button"
+                      onClick={() => {
+                        setLanguages([...identity.languages, code as LanguageCode])
+                        setLangSearch('')
+                      }}
+                      className="px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10 text-phi-xs hover:bg-brand-accent/20 hover:text-white/70 transition-colors"
+                    >
+                      + {lang.nativeName}
+                    </button>
+                  ))}
+              </div>
+            )}
+          </div>
         </GlassCard>
 
         {/* 3. Craft */}
@@ -698,6 +740,25 @@ export default function MePage() {
               <span className="text-phi-sm text-white/30 italic">{t('me.noInterests')}</span>
             )}
           </div>
+          {/* Available interest categories to add */}
+          {EXCHANGE_CATEGORIES.filter((c) => !identity.interests.includes(c.id)).length > 0 &&
+            identity.interests.length < 5 && (
+              <div className="flex flex-wrap gap-phi-1 mt-phi-3">
+                {EXCHANGE_CATEGORIES.filter((c) => !identity.interests.includes(c.id))
+                  .slice(0, 8)
+                  .map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setInterests([...identity.interests, cat.id])}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10 text-phi-xs hover:bg-white/10 hover:text-white/70 transition-colors"
+                    >
+                      <span>{cat.icon}</span>
+                      {t(cat.i18nKey) || cat.label}
+                    </button>
+                  ))}
+              </div>
+            )}
         </GlassCard>
 
         {/* 5. Reach */}
@@ -1154,6 +1215,21 @@ export default function MePage() {
             </div>
           )}
         </GlassCard>
+
+        {/* Redo Discovery */}
+        <div className="mt-phi-7 pt-phi-5 border-t border-white/10">
+          <div className="text-center">
+            <p className="text-phi-sm text-white/40 mb-phi-3">
+              {t('me.redoDiscoveryHint') || 'Want to start fresh? Redo the discovery process.'}
+            </p>
+            <Link
+              href="/onboarding?redo=true"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 text-white/60 border border-white/10 text-phi-sm hover:bg-white/10 hover:text-white transition-colors"
+            >
+              {t('me.redoDiscovery') || 'Redo Discovery'}
+            </Link>
+          </div>
+        </div>
       </div>
     )
   }
