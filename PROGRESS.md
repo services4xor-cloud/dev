@@ -17,8 +17,8 @@
 | Supporting Routes | `/be/[code]` `/signup` `/login` `/forgot-password` `/referral` `/media` `/fashion` + info |
 | API routes        | 12+                                                                                       |
 | Library modules   | 30 (+ semantic-skills.ts — 68 skills × 12 languages)                                      |
-| Mock data modules | 18 (+ messages.ts); admin data deduplicated, all pages import from barrel                 |
-| Jest tests        | 901/901 ✅ (47 suites)                                                                    |
+| Mock data modules | 17 (+ messages.ts); admin data deduplicated, all pages import from barrel                 |
+| Jest tests        | 881/881 ✅ (46 suites)                                                                    |
 | Playwright tests  | 144+ ✅ (8 suites incl. demo-flow)                                                        |
 | TypeScript errors | 0                                                                                         |
 | Build             | ✅ passes                                                                                 |
@@ -34,7 +34,19 @@
 
 ---
 
-## 🔥 Session 67: BTW Feedback Fixes — Quests, Navigation, Interests
+## 🔥 Session 67: BTW Feedback + Deep Cleanup (-1,460 lines)
+
+### Deep Codebase Cleanup
+
+- **Extracted shared helpers** to single sources of truth:
+  - `identityToProfile` / `agentToProfile` → `lib/dimension-scoring.ts` (was duplicated in 4 files)
+  - `langCodeToName` → `lib/country-selector.ts` (was duplicated in 4 files)
+- **Deleted 5 unused files** (-780 lines): `CountryPrioritySelector`, `PathCard`, `WizardShell`, `identity-flags.ts`, `data/mock/config.ts`
+- **Removed 13 deprecated nav exports** from `lib/nav-structure.ts`
+- **Fixed hardcoded `/be/KE`** in nav → uses `NEXT_PUBLIC_COUNTRY_CODE`
+- **Simplified `ventures/[id]`** → redirect to `exchange/[id]` (368 → 5 lines)
+- **Exchange is now profile-driven** — removed filter pills/sectors, matches via 8-dimension scoring with MIN_MATCH_SCORE threshold
+- **Removed hardcoded currencies** (`* 165` KES multiplier, `en-KE` locale, `Nairobi` text)
 
 ### Quest Progress Now Live
 
@@ -52,17 +64,31 @@
 - Back navigation fallback: `router.back()` now falls back to `/exchange` if no browser history
 - Updated test assertions to match new `/exchange` URLs
 
-### Files Changed (9)
+### Files Changed (24)
+
+**Cleanup batch (17 files, -1,460 lines):**
+
+- `lib/dimension-scoring.ts` — added shared `identityToProfile`, `agentToProfile`
+- `lib/country-selector.ts` — added shared `langCodeToName`
+- `lib/nav-structure.ts` — removed 13 deprecated exports, fixed hardcoded `/be/KE`
+- `app/exchange/page.tsx` — profile-driven matching, removed filter UI
+- `app/exchange/[id]/page.tsx` — uses shared helpers
+- `app/messages/page.tsx` — uses shared helpers
+- `app/page.tsx` — uses shared helpers
+- `app/ventures/[id]/page.tsx` — redirect to exchange/[id]
+- `data/mock/index.ts` — removed config re-exports
+- Deleted: `components/CountryPrioritySelector.tsx`, `PathCard.tsx`, `WizardShell.tsx`, `lib/identity-flags.ts`, `data/mock/config.ts`, `__tests__/lib/identity-flags.test.ts`
+- Updated: `__tests__/data/mock-barrel.test.ts`, `__tests__/lib/nav-structure.test.ts`
+
+**BTW feedback batch (9 files):**
 
 - `components/JourneyProgress.tsx` — quest progress computation + UI
 - `app/me/page.tsx` — removed interest cap
 - `app/exchange/[id]/page.tsx` — safer back navigation
 - `app/world/page.tsx` — `/ventures` → `/exchange`
-- `lib/identity-flags.ts` — `/ventures` → `/exchange`
 - `lib/threads.ts` — `/ventures` → `/exchange`
 - `data/mock/homepage.ts` — `/ventures` → `/exchange`
 - `app/api/onboarding/route.ts` — `/ventures` → `/exchange`
-- `__tests__/lib/identity-flags.test.ts` — test assertion updated
 
 ---
 
