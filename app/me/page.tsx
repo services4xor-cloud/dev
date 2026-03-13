@@ -24,6 +24,7 @@ import StatCard from '@/components/ui/StatCard'
 import { SkeletonDashboard } from '@/components/Skeleton'
 import JourneyProgress from '@/components/JourneyProgress'
 import { useProfileSync, type DimensionPriority } from '@/lib/hooks/use-profile-sync'
+import { NEED_CATEGORIES } from '@/lib/needs'
 import { computeCompleteness } from '@/lib/profile-completeness'
 import StatHexagon from '@/components/StatHexagon'
 import { getRouteInfo } from '@/lib/compass'
@@ -215,6 +216,9 @@ export default function MePage() {
   const [editVideoUrl, setEditVideoUrl] = useState('')
   const [craftSearch, setCraftSearch] = useState('')
   const [langSearch, setLangSearch] = useState('')
+  const [needDescription, setNeedDescription] = useState('')
+  const [needSkills, setNeedSkills] = useState<string[]>([])
+  const [needUrgency, setNeedUrgency] = useState<'low' | 'medium' | 'high'>('medium')
 
   // Dimension keys for priority selector
   const DIMENSION_KEYS = [
@@ -1214,6 +1218,91 @@ export default function MePage() {
               })}
             </div>
           )}
+        </GlassCard>
+
+        {/* What do you need? — International Recommendations */}
+        <GlassCard padding="md">
+          <label className="block text-phi-sm text-white/60 mb-phi-2">
+            <span className="mr-1">🎯</span> {t('me.whatDoYouNeed') || 'What do you need?'}
+          </label>
+          <p className="text-xs text-white/30 mb-phi-3">
+            {t('me.needsDescription') ||
+              "Define what you're looking for and get matched with people worldwide who can help."}
+          </p>
+
+          {/* Need category chips */}
+          <div className="flex flex-wrap gap-phi-1 mb-phi-3">
+            {NEED_CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => {
+                  if (needSkills.includes(cat.id)) {
+                    setNeedSkills(needSkills.filter((s) => s !== cat.id))
+                  } else {
+                    setNeedSkills([...needSkills, cat.id])
+                  }
+                }}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-phi-xs transition-colors ${
+                  needSkills.includes(cat.id)
+                    ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/40'
+                    : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
+                }`}
+              >
+                {cat.icon} {cat.labels[identity.language] || cat.labels.en}
+              </button>
+            ))}
+          </div>
+
+          {/* Free-text need description */}
+          <textarea
+            value={needDescription}
+            onChange={(e) => setNeedDescription(e.target.value)}
+            placeholder={
+              t('me.needPlaceholder') || 'e.g., I need a web developer who speaks Swahili...'
+            }
+            rows={2}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-phi-3 py-phi-2 text-white placeholder:text-white/30 focus:border-brand-accent/50 focus:outline-none transition-colors resize-none text-phi-sm mb-phi-2"
+          />
+
+          {/* Urgency selector */}
+          <div className="flex items-center gap-phi-2 mb-phi-3">
+            <span className="text-phi-xs text-white/40">{t('me.urgency') || 'Urgency'}:</span>
+            {(['low', 'medium', 'high'] as const).map((level) => (
+              <button
+                key={level}
+                type="button"
+                onClick={() => setNeedUrgency(level)}
+                className={`px-2.5 py-0.5 rounded-full text-phi-xs font-medium transition-all ${
+                  needUrgency === level
+                    ? level === 'high'
+                      ? 'bg-red-500/20 text-red-400 border border-red-500/40'
+                      : level === 'medium'
+                        ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/40'
+                        : 'bg-white/10 text-white/50 border border-white/20'
+                    : 'bg-white/5 text-white/25 border border-transparent hover:bg-white/10'
+                }`}
+              >
+                {t(`me.urgency${level.charAt(0).toUpperCase() + level.slice(1)}`) || level}
+              </button>
+            ))}
+          </div>
+
+          {/* Post need button */}
+          <button
+            type="button"
+            disabled={needSkills.length === 0 && !needDescription}
+            onClick={() => {
+              // For now, navigate to exchange with the need as a search filter
+              const searchParams = new URLSearchParams()
+              if (needSkills.length > 0) searchParams.set('skills', needSkills.join(','))
+              if (needDescription) searchParams.set('q', needDescription)
+              router.push(`/exchange?${searchParams.toString()}`)
+            }}
+            className="w-full py-2 rounded-lg bg-brand-primary text-white text-phi-sm font-medium hover:bg-brand-primary/80 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            {t('me.findMatches') || 'Find matching people'}
+          </button>
         </GlassCard>
 
         {/* Redo Discovery */}

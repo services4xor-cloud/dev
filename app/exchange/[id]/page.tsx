@@ -37,6 +37,7 @@ import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionLayout from '@/components/ui/SectionLayout'
 import { useXPContext } from '@/components/XPProvider'
+import PaymentCheckout from '@/components/PaymentCheckout'
 
 // ─── Helpers ────────────────────────────────────────────────────────
 
@@ -82,6 +83,7 @@ export default function ExchangeDetailPage() {
   const [applied, setApplied] = useState(false)
   const [applyError, setApplyError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [showPayment, setShowPayment] = useState(false)
 
   // Award XP for viewing a path
   useEffect(() => {
@@ -638,7 +640,19 @@ export default function ExchangeDetailPage() {
           {/* Sidebar */}
           <div className="space-y-4">
             <GlassCard padding="md">
-              {applied ? (
+              {showPayment && path.salaryMin ? (
+                <PaymentCheckout
+                  amount={path.salaryMin}
+                  currency={path.currency}
+                  pathId={path.id}
+                  description={`Chapter: ${path.title}`.slice(0, 13)}
+                  onSuccess={() => {
+                    setShowPayment(false)
+                    setApplied(true)
+                  }}
+                  onCancel={() => setShowPayment(false)}
+                />
+              ) : applied ? (
                 <div className="text-center py-2">
                   <CheckCircle className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
                   <p className="text-emerald-400 font-semibold text-phi-sm">Chapter opened!</p>

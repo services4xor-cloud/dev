@@ -53,25 +53,66 @@ export interface MatchableProfile {
 export const NEED_CATEGORIES = [
   {
     id: 'tech',
-    labels: { en: 'Technology', de: 'Technologie', fr: 'Technologie', sw: 'Teknolojia' },
+    icon: '💻',
+    labels: { en: 'Technology', de: 'Technologie', fr: 'Technologie', sw: 'Teknolojia' } as Record<
+      string,
+      string
+    >,
   },
-  { id: 'business', labels: { en: 'Business', de: 'Wirtschaft', fr: 'Affaires', sw: 'Biashara' } },
-  { id: 'creative', labels: { en: 'Creative', de: 'Kreativ', fr: 'Créatif', sw: 'Ubunifu' } },
-  { id: 'trades', labels: { en: 'Trades', de: 'Handwerk', fr: 'Métiers', sw: 'Ufundi' } },
-  { id: 'health', labels: { en: 'Healthcare', de: 'Gesundheit', fr: 'Santé', sw: 'Afya' } },
-  { id: 'education', labels: { en: 'Education', de: 'Bildung', fr: 'Éducation', sw: 'Elimu' } },
+  {
+    id: 'business',
+    icon: '💼',
+    labels: { en: 'Business', de: 'Wirtschaft', fr: 'Affaires', sw: 'Biashara' } as Record<
+      string,
+      string
+    >,
+  },
+  {
+    id: 'creative',
+    icon: '🎨',
+    labels: { en: 'Creative', de: 'Kreativ', fr: 'Créatif', sw: 'Ubunifu' } as Record<
+      string,
+      string
+    >,
+  },
+  {
+    id: 'trades',
+    icon: '🔧',
+    labels: { en: 'Trades', de: 'Handwerk', fr: 'Métiers', sw: 'Ufundi' } as Record<string, string>,
+  },
+  {
+    id: 'health',
+    icon: '🏥',
+    labels: { en: 'Healthcare', de: 'Gesundheit', fr: 'Santé', sw: 'Afya' } as Record<
+      string,
+      string
+    >,
+  },
+  {
+    id: 'education',
+    icon: '📚',
+    labels: { en: 'Education', de: 'Bildung', fr: 'Éducation', sw: 'Elimu' } as Record<
+      string,
+      string
+    >,
+  },
   {
     id: 'service',
-    labels: { en: 'Services', de: 'Dienstleistungen', fr: 'Services', sw: 'Huduma' },
+    icon: '🤝',
+    labels: { en: 'Services', de: 'Dienstleistungen', fr: 'Services', sw: 'Huduma' } as Record<
+      string,
+      string
+    >,
   },
   {
     id: 'nature',
+    icon: '🌿',
     labels: {
       en: 'Agriculture & Nature',
       de: 'Landwirtschaft & Natur',
       fr: 'Agriculture & Nature',
       sw: 'Kilimo & Mazingira',
-    },
+    } as Record<string, string>,
   },
 ] as const
 
