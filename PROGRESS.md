@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 66 (2026-03-13) — UX Flow Fix, Semantic Matching, Lazy Loading
+> Last updated: Session 66 (2026-03-13) — Semantic Matching, Payments, Needs, Search, UX Polish
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -83,6 +83,27 @@
 - Exchange page now reads `?skills=` and `?q=` query params, pre-sets filters + text search
 - Full text search bar on exchange feed — searches names, skills (semantic), bios, sectors
 - Suspense boundary wrapping `useSearchParams()` per Next.js App Router requirements
+
+### Semantic Matching Audit — All Pages Fixed
+
+- Messages page: 4 craft matching callsites switched to `areSkillsEquivalent()`
+- Me page: craft dedup uses semantic matching (prevents "Softwareentwicklung" + "Software Development" duplicates)
+- Homepage: path scoring adds semantic craft matching
+- Compass: route insights use `areSkillsEquivalent()` for craft matching
+- All `/ventures` hrefs → `/exchange` across 5 files (17 links)
+- PaymentCheckout: `plugId` → `method` (fixed API validation mismatch)
+
+### UX: Inline Expansion Fix
+
+- Compass page: detail panel renders inline after the section containing clicked card (was at page bottom)
+- Auto-scrolls into view via `useRef` + `scrollIntoView({ behavior: 'smooth' })`
+- Playwright test suite `inline-expansion.spec.ts` guards against this pattern (5 tests)
+
+### Profile Completeness Bar
+
+- Me page header shows color-coded completeness bar (red/gold/green) + percentage
+- Dashboard completeness chips navigate to Profile tab with `+ dimension` labels
+- Compass semantic craft matching for personalized route insights
 
 ---
 
