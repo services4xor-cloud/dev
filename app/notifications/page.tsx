@@ -35,7 +35,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
       'Safari Guide & Wildlife Educator at Orpul Safaris matches your compass profile strongly.',
     timeAgo: '12 minutes ago',
     read: false,
-    link: '/ventures',
+    link: '/exchange',
   },
   {
     id: 'n2',
@@ -56,7 +56,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
       'Victoria Paradise posted a new Path in Diani Beach — aligns with your hospitality interests.',
     timeAgo: '3 hours ago',
     read: false,
-    link: '/ventures',
+    link: '/exchange',
   },
   {
     id: 'n4',
@@ -88,7 +88,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
     description: 'Victoria Paradise launched a new Deep Sea Fishing Venture — only 3 spots remain.',
     timeAgo: '3 days ago',
     read: true,
-    link: '/ventures',
+    link: '/exchange',
   },
   {
     id: 'n7',
@@ -99,7 +99,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
       'African Wildlife Foundation is looking for a Wildlife Photographer — strong alignment with your craft.',
     timeAgo: '5 days ago',
     read: true,
-    link: '/ventures',
+    link: '/exchange',
   },
   {
     id: 'n8',
@@ -120,7 +120,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
       'Kenyatta Conference Centre Tour Coordinator closes in 48 hours — 12 chapters received so far.',
     timeAgo: '1 week ago',
     read: true,
-    link: '/ventures',
+    link: '/exchange',
   },
   {
     id: 'n10',

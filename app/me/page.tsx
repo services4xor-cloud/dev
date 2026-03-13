@@ -25,6 +25,7 @@ import { SkeletonDashboard } from '@/components/Skeleton'
 import JourneyProgress from '@/components/JourneyProgress'
 import { useProfileSync, type DimensionPriority } from '@/lib/hooks/use-profile-sync'
 import { NEED_CATEGORIES } from '@/lib/needs'
+import { areSkillsEquivalent } from '@/lib/semantic-skills'
 import { computeCompleteness } from '@/lib/profile-completeness'
 import StatHexagon from '@/components/StatHexagon'
 import { getRouteInfo } from '@/lib/compass'
@@ -696,7 +697,7 @@ export default function MePage() {
                 {CRAFT_SUGGESTIONS.filter(
                   (c) =>
                     c.toLowerCase().includes(craftSearch.toLowerCase()) &&
-                    !identity.craft.includes(c)
+                    !identity.craft.some((existing) => areSkillsEquivalent(existing, c))
                 )
                   .slice(0, 8)
                   .map((c) => (

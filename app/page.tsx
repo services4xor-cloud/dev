@@ -33,6 +33,7 @@ import { getSignalsForRegion } from '@/lib/market-data'
 // Real paths fetched from /api/paths (Prisma → Neon PostgreSQL)
 import { MOCK_VENTURE_PATHS } from '@/data/mock'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
+import { areSkillsEquivalent } from '@/lib/semantic-skills'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 
@@ -195,10 +196,12 @@ export default function HomePage() {
     return dbPaths
       .map((path) => {
         let score = 25
-        const skillMatch = path.skills.some((skill) =>
-          interestLabels.some(
-            (il) => il.includes(skill.toLowerCase()) || skill.toLowerCase().includes(il)
-          )
+        const skillMatch = path.skills.some(
+          (skill) =>
+            (identity.craft ?? []).some((uc) => areSkillsEquivalent(uc, skill)) ||
+            interestLabels.some(
+              (il) => il.includes(skill.toLowerCase()) || skill.toLowerCase().includes(il)
+            )
         )
         if (skillMatch) score += 40
         if (path.tier === 'FEATURED' || path.tier === 'PREMIUM') score += 15
@@ -227,7 +230,7 @@ export default function HomePage() {
       })
       .sort((a, b) => b.score - a.score)
       .slice(0, 4)
-  }, [hasCompletedDiscovery, identity.interests, identity.country, dbPaths])
+  }, [hasCompletedDiscovery, identity.interests, identity.craft, identity.country, dbPaths])
 
   // ─── First-time visitor flow ──────────────────────────────────
   if (!hasCompletedDiscovery) {

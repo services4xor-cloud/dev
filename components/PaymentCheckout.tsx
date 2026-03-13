@@ -74,7 +74,7 @@ export default function PaymentCheckout({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          plugId: selectedPlug.id,
+          method: selectedPlug.id,
           amount,
           currency,
           description,

@@ -94,7 +94,7 @@ export default function ExperiencePage() {
           <h1 className="text-2xl font-bold text-white mb-2">{t('exp.notFoundTitle')}</h1>
           <p className="text-gray-400 mb-6">{t('exp.notFoundDesc')}</p>
           <Link
-            href="/ventures"
+            href="/exchange"
             className="inline-block text-white font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105"
             style={{
               background:
@@ -279,7 +279,7 @@ export default function ExperiencePage() {
               {t('exp.myDashboard')}
             </Link>
             <Link
-              href="/ventures"
+              href="/exchange"
               className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-gray-300 bg-gray-800 border border-gray-700 hover:bg-gray-700 transition-all"
             >
               {t('exp.browseMore')}
@@ -309,7 +309,7 @@ export default function ExperiencePage() {
       <div className="bg-gradient-to-br from-brand-primary via-brand-primary/80 to-brand-bg text-white">
         <div className="max-w-5xl mx-auto px-4 py-phi-7">
           <Link
-            href="/ventures"
+            href="/exchange"
             className="inline-flex items-center gap-2 text-gray-300 hover:text-white text-sm mb-8 transition-colors"
           >
             {t('exp.backToVentures')}

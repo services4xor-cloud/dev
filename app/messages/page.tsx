@@ -16,6 +16,7 @@ import { scoreDimensions, type DimensionProfile } from '@/lib/dimension-scoring'
 import { getSignalsForRegion } from '@/lib/market-data'
 import { EXCHANGE_CATEGORIES } from '@/lib/exchange-categories'
 import { LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
+import { areSkillsEquivalent } from '@/lib/semantic-skills'
 import GlassCard from '@/components/ui/GlassCard'
 import { useTranslation } from '@/lib/hooks/use-translation'
 
@@ -148,11 +149,9 @@ function generateAgentResponse(
     ? agent.interests.filter((i) => userIdentity.interests.includes(i))
     : []
   const userCrafts = userIdentity?.craft ?? []
-  const sharedCraft = userCrafts.filter((c) =>
-    agent.craft.some((ac) => ac.toLowerCase() === c.toLowerCase())
-  )
+  const sharedCraft = userCrafts.filter((c) => agent.craft.some((ac) => areSkillsEquivalent(c, ac)))
   const complementaryCraft = agent.craft.filter(
-    (ac) => !userCrafts.some((uc) => uc.toLowerCase() === ac.toLowerCase())
+    (ac) => !userCrafts.some((uc) => areSkillsEquivalent(uc, ac))
   )
   const sameCountry = userIdentity ? agent.country === userIdentity.country : false
   const sameCulture =
@@ -943,7 +942,7 @@ export default function MessagesPage() {
                 <span
                   key={c}
                   className={`rounded-full px-phi-2 py-0.5 text-phi-xs ${
-                    identity.craft?.includes(c)
+                    (identity.craft ?? []).some((uc) => areSkillsEquivalent(uc, c))
                       ? 'border border-brand-accent/40 bg-brand-accent/10 text-brand-accent'
                       : 'bg-white/5 text-white/50'
                   }`}
@@ -1045,7 +1044,7 @@ export default function MessagesPage() {
             identity.interests.includes(i)
           )
           const sharedCraft = selectedAgent.agent.craft.filter((c) =>
-            (identity.craft ?? []).includes(c)
+            (identity.craft ?? []).some((uc) => areSkillsEquivalent(uc, c))
           )
           const totalShared =
             sharedLangs.length + sharedFaith.length + sharedInterests.length + sharedCraft.length

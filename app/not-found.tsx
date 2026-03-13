@@ -84,12 +84,12 @@ export default function NotFound() {
           </p>
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              { label: 'Safari Guide', href: '/ventures?q=safari' },
-              { label: 'Software Engineer', href: '/ventures?q=software' },
-              { label: 'NHS Nursing', href: '/ventures?q=nursing' },
-              { label: 'Remote Work', href: '/ventures?q=remote' },
+              { label: 'Safari Guide', href: '/exchange?q=safari' },
+              { label: 'Software Engineer', href: '/exchange?q=software' },
+              { label: 'NHS Nursing', href: '/exchange?q=nursing' },
+              { label: 'Remote Work', href: '/exchange?q=remote' },
               { label: 'Germany Route', href: '/compass' },
-              { label: 'UAE Hospitality', href: '/ventures?q=hospitality' },
+              { label: 'UAE Hospitality', href: '/exchange?q=hospitality' },
             ].map((item) => (
               <Link
                 key={item.label}

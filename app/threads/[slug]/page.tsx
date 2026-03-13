@@ -172,7 +172,7 @@ export default function ThreadDetailPage() {
                   {t('thread.pathsIn', { name: thread.name })}
                 </h2>
                 <Link
-                  href="/ventures"
+                  href="/exchange"
                   className="text-brand-accent text-sm hover:underline flex items-center gap-1"
                 >
                   {t('thread.seeAll')} <ArrowRight className="w-3 h-3" />
@@ -182,7 +182,7 @@ export default function ThreadDetailPage() {
                 {communityPaths.map((path) => (
                   <Link
                     key={path.id}
-                    href={`/ventures/${path.id}`}
+                    href={`/exchange/${path.id}`}
                     className="flex items-start gap-3 bg-gray-800 border border-gray-700 rounded-xl p-4 hover:border-gray-600 transition-colors group"
                   >
                     <span className="text-2xl flex-shrink-0">{path.icon}</span>
