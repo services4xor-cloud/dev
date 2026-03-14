@@ -52,9 +52,14 @@ export default function MePage() {
 
   return (
     <div className="min-h-screen bg-brand-bg p-6">
-      <h1 className="mb-6 text-3xl font-bold text-brand-accent">
-        {session?.user?.name ?? 'Explorer'}
-      </h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-brand-accent">
+          {session?.user?.name ?? 'Explorer'}
+        </h1>
+        <a href="/" className="text-sm text-brand-text-muted hover:text-brand-accent transition">
+          ← Map
+        </a>
+      </div>
 
       {Object.keys(grouped).length === 0 ? (
         <div className="text-center">

@@ -7,7 +7,10 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-brand-bg">
       <div className="w-full max-w-sm space-y-6 rounded-xl bg-brand-surface p-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-brand-accent">Be[X]</h1>
+          <a href="/" className="text-xs text-brand-text-muted hover:text-brand-accent">
+            ← Back to Map
+          </a>
+          <h1 className="mt-2 text-2xl font-bold text-brand-accent">Be[X]</h1>
           <p className="mt-1 text-sm text-brand-text-muted">Sign in to explore</p>
         </div>
         <button

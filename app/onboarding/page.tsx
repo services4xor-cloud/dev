@@ -86,7 +86,10 @@ export default function OnboardingPage() {
     <div className="flex min-h-screen items-center justify-center bg-brand-bg">
       <div className="w-full max-w-md space-y-6 rounded-xl bg-brand-surface p-8">
         <div className="text-center">
-          <p className="text-xs text-brand-text-muted">
+          <a href="/" className="text-xs text-brand-text-muted hover:text-brand-accent">
+            ← Back to Map
+          </a>
+          <p className="mt-2 text-xs text-brand-text-muted">
             Step {step + 1} of {STEPS.length}
           </p>
           <h1 className="mt-2 text-xl font-bold text-brand-accent">{currentStep.title}</h1>

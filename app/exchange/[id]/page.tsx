@@ -23,6 +23,12 @@ export default async function ExchangePage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-brand-bg p-6">
+      <a
+        href="/"
+        className="mb-4 inline-block text-sm text-brand-text-muted hover:text-brand-accent"
+      >
+        ← Back to Map
+      </a>
       <h1 className="mb-2 text-3xl font-bold text-brand-accent">
         {node.icon} {node.label}
       </h1>
