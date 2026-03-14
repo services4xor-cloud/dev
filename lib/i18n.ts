@@ -6214,3 +6214,212 @@ export function hasTranslation(key: string, language: string): boolean {
   const langPrefix = language.split('-')[0].toLowerCase()
   return !!(CONTENT[language]?.[key] ?? CONTENT[langPrefix]?.[key])
 }
+
+// ─── Typed Locale System (4 core locales) ───────────────────────────
+
+export type Locale = 'en' | 'sw' | 'de' | 'fr'
+
+export const SUPPORTED_LOCALES: Locale[] = ['en', 'sw', 'de', 'fr']
+
+export const LOCALE_NAMES: Record<Locale, string> = {
+  en: 'English',
+  sw: 'Kiswahili',
+  de: 'Deutsch',
+  fr: 'Français',
+}
+
+/**
+ * Locale-scoped translation dictionary for common UI strings.
+ * Covers the 4 core platform locales: en, sw, de, fr.
+ * Falls back to English for any missing key, then to the key itself.
+ */
+const LOCALE_TRANSLATIONS: Record<Locale, Record<string, string>> = {
+  en: {
+    'nav.agent': 'Agent',
+    'nav.opportunities': 'Opportunities',
+    'nav.explorers': 'Explorers',
+    'nav.discovery': 'Discovery',
+    'nav.messages': 'Messages',
+    'nav.me': 'Me',
+    'nav.payments': 'Payments',
+    'nav.refer': 'Refer',
+    'nav.signIn': 'Sign in',
+    'nav.signOut': 'Sign out',
+    'common.loading': 'Loading...',
+    'common.error': 'Something went wrong',
+    'common.retry': 'Try again',
+    'common.back': 'Back',
+    'common.next': 'Next',
+    'common.save': 'Save',
+    'common.cancel': 'Cancel',
+    'common.search': 'Search',
+    'common.noResults': 'No results found',
+    'home.title': 'Be[X]',
+    'home.tagline': 'Identity-first life routing',
+    'discovery.title': 'Discovery',
+    'discovery.step1': 'Where are you?',
+    'discovery.step2': 'What do you speak?',
+    'discovery.step3': 'What do you do?',
+    'discovery.step4': 'Your Corridors',
+    'explorer.title': 'Explorers',
+    'explorer.searchPlaceholder': 'Search by name...',
+    'opportunity.title': 'Opportunities',
+    'opportunity.postNew': 'Post an Opportunity',
+    'profile.title': 'My Identity',
+    'profile.noDimensions': 'No dimensions yet.',
+    'profile.tellUs': 'Tell us who you are',
+    'onboarding.languages': 'What languages do you speak?',
+    'onboarding.faith': 'What is your faith or worldview?',
+    'onboarding.crafts': 'What are your skills or crafts?',
+    'onboarding.interests': 'What sectors interest you?',
+    'onboarding.locations': 'Where are you located or interested in?',
+  },
+  sw: {
+    'nav.agent': 'Wakala',
+    'nav.opportunities': 'Fursa',
+    'nav.explorers': 'Watafutaji',
+    'nav.discovery': 'Ugunduzi',
+    'nav.messages': 'Ujumbe',
+    'nav.me': 'Mimi',
+    'nav.payments': 'Malipo',
+    'nav.refer': 'Pendekeza',
+    'nav.signIn': 'Ingia',
+    'nav.signOut': 'Ondoka',
+    'common.loading': 'Inapakia...',
+    'common.error': 'Kuna hitilafu',
+    'common.retry': 'Jaribu tena',
+    'common.back': 'Rudi',
+    'common.next': 'Endelea',
+    'common.save': 'Hifadhi',
+    'common.cancel': 'Ghairi',
+    'common.search': 'Tafuta',
+    'common.noResults': 'Hakuna matokeo',
+    'home.title': 'Be[X]',
+    'home.tagline': 'Jukwaa la maisha kwa utambulisho',
+    'discovery.title': 'Ugunduzi',
+    'discovery.step1': 'Uko wapi?',
+    'discovery.step2': 'Unazungumza lugha gani?',
+    'discovery.step3': 'Unafanya nini?',
+    'discovery.step4': 'Njia zako',
+    'explorer.title': 'Watafutaji',
+    'explorer.searchPlaceholder': 'Tafuta kwa jina...',
+    'opportunity.title': 'Fursa',
+    'opportunity.postNew': 'Chapisha Fursa',
+    'profile.title': 'Utambulisho Wangu',
+    'profile.noDimensions': 'Hakuna vipimo bado.',
+    'profile.tellUs': 'Tuambie wewe ni nani',
+    'onboarding.languages': 'Unazungumza lugha gani?',
+    'onboarding.faith': 'Imani yako ni ipi?',
+    'onboarding.crafts': 'Ujuzi wako ni upi?',
+    'onboarding.interests': 'Sekta zipi zinakuvutia?',
+    'onboarding.locations': 'Uko wapi au unapenda wapi?',
+  },
+  de: {
+    'nav.agent': 'Agent',
+    'nav.opportunities': 'Chancen',
+    'nav.explorers': 'Entdecker',
+    'nav.discovery': 'Entdeckung',
+    'nav.messages': 'Nachrichten',
+    'nav.me': 'Ich',
+    'nav.payments': 'Zahlungen',
+    'nav.refer': 'Empfehlen',
+    'nav.signIn': 'Anmelden',
+    'nav.signOut': 'Abmelden',
+    'common.loading': 'Wird geladen...',
+    'common.error': 'Etwas ist schiefgelaufen',
+    'common.retry': 'Erneut versuchen',
+    'common.back': 'Zurück',
+    'common.next': 'Weiter',
+    'common.save': 'Speichern',
+    'common.cancel': 'Abbrechen',
+    'common.search': 'Suchen',
+    'common.noResults': 'Keine Ergebnisse',
+    'home.title': 'Be[X]',
+    'home.tagline': 'Identitätsorientierte Lebensrouting',
+    'discovery.title': 'Entdeckung',
+    'discovery.step1': 'Wo bist du?',
+    'discovery.step2': 'Welche Sprachen sprichst du?',
+    'discovery.step3': 'Was machst du?',
+    'discovery.step4': 'Deine Korridore',
+    'explorer.title': 'Entdecker',
+    'explorer.searchPlaceholder': 'Nach Name suchen...',
+    'opportunity.title': 'Chancen',
+    'opportunity.postNew': 'Chance veröffentlichen',
+    'profile.title': 'Meine Identität',
+    'profile.noDimensions': 'Noch keine Dimensionen.',
+    'profile.tellUs': 'Sag uns wer du bist',
+    'onboarding.languages': 'Welche Sprachen sprichst du?',
+    'onboarding.faith': 'Was ist dein Glaube?',
+    'onboarding.crafts': 'Was sind deine Fähigkeiten?',
+    'onboarding.interests': 'Welche Sektoren interessieren dich?',
+    'onboarding.locations': 'Wo bist du oder wo möchtest du hin?',
+  },
+  fr: {
+    'nav.agent': 'Agent',
+    'nav.opportunities': 'Opportunités',
+    'nav.explorers': 'Explorateurs',
+    'nav.discovery': 'Découverte',
+    'nav.messages': 'Messages',
+    'nav.me': 'Moi',
+    'nav.payments': 'Paiements',
+    'nav.refer': 'Recommander',
+    'nav.signIn': 'Se connecter',
+    'nav.signOut': 'Se déconnecter',
+    'common.loading': 'Chargement...',
+    'common.error': 'Une erreur est survenue',
+    'common.retry': 'Réessayer',
+    'common.back': 'Retour',
+    'common.next': 'Suivant',
+    'common.save': 'Enregistrer',
+    'common.cancel': 'Annuler',
+    'common.search': 'Rechercher',
+    'common.noResults': 'Aucun résultat',
+    'home.title': 'Be[X]',
+    'home.tagline': "Routage de vie basé sur l'identité",
+    'discovery.title': 'Découverte',
+    'discovery.step1': 'Où êtes-vous ?',
+    'discovery.step2': 'Quelles langues parlez-vous ?',
+    'discovery.step3': 'Que faites-vous ?',
+    'discovery.step4': 'Vos corridors',
+    'explorer.title': 'Explorateurs',
+    'explorer.searchPlaceholder': 'Rechercher par nom...',
+    'opportunity.title': 'Opportunités',
+    'opportunity.postNew': 'Publier une opportunité',
+    'profile.title': 'Mon Identité',
+    'profile.noDimensions': 'Pas encore de dimensions.',
+    'profile.tellUs': 'Dites-nous qui vous êtes',
+    'onboarding.languages': 'Quelles langues parlez-vous ?',
+    'onboarding.faith': 'Quelle est votre foi ?',
+    'onboarding.crafts': 'Quels sont vos métiers ?',
+    'onboarding.interests': 'Quels secteurs vous intéressent ?',
+    'onboarding.locations': 'Où êtes-vous ou souhaitez-vous aller ?',
+  },
+}
+
+/**
+ * Typed translation function for the 4 core locales.
+ * Falls back to English for missing keys, then to the key itself.
+ *
+ * @param key    - dot-notation translation key (e.g. 'nav.agent')
+ * @param locale - one of: 'en' | 'sw' | 'de' | 'fr' (default 'en')
+ */
+export function t(key: string, locale: Locale = 'en'): string {
+  return LOCALE_TRANSLATIONS[locale]?.[key] ?? LOCALE_TRANSLATIONS.en[key] ?? key
+}
+
+/**
+ * Map a country code to its primary locale.
+ * Falls back to 'en' for unmapped countries.
+ */
+export function getLocaleFromCountry(countryCode: string): Locale {
+  const map: Record<string, Locale> = {
+    KE: 'en', // Kenya — English primary, Swahili available
+    DE: 'de',
+    CH: 'de', // Switzerland — German primary
+    FR: 'fr',
+    TZ: 'sw', // Tanzania — Swahili
+    UG: 'en', // Uganda
+    NG: 'en', // Nigeria
+  }
+  return map[countryCode.toUpperCase()] ?? 'en'
+}

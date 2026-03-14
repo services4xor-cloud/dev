@@ -16,7 +16,13 @@ export const metadata: Metadata = {
     locale: 'en_US',
   },
   twitter: { card: 'summary_large_image' },
-  themeColor: '#0A0A0F',
+  themeColor: '#5C0A14',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Be[X]',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
