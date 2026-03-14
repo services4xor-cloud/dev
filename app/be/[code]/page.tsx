@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import PageShell from '@/components/PageShell'
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
 
@@ -28,14 +27,24 @@ export default async function CountryHubPage({ params }: PageProps) {
   const upperCode = code.toUpperCase()
   const country = getCountry(upperCode)
 
-  if (!country) notFound()
+  // Derive display values — works for both known and unknown countries
+  const name = country?.name ?? upperCode
+  const flag = country?.flag ?? null
+  const region = country?.region ?? null
+  const currency = country?.currency ?? null
+  const payments = country?.payment ?? []
+  const visa = country?.visa ?? null
+  const tz = country?.tz ? country.tz.replace(/^.*\//, '') : null
+  const topSectors = country?.topSectors ?? []
 
-  const languages = country.languages
-    .map((lc) => {
-      const lang = LANGUAGE_REGISTRY[lc]
-      return lang ? { code: lc, name: lang.name, nativeName: lang.nativeName } : null
-    })
-    .filter(Boolean) as { code: string; name: string; nativeName: string }[]
+  const languages = country
+    ? (country.languages
+        .map((lc) => {
+          const lang = LANGUAGE_REGISTRY[lc]
+          return lang ? { code: lc, name: lang.name, nativeName: lang.nativeName } : null
+        })
+        .filter(Boolean) as { code: string; name: string; nativeName: string }[])
+    : []
 
   return (
     <PageShell backHref="/" backLabel="← Back to Map">
@@ -43,55 +52,61 @@ export default async function CountryHubPage({ params }: PageProps) {
       <section className="relative overflow-hidden bg-gradient-to-b from-brand-surface via-brand-bg to-brand-bg">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.08),transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 sm:py-20">
-          <div className="mb-3 text-5xl leading-none sm:mb-4 sm:text-7xl">{country.flag}</div>
+          {flag && <div className="mb-3 text-5xl leading-none sm:mb-4 sm:text-7xl">{flag}</div>}
           <h1 className="mb-2 text-3xl font-bold tracking-tight text-brand-accent sm:mb-3 sm:text-5xl">
             Be{upperCode}
           </h1>
-          <p className="mb-4 text-xl font-light text-brand-text sm:mb-5 sm:text-2xl">
-            {country.name}
-          </p>
-          <span className="inline-block rounded-full border border-brand-accent/30 bg-brand-accent/10 px-3 py-1 text-xs font-medium text-brand-accent sm:px-4 sm:text-sm">
-            {country.region}
-          </span>
-          <div className="mt-3 flex flex-wrap justify-center gap-1.5 sm:gap-2">
-            <span className="inline-block rounded-full border border-brand-accent/20 bg-brand-surface px-2.5 py-0.5 text-xs text-brand-text-muted sm:px-3 sm:py-1 sm:text-sm">
-              {country.currency}
+          <p className="mb-4 text-xl font-light text-brand-text sm:mb-5 sm:text-2xl">{name}</p>
+          {region && (
+            <span className="inline-block rounded-full border border-brand-accent/30 bg-brand-accent/10 px-3 py-1 text-xs font-medium text-brand-accent sm:px-4 sm:text-sm">
+              {region}
             </span>
-            {country.payment.map((p) => (
-              <span
-                key={p}
-                className="inline-block rounded-full border border-brand-accent/20 bg-brand-surface px-2.5 py-0.5 text-xs text-brand-text-muted sm:px-3 sm:py-1 sm:text-sm"
-              >
-                {p}
-              </span>
-            ))}
-          </div>
+          )}
+          {(currency || payments.length > 0) && (
+            <div className="mt-3 flex flex-wrap justify-center gap-1.5 sm:gap-2">
+              {currency && (
+                <span className="inline-block rounded-full border border-brand-accent/20 bg-brand-surface px-2.5 py-0.5 text-xs text-brand-text-muted sm:px-3 sm:py-1 sm:text-sm">
+                  {currency}
+                </span>
+              )}
+              {payments.map((p) => (
+                <span
+                  key={p}
+                  className="inline-block rounded-full border border-brand-accent/20 bg-brand-surface px-2.5 py-0.5 text-xs text-brand-text-muted sm:px-3 sm:py-1 sm:text-sm"
+                >
+                  {p}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Stats bar */}
-      <section className="border-y border-brand-accent/10 bg-brand-surface">
-        <div className="mx-auto grid max-w-4xl grid-cols-2 divide-x divide-brand-accent/10 sm:grid-cols-4">
-          {[
-            { label: 'Languages', value: String(languages.length) },
-            { label: 'Sectors', value: String(country.topSectors.length) },
-            { label: 'Visa', value: country.visa },
-            { label: 'Timezone', value: country.tz.replace(/^.*\//, '') },
-          ].map(({ label, value }) => (
-            <div
-              key={label}
-              className="flex flex-col items-center px-2 py-4 text-center sm:px-6 sm:py-5"
-            >
-              <span className="text-lg font-bold leading-tight text-brand-accent sm:text-2xl">
-                {value}
-              </span>
-              <span className="mt-1 text-[10px] font-medium uppercase tracking-widest text-brand-text-muted sm:text-xs">
-                {label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Stats bar — only if we have data */}
+      {country && (
+        <section className="border-y border-brand-accent/10 bg-brand-surface">
+          <div className="mx-auto grid max-w-4xl grid-cols-2 divide-x divide-brand-accent/10 sm:grid-cols-4">
+            {[
+              { label: 'Languages', value: String(languages.length) },
+              { label: 'Sectors', value: String(topSectors.length) },
+              ...(visa ? [{ label: 'Visa', value: visa }] : []),
+              ...(tz ? [{ label: 'Timezone', value: tz }] : []),
+            ].map(({ label, value }) => (
+              <div
+                key={label}
+                className="flex flex-col items-center px-2 py-4 text-center sm:px-6 sm:py-5"
+              >
+                <span className="text-lg font-bold leading-tight text-brand-accent sm:text-2xl">
+                  {value}
+                </span>
+                <span className="mt-1 text-[10px] font-medium uppercase tracking-widest text-brand-text-muted sm:text-xs">
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="mx-auto max-w-4xl space-y-8 px-4 py-8 sm:space-y-10 sm:px-6 sm:py-12">
         {/* Languages */}
@@ -117,13 +132,13 @@ export default async function CountryHubPage({ params }: PageProps) {
         )}
 
         {/* Sectors */}
-        {country.topSectors.length > 0 && (
+        {topSectors.length > 0 && (
           <section>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
               Top Sectors
             </h2>
             <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-              {country.topSectors.map((sector) => (
+              {topSectors.map((sector) => (
                 <span
                   key={sector}
                   className="rounded-xl border border-brand-accent/10 bg-brand-surface px-3 py-2 text-center text-xs text-brand-text sm:px-4 sm:text-sm"
@@ -149,9 +164,7 @@ export default async function CountryHubPage({ params }: PageProps) {
               <p className="text-sm font-semibold text-brand-text group-hover:text-brand-accent">
                 Ask the Agent
               </p>
-              <p className="mt-1 text-xs text-brand-text-muted">
-                AI-guided routing for {country.name}
-              </p>
+              <p className="mt-1 text-xs text-brand-text-muted">AI-guided routing for {name}</p>
             </Link>
             <Link
               href="/opportunities"
@@ -161,7 +174,7 @@ export default async function CountryHubPage({ params }: PageProps) {
               <p className="text-sm font-semibold text-brand-text group-hover:text-brand-accent">
                 Browse Paths
               </p>
-              <p className="mt-1 text-xs text-brand-text-muted">Opportunities in {country.name}</p>
+              <p className="mt-1 text-xs text-brand-text-muted">Opportunities in {name}</p>
             </Link>
             <Link
               href="/explorers"
@@ -171,9 +184,7 @@ export default async function CountryHubPage({ params }: PageProps) {
               <p className="text-sm font-semibold text-brand-text group-hover:text-brand-accent">
                 Meet Pioneers
               </p>
-              <p className="mt-1 text-xs text-brand-text-muted">
-                People connected to {country.name}
-              </p>
+              <p className="mt-1 text-xs text-brand-text-muted">People connected to {name}</p>
             </Link>
           </div>
         </section>
