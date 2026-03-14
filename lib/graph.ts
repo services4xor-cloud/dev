@@ -6,6 +6,7 @@
 
 import { db } from '@/lib/db'
 import type { EdgeRelation, NodeType, Prisma } from '@prisma/client'
+import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
 
 // ─── Node operations ─────────────────────────────────────────
 
@@ -185,7 +186,11 @@ export async function filterCountries(
 
 /**
  * Build a subgraph context for an AI agent persona.
- * Given dimensions, returns all connected nodes and their properties.
+ * Given dimensions, returns all connected nodes with enriched data from COUNTRY_OPTIONS.
+ *
+ * For COUNTRY nodes, injects: topSectors, visa, payment, languages, currency, region.
+ * For LANGUAGE nodes, injects: nativeName, countries where spoken.
+ * This gives the AI real-world knowledge to make useful recommendations.
  */
 export async function buildAgentContext(dimensions: Record<string, string>) {
   const nodes: Record<string, unknown>[] = []
@@ -193,19 +198,59 @@ export async function buildAgentContext(dimensions: Record<string, string>) {
   for (const [dimType, code] of Object.entries(dimensions)) {
     const nodeType = dimType.toUpperCase() as NodeType
     const node = await getNodeWithEdges(nodeType, code)
-    if (node) {
-      nodes.push({
-        type: node.type,
-        code: node.code,
-        label: node.label,
-        properties: node.properties,
-        connections: node.outEdges.map((e) => ({
-          relation: e.relation,
-          target: e.to.label,
-          targetType: e.to.type,
-        })),
-      })
+    if (!node) continue
+
+    const base = {
+      type: node.type,
+      code: node.code,
+      label: node.label,
+      properties: node.properties,
+      connections: node.outEdges.map((e) => ({
+        relation: e.relation,
+        target: e.to.label,
+        targetType: e.to.type,
+      })),
     }
+
+    // Enrich COUNTRY nodes with COUNTRY_OPTIONS data
+    if (node.type === 'COUNTRY') {
+      const countryData = COUNTRY_OPTIONS.find((c) => c.code === node.code)
+      if (countryData) {
+        Object.assign(base, {
+          enriched: {
+            topSectors: countryData.topSectors,
+            visa: countryData.visa,
+            payment: countryData.payment,
+            currency: countryData.currency,
+            region: countryData.region,
+            corridorStrength: countryData.corridorStrength,
+            languages: countryData.languages.map((lc) => {
+              const lang = LANGUAGE_REGISTRY[lc as LanguageCode]
+              return lang
+                ? { code: lc, name: lang.name, nativeName: lang.nativeName }
+                : { code: lc }
+            }),
+          },
+        })
+      }
+    }
+
+    // Enrich LANGUAGE nodes with registry data
+    if (node.type === 'LANGUAGE') {
+      const langData = LANGUAGE_REGISTRY[node.code as LanguageCode]
+      if (langData) {
+        Object.assign(base, {
+          enriched: {
+            nativeName: langData.nativeName,
+            digitalReach: langData.digitalReach,
+            countriesCount: langData.countries.length,
+            topCountries: langData.countries.slice(0, 6),
+          },
+        })
+      }
+    }
+
+    nodes.push(base)
   }
 
   return nodes
