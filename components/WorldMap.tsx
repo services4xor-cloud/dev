@@ -44,95 +44,59 @@ export default function WorldMap({ countries, onCountryClick, selectedCountry }:
   // Build a set of highlighted country codes from filter results
   const highlightedCodes = useMemo(() => new Set(countries.map((c) => c.code)), [countries])
 
-  // Dynamic fill color: highlighted countries get bright gold, selected gets full gold, rest get subtle
+  // --- Map style expressions ---
+  // Default: all countries subtle. Selected: bright gold. Filtered: medium. Others: very dim.
+
   const fillColor = useMemo(() => {
-    if (highlightedCodes.size === 0 && !selectedCountry) {
-      // No filters active — subtle uniform tint
-      return '#C9A227'
-    }
+    const hasActive = highlightedCodes.size > 0 || !!selectedCountry
+    if (!hasActive) return '#C9A227' // uniform subtle gold
 
-    // Build match expression: [match, [get, ISO_A2], ...pairs, fallback]
-    const matchExpr: unknown[] = ['match', ['get', 'ISO_A2']]
-
-    if (selectedCountry) {
-      matchExpr.push(selectedCountry, '#C9A227') // full gold for selected
-    }
-
+    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
+    if (selectedCountry) expr.push(selectedCountry, '#C9A227') // gold for selected
     for (const code of Array.from(highlightedCodes)) {
-      if (code !== selectedCountry) {
-        matchExpr.push(code, '#C9A227') // bright gold for filtered
-      }
+      if (code !== selectedCountry) expr.push(code, '#C9A227')
     }
-
-    matchExpr.push('#4a5568') // fallback: dim gray for non-matching
-
-    return matchExpr as unknown as string
+    expr.push('#2d3748') // fallback: dark slate
+    return expr as unknown as string
   }, [highlightedCodes, selectedCountry])
 
   const fillOpacity = useMemo(() => {
-    if (highlightedCodes.size === 0 && !selectedCountry) {
-      return 0.12
-    }
+    const hasActive = highlightedCodes.size > 0 || !!selectedCountry
+    if (!hasActive) return 0.08 // very subtle default
 
-    const matchExpr: unknown[] = ['match', ['get', 'ISO_A2']]
-
-    if (selectedCountry) {
-      matchExpr.push(selectedCountry, 0.45)
-    }
-
+    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
+    if (selectedCountry) expr.push(selectedCountry, 0.5) // selected: bright
     for (const code of Array.from(highlightedCodes)) {
-      if (code !== selectedCountry) {
-        matchExpr.push(code, 0.3)
-      }
+      if (code !== selectedCountry) expr.push(code, 0.25) // filtered: medium
     }
-
-    matchExpr.push(0.06) // fallback: very dim
-
-    return matchExpr as unknown as number
+    expr.push(0.04) // others: barely visible
+    return expr as unknown as number
   }, [highlightedCodes, selectedCountry])
 
   const borderColor = useMemo(() => {
-    if (highlightedCodes.size === 0 && !selectedCountry) {
-      return '#C9A227'
-    }
+    const hasActive = highlightedCodes.size > 0 || !!selectedCountry
+    if (!hasActive) return '#C9A227'
 
-    const matchExpr: unknown[] = ['match', ['get', 'ISO_A2']]
-
-    if (selectedCountry) {
-      matchExpr.push(selectedCountry, '#C9A227')
-    }
-
+    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
+    if (selectedCountry) expr.push(selectedCountry, '#C9A227') // gold border
     for (const code of Array.from(highlightedCodes)) {
-      if (code !== selectedCountry) {
-        matchExpr.push(code, '#C9A227')
-      }
+      if (code !== selectedCountry) expr.push(code, '#C9A227')
     }
-
-    matchExpr.push('#374151') // fallback: dark gray border
-
-    return matchExpr as unknown as string
+    expr.push('#1f2937') // fallback: very dark border
+    return expr as unknown as string
   }, [highlightedCodes, selectedCountry])
 
   const borderWidth = useMemo(() => {
-    if (highlightedCodes.size === 0 && !selectedCountry) {
-      return 0.5
-    }
+    const hasActive = highlightedCodes.size > 0 || !!selectedCountry
+    if (!hasActive) return 0.4
 
-    const matchExpr: unknown[] = ['match', ['get', 'ISO_A2']]
-
-    if (selectedCountry) {
-      matchExpr.push(selectedCountry, 2)
-    }
-
+    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
+    if (selectedCountry) expr.push(selectedCountry, 2.5) // thick for selected
     for (const code of Array.from(highlightedCodes)) {
-      if (code !== selectedCountry) {
-        matchExpr.push(code, 1.2)
-      }
+      if (code !== selectedCountry) expr.push(code, 1)
     }
-
-    matchExpr.push(0.3)
-
-    return matchExpr as unknown as number
+    expr.push(0.2) // others: hairline
+    return expr as unknown as number
   }, [highlightedCodes, selectedCountry])
 
   return (

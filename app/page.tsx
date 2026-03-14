@@ -5,7 +5,6 @@ import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters from '@/components/DimensionFilters'
-import CountryPanel from '@/components/CountryPanel'
 import NotificationBadge from '@/components/NotificationBadge'
 import type { DimensionFilter, MapCountry } from '@/types/domain'
 
@@ -71,7 +70,32 @@ export default function HomePage() {
 
       {/* Top bar */}
       <div className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-4 py-3">
-        <h1 className="text-xl font-bold text-brand-accent">Be[X]</h1>
+        {selectedCountry ? (
+          <span className="flex items-center gap-1.5">
+            <button
+              onClick={() => setSelectedCountry(null)}
+              className="text-xl font-bold text-brand-text-muted transition hover:text-brand-accent"
+              title="Clear selection"
+            >
+              Be[
+            </button>
+            <Link
+              href={`/be/${selectedCountry.toLowerCase()}`}
+              className="text-xl font-bold text-brand-accent underline decoration-brand-accent/40 underline-offset-2 transition hover:decoration-brand-accent"
+            >
+              {selectedCountry}
+            </Link>
+            <button
+              onClick={() => setSelectedCountry(null)}
+              className="text-xl font-bold text-brand-text-muted transition hover:text-brand-accent"
+              title="Clear selection"
+            >
+              ]
+            </button>
+          </span>
+        ) : (
+          <h1 className="text-xl font-bold text-brand-accent">Be[X]</h1>
+        )}
         {/* Mobile menu toggle */}
         <button
           className="text-brand-text-muted hover:text-brand-accent transition sm:hidden"
@@ -269,8 +293,6 @@ export default function HomePage() {
       )}
 
       <DimensionFilters activeFilters={filters} onFilterChange={setFilters} />
-
-      <CountryPanel countryCode={selectedCountry} onClose={() => setSelectedCountry(null)} />
     </main>
   )
 }
