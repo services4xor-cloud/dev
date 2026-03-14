@@ -16,7 +16,7 @@
 | Core Routes       | 16+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/about` `/pricing` `/contact` `/privacy` `/offline`                                                                                                                                                                                                                                                        |
 | API routes        | 20+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` |
 | Library modules   | 20+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, i18n.ts, validation.ts, identity-context.tsx, etc.)                                                                                                                                                                                                                                                                                                                                                                                 |
-| Jest tests        | 283/283 ✅ (17 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Jest tests        | 329/329 ✅ (21 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                            |
@@ -84,11 +84,50 @@
 - **Impact API** (`/api/impact`) — Public GET, counts users/countries/connections, sums 5% of payments
 - **ImpactCounter component** — Animated stat counters with ease-out cubic easing
 
-### In Progress (Session 70 cont.)
+### Community Threads
 
-- Community Threads (Thread/ThreadPost models, API, pages)
-- Shared UI components (PageShell, HeroSection extraction)
-- Explorer Stories + Trust Badges components
+- **Thread/ThreadPost models** — Added to Prisma schema with Node relation
+- **Thread API** (`/api/threads`) — GET (list, filter by NodeType), POST (create, HOST/ADMIN only)
+- **Thread detail API** (`/api/threads/[id]`) — GET with paginated posts
+- **Thread posts API** (`/api/threads/[id]/posts`) — POST (create post, auth required)
+- **Thread pages** — Browse grid (`/threads`) + detail view (`/threads/[id]`) with post form
+- **22 new tests** covering thread API
+
+### Shared UI Components
+
+- **PageShell** — Shared nav header + footer wrapper for non-map pages
+- **HeroSection** — Reusable hero with title/highlight/description
+- **WizardShell** — Multi-step wizard wrapper with step indicator + nav
+- **DashboardTabs** — Tabbed navigation component for dashboards
+- **Form components** — Input, Select, Textarea with forwardRef + error state
+
+### Explorer Stories + Trust Badges
+
+- **ExplorerStories** — 3 testimonial cards (Amina/Felix/Sarah) with dimension pills
+- **TrustBadges** — 4 trust/security badges (verified, secure, privacy, global)
+- Both added to about page
+
+### Country Gate Redesign
+
+- **Immersive hero** — Large flag, BeXX title, region badge
+- **Corridors section** — Shows CORRIDOR edges to other countries with links
+- **Stats bar** — Language/sector/corridor/explorer counts
+- **CTA** — "Explore on Map" button
+
+### Notification Preferences
+
+- **NotificationPreference model** — 5 boolean toggles (email, push, messages, matches, marketing)
+- **Preferences API** (`/api/notifications/preferences`) — GET/PUT with upsert
+- **Settings page** (`/settings`) — Toggle switches for each preference
+- **7 new tests**
+
+### API Client + JSDoc + Service Layer
+
+- **API client** (`lib/api-client.ts`) — Fetch wrapper with retry, typed errors, convenience methods
+- **Service layer** (`services/`) — Prisma service abstractions for User/Node/Payment/Thread
+- **JSDoc** — Documentation added to graph.ts, vocabulary.ts, i18n.ts, validation.ts, mpesa.ts
+- **Sitemap** — Expanded with 6 new URLs
+- **17 new tests** (api-client 8, service layer 9)
 
 ---
 
