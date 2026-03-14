@@ -13,6 +13,7 @@ export default function HomePage() {
   const [filters, setFilters] = useState<DimensionFilter[]>([])
   const [countries, setCountries] = useState<MapCountry[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   // Fetch filtered countries when filters change
   const fetchFilteredCountries = useCallback(async (activeFilters: DimensionFilter[]) => {
@@ -39,12 +40,32 @@ export default function HomePage() {
 
   return (
     <main className="relative h-screen w-screen overflow-hidden">
-      <WorldMap countries={countries} onCountryClick={setSelectedCountry} />
+      <WorldMap
+        countries={countries}
+        onCountryClick={setSelectedCountry}
+        selectedCountry={selectedCountry}
+      />
 
       {/* Top bar */}
       <div className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-4 py-3">
         <h1 className="text-xl font-bold text-brand-accent">Be[X]</h1>
-        <nav className="flex items-center gap-3">
+        {/* Mobile menu toggle */}
+        <button
+          className="text-brand-text-muted hover:text-brand-accent transition sm:hidden"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label="Toggle menu"
+        >
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-3 sm:flex">
           <Link
             href="/agent"
             className="text-sm text-brand-text-muted hover:text-brand-accent transition"
@@ -88,6 +109,61 @@ export default function HomePage() {
           )}
         </nav>
       </div>
+
+      {/* Mobile nav dropdown */}
+      {menuOpen && (
+        <nav className="absolute left-0 right-0 top-12 z-30 flex flex-col gap-1 bg-brand-surface/95 px-4 py-3 backdrop-blur sm:hidden">
+          <Link
+            href="/agent"
+            onClick={() => setMenuOpen(false)}
+            className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            Agent
+          </Link>
+          <Link
+            href="/opportunities"
+            onClick={() => setMenuOpen(false)}
+            className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            Opportunities
+          </Link>
+          {session ? (
+            <>
+              <Link
+                href="/messages"
+                onClick={() => setMenuOpen(false)}
+                className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+              >
+                Messages
+              </Link>
+              <Link
+                href="/me"
+                onClick={() => setMenuOpen(false)}
+                className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+              >
+                Me
+              </Link>
+              <button
+                onClick={() => {
+                  signOut({ callbackUrl: '/' })
+                  setMenuOpen(false)
+                }}
+                className="py-2 text-left text-sm text-brand-text-muted hover:text-brand-accent transition"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setMenuOpen(false)}
+              className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+            >
+              Sign in
+            </Link>
+          )}
+        </nav>
+      )}
 
       <DimensionFilters activeFilters={filters} onFilterChange={setFilters} />
 

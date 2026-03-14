@@ -88,7 +88,7 @@ export default function DimensionFilters({ activeFilters, onFilterChange }: Dime
       )}
 
       {/* Dimension pills */}
-      <div className="flex gap-2 rounded-full border border-brand-accent/20 bg-brand-surface/90 px-4 py-2 backdrop-blur">
+      <div className="flex flex-wrap justify-center gap-2 rounded-2xl border border-brand-accent/20 bg-brand-surface/90 px-3 py-2 backdrop-blur sm:flex-nowrap sm:rounded-full sm:px-4">
         {DIMENSIONS.map((dim) => {
           const isActive = activeFilters.some((f) => f.dimension === dim.key)
           const isExpanded = expanded === dim.key
