@@ -1,44 +1,17 @@
-import { readFileSync } from 'fs'
-import { join } from 'path'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import PageShell from '@/components/PageShell'
-import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
+import { getCountryData } from '@/lib/country-api'
 
 interface PageProps {
   params: Promise<{ code: string }>
 }
 
-function getCountry(code: string) {
-  return COUNTRY_OPTIONS.find((c) => c.code === code) ?? null
-}
-
-/** Lookup country name from GeoJSON for countries not in COUNTRY_OPTIONS */
-let _geoNames: Record<string, string> | null = null
-function getGeoName(code: string): string | null {
-  if (!_geoNames) {
-    try {
-      const raw = readFileSync(join(process.cwd(), 'public/geo/countries.json'), 'utf-8')
-      const geo = JSON.parse(raw) as {
-        features: { properties: { ISO_A2: string; name: string } }[]
-      }
-      _geoNames = {}
-      for (const f of geo.features) {
-        _geoNames[f.properties.ISO_A2] = f.properties.name
-      }
-    } catch {
-      _geoNames = {}
-    }
-  }
-  return _geoNames[code] ?? null
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { code } = await params
-  const upperCode = code.toUpperCase()
-  const country = getCountry(upperCode)
-  const name = country?.name ?? getGeoName(upperCode) ?? upperCode
+  const data = await getCountryData(code)
+  const name = data?.name ?? code.toUpperCase()
   return {
     title: `Be${name}`,
     description: `Explore ${name} on Be[X] — discover languages, culture, paths, and connections.`,
@@ -48,25 +21,38 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CountryHubPage({ params }: PageProps) {
   const { code } = await params
   const upperCode = code.toUpperCase()
-  const country = getCountry(upperCode)
+  const data = await getCountryData(code)
 
-  // Derive display values — works for both known and unknown countries
-  const name = country?.name ?? getGeoName(upperCode) ?? upperCode
-  const region = country?.region ?? null
-  const currency = country?.currency ?? null
-  const payments = country?.payment ?? []
-  const visa = country?.visa ?? null
-  const tz = country?.tz ? country.tz.replace(/^.*\//, '') : null
-  const topSectors = country?.topSectors ?? []
+  // Display values — API data with fallbacks
+  const name = data?.name ?? upperCode
+  const flagPng = data?.flagPng ?? `https://flagcdn.com/w80/${upperCode.toLowerCase()}.png`
+  const region = data?.region ?? null
+  const currency = data?.currency ?? null
+  const currencyName = data?.currencyName ?? null
+  const currencySymbol = data?.currencySymbol ?? null
+  const payments = data?.payment ?? []
+  const visa = data?.visa ?? null
+  const capital = data?.capital ?? null
+  const tz = data?.timezone ? data.timezone.replace(/^.*\//, '') : null
+  const population = data?.population ?? null
+  const topSectors = data?.topSectors ?? []
+  const languages = data?.languages ?? []
 
-  const languages = country
-    ? (country.languages
-        .map((lc) => {
-          const lang = LANGUAGE_REGISTRY[lc]
-          return lang ? { code: lc, name: lang.name, nativeName: lang.nativeName } : null
-        })
-        .filter(Boolean) as { code: string; name: string; nativeName: string }[])
-    : []
+  // Format population for display
+  const popDisplay = population
+    ? population >= 1_000_000
+      ? `${(population / 1_000_000).toFixed(1)}M`
+      : `${(population / 1_000).toFixed(0)}K`
+    : null
+
+  // Current local time in the country's timezone
+  const localTime = data?.timezone
+    ? new Date().toLocaleTimeString('en-GB', {
+        timeZone: data.timezone,
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : null
 
   return (
     <PageShell backHref="/" backLabel="← Back to Map" title={`Be${name}`}>
@@ -76,7 +62,7 @@ export default async function CountryHubPage({ params }: PageProps) {
         <div className="relative mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 sm:py-20">
           <h1 className="mb-4 flex items-center justify-center gap-3 text-3xl font-bold tracking-tight text-brand-accent sm:mb-5 sm:text-5xl">
             <Image
-              src={`https://flagcdn.com/w80/${upperCode.toLowerCase()}.png`}
+              src={flagPng}
               alt={`${name} flag`}
               width={48}
               height={36}
@@ -93,8 +79,13 @@ export default async function CountryHubPage({ params }: PageProps) {
           {(currency || payments.length > 0) && (
             <div className="mt-3 flex flex-wrap justify-center gap-1.5 sm:gap-2">
               {currency && (
-                <span className="inline-block rounded-full border border-brand-accent/20 bg-brand-surface px-2.5 py-0.5 text-xs text-brand-text-muted sm:px-3 sm:py-1 sm:text-sm">
-                  {currency}
+                <span
+                  className="inline-block rounded-full border border-brand-accent/20 bg-brand-surface px-2.5 py-0.5 text-xs text-brand-text-muted sm:px-3 sm:py-1 sm:text-sm"
+                  title={currencyName ?? undefined}
+                >
+                  {currencySymbol && currencySymbol !== currency
+                    ? `${currency} (${currencySymbol})`
+                    : currency}
                 </span>
               )}
               {payments.map((p) => (
@@ -110,16 +101,17 @@ export default async function CountryHubPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* Stats bar — only if we have data */}
-      {country && (
-        <section className="border-y border-brand-accent/10 bg-brand-surface">
-          <div className="mx-auto grid max-w-4xl grid-cols-2 divide-x divide-brand-accent/10 sm:grid-cols-4">
-            {[
-              { label: 'Languages', value: String(languages.length) },
-              { label: 'Sectors', value: String(topSectors.length) },
-              ...(visa ? [{ label: 'Visa', value: visa }] : []),
-              ...(tz ? [{ label: 'Timezone', value: tz }] : []),
-            ].map(({ label, value }) => (
+      {/* Stats bar */}
+      <section className="border-y border-brand-accent/10 bg-brand-surface">
+        <div className="mx-auto grid max-w-4xl grid-cols-2 divide-x divide-brand-accent/10 sm:grid-cols-4">
+          {[
+            ...(capital ? [{ label: 'Capital', value: capital }] : []),
+            ...(localTime ? [{ label: 'Local Time', value: localTime }] : []),
+            ...(popDisplay ? [{ label: 'Population', value: popDisplay }] : []),
+            { label: 'Languages', value: String(languages.length) },
+          ]
+            .slice(0, 4)
+            .map(({ label, value }) => (
               <div
                 key={label}
                 className="flex flex-col items-center px-2 py-4 text-center sm:px-6 sm:py-5"
@@ -132,9 +124,8 @@ export default async function CountryHubPage({ params }: PageProps) {
                 </span>
               </div>
             ))}
-          </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       <div className="mx-auto max-w-4xl space-y-8 px-4 py-8 sm:space-y-10 sm:px-6 sm:py-12">
         {/* Languages */}
@@ -150,9 +141,11 @@ export default async function CountryHubPage({ params }: PageProps) {
                   className="rounded-full border border-brand-accent/25 bg-brand-surface px-3 py-1.5 text-sm font-medium text-brand-accent sm:px-5 sm:py-2 sm:text-base"
                 >
                   {lang.name}
-                  <span className="ml-1 text-xs text-brand-text-muted sm:ml-1.5 sm:text-sm">
-                    ({lang.nativeName})
-                  </span>
+                  {lang.nativeName && lang.nativeName !== lang.name && (
+                    <span className="ml-1 text-xs text-brand-text-muted sm:ml-1.5 sm:text-sm">
+                      ({lang.nativeName})
+                    </span>
+                  )}
                 </span>
               ))}
             </div>
