@@ -101,18 +101,26 @@ export default function WorldMap({
   // Graduated intensity: score 0.2 = dim, score 0.5 = medium, score 1.0 = blazing
   // 5 tiers: Selected > High score > Medium score > Low score > Preview > Default
 
+  // Color graduation: score drives color from dim amber → gold → white-gold
+  const scoreToColor = (score: number): string => {
+    if (score >= 0.8) return '#FFF4CC' // blazing white-gold (4-5 dimensions)
+    if (score >= 0.6) return '#E8C840' // bright gold (3 dimensions)
+    if (score >= 0.4) return '#C9A227' // standard gold (2 dimensions)
+    return '#A07820' // warm amber (1 dimension)
+  }
+
   const fillColor = useMemo(() => {
     const hasActive = scoreMap.size > 0 || !!selectedCountry || previewCodes.size > 0
     if (!hasActive) return '#C9A227'
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, '#C9A227')
-    for (const [code] of Array.from(scoreMap)) {
-      if (code !== selectedCountry) expr.push(code, '#C9A227')
+    if (selectedCountry) expr.push(selectedCountry, '#FFF4CC') // selected = blazing
+    for (const [code, sc] of Array.from(scoreMap)) {
+      if (code !== selectedCountry) expr.push(code, scoreToColor(sc.score))
     }
     for (const code of Array.from(previewCodes)) {
       if (code !== selectedCountry && !scoreMap.has(code)) {
-        expr.push(code, '#C9A227')
+        expr.push(code, '#8B6914') // preview = muted gold
       }
     }
     expr.push('#2d3748')

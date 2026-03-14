@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import type { DimensionFilter } from '@/types/domain'
 
 /**
@@ -23,6 +23,7 @@ interface DimensionsData {
   sector: DimensionOption[]
   location: DimensionOption[]
   currency: DimensionOption[]
+  timezone: DimensionOption[]
 }
 
 /** What we store per active filter — code for API, label for display, countryCodes for scoring */
@@ -40,7 +41,7 @@ interface DimensionFiltersProps {
   onPreview?: (countryCodes: string[]) => void
 }
 
-type DimensionKey = 'language' | 'faith' | 'sector' | 'location' | 'currency'
+type DimensionKey = 'language' | 'faith' | 'sector' | 'location' | 'currency' | 'timezone'
 
 const DIMENSIONS: { key: DimensionKey; label: string; icon: string }[] = [
   { key: 'language', label: 'Language', icon: '🗣️' },
@@ -48,6 +49,7 @@ const DIMENSIONS: { key: DimensionKey; label: string; icon: string }[] = [
   { key: 'sector', label: 'Sector', icon: '💼' },
   { key: 'location', label: 'Region', icon: '📍' },
   { key: 'currency', label: 'Currency', icon: '💱' },
+  { key: 'timezone', label: 'Timezone', icon: '🕐' },
 ]
 
 export default function DimensionFilters({

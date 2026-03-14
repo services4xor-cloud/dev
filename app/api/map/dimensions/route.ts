@@ -110,13 +110,45 @@ export async function GET() {
     }))
   currencyOptions.sort((a, b) => b.count - a.count)
 
+  // 6. TIMEZONE — group by UTC offset band for meaningful clusters
+  const tzBandMap = new Map<string, string[]>()
+  for (const c of COUNTRY_OPTIONS) {
+    // Extract UTC offset band from IANA timezone (group into broad bands)
+    const tz = c.tz
+    // Map IANA zones to readable UTC bands
+    let band = tz
+    if (tz.startsWith('Pacific/')) band = 'Pacific'
+    else if (tz.startsWith('America/')) band = 'Americas'
+    else if (tz.startsWith('Atlantic/')) band = 'Atlantic'
+    else if (tz.startsWith('Europe/')) band = 'Europe'
+    else if (tz.startsWith('Africa/')) band = 'Africa'
+    else if (tz.startsWith('Asia/')) band = 'Asia'
+    else if (tz.startsWith('Indian/')) band = 'Indian Ocean'
+    else if (tz.startsWith('Australia/')) band = 'Oceania'
+
+    const existing = tzBandMap.get(band) || []
+    existing.push(c.code)
+    tzBandMap.set(band, existing)
+  }
+  const timezoneOptions: DimensionOption[] = Array.from(tzBandMap.entries())
+    .filter(([, codes]) => codes.length >= 2)
+    .map(([band, codes]) => ({
+      code: band.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      label: band,
+      icon: '🕐',
+      count: codes.length,
+      countryCodes: codes,
+    }))
+  timezoneOptions.sort((a, b) => b.count - a.count)
+
   return NextResponse.json({
     dimensions: {
-      language: languageOptions.slice(0, 30), // Top 30 languages
+      language: languageOptions.slice(0, 30),
       faith: faithOptions,
-      sector: sectorOptions, // All 31 canonical sectors
+      sector: sectorOptions,
       location: locationOptions,
-      currency: currencyOptions.slice(0, 25), // Top 25 currencies
+      currency: currencyOptions.slice(0, 25),
+      timezone: timezoneOptions,
     },
   })
 }

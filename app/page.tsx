@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
@@ -77,6 +77,37 @@ export default function HomePage() {
     return scored
   }, [filters])
 
+  // Enrich: when clicking a country, auto-discover related dimensions
+  const enrichCountry = useCallback(
+    async (code: string, name: string) => {
+      try {
+        const res = await fetch('/api/map/enrich', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code }),
+        })
+        if (!res.ok) return
+        const data = (await res.json()) as {
+          filters: ActiveFilter[]
+        }
+        // Set all enrichment filters (replaces previous enrichment)
+        setFilters(data.filters)
+      } catch {
+        // Fallback: just add location filter
+        setFilters([
+          {
+            dimension: 'location' as const,
+            nodeCode: name.toLowerCase(),
+            label: name,
+            icon: '📍',
+            countryCodes: [code],
+          },
+        ])
+      }
+    },
+    [setFilters]
+  )
+
   // Poll for unread notifications every 30 seconds when signed in
   useEffect(() => {
     if (!session) return
@@ -108,31 +139,15 @@ export default function HomePage() {
             setSelectedCountry(null)
             setSelectedCountryName(null)
           } else if (code === selectedCountry) {
-            // Toggle off — remove this country from location filters
+            // Toggle off — clear all enrichment filters
             setSelectedCountry(null)
             setSelectedCountryName(null)
-            setFilters((prev) =>
-              prev.filter((f) => !(f.dimension === 'location' && f.nodeCode === code.toLowerCase()))
-            )
+            setFilters([])
           } else {
             setSelectedCountry(code)
             setSelectedCountryName(name ?? code)
-            // Add as location filter (keep existing location filters — multi-select!)
-            const alreadyHas = filters.some(
-              (f) => f.dimension === 'location' && f.nodeCode === code.toLowerCase()
-            )
-            if (!alreadyHas) {
-              setFilters((prev) => [
-                ...prev,
-                {
-                  dimension: 'location' as const,
-                  nodeCode: code.toLowerCase(),
-                  label: `${name ?? code}`,
-                  icon: '📍',
-                  countryCodes: [code],
-                },
-              ])
-            }
+            // Auto-enrich: discover all related dimensions for this country
+            void enrichCountry(code, name ?? code)
           }
         }}
         selectedCountry={selectedCountry}
