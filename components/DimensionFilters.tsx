@@ -1,16 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { DimensionFilter } from '@/types/domain'
 
-const DIMENSIONS = [
-  { key: 'language', label: '🗣️', name: 'Language', placeholder: 'e.g., sw, en, de' },
-  { key: 'faith', label: '☪️', name: 'Faith', placeholder: 'e.g., islam, christianity' },
-  { key: 'sector', label: '💼', name: 'Sector', placeholder: 'e.g., technology, healthcare' },
-  { key: 'location', label: '📍', name: 'Location', placeholder: 'e.g., nairobi, berlin' },
-  { key: 'currency', label: '💱', name: 'Currency', placeholder: 'e.g., KES, EUR, USD' },
-  { key: 'culture', label: '🏛️', name: 'Culture', placeholder: 'e.g., maasai, yoruba' },
-] as const
+/**
+ * Universal dimension search — always-visible text box.
+ * As the user types, shows matching results across ALL 6 dimensions.
+ * E.g., typing "german" shows: Language: German (12 countries), Location: Germany (1), etc.
+ */
+
+interface Suggestion {
+  dimension: string
+  code: string
+  label: string
+  detail: string
+  countryCount: number
+}
 
 interface DimensionFiltersProps {
   activeFilters: DimensionFilter[]
@@ -18,97 +23,159 @@ interface DimensionFiltersProps {
 }
 
 export default function DimensionFilters({ activeFilters, onFilterChange }: DimensionFiltersProps) {
-  const [expanded, setExpanded] = useState<DimensionFilter['dimension'] | null>(null)
-  const [input, setInput] = useState('')
+  const [query, setQuery] = useState('')
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
+  const [loading, setLoading] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const debounceRef = useRef<NodeJS.Timeout | null>(null)
 
-  const toggleDimension = (key: DimensionFilter['dimension']) => {
-    if (expanded === key) {
-      setExpanded(null)
-      setInput('')
-    } else {
-      setExpanded(key)
-      setInput('')
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(e.target as Node)
+      ) {
+        setShowDropdown(false)
+      }
     }
-  }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
-  const addFilter = () => {
-    if (!input.trim() || !expanded) return
+  // Debounced search across all dimensions
+  const searchAllDimensions = useCallback(async (q: string) => {
+    if (q.length < 2) {
+      setSuggestions([])
+      setShowDropdown(false)
+      return
+    }
+
+    setLoading(true)
+    try {
+      const res = await fetch('/api/map/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: q }),
+      })
+      if (res.ok) {
+        const data = (await res.json()) as { suggestions: Suggestion[] }
+        setSuggestions(data.suggestions)
+        setShowDropdown(data.suggestions.length > 0)
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  // Debounce input
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      searchAllDimensions(query)
+    }, 200)
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [query, searchAllDimensions])
+
+  const selectSuggestion = (s: Suggestion) => {
     const newFilter: DimensionFilter = {
-      dimension: expanded,
-      nodeCode: input.trim().toLowerCase(),
+      dimension: s.dimension as DimensionFilter['dimension'],
+      nodeCode: s.code,
     }
     // Replace existing filter for same dimension, or add new
-    const updated = activeFilters.filter((f) => f.dimension !== expanded)
+    const updated = activeFilters.filter((f) => f.dimension !== s.dimension)
     updated.push(newFilter)
     onFilterChange(updated)
-    setExpanded(null)
-    setInput('')
+    setQuery('')
+    setShowDropdown(false)
+    inputRef.current?.blur()
   }
 
-  const removeFilter = (dimension: DimensionFilter['dimension']) => {
+  const removeFilter = (dimension: string) => {
     onFilterChange(activeFilters.filter((f) => f.dimension !== dimension))
+  }
+
+  const dimensionIcon: Record<string, string> = {
+    language: '🗣️',
+    faith: '☪️',
+    sector: '💼',
+    location: '📍',
+    currency: '💱',
+    culture: '🏛️',
   }
 
   return (
     <div className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2">
       {/* Active filter tags */}
       {activeFilters.length > 0 && (
-        <div className="flex gap-1.5">
+        <div className="flex flex-wrap justify-center gap-1.5">
           {activeFilters.map((f) => (
             <button
               key={f.dimension}
               onClick={() => removeFilter(f.dimension)}
               className="rounded-full bg-brand-accent/20 px-2.5 py-1 text-xs text-brand-accent hover:bg-brand-accent/30 transition"
             >
-              {f.dimension}: {f.nodeCode} ✕
+              {dimensionIcon[f.dimension] ?? '◆'} {f.nodeCode} ✕
             </button>
           ))}
         </div>
       )}
 
-      {/* Expanded input */}
-      {expanded && (
-        <div className="flex gap-2 rounded-lg border border-brand-accent/20 bg-brand-surface px-3 py-2">
+      {/* Search box — always visible */}
+      <div className="relative w-[320px] sm:w-[400px]">
+        <div className="flex items-center gap-2 rounded-2xl border border-brand-accent/20 bg-brand-surface/95 px-4 py-2.5 backdrop-blur">
+          <span className="text-brand-text-muted">🔍</span>
           <input
+            ref={inputRef}
             type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && addFilter()}
-            placeholder={DIMENSIONS.find((d) => d.key === expanded)?.placeholder}
-            className="w-40 bg-transparent text-sm text-brand-text placeholder:text-brand-text-muted focus:outline-none"
-            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => {
+              if (suggestions.length > 0) setShowDropdown(true)
+            }}
+            placeholder="Search language, faith, sector, location…"
+            className="flex-1 bg-transparent text-sm text-brand-text placeholder:text-brand-text-muted/60 focus:outline-none"
           />
-          <button
-            onClick={addFilter}
-            className="text-sm font-medium text-brand-accent hover:opacity-80"
-          >
-            Apply
-          </button>
+          {loading && <span className="text-xs text-brand-text-muted animate-pulse">…</span>}
         </div>
-      )}
 
-      {/* Dimension pills */}
-      <div className="flex flex-wrap justify-center gap-2 rounded-2xl border border-brand-accent/20 bg-brand-surface/90 px-3 py-2 backdrop-blur sm:flex-nowrap sm:rounded-full sm:px-4">
-        {DIMENSIONS.map((dim) => {
-          const isActive = activeFilters.some((f) => f.dimension === dim.key)
-          const isExpanded = expanded === dim.key
-          return (
-            <button
-              key={dim.key}
-              onClick={() => toggleDimension(dim.key as DimensionFilter['dimension'])}
-              className={`rounded-full px-3 py-1.5 text-sm transition-all ${
-                isExpanded
-                  ? 'bg-brand-accent text-brand-bg scale-110'
-                  : isActive
-                    ? 'bg-brand-accent/30 text-brand-accent'
-                    : 'text-brand-text-muted hover:bg-brand-surface hover:text-brand-text'
-              }`}
-              title={dim.name}
-            >
-              {dim.label}
-            </button>
-          )
-        })}
+        {/* Suggestions dropdown */}
+        {showDropdown && suggestions.length > 0 && (
+          <div
+            ref={dropdownRef}
+            className="absolute bottom-full mb-2 w-full overflow-hidden rounded-xl border border-brand-accent/20 bg-brand-surface/98 shadow-xl backdrop-blur"
+          >
+            <div className="max-h-64 overflow-y-auto py-1">
+              {suggestions.map((s, i) => (
+                <button
+                  key={`${s.dimension}-${s.code}-${i}`}
+                  onClick={() => selectSuggestion(s)}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-brand-accent/10"
+                >
+                  <span className="text-base">{dimensionIcon[s.dimension] ?? '◆'}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-sm font-medium text-brand-text">{s.label}</span>
+                      <span className="text-xs text-brand-text-muted">{s.detail}</span>
+                    </div>
+                    <span className="text-[10px] uppercase tracking-wider text-brand-text-muted/60">
+                      {s.dimension}
+                    </span>
+                  </div>
+                  <span className="text-xs text-brand-accent/70">{s.countryCount}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -226,7 +226,17 @@ export const CULTURE_SUGGESTIONS: Record<string, string[]> = {
   MZ: ['Makhuwa', 'Tsonga', 'Shona', 'Sena'],
   AO: ['Ovimbundu', 'Ambundu', 'Bakongo'],
 
+  ZW: ['Shona', 'Ndebele', 'Tonga'],
+  MA: ['Arab', 'Berber', 'Sahrawi'],
+
   // Europe
+  RU: ['Russian', 'Tatar', 'Chechen', 'Bashkir', 'Circassian'],
+  UA: ['Ukrainian', 'Crimean Tatar', 'Rusyn'],
+  GR: ['Greek', 'Pontic Greek', 'Arvanite'],
+  RO: ['Romanian', 'Hungarian', 'Roma', 'German'],
+  CH: ['German-Swiss', 'French-Swiss', 'Italian-Swiss', 'Romansh'],
+  AT: ['Austrian', 'Carinthian Slovene', 'Burgenland Croat'],
+  BE: ['Flemish', 'Walloon', 'German-Belgian'],
   DE: ['Bavarian', 'Saxon', 'Swabian', 'Frisian'],
   GB: ['English', 'Scottish', 'Welsh', 'Irish', 'Cornish'],
   FR: ['Breton', 'Basque', 'Alsatian', 'Corsican', 'Occitan'],
@@ -245,12 +255,27 @@ export const CULTURE_SUGGESTIONS: Record<string, string[]> = {
   PH: ['Tagalog', 'Cebuano', 'Ilocano', 'Bicolano', 'Waray'],
   ID: ['Javanese', 'Sundanese', 'Batak', 'Malay', 'Balinese'],
   MY: ['Malay', 'Chinese-Malaysian', 'Indian-Malaysian', 'Orang Asli'],
+  TH: ['Thai', 'Isan', 'Northern Thai', 'Mon', 'Malay-Thai'],
+  VN: ['Kinh', 'Tay', 'Thai', 'Muong', 'Khmer Krom', 'Hmong'],
+  KR: ['Korean', 'Jeju'],
+  LK: ['Sinhalese', 'Tamil', 'Moor', 'Burgher'],
+  NP: ['Newar', 'Tharu', 'Tamang', 'Magar', 'Sherpa'],
+  MM: ['Bamar', 'Shan', 'Karen', 'Rakhine', 'Mon'],
+  IR: ['Persian', 'Azeri', 'Kurdish', 'Lur', 'Baloch', 'Arab'],
+  IL: ['Ashkenazi', 'Mizrahi', 'Sephardi', 'Ethiopian', 'Arab'],
 
   // Americas
   US: ['African American', 'Latino', 'Native American', 'Asian American', 'Pacific Islander'],
   BR: ['Afro-Brazilian', 'Indigenous', 'Japanese-Brazilian', 'Italian-Brazilian'],
   MX: ['Mestizo', 'Nahua', 'Maya', 'Zapotec', 'Mixtec'],
   CO: ['Mestizo', 'Afro-Colombian', 'Indigenous', 'Raizal'],
+  CA: ['First Nations', 'Inuit', 'Métis', 'Québécois', 'Acadian'],
+  AR: ['Criollo', 'Mestizo', 'Italian-Argentine', 'Mapuche'],
+  PE: ['Quechua', 'Aymara', 'Mestizo', 'Afro-Peruvian', 'Asháninka'],
+  CL: ['Mapuche', 'Rapa Nui', 'Aymara', 'Chilean Mestizo'],
+  VE: ['Mestizo', 'Afro-Venezuelan', 'Indigenous', 'Criollo'],
+  JM: ['Jamaican', 'Maroon', 'East Indian', 'Chinese-Jamaican'],
+  HT: ['Haitian Creole', 'Afro-Haitian', 'Mulatto'],
 
   // Middle East
   AE: ['Emirati', 'Bedouin', 'Baloch', 'Persian'],

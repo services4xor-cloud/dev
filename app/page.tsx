@@ -10,12 +10,45 @@ import type { DimensionFilter, MapCountry } from '@/types/domain'
 
 export default function HomePage() {
   const { data: session } = useSession()
-  const [filters, setFilters] = useState<DimensionFilter[]>([])
+  // Restore map state from sessionStorage (survives navigation)
+  const [filters, setFilters] = useState<DimensionFilter[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const raw = sessionStorage.getItem('bex-map-filters')
+      return raw ? (JSON.parse(raw) as DimensionFilter[]) : []
+    } catch {
+      return []
+    }
+  })
   const [countries, setCountries] = useState<MapCountry[]>([])
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
-  const [selectedCountryName, setSelectedCountryName] = useState<string | null>(null)
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    return sessionStorage.getItem('bex-map-selected') || null
+  })
+  const [selectedCountryName, setSelectedCountryName] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    return sessionStorage.getItem('bex-map-selected-name') || null
+  })
   const [menuOpen, setMenuOpen] = useState(false)
   const [unreadMessages, setUnreadMessages] = useState(0)
+
+  // Persist selection + filters to sessionStorage
+  useEffect(() => {
+    if (selectedCountry) {
+      sessionStorage.setItem('bex-map-selected', selectedCountry)
+    } else {
+      sessionStorage.removeItem('bex-map-selected')
+    }
+    if (selectedCountryName) {
+      sessionStorage.setItem('bex-map-selected-name', selectedCountryName)
+    } else {
+      sessionStorage.removeItem('bex-map-selected-name')
+    }
+  }, [selectedCountry, selectedCountryName])
+
+  useEffect(() => {
+    sessionStorage.setItem('bex-map-filters', JSON.stringify(filters))
+  }, [filters])
 
   // Fetch filtered countries when filters change
   const fetchFilteredCountries = useCallback(async (activeFilters: DimensionFilter[]) => {
@@ -173,7 +206,7 @@ export default function HomePage() {
               href="/login"
               className="text-sm text-brand-text-muted hover:text-brand-accent transition"
             >
-              Sign in
+              Login
             </Link>
           )}
         </nav>
@@ -250,7 +283,7 @@ export default function HomePage() {
               onClick={() => setMenuOpen(false)}
               className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
             >
-              Sign in
+              Login
             </Link>
           )}
         </nav>

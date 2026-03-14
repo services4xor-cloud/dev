@@ -103,28 +103,25 @@ export default function OpportunitiesPage() {
 
   return (
     <div className="min-h-screen bg-brand-bg">
-      {/* Header */}
-      <div className="border-b border-white/5 bg-brand-surface px-6 py-4">
+      {/* Header — matches agent page layout */}
+      <header className="border-b border-brand-accent/10 px-6 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="text-sm text-brand-text-muted transition hover:text-brand-accent"
-            >
-              ← Back to Map
-            </Link>
+          <div>
             <h1 className="text-xl font-bold text-brand-accent">Opportunities</h1>
+            {canPost && (
+              <button
+                onClick={() => setShowForm((v) => !v)}
+                className="mt-1 text-sm text-brand-text-muted transition hover:text-brand-accent"
+              >
+                {showForm ? 'Cancel' : '+ Post an Opportunity'}
+              </button>
+            )}
           </div>
-          {canPost && (
-            <button
-              onClick={() => setShowForm((v) => !v)}
-              className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-brand-accent transition hover:opacity-90"
-            >
-              {showForm ? 'Cancel' : 'Post an Opportunity'}
-            </button>
-          )}
+          <a href="/" className="text-sm text-brand-text-muted hover:text-brand-accent transition">
+            ← Map
+          </a>
         </div>
-      </div>
+      </header>
 
       <div className="mx-auto max-w-5xl px-6 py-8">
         {/* Success banner */}

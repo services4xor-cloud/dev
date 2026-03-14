@@ -55,7 +55,7 @@ export default async function CountryHubPage({ params }: PageProps) {
     : null
 
   return (
-    <PageShell backHref="/" backLabel="← Back to Map" title={`Be${name}`}>
+    <PageShell backHref="/" backLabel="← Map" title={`Be${name}`}>
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-b from-brand-surface via-brand-bg to-brand-bg">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.08),transparent_70%)]" />

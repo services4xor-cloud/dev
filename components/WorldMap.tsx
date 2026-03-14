@@ -1,8 +1,21 @@
 'use client'
 
-import { useCallback, useRef, useMemo, useState } from 'react'
+import { useCallback, useRef, useMemo, useState, useEffect } from 'react'
 import { Map, Source, Layer, type MapRef, type MapLayerMouseEvent } from 'react-map-gl/maplibre'
 import type { MapCountry } from '@/types/domain'
+
+const MAP_STATE_KEY = 'bex-map-viewport'
+
+function getSavedViewport() {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = sessionStorage.getItem(MAP_STATE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw) as { longitude: number; latitude: number; zoom: number }
+  } catch {
+    return null
+  }
+}
 
 interface WorldMapProps {
   countries: MapCountry[]
@@ -12,11 +25,31 @@ interface WorldMapProps {
 
 export default function WorldMap({ countries, onCountryClick, selectedCountry }: WorldMapProps) {
   const mapRef = useRef<MapRef>(null)
+  const [initialViewport] = useState(
+    () => getSavedViewport() ?? { longitude: 20, latitude: 10, zoom: 2 }
+  )
   const [hoveredCountry, setHoveredCountry] = useState<{
     name: string
     x: number
     y: number
   } | null>(null)
+
+  // Persist map viewport to sessionStorage on move
+  const saveViewport = useCallback(() => {
+    const map = mapRef.current
+    if (!map) return
+    const center = map.getCenter()
+    const zoom = map.getZoom()
+    sessionStorage.setItem(
+      MAP_STATE_KEY,
+      JSON.stringify({ longitude: center.lng, latitude: center.lat, zoom })
+    )
+  }, [])
+
+  // Save on unmount too
+  useEffect(() => {
+    return () => saveViewport()
+  }, [saveViewport])
 
   const handleMouseMove = useCallback((e: MapLayerMouseEvent) => {
     const features = e.features
@@ -106,13 +139,14 @@ export default function WorldMap({ countries, onCountryClick, selectedCountry }:
     <div className="relative" style={{ width: '100%', height: '100vh' }}>
       <Map
         ref={mapRef}
-        initialViewState={{ longitude: 20, latitude: 10, zoom: 2 }}
+        initialViewState={initialViewport}
         style={{ width: '100%', height: '100%' }}
         mapStyle={`https://api.maptiler.com/maps/dataviz-dark/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`}
         renderWorldCopies={false}
         onClick={handleClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setHoveredCountry(null)}
+        onMoveEnd={saveViewport}
         interactiveLayerIds={['country-fill']}
         cursor="pointer"
       >
