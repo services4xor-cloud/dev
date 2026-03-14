@@ -1,11 +1,27 @@
+'use client'
+
+import { useState } from 'react'
+import WorldMap from '@/components/WorldMap'
+import DimensionFilters from '@/components/DimensionFilters'
+import CountryPanel from '@/components/CountryPanel'
+import type { DimensionFilter, MapCountry } from '@/types/domain'
+
 export default function HomePage() {
+  const [filters, setFilters] = useState<DimensionFilter[]>([])
+  const [countries] = useState<MapCountry[]>([])
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
+
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-brand-bg">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-brand-accent">Be[X]</h1>
-        <p className="mt-2 text-brand-text-muted">The world is connected to you.</p>
-        <p className="mt-4 text-sm text-brand-text-muted">Map loading in Phase 2...</p>
+    <main className="relative h-screen w-screen overflow-hidden">
+      <WorldMap countries={countries} onCountryClick={setSelectedCountry} />
+
+      <div className="absolute left-4 top-4 z-20">
+        <h1 className="text-xl font-bold text-brand-accent">Be[X]</h1>
       </div>
-    </div>
+
+      <DimensionFilters activeFilters={filters} onFilterChange={setFilters} />
+
+      <CountryPanel countryCode={selectedCountry} onClose={() => setSelectedCountry(null)} />
+    </main>
   )
 }
