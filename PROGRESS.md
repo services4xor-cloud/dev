@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 69 (2026-03-14); Payments, Admin, Discovery shipped
+> Last updated: Session 70 (2026-03-14); PWA, i18n, reviews, impact, community threads
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -13,10 +13,10 @@
 | Phase             | 5 (Be[X] v2 — Graph-Powered Rebuild)                                                                                                                                                                                                                                                                   |
 | Branch            | `main` (direct push)                                                                                                                                                                                                                                                                                   |
 | Deploy            | Vercel auto on push                                                                                                                                                                                                                                                                                    |
-| Core Routes       | 12: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery`                                                                                                                                                               |
-| API routes        | 14: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` |
-| Library modules   | 16+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, identity-context.tsx, etc.)                                                                                                                                                                                                             |
-| Jest tests        | 176/176 ✅ (15 suites)                                                                                                                                                                                                                                                                                 |
+| Core Routes       | 16+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/about` `/pricing` `/contact` `/privacy` `/offline` |
+| API routes        | 20+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` |
+| Library modules   | 20+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, i18n.ts, validation.ts, identity-context.tsx, etc.)                                                                                                                                                                                     |
+| Jest tests        | 283/283 ✅ (17 suites)                                                                                                                                                                                                                                                                                 |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                      |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                    |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                |
@@ -28,6 +28,46 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                               |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                   |
 | Auth              | ✅ NextAuth v4 — Google OAuth, EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                         |
+
+---
+
+## 🔥 Session 70: PWA + i18n + Reviews + Impact + Community
+
+### PWA & Infrastructure
+
+- **PWA manifest** (`public/manifest.json`) — Be[X] branding, theme colors, icon
+- **Offline page** (`/offline`) — Branded fallback when network unavailable
+- **Layout metadata** — Full SEO: OpenGraph, Twitter card, theme-color, apple-web-app
+
+### Internationalization
+
+- **i18n system** (`lib/i18n.ts`) — 4-locale dictionary (en/sw/de/fr), 35 translation keys, `t()` function
+- **Locale mapping** — `getLocaleFromCountry()` maps country codes to default locales
+- **57 tests** covering all keys, locales, fallbacks
+
+### Validation Utilities
+
+- **Validation lib** (`lib/validation.ts`) — `sanitizeString`, `validateEmail`, `validateAmount`, `capArray`, `validateCountryCode`, `validateCurrency`, `parseJsonBody`
+- **50 tests** covering edge cases, XSS prevention, boundary values
+
+### Review System
+
+- **Review model** — Added to Prisma schema (author, target, rating, content)
+- **Reviews API** (`/api/reviews`) — GET (by targetId), POST (auth, 1-5 rating, no self-review)
+- **Review delete** (`/api/reviews/[id]`) — DELETE (author-only)
+- **ReviewSection component** — Average rating, star display, review list, write form
+- **Added to Explorer detail** — ReviewSection at bottom of `/explorers/[id]`
+
+### Impact Counter
+
+- **Impact API** (`/api/impact`) — Public GET, counts users/countries/connections, sums 5% of payments
+- **ImpactCounter component** — Animated stat counters with ease-out cubic easing
+
+### In Progress (Session 70 cont.)
+
+- Community Threads (Thread/ThreadPost models, API, pages)
+- Shared UI components (PageShell, HeroSection extraction)
+- Explorer Stories + Trust Badges components
 
 ---
 
