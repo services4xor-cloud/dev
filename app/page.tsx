@@ -79,6 +79,12 @@ export default function HomePage() {
             Opportunities
           </Link>
           <Link
+            href="/explorers"
+            className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            Explorers
+          </Link>
+          <Link
             href="/discovery"
             className="text-sm text-brand-text-muted hover:text-brand-accent transition"
           >
@@ -97,6 +103,12 @@ export default function HomePage() {
                 className="text-sm text-brand-text-muted hover:text-brand-accent transition"
               >
                 Me
+              </Link>
+              <Link
+                href="/referral"
+                className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+              >
+                Refer
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: '/' })}
@@ -134,6 +146,13 @@ export default function HomePage() {
             Opportunities
           </Link>
           <Link
+            href="/explorers"
+            onClick={() => setMenuOpen(false)}
+            className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            Explorers
+          </Link>
+          <Link
             href="/discovery"
             onClick={() => setMenuOpen(false)}
             className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
@@ -155,6 +174,13 @@ export default function HomePage() {
                 className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
               >
                 Me
+              </Link>
+              <Link
+                href="/referral"
+                onClick={() => setMenuOpen(false)}
+                className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+              >
+                Refer
               </Link>
               <button
                 onClick={() => {
