@@ -1,40 +1,93 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 67 (2026-03-13); Skill audit 2026-03-14 (docs/skills/2026-03-14-skill-audit.md)
+> Last updated: Session 68 (2026-03-14); Be[X] v2 rebuild complete
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
 
 ## Current State
 
-| Metric            | Value                                                                                     |
-| ----------------- | ----------------------------------------------------------------------------------------- |
-| Phase             | 4 (World Dimensions + AI Agents)                                                          |
-| Branch            | `main` (direct push)                                                                      |
-| Deploy            | Vercel auto on push                                                                       |
-| Core Routes       | 7: `/` `/world` `/exchange` `/messages` `/me` `/notifications` `/exchange/[id]`           |
-| Supporting Routes | `/be/[code]` `/signup` `/login` `/forgot-password` `/referral` `/media` `/fashion` + info |
-| API routes        | 12+                                                                                       |
-| Library modules   | 30 (+ semantic-skills.ts — 68 skills × 12 languages)                                      |
-| Mock data modules | 17 (+ messages.ts); admin data deduplicated, all pages import from barrel                 |
-| Jest tests        | 872/872 ✅ (46 suites)                                                                    |
-| Playwright tests  | 159 ✅ (7 files incl. demo-flow)                                                          |
-| TypeScript errors | 0                                                                                         |
-| Build             | ✅ passes                                                                                 |
-| Countries         | 120+ selectable (COUNTRY_OPTIONS) + 193 in world-data.ts                                  |
-| Languages         | 100+ in LANGUAGE_REGISTRY (Tier A: en/de/fr/sw, Tier B: 10 stubs, Tier C: 90+ label-only) |
-| i18n translations | en: ~1220 keys, de: ~1220, sw: ~1220, fr: ~1220, + 10 stub languages                      |
-| AI Agents         | ~700 deterministic personas across 193 countries                                          |
-| Identity dims     | 8 (Location, Languages, Faith, Craft, Passion, Reach, Culture, Market)                    |
-| Skills            | 22+ (`becountry-*` + `bex-*`) covering all process areas                                  |
-| DB                | ✅ Neon PostgreSQL connected + seeded (11 anchors, 22 paths, 8 pioneers)                  |
-| Auth              | ✅ Google OAuth + email/password + password reset                                         |
-| Email             | ✅ Resend (password reset emails)                                                         |
+| Metric            | Value                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| Phase             | 5 (Be[X] v2 — Graph-Powered Rebuild)                                                 |
+| Branch            | `main` (direct push)                                                                 |
+| Deploy            | Vercel auto on push                                                                  |
+| Core Routes       | 7: `/` `/me` `/agent` `/onboarding` `/be/[code]` `/exchange/[id]` `/login` `/signup` |
+| API routes        | 5: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/onboarding` |
+| Library modules   | 15+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, identity-context.tsx, etc.)     |
+| Jest tests        | 32/32 ✅ (5 suites)                                                                  |
+| TypeScript errors | 0                                                                                    |
+| Build             | ✅ passes (13 routes)                                                                |
+| Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment              |
+| Map               | Fullscreen MapLibre GL JS + 177 countries GeoJSON + dimension filters                |
+| AI Agents         | Claude API (claude-sonnet-4-20250514) with graph-powered personas                    |
+| Vocabulary        | v2: Explorer/Host/Opportunity/Exchange/Experience/Discovery/Hub/Corridor             |
+| Legacy terms      | 0 — zero Pioneer/Anchor/Venture/Compass in lib/, app/, components/, types/           |
+| Countries         | 120+ in seed (Node type COUNTRY) + 100+ languages, 8 faiths, ~50 currencies          |
+| Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)             |
+| DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat) |
+| Auth              | ✅ NextAuth v4 — Google OAuth, EXPLORER/HOST/AGENT/ADMIN roles                       |
 
 ---
 
-## 🔥 Session 67: BTW Feedback + Deep Cleanup (-1,460 lines)
+## 🔥 Session 68: Be[X] v2 Complete Rebuild
+
+### Architecture (Chunk 1 — Foundation)
+
+- **Nuclear cleanup** — deleted 20+ old app/ pages, replaced with 7 clean routes
+- **Hybrid triple-store** — Node+Edge tables (10 NodeTypes, 20 EdgeRelations) alongside relational auth/payment
+- **Vocabulary v2** — Explorer, Host, Opportunity, Exchange, Experience, Discovery, Hub, Corridor
+- **Graph engine** (`lib/graph.ts`) — getNode, createEdge, filterCountries, buildAgentContext
+- **Seed script** — 120+ countries, 100+ languages, 8 faiths, ~50 currencies, edge relationships
+- **Auth updated** — EXPLORER/HOST roles, auto-creates USER Node on signup
+
+### The Map (Chunk 2)
+
+- **Fullscreen MapLibre GL JS** with MapTiler tiles, 177 countries GeoJSON (Natural Earth 110m)
+- **6 dimension filter pills** (language, faith, sector, location, currency, culture)
+- **Filter API** — multi-dimension intersection queries via graph engine
+- **Country panel** — slide-in on click with country details
+
+### AI Agents (Chunk 3)
+
+- **Claude API integration** (`lib/ai.ts`) — persona builder from graph subgraph
+- **Agent chat API** — streaming responses, conversation persistence in AgentChat table
+- **Chat UI** — standalone `/agent` page with message history
+
+### Identity (Chunk 4)
+
+- **Identity context** — React context fetching user's graph node + edges
+- **`/me`** — visual identity graph showing edges grouped by relation
+- **`/onboarding`** — 5-step wizard creating SPEAKS/PRACTICES/HAS_SKILL/INTERESTED_IN/LOCATED_IN edges
+- **`/be/[code]`** — country hub with languages, currencies, regions, sectors from graph
+- **`/exchange/[id]`** — exchange detail with offered-by hosts and dimensions
+
+### Tests & Polish (Chunk 5)
+
+- **32 tests across 5 suites**: graph (13), vocabulary (4), AI persona (5), map filter (5), agent chat (5)
+- **Zero legacy vocabulary** — purged Pioneer/Anchor/Venture/Compass from all source files
+- **Full build passes** — 0 TS errors, clean lint
+
+### Commits
+
+- `58f558e` refactor: purge all legacy vocabulary from lib/
+- `214901a` test: expand test suite — graph, AI, map filter, agent chat
+- `1114d4a` feat: Chunks 3+4 — AI agents + identity routes
+- `15529d1` feat: Chunk 2 — fullscreen world map with dimension filters
+- `9247147` feat: first tests + .env.example + fix Jest moduleNameMapper
+- `cf2b3f6` feat: minimal app shell + fix retained lib/ imports
+- `49e996d` feat: install maplibre-gl, react-map-gl, @anthropic-ai/sdk
+- `df92f8e` feat: seed script
+- `ef42afc` feat: lib/graph.ts
+- `e436c5f` feat: new type system
+- `4009eef` feat: auth.ts — EXPLORER/HOST roles
+- `9f6ea63` feat: vocabulary.ts + new Prisma schema
+- `58b2993` chore: curate lib/
+
+---
+
+## Session 67: BTW Feedback + Deep Cleanup (-1,460 lines)
 
 ### Hardcode Elimination + More Dead Code (-358 lines)
 
