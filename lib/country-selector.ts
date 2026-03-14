@@ -1129,6 +1129,16 @@ export type RegionCluster =
 
 export type CorridorStrength = 'direct' | 'partner' | 'emerging'
 
+export type FaithCode =
+  | 'christianity'
+  | 'islam'
+  | 'hinduism'
+  | 'buddhism'
+  | 'judaism'
+  | 'traditional'
+  | 'secular'
+  | 'other'
+
 export interface CountryOption {
   code: string
   name: string
@@ -1144,6 +1154,8 @@ export interface CountryOption {
   tz: string // IANA timezone
   /** Languages spoken in this country (ordered by prevalence) */
   languages: LanguageCode[]
+  /** Dominant faiths in this country (ordered by prevalence) */
+  topFaiths: FaithCode[]
 }
 
 export interface RegionClusterConfig {
@@ -1257,6 +1269,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Home market',
     tz: 'Africa/Nairobi',
     languages: ['en', 'sw'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'UG',
@@ -1278,6 +1291,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EAC Free Movement',
     tz: 'Africa/Kampala',
     languages: ['en', 'sw'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'TZ',
@@ -1293,6 +1307,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EAC Free Movement',
     tz: 'Africa/Dar_es_Salaam',
     languages: ['sw', 'en'],
+    topFaiths: ['christianity', 'islam', 'traditional'],
   },
   {
     code: 'RW',
@@ -1308,6 +1323,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EAC Free Movement',
     tz: 'Africa/Kigali',
     languages: ['rw', 'en', 'fr'],
+    topFaiths: ['christianity'],
   },
   // ── West Africa ──────────────────────────────────────────────────────────
   {
@@ -1331,6 +1347,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Lagos',
     languages: ['en', 'ha', 'yo', 'ig'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'GH',
@@ -1358,6 +1375,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Accra',
     languages: ['en'],
+    topFaiths: ['christianity', 'islam', 'traditional'],
   },
   // ── Southern Africa ──────────────────────────────────────────────────────
   {
@@ -1388,6 +1406,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'General Work Visa / Critical Skills',
     tz: 'Africa/Johannesburg',
     languages: ['zu', 'xh', 'af', 'en', 'st', 'tn', 'ts', 'ss', 've', 'nr'],
+    topFaiths: ['christianity'],
   },
   // ── Middle East ──────────────────────────────────────────────────────────
   {
@@ -1418,6 +1437,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Employment visa via employer',
     tz: 'Asia/Dubai',
     languages: ['ar', 'en'],
+    topFaiths: ['islam'],
   },
   // ── Europe ───────────────────────────────────────────────────────────────
   {
@@ -1441,6 +1461,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Schengen visa required',
     tz: 'Europe/Berlin',
     languages: ['de', 'en'],
+    topFaiths: ['christianity', 'secular', 'islam'],
   },
   {
     code: 'CH',
@@ -1463,6 +1484,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Schengen visa required',
     tz: 'Europe/Zurich',
     languages: ['de', 'fr', 'it', 'rm', 'en'],
+    topFaiths: ['christianity', 'secular', 'islam'],
   },
   {
     code: 'GB',
@@ -1481,10 +1503,18 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Higher Education & Research',
     ],
     currency: 'GBP',
-    payment: ['Visa/Mastercard', 'PayPal', 'Apple Pay', 'Open Banking'],
+    payment: [
+      'Visa/Mastercard Contactless',
+      'Apple Pay',
+      'Google Pay',
+      'PayPal',
+      'Klarna',
+      'Open Banking',
+    ],
     visa: 'UK visa required',
     tz: 'Europe/London',
     languages: ['en'],
+    topFaiths: ['christianity', 'secular', 'islam'],
   },
   {
     code: 'NL',
@@ -1507,6 +1537,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Schengen visa required',
     tz: 'Europe/Amsterdam',
     languages: ['nl', 'en'],
+    topFaiths: ['secular', 'christianity', 'islam'],
   },
   {
     code: 'FR',
@@ -1525,10 +1556,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Tourism & Hospitality',
     ],
     currency: 'EUR',
-    payment: ['Carte Bancaire', 'SEPA', 'PayPal', 'Apple Pay', 'Google Pay'],
+    payment: ['Carte Bancaire', 'Apple Pay', 'PayPal', 'Google Pay', 'Klarna'],
     visa: 'Schengen visa required',
     tz: 'Europe/Paris',
     languages: ['fr'],
+    topFaiths: ['christianity', 'secular', 'islam'],
   },
   // ── Americas ─────────────────────────────────────────────────────────────
   {
@@ -1544,14 +1576,15 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Financial Services & Banking',
       'Healthcare & Pharma',
       'Aerospace & Defense',
+      'Nuclear Energy & Research',
       'Entertainment & Media',
-      'Agriculture & Food Production',
     ],
     currency: 'USD',
     payment: ['Zelle', 'Venmo', 'Apple Pay', 'Stripe'],
     visa: 'B1/B2 visa required',
     tz: 'America/New_York',
     languages: ['en', 'es'],
+    topFaiths: ['christianity', 'secular', 'judaism'],
   },
   {
     code: 'CA',
@@ -1574,6 +1607,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'America/Toronto',
     languages: ['en', 'fr'],
+    topFaiths: ['christianity', 'secular', 'islam'],
   },
   // ── South Asia ───────────────────────────────────────────────────────────
   {
@@ -1603,6 +1637,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Asia/Kolkata',
     languages: ['hi', 'en'],
+    topFaiths: ['hinduism', 'islam', 'christianity'],
   },
   // ── South-East Asia ─────────────────────────────────────────────────────
   {
@@ -1632,6 +1667,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Bangkok',
     languages: ['th'],
+    topFaiths: ['buddhism', 'islam'],
   },
   // ── Oceania ──────────────────────────────────────────────────────────────
   {
@@ -1655,6 +1691,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Australia/Sydney',
     languages: ['en'],
+    topFaiths: ['christianity', 'secular'],
   },
   // ══════════════════════════════════════════════════════════════════════════
   // EXPANDED COUNTRIES — 100+ additional countries
@@ -1679,6 +1716,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Addis_Ababa',
     languages: ['am', 'om'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'SO',
@@ -1694,6 +1732,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Mogadishu',
     languages: ['so', 'ar'],
+    topFaiths: ['islam'],
   },
   {
     code: 'DJ',
@@ -1709,6 +1748,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Djibouti',
     languages: ['fr', 'ar'],
+    topFaiths: ['islam'],
   },
   {
     code: 'ER',
@@ -1724,6 +1764,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Asmara',
     languages: ['ti', 'ar'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'SS',
@@ -1739,6 +1780,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EAC Free Movement',
     tz: 'Africa/Juba',
     languages: ['en', 'ar'],
+    topFaiths: ['christianity', 'traditional'],
   },
   {
     code: 'SD',
@@ -1754,6 +1796,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Africa/Khartoum',
     languages: ['ar'],
+    topFaiths: ['islam'],
   },
   {
     code: 'BI',
@@ -1769,6 +1812,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EAC Free Movement',
     tz: 'Africa/Bujumbura',
     languages: ['rn', 'fr'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'MZ',
@@ -1784,6 +1828,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Africa/Maputo',
     languages: ['pt'],
+    topFaiths: ['christianity', 'islam', 'traditional'],
   },
   {
     code: 'MG',
@@ -1799,6 +1844,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Indian/Antananarivo',
     languages: ['mg', 'fr'],
+    topFaiths: ['christianity', 'traditional'],
   },
   {
     code: 'MW',
@@ -1820,6 +1866,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Blantyre',
     languages: ['en', 'ny'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'ZM',
@@ -1841,6 +1888,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Lusaka',
     languages: ['en', 'ny'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'ZW',
@@ -1862,6 +1910,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Harare',
     languages: ['en', 'sn', 'nd'],
+    topFaiths: ['christianity', 'traditional'],
   },
   {
     code: 'KM',
@@ -1877,6 +1926,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Indian/Comoro',
     languages: ['ar', 'fr'],
+    topFaiths: ['islam'],
   },
   {
     code: 'SC',
@@ -1896,6 +1946,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Indian/Mahe',
     languages: ['en', 'fr'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'MU',
@@ -1917,6 +1968,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Indian/Mauritius',
     languages: ['en', 'fr'],
+    topFaiths: ['hinduism', 'christianity', 'islam'],
   },
 
   // ── West Africa (additional) ────────────────────────────────────────────
@@ -1940,6 +1992,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Africa/Dakar',
     languages: ['fr', 'wo'],
+    topFaiths: ['islam'],
   },
   {
     code: 'CI',
@@ -1961,6 +2014,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Abidjan',
     languages: ['fr'],
+    topFaiths: ['islam', 'christianity', 'traditional'],
   },
   {
     code: 'CM',
@@ -1982,6 +2036,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Douala',
     languages: ['fr', 'en'],
+    topFaiths: ['christianity', 'islam', 'traditional'],
   },
   {
     code: 'ML',
@@ -1997,6 +2052,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Africa/Bamako',
     languages: ['fr', 'ff'],
+    topFaiths: ['islam'],
   },
   {
     code: 'BF',
@@ -2012,6 +2068,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Ouagadougou',
     languages: ['fr'],
+    topFaiths: ['islam', 'christianity', 'traditional'],
   },
   {
     code: 'NE',
@@ -2032,6 +2089,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Niamey',
     languages: ['ha', 'fr'],
+    topFaiths: ['islam'],
   },
   {
     code: 'GN',
@@ -2052,6 +2110,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Conakry',
     languages: ['fr', 'ff'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'BJ',
@@ -2072,6 +2131,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Porto-Novo',
     languages: ['fr', 'yo'],
+    topFaiths: ['christianity', 'islam', 'traditional'],
   },
   {
     code: 'TG',
@@ -2092,6 +2152,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Lome',
     languages: ['fr', 'ee'],
+    topFaiths: ['christianity', 'traditional', 'islam'],
   },
   {
     code: 'SL',
@@ -2112,6 +2173,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Africa/Freetown',
     languages: ['en'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'LR',
@@ -2132,6 +2194,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Monrovia',
     languages: ['en'],
+    topFaiths: ['christianity', 'islam', 'traditional'],
   },
   {
     code: 'GM',
@@ -2152,6 +2215,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Banjul',
     languages: ['en', 'wo'],
+    topFaiths: ['islam'],
   },
   {
     code: 'GW',
@@ -2167,6 +2231,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Africa/Bissau',
     languages: ['pt'],
+    topFaiths: ['islam', 'traditional', 'christianity'],
   },
   {
     code: 'CV',
@@ -2187,6 +2252,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Atlantic/Cape_Verde',
     languages: ['pt'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'MR',
@@ -2207,6 +2273,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Africa/Nouakchott',
     languages: ['ar', 'fr'],
+    topFaiths: ['islam'],
   },
 
   // ── Central Africa ──────────────────────────────────────────────────────
@@ -2230,6 +2297,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Africa/Kinshasa',
     languages: ['fr', 'sw', 'ln', 'kg', 'lu'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'CG',
@@ -2245,6 +2313,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Brazzaville',
     languages: ['fr', 'ln', 'kg'],
+    topFaiths: ['christianity', 'traditional'],
   },
   {
     code: 'GA',
@@ -2265,6 +2334,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'e-Visa',
     tz: 'Africa/Libreville',
     languages: ['fr'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'GQ',
@@ -2280,6 +2350,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Africa/Malabo',
     languages: ['es', 'fr', 'pt'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'CF',
@@ -2295,6 +2366,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Africa/Bangui',
     languages: ['fr', 'sg'],
+    topFaiths: ['christianity', 'islam', 'traditional'],
   },
   {
     code: 'TD',
@@ -2310,6 +2382,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Ndjamena',
     languages: ['fr', 'ar'],
+    topFaiths: ['islam', 'christianity', 'traditional'],
   },
   {
     code: 'ST',
@@ -2325,6 +2398,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Sao_Tome',
     languages: ['pt'],
+    topFaiths: ['christianity'],
   },
 
   // ── North Africa ────────────────────────────────────────────────────────
@@ -2349,6 +2423,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'e-Visa',
     tz: 'Africa/Cairo',
     languages: ['ar'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'MA',
@@ -2371,6 +2446,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Africa/Casablanca',
     languages: ['ar', 'fr'],
+    topFaiths: ['islam'],
   },
   {
     code: 'DZ',
@@ -2392,6 +2468,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Africa/Algiers',
     languages: ['ar', 'fr'],
+    topFaiths: ['islam'],
   },
   {
     code: 'TN',
@@ -2414,6 +2491,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Africa/Tunis',
     languages: ['ar', 'fr'],
+    topFaiths: ['islam'],
   },
   {
     code: 'LY',
@@ -2429,6 +2507,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Africa/Tripoli',
     languages: ['ar'],
+    topFaiths: ['islam'],
   },
 
   // ── Southern Africa (additional) ────────────────────────────────────────
@@ -2451,6 +2530,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Africa/Gaborone',
     languages: ['en', 'tn'],
+    topFaiths: ['christianity', 'traditional'],
   },
   {
     code: 'NA',
@@ -2471,6 +2551,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Africa/Windhoek',
     languages: ['en', 'af', 'de'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'SZ',
@@ -2491,6 +2572,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Mbabane',
     languages: ['en', 'ss'],
+    topFaiths: ['christianity', 'traditional'],
   },
   {
     code: 'LS',
@@ -2511,6 +2593,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Africa/Maseru',
     languages: ['en', 'st'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'AO',
@@ -2532,6 +2615,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Africa/Luanda',
     languages: ['pt', 'kg'],
+    topFaiths: ['christianity'],
   },
 
   // ── Middle East (additional) ────────────────────────────────────────────
@@ -2563,6 +2647,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Work visa via employer',
     tz: 'Asia/Riyadh',
     languages: ['ar'],
+    topFaiths: ['islam'],
   },
   {
     code: 'QA',
@@ -2584,6 +2669,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Qatar',
     languages: ['ar', 'en'],
+    topFaiths: ['islam'],
   },
   {
     code: 'KW',
@@ -2604,6 +2690,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Work visa via employer',
     tz: 'Asia/Kuwait',
     languages: ['ar', 'en'],
+    topFaiths: ['islam'],
   },
   {
     code: 'OM',
@@ -2625,6 +2712,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'e-Visa',
     tz: 'Asia/Muscat',
     languages: ['ar'],
+    topFaiths: ['islam'],
   },
   {
     code: 'BH',
@@ -2645,6 +2733,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'e-Visa',
     tz: 'Asia/Bahrain',
     languages: ['ar', 'en'],
+    topFaiths: ['islam'],
   },
   {
     code: 'JO',
@@ -2666,6 +2755,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Amman',
     languages: ['ar'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'LB',
@@ -2686,6 +2776,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Beirut',
     languages: ['ar', 'fr'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'IQ',
@@ -2706,6 +2797,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Baghdad',
     languages: ['ar', 'ku'],
+    topFaiths: ['islam'],
   },
   {
     code: 'YE',
@@ -2726,6 +2818,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Asia/Aden',
     languages: ['ar'],
+    topFaiths: ['islam'],
   },
   {
     code: 'IL',
@@ -2755,6 +2848,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Work visa required',
     tz: 'Asia/Jerusalem',
     languages: ['he', 'ar', 'en'],
+    topFaiths: ['judaism', 'islam', 'christianity'],
   },
 
   // ── Europe (additional) ─────────────────────────────────────────────────
@@ -2768,10 +2862,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'partner',
     topSectors: ['Tourism & Hospitality', 'Machinery & Metal', 'Financial Services'],
     currency: 'EUR',
-    payment: ['EPS', 'SEPA', 'PayPal', 'Klarna'],
+    payment: ['EPS', 'PayPal', 'Apple Pay', 'Klarna', 'Google Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Vienna',
     languages: ['de', 'en'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'BE',
@@ -2783,10 +2878,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'partner',
     topSectors: ['Chemical & Pharmaceutical', 'Logistics & Trade', 'Financial Services'],
     currency: 'EUR',
-    payment: ['Bancontact', 'SEPA', 'PayPal'],
+    payment: ['Bancontact', 'PayPal', 'Apple Pay', 'Google Pay', 'Klarna'],
     visa: 'Schengen visa required',
     tz: 'Europe/Brussels',
     languages: ['nl', 'fr', 'de', 'en'],
+    topFaiths: ['christianity', 'secular', 'islam'],
   },
   {
     code: 'IE',
@@ -2798,10 +2894,18 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'partner',
     topSectors: ['Pharmaceutical & Biotech', 'Technology & Software', 'Financial Services'],
     currency: 'EUR',
-    payment: ['SEPA', 'PayPal', 'Apple Pay'],
+    payment: [
+      'Visa/Mastercard Contactless',
+      'Apple Pay',
+      'Revolut',
+      'Google Pay',
+      'PayPal',
+      'Klarna',
+    ],
     visa: 'Irish visa required',
     tz: 'Europe/Dublin',
     languages: ['en', 'ga'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'ES',
@@ -2813,10 +2917,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'emerging',
     topSectors: ['Tourism & Hospitality', 'Automotive Manufacturing', 'Agri-Food & Wine'],
     currency: 'EUR',
-    payment: ['Bizum', 'SEPA', 'PayPal'],
+    payment: ['Bizum', 'Apple Pay', 'PayPal', 'Google Pay', 'Klarna'],
     visa: 'Schengen visa required',
     tz: 'Europe/Madrid',
     languages: ['es'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'PT',
@@ -2828,10 +2933,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'emerging',
     topSectors: ['Tourism & Hospitality', 'Textiles & Footwear', 'Automotive & Manufacturing'],
     currency: 'EUR',
-    payment: ['MB Way', 'SEPA', 'PayPal'],
+    payment: ['Multibanco', 'MB WAY', 'PayPal', 'Apple Pay', 'Google Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Lisbon',
     languages: ['pt', 'en'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'IT',
@@ -2843,10 +2949,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'emerging',
     topSectors: ['Manufacturing & Machinery', 'Tourism & Hospitality', 'Fashion & Luxury Goods'],
     currency: 'EUR',
-    payment: ['Bancomat', 'SEPA', 'PayPal', 'Satispay'],
+    payment: ['Satispay', 'PostePay', 'PayPal', 'Apple Pay', 'Bancomat Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Rome',
     languages: ['it'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'SE',
@@ -2865,10 +2972,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Mining & Iron Ore',
     ],
     currency: 'SEK',
-    payment: ['Swish', 'Klarna', 'SEPA'],
+    payment: ['Swish', 'Apple Pay', 'Klarna', 'Google Pay', 'PayPal'],
     visa: 'Schengen visa required',
     tz: 'Europe/Stockholm',
     languages: ['sv', 'en'],
+    topFaiths: ['secular', 'christianity'],
   },
   {
     code: 'DK',
@@ -2880,10 +2988,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'emerging',
     topSectors: ['Pharmaceutical & Biotech', 'Shipping & Maritime', 'Wind Energy & Cleantech'],
     currency: 'DKK',
-    payment: ['MobilePay', 'SEPA', 'PayPal'],
+    payment: ['MobilePay', 'Apple Pay', 'Google Pay', 'Klarna', 'Dankort'],
     visa: 'Schengen visa required',
     tz: 'Europe/Copenhagen',
     languages: ['da', 'en'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'NO',
@@ -2901,10 +3010,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Technology & Fintech',
     ],
     currency: 'NOK',
-    payment: ['Vipps', 'SEPA', 'PayPal'],
+    payment: ['Vipps', 'Apple Pay', 'Google Pay', 'Klarna', 'PayPal'],
     visa: 'Schengen visa required',
     tz: 'Europe/Oslo',
     languages: ['no', 'en'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'FI',
@@ -2916,10 +3026,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'emerging',
     topSectors: ['Technology & Telecommunications', 'Forestry & Paper', 'Machinery & Metal'],
     currency: 'EUR',
-    payment: ['MobilePay', 'SEPA', 'PayPal'],
+    payment: ['MobilePay', 'Apple Pay', 'Google Pay', 'PayPal', 'Klarna'],
     visa: 'Schengen visa required',
     tz: 'Europe/Helsinki',
     languages: ['fi', 'sv', 'en'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'PL',
@@ -2938,10 +3049,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Construction & Real Estate',
     ],
     currency: 'PLN',
-    payment: ['BLIK', 'SEPA', 'PayPal'],
+    payment: ['BLIK', 'Apple Pay', 'Google Pay', 'PayPal', 'Klarna'],
     visa: 'Schengen visa required',
     tz: 'Europe/Warsaw',
     languages: ['pl', 'en'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'CZ',
@@ -2953,10 +3065,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'emerging',
     topSectors: ['Automotive Manufacturing', 'Machinery & Engineering', 'IT & Electronics'],
     currency: 'CZK',
-    payment: ['SEPA', 'PayPal', 'Apple Pay'],
+    payment: ['Visa/Mastercard Contactless', 'Apple Pay', 'Google Pay', 'PayPal', 'GoPay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Prague',
     languages: ['cs', 'en'],
+    topFaiths: ['secular', 'christianity'],
   },
   {
     code: 'GR',
@@ -2968,10 +3081,11 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'emerging',
     topSectors: ['Tourism & Hospitality', 'Shipping & Maritime', 'Agriculture & Food'],
     currency: 'EUR',
-    payment: ['SEPA', 'PayPal', 'IRIS'],
+    payment: ['Visa/Mastercard Contactless', 'PayPal', 'Apple Pay', 'Google Pay', 'IRIS'],
     visa: 'Schengen visa required',
     tz: 'Europe/Athens',
     languages: ['el', 'en'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'RO',
@@ -2987,6 +3101,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Schengen visa required',
     tz: 'Europe/Bucharest',
     languages: ['ro'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'HU',
@@ -3006,6 +3121,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Schengen visa required',
     tz: 'Europe/Budapest',
     languages: ['hu'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'LU',
@@ -3021,6 +3137,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Schengen visa required',
     tz: 'Europe/Luxembourg',
     languages: ['lb', 'fr', 'de', 'en'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'TR',
@@ -3043,6 +3160,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Europe/Istanbul',
     languages: ['tr'],
+    topFaiths: ['islam'],
   },
   {
     code: 'RU',
@@ -3056,14 +3174,16 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Oil & Natural Gas Export',
       'Mining & Metals',
       'Defense & Aerospace',
-      'Agriculture & Grain Export',
+      'Cybersecurity & IT',
       'Nuclear Energy & Technology',
+      'Agriculture & Grain Export',
     ],
     currency: 'RUB',
     payment: ['Mir', 'SBPay', 'SberPay'],
     visa: 'Visa required',
     tz: 'Europe/Moscow',
     languages: ['ru'],
+    topFaiths: ['christianity', 'islam', 'secular'],
   },
 
   // ── South Asia (additional) ─────────────────────────────────────────────
@@ -3088,6 +3208,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Asia/Karachi',
     languages: ['ur', 'en'],
+    topFaiths: ['islam'],
   },
   {
     code: 'BD',
@@ -3109,6 +3230,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Dhaka',
     languages: ['bn'],
+    topFaiths: ['islam', 'hinduism'],
   },
   {
     code: 'LK',
@@ -3130,6 +3252,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Asia/Colombo',
     languages: ['si', 'ta'],
+    topFaiths: ['buddhism', 'hinduism', 'islam', 'christianity'],
   },
   {
     code: 'NP',
@@ -3150,6 +3273,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Kathmandu',
     languages: ['ne'],
+    topFaiths: ['hinduism', 'buddhism'],
   },
   {
     code: 'AF',
@@ -3170,6 +3294,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Asia/Kabul',
     languages: ['ps', 'fa'],
+    topFaiths: ['islam'],
   },
 
   // ── Southeast Asia (additional) ─────────────────────────────────────────
@@ -3194,6 +3319,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival (30 days)',
     tz: 'Asia/Jakarta',
     languages: ['id'],
+    topFaiths: ['islam', 'christianity', 'hinduism'],
   },
   {
     code: 'MY',
@@ -3215,6 +3341,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'Asia/Kuala_Lumpur',
     languages: ['ms', 'en'],
+    topFaiths: ['islam', 'buddhism', 'christianity', 'hinduism'],
   },
   {
     code: 'SG',
@@ -3237,6 +3364,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Employment Pass',
     tz: 'Asia/Singapore',
     languages: ['en', 'ms', 'zh', 'ta'],
+    topFaiths: ['buddhism', 'christianity', 'islam', 'hinduism'],
   },
   {
     code: 'PH',
@@ -3259,6 +3387,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (30 days)',
     tz: 'Asia/Manila',
     languages: ['tl', 'en'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'VN',
@@ -3281,6 +3410,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'eVisa available',
     tz: 'Asia/Ho_Chi_Minh',
     languages: ['vi'],
+    topFaiths: ['buddhism', 'christianity', 'secular'],
   },
   {
     code: 'MM',
@@ -3301,6 +3431,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Yangon',
     languages: ['my'],
+    topFaiths: ['buddhism', 'christianity', 'islam'],
   },
   {
     code: 'KH',
@@ -3321,6 +3452,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Phnom_Penh',
     languages: ['km'],
+    topFaiths: ['buddhism'],
   },
   {
     code: 'LA',
@@ -3341,6 +3473,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Vientiane',
     languages: ['lo'],
+    topFaiths: ['buddhism', 'traditional'],
   },
   {
     code: 'BN',
@@ -3360,6 +3493,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Brunei',
     languages: ['ms'],
+    topFaiths: ['islam', 'buddhism'],
   },
   {
     code: 'TL',
@@ -3380,6 +3514,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Dili',
     languages: ['pt', 'tet'],
+    topFaiths: ['christianity'],
   },
 
   // ── East Asia ───────────────────────────────────────────────────────────
@@ -3404,6 +3539,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Asia/Shanghai',
     languages: ['zh'],
+    topFaiths: ['secular', 'buddhism', 'christianity'],
   },
   {
     code: 'JP',
@@ -3432,6 +3568,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Asia/Tokyo',
     languages: ['ja'],
+    topFaiths: ['buddhism', 'secular'],
   },
   {
     code: 'KR',
@@ -3454,6 +3591,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Asia/Seoul',
     languages: ['ko'],
+    topFaiths: ['christianity', 'buddhism', 'secular'],
   },
   {
     code: 'TW',
@@ -3475,6 +3613,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Work permit',
     tz: 'Asia/Taipei',
     languages: ['zh'],
+    topFaiths: ['buddhism', 'christianity'],
   },
   {
     code: 'MN',
@@ -3495,6 +3634,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (30 days)',
     tz: 'Asia/Ulaanbaatar',
     languages: ['mn'],
+    topFaiths: ['buddhism', 'secular'],
   },
 
   // ── Central Asia ────────────────────────────────────────────────────────
@@ -3518,6 +3658,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (30 days)',
     tz: 'Asia/Almaty',
     languages: ['kk', 'ru'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'UZ',
@@ -3539,6 +3680,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (30 days)',
     tz: 'Asia/Tashkent',
     languages: ['uz', 'ru'],
+    topFaiths: ['islam'],
   },
   {
     code: 'KG',
@@ -3559,6 +3701,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (60 days)',
     tz: 'Asia/Bishkek',
     languages: ['ky', 'ru'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'TJ',
@@ -3579,6 +3722,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Dushanbe',
     languages: ['tg', 'ru'],
+    topFaiths: ['islam'],
   },
   {
     code: 'TM',
@@ -3599,6 +3743,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required (LOI)',
     tz: 'Asia/Ashgabat',
     languages: ['tk', 'ru'],
+    topFaiths: ['islam'],
   },
 
   // ── Caucasus ────────────────────────────────────────────────────────────
@@ -3621,6 +3766,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (1 year)',
     tz: 'Asia/Tbilisi',
     languages: ['ka'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'AM',
@@ -3642,6 +3788,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (180 days)',
     tz: 'Asia/Yerevan',
     languages: ['hy'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'AZ',
@@ -3662,6 +3809,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'e-Visa',
     tz: 'Asia/Baku',
     languages: ['az'],
+    topFaiths: ['islam'],
   },
 
   // ── Americas (additional) ───────────────────────────────────────────────
@@ -3692,6 +3840,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'America/Mexico_City',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'BR',
@@ -3714,6 +3863,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'America/Sao_Paulo',
     languages: ['pt'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'AR',
@@ -3736,6 +3886,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Buenos_Aires',
     languages: ['es'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'CO',
@@ -3758,6 +3909,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Bogota',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'CL',
@@ -3779,6 +3931,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Santiago',
     languages: ['es'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'PE',
@@ -3800,6 +3953,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (183 days)',
     tz: 'America/Lima',
     languages: ['es', 'qu'],
+    topFaiths: ['christianity'],
   },
 
   // ── Central America & Caribbean ─────────────────────────────────────────
@@ -3822,6 +3976,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'America/Costa_Rica',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'PA',
@@ -3842,6 +3997,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (180 days)',
     tz: 'America/Panama',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'JM',
@@ -3862,6 +4018,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (6 months)',
     tz: 'America/Jamaica',
     languages: ['en'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'TT',
@@ -3882,6 +4039,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (3 months)',
     tz: 'America/Port_of_Spain',
     languages: ['en'],
+    topFaiths: ['christianity', 'hinduism', 'islam'],
   },
   {
     code: 'HT',
@@ -3902,6 +4060,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free',
     tz: 'America/Port-au-Prince',
     languages: ['fr', 'ht'],
+    topFaiths: ['christianity'],
   },
 
   // ── Oceania (additional) ────────────────────────────────────────────────
@@ -3926,6 +4085,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Skilled Migrant Category',
     tz: 'Pacific/Auckland',
     languages: ['en', 'mi'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'FJ',
@@ -3947,6 +4107,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (4 months)',
     tz: 'Pacific/Fiji',
     languages: ['en', 'fj', 'hi'],
+    topFaiths: ['christianity', 'hinduism', 'islam'],
   },
   {
     code: 'PG',
@@ -3967,6 +4128,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Pacific/Port_Moresby',
     languages: ['en'],
+    topFaiths: ['christianity', 'traditional'],
   },
   {
     code: 'WS',
@@ -3987,6 +4149,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (60 days)',
     tz: 'Pacific/Apia',
     languages: ['sm', 'en'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'TO',
@@ -4007,6 +4170,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Pacific/Tongatapu',
     languages: ['to', 'en'],
+    topFaiths: ['christianity'],
   },
 
   // ── Europe (missing countries) ──────────────────────────────────────────
@@ -4029,6 +4193,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Europe/Tirane',
     languages: ['sq'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'BA',
@@ -4049,6 +4214,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Europe/Sarajevo',
     languages: ['bs', 'hr', 'sr'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'BG',
@@ -4069,6 +4235,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Work permit',
     tz: 'Europe/Sofia',
     languages: ['bg'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'BY',
@@ -4089,6 +4256,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Europe/Minsk',
     languages: ['be', 'ru'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'CY',
@@ -4109,6 +4277,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Work permit',
     tz: 'Asia/Nicosia',
     languages: ['el', 'tr', 'en'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'EE',
@@ -4129,6 +4298,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EU Blue Card',
     tz: 'Europe/Tallinn',
     languages: ['et', 'en'],
+    topFaiths: ['secular', 'christianity'],
   },
   {
     code: 'HR',
@@ -4149,6 +4319,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Work permit / EU Blue Card',
     tz: 'Europe/Zagreb',
     languages: ['hr', 'en'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'IS',
@@ -4169,6 +4340,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Work permit',
     tz: 'Atlantic/Reykjavik',
     languages: ['is'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'LT',
@@ -4189,6 +4361,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EU Blue Card',
     tz: 'Europe/Vilnius',
     languages: ['lt', 'en'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'LV',
@@ -4209,6 +4382,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EU Blue Card',
     tz: 'Europe/Riga',
     languages: ['lv', 'en'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'MD',
@@ -4229,6 +4403,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Europe/Chisinau',
     languages: ['ro'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'ME',
@@ -4249,6 +4424,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Europe/Podgorica',
     languages: ['sr'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'MK',
@@ -4269,6 +4445,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Europe/Skopje',
     languages: ['mk', 'sq'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'RS',
@@ -4289,6 +4466,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Europe/Belgrade',
     languages: ['sr'],
+    topFaiths: ['christianity', 'islam'],
   },
   {
     code: 'SI',
@@ -4309,6 +4487,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EU Blue Card',
     tz: 'Europe/Ljubljana',
     languages: ['sl', 'en'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'SK',
@@ -4329,6 +4508,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EU Blue Card',
     tz: 'Europe/Bratislava',
     languages: ['sk', 'en'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'UA',
@@ -4349,6 +4529,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'Europe/Kyiv',
     languages: ['uk'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'XK',
@@ -4369,6 +4550,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Europe/Belgrade',
     languages: ['sq', 'sr'],
+    topFaiths: ['islam', 'christianity'],
   },
 
   // ── Middle East (missing countries) ─────────────────────────────────────
@@ -4392,6 +4574,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Asia/Tehran',
     languages: ['fa'],
+    topFaiths: ['islam'],
   },
   {
     code: 'PS',
@@ -4411,6 +4594,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Asia/Hebron',
     languages: ['ar'],
+    topFaiths: ['islam', 'christianity'],
   },
   {
     code: 'SY',
@@ -4430,6 +4614,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Asia/Damascus',
     languages: ['ar'],
+    topFaiths: ['islam', 'christianity'],
   },
 
   // ── North Africa (missing countries) ────────────────────────────────────
@@ -4447,6 +4632,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Africa/El_Aaiun',
     languages: ['ar', 'fr'],
+    topFaiths: ['islam'],
   },
 
   // ── South Asia (missing countries) ──────────────────────────────────────
@@ -4468,6 +4654,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Asia/Thimphu',
     languages: ['dz'],
+    topFaiths: ['buddhism', 'hinduism'],
   },
 
   // ── East Asia (missing countries) ───────────────────────────────────────
@@ -4485,6 +4672,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Asia/Pyongyang',
     languages: ['ko'],
+    topFaiths: ['secular'],
   },
 
   // ── South America (missing countries) ───────────────────────────────────
@@ -4507,6 +4695,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/La_Paz',
     languages: ['es', 'qu', 'ay'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'EC',
@@ -4527,6 +4716,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Guayaquil',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'GY',
@@ -4542,6 +4732,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Guyana',
     languages: ['en'],
+    topFaiths: ['christianity', 'hinduism', 'islam'],
   },
   {
     code: 'PY',
@@ -4562,6 +4753,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Asuncion',
     languages: ['es', 'gn'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'SR',
@@ -4582,6 +4774,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'America/Paramaribo',
     languages: ['nl', 'en'],
+    topFaiths: ['christianity', 'hinduism', 'islam'],
   },
   {
     code: 'UY',
@@ -4603,6 +4796,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Montevideo',
     languages: ['es'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'VE',
@@ -4623,6 +4817,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Caracas',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'FK',
@@ -4638,6 +4833,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'Atlantic/Stanley',
     languages: ['en'],
+    topFaiths: ['christianity'],
   },
 
   // ── Central America & Caribbean (missing countries) ─────────────────────
@@ -4655,6 +4851,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Nassau',
     languages: ['en'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'BZ',
@@ -4675,6 +4872,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (30 days)',
     tz: 'America/Belize',
     languages: ['en', 'es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'CU',
@@ -4695,6 +4893,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Tourist card required',
     tz: 'America/Havana',
     languages: ['es'],
+    topFaiths: ['christianity', 'secular'],
   },
   {
     code: 'DO',
@@ -4716,6 +4915,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Santo_Domingo',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'GT',
@@ -4736,6 +4936,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Guatemala',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'HN',
@@ -4756,6 +4957,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (90 days)',
     tz: 'America/Tegucigalpa',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'NI',
@@ -4776,6 +4978,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'America/Managua',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'PR',
@@ -4795,6 +4998,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'US visa required',
     tz: 'America/Puerto_Rico',
     languages: ['es', 'en'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'SV',
@@ -4815,6 +5019,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa required',
     tz: 'America/El_Salvador',
     languages: ['es'],
+    topFaiths: ['christianity'],
   },
 
   // ── Americas (missing countries) ────────────────────────────────────────
@@ -4832,6 +5037,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Schengen visa',
     tz: 'America/Nuuk',
     languages: ['kl', 'da'],
+    topFaiths: ['christianity', 'secular'],
   },
 
   // ── Oceania (missing countries) ─────────────────────────────────────────
@@ -4854,6 +5060,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'French visa',
     tz: 'Pacific/Noumea',
     languages: ['fr'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'SB',
@@ -4874,6 +5081,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa on arrival',
     tz: 'Pacific/Guadalcanal',
     languages: ['en'],
+    topFaiths: ['christianity'],
   },
   {
     code: 'TF',
@@ -4893,6 +5101,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Special permit required',
     tz: 'Indian/Kerguelen',
     languages: ['fr'],
+    topFaiths: ['secular'],
   },
   {
     code: 'VU',
@@ -4913,6 +5122,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'Visa free (30 days)',
     tz: 'Pacific/Efate',
     languages: ['en', 'fr', 'bi'],
+    topFaiths: ['christianity'],
   },
 ]
 
