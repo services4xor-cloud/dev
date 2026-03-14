@@ -145,6 +145,82 @@ describe('POST /api/map/filter', () => {
     expect(codes).toContain('TZ')
   })
 
+  test('searchAliases: "suaheli" (German for Swahili) matches KE/TZ', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'language', nodeCode: 'suaheli' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    const codes = data.countries.map((c: { code: string }) => c.code)
+    expect(codes).toContain('KE')
+    expect(codes).toContain('TZ')
+  })
+
+  test('searchAliases: "allemand" (French for German) matches DE/AT/CH', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'language', nodeCode: 'allemand' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    const codes = data.countries.map((c: { code: string }) => c.code)
+    expect(codes).toContain('DE')
+    expect(codes).toContain('AT')
+    expect(codes).toContain('CH')
+  })
+
+  test('English filter includes Germany (widely spoken)', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'language', nodeCode: 'en' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    const codes = data.countries.map((c: { code: string }) => c.code)
+    expect(codes).toContain('DE') // Germany — high English proficiency
+    expect(codes).toContain('SE') // Sweden — very high English proficiency
+    expect(codes).toContain('NL') // Netherlands — very high English proficiency
+    expect(codes).not.toContain('JP') // Japan — low English proficiency
+  })
+
+  test('suggestions: "sw" returns Swahili suggestion with country count', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'language', nodeCode: 'sw' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    expect(data.suggestions).toBeDefined()
+    expect(data.suggestions.length).toBeGreaterThanOrEqual(1)
+    const swahiliSuggestion = data.suggestions.find((s: { code: string }) => s.code === 'sw')
+    expect(swahiliSuggestion).toBeDefined()
+    expect(swahiliSuggestion.name).toBe('Swahili')
+    expect(swahiliSuggestion.countryCount).toBeGreaterThanOrEqual(3)
+  })
+
+  test('suggestions: "sw" returns both Swahili and Swedish', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'language', nodeCode: 'sw' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    const names = data.suggestions.map((s: { name: string }) => s.name)
+    expect(names).toContain('Swahili')
+    expect(names).toContain('Swedish') // "sw" matches "Swedish" substring
+  })
+
+  test('suggestions: sector filter returns matched sector names', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'sector', nodeCode: 'tourism' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    expect(data.suggestions.length).toBeGreaterThanOrEqual(1)
+    // All suggestions should contain "tourism" (case-insensitive)
+    for (const s of data.suggestions) {
+      expect((s as { name: string }).name.toLowerCase()).toContain('tourism')
+    }
+  })
+
+  test('empty filters returns empty suggestions', async () => {
+    const req = makeRequest({ filters: [] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    expect(data.suggestions).toEqual([])
+  })
+
   test('response shape matches MapCountry interface', async () => {
     const req = makeRequest({ filters: [{ dimension: 'language', nodeCode: 'en' }] })
     const res = await POST(req)

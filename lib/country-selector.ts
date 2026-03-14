@@ -156,6 +156,8 @@ export interface Language {
   code: LanguageCode
   name: string
   nativeName: string
+  /** Alternate names / translations for search (e.g. "Suaheli", "Allemand") */
+  searchAliases?: string[]
   /** Countries where this language is widely spoken (ISO codes) */
   countries: string[]
   /** Digital communication relevance (how common online / in tech) */
@@ -169,6 +171,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'en',
     name: 'English',
     nativeName: 'English',
+    searchAliases: ['Englisch', 'Anglais', 'Inglés', 'Inglese', 'Inglês'],
     countries: [
       'KE',
       'UG',
@@ -213,6 +216,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'de',
     name: 'German',
     nativeName: 'Deutsch',
+    searchAliases: ['Allemand', 'Alemán', 'Tedesco', 'Alemão', 'Kijerumani'],
     countries: ['DE', 'CH', 'AT', 'LI', 'LU', 'BE'],
     digitalReach: 'regional',
   },
@@ -220,6 +224,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'fr',
     name: 'French',
     nativeName: 'Français',
+    searchAliases: ['Französisch', 'Francés', 'Francese', 'Francês', 'Kifaransa'],
     countries: [
       'FR',
       'CA',
@@ -251,6 +256,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'sw',
     name: 'Swahili',
     nativeName: 'Kiswahili',
+    searchAliases: ['Suaheli', 'Swahéli', 'Suajili', 'Suaíli'],
     countries: ['KE', 'TZ', 'UG', 'RW', 'CD', 'MZ'],
     digitalReach: 'regional',
   },
@@ -259,6 +265,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'es',
     name: 'Spanish',
     nativeName: 'Español',
+    searchAliases: ['Spanisch', 'Espagnol', 'Spagnolo', 'Kihispania', 'Castellano'],
     countries: [
       'ES',
       'MX',
@@ -287,6 +294,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'pt',
     name: 'Portuguese',
     nativeName: 'Português',
+    searchAliases: ['Portugiesisch', 'Portugais', 'Portoghese', 'Kireno'],
     countries: ['BR', 'PT', 'AO', 'MZ', 'GW', 'CV', 'ST', 'TL'],
     digitalReach: 'global',
   },
@@ -294,6 +302,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'ar',
     name: 'Arabic',
     nativeName: 'العربية',
+    searchAliases: ['Arabisch', 'Arabe', 'Árabe', 'Arabo', 'Kiarabu'],
     countries: [
       'AE',
       'SA',
@@ -324,6 +333,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'hi',
     name: 'Hindi',
     nativeName: 'हिन्दी',
+    searchAliases: ['Hindisch', 'Hindou', 'Hindú', 'Kihindi'],
     countries: ['IN', 'FJ', 'MU', 'NP'],
     digitalReach: 'regional',
   },
@@ -331,6 +341,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'zh',
     name: 'Chinese',
     nativeName: '中文',
+    searchAliases: ['Chinesisch', 'Chinois', 'Chino', 'Cinese', 'Kichina', 'Mandarin'],
     countries: ['CN', 'TW', 'SG', 'MY'],
     digitalReach: 'global',
   },
@@ -338,6 +349,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'ja',
     name: 'Japanese',
     nativeName: '日本語',
+    searchAliases: ['Japanisch', 'Japonais', 'Japonés', 'Giapponese', 'Kijapani'],
     countries: ['JP'],
     digitalReach: 'regional',
   },
@@ -359,6 +371,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'ru',
     name: 'Russian',
     nativeName: 'Русский',
+    searchAliases: ['Russisch', 'Russe', 'Ruso', 'Russo', 'Kirusi'],
     countries: ['RU', 'BY', 'KZ', 'KG'],
     digitalReach: 'regional',
   },
@@ -374,6 +387,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'nl',
     name: 'Dutch',
     nativeName: 'Nederlands',
+    searchAliases: ['Niederländisch', 'Holländisch', 'Néerlandais', 'Holandés', 'Olandese'],
     countries: ['NL', 'BE', 'SR', 'ZA'],
     digitalReach: 'regional',
   },
@@ -381,6 +395,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'it',
     name: 'Italian',
     nativeName: 'Italiano',
+    searchAliases: ['Italienisch', 'Italien', 'Italiano', 'Kiitaliano'],
     countries: ['IT', 'CH', 'SM', 'VA'],
     digitalReach: 'regional',
   },
@@ -1376,7 +1391,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Apple Pay', 'Samsung Pay', 'Bank Transfer', 'Wise'],
     visa: 'Employment visa via employer',
     tz: 'Asia/Dubai',
-    languages: ['ar'],
+    languages: ['ar', 'en'],
   },
   // ── Europe ───────────────────────────────────────────────────────────────
   {
@@ -1396,10 +1411,10 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Insurance & Financial Services',
     ],
     currency: 'EUR',
-    payment: ['SEPA', 'PayPal', 'Klarna', 'Wero'],
+    payment: ['SEPA', 'PayPal', 'Klarna', 'Apple Pay', 'Google Pay', 'Wero'],
     visa: 'Schengen visa required',
     tz: 'Europe/Berlin',
-    languages: ['de'],
+    languages: ['de', 'en'],
   },
   {
     code: 'CH',
@@ -1418,10 +1433,10 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Tourism & Hospitality',
     ],
     currency: 'CHF',
-    payment: ['TWINT', 'SEPA', 'PayPal'],
+    payment: ['TWINT', 'SEPA', 'PayPal', 'Apple Pay', 'Google Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Zurich',
-    languages: ['de', 'fr', 'it', 'rm'],
+    languages: ['de', 'fr', 'it', 'rm', 'en'],
   },
   {
     code: 'GB',
@@ -1462,10 +1477,10 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Water Management & Engineering',
     ],
     currency: 'EUR',
-    payment: ['iDEAL', 'SEPA', 'PayPal', 'Klarna'],
+    payment: ['iDEAL', 'SEPA', 'PayPal', 'Klarna', 'Apple Pay', 'Google Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Amsterdam',
-    languages: ['nl'],
+    languages: ['nl', 'en'],
   },
   {
     code: 'FR',
@@ -1484,7 +1499,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Tourism & Hospitality',
     ],
     currency: 'EUR',
-    payment: ['Carte Bancaire', 'SEPA', 'PayPal'],
+    payment: ['Carte Bancaire', 'SEPA', 'PayPal', 'Apple Pay', 'Google Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Paris',
     languages: ['fr'],
@@ -2523,7 +2538,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer'],
     visa: 'Visa on arrival',
     tz: 'Asia/Qatar',
-    languages: ['ar'],
+    languages: ['ar', 'en'],
   },
   {
     code: 'KW',
@@ -2543,7 +2558,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer', 'KNET'],
     visa: 'Work visa via employer',
     tz: 'Asia/Kuwait',
-    languages: ['ar'],
+    languages: ['ar', 'en'],
   },
   {
     code: 'OM',
@@ -2584,7 +2599,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer', 'BenefitPay'],
     visa: 'e-Visa',
     tz: 'Asia/Bahrain',
-    languages: ['ar'],
+    languages: ['ar', 'en'],
   },
   {
     code: 'JO',
@@ -2687,7 +2702,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bit', 'PayBox', 'Apple Pay', 'Bank Transfer'],
     visa: 'Work visa required',
     tz: 'Asia/Jerusalem',
-    languages: ['he', 'ar'],
+    languages: ['he', 'ar', 'en'],
   },
 
   // ── Europe (additional) ─────────────────────────────────────────────────
@@ -2704,7 +2719,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['EPS', 'SEPA', 'PayPal', 'Klarna'],
     visa: 'Schengen visa required',
     tz: 'Europe/Vienna',
-    languages: ['de'],
+    languages: ['de', 'en'],
   },
   {
     code: 'BE',
@@ -2719,7 +2734,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bancontact', 'SEPA', 'PayPal'],
     visa: 'Schengen visa required',
     tz: 'Europe/Brussels',
-    languages: ['nl', 'fr', 'de'],
+    languages: ['nl', 'fr', 'de', 'en'],
   },
   {
     code: 'IE',
@@ -2764,7 +2779,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['MB Way', 'SEPA', 'PayPal'],
     visa: 'Schengen visa required',
     tz: 'Europe/Lisbon',
-    languages: ['pt'],
+    languages: ['pt', 'en'],
   },
   {
     code: 'IT',
@@ -2801,7 +2816,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Swish', 'Klarna', 'SEPA'],
     visa: 'Schengen visa required',
     tz: 'Europe/Stockholm',
-    languages: ['sv'],
+    languages: ['sv', 'en'],
   },
   {
     code: 'DK',
@@ -2816,7 +2831,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['MobilePay', 'SEPA', 'PayPal'],
     visa: 'Schengen visa required',
     tz: 'Europe/Copenhagen',
-    languages: ['da'],
+    languages: ['da', 'en'],
   },
   {
     code: 'NO',
@@ -2837,7 +2852,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Vipps', 'SEPA', 'PayPal'],
     visa: 'Schengen visa required',
     tz: 'Europe/Oslo',
-    languages: ['no'],
+    languages: ['no', 'en'],
   },
   {
     code: 'FI',
@@ -2852,7 +2867,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['MobilePay', 'SEPA', 'PayPal'],
     visa: 'Schengen visa required',
     tz: 'Europe/Helsinki',
-    languages: ['fi', 'sv'],
+    languages: ['fi', 'sv', 'en'],
   },
   {
     code: 'PL',
@@ -2874,7 +2889,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['BLIK', 'SEPA', 'PayPal'],
     visa: 'Schengen visa required',
     tz: 'Europe/Warsaw',
-    languages: ['pl'],
+    languages: ['pl', 'en'],
   },
   {
     code: 'CZ',
@@ -2889,7 +2904,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal', 'Apple Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Prague',
-    languages: ['cs'],
+    languages: ['cs', 'en'],
   },
   {
     code: 'GR',
@@ -2904,7 +2919,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal', 'IRIS'],
     visa: 'Schengen visa required',
     tz: 'Europe/Athens',
-    languages: ['el'],
+    languages: ['el', 'en'],
   },
   {
     code: 'RO',
@@ -2919,7 +2934,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal', 'Apple Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Bucharest',
-    languages: ['ro'],
+    languages: ['ro', 'en'],
   },
   {
     code: 'HU',
@@ -2938,7 +2953,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal', 'Apple Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Budapest',
-    languages: ['hu'],
+    languages: ['hu', 'en'],
   },
   {
     code: 'LU',
@@ -2953,7 +2968,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Payconiq', 'SEPA', 'PayPal'],
     visa: 'Schengen visa required',
     tz: 'Europe/Luxembourg',
-    languages: ['lb', 'fr', 'de'],
+    languages: ['lb', 'fr', 'de', 'en'],
   },
   {
     code: 'TR',
@@ -3147,7 +3162,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ["Touch 'n Go", 'GrabPay', 'DuitNow'],
     visa: 'Visa free',
     tz: 'Asia/Kuala_Lumpur',
-    languages: ['ms'],
+    languages: ['ms', 'en'],
   },
   {
     code: 'SG',
@@ -3989,7 +4004,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'Bank Transfer'],
     visa: 'Work permit',
     tz: 'Europe/Sofia',
-    languages: ['bg'],
+    languages: ['bg', 'en'],
   },
   {
     code: 'BY',
@@ -4029,7 +4044,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal', 'Bank Transfer'],
     visa: 'Work permit',
     tz: 'Asia/Nicosia',
-    languages: ['el', 'tr'],
+    languages: ['el', 'tr', 'en'],
   },
   {
     code: 'EE',
@@ -4049,7 +4064,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal'],
     visa: 'EU Blue Card',
     tz: 'Europe/Tallinn',
-    languages: ['et'],
+    languages: ['et', 'en'],
   },
   {
     code: 'HR',
@@ -4069,7 +4084,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal'],
     visa: 'Work permit / EU Blue Card',
     tz: 'Europe/Zagreb',
-    languages: ['hr'],
+    languages: ['hr', 'en'],
   },
   {
     code: 'IS',
@@ -4109,7 +4124,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal'],
     visa: 'EU Blue Card',
     tz: 'Europe/Vilnius',
-    languages: ['lt'],
+    languages: ['lt', 'en'],
   },
   {
     code: 'LV',
@@ -4129,7 +4144,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal'],
     visa: 'EU Blue Card',
     tz: 'Europe/Riga',
-    languages: ['lv'],
+    languages: ['lv', 'en'],
   },
   {
     code: 'MD',
@@ -4229,7 +4244,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal'],
     visa: 'EU Blue Card',
     tz: 'Europe/Ljubljana',
-    languages: ['sl'],
+    languages: ['sl', 'en'],
   },
   {
     code: 'SK',
@@ -4249,7 +4264,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal'],
     visa: 'EU Blue Card',
     tz: 'Europe/Bratislava',
-    languages: ['sk'],
+    languages: ['sk', 'en'],
   },
   {
     code: 'UA',
@@ -4502,7 +4517,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer'],
     visa: 'Visa required',
     tz: 'America/Paramaribo',
-    languages: ['nl'],
+    languages: ['nl', 'en'],
   },
   {
     code: 'UY',

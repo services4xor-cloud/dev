@@ -19,6 +19,7 @@ async function main() {
   // Phase 2: Edges
   await seedCountryLanguageEdges()
   await seedCountryCurrencyEdges()
+  await seedCountrySectorEdges()
 
   console.log('✅ Seed complete')
 }
@@ -89,8 +90,18 @@ async function seedCurrencies() {
 }
 
 async function seedSectors() {
-  // Extract all unique sectors from EXPLORER_TYPES
+  // Extract all unique sectors from COUNTRY_OPTIONS (enriched, specific)
+  // + EXPLORER_TYPES (for any extras not in country data)
   const sectors = new Set<string>()
+
+  // Primary source: enriched country topSectors
+  for (const country of COUNTRY_OPTIONS) {
+    for (const sector of country.topSectors) {
+      sectors.add(sector)
+    }
+  }
+
+  // Secondary source: EXPLORER_TYPES (catch any not in topSectors)
   for (const explorerType of Object.values(EXPLORER_TYPES)) {
     for (const sector of explorerType.sectors) {
       sectors.add(sector)
@@ -228,6 +239,45 @@ async function seedCountryCurrencyEdges() {
   }
 
   console.log(`    Created ${count} COUNTRY_CURRENCY edges`)
+}
+
+async function seedCountrySectorEdges() {
+  console.log('  🔗 Seeding HAS_SECTOR edges...')
+  let count = 0
+
+  for (const country of COUNTRY_OPTIONS) {
+    const countryNode = await prisma.node.findUnique({
+      where: { type_code: { type: 'COUNTRY', code: country.code } },
+    })
+    if (!countryNode) continue
+
+    for (const sector of country.topSectors) {
+      const sectorCode = sector.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+      const sectorNode = await prisma.node.findUnique({
+        where: { type_code: { type: 'SECTOR', code: sectorCode } },
+      })
+      if (!sectorNode) continue
+
+      await prisma.edge.upsert({
+        where: {
+          fromId_toId_relation: {
+            fromId: countryNode.id,
+            toId: sectorNode.id,
+            relation: 'HAS_SECTOR',
+          },
+        },
+        create: {
+          fromId: countryNode.id,
+          toId: sectorNode.id,
+          relation: 'HAS_SECTOR',
+        },
+        update: {},
+      })
+      count++
+    }
+  }
+
+  console.log(`    Created ${count} HAS_SECTOR edges`)
 }
 
 main()
