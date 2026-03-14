@@ -1,18 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { filterCountries } from '@/lib/graph'
-import type { NodeType, EdgeRelation } from '@prisma/client'
-
-const DIMENSION_TO_EDGE: Record<string, { nodeType: NodeType; relation: EdgeRelation }> = {
-  language: { nodeType: 'LANGUAGE', relation: 'OFFICIAL_LANG' },
-  faith: { nodeType: 'FAITH', relation: 'DOMINANT_FAITH' },
-  sector: { nodeType: 'SECTOR', relation: 'HAS_SECTOR' },
-  currency: { nodeType: 'CURRENCY', relation: 'COUNTRY_CURRENCY' },
-  location: { nodeType: 'LOCATION', relation: 'PARENT_OF' },
-  // culture filter deferred — no COUNTRY→CULTURE edge yet
-}
+import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
+import type { DimensionFilter } from '@/types/domain'
 
 const MAX_FILTERS = 10
 
+/**
+ * Filter countries by dimension values using COUNTRY_OPTIONS static data.
+ *
+ * Supports: language (code or name), sector (substring), currency (exact code),
+ * faith (deferred), location (deferred), culture (deferred).
+ */
 export async function POST(req: NextRequest) {
   let body: unknown
   try {
@@ -29,33 +26,92 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const graphFilters = filters
+  // Parse and validate filters
+  const parsed: DimensionFilter[] = filters
     .map((f: unknown) => {
       const filter = f as { dimension?: string; nodeCode?: string }
       if (!filter?.dimension || !filter?.nodeCode) return null
-      const mapping = DIMENSION_TO_EDGE[filter.dimension]
-      if (!mapping) return null
       return {
-        dimensionType: mapping.nodeType,
-        dimensionCode: String(filter.nodeCode),
-        relation: mapping.relation,
+        dimension: filter.dimension as DimensionFilter['dimension'],
+        nodeCode: String(filter.nodeCode).toLowerCase().trim(),
       }
     })
-    .filter(
-      (f): f is { dimensionType: NodeType; dimensionCode: string; relation: EdgeRelation } =>
-        f !== null
-    )
+    .filter((f): f is DimensionFilter => f !== null)
 
-  const countries = await filterCountries(graphFilters)
+  // No valid filters → return all active countries
+  if (parsed.length === 0) {
+    return NextResponse.json({ countries: [], totalMatches: 0 })
+  }
+
+  // Apply each filter, then intersect results
+  const matchSets = parsed.map((f) => filterByDimension(f))
+
+  // Intersect: country must match ALL filters
+  const intersection = matchSets.reduce((acc, set) => {
+    const codes = new Set(set.map((c) => c.code))
+    return acc.filter((c) => codes.has(c.code))
+  }, matchSets[0] ?? [])
 
   return NextResponse.json({
-    countries: countries.map((c) => ({
+    countries: intersection.map((c) => ({
       code: c.code,
-      name: c.label,
+      name: c.name,
       lat: c.lat,
       lng: c.lng,
       matchStrength: 1.0,
     })),
-    totalMatches: countries.length,
+    totalMatches: intersection.length,
   })
+}
+
+/**
+ * Filter COUNTRY_OPTIONS by a single dimension.
+ */
+function filterByDimension(filter: DimensionFilter) {
+  const { dimension, nodeCode } = filter
+
+  switch (dimension) {
+    case 'language':
+      return COUNTRY_OPTIONS.filter((c) => {
+        // Match by language code (exact)
+        if (c.languages.some((lc) => lc.toLowerCase() === nodeCode)) return true
+        // Match by language name (case-insensitive substring)
+        return c.languages.some((lc) => {
+          const lang = LANGUAGE_REGISTRY[lc as LanguageCode]
+          if (!lang) return false
+          return (
+            lang.name.toLowerCase().includes(nodeCode) ||
+            (lang.nativeName?.toLowerCase().includes(nodeCode) ?? false)
+          )
+        })
+      })
+
+    case 'sector':
+      return COUNTRY_OPTIONS.filter((c) =>
+        c.topSectors.some((s) => s.toLowerCase().includes(nodeCode))
+      )
+
+    case 'currency':
+      return COUNTRY_OPTIONS.filter((c) => c.currency.toLowerCase() === nodeCode)
+
+    case 'faith':
+      // Faith data not yet in COUNTRY_OPTIONS — return empty for now
+      return []
+
+    case 'location':
+      // Match by region name or country name (normalize hyphens/spaces)
+      return COUNTRY_OPTIONS.filter((c) => {
+        const region = c.region.toLowerCase().replace(/-/g, ' ')
+        const name = c.name.toLowerCase()
+        const query = nodeCode.replace(/-/g, ' ')
+        return region.includes(query) || name.includes(query)
+      })
+
+    case 'culture':
+      // Culture data not yet in COUNTRY_OPTIONS — return empty for now
+      return []
+
+    default:
+      return []
+  }
 }
