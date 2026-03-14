@@ -16,7 +16,7 @@
 | Core Routes       | 12: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery`                                                                                                                                                               |
 | API routes        | 14: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` |
 | Library modules   | 16+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, identity-context.tsx, etc.)                                                                                                                                                                                                             |
-| Jest tests        | 132/132 ✅ (13 suites)                                                                                                                                                                                                                                                                                 |
+| Jest tests        | 176/176 ✅ (15 suites)                                                                                                                                                                                                                                                                                 |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                      |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                    |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                |
@@ -94,6 +94,24 @@
 - **Explorer detail** (`/explorers/[id]`) — Server component, dimension cards, send message link
 - **Explorer API detail** (`/api/explorers/[id]`) — Returns explorer with grouped dimensions
 - **34 new tests** — Discovery (15), Referral (13), Notifications (6), Explorers detail (9), Admin (4)
+
+### Host Dashboard + Payments
+
+- **Host dashboard** (`/host`) — Stats cards, opportunities list, recent payments (HOST/ADMIN gated)
+- **Host stats API** (`/api/host/stats`) — Offer edges + payment summary
+- **Payment history** (`/payments`) — Responsive table/cards with status badges
+- **Privacy page** (`/privacy`) — Be[X]-tailored privacy policy
+
+### Map + Content Pages
+
+- **Map tooltips** — Country name pill follows cursor on hover
+- **Contact page** (`/contact`) — Email, location, platform info
+- **Pricing page** (`/pricing`) — 3 tiers (Explorer free, Host/Enterprise coming soon)
+
+### Test Coverage Expansion
+
+- Messages API (28), Onboarding (16), Identity edges (24), Host stats (7)
+- Total: 176 tests, 15 suites
 
 ---
 
