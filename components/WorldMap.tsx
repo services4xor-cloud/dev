@@ -6,7 +6,7 @@ import type { MapCountry } from '@/types/domain'
 
 interface WorldMapProps {
   countries: MapCountry[]
-  onCountryClick: (code: string) => void
+  onCountryClick: (code: string | null) => void
   selectedCountry?: string | null
 }
 
@@ -36,6 +36,9 @@ export default function WorldMap({ countries, onCountryClick, selectedCountry }:
       const features = e.features
       if (features?.[0]?.properties?.ISO_A2) {
         onCountryClick(features[0].properties.ISO_A2)
+      } else {
+        // Clicked water / empty area → deselect
+        onCountryClick(null)
       }
     },
     [onCountryClick]
