@@ -8,30 +8,46 @@
 
 ## Current State
 
-| Metric            | Value                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------ |
-| Phase             | 5 (Be[X] v2 — Graph-Powered Rebuild)                                                 |
-| Branch            | `main` (direct push)                                                                 |
-| Deploy            | Vercel auto on push                                                                  |
-| Core Routes       | 7: `/` `/me` `/agent` `/onboarding` `/be/[code]` `/exchange/[id]` `/login` `/signup` |
-| API routes        | 5: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/onboarding` |
-| Library modules   | 15+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, identity-context.tsx, etc.)     |
-| Jest tests        | 32/32 ✅ (5 suites)                                                                  |
-| TypeScript errors | 0                                                                                    |
-| Build             | ✅ passes (13 routes)                                                                |
-| Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment              |
-| Map               | Fullscreen MapLibre GL JS + 177 countries GeoJSON + dimension filters                |
-| AI Agents         | Claude API (claude-sonnet-4-20250514) with graph-powered personas                    |
-| Vocabulary        | v2: Explorer/Host/Opportunity/Exchange/Experience/Discovery/Hub/Corridor             |
-| Legacy terms      | 0 — zero Pioneer/Anchor/Venture/Compass in lib/, app/, components/, types/           |
-| Countries         | 120+ in seed (Node type COUNTRY) + 100+ languages, 8 faiths, ~50 currencies          |
-| Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)             |
-| DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat) |
-| Auth              | ✅ NextAuth v4 — Google OAuth, EXPLORER/HOST/AGENT/ADMIN roles                       |
+| Metric            | Value                                                                                                                                                                |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phase             | 5 (Be[X] v2 — Graph-Powered Rebuild)                                                                                                                                 |
+| Branch            | `main` (direct push)                                                                                                                                                 |
+| Deploy            | Vercel auto on push                                                                                                                                                  |
+| Core Routes       | 10: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup`                                                   |
+| API routes        | 8: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` |
+| Library modules   | 15+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, identity-context.tsx, etc.)                                                                                     |
+| Jest tests        | 33/33 ✅ (5 suites)                                                                                                                                                  |
+| TypeScript errors | 0                                                                                                                                                                    |
+| Build             | ✅ passes (20 routes)                                                                                                                                                |
+| Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                              |
+| Map               | Fullscreen MapLibre GL JS + 177 countries GeoJSON + dimension filters                                                                                                |
+| AI Agents         | Claude API (claude-sonnet-4-20250514) with graph-powered personas                                                                                                    |
+| Vocabulary        | v2: Explorer/Host/Opportunity/Exchange/Experience/Discovery/Hub/Corridor                                                                                             |
+| Legacy terms      | 0 — zero Pioneer/Anchor/Venture/Compass in lib/, app/, components/, types/                                                                                           |
+| Countries         | 120+ in seed (Node type COUNTRY) + 100+ languages, 8 faiths, ~50 currencies                                                                                          |
+| Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                             |
+| DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                 |
+| Auth              | ✅ NextAuth v4 — Google OAuth, EXPLORER/HOST/AGENT/ADMIN roles                                                                                                       |
 
 ---
 
-## 🔥 Session 68: Be[X] v2 Complete Rebuild
+## 🔥 Session 68: Be[X] v2 Complete Rebuild + Phase 5
+
+### Phase 5: Exchange & Connect
+
+- **Opportunity posting** (`/opportunities`) — Hosts create EXPERIENCE nodes + OFFERS edges. Card grid, inline form, role-gated (HOST/ADMIN only). Input validation, string caps.
+- **Messaging** (`/messages`) — Split-panel DM UI. Find-or-create conversations, message bubbles, 5s polling, mark-as-read. APIs: GET/POST `/api/messages`, GET `/api/messages/[id]`.
+- **Country API** (`/api/country/[code]`) — Graph-powered country data for CountryPanel.
+
+### Review & Security Fixes
+
+- **IDOR fix** — Agent chat verifies conversation ownership before loading history
+- **Input validation** — All mutation APIs validate JSON, cap arrays/strings
+- **Navigation** — Top nav bar (Agent, Opportunities, Messages, Me, Sign out), back links on all pages
+- **Working filters** — DimensionFilters interactive: click pill → input → apply → API → map update
+- **CountryPanel** — Fetches real graph data (languages, currencies, region), links to /be/[code]
+- **Onboarding UX** — Removable chips, back button, error display, res.ok check
+- **AgentChat** — Checks res.ok, no raw error strings shown to user
 
 ### Architecture (Chunk 1 — Foundation)
 
