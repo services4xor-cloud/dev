@@ -4,9 +4,9 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { DimensionFilter } from '@/types/domain'
 
 /**
- * Curated dimension selector — 6 tabs with data-backed options.
- * Every option is pre-computed from COUNTRY_OPTIONS, sorted by country count.
- * Tap an option → map lights up. 100% reliable, no typing needed.
+ * Curated dimension selector — 5 tabs with data-backed options.
+ * Multi-select within and across dimensions. More matches = more intense glow.
+ * Every option is pre-computed from COUNTRY_OPTIONS — 100% data-backed.
  */
 
 interface DimensionOption {
@@ -25,16 +25,18 @@ interface DimensionsData {
   currency: DimensionOption[]
 }
 
-/** What we store per active filter — code for API, label for display */
+/** What we store per active filter — code for API, label for display, countryCodes for scoring */
 export interface ActiveFilter extends DimensionFilter {
   label?: string
   icon?: string
+  /** Country codes this filter matches — used for client-side intensity scoring */
+  countryCodes?: string[]
 }
 
 interface DimensionFiltersProps {
   activeFilters: ActiveFilter[]
   onFilterChange: (filters: ActiveFilter[]) => void
-  /** Called with country codes for real-time map preview when hovering/browsing */
+  /** Called with country codes for real-time map preview when hovering */
   onPreview?: (countryCodes: string[]) => void
 }
 
@@ -87,28 +89,43 @@ export default function DimensionFilters({
     }
   }, [activeTab, onPreview])
 
-  const selectOption = useCallback(
-    (dimension: DimensionKey, option: DimensionOption) => {
-      const newFilter: ActiveFilter = {
-        dimension: dimension as DimensionFilter['dimension'],
-        nodeCode: option.code,
-        label: option.label,
-        icon: option.icon,
-      }
-      const updated = activeFilters.filter((f) => f.dimension !== dimension)
-      updated.push(newFilter)
-      onFilterChange(updated)
-      setActiveTab(null)
-      onPreview?.([]) // Clear preview — confirmed filter takes over
-    },
-    [activeFilters, onFilterChange, onPreview]
+  // Build a set of already-selected option codes for quick lookup
+  const selectedCodes = useMemo(
+    () => new Set<string>(activeFilters.map((f) => `${f.dimension}:${f.nodeCode}`)),
+    [activeFilters]
   )
 
-  const removeFilter = (dimension: string) => {
-    onFilterChange(activeFilters.filter((f) => f.dimension !== dimension))
+  const toggleOption = useCallback(
+    (dimension: DimensionKey, option: DimensionOption) => {
+      const key = `${dimension}:${option.code}`
+      if (selectedCodes.has(key)) {
+        // Deselect — remove this specific filter
+        onFilterChange(
+          activeFilters.filter((f) => !(f.dimension === dimension && f.nodeCode === option.code))
+        )
+      } else {
+        // Select — ADD to filters (multi-select)
+        const newFilter: ActiveFilter = {
+          dimension: dimension as DimensionFilter['dimension'],
+          nodeCode: option.code,
+          label: option.label,
+          icon: option.icon,
+          countryCodes: option.countryCodes,
+        }
+        onFilterChange([...activeFilters, newFilter])
+      }
+      onPreview?.([])
+    },
+    [activeFilters, onFilterChange, onPreview, selectedCodes]
+  )
+
+  const removeFilter = (dimension: string, nodeCode: string) => {
+    onFilterChange(
+      activeFilters.filter((f) => !(f.dimension === dimension && f.nodeCode === nodeCode))
+    )
   }
 
-  const activeDims = new Set<string>(activeFilters.map((f) => f.dimension))
+  const filtersForDimension = (dim: string) => activeFilters.filter((f) => f.dimension === dim)
   const options = activeTab && dimensions ? dimensions[activeTab] : []
 
   return (
@@ -118,11 +135,11 @@ export default function DimensionFilters({
     >
       {/* Active filter tags */}
       {activeFilters.length > 0 && (
-        <div className="flex flex-wrap justify-center gap-1.5">
+        <div className="flex flex-wrap justify-center gap-1.5 max-w-[90vw]">
           {activeFilters.map((f) => (
             <button
-              key={f.dimension}
-              onClick={() => removeFilter(f.dimension)}
+              key={`${f.dimension}:${f.nodeCode}`}
+              onClick={() => removeFilter(f.dimension, f.nodeCode)}
               className="rounded-full bg-brand-accent/20 px-3 py-1 text-xs text-brand-accent hover:bg-brand-accent/30 transition"
             >
               {f.icon ?? '◆'} {f.label ?? f.nodeCode} ✕
@@ -144,45 +161,48 @@ export default function DimensionFilters({
         <div className="w-[340px] sm:w-[480px] overflow-hidden rounded-xl border border-brand-accent/20 bg-brand-surface/95 shadow-xl backdrop-blur">
           <div className="max-h-52 overflow-y-auto p-2">
             <div className="flex flex-wrap gap-1.5">
-              {options.map((opt) => (
-                <button
-                  key={opt.code}
-                  onClick={() => selectOption(activeTab, opt)}
-                  onMouseEnter={() => onPreview?.(opt.countryCodes)}
-                  onMouseLeave={() => onPreview?.([])}
-                  className="rounded-full border border-brand-accent/10 bg-brand-bg/80 px-3 py-1.5 text-xs text-brand-text transition hover:border-brand-accent/40 hover:bg-brand-accent/10 hover:text-brand-accent"
-                >
-                  {opt.label}
-                  <span className="ml-1.5 text-brand-text-muted/50">{opt.count}</span>
-                </button>
-              ))}
+              {options.map((opt) => {
+                const isSelected = selectedCodes.has(`${activeTab}:${opt.code}`)
+                return (
+                  <button
+                    key={opt.code}
+                    onClick={() => toggleOption(activeTab, opt)}
+                    onMouseEnter={() => onPreview?.(opt.countryCodes)}
+                    onMouseLeave={() => onPreview?.([])}
+                    className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                      isSelected
+                        ? 'border-brand-accent bg-brand-accent/20 text-brand-accent'
+                        : 'border-brand-accent/10 bg-brand-bg/80 text-brand-text hover:border-brand-accent/40 hover:bg-brand-accent/10 hover:text-brand-accent'
+                    }`}
+                  >
+                    {isSelected && '✓ '}
+                    {opt.label}
+                    <span className="ml-1.5 text-brand-text-muted/50">{opt.count}</span>
+                  </button>
+                )
+              })}
             </div>
           </div>
         </div>
       )}
 
-      {/* Dimension tab bar — 5 tappable icons */}
+      {/* Dimension tab bar */}
       <div className="flex items-center gap-1 rounded-2xl border border-brand-accent/20 bg-brand-surface/95 px-3 py-2 backdrop-blur">
         {DIMENSIONS.map((dim) => {
           const isActive = activeTab === dim.key
-          const isSelected = activeDims.has(dim.key)
+          const dimFilters = filtersForDimension(dim.key)
+          const hasFilters = dimFilters.length > 0
           return (
             <button
               key={dim.key}
               onClick={() => {
-                if (isSelected) {
-                  // Already selected — tap to remove filter
-                  removeFilter(dim.key)
-                  setActiveTab(null)
-                } else {
-                  setActiveTab(isActive ? null : dim.key)
-                  onPreview?.([])
-                }
+                setActiveTab(isActive ? null : dim.key)
+                onPreview?.([])
               }}
               className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs transition ${
                 isActive
                   ? 'bg-brand-accent/20 text-brand-accent'
-                  : isSelected
+                  : hasFilters
                     ? 'bg-brand-accent/10 text-brand-accent'
                     : 'text-brand-text-muted hover:bg-brand-accent/5 hover:text-brand-accent'
               }`}
@@ -190,12 +210,14 @@ export default function DimensionFilters({
             >
               <span className="text-sm">{dim.icon}</span>
               <span className="hidden sm:inline">{dim.label}</span>
+              {hasFilters && (
+                <span className="rounded-full bg-brand-accent/30 px-1.5 text-[10px]">
+                  {dimFilters.length}
+                </span>
+              )}
             </button>
           )
         })}
-        {activeFilters.length > 0 && (
-          <span className="ml-1 text-[10px] text-brand-accent/50">{activeFilters.length}/5</span>
-        )}
       </div>
     </div>
   )

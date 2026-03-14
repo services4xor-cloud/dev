@@ -2,7 +2,6 @@
 
 import { useCallback, useRef, useMemo, useState, useEffect } from 'react'
 import { Map, Source, Layer, type MapRef, type MapLayerMouseEvent } from 'react-map-gl/maplibre'
-import type { MapCountry } from '@/types/domain'
 
 const MAP_STATE_KEY = 'bex-map-viewport'
 
@@ -17,16 +16,24 @@ function getSavedViewport() {
   }
 }
 
+/** Country with intensity score — more filter matches = brighter glow */
+interface ScoredCountry {
+  code: string
+  score: number // 0-1 normalized
+  matchCount: number
+}
+
 interface WorldMapProps {
-  countries: MapCountry[]
+  /** Countries with intensity scores from active filters */
+  scoredCountries?: ScoredCountry[]
   onCountryClick: (code: string | null, name?: string) => void
   selectedCountry?: string | null
-  /** Country codes to show as soft preview glow (from search-as-you-type) */
+  /** Country codes for soft preview glow (hover state) */
   previewCountryCodes?: string[]
 }
 
 export default function WorldMap({
-  countries,
+  scoredCountries = [],
   onCountryClick,
   selectedCountry,
   previewCountryCodes = [],
@@ -53,7 +60,6 @@ export default function WorldMap({
     )
   }, [])
 
-  // Save on unmount too
   useEffect(() => {
     return () => saveViewport()
   }, [saveViewport])
@@ -77,93 +83,105 @@ export default function WorldMap({
       if (features?.[0]?.properties?.ISO_A2) {
         onCountryClick(features[0].properties.ISO_A2, features[0].properties.name as string)
       } else {
-        // Clicked water / empty area → deselect
         onCountryClick(null)
       }
     },
     [onCountryClick]
   )
 
-  // Build sets: confirmed filter results vs preview (search-as-you-type)
-  const highlightedCodes = useMemo(() => new Set(countries.map((c) => c.code)), [countries])
-  const previewCodes = useMemo(() => new Set(previewCountryCodes), [previewCountryCodes])
+  // Build scored map + preview set
+  const scoreMap = useMemo(() => {
+    const m: globalThis.Map<string, ScoredCountry> = new globalThis.Map()
+    for (const sc of scoredCountries) m.set(sc.code, sc)
+    return m
+  }, [scoredCountries])
+  const previewCodes = useMemo(() => new Set<string>(previewCountryCodes), [previewCountryCodes])
 
   // --- Map style expressions ---
-  // 4 tiers: Selected (bright gold) > Confirmed (medium gold) > Preview (soft pulse) > Default (dim)
+  // Graduated intensity: score 0.2 = dim, score 0.5 = medium, score 1.0 = blazing
+  // 5 tiers: Selected > High score > Medium score > Low score > Preview > Default
 
   const fillColor = useMemo(() => {
-    const hasActive = highlightedCodes.size > 0 || !!selectedCountry || previewCodes.size > 0
-    if (!hasActive) return '#C9A227' // uniform subtle gold
-
-    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, '#C9A227')
-    for (const code of Array.from(highlightedCodes)) {
-      if (code !== selectedCountry) expr.push(code, '#C9A227')
-    }
-    // Preview countries — softer warm gold
-    for (const code of Array.from(previewCodes)) {
-      if (code !== selectedCountry && !highlightedCodes.has(code)) {
-        expr.push(code, '#C9A227')
-      }
-    }
-    expr.push('#2d3748') // fallback: dark slate
-    return expr as unknown as string
-  }, [highlightedCodes, previewCodes, selectedCountry])
-
-  const fillOpacity = useMemo(() => {
-    const hasActive = highlightedCodes.size > 0 || !!selectedCountry || previewCodes.size > 0
-    if (!hasActive) return 0.08
-
-    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, 0.5) // selected: bright
-    for (const code of Array.from(highlightedCodes)) {
-      if (code !== selectedCountry) expr.push(code, 0.25) // confirmed: medium
-    }
-    // Preview: soft glow between confirmed and default
-    for (const code of Array.from(previewCodes)) {
-      if (code !== selectedCountry && !highlightedCodes.has(code)) {
-        expr.push(code, 0.15)
-      }
-    }
-    expr.push(0.04) // others: barely visible
-    return expr as unknown as number
-  }, [highlightedCodes, previewCodes, selectedCountry])
-
-  const borderColor = useMemo(() => {
-    const hasActive = highlightedCodes.size > 0 || !!selectedCountry || previewCodes.size > 0
+    const hasActive = scoreMap.size > 0 || !!selectedCountry || previewCodes.size > 0
     if (!hasActive) return '#C9A227'
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
     if (selectedCountry) expr.push(selectedCountry, '#C9A227')
-    for (const code of Array.from(highlightedCodes)) {
+    for (const [code] of Array.from(scoreMap)) {
       if (code !== selectedCountry) expr.push(code, '#C9A227')
     }
     for (const code of Array.from(previewCodes)) {
-      if (code !== selectedCountry && !highlightedCodes.has(code)) {
+      if (code !== selectedCountry && !scoreMap.has(code)) {
         expr.push(code, '#C9A227')
       }
     }
-    expr.push('#1f2937') // fallback: very dark border
+    expr.push('#2d3748')
     return expr as unknown as string
-  }, [highlightedCodes, previewCodes, selectedCountry])
+  }, [scoreMap, previewCodes, selectedCountry])
+
+  const fillOpacity = useMemo(() => {
+    const hasActive = scoreMap.size > 0 || !!selectedCountry || previewCodes.size > 0
+    if (!hasActive) return 0.08
+
+    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
+    if (selectedCountry) expr.push(selectedCountry, 0.55)
+
+    // Graduated intensity: score drives opacity (0.1 base + score * 0.5)
+    for (const [code, sc] of Array.from(scoreMap)) {
+      if (code !== selectedCountry) {
+        const opacity = 0.08 + sc.score * 0.5
+        expr.push(code, Math.min(opacity, 0.6))
+      }
+    }
+    for (const code of Array.from(previewCodes)) {
+      if (code !== selectedCountry && !scoreMap.has(code)) {
+        expr.push(code, 0.15) // preview: soft
+      }
+    }
+    expr.push(0.04)
+    return expr as unknown as number
+  }, [scoreMap, previewCodes, selectedCountry])
+
+  const borderColor = useMemo(() => {
+    const hasActive = scoreMap.size > 0 || !!selectedCountry || previewCodes.size > 0
+    if (!hasActive) return '#C9A227'
+
+    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
+    if (selectedCountry) expr.push(selectedCountry, '#C9A227')
+    for (const [code] of Array.from(scoreMap)) {
+      if (code !== selectedCountry) expr.push(code, '#C9A227')
+    }
+    for (const code of Array.from(previewCodes)) {
+      if (code !== selectedCountry && !scoreMap.has(code)) {
+        expr.push(code, '#C9A227')
+      }
+    }
+    expr.push('#1f2937')
+    return expr as unknown as string
+  }, [scoreMap, previewCodes, selectedCountry])
 
   const borderWidth = useMemo(() => {
-    const hasActive = highlightedCodes.size > 0 || !!selectedCountry || previewCodes.size > 0
+    const hasActive = scoreMap.size > 0 || !!selectedCountry || previewCodes.size > 0
     if (!hasActive) return 0.4
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, 2.5) // thick for selected
-    for (const code of Array.from(highlightedCodes)) {
-      if (code !== selectedCountry) expr.push(code, 1)
-    }
-    for (const code of Array.from(previewCodes)) {
-      if (code !== selectedCountry && !highlightedCodes.has(code)) {
-        expr.push(code, 0.6) // preview: subtle border
+    if (selectedCountry) expr.push(selectedCountry, 2.5)
+
+    // Border also scales with score
+    for (const [code, sc] of Array.from(scoreMap)) {
+      if (code !== selectedCountry) {
+        const width = 0.4 + sc.score * 2.0
+        expr.push(code, Math.min(width, 2.5))
       }
     }
-    expr.push(0.2) // others: hairline
+    for (const code of Array.from(previewCodes)) {
+      if (code !== selectedCountry && !scoreMap.has(code)) {
+        expr.push(code, 0.6)
+      }
+    }
+    expr.push(0.2)
     return expr as unknown as number
-  }, [highlightedCodes, previewCodes, selectedCountry])
+  }, [scoreMap, previewCodes, selectedCountry])
 
   return (
     <div className="relative" style={{ width: '100%', height: '100vh' }}>

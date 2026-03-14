@@ -1,12 +1,18 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
 import NotificationBadge from '@/components/NotificationBadge'
-import type { DimensionFilter, MapCountry } from '@/types/domain'
+
+/** Country with intensity score: how many active filters match this country */
+export interface ScoredCountry {
+  code: string
+  score: number // 0-1 normalized (matchCount / totalFilters)
+  matchCount: number
+}
 
 export default function HomePage() {
   const { data: session } = useSession()
@@ -20,7 +26,6 @@ export default function HomePage() {
       return []
     }
   })
-  const [countries, setCountries] = useState<MapCountry[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null
     return sessionStorage.getItem('bex-map-selected') || null
@@ -51,28 +56,26 @@ export default function HomePage() {
     sessionStorage.setItem('bex-map-filters', JSON.stringify(filters))
   }, [filters])
 
-  // Fetch filtered countries when filters change
-  const fetchFilteredCountries = useCallback(async (activeFilters: DimensionFilter[]) => {
-    if (activeFilters.length === 0) {
-      setCountries([])
-      return
-    }
-    try {
-      const res = await fetch('/api/map/filter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filters: activeFilters }),
-      })
-      const data = await res.json()
-      setCountries(data.countries ?? [])
-    } catch {
-      setCountries([])
-    }
-  }, [])
+  // Compute intensity scores from active filters — client-side, no API needed
+  // Each filter has countryCodes[]. Count how many filters match each country.
+  const scoredCountries = useMemo(() => {
+    const filtersWithCodes = filters.filter((f) => f.countryCodes && f.countryCodes.length > 0)
+    if (filtersWithCodes.length === 0) return []
 
-  useEffect(() => {
-    fetchFilteredCountries(filters)
-  }, [filters, fetchFilteredCountries])
+    const countMap = new Map<string, number>()
+    for (const f of filtersWithCodes) {
+      for (const code of f.countryCodes!) {
+        countMap.set(code, (countMap.get(code) || 0) + 1)
+      }
+    }
+
+    const total = filtersWithCodes.length
+    const scored: ScoredCountry[] = []
+    for (const [code, matchCount] of Array.from(countMap.entries())) {
+      scored.push({ code, score: matchCount / total, matchCount })
+    }
+    return scored
+  }, [filters])
 
   // Poll for unread notifications every 30 seconds when signed in
   useEffect(() => {
@@ -98,33 +101,38 @@ export default function HomePage() {
   return (
     <main className="relative h-screen w-screen overflow-hidden">
       <WorldMap
-        countries={countries}
+        scoredCountries={scoredCountries}
         previewCountryCodes={previewCountries}
         onCountryClick={(code, name) => {
           if (code === null) {
             setSelectedCountry(null)
             setSelectedCountryName(null)
           } else if (code === selectedCountry) {
+            // Toggle off — remove this country from location filters
             setSelectedCountry(null)
             setSelectedCountryName(null)
-            // Remove the location filter too
-            setFilters((prev) => prev.filter((f) => f.dimension !== 'location'))
+            setFilters((prev) =>
+              prev.filter((f) => !(f.dimension === 'location' && f.nodeCode === code.toLowerCase()))
+            )
           } else {
             setSelectedCountry(code)
             setSelectedCountryName(name ?? code)
-            // Auto-add as location filter
-            setFilters((prev) => {
-              const without = prev.filter((f) => f.dimension !== 'location')
-              return [
-                ...without,
+            // Add as location filter (keep existing location filters — multi-select!)
+            const alreadyHas = filters.some(
+              (f) => f.dimension === 'location' && f.nodeCode === code.toLowerCase()
+            )
+            if (!alreadyHas) {
+              setFilters((prev) => [
+                ...prev,
                 {
                   dimension: 'location' as const,
-                  nodeCode: (name ?? code).toLowerCase(),
-                  label: `🏳️ ${name ?? code}`,
+                  nodeCode: code.toLowerCase(),
+                  label: `${name ?? code}`,
                   icon: '📍',
+                  countryCodes: [code],
                 },
-              ]
-            })
+              ])
+            }
           }
         }}
         selectedCountry={selectedCountry}
@@ -137,7 +145,6 @@ export default function HomePage() {
           className={`text-xl font-bold transition ${selectedCountry ? 'logo-saiyan' : ''}`}
           onClick={(e) => {
             if (selectedCountry) {
-              // Let the link navigate to the Gate page
               return
             }
             e.preventDefault()
