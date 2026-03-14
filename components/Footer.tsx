@@ -15,7 +15,7 @@ const footerLinks = {
   ],
   About: [
     { label: 'About', href: '/about' },
-    { label: 'Privacy', href: '#' },
+    { label: 'Privacy', href: '/privacy' },
   ],
 }
 
