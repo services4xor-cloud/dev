@@ -9,12 +9,26 @@ import type { EdgeRelation, NodeType, Prisma } from '@prisma/client'
 
 // ─── Node operations ─────────────────────────────────────────
 
+/**
+ * Finds a graph node by its type and unique code.
+ *
+ * @param type - The node type (COUNTRY, LANGUAGE, FAITH, etc.)
+ * @param code - The unique code within that type (e.g., "KE", "en", "islam")
+ * @returns The matching node, or null if not found
+ */
 export async function getNode(type: NodeType, code: string) {
   return db.node.findUnique({
     where: { type_code: { type, code } },
   })
 }
 
+/**
+ * Finds a graph node by type and code, including all its incoming and outgoing edges.
+ *
+ * @param type - The node type (COUNTRY, LANGUAGE, FAITH, etc.)
+ * @param code - The unique code within that type
+ * @returns The node with populated edge relations, or null if not found
+ */
 export async function getNodeWithEdges(type: NodeType, code: string) {
   return db.node.findUnique({
     where: { type_code: { type, code } },
@@ -25,6 +39,12 @@ export async function getNodeWithEdges(type: NodeType, code: string) {
   })
 }
 
+/**
+ * Retrieves the graph node associated with a platform user, including all edges.
+ *
+ * @param userId - The platform user ID
+ * @returns The user's node with populated edges, or null if the user has no node
+ */
 export async function getUserNode(userId: string) {
   return db.node.findUnique({
     where: { userId },
@@ -37,6 +57,19 @@ export async function getUserNode(userId: string) {
 
 // ─── Edge operations ─────────────────────────────────────────
 
+/**
+ * Creates or updates a directed edge between two graph nodes.
+ * Uses upsert semantics — safe to call multiple times with the same node pair and relation.
+ *
+ * @param fromType - Node type of the source node
+ * @param fromCode - Code of the source node
+ * @param toType - Node type of the target node
+ * @param toCode - Code of the target node
+ * @param relation - The edge relation type (e.g., OFFICIAL_LANG, SPEAKS, BELONGS_TO)
+ * @param weight - Optional numeric weight for scoring or ranking
+ * @param properties - Optional arbitrary JSON properties to store on the edge
+ * @returns The created or updated edge, or null if either node does not exist
+ */
 export async function createEdge(
   fromType: NodeType,
   fromCode: string,
@@ -63,12 +96,27 @@ export async function createEdge(
   })
 }
 
+/**
+ * Deletes all edges between two nodes with a given relation type.
+ *
+ * @param fromId - Database ID of the source node
+ * @param toId - Database ID of the target node
+ * @param relation - The edge relation type to delete
+ * @returns Prisma batch delete result with the count of deleted records
+ */
 export async function deleteEdge(fromId: string, toId: string, relation: EdgeRelation) {
   return db.edge.deleteMany({
     where: { fromId, toId, relation },
   })
 }
 
+/**
+ * Retrieves all outgoing edges from a user's graph node, optionally filtered by relation type.
+ *
+ * @param userId - The platform user ID
+ * @param relation - Optional edge relation filter (returns all relations if omitted)
+ * @returns Array of edges with their target nodes populated, or empty array if the user has no node
+ */
 export async function getUserEdges(userId: string, relation?: EdgeRelation) {
   const node = await db.node.findUnique({ where: { userId } })
   if (!node) return []

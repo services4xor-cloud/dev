@@ -7,6 +7,12 @@
  * NEVER use: job, employer, candidate, application, booking, tour, search
  */
 
+/**
+ * Canonical vocabulary for the Be[X] platform.
+ *
+ * All UI-facing terms must be drawn from this constant to ensure brand consistency.
+ * Never hardcode words like "job", "employer", "candidate", or "booking" — use VOCAB instead.
+ */
 export const VOCAB = {
   // ── Core roles ──
   explorer: { singular: 'Explorer', plural: 'Explorers', verb: 'exploring' },
@@ -40,6 +46,11 @@ export type ExplorerType =
   | 'creator'
   | 'healer'
 
+/**
+ * Explorer type definitions keyed by ExplorerType identifier.
+ * Each entry provides a label, icon, description, and associated sector list
+ * used during onboarding and profile display.
+ */
 export const EXPLORER_TYPES: Record<
   ExplorerType,
   { label: string; icon: string; description: string; sectors: string[] }
@@ -82,6 +93,10 @@ export const EXPLORER_TYPES: Record<
   },
 }
 
+/**
+ * Flattened option list derived from EXPLORER_TYPES, suitable for select/radio inputs.
+ * Each option has a `value` (the ExplorerType key) and a `label` with the icon prepended.
+ */
 export const EXPLORER_TYPE_OPTIONS = Object.entries(EXPLORER_TYPES).map(([key, val]) => ({
   value: key,
   label: `${val.icon} ${val.label}`,

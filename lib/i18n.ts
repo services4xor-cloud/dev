@@ -6219,8 +6219,10 @@ export function hasTranslation(key: string, language: string): boolean {
 
 export type Locale = 'en' | 'sw' | 'de' | 'fr'
 
+/** The four core platform locales that have full or near-full translation coverage. */
 export const SUPPORTED_LOCALES: Locale[] = ['en', 'sw', 'de', 'fr']
 
+/** Human-readable display names for each supported locale. */
 export const LOCALE_NAMES: Record<Locale, string> = {
   en: 'English',
   sw: 'Kiswahili',
