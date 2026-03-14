@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
+import {
+  COUNTRY_OPTIONS,
+  LANGUAGE_REGISTRY,
+  type LanguageCode,
+  type FaithCode,
+} from '@/lib/country-selector'
+import { FAITH_OPTIONS } from '@/lib/dimensions'
 import type { DimensionFilter } from '@/types/domain'
 
 const MAX_FILTERS = 10
@@ -58,6 +64,17 @@ export async function POST(req: NextRequest) {
     if (f.dimension === 'language') {
       const langSuggestions = getLanguageSuggestions(f.nodeCode)
       suggestions.push(...langSuggestions)
+    }
+    if (f.dimension === 'faith') {
+      const faithSuggestions = getFaithSuggestions(f.nodeCode)
+      suggestions.push(
+        ...faithSuggestions.map((s) => ({
+          code: s.code,
+          name: s.label,
+          nativeName: s.label,
+          countryCount: s.countryCount,
+        }))
+      )
     }
     if (f.dimension === 'sector') {
       // Show which sectors matched
@@ -151,6 +168,37 @@ function getSectorSuggestions(query: string) {
 }
 
 /**
+ * Check if a faith matches a search query (by code or label substring).
+ */
+function faithMatchesQuery(faithCode: FaithCode, query: string) {
+  if (faithCode.toLowerCase().includes(query)) return true
+  const faith = FAITH_OPTIONS.find((f) => f.id === faithCode)
+  if (faith && faith.label.toLowerCase().includes(query)) return true
+  return false
+}
+
+/**
+ * Get faith suggestions — which faiths match and how many countries each.
+ */
+function getFaithSuggestions(query: string) {
+  const results: { code: string; label: string; countryCount: number }[] = []
+
+  for (const faith of FAITH_OPTIONS) {
+    const matches =
+      faith.id.toLowerCase().includes(query) || faith.label.toLowerCase().includes(query)
+    if (!matches) continue
+
+    const countryCount = COUNTRY_OPTIONS.filter((c) =>
+      c.topFaiths.includes(faith.id as FaithCode)
+    ).length
+
+    results.push({ code: faith.id, label: faith.label, countryCount })
+  }
+
+  return results.sort((a, b) => b.countryCount - a.countryCount)
+}
+
+/**
  * Filter COUNTRY_OPTIONS by a single dimension.
  */
 function filterByDimension(filter: DimensionFilter) {
@@ -175,8 +223,7 @@ function filterByDimension(filter: DimensionFilter) {
       return COUNTRY_OPTIONS.filter((c) => c.currency.toLowerCase() === nodeCode)
 
     case 'faith':
-      // Faith data not yet in COUNTRY_OPTIONS — return empty for now
-      return []
+      return COUNTRY_OPTIONS.filter((c) => c.topFaiths.some((f) => faithMatchesQuery(f, nodeCode)))
 
     case 'location':
       // Match by region name or country name (normalize hyphens/spaces)

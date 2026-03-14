@@ -20,6 +20,7 @@ async function main() {
   await seedCountryLanguageEdges()
   await seedCountryCurrencyEdges()
   await seedCountrySectorEdges()
+  await seedCountryFaithEdges()
 
   console.log('✅ Seed complete')
 }
@@ -278,6 +279,49 @@ async function seedCountrySectorEdges() {
   }
 
   console.log(`    Created ${count} HAS_SECTOR edges`)
+}
+
+async function seedCountryFaithEdges() {
+  console.log('  🔗 Seeding DOMINANT_FAITH edges...')
+  let count = 0
+
+  for (const country of COUNTRY_OPTIONS) {
+    const countryNode = await prisma.node.findUnique({
+      where: { type_code: { type: 'COUNTRY', code: country.code } },
+    })
+    if (!countryNode) continue
+
+    for (let i = 0; i < country.topFaiths.length; i++) {
+      const faithCode = country.topFaiths[i]
+      const faithNode = await prisma.node.findUnique({
+        where: { type_code: { type: 'FAITH', code: faithCode } },
+      })
+      if (!faithNode) continue
+
+      // Weight: 1.0 for dominant (first), decreasing for minority faiths
+      const weight = 1.0 - i * 0.2
+
+      await prisma.edge.upsert({
+        where: {
+          fromId_toId_relation: {
+            fromId: countryNode.id,
+            toId: faithNode.id,
+            relation: 'DOMINANT_FAITH',
+          },
+        },
+        create: {
+          fromId: countryNode.id,
+          toId: faithNode.id,
+          relation: 'DOMINANT_FAITH',
+          weight,
+        },
+        update: { weight },
+      })
+      count++
+    }
+  }
+
+  console.log(`    Created ${count} DOMINANT_FAITH edges`)
 }
 
 main()

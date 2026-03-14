@@ -221,6 +221,71 @@ describe('POST /api/map/filter', () => {
     expect(data.suggestions).toEqual([])
   })
 
+  test('faith filter: "islam" returns Muslim-majority countries', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'faith', nodeCode: 'islam' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    const codes = data.countries.map((c: { code: string }) => c.code)
+    expect(codes).toContain('SA') // Saudi Arabia
+    expect(codes).toContain('EG') // Egypt
+    expect(codes).toContain('ID') // Indonesia
+    expect(codes).not.toContain('BR') // Brazil — Christianity
+    expect(data.totalMatches).toBeGreaterThanOrEqual(40) // ~50+ Muslim countries
+  })
+
+  test('faith filter: "christianity" returns Christian-majority countries', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'faith', nodeCode: 'christianity' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    const codes = data.countries.map((c: { code: string }) => c.code)
+    expect(codes).toContain('BR') // Brazil
+    expect(codes).toContain('KE') // Kenya
+    expect(codes).toContain('DE') // Germany
+    expect(data.totalMatches).toBeGreaterThanOrEqual(80) // Most countries
+  })
+
+  test('faith filter: "buddh" matches Buddhism (substring)', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'faith', nodeCode: 'buddh' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    const codes = data.countries.map((c: { code: string }) => c.code)
+    expect(codes).toContain('TH') // Thailand
+    expect(codes).toContain('JP') // Japan
+    expect(codes).toContain('LK') // Sri Lanka
+  })
+
+  test('faith suggestions: "islam" returns suggestion with country count', async () => {
+    const req = makeRequest({ filters: [{ dimension: 'faith', nodeCode: 'islam' }] })
+    const res = await POST(req)
+    const data = await res.json()
+
+    expect(data.suggestions.length).toBeGreaterThanOrEqual(1)
+    const islamSuggestion = data.suggestions.find((s: { code: string }) => s.code === 'islam')
+    expect(islamSuggestion).toBeDefined()
+    expect(islamSuggestion.name).toBe('Islam')
+    expect(islamSuggestion.countryCount).toBeGreaterThanOrEqual(40)
+  })
+
+  test('faith + language intersection works', async () => {
+    // Countries that are Muslim AND speak Arabic
+    const req = makeRequest({
+      filters: [
+        { dimension: 'faith', nodeCode: 'islam' },
+        { dimension: 'language', nodeCode: 'ar' },
+      ],
+    })
+    const res = await POST(req)
+    const data = await res.json()
+
+    const codes = data.countries.map((c: { code: string }) => c.code)
+    expect(codes).toContain('SA') // Saudi Arabia: Islam + Arabic ✓
+    expect(codes).toContain('EG') // Egypt: Islam + Arabic ✓
+    expect(codes).not.toContain('ID') // Indonesia: Islam but no Arabic
+  })
+
   test('response shape matches MapCountry interface', async () => {
     const req = makeRequest({ filters: [{ dimension: 'language', nodeCode: 'en' }] })
     const res = await POST(req)

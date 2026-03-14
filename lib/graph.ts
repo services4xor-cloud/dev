@@ -224,6 +224,7 @@ export async function buildAgentContext(dimensions: Record<string, string>) {
             currency: countryData.currency,
             region: countryData.region,
             corridorStrength: countryData.corridorStrength,
+            topFaiths: countryData.topFaiths,
             languages: countryData.languages.map((lc) => {
               const lang = LANGUAGE_REGISTRY[lc as LanguageCode]
               return lang

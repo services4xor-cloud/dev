@@ -24,6 +24,7 @@ interface EnrichedNode {
   connections?: { relation: string; target: string; targetType: string }[]
   enriched?: {
     topSectors?: string[]
+    topFaiths?: string[]
     visa?: string
     payment?: string[]
     currency?: string
@@ -61,6 +62,9 @@ export async function buildPersonaPrompt(dimensions: AgentDimensions): Promise<s
       const e = node.enriched
       if (e.topSectors?.length) {
         parts.push(`  Key sectors: ${e.topSectors.join(', ')}`)
+      }
+      if (e.topFaiths?.length) {
+        parts.push(`  Dominant faiths: ${e.topFaiths.join(', ')}`)
       }
       if (e.visa) {
         parts.push(`  Visa (for Kenyan passport): ${e.visa}`)
