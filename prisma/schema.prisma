@@ -25,15 +25,17 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
-  node          Node?
-  payments      Payment[]
-  sentMessages  Message[]
-  conversations Conversation[] @relation("ConversationParticipants")
-  agentChats    AgentChat[]
-  referrals     Referral[] @relation("Referrals")
-  referredBy    Referral[] @relation("ReferredBy")
+  accounts        Account[]
+  sessions        Session[]
+  node            Node?
+  payments        Payment[]
+  sentMessages    Message[]
+  conversations   Conversation[] @relation("ConversationParticipants")
+  agentChats      AgentChat[]
+  referrals       Referral[] @relation("Referrals")
+  referredBy      Referral[] @relation("ReferredBy")
+  reviewsWritten  Review[]   @relation("ReviewsWritten")
+  reviewsReceived Review[]   @relation("ReviewsReceived")
 }
 
 enum UserRole {
@@ -254,4 +256,21 @@ model Referral {
 
   @@index([referrerId])
   @@index([code])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  authorId  String
+  author    User     @relation("ReviewsWritten", fields: [authorId], references: [id])
+  targetId  String
+  target    User     @relation("ReviewsReceived", fields: [targetId], references: [id])
+  nodeId    String?
+  rating    Int
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([targetId])
+  @@index([nodeId])
 }

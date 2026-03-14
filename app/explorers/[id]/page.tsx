@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import ReviewSection from '@/components/ReviewSection'
 
 interface DimensionItem {
   code: string
@@ -180,6 +181,8 @@ export default async function ExplorerDetailPage({ params }: { params: { id: str
             </p>
           </div>
         )}
+
+        <ReviewSection targetId={explorer.userId} showForm />
       </div>
     </main>
   )
