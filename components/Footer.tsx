@@ -4,9 +4,7 @@ import Link from 'next/link'
 
 const footerLinks = {
   Explore: [
-    { label: 'Discovery', href: '/discovery' },
     { label: 'Opportunities', href: '/opportunities' },
-    { label: 'Explorers', href: '/explorers' },
     { label: 'Threads', href: '/threads' },
   ],
   Account: [

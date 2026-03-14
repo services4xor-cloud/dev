@@ -176,7 +176,7 @@ export default async function CountryHubPage({ params }: PageProps) {
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
             Discover
           </h2>
-          <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
             <Link
               href="/agent"
               className="group rounded-xl border border-brand-accent/15 bg-brand-surface p-5 text-center transition hover:border-brand-accent/40 sm:p-6"
@@ -196,16 +196,6 @@ export default async function CountryHubPage({ params }: PageProps) {
                 Browse Paths
               </p>
               <p className="mt-1 text-xs text-brand-text-muted">Opportunities in {name}</p>
-            </Link>
-            <Link
-              href="/explorers"
-              className="group rounded-xl border border-brand-accent/15 bg-brand-surface p-5 text-center transition hover:border-brand-accent/40 sm:p-6"
-            >
-              <div className="mb-2 text-2xl">👥</div>
-              <p className="text-sm font-semibold text-brand-text group-hover:text-brand-accent">
-                Meet Pioneers
-              </p>
-              <p className="mt-1 text-xs text-brand-text-muted">People connected to {name}</p>
             </Link>
           </div>
         </section>

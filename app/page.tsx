@@ -129,18 +129,6 @@ export default function HomePage() {
             Opportunities
           </Link>
           <Link
-            href="/explorers"
-            className="text-sm text-brand-text-muted hover:text-brand-accent transition"
-          >
-            Explorers
-          </Link>
-          <Link
-            href="/discovery"
-            className="text-sm text-brand-text-muted hover:text-brand-accent transition"
-          >
-            Discovery
-          </Link>
-          <Link
             href="/threads"
             className="text-sm text-brand-text-muted hover:text-brand-accent transition"
           >
@@ -213,20 +201,6 @@ export default function HomePage() {
             className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
           >
             Opportunities
-          </Link>
-          <Link
-            href="/explorers"
-            onClick={() => setMenuOpen(false)}
-            className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
-          >
-            Explorers
-          </Link>
-          <Link
-            href="/discovery"
-            onClick={() => setMenuOpen(false)}
-            className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
-          >
-            Discovery
           </Link>
           <Link
             href="/threads"

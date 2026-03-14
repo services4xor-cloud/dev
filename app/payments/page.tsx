@@ -176,7 +176,7 @@ export default function PaymentsPage() {
           <div className="rounded-lg border border-brand-accent/20 bg-brand-surface py-16 text-center">
             <p className="text-brand-text-muted">No payments yet</p>
             <Link
-              href="/discovery"
+              href="/opportunities"
               className="mt-4 inline-block text-sm text-brand-accent hover:underline"
             >
               Explore opportunities →
