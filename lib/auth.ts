@@ -11,17 +11,10 @@ import { db } from '@/lib/db'
  * Adapter: PrismaAdapter stores Account (OAuth links) in Neon.
  * Strategy: JWT — no DB round-trip per request.
  * Providers: Google OAuth + Magic Link (via Resend HTTP API).
- *
- * NOTE: Only use adapter when DATABASE_URL is set, otherwise Google OAuth
- * will silently fail when trying to write Account records to a cold/missing DB.
  */
 const hasDB = !!process.env.DATABASE_URL
 const resendKey = process.env.RESEND_API_KEY
 
-/**
- * Custom magic link sender using Resend HTTP API (not SMTP).
- * More reliable, better error messages, no timeout issues.
- */
 async function sendMagicLink({
   identifier: email,
   url,
@@ -69,8 +62,6 @@ async function sendMagicLink({
 }
 
 export const authOptions: NextAuthOptions = {
-  // Only wire PrismaAdapter if we have a DB — otherwise NextAuth works in
-  // "JWT-only" mode (no Account persistence, but OAuth still works)
   ...(hasDB ? { adapter: PrismaAdapter(db) as NextAuthOptions['adapter'] } : {}),
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -78,8 +69,6 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
     }),
-    // Magic link email — requires RESEND_API_KEY + DATABASE_URL
-    // Uses Resend HTTP API (not SMTP) for reliability
     ...(hasDB && resendKey
       ? [
           EmailProvider({
@@ -101,27 +90,51 @@ export const authOptions: NextAuthOptions = {
         try {
           const dbUser = await db.user.findUnique({
             where: { id: user.id },
-            select: { role: true, country: true },
+            select: { role: true, country: true, language: true },
           })
           if (dbUser) {
             token.role = dbUser.role
             token.country = dbUser.country
+            token.language = dbUser.language
           }
         } catch {
-          token.role = 'PIONEER'
+          token.role = 'EXPLORER'
           token.country = 'KE'
+          token.language = 'en'
         }
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        const u = session.user as { id?: string; role?: string; country?: string }
+        const u = session.user as {
+          id?: string
+          role?: string
+          country?: string
+          language?: string
+        }
         u.id = token.id as string
         u.role = token.role as string
         u.country = token.country as string
+        u.language = token.language as string
       }
       return session
+    },
+  },
+  events: {
+    async createUser({ user }) {
+      if (user.id) {
+        const { db } = await import('@/lib/db')
+        await db.node.create({
+          data: {
+            type: 'USER',
+            code: user.email ?? user.id,
+            label: user.name ?? 'Explorer',
+            icon: '👤',
+            userId: user.id,
+          },
+        })
+      }
     },
   },
 }
