@@ -6,6 +6,7 @@ import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
 import NotificationBadge from '@/components/NotificationBadge'
+import PathSuggestions from '@/components/PathSuggestions'
 
 /** Country with intensity score: how many active filters match this country */
 export interface ScoredCountry {
@@ -211,6 +212,21 @@ export default function HomePage() {
           }
         }}
         selectedCountry={selectedCountry}
+      />
+
+      {/* Path Suggestions — identity-driven route discovery */}
+      <PathSuggestions
+        scoredCountries={scoredCountries}
+        enrichedCountries={enrichedCountries}
+        totalFilters={filters.filter((f) => f.countryCodes && f.countryCodes.length > 0).length}
+        onSuggestClick={(code, name) => {
+          if (!enrichedCountries.includes(code)) {
+            setEnrichedCountries((prev) => [...prev, code])
+            setEnrichedNames((prev) => ({ ...prev, [code]: name }))
+            void enrichCountry(code, name)
+          }
+        }}
+        onPreview={setPreviewCountries}
       />
 
       {/* Top bar */}
