@@ -6,6 +6,7 @@ import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters from '@/components/DimensionFilters'
 import CountryPanel from '@/components/CountryPanel'
+import NotificationBadge from '@/components/NotificationBadge'
 import type { DimensionFilter, MapCountry } from '@/types/domain'
 
 export default function HomePage() {
@@ -14,6 +15,7 @@ export default function HomePage() {
   const [countries, setCountries] = useState<MapCountry[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [unreadMessages, setUnreadMessages] = useState(0)
 
   // Fetch filtered countries when filters change
   const fetchFilteredCountries = useCallback(async (activeFilters: DimensionFilter[]) => {
@@ -37,6 +39,27 @@ export default function HomePage() {
   useEffect(() => {
     fetchFilteredCountries(filters)
   }, [filters, fetchFilteredCountries])
+
+  // Poll for unread notifications every 30 seconds when signed in
+  useEffect(() => {
+    if (!session) return
+
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch('/api/notifications')
+        if (res.ok) {
+          const data = (await res.json()) as { unreadMessages: number; pendingPayments: number }
+          setUnreadMessages(data.unreadMessages)
+        }
+      } catch {
+        // silently ignore network errors
+      }
+    }
+
+    fetchNotifications()
+    const interval = setInterval(fetchNotifications, 30_000)
+    return () => clearInterval(interval)
+  }, [session])
 
   return (
     <main className="relative h-screen w-screen overflow-hidden">
@@ -94,9 +117,10 @@ export default function HomePage() {
             <>
               <Link
                 href="/messages"
-                className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+                className="relative text-sm text-brand-text-muted hover:text-brand-accent transition"
               >
                 Messages
+                <NotificationBadge count={unreadMessages} />
               </Link>
               <Link
                 href="/me"
@@ -164,9 +188,10 @@ export default function HomePage() {
               <Link
                 href="/messages"
                 onClick={() => setMenuOpen(false)}
-                className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+                className="relative py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
               >
                 Messages
+                <NotificationBadge count={unreadMessages} />
               </Link>
               <Link
                 href="/me"

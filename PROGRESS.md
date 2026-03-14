@@ -18,7 +18,7 @@
 | Library modules   | 16+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, identity-context.tsx, etc.)                                                                                                                                                                                                             |
 | Jest tests        | 55/55 ✅ (6 suites)                                                                                                                                                                                                                                                                                    |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                      |
-| Build             | ✅ passes (26 routes)                                                                                                                                                                                                                                                                                  |
+| Build             | ✅ passes (30 routes)                                                                                                                                                                                                                                                                                  |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                |
 | Map               | Fullscreen MapLibre GL JS + 177 countries GeoJSON + dimension filters                                                                                                                                                                                                                                  |
 | AI Agents         | Claude API (claude-sonnet-4-20250514) with graph-powered personas                                                                                                                                                                                                                                      |
@@ -52,12 +52,32 @@
 - **Options API** (`/api/discovery/options`) — Lists all active countries, languages, sectors
 - **Discovery page** (`/discovery`) — 4-step wizard: country select → languages → sectors → corridor results with match scores
 
+### Explorer Search
+
+- **Explorer API** (`/api/explorers`) — GET with language/sector/country/name filters, debounced
+- **Explorer browse page** (`/explorers`) — Card grid with search + filter pills, responsive
+
+### Profile Editing
+
+- **Identity edges API** (`/api/identity/edges`) — POST/DELETE for add/remove dimensions
+- **Name editing** — PATCH `/api/identity` to update User.name + Node.label
+- **Profile page** (`/me`) — Inline add/remove for all 7 dimension types, pencil icon for name
+
+### Referral System
+
+- **Referral model** — Added to Prisma schema with referrer/referred relations
+- **Referral API** (`/api/referral`) — GET code+stats, POST validate code
+- **Claim API** (`/api/referral/claim`) — POST to claim referral (prevents self-referral)
+- **Referral page** (`/referral`) — Stats, copy-link, how-it-works
+- **Signup integration** — `?ref=` param auto-validated, auto-claimed after sign-in
+
 ### UI Fixes
 
 - **Mobile nav** — Hamburger menu on small screens, dropdown with all links
 - **Filter pills** — `flex-wrap` so all 6 dimension pills visible on any screen
 - **Map selectedCountry** — Now passed from homepage, dynamic highlight styling works
 - **WorldMap** — Fixed Set iteration for TS compatibility
+- **Nav links** — Added Explorers, Discovery, Refer to desktop + mobile nav
 
 ---
 
