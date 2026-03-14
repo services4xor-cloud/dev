@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import type { ActiveFilter } from '@/components/DimensionFilters'
 
 interface OpportunityHost {
   label: string
@@ -48,6 +49,18 @@ export default function OpportunitiesPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+
+  const [mapFilters, setMapFilters] = useState<ActiveFilter[]>([])
+
+  // Load active filters from sessionStorage (set by map page)
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('bex-map-filters')
+      if (raw) setMapFilters(JSON.parse(raw) as ActiveFilter[])
+    } catch {
+      // ignore
+    }
+  }, [])
 
   const role = (session?.user as { role?: string } | undefined)?.role
   const canPost = role === 'HOST' || role === 'ADMIN'
@@ -122,6 +135,25 @@ export default function OpportunitiesPage() {
           </a>
         </div>
       </header>
+
+      {/* Active context bar — shows what dimensions the user selected on map */}
+      {mapFilters.length > 0 && (
+        <div className="border-b border-brand-accent/5 bg-brand-surface/50 px-6 py-2">
+          <div className="mx-auto flex max-w-5xl flex-wrap gap-1.5">
+            <span className="text-[10px] uppercase tracking-wider text-brand-text-muted/50 self-center mr-1">
+              Context:
+            </span>
+            {mapFilters.map((f) => (
+              <span
+                key={f.dimension}
+                className="rounded-full bg-brand-accent/10 px-2.5 py-0.5 text-xs text-brand-accent"
+              >
+                {f.icon ?? '◆'} {f.label ?? f.nodeCode}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mx-auto max-w-5xl px-6 py-8">
         {/* Success banner */}

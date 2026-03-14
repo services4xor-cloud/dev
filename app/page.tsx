@@ -4,18 +4,18 @@ import { useState, useCallback, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
-import DimensionFilters from '@/components/DimensionFilters'
+import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
 import NotificationBadge from '@/components/NotificationBadge'
 import type { DimensionFilter, MapCountry } from '@/types/domain'
 
 export default function HomePage() {
   const { data: session } = useSession()
   // Restore map state from sessionStorage (survives navigation)
-  const [filters, setFilters] = useState<DimensionFilter[]>(() => {
+  const [filters, setFilters] = useState<ActiveFilter[]>(() => {
     if (typeof window === 'undefined') return []
     try {
       const raw = sessionStorage.getItem('bex-map-filters')
-      return raw ? (JSON.parse(raw) as DimensionFilter[]) : []
+      return raw ? (JSON.parse(raw) as ActiveFilter[]) : []
     } catch {
       return []
     }
@@ -105,16 +105,31 @@ export default function HomePage() {
           } else if (code === selectedCountry) {
             setSelectedCountry(null)
             setSelectedCountryName(null)
+            // Remove the location filter too
+            setFilters((prev) => prev.filter((f) => f.dimension !== 'location'))
           } else {
             setSelectedCountry(code)
             setSelectedCountryName(name ?? code)
+            // Auto-add as location filter
+            setFilters((prev) => {
+              const without = prev.filter((f) => f.dimension !== 'location')
+              return [
+                ...without,
+                {
+                  dimension: 'location' as const,
+                  nodeCode: (name ?? code).toLowerCase(),
+                  label: `🏳️ ${name ?? code}`,
+                  icon: '📍',
+                },
+              ]
+            })
           }
         }}
         selectedCountry={selectedCountry}
       />
 
       {/* Top bar */}
-      <div className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-4 py-3">
+      <div className="absolute left-0 right-0 top-0 z-30 flex items-center justify-between px-4 py-3">
         <Link
           href={selectedCountry ? `/be/${selectedCountry.toLowerCase()}` : '/'}
           className={`text-xl font-bold transition ${selectedCountry ? 'logo-saiyan' : ''}`}
@@ -214,7 +229,7 @@ export default function HomePage() {
 
       {/* Mobile nav dropdown */}
       {menuOpen && (
-        <nav className="absolute left-0 right-0 top-12 z-30 flex flex-col gap-1 bg-brand-surface/95 px-4 py-3 backdrop-blur sm:hidden">
+        <nav className="absolute left-0 right-0 top-12 z-40 flex flex-col gap-1 bg-brand-surface/95 px-4 py-3 backdrop-blur sm:hidden">
           <Link
             href="/agent"
             onClick={() => setMenuOpen(false)}
