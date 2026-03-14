@@ -6,7 +6,28 @@ import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
 import NotificationBadge from '@/components/NotificationBadge'
-import PathSuggestions from '@/components/PathSuggestions'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+
+/** Max enrichment steps — oldest drops off when exceeded (ouroboros) */
+const MAX_PATH_STEPS = 7
+
+/** Country code → name lookup */
+const COUNTRY_NAMES: Record<string, string> = {}
+for (const c of COUNTRY_OPTIONS) COUNTRY_NAMES[c.code] = c.name
+
+/** Country flag emoji */
+function countryFlag(code: string): string {
+  try {
+    return String.fromCodePoint(
+      ...code
+        .toUpperCase()
+        .split('')
+        .map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)
+    )
+  } catch {
+    return '🌍'
+  }
+}
 
 /** Country with intensity score: how many active filters match this country */
 export interface ScoredCountry {
@@ -98,6 +119,22 @@ export default function HomePage() {
     }
     return scored
   }, [filters])
+
+  // Next best step — single top suggestion (not already enriched, highest score, 2+ matches)
+  const nextStep = useMemo(() => {
+    if (scoredCountries.length === 0 || enrichedCountries.length === 0) return null
+    const enrichedSet = new Set(enrichedCountries)
+    const best = scoredCountries
+      .filter((sc) => !enrichedSet.has(sc.code) && sc.matchCount >= 2)
+      .sort((a, b) => b.score - a.score || b.matchCount - a.matchCount)[0]
+    if (!best) return null
+    return {
+      code: best.code,
+      name: COUNTRY_NAMES[best.code] ?? best.code,
+      score: best.score,
+      matchCount: best.matchCount,
+    }
+  }, [scoredCountries, enrichedCountries])
 
   // Enrich: when clicking a country, auto-discover related dimensions and ADD to existing
   const enrichCountry = useCallback(async (code: string, name: string) => {
@@ -204,29 +241,23 @@ export default function HomePage() {
             // Toggle off — remove this country's enrichment only
             unenrichCountry(code)
           } else {
-            // Add this country to enriched list
-            setEnrichedCountries((prev) => [...prev, code])
+            // Add this country — ouroboros: if at max, oldest drops off
+            setEnrichedCountries((prev) => {
+              const next = [...prev, code]
+              if (next.length > MAX_PATH_STEPS) {
+                const dropped = next[0]
+                // Remove oldest country's filters
+                setFilters((f) => f.filter((fl) => fl.source !== dropped))
+                return next.slice(1)
+              }
+              return next
+            })
             setEnrichedNames((prev) => ({ ...prev, [code]: name ?? code }))
             // Auto-enrich: discover all related dimensions for this country
             void enrichCountry(code, name ?? code)
           }
         }}
         selectedCountry={selectedCountry}
-      />
-
-      {/* Path Suggestions — identity-driven route discovery */}
-      <PathSuggestions
-        scoredCountries={scoredCountries}
-        enrichedCountries={enrichedCountries}
-        totalFilters={filters.filter((f) => f.countryCodes && f.countryCodes.length > 0).length}
-        onSuggestClick={(code, name) => {
-          if (!enrichedCountries.includes(code)) {
-            setEnrichedCountries((prev) => [...prev, code])
-            setEnrichedNames((prev) => ({ ...prev, [code]: name }))
-            void enrichCountry(code, name)
-          }
-        }}
-        onPreview={setPreviewCountries}
       />
 
       {/* Top bar */}
@@ -330,6 +361,42 @@ export default function HomePage() {
           )}
         </nav>
       </div>
+
+      {/* Next best step — subtle suggestion bar under nav */}
+      {nextStep && (
+        <div className="absolute left-0 right-0 top-12 z-20 flex justify-center px-4 py-1.5">
+          <button
+            onClick={() => {
+              if (!enrichedCountries.includes(nextStep.code)) {
+                setEnrichedCountries((prev) => {
+                  const next = [...prev, nextStep.code]
+                  if (next.length > MAX_PATH_STEPS) {
+                    const dropped = next[0]
+                    setFilters((f) => f.filter((fl) => fl.source !== dropped))
+                    return next.slice(1)
+                  }
+                  return next
+                })
+                setEnrichedNames((prev) => ({ ...prev, [nextStep.code]: nextStep.name }))
+                void enrichCountry(nextStep.code, nextStep.name)
+              }
+            }}
+            onMouseEnter={() => setPreviewCountries([nextStep.code])}
+            onMouseLeave={() => setPreviewCountries([])}
+            className="group flex items-center gap-2 rounded-full border border-brand-accent/15 bg-brand-surface/80 px-3 py-1 backdrop-blur transition hover:border-brand-accent/30 hover:bg-brand-accent/10"
+          >
+            <span className="text-[10px] text-brand-text-muted">Next step</span>
+            <span className="text-sm">{countryFlag(nextStep.code)}</span>
+            <span className="text-xs text-brand-accent group-hover:underline">{nextStep.name}</span>
+            <span className="rounded-full bg-brand-accent/15 px-1.5 text-[9px] text-brand-accent">
+              {Math.round(nextStep.score * 100)}%
+            </span>
+            <span className="text-[10px] text-brand-text-muted">
+              {enrichedCountries.length}/{MAX_PATH_STEPS}
+            </span>
+          </button>
+        </div>
+      )}
 
       {/* Mobile nav dropdown */}
       {menuOpen && (
