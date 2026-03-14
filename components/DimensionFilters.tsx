@@ -69,7 +69,6 @@ const DIMENSIONS: { key: DimensionKey; label: string; icon: string }[] = [
   { key: 'sector', label: 'Sector', icon: '💼' },
   { key: 'location', label: 'Region', icon: '📍' },
   { key: 'currency', label: 'Currency', icon: '💱' },
-  { key: 'timezone', label: 'Timezone', icon: '🕐' },
 ]
 
 /** Country flag emoji from ISO code */
