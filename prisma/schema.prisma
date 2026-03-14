@@ -1,11 +1,5 @@
-// Be[Country] Platform — Database Schema
-// PostgreSQL with Prisma ORM
-//
-// Vocabulary: Pioneer (person), Anchor (org), Path (opportunity),
-//             Chapter (engagement), Venture (experience + path)
-//
-// Scale: Be[Country] → Be[Tribe] → Be[Location] → Be[Interest]
-// Countries live in code (lib/countries.ts). Dynamic content lives here.
+// Be[X] v2 — Graph-powered identity platform
+// Hybrid: relational (auth, payments, messages) + graph (Node + Edge)
 
 generator client {
   provider = "prisma-client-js"
@@ -16,58 +10,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ─── Users ───────────────────────────────────────────────────────────────────
+// ─── Layer 1: Auth (relational, required by NextAuth) ─────────────────────────
 
 model User {
   id            String    @id @default(cuid())
-  pioneerId     String?   @unique // Shareable public ID (e.g. "BE-KE-7X3M") for discovery
   email         String    @unique
-  emailVerified DateTime?           // Required by @auth/prisma-adapter (Google OAuth sets this)
+  emailVerified DateTime?
   name          String?
-  image         String?             // Required by @auth/prisma-adapter (Google profile picture)
-  phone         String?
-  passwordHash  String?   // bcrypt hash for Credentials auth (null for OAuth-only)
-  role          UserRole  @default(PIONEER)
-  avatarUrl     String?
+  image         String?
+  passwordHash  String?
+  role          UserRole  @default(EXPLORER)
   country       String    @default("KE")
+  language      String    @default("en")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  profile       Profile?
-  accounts      Account[]         // OAuth providers (Google, etc.)
-  sessions      Session[]         // Required by @auth/prisma-adapter
-  postedPaths   Path[]            // Anchors post Paths
-  chapters      Chapter[]         // Pioneers open Chapters
+  accounts      Account[]
+  sessions      Session[]
+  node          Node?
   payments      Payment[]
-  referrals     Referral[]        @relation("ReferredBy")
-  referred      Referral?         @relation("Referred")
-  threadMemberships ThreadMembership[]
-  savedPaths    SavedPath[]
-  forwards      Forward[]         // Agent forwards paths to workers
-  agentProfile  AgentProfile?     // Agent-specific profile (territory, commission)
-  conversations Conversation[]    @relation("ConversationParticipants")
   sentMessages  Message[]
-  sentFriendships     Friendship[] @relation("SentFriendships")
-  receivedFriendships Friendship[] @relation("ReceivedFriendships")
-  xpEvents      XPEvent[]
+  conversations Conversation[] @relation("ConversationParticipants")
+  agentChats    AgentChat[]
 }
 
 enum UserRole {
-  PIONEER
-  ANCHOR
+  EXPLORER
+  HOST
   AGENT
   ADMIN
 }
-
-// ─── Account (NextAuth OAuth) ────────────────────────────────────────────────
-// Stores OAuth provider data. Required by @auth/prisma-adapter.
 
 model Account {
   id                String  @id @default(cuid())
   userId            String
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type              String  // "oauth" | "credentials"
-  provider          String  // "google" | "credentials"
+  type              String
+  provider          String
   providerAccountId String
   refresh_token     String? @db.Text
   access_token      String? @db.Text
@@ -81,9 +60,6 @@ model Account {
   @@index([userId])
 }
 
-// ─── Session (NextAuth) ──────────────────────────────────────────────────────
-// Required by @auth/prisma-adapter even when using JWT strategy.
-
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -94,9 +70,6 @@ model Session {
   @@index([userId])
 }
 
-// ─── VerificationToken (NextAuth) ────────────────────────────────────────────
-// Required by @auth/prisma-adapter for email verification flows.
-
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -105,233 +78,109 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ─── Profile ─────────────────────────────────────────────────────────────────
+// ─── Layer 2: The Graph (Node + Edge) ─────────────────────────────────────────
 
-model Profile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  headline    String?
-  bio         String?
-  pioneerType String?  // explorer, professional, artisan, guardian, creator, healer
-  resumeUrl   String?
-  skills      String[]
-  experience  Int?     // Years of experience
-  location    String?
-  city        String?
-  linkedinUrl String?
-  upworkUrl   String?
-  fiverrUrl   String?
-  videoUrl    String?  // 30-second pitch video
-  isPublic    Boolean  @default(true)
+model Node {
+  id         String   @id @default(cuid())
+  type       NodeType
+  code       String
+  label      String
+  labelKey   String?
+  icon       String?
+  lat        Float?
+  lng        Float?
+  properties Json?    @db.JsonB
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  // ─── Identity dimensions (from onboarding / Me page) ──────
-  language    String   @default("en")     // Primary language code
-  languages   String[] // All spoken languages
-  interests   String[] // Exchange category IDs
-  reach       String[] // Reach option IDs (can-travel, can-host, etc.)
-  faith       String[] // Faith IDs (islam, christianity, etc.)
-  culture     String?  // Cultural identity (Maasai, Kikuyu, etc.)
-  crafts      String[] // Craft/skill tags
-  toCountries String[] // Target destination countries (ISO codes)
-  priorities  Json?    // Dimension priority weights: { language: 'high', craft: 'high', ... }
-  totalXP     Int      @default(0) // Cached XP total for fast reads
+  userId     String?  @unique
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  updatedAt   DateTime @updatedAt
-}
+  outEdges   Edge[]   @relation("EdgeFrom")
+  inEdges    Edge[]   @relation("EdgeTo")
 
-// ─── Paths ───────────────────────────────────────────────────────────────────
-
-model Path {
-  id           String      @id @default(cuid())
-  anchorId     String
-  anchor       User        @relation(fields: [anchorId], references: [id])
-  title        String
-  company      String
-  description  String      @db.Text
-  location     String
-  isRemote     Boolean     @default(false)
-  pathType     PathType    @default(FULL_PATH)
-  salaryMin    Int?
-  salaryMax    Int?
-  currency     String      @default("KES")
-  skills       String[]
-  sector       String?     // tech, healthcare, hospitality, finance, etc.
-  country      String      @default("KE")
-  status       PathStatus  @default(OPEN)
-  tier         PathTier    @default(BASIC)
-  expiresAt    DateTime
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-
-  chapters     Chapter[]
-  payments     Payment[]
-  savedBy      SavedPath[]
-  forwards     Forward[]    // Agent forwards of this path
-
-  @@index([country])
-  @@index([status])
-  @@index([sector])
-}
-
-enum PathType {
-  FULL_PATH
-  PART_PATH
-  SEASONAL
-  CONTRACT
-  REMOTE
-}
-
-enum PathStatus {
-  DRAFT
-  OPEN
-  PAUSED
-  EXPIRED
-  FILLED
-}
-
-enum PathTier {
-  BASIC
-  FEATURED
-  PREMIUM
-}
-
-// ─── Chapters ────────────────────────────────────────────────────────────────
-// A Chapter is a Pioneer's engagement with a Path.
-
-model Chapter {
-  id          String        @id @default(cuid())
-  pathId      String
-  path        Path          @relation(fields: [pathId], references: [id])
-  pioneerId   String
-  pioneer     User          @relation(fields: [pioneerId], references: [id])
-  coverLetter String?       @db.Text
-  status      ChapterStatus @default(PENDING)
-  openedAt    DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-
-  @@index([pathId])
-  @@index([pioneerId])
-}
-
-enum ChapterStatus {
-  PENDING
-  REVIEWED
-  SHORTLISTED
-  DECLINED
-  PLACED
-}
-
-// ─── Threads ─────────────────────────────────────────────────────────────────
-// Identity-based communities. Be[Country] → Be[Tribe] → Be[Location].
-// Each thread is a community space with its own Gate page and curated feed.
-
-model Thread {
-  id           String       @id @default(cuid())
-  slug         String       @unique
-  name         String
-  brandName    String       // "BeKenya", "BeMaasai", "BeNairobi"
-  type         ThreadType
-  icon         String       // Emoji: 🇰🇪, 🦁, 🏙️
-  tagline      String
-  description  String       @db.Text
-  parentSlug   String?
-  parent       Thread?      @relation("ThreadHierarchy", fields: [parentSlug], references: [slug])
-  children     Thread[]     @relation("ThreadHierarchy")
-  countries    String[]     // ISO codes this thread spans
-  relatedSlugs String[]     // Related thread slugs for cross-linking
-  memberCount  Int          @default(0)
-  active       Boolean      @default(true)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-
-  memberships  ThreadMembership[]
-
+  @@unique([type, code])
   @@index([type])
-  @@index([active])
-  @@index([parentSlug])
+  @@index([type, active])
 }
 
-enum ThreadType {
+enum NodeType {
+  USER
   COUNTRY
-  TRIBE
   LANGUAGE
-  INTEREST
-  RELIGION
-  SCIENCE
+  FAITH
+  SECTOR
+  CURRENCY
   LOCATION
+  CULTURE
+  SKILL
+  EXPERIENCE
 }
 
-// ─── Thread Membership ───────────────────────────────────────────────────────
+model Edge {
+  id         String       @id @default(cuid())
+  fromId     String
+  from       Node         @relation("EdgeFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  toId       String
+  to         Node         @relation("EdgeTo", fields: [toId], references: [id], onDelete: Cascade)
+  relation   EdgeRelation
+  weight     Float?
+  properties Json?        @db.JsonB
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 
-model ThreadMembership {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  threadId  String
-  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  role      String   @default("member") // member, moderator, admin
-  joinedAt  DateTime @default(now())
-
-  @@unique([userId, threadId])
-  @@index([threadId])
+  @@unique([fromId, toId, relation])
+  @@index([fromId])
+  @@index([toId])
+  @@index([relation])
+  @@index([fromId, relation])
+  @@index([toId, relation])
 }
 
-// ─── Experiences ─────────────────────────────────────────────────────────────
-// Eco-tourism, cultural immersions, professional ventures.
+enum EdgeRelation {
+  // User → Dimension
+  SPEAKS
+  PRACTICES
+  WORKS_IN
+  LOCATED_IN
+  USES_CURRENCY
+  HAS_SKILL
+  BELONGS_TO
+  INTERESTED_IN
 
-model Experience {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  name        String
-  location    String
-  type        String   // eco-lodge, conservation, community-stay, safari, cultural
-  duration    String   // "5 days", "2 weeks"
-  priceUSD    Int
-  priceNote   String?
-  capacity    Int      @default(12)
-  highlights  String[]
-  impactNote  String?
-  seasonBest  String?
-  imageUrl    String?
-  country     String   @default("KE")
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  // Country → Dimension
+  OFFICIAL_LANG
+  DOMINANT_FAITH
+  COUNTRY_CURRENCY
+  HAS_SECTOR
+  BORDERS
+  CORRIDOR
 
-  @@index([country])
-  @@index([type])
+  // Structural
+  PARENT_OF
+  RELATED_TO
+
+  // Human Exchange
+  OFFERS
+  SEEKS
+  CONNECTED_TO
+  EXCHANGED_WITH
 }
 
-// ─── Saved Paths ─────────────────────────────────────────────────────────────
-
-model SavedPath {
-  id      String   @id @default(cuid())
-  userId  String
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pathId  String
-  path    Path     @relation(fields: [pathId], references: [id], onDelete: Cascade)
-  savedAt DateTime @default(now())
-
-  @@unique([userId, pathId])
-  @@index([userId])
-}
-
-// ─── Payments ─────────────────────────────────────────────────────────────────
+// ─── Layer 3: Transactional (relational) ──────────────────────────────────────
 
 model Payment {
   id                 String        @id @default(cuid())
   userId             String
   user               User          @relation(fields: [userId], references: [id])
-  pathId             String?
-  path               Path?         @relation(fields: [pathId], references: [id])
-  amount             Int           // In smallest currency unit
+  amount             Int
   currency           String        @default("KES")
   method             PaymentMethod
   status             PaymentStatus @default(PENDING)
   mpesaReceiptNumber String?
-  checkoutRequestId  String?
   stripePaymentId    String?
+  description        String?
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 
@@ -355,129 +204,14 @@ enum PaymentStatus {
   REFUNDED
 }
 
-// ─── Referrals ────────────────────────────────────────────────────────────────
-
-model Referral {
-  id           String   @id @default(cuid())
-  referredById String
-  referredBy   User     @relation("ReferredBy", fields: [referredById], references: [id])
-  referredId   String   @unique
-  referred     User     @relation("Referred", fields: [referredId], references: [id])
-  bonusPaid    Boolean  @default(false)
-  bonusAmount  Int?
-  createdAt    DateTime @default(now())
-}
-
-// ─── Agent Profile ──────────────────────────────────────────────────────────
-// Agent-specific data: territory, commission rate, network size.
-// Agents are the platform bootstrap — they know workers locally and forward
-// demand signals to their network (WhatsApp, in-person, community groups).
-
-model AgentProfile {
-  id              String   @id @default(cuid())
-  userId          String   @unique
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  territory       String   // Country/city they cover: "KE", "KE-Nairobi", "DE-Berlin"
-  sectors         String[] // Sectors they specialize in: ["healthcare", "tech", "hospitality"]
-  networkSize     Int      @default(0) // How many workers they know
-  commissionRate  Float    @default(0.10) // 10% default commission on placement fee
-  totalEarnings   Int      @default(0) // Lifetime earnings in smallest currency unit
-  totalPlacements Int      @default(0) // Successful placements
-  totalForwards   Int      @default(0) // Total forwards sent
-  whatsappNumber  String?  // For receiving demand notifications
-  isActive        Boolean  @default(true)
-  verifiedAt      DateTime? // When admin verified this agent
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@index([territory])
-  @@index([isActive])
-}
-
-// ─── Forwards ───────────────────────────────────────────────────────────────
-// When an Agent forwards a Path to a worker. Tracks the full lifecycle:
-// forward → click → signup → chapter → placement → commission.
-
-model Forward {
-  id          String        @id @default(cuid())
-  agentId     String
-  agent       User          @relation(fields: [agentId], references: [id])
-  pathId      String
-  path        Path          @relation(fields: [pathId], references: [id])
-  workerName  String?       // Who the agent forwarded to (optional, for agent's tracking)
-  workerPhone String?       // Worker's phone (for WhatsApp follow-up)
-  workerEmail String?       // Worker's email (if known)
-  channel     ForwardChannel @default(WHATSAPP)
-  trackingCode String       @unique // Unique code embedded in forwarding link
-  status      ForwardStatus @default(SENT)
-  clickedAt   DateTime?     // When worker clicked the link
-  signedUpAt  DateTime?     // When worker created an account
-  chapterId   String?       // If worker opened a Chapter via this forward
-  placedAt    DateTime?     // If worker got placed
-  commission  Int?          // Commission earned (in smallest currency unit)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-
-  @@index([agentId])
-  @@index([pathId])
-  @@index([trackingCode])
-  @@index([status])
-}
-
-enum ForwardChannel {
-  WHATSAPP
-  SMS
-  EMAIL
-  IN_PERSON
-  SOCIAL_MEDIA
-}
-
-enum ForwardStatus {
-  SENT        // Agent forwarded the path
-  CLICKED     // Worker clicked the link
-  SIGNED_UP   // Worker created an account
-  APPLIED     // Worker opened a Chapter
-  PLACED      // Worker got placed — commission earned!
-  EXPIRED     // Link expired (30 days)
-}
-
-// ─── Social Media Posts ───────────────────────────────────────────────────────
-
-model SocialPost {
-  id           String   @id @default(cuid())
-  type         String
-  title        String
-  body         String   @db.Text
-  imageUrl     String?
-  link         String?
-  platforms    String   // JSON array
-  scheduledFor DateTime?
-  postedAt     DateTime?
-  status       String   @default("draft")
-  countryCode  String   @default("KE")
-  results      String?  @db.Text
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@index([status])
-  @@index([countryCode])
-  @@index([scheduledFor])
-}
-
-// ─── Conversations ────────────────────────────────────────────────────────────
-// Direct message conversations between two or more Pioneers.
-
 model Conversation {
   id            String    @id @default(cuid())
   participants  User[]    @relation("ConversationParticipants")
   messages      Message[]
-  lastMessage   String?
   lastMessageAt DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
-
-// ─── Messages ─────────────────────────────────────────────────────────────────
 
 model Message {
   id             String       @id @default(cuid())
@@ -493,39 +227,14 @@ model Message {
   @@index([senderId])
 }
 
-// ─── Friendships ──────────────────────────────────────────────────────────────
-// Pioneer-to-Pioneer connections. Directional: from → to, with status.
-
-model Friendship {
-  id        String           @id @default(cuid())
-  fromId    String
-  from      User             @relation("SentFriendships", fields: [fromId], references: [id])
-  toId      String
-  to        User             @relation("ReceivedFriendships", fields: [toId], references: [id])
-  status    FriendshipStatus @default(PENDING)
-  createdAt DateTime         @default(now())
-
-  @@unique([fromId, toId])
-  @@index([toId])
-}
-
-enum FriendshipStatus {
-  PENDING
-  ACCEPTED
-  BLOCKED
-}
-
-// ─── XP Events ────────────────────────────────────────────────────────────────
-// Tracks XP awards for gamification. Each event = one XP action.
-
-model XPEvent {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  action    String   // XP action key (e.g. "VIEW_PATH", "COMPLETE_DISCOVERY")
-  points    Int
-  createdAt DateTime @default(now())
+model AgentChat {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dimensions Json     @db.JsonB
+  messages   Json     @db.JsonB
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([userId])
-  @@index([userId, action])
 }
