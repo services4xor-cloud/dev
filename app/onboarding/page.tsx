@@ -41,6 +41,7 @@ export default function OnboardingPage() {
   })
   const [input, setInput] = useState('')
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   if (status === 'unauthenticated') {
     router.push('/login')
@@ -68,16 +69,37 @@ export default function OnboardingPage() {
     }
   }
 
+  const removeItem = (key: string, index: number) => {
+    setData((prev) => ({
+      ...prev,
+      [key]: prev[key].filter((_, i) => i !== index),
+    }))
+  }
+
+  const back = () => {
+    if (step > 0) {
+      setStep(step - 1)
+      setInput('')
+    }
+  }
+
   const submit = async () => {
     setSaving(true)
+    setError('')
     try {
-      await fetch('/api/onboarding', {
+      const res = await fetch('/api/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
+      if (!res.ok) {
+        setError('Failed to save. Please try again.')
+        setSaving(false)
+        return
+      }
       router.push('/me')
     } catch {
+      setError('Connection error. Please try again.')
       setSaving(false)
     }
   }
@@ -115,23 +137,36 @@ export default function OnboardingPage() {
         {data[currentStep.key].length > 0 && (
           <div className="flex flex-wrap gap-2">
             {data[currentStep.key].map((item, i) => (
-              <span
+              <button
                 key={i}
-                className="rounded-full bg-brand-accent/10 px-3 py-1 text-sm text-brand-accent"
+                onClick={() => removeItem(currentStep.key, i)}
+                className="rounded-full bg-brand-accent/10 px-3 py-1 text-sm text-brand-accent hover:bg-brand-accent/20 transition"
               >
-                {item}
-              </span>
+                {item} ✕
+              </button>
             ))}
           </div>
         )}
 
-        <button
-          onClick={next}
-          disabled={saving}
-          className="w-full rounded-lg bg-brand-primary px-4 py-3 font-medium text-brand-accent transition hover:opacity-90 disabled:opacity-50"
-        >
-          {step < STEPS.length - 1 ? 'Next' : saving ? 'Saving...' : 'Complete'}
-        </button>
+        {error && <p className="text-center text-sm text-red-400">{error}</p>}
+
+        <div className="flex gap-3">
+          {step > 0 && (
+            <button
+              onClick={back}
+              className="rounded-lg border border-brand-accent/20 px-4 py-3 font-medium text-brand-text-muted transition hover:text-brand-text"
+            >
+              Back
+            </button>
+          )}
+          <button
+            onClick={next}
+            disabled={saving}
+            className="flex-1 rounded-lg bg-brand-primary px-4 py-3 font-medium text-brand-accent transition hover:opacity-90 disabled:opacity-50"
+          >
+            {step < STEPS.length - 1 ? 'Next' : saving ? 'Saving...' : 'Complete'}
+          </button>
+        </div>
       </div>
     </div>
   )

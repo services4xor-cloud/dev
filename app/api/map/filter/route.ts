@@ -11,20 +11,40 @@ const DIMENSION_TO_EDGE: Record<string, { nodeType: NodeType; relation: EdgeRela
   // culture filter deferred — no COUNTRY→CULTURE edge yet
 }
 
+const MAX_FILTERS = 10
+
 export async function POST(req: NextRequest) {
-  const { filters } = await req.json()
+  let body: unknown
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  const { filters } = body as { filters?: unknown[] }
+  if (!Array.isArray(filters) || filters.length > MAX_FILTERS) {
+    return NextResponse.json(
+      { error: `filters must be an array of max ${MAX_FILTERS} items` },
+      { status: 400 }
+    )
+  }
 
   const graphFilters = filters
-    .map((f: { dimension: string; nodeCode: string }) => {
-      const mapping = DIMENSION_TO_EDGE[f.dimension]
+    .map((f: unknown) => {
+      const filter = f as { dimension?: string; nodeCode?: string }
+      if (!filter?.dimension || !filter?.nodeCode) return null
+      const mapping = DIMENSION_TO_EDGE[filter.dimension]
       if (!mapping) return null
       return {
         dimensionType: mapping.nodeType,
-        dimensionCode: f.nodeCode,
+        dimensionCode: String(filter.nodeCode),
         relation: mapping.relation,
       }
     })
-    .filter(Boolean)
+    .filter(
+      (f): f is { dimensionType: NodeType; dimensionCode: string; relation: EdgeRelation } =>
+        f !== null
+    )
 
   const countries = await filterCountries(graphFilters)
 

@@ -14,7 +14,7 @@ jest.mock('@/lib/auth', () => ({
 
 jest.mock('@/lib/ai', () => ({
   buildPersonaPrompt: jest.fn(),
-  streamChatWithAgent: jest.fn(),
+  chatWithAgent: jest.fn(),
 }))
 
 jest.mock('@/lib/db', () => ({
@@ -40,13 +40,11 @@ jest.mock('@anthropic-ai/sdk', () => ({
 
 import { POST } from '@/app/api/agent/chat/route'
 import { getServerSession } from 'next-auth'
-import { buildPersonaPrompt, streamChatWithAgent } from '@/lib/ai'
+import { buildPersonaPrompt, chatWithAgent } from '@/lib/ai'
 
 const mockGetServerSession = getServerSession as jest.MockedFunction<typeof getServerSession>
 const mockBuildPersonaPrompt = buildPersonaPrompt as jest.MockedFunction<typeof buildPersonaPrompt>
-const mockStreamChatWithAgent = streamChatWithAgent as jest.MockedFunction<
-  typeof streamChatWithAgent
->
+const mockChatWithAgent = chatWithAgent as jest.MockedFunction<typeof chatWithAgent>
 
 function makeRequest(body: unknown): NextRequest {
   return new NextRequest('http://localhost/api/agent/chat', {
@@ -93,7 +91,7 @@ describe('POST /api/agent/chat', () => {
     expect(res.status).toBe(401)
   })
 
-  test('streams response for authenticated user', async () => {
+  test('returns response for authenticated user', async () => {
     const { db } = require('@/lib/db')
 
     mockGetServerSession.mockResolvedValue({
@@ -102,16 +100,7 @@ describe('POST /api/agent/chat', () => {
     })
 
     mockBuildPersonaPrompt.mockResolvedValue('You are a Be[X] agent...')
-
-    // Mock stream with finalMessage
-    const fakeStream = {
-      finalMessage: jest.fn().mockResolvedValue({
-        content: [{ type: 'text', text: 'Hello from Kenya!' }],
-      }),
-    }
-    mockStreamChatWithAgent.mockReturnValue(
-      fakeStream as unknown as ReturnType<typeof streamChatWithAgent>
-    )
+    mockChatWithAgent.mockResolvedValue('Hello from Kenya!')
 
     db.agentChat.create.mockResolvedValue({ id: 'chat-new-1' })
 
@@ -122,23 +111,20 @@ describe('POST /api/agent/chat', () => {
 
     const res = await POST(req)
 
-    // The response is a streaming Response
     expect(res.status).toBe(200)
     expect(res.headers.get('Content-Type')).toBe('text/plain')
 
-    // Read body
     const body = await res.text()
     expect(body).toBe('Hello from Kenya!')
 
-    // Verify prompt was built with dimensions
     expect(mockBuildPersonaPrompt).toHaveBeenCalledWith({ country: 'KE' })
-    expect(mockStreamChatWithAgent).toHaveBeenCalledWith(
+    expect(mockChatWithAgent).toHaveBeenCalledWith(
       'You are a Be[X] agent...',
       expect.arrayContaining([{ role: 'user', content: 'Tell me about Kenya' }])
     )
   })
 
-  test('loads existing conversation history when conversationId provided', async () => {
+  test('loads existing conversation and verifies ownership', async () => {
     const { db } = require('@/lib/db')
 
     mockGetServerSession.mockResolvedValue({
@@ -147,6 +133,7 @@ describe('POST /api/agent/chat', () => {
     })
 
     mockBuildPersonaPrompt.mockResolvedValue('System prompt')
+    mockChatWithAgent.mockResolvedValue('New reply')
 
     const existingHistory = [
       { role: 'user', content: 'Previous message' },
@@ -154,17 +141,9 @@ describe('POST /api/agent/chat', () => {
     ]
     db.agentChat.findUnique.mockResolvedValue({
       id: 'chat-existing',
+      userId: 'user-1',
       messages: existingHistory,
     })
-
-    const fakeStream = {
-      finalMessage: jest.fn().mockResolvedValue({
-        content: [{ type: 'text', text: 'New reply' }],
-      }),
-    }
-    mockStreamChatWithAgent.mockReturnValue(
-      fakeStream as unknown as ReturnType<typeof streamChatWithAgent>
-    )
     db.agentChat.update.mockResolvedValue({ id: 'chat-existing' })
 
     const req = makeRequest({
@@ -173,11 +152,11 @@ describe('POST /api/agent/chat', () => {
       conversationId: 'chat-existing',
     })
 
-    await POST(req)
+    const res = await POST(req)
+    expect(res.status).toBe(200)
 
     expect(db.agentChat.findUnique).toHaveBeenCalledWith({ where: { id: 'chat-existing' } })
-    // Stream should be called with history + new message
-    expect(mockStreamChatWithAgent).toHaveBeenCalledWith(
+    expect(mockChatWithAgent).toHaveBeenCalledWith(
       'System prompt',
       expect.arrayContaining([
         { role: 'user', content: 'Previous message' },
@@ -185,5 +164,29 @@ describe('POST /api/agent/chat', () => {
         { role: 'user', content: 'Follow-up question' },
       ])
     )
+  })
+
+  test('returns 403 when accessing another users conversation', async () => {
+    const { db } = require('@/lib/db')
+
+    mockGetServerSession.mockResolvedValue({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+      expires: '2099-01-01',
+    })
+
+    db.agentChat.findUnique.mockResolvedValue({
+      id: 'chat-other',
+      userId: 'user-999',
+      messages: [],
+    })
+
+    const req = makeRequest({
+      dimensions: { country: 'KE' },
+      message: 'Sneaky',
+      conversationId: 'chat-other',
+    })
+
+    const res = await POST(req)
+    expect(res.status).toBe(403)
   })
 })

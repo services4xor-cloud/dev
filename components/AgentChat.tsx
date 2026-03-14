@@ -43,6 +43,10 @@ export default function AgentChat({ dimensions, onClose }: AgentChatProps) {
         }),
       })
 
+      if (!res.ok) {
+        throw new Error(`Agent error (${res.status})`)
+      }
+
       const newConversationId = res.headers.get('X-Conversation-Id')
       if (newConversationId) setConversationId(newConversationId)
 

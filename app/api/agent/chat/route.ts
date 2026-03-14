@@ -1,9 +1,8 @@
 import { NextRequest } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { buildPersonaPrompt, streamChatWithAgent } from '@/lib/ai'
+import { buildPersonaPrompt, chatWithAgent } from '@/lib/ai'
 import { db } from '@/lib/db'
-import type { AgentChatRequest } from '@/types/api'
 import type { Prisma } from '@prisma/client'
 
 export async function POST(req: NextRequest) {
@@ -17,16 +16,28 @@ export async function POST(req: NextRequest) {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  const body: AgentChatRequest = await req.json()
-  const { dimensions, message, conversationId } = body
+  let body: { dimensions?: Record<string, string>; message?: string; conversationId?: string }
+  try {
+    body = await req.json()
+  } catch {
+    return new Response('Invalid JSON', { status: 400 })
+  }
 
-  // Load or create conversation
+  const { dimensions, message, conversationId } = body
+  if (!message || typeof message !== 'string' || !dimensions) {
+    return new Response('Missing message or dimensions', { status: 400 })
+  }
+
+  // Load or create conversation — verify ownership
   let history: { role: 'user' | 'assistant'; content: string }[] = []
   let chatId = conversationId
 
   if (chatId) {
     const chat = await db.agentChat.findUnique({ where: { id: chatId } })
     if (chat) {
+      if (chat.userId !== userId) {
+        return new Response('Forbidden', { status: 403 })
+      }
       history = (chat.messages as { role: 'user' | 'assistant'; content: string }[]) ?? []
     }
   }
@@ -37,49 +48,39 @@ export async function POST(req: NextRequest) {
   // Add new user message
   history.push({ role: 'user', content: message })
 
-  // Stream response
-  const stream = streamChatWithAgent(systemPrompt, history)
+  try {
+    // Get full response (no fake streaming)
+    const fullResponse = await chatWithAgent(systemPrompt, history)
 
-  // Collect full response for storage
-  let fullResponse = ''
+    // Save conversation
+    history.push({ role: 'assistant', content: fullResponse })
 
-  const encoder = new TextEncoder()
-  const readable = new ReadableStream({
-    async start(controller) {
-      const response = await stream.finalMessage()
-      fullResponse = response.content[0].type === 'text' ? response.content[0].text : ''
+    if (chatId) {
+      await db.agentChat.update({
+        where: { id: chatId },
+        data: {
+          messages: history as Prisma.InputJsonValue,
+          dimensions: dimensions as Prisma.InputJsonValue,
+        },
+      })
+    } else {
+      const chat = await db.agentChat.create({
+        data: {
+          userId,
+          dimensions: dimensions as Prisma.InputJsonValue,
+          messages: history as Prisma.InputJsonValue,
+        },
+      })
+      chatId = chat.id
+    }
 
-      controller.enqueue(encoder.encode(fullResponse))
-      controller.close()
-
-      // Save conversation
-      history.push({ role: 'assistant', content: fullResponse })
-
-      if (chatId) {
-        await db.agentChat.update({
-          where: { id: chatId },
-          data: {
-            messages: history as Prisma.InputJsonValue,
-            dimensions: dimensions as Prisma.InputJsonValue,
-          },
-        })
-      } else {
-        const chat = await db.agentChat.create({
-          data: {
-            userId,
-            dimensions: dimensions as Prisma.InputJsonValue,
-            messages: history as Prisma.InputJsonValue,
-          },
-        })
-        chatId = chat.id
-      }
-    },
-  })
-
-  return new Response(readable, {
-    headers: {
-      'Content-Type': 'text/plain',
-      'X-Conversation-Id': chatId ?? '',
-    },
-  })
+    return new Response(fullResponse, {
+      headers: {
+        'Content-Type': 'text/plain',
+        'X-Conversation-Id': chatId ?? '',
+      },
+    })
+  } catch {
+    return new Response('Agent error', { status: 500 })
+  }
 }
