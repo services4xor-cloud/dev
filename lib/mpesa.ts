@@ -1,14 +1,18 @@
 /**
- * M-Pesa Daraja v2 STK Push client — sandbox mode.
+ * M-Pesa Daraja v2 STK Push client.
  *
- * Uses Safaricom sandbox endpoints. Set env vars to enable:
+ * Set MPESA_ENV=production for live Safaricom endpoint, otherwise sandbox is used.
+ * Required env vars:
  *   MPESA_CONSUMER_KEY, MPESA_CONSUMER_SECRET, MPESA_SHORTCODE,
  *   MPESA_PASSKEY, MPESA_CALLBACK_URL
  *
  * If any env var is missing, operations return { success: false } rather than crashing.
  */
 
-const SANDBOX_BASE = 'https://sandbox.safaricom.co.ke'
+const MPESA_BASE =
+  process.env.MPESA_ENV === 'production'
+    ? 'https://api.safaricom.co.ke'
+    : 'https://sandbox.safaricom.co.ke'
 
 function isConfigured(): boolean {
   return !!(
@@ -21,14 +25,14 @@ function isConfigured(): boolean {
 }
 
 /**
- * Fetch OAuth access token from Safaricom sandbox.
+ * Fetch OAuth access token from Safaricom.
  */
 export async function getAccessToken(): Promise<string> {
   const key = process.env.MPESA_CONSUMER_KEY!
   const secret = process.env.MPESA_CONSUMER_SECRET!
   const credentials = Buffer.from(`${key}:${secret}`).toString('base64')
 
-  const res = await fetch(`${SANDBOX_BASE}/oauth/v1/generate?grant_type=client_credentials`, {
+  const res = await fetch(`${MPESA_BASE}/oauth/v1/generate?grant_type=client_credentials`, {
     method: 'GET',
     headers: { Authorization: `Basic ${credentials}` },
   })
@@ -56,7 +60,7 @@ export interface StkPushResult {
 }
 
 /**
- * Initiate M-Pesa STK Push (sandbox).
+ * Initiate M-Pesa STK Push.
  * Returns checkout request ID on success for later status polling / callback matching.
  */
 export async function stkPush(params: StkPushParams): Promise<StkPushResult> {
@@ -97,7 +101,7 @@ export async function stkPush(params: StkPushParams): Promise<StkPushResult> {
       TransactionDesc: description.slice(0, 13),
     }
 
-    const res = await fetch(`${SANDBOX_BASE}/mpesa/stkpush/v1/processrequest`, {
+    const res = await fetch(`${MPESA_BASE}/mpesa/stkpush/v1/processrequest`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

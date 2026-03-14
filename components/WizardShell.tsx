@@ -1,5 +1,7 @@
 'use client'
 
+import type { ReactNode } from 'react'
+
 interface WizardStep {
   key: string
   title: string
@@ -12,7 +14,7 @@ interface WizardShellProps {
   onBack: () => void
   nextLabel?: string
   nextDisabled?: boolean
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default function WizardShell({
