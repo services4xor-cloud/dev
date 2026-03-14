@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Footer from '@/components/Footer'
+import PageShell from '@/components/PageShell'
 
 interface PricingTier {
   name: string
@@ -69,22 +69,8 @@ const tiers: PricingTier[] = [
 
 export default function PricingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-brand-bg">
-      {/* Header */}
-      <header className="border-b border-brand-accent/10 bg-brand-surface/60 px-6 py-4 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center gap-4">
-          <Link
-            href="/"
-            className="text-sm text-brand-text-muted transition-colors hover:text-brand-accent"
-          >
-            ← Back
-          </Link>
-          <h1 className="text-xl font-semibold text-brand-text">Pricing</h1>
-        </div>
-      </header>
-
-      {/* Main content */}
-      <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-16">
+    <PageShell backLabel="← Back">
+      <div className="mx-auto w-full max-w-5xl px-6 py-16">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold text-brand-text">Simple, Honest Pricing</h2>
           <p className="mx-auto max-w-xl text-brand-text-muted">
@@ -173,9 +159,7 @@ export default function PricingPage() {
             </Link>
           </p>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   )
 }

@@ -113,6 +113,12 @@ export default function HomePage() {
           >
             Discovery
           </Link>
+          <Link
+            href="/threads"
+            className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            Threads
+          </Link>
           {session ? (
             <>
               <Link
@@ -188,6 +194,13 @@ export default function HomePage() {
             className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
           >
             Discovery
+          </Link>
+          <Link
+            href="/threads"
+            onClick={() => setMenuOpen(false)}
+            className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            Threads
           </Link>
           {session ? (
             <>

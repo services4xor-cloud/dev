@@ -1,5 +1,4 @@
-import Link from 'next/link'
-import Footer from '@/components/Footer'
+import PageShell from '@/components/PageShell'
 
 const sections = [
   {
@@ -77,26 +76,8 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-text">
-      {/* Header */}
-      <header className="border-b border-brand-accent/20 bg-brand-surface">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <Link
-            href="/"
-            className="text-lg font-bold text-brand-accent hover:opacity-80 transition-opacity"
-          >
-            Be[X]
-          </Link>
-          <Link
-            href="/"
-            className="text-sm text-brand-text-muted hover:text-brand-accent transition-colors"
-          >
-            ← Back to Map
-          </Link>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-4xl px-6 py-16">
+    <PageShell>
+      <div className="mx-auto max-w-4xl px-6 py-16">
         {/* Title */}
         <div className="mb-12">
           <h1 className="text-3xl font-bold tracking-tight text-brand-text sm:text-4xl">
@@ -158,9 +139,7 @@ export default function PrivacyPage() {
             — we respond within 10 business days.
           </p>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   )
 }

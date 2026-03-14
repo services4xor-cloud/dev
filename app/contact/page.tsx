@@ -1,24 +1,9 @@
-import Link from 'next/link'
-import Footer from '@/components/Footer'
+import PageShell from '@/components/PageShell'
 
 export default function ContactPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-brand-bg">
-      {/* Header */}
-      <header className="border-b border-brand-accent/10 bg-brand-surface/60 px-6 py-4 backdrop-blur">
-        <div className="mx-auto flex max-w-4xl items-center gap-4">
-          <Link
-            href="/"
-            className="text-sm text-brand-text-muted transition-colors hover:text-brand-accent"
-          >
-            ← Back
-          </Link>
-          <h1 className="text-xl font-semibold text-brand-text">Contact</h1>
-        </div>
-      </header>
-
-      {/* Main content */}
-      <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-16">
+    <PageShell backLabel="← Back">
+      <div className="mx-auto w-full max-w-4xl px-6 py-16">
         <div className="mb-12">
           <h2 className="mb-4 text-3xl font-bold text-brand-text">Get in Touch</h2>
           <p className="max-w-xl text-brand-text-muted">
@@ -117,9 +102,7 @@ export default function ContactPage() {
             mention &ldquo;urgent&rdquo; in the subject line.
           </p>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   )
 }
