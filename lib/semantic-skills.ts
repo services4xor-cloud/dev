@@ -3,11 +3,11 @@
  *
  * Enables international skill matching across the Be[X] platform.
  * "Softwareentwicklung" (DE) = "Software Development" (EN) = "Développement logiciel" (FR).
- * When two Pioneers have the same skill in different languages, the matching
+ * When two Explorers have the same skill in different languages, the matching
  * engine recognizes them as equivalent via canonical skill IDs.
  *
  * Data source: CRAFT_SUGGESTIONS from lib/dimensions.ts
- * Used by: matching engine, Compass routing, Pioneer profiles, Anchor path filtering
+ * Used by: matching engine, Discovery routing, Explorer profiles, Host path filtering
  */
 
 // ---------------------------------------------------------------------------
@@ -2047,7 +2047,7 @@ export function getSkillsByCategory(category: string): SkillCanonical[] {
 
 /**
  * Check if two strings (in any language) resolve to the same canonical skill.
- * Useful for cross-language matching in the Compass engine.
+ * Useful for cross-language matching in the Discovery engine.
  *
  * @param a - First skill string (any language)
  * @param b - Second skill string (any language)

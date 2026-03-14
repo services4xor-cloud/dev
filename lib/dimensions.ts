@@ -3,7 +3,7 @@
  *
  * Four identity dimensions that power the BeNetwork matching engine.
  * These registries provide options, suggestions, and lookups for
- * Pioneer profiles and Compass routing.
+ * Explorer profiles and Discovery routing.
  */
 
 // ---------------------------------------------------------------------------

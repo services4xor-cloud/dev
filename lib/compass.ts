@@ -12,7 +12,7 @@ export interface CompassReading {
   explorerType: ExplorerType | null
   routeStrength: 'direct' | 'partner' | 'emerging' // how well this route is supported
   matchScore: number // 0-100
-  topVentures: string[] // recommended venture IDs
+  topExperiences: string[] // recommended experience IDs
   visaNote: string
   paymentNote: string
 }

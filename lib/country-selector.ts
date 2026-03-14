@@ -9,9 +9,9 @@
  *   - Corridor strength (direct / partner / emerging)
  *
  * KEY CONCEPT: Language + Location = Collaboration
- *   A Pioneer's languages and location together determine the strongest
- *   corridors. A Swahili-speaking Pioneer in Kenya has a direct corridor
- *   to Tanzania/Uganda. A German-speaking Pioneer has a direct corridor
+ *   A Explorer's languages and location together determine the strongest
+ *   corridors. A Swahili-speaking Explorer in Kenya has a direct corridor
+ *   to Tanzania/Uganda. A German-speaking Explorer has a direct corridor
  *   to Germany/Austria/Switzerland.
  *
  * Used by:
@@ -3484,7 +3484,7 @@ export function priorityChar(n: number): string {
   return PRIORITY_CHARS[n - 1] ?? String(n)
 }
 
-/** Max countries a Pioneer can select in the priority selector */
+/** Max countries a Explorer can select in the priority selector */
 export const MAX_COUNTRY_SELECTIONS = 5
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -3532,7 +3532,7 @@ export function getAllLanguages(): Language[] {
 /**
  * Language overlap score between two countries (0–1).
  * Used by the matching engine to boost corridor strength
- * when Pioneer and destination share languages.
+ * when Explorer and destination share languages.
  */
 export function languageOverlap(codeA: string, codeB: string): number {
   const a = COUNTRY_OPTIONS.find((c) => c.code === codeA)

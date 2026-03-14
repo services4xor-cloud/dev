@@ -11,7 +11,7 @@
  *
  * Usage:
  *   import { sendEmail } from '@/lib/email'
- *   await sendEmail('user@example.com', 'pioneer_welcome', { name: 'Alice', ... })
+ *   await sendEmail('user@example.com', 'pioneer_welcome', { name: 'Alice', ... }) // template key unchanged
  */
 
 // eslint-disable-next-line no-console
@@ -123,8 +123,8 @@ function emailFooter(
     <p class="footer-brand">BeKenya</p>
     <p class="footer-links">
       <a href="https://bekenya.com">Home</a>
-      <a href="https://bekenya.com/ventures">Paths</a>
-      <a href="https://bekenya.com/compass">Compass</a>
+      <a href="https://bekenya.com/ventures">Experiences</a>
+      <a href="https://bekenya.com/compass">Discovery</a>
       <a href="https://bekenya.com/about">About</a>
     </p>
     <p class="footer-unsub">${unsubscribeText}</p>
@@ -139,17 +139,17 @@ export const EMAIL_TEMPLATES: Record<
   EmailTemplate,
   (data: Record<string, string>) => { subject: string; html: string }
 > = {
-  // ── 1. Pioneer Welcome ──────────────────────────────────────────────────────
+  // ── 1. Explorer Welcome ──────────────────────────────────────────────────────
   pioneer_welcome: (data) => ({
-    subject: `Welcome to the BeNetwork, ${data.name || 'Pioneer'}!`,
+    subject: `Welcome to the BeNetwork, ${data.name || 'Explorer'}!`,
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
-        <div class="badge">${data.pioneerType || 'Pioneer'} Pioneer</div>
-        <h1 class="h1">Welcome to the BeNetwork, ${data.name || 'Pioneer'}!</h1>
+        <div class="badge">${data.pioneerType || 'Explorer'} Explorer</div>
+        <h1 class="h1">Welcome to the BeNetwork, ${data.name || 'Explorer'}!</h1>
         <p class="p">
-          You've taken the first step on your journey. The Compass is calibrated,
-          your profile is live, and Anchors are ready to meet you.
+          You've taken the first step on your journey. Discovery is calibrated,
+          your profile is live, and Hosts are ready to meet you.
         </p>
 
         <div class="info-card">
@@ -157,7 +157,7 @@ export const EMAIL_TEMPLATES: Record<
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <div style="flex:1;min-width:100px;text-align:center;background:#fdf2f3;border-radius:8px;padding:12px;">
               <span style="font-size:24px;font-weight:800;color:#5C0A14;">${data.matchCount || '0'}</span>
-              <span style="display:block;font-size:11px;color:#9ca3af;margin-top:2px;">Path Matches</span>
+              <span style="display:block;font-size:11px;color:#9ca3af;margin-top:2px;">Opportunity Matches</span>
             </div>
             <div style="flex:1;min-width:100px;text-align:center;background:#f0fdf4;border-radius:8px;padding:12px;">
               <span style="font-size:24px;font-weight:800;color:#006600;">${data.countryFrom || 'KE'}</span>
@@ -175,29 +175,29 @@ export const EMAIL_TEMPLATES: Record<
           <li>
             <div class="step-num">1</div>
             <div>
-              <strong>Complete your Compass profile</strong><br/>
-              <span style="font-size:13px;color:#6b7280;">Add your skills, experience, and target role. Better profiles = more Anchor responses.</span>
+              <strong>Complete your Discovery profile</strong><br/>
+              <span style="font-size:13px;color:#6b7280;">Add your skills, experience, and target role. Better profiles = more Host responses.</span>
             </div>
           </li>
           <li>
             <div class="step-num">2</div>
             <div>
-              <strong>Browse your matched Paths</strong><br/>
-              <span style="font-size:13px;color:#6b7280;">The Compass has matched you with ${data.matchCount || 'open'} Paths. Explore them and open a Chapter.</span>
+              <strong>Browse your matched Opportunities</strong><br/>
+              <span style="font-size:13px;color:#6b7280;">Discovery has matched you with ${data.matchCount || 'open'} Opportunities. Explore them and open an Exchange.</span>
             </div>
           </li>
           <li>
             <div class="step-num">3</div>
             <div>
-              <strong>Connect with an Anchor</strong><br/>
-              <span style="font-size:13px;color:#6b7280;">Anchors are employers and guides who open their Paths to Pioneers like you.</span>
+              <strong>Connect with a Host</strong><br/>
+              <span style="font-size:13px;color:#6b7280;">Hosts are employers and guides who open their Opportunities to Explorers like you.</span>
             </div>
           </li>
         </ol>
 
         <div class="cta-block">
           <a href="${data.ctaUrl || 'https://bekenya.com/compass'}" class="cta-btn">
-            Start Your Compass &rarr;
+            Start Your Discovery &rarr;
           </a>
         </div>
 
@@ -208,28 +208,28 @@ export const EMAIL_TEMPLATES: Record<
         </p>
       </div>
       ${emailFooter()}`,
-      `Welcome, ${data.name || 'Pioneer'}! Your journey starts now.`
+      `Welcome, ${data.name || 'Explorer'}! Your journey starts now.`
     ),
   }),
 
-  // ── 2. Chapter Opened (Pioneer notified when chapter is created) ───────────
+  // ── 2. Exchange Opened (Explorer notified when exchange is created) ───────────
   chapter_opened: (data) => ({
-    subject: `Chapter opened: ${data.pathTitle || 'Your Application'}`,
+    subject: `Exchange opened: ${data.pathTitle || 'Your Application'}`,
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
-        <div class="badge-green">Chapter Opened</div>
-        <h1 class="h1">Your chapter is live, ${data.pioneerName || 'Pioneer'}!</h1>
+        <div class="badge-green">Exchange Opened</div>
+        <h1 class="h1">Your exchange is live, ${data.pioneerName || 'Explorer'}!</h1>
         <p class="p">
-          You've successfully opened a Chapter for <strong>${data.pathTitle || 'this Path'}</strong>.
-          The Anchor has been notified and will respond within 48 hours.
+          You've successfully opened an Exchange for <strong>${data.pathTitle || 'this Opportunity'}</strong>.
+          The Host has been notified and will respond within 48 hours.
         </p>
 
         <div class="info-card">
-          <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:#374151;">Chapter Details</p>
+          <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:#374151;">Exchange Details</p>
           <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;width:130px;">Path</td><td style="font-size:13px;color:#111827;font-weight:600;">${data.pathTitle || '—'}</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Anchor</td><td style="font-size:13px;color:#111827;">${data.anchorName || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;width:130px;">Opportunity</td><td style="font-size:13px;color:#111827;font-weight:600;">${data.pathTitle || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Host</td><td style="font-size:13px;color:#111827;">${data.anchorName || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Location</td><td style="font-size:13px;color:#111827;">${data.location || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Match Score</td><td style="font-size:13px;color:#5C0A14;font-weight:700;">${data.matchScore || '—'}%</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Reference</td><td style="font-size:13px;color:#111827;">${data.chapterId || '—'}</td></tr>
@@ -238,24 +238,24 @@ export const EMAIL_TEMPLATES: Record<
         </div>
 
         <p class="p">
-          While you wait, make sure your profile is complete — Anchors look at your
-          skills, experience, and the message you wrote in your chapter.
+          While you wait, make sure your profile is complete — Hosts look at your
+          skills, experience, and the message you wrote in your exchange.
         </p>
 
         <div class="cta-block">
           <a href="${data.chapterUrl || 'https://bekenya.com/compass'}" class="cta-btn">
-            View Your Chapter
+            View Your Exchange
           </a>
         </div>
       </div>
       ${emailFooter()}`,
-      `Your chapter for ${data.pathTitle || 'this Path'} is now live.`
+      `Your exchange for ${data.pathTitle || 'this Opportunity'} is now live.`
     ),
   }),
 
-  // ── 3. Chapter Status Update (Anchor responded) ───────────────────────────
+  // ── 3. Exchange Status Update (Host responded) ───────────────────────────
   chapter_status_update: (data) => ({
-    subject: `Chapter update: ${data.status || 'New update'} on ${data.pathTitle || 'your application'}`,
+    subject: `Exchange update: ${data.status || 'New update'} on ${data.pathTitle || 'your application'}`,
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
@@ -265,13 +265,13 @@ export const EMAIL_TEMPLATES: Record<
         <h1 class="h1">
           ${
             data.status === 'accepted'
-              ? `Congratulations, ${data.pioneerName || 'Pioneer'}!`
-              : `Update on your chapter, ${data.pioneerName || 'Pioneer'}`
+              ? `Congratulations, ${data.pioneerName || 'Explorer'}!`
+              : `Update on your exchange, ${data.pioneerName || 'Explorer'}`
           }
         </h1>
         <p class="p">
-          ${data.anchorName || 'The Anchor'} has reviewed your chapter for
-          <strong>${data.pathTitle || 'the Path'}</strong>.
+          ${data.anchorName || 'The Host'} has reviewed your exchange for
+          <strong>${data.pathTitle || 'the Opportunity'}</strong>.
         </p>
 
         <div class="info-card" style="${data.status === 'accepted' ? 'border-color:#86efac;background:#f0fdf4;' : ''}">
@@ -284,12 +284,12 @@ export const EMAIL_TEMPLATES: Record<
 
         <div class="cta-block">
           <a href="${data.chapterUrl || 'https://bekenya.com/compass'}" class="cta-btn${data.status === 'accepted' ? '-green' : ''}">
-            ${data.status === 'accepted' ? 'View Your Offer' : 'View Chapter Details'}
+            ${data.status === 'accepted' ? 'View Your Offer' : 'View Exchange Details'}
           </a>
         </div>
       </div>
       ${emailFooter()}`,
-      `${data.anchorName || 'An Anchor'} has responded to your chapter.`
+      `${data.anchorName || 'A Host'} has responded to your exchange.`
     ),
   }),
 
@@ -346,25 +346,25 @@ export const EMAIL_TEMPLATES: Record<
     ),
   }),
 
-  // ── 5. New Path Match ──────────────────────────────────────────────────────
+  // ── 5. New Opportunity Match ──────────────────────────────────────────────────────
   new_path_match: (data) => ({
-    subject: `New match: ${data.pathTitle || 'A Path'} at ${data.anchorName || 'an Anchor'} (${data.matchScore || '—'}% match)`,
+    subject: `New match: ${data.pathTitle || 'An Opportunity'} at ${data.anchorName || 'a Host'} (${data.matchScore || '—'}% match)`,
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
         <div class="badge">New Match</div>
-        <h1 class="h1">The Compass found a new Path for you!</h1>
+        <h1 class="h1">Discovery found a new Opportunity for you!</h1>
         <p class="p">
-          Based on your profile, <strong>${data.anchorName || 'an Anchor'}</strong> has opened a Path
+          Based on your profile, <strong>${data.anchorName || 'a Host'}</strong> has opened an Opportunity
           that matches your skills and goals.
         </p>
 
         <div class="info-card">
           <p style="font-size:18px;font-weight:700;color:#111827;margin:0 0 8px;">
-            ${data.pathTitle || 'Untitled Path'}
+            ${data.pathTitle || 'Untitled Opportunity'}
           </p>
           <p style="font-size:13px;color:#5C0A14;font-weight:600;margin:0 0 16px;">
-            ${data.anchorName || 'Anchor'} &bull; ${data.location || 'Location TBC'}
+            ${data.anchorName || 'Host'} &bull; ${data.location || 'Location TBC'}
           </p>
           ${data.salary ? `<p style="font-size:14px;color:#374151;margin:0 0 16px;"><strong>Compensation:</strong> ${data.salary}</p>` : ''}
 
@@ -380,40 +380,40 @@ export const EMAIL_TEMPLATES: Record<
         </div>
 
         <p class="p">
-          This Path won't stay open forever — ${data.openDays || 'a limited number of'} Pioneers can
-          open a Chapter. Be one of the first to reach out.
+          This Opportunity won't stay open forever — ${data.openDays || 'a limited number of'} Explorers can
+          open an Exchange. Be one of the first to reach out.
         </p>
 
         <div class="cta-block">
           <a href="${data.pathUrl || 'https://bekenya.com/compass'}" class="cta-btn">
-            Open a Chapter &rarr;
+            Open an Exchange &rarr;
           </a>
         </div>
       </div>
       ${emailFooter()}`,
-      `${data.matchScore || '—'}% match: ${data.pathTitle || 'A new path'} at ${data.anchorName || 'an Anchor'}`
+      `${data.matchScore || '—'}% match: ${data.pathTitle || 'A new opportunity'} at ${data.anchorName || 'a Host'}`
     ),
   }),
 
-  // ── 6. Anchor: New Chapter Notification ────────────────────────────────────
+  // ── 6. Host: New Exchange Notification ────────────────────────────────────
   anchor_new_chapter: (data) => ({
-    subject: `New chapter opened by ${data.pioneerName || 'a Pioneer'} — ${data.matchScore || '—'}% match`,
+    subject: `New exchange opened by ${data.pioneerName || 'an Explorer'} — ${data.matchScore || '—'}% match`,
     html: emailWrapper(
-      `${emailHeader('BeNetwork Anchor Hub', 'Your Pioneers are waiting.')}
+      `${emailHeader('BeNetwork Host Hub', 'Your Explorers are waiting.')}
       <div class="body">
-        <div class="badge">New Chapter</div>
-        <h1 class="h1">A Pioneer opened a chapter on your Path</h1>
+        <div class="badge">New Exchange</div>
+        <h1 class="h1">An Explorer opened an exchange on your Opportunity</h1>
         <p class="p">
-          <strong>${data.pioneerName || 'A Pioneer'}</strong> from <strong>${data.pioneerCountry || '—'}</strong>
-          has applied to your Path: <strong>${data.pathTitle || '—'}</strong>.
+          <strong>${data.pioneerName || 'An Explorer'}</strong> from <strong>${data.pioneerCountry || '—'}</strong>
+          has applied to your Opportunity: <strong>${data.pathTitle || '—'}</strong>.
         </p>
 
         <div class="info-card">
           <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;width:130px;">Pioneer</td><td style="font-size:13px;color:#111827;font-weight:600;">${data.pioneerName || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;width:130px;">Explorer</td><td style="font-size:13px;color:#111827;font-weight:600;">${data.pioneerName || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">From</td><td style="font-size:13px;color:#111827;">${data.pioneerCountry || '—'}</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Type</td><td style="font-size:13px;color:#111827;">${data.pioneerType || '—'} Pioneer</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Path</td><td style="font-size:13px;color:#111827;">${data.pathTitle || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Type</td><td style="font-size:13px;color:#111827;">${data.pioneerType || '—'} Explorer</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Opportunity</td><td style="font-size:13px;color:#111827;">${data.pathTitle || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Match Score</td><td style="font-size:13px;color:#5C0A14;font-weight:700;">${data.matchScore || '—'}%</td></tr>
           </table>
           ${data.matchScore ? `<div class="score-bar"><div class="score-fill" style="width:${Math.min(100, Number(data.matchScore))}%;"></div></div>` : ''}
@@ -421,7 +421,7 @@ export const EMAIL_TEMPLATES: Record<
         </div>
 
         <p class="p">
-          Respond within <strong>48 hours</strong> for the best results. Pioneers who get
+          Respond within <strong>48 hours</strong> for the best results. Explorers who get
           fast responses are 4x more likely to complete their journey with you.
         </p>
 
@@ -431,8 +431,8 @@ export const EMAIL_TEMPLATES: Record<
           </a>
         </div>
       </div>
-      ${emailFooter('You received this because you are an Anchor on bekenya.com.')}`,
-      `${data.pioneerName || 'A Pioneer'} wants to join your path.`
+      ${emailFooter('You received this because you are a Host on bekenya.com.')}`,
+      `${data.pioneerName || 'An Explorer'} wants to join your opportunity.`
     ),
   }),
 
@@ -452,7 +452,7 @@ export const EMAIL_TEMPLATES: Record<
           </div>
           <div class="stat">
             <span class="stat-value">${data.openChapters || '0'}</span>
-            <span class="stat-label">Open Chapters</span>
+            <span class="stat-label">Open Exchanges</span>
           </div>
           <div class="stat">
             <span class="stat-value">${data.profileViews || '0'}</span>
@@ -495,7 +495,7 @@ export const EMAIL_TEMPLATES: Record<
         </p>
       </div>
       ${emailFooter()}`,
-      `${data.newMatches || '0'} new matches, ${data.openChapters || '0'} open chapters this week.`
+      `${data.newMatches || '0'} new matches, ${data.openChapters || '0'} open exchanges this week.`
     ),
   }),
 
@@ -656,7 +656,7 @@ export async function sendEmail(
 // Convenience wrappers — pre-typed data for common send scenarios
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Send pioneer welcome email after onboarding completion */
+/** Send explorer welcome email after onboarding completion */
 export async function sendPioneerWelcome(
   email: string,
   name: string,
@@ -675,7 +675,7 @@ export async function sendPioneerWelcome(
   })
 }
 
-/** Notify pioneer when a new path matches their profile */
+/** Notify explorer when a new opportunity matches their profile */
 export async function sendNewPathMatch(
   email: string,
   pioneerName: string,
@@ -700,7 +700,7 @@ export async function sendNewPathMatch(
   })
 }
 
-/** Notify anchor when a pioneer opens a chapter on their path */
+/** Notify host when an explorer opens an exchange on their opportunity */
 export async function sendAnchorChapterNotification(
   anchorEmail: string,
   pioneerName: string,

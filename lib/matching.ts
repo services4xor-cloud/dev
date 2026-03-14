@@ -1,7 +1,7 @@
 /**
  * MATCHING ENGINE — BeNetwork's core algorithm
  *
- * Scores a Explorer against a Path/Venture and ranks multiple Paths
+ * Scores an Explorer against an Opportunity and ranks multiple Opportunities
  * for a given Explorer profile.
  *
  * Scoring breakdown (total 100 points):
@@ -27,7 +27,7 @@ export interface ExplorerProfile {
 export interface PathOpportunity {
   id: string
   title: string
-  anchorName: string
+  hostName: string
   category: string
   location: string // Country name or code
   requiredSkills: string[]
@@ -49,15 +49,15 @@ export interface MatchResult {
 
 // ─── Core Scoring Function ────────────────────────────────────────────────────
 
-export function scoreExplorerPath(pioneer: ExplorerProfile, path: PathOpportunity): MatchResult {
+export function scoreExplorerPath(explorer: ExplorerProfile, path: PathOpportunity): MatchResult {
   let score = 0
   const reasons: string[] = []
   const gaps: string[] = []
 
   // ── Explorer Type Match (40 points max) ──────────────────────────────────────
-  if (path.explorerTypes.includes(pioneer.explorerType)) {
+  if (path.explorerTypes.includes(explorer.explorerType)) {
     score += 40
-    reasons.push(`Your ${pioneer.explorerType} background is a perfect type match`)
+    reasons.push(`Your ${explorer.explorerType} background is a perfect type match`)
   } else if (path.explorerTypes.length > 0) {
     // Partial credit: adjacent types (e.g. creator ↔ artisan)
     const adjacentMap: Partial<Record<ExplorerType, ExplorerType[]>> = {
@@ -68,7 +68,7 @@ export function scoreExplorerPath(pioneer: ExplorerProfile, path: PathOpportunit
       professional: ['guardian', 'healer'],
       healer: ['professional', 'creator'],
     }
-    const adjacent = adjacentMap[pioneer.explorerType] ?? []
+    const adjacent = adjacentMap[explorer.explorerType] ?? []
     const hasAdjacent = path.explorerTypes.some((t) => adjacent.includes(t))
     if (hasAdjacent) {
       score += 20
@@ -87,7 +87,7 @@ export function scoreExplorerPath(pioneer: ExplorerProfile, path: PathOpportunit
   // ── Skills Overlap (30 points max) ──────────────────────────────────────────
   const normalise = (s: string) => s.toLowerCase().trim()
 
-  const matchingSkills = pioneer.skills.filter((s) =>
+  const matchingSkills = explorer.skills.filter((s) =>
     path.requiredSkills.some(
       (rs) => normalise(rs).includes(normalise(s)) || normalise(s).includes(normalise(rs))
     )
@@ -106,7 +106,7 @@ export function scoreExplorerPath(pioneer: ExplorerProfile, path: PathOpportunit
   }
 
   const missingSkills = path.requiredSkills.filter(
-    (rs) => !pioneer.skills.some((s) => normalise(s).includes(normalise(rs)))
+    (rs) => !explorer.skills.some((s) => normalise(s).includes(normalise(rs)))
   )
   if (missingSkills.length > 0) {
     gaps.push(`You could strengthen: ${missingSkills.slice(0, 2).join(', ')}`)
@@ -118,7 +118,7 @@ export function scoreExplorerPath(pioneer: ExplorerProfile, path: PathOpportunit
 
   // Normalise location to check against desired destinations
   const pathLocationNorm = normalise(path.location)
-  const targetInDesiredCountries = pioneer.toCountries.some(
+  const targetInDesiredCountries = explorer.toCountries.some(
     (c) => pathLocationNorm.includes(normalise(c)) || normalise(c).includes(pathLocationNorm)
   )
 
@@ -127,13 +127,13 @@ export function scoreExplorerPath(pioneer: ExplorerProfile, path: PathOpportunit
     routeStrength = 'direct'
     isDirectRoute = true
     reasons.push('This is in one of your target destinations')
-  } else if (path.remoteOk && pioneer.toCountries.length > 0) {
+  } else if (path.remoteOk && explorer.toCountries.length > 0) {
     // Remote roles are accessible from any desired country
     score += 15
     routeStrength = 'partner'
     reasons.push('This remote path is accessible from your target countries')
   } else if (
-    path.preferredCountries.some((pc) => normalise(pc) === normalise(pioneer.fromCountry))
+    path.preferredCountries.some((pc) => normalise(pc) === normalise(explorer.fromCountry))
   ) {
     score += 15
     routeStrength = 'partner'
@@ -144,11 +144,11 @@ export function scoreExplorerPath(pioneer: ExplorerProfile, path: PathOpportunit
   }
 
   // ── Experience Match (10 points max) ────────────────────────────────────────
-  if (pioneer.yearsExperience !== undefined && path.experienceYears !== undefined) {
-    if (pioneer.yearsExperience >= path.experienceYears) {
+  if (explorer.yearsExperience !== undefined && path.experienceYears !== undefined) {
+    if (explorer.yearsExperience >= path.experienceYears) {
       score += 10
       reasons.push(
-        `Your ${pioneer.yearsExperience} year${pioneer.yearsExperience !== 1 ? 's' : ''} of experience qualifies you`
+        `Your ${explorer.yearsExperience} year${explorer.yearsExperience !== 1 ? 's' : ''} of experience qualifies you`
       )
     } else {
       score += 5
@@ -187,10 +187,10 @@ export function scoreExplorerPath(pioneer: ExplorerProfile, path: PathOpportunit
 // ─── Rank Multiple Paths for a Explorer ───────────────────────────────────────
 
 export function rankPathsForExplorer(
-  pioneer: ExplorerProfile,
+  explorer: ExplorerProfile,
   paths: PathOpportunity[]
 ): MatchResult[] {
-  return paths.map((path) => scoreExplorerPath(pioneer, path)).sort((a, b) => b.score - a.score)
+  return paths.map((path) => scoreExplorerPath(explorer, path)).sort((a, b) => b.score - a.score)
 }
 
 // ─── Filter Helpers ───────────────────────────────────────────────────────────

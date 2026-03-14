@@ -161,21 +161,21 @@ const kenyaConfig: CountryConfig = {
   ],
   popularSearches: [
     'Safari Guide',
-    'Software Pioneer',
+    'Software Explorer',
     'Healthcare',
     'Tea Estate',
     'Deep-Sea Fishing',
     'Remote',
     'Nairobi',
-    'UK Visa Path',
+    'UK Visa Opportunity',
   ],
-  heroTagline: 'Global Paths, Paid via M-Pesa',
+  heroTagline: 'Global Opportunities, Paid via M-Pesa',
   heroSubtext:
-    'Find your path with Anchors from Kenya, USA, UK, UAE and beyond. Open a Chapter, begin your Venture.',
+    'Find your path with Hosts from Kenya, USA, UK, UAE and beyond. Open an Exchange, begin your Experience.',
   statsBar: [
-    { label: 'Open Paths', value: '12,400+' },
+    { label: 'Open Opportunities', value: '12,400+' },
     { label: 'Countries', value: '50+' },
-    { label: 'Pioneers Placed', value: '3,200' },
+    { label: 'Explorers Placed', value: '3,200' },
     { label: 'Avg. (KES)', value: '85K' },
   ],
 }
@@ -267,11 +267,11 @@ const germanyConfig: CountryConfig = {
   ],
   heroTagline: 'Dein Weg nach Deutschland',
   heroSubtext:
-    'Finde deinen Pfad bei führenden deutschen Ankern. Öffne ein Kapitel, starte dein Abenteuer.',
+    'Finde deinen Pfad bei führenden deutschen Hosts. Öffne einen Exchange, starte dein Abenteuer.',
   statsBar: [
-    { label: 'Offene Pfade', value: '48,000+' },
-    { label: 'Anker', value: '2,400+' },
-    { label: 'Pioniere platziert', value: '8,200' },
+    { label: 'Offene Opportunities', value: '48,000+' },
+    { label: 'Hosts', value: '2,400+' },
+    { label: 'Explorers platziert', value: '8,200' },
     { label: 'Ø Vergütung', value: '€58k' },
   ],
 }
@@ -363,11 +363,11 @@ const switzerlandConfig: CountryConfig = {
   ],
   heroTagline: 'Dein Weg in die Schweiz',
   heroSubtext:
-    'Finde deinen Pfad bei führenden Schweizer Ankern. Pharma, Finanzen, Hospitality — Weltklasse-Chancen.',
+    'Finde deinen Pfad bei führenden Schweizer Hosts. Pharma, Finanzen, Hospitality — Weltklasse-Chancen.',
   statsBar: [
-    { label: 'Offene Pfade', value: '38,000+' },
-    { label: 'Anker', value: '1,800+' },
-    { label: 'Pioniere platziert', value: '4,200' },
+    { label: 'Offene Opportunities', value: '38,000+' },
+    { label: 'Hosts', value: '1,800+' },
+    { label: 'Explorers platziert', value: '4,200' },
     { label: 'Ø Vergütung', value: 'CHF 85k' },
   ],
 }
@@ -416,20 +416,20 @@ const usaConfig: CountryConfig = {
     { id: 'remote', name: 'Remote / Anywhere', emoji: '🌎', count: 48000 },
   ],
   popularSearches: [
-    'Software Pioneer',
+    'Software Explorer',
     'Remote',
-    'H1B Path',
+    'H1B Opportunity',
     'New York',
     'Silicon Valley',
     'Healthcare',
   ],
-  heroTagline: 'Find Your American Path',
+  heroTagline: 'Find Your American Opportunity',
   heroSubtext:
-    'Top US Anchors with open Paths. H1B sponsored, remote, and high-value Ventures across 50 states.',
+    'Top US Hosts with open Opportunities. H1B sponsored, remote, and high-value Experiences across 50 states.',
   statsBar: [
-    { label: 'Open Paths', value: '280,000+' },
-    { label: 'Anchors', value: '12,000+' },
-    { label: 'Pioneers Placed', value: '42,000' },
+    { label: 'Open Opportunities', value: '280,000+' },
+    { label: 'Hosts', value: '12,000+' },
+    { label: 'Explorers Placed', value: '42,000' },
     { label: 'Avg. Compensation', value: '$95k' },
   ],
 }
@@ -490,14 +490,21 @@ const nigeriaConfig: CountryConfig = {
     { id: 'health', name: 'Healthcare', emoji: '🏥', count: 5200 },
     { id: 'education', name: 'Education', emoji: '📚', count: 3800 },
   ],
-  popularSearches: ['Software Pioneer', 'Lagos', 'Remote', 'Finance Path', 'Oil & Gas', 'NYSC'],
-  heroTagline: 'Find Your Path in Nigeria',
+  popularSearches: [
+    'Software Explorer',
+    'Lagos',
+    'Remote',
+    'Finance Opportunity',
+    'Oil & Gas',
+    'NYSC',
+  ],
+  heroTagline: 'Find Your Opportunity in Nigeria',
   heroSubtext:
-    'Connect with Anchors across Nigeria. Pay with Flutterwave or Paystack. Open your Chapter today.',
+    'Connect with Hosts across Nigeria. Pay with Flutterwave or Paystack. Open your Exchange today.',
   statsBar: [
-    { label: 'Open Paths', value: '38,000+' },
-    { label: 'Anchors', value: '3,200+' },
-    { label: 'Pioneers Placed', value: '6,800' },
+    { label: 'Open Opportunities', value: '38,000+' },
+    { label: 'Hosts', value: '3,200+' },
+    { label: 'Explorers Placed', value: '6,800' },
     { label: 'Avg. (₦)', value: '450k' },
   ],
 }
@@ -850,19 +857,19 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     ],
     popularSearches: [
       'Hotel Manager',
-      'Software Pioneer',
+      'Software Explorer',
       'Tourism',
       'Bangkok',
       'Remote',
       'Agriculture',
     ],
-    heroTagline: 'Find Your Path in Thailand',
+    heroTagline: 'Find Your Opportunity in Thailand',
     heroSubtext:
-      'Connect with Anchors across Thailand. Tourism, tech, and agriculture Paths in the Land of Smiles.',
+      'Connect with Hosts across Thailand. Tourism, tech, and agriculture Opportunities in the Land of Smiles.',
     statsBar: [
-      { label: 'Open Paths', value: '32,000+' },
-      { label: 'Anchors', value: '2,100+' },
-      { label: 'Pioneers Placed', value: '5,400' },
+      { label: 'Open Opportunities', value: '32,000+' },
+      { label: 'Hosts', value: '2,100+' },
+      { label: 'Explorers Placed', value: '5,400' },
       { label: 'Avg. (THB)', value: '85k' },
     ],
   },
@@ -883,7 +890,7 @@ export const COUNTRY_META: Record<string, CountrySEOMeta> = {
   KE: {
     title: 'BeKenya — Find Where You Belong. Go There.',
     description:
-      'An identity-first compass for Pioneers. Safari paths, professional ventures, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
+      'An identity-first discovery platform for Explorers. Safari paths, professional experiences, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
     twitter: '@BeKenya',
     brandName: 'BeKenya',
   },

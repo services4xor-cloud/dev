@@ -21,6 +21,15 @@ import { filterCountries } from '@/lib/graph'
 
 const mockFilterCountries = filterCountries as jest.MockedFunction<typeof filterCountries>
 
+function mockNode(overrides: Record<string, unknown>) {
+  return {
+    userId: null,
+    createdAt: new Date('2026-01-01'),
+    updatedAt: new Date('2026-01-01'),
+    ...overrides,
+  }
+}
+
 function makeRequest(body: unknown): NextRequest {
   return new NextRequest('http://localhost/api/map/filter', {
     method: 'POST',
@@ -34,7 +43,7 @@ describe('POST /api/map/filter', () => {
 
   test('returns country codes for language filter', async () => {
     mockFilterCountries.mockResolvedValue([
-      {
+      mockNode({
         id: '1',
         type: 'COUNTRY',
         code: 'KE',
@@ -45,8 +54,8 @@ describe('POST /api/map/filter', () => {
         properties: null,
         icon: null,
         labelKey: null,
-      },
-      {
+      }) as never,
+      mockNode({
         id: '2',
         type: 'COUNTRY',
         code: 'TZ',
@@ -57,7 +66,7 @@ describe('POST /api/map/filter', () => {
         properties: null,
         icon: null,
         labelKey: null,
-      },
+      }) as never,
     ])
 
     const req = makeRequest({ filters: [{ dimension: 'language', nodeCode: 'sw' }] })
@@ -102,7 +111,7 @@ describe('POST /api/map/filter', () => {
 
   test('handles multiple filters', async () => {
     mockFilterCountries.mockResolvedValue([
-      {
+      mockNode({
         id: '1',
         type: 'COUNTRY',
         code: 'KE',
@@ -113,7 +122,7 @@ describe('POST /api/map/filter', () => {
         properties: null,
         icon: null,
         labelKey: null,
-      },
+      }) as never,
     ])
 
     const req = makeRequest({
@@ -134,7 +143,7 @@ describe('POST /api/map/filter', () => {
 
   test('includes lat/lng in response', async () => {
     mockFilterCountries.mockResolvedValue([
-      {
+      mockNode({
         id: '1',
         type: 'COUNTRY',
         code: 'DE',
@@ -145,7 +154,7 @@ describe('POST /api/map/filter', () => {
         properties: null,
         icon: null,
         labelKey: null,
-      },
+      }) as never,
     ])
 
     const req = makeRequest({ filters: [] })
