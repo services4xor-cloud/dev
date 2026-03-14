@@ -75,7 +75,7 @@ async function seedCurrencies() {
 
   console.log(`  💰 Seeding ${currencies.size} currencies...`)
 
-  for (const code of currencies) {
+  for (const code of Array.from(currencies)) {
     await prisma.node.upsert({
       where: { type_code: { type: 'CURRENCY', code } },
       create: {
@@ -99,7 +99,7 @@ async function seedSectors() {
 
   console.log(`  🏢 Seeding ${sectors.size} sectors...`)
 
-  for (const sector of sectors) {
+  for (const sector of Array.from(sectors)) {
     const code = sector.toLowerCase().replace(/[^a-z0-9]+/g, '-')
     await prisma.node.upsert({
       where: { type_code: { type: 'SECTOR', code } },

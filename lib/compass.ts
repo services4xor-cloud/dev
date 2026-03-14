@@ -1,7 +1,7 @@
 // THE COMPASS — Smart routing engine
 // Auto-detects user location, matches to target countries, shows relevant paths
 
-import { PioneerType } from './vocabulary'
+import { ExplorerType } from './vocabulary'
 import { COUNTRIES, CountryCode } from './countries'
 
 export interface CompassReading {
@@ -9,7 +9,7 @@ export interface CompassReading {
   fromCountryName: string
   toCountry: string // ISO2: where they want to go
   toCountryName: string
-  pioneerType: PioneerType | null
+  explorerType: ExplorerType | null
   routeStrength: 'direct' | 'partner' | 'emerging' // how well this route is supported
   matchScore: number // 0-100
   topVentures: string[] // recommended venture IDs

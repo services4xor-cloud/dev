@@ -10,9 +10,32 @@
  * Two people with different skills create more value together.
  */
 
-import { getMarketScore, type MarketSignal } from './market-data'
 import { resolveSkillId } from './semantic-skills'
-import type { DimensionPriority } from './hooks/use-profile-sync'
+
+// Inlined from deleted modules
+export type DimensionPriority = 'high' | 'medium' | 'low'
+export interface MarketSignal {
+  sector: string
+  demand: number
+  supply: number
+  trend: 'growing' | 'stable' | 'declining'
+}
+
+function getMarketScore(
+  profile: { country: string; craft: string[]; interests: string[] },
+  signals: MarketSignal[]
+): number {
+  if (signals.length === 0 || profile.craft.length === 0) return 0
+  let best = 0
+  for (const craft of profile.craft) {
+    const signal = signals.find((s) => s.sector === craft)
+    if (!signal) continue
+    const ratio = signal.supply > 0 ? signal.demand / signal.supply : signal.demand
+    const trendMul = signal.trend === 'growing' ? 1.2 : signal.trend === 'declining' ? 0.8 : 1
+    best = Math.max(best, Math.round(ratio * 10 * trendMul))
+  }
+  return Math.min(20, best)
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

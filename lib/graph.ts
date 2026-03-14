@@ -5,7 +5,7 @@
  */
 
 import { db } from '@/lib/db'
-import type { EdgeRelation, NodeType } from '@prisma/client'
+import type { EdgeRelation, NodeType, Prisma } from '@prisma/client'
 
 // ─── Node operations ─────────────────────────────────────────
 
@@ -52,8 +52,14 @@ export async function createEdge(
 
   return db.edge.upsert({
     where: { fromId_toId_relation: { fromId: from.id, toId: to.id, relation } },
-    create: { fromId: from.id, toId: to.id, relation, weight, properties: properties ?? undefined },
-    update: { weight, properties: properties ?? undefined },
+    create: {
+      fromId: from.id,
+      toId: to.id,
+      relation,
+      weight,
+      properties: (properties ?? undefined) as Prisma.InputJsonValue | undefined,
+    },
+    update: { weight, properties: (properties ?? undefined) as Prisma.InputJsonValue | undefined },
   })
 }
 

@@ -1,22 +1,22 @@
 /**
  * MATCHING ENGINE — BeNetwork's core algorithm
  *
- * Scores a Pioneer against a Path/Venture and ranks multiple Paths
- * for a given Pioneer profile.
+ * Scores a Explorer against a Path/Venture and ranks multiple Paths
+ * for a given Explorer profile.
  *
  * Scoring breakdown (total 100 points):
- *   Pioneer type match  → 40 pts
+ *   Explorer type match  → 40 pts
  *   Skills overlap      → 30 pts
  *   Country route match → 20 pts
  *   Experience level    → 10 pts
  */
 
-import type { PioneerType } from './vocabulary'
+import type { ExplorerType } from './vocabulary'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export interface PioneerProfile {
-  pioneerType: PioneerType
+export interface ExplorerProfile {
+  explorerType: ExplorerType
   fromCountry: string // ISO 2-letter code e.g. 'KE', 'DE'
   toCountries: string[] // Desired destination codes
   skills: string[]
@@ -34,7 +34,7 @@ export interface PathOpportunity {
   preferredCountries: string[] // Origin countries preferred by anchor
   remoteOk: boolean
   experienceYears?: number
-  pioneerTypes: PioneerType[]
+  explorerTypes: ExplorerType[]
 }
 
 export interface MatchResult {
@@ -49,18 +49,18 @@ export interface MatchResult {
 
 // ─── Core Scoring Function ────────────────────────────────────────────────────
 
-export function scorePioneerPath(pioneer: PioneerProfile, path: PathOpportunity): MatchResult {
+export function scoreExplorerPath(pioneer: ExplorerProfile, path: PathOpportunity): MatchResult {
   let score = 0
   const reasons: string[] = []
   const gaps: string[] = []
 
-  // ── Pioneer Type Match (40 points max) ──────────────────────────────────────
-  if (path.pioneerTypes.includes(pioneer.pioneerType)) {
+  // ── Explorer Type Match (40 points max) ──────────────────────────────────────
+  if (path.explorerTypes.includes(pioneer.explorerType)) {
     score += 40
-    reasons.push(`Your ${pioneer.pioneerType} background is a perfect type match`)
-  } else if (path.pioneerTypes.length > 0) {
+    reasons.push(`Your ${pioneer.explorerType} background is a perfect type match`)
+  } else if (path.explorerTypes.length > 0) {
     // Partial credit: adjacent types (e.g. creator ↔ artisan)
-    const adjacentMap: Partial<Record<PioneerType, PioneerType[]>> = {
+    const adjacentMap: Partial<Record<ExplorerType, ExplorerType[]>> = {
       creator: ['artisan', 'professional'],
       artisan: ['creator', 'explorer'],
       explorer: ['artisan', 'guardian'],
@@ -68,20 +68,20 @@ export function scorePioneerPath(pioneer: PioneerProfile, path: PathOpportunity)
       professional: ['guardian', 'healer'],
       healer: ['professional', 'creator'],
     }
-    const adjacent = adjacentMap[pioneer.pioneerType] ?? []
-    const hasAdjacent = path.pioneerTypes.some((t) => adjacent.includes(t))
+    const adjacent = adjacentMap[pioneer.explorerType] ?? []
+    const hasAdjacent = path.explorerTypes.some((t) => adjacent.includes(t))
     if (hasAdjacent) {
       score += 20
       gaps.push(
-        `This path is primarily for ${path.pioneerTypes.join('/')} Pioneers — your skills transfer well though`
+        `This path is primarily for ${path.explorerTypes.join('/')} Explorers — your skills transfer well though`
       )
     } else {
       score += 10
-      gaps.push(`This path is primarily for ${path.pioneerTypes.join('/')} Pioneers`)
+      gaps.push(`This path is primarily for ${path.explorerTypes.join('/')} Explorers`)
     }
   } else {
     score += 15 // Open to all types
-    reasons.push('This path is open to all Pioneer types')
+    reasons.push('This path is open to all Explorer types')
   }
 
   // ── Skills Overlap (30 points max) ──────────────────────────────────────────
@@ -184,13 +184,13 @@ export function scorePioneerPath(pioneer: PioneerProfile, path: PathOpportunity)
   }
 }
 
-// ─── Rank Multiple Paths for a Pioneer ───────────────────────────────────────
+// ─── Rank Multiple Paths for a Explorer ───────────────────────────────────────
 
-export function rankPathsForPioneer(
-  pioneer: PioneerProfile,
+export function rankPathsForExplorer(
+  pioneer: ExplorerProfile,
   paths: PathOpportunity[]
 ): MatchResult[] {
-  return paths.map((path) => scorePioneerPath(pioneer, path)).sort((a, b) => b.score - a.score)
+  return paths.map((path) => scoreExplorerPath(pioneer, path)).sort((a, b) => b.score - a.score)
 }
 
 // ─── Filter Helpers ───────────────────────────────────────────────────────────
@@ -209,7 +209,3 @@ export function filterDirectRoutes(results: MatchResult[]): MatchResult[] {
 export function topN(results: MatchResult[], n: number): MatchResult[] {
   return results.slice(0, n)
 }
-
-// ─── Mock Paths — re-exported from canonical data source ─────────────────────
-
-export { MOCK_MATCHING_PATHS as MOCK_PATHS } from '@/data/mock'

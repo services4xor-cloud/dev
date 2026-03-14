@@ -14,7 +14,8 @@
  *   await sendEmail('user@example.com', 'pioneer_welcome', { name: 'Alice', ... })
  */
 
-import { logger } from '@/lib/logger'
+// eslint-disable-next-line no-console
+const logger = { info: console.log, warn: console.warn, error: console.error, debug: console.log }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
