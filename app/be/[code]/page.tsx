@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs'
+import { join } from 'path'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -12,11 +14,31 @@ function getCountry(code: string) {
   return COUNTRY_OPTIONS.find((c) => c.code === code) ?? null
 }
 
+/** Lookup country name from GeoJSON for countries not in COUNTRY_OPTIONS */
+let _geoNames: Record<string, string> | null = null
+function getGeoName(code: string): string | null {
+  if (!_geoNames) {
+    try {
+      const raw = readFileSync(join(process.cwd(), 'public/geo/countries.json'), 'utf-8')
+      const geo = JSON.parse(raw) as {
+        features: { properties: { ISO_A2: string; name: string } }[]
+      }
+      _geoNames = {}
+      for (const f of geo.features) {
+        _geoNames[f.properties.ISO_A2] = f.properties.name
+      }
+    } catch {
+      _geoNames = {}
+    }
+  }
+  return _geoNames[code] ?? null
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { code } = await params
   const upperCode = code.toUpperCase()
   const country = getCountry(upperCode)
-  const name = country?.name ?? upperCode
+  const name = country?.name ?? getGeoName(upperCode) ?? upperCode
   return {
     title: `Be${name}`,
     description: `Explore ${name} on Be[X] — discover languages, culture, paths, and connections.`,
@@ -29,7 +51,7 @@ export default async function CountryHubPage({ params }: PageProps) {
   const country = getCountry(upperCode)
 
   // Derive display values — works for both known and unknown countries
-  const name = country?.name ?? upperCode
+  const name = country?.name ?? getGeoName(upperCode) ?? upperCode
   const region = country?.region ?? null
   const currency = country?.currency ?? null
   const payments = country?.payment ?? []
