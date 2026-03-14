@@ -65,7 +65,7 @@ export default function HomePage() {
     <main className="relative h-screen w-screen overflow-hidden">
       <WorldMap
         countries={countries}
-        onCountryClick={setSelectedCountry}
+        onCountryClick={(code) => setSelectedCountry((prev) => (prev === code ? null : code))}
         selectedCountry={selectedCountry}
       />
 
