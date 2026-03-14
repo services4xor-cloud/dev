@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useMemo } from 'react'
+import { useCallback, useRef, useMemo, useState } from 'react'
 import { Map, Source, Layer, type MapRef, type MapLayerMouseEvent } from 'react-map-gl/maplibre'
 import type { MapCountry } from '@/types/domain'
 
@@ -12,6 +12,24 @@ interface WorldMapProps {
 
 export default function WorldMap({ countries, onCountryClick, selectedCountry }: WorldMapProps) {
   const mapRef = useRef<MapRef>(null)
+  const [hoveredCountry, setHoveredCountry] = useState<{
+    name: string
+    x: number
+    y: number
+  } | null>(null)
+
+  const handleMouseMove = useCallback((e: MapLayerMouseEvent) => {
+    const features = e.features
+    if (features?.[0]?.properties?.name) {
+      setHoveredCountry({
+        name: features[0].properties.name,
+        x: e.point.x,
+        y: e.point.y,
+      })
+    } else {
+      setHoveredCountry(null)
+    }
+  }, [])
 
   const handleClick = useCallback(
     (e: MapLayerMouseEvent) => {
@@ -118,34 +136,46 @@ export default function WorldMap({ countries, onCountryClick, selectedCountry }:
   }, [highlightedCodes, selectedCountry])
 
   return (
-    <Map
-      ref={mapRef}
-      initialViewState={{ longitude: 20, latitude: 10, zoom: 2 }}
-      style={{ width: '100%', height: '100vh' }}
-      mapStyle={`https://api.maptiler.com/maps/dataviz-dark/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`}
-      onClick={handleClick}
-      interactiveLayerIds={['country-fill']}
-      cursor="pointer"
-    >
-      <Source id="countries" type="geojson" data="/geo/countries.json">
-        <Layer
-          id="country-fill"
-          type="fill"
-          paint={{
-            'fill-color': fillColor,
-            'fill-opacity': fillOpacity,
-          }}
-        />
-        <Layer
-          id="country-border"
-          type="line"
-          paint={{
-            'line-color': borderColor,
-            'line-width': borderWidth,
-            'line-opacity': 0.6,
-          }}
-        />
-      </Source>
-    </Map>
+    <div className="relative" style={{ width: '100%', height: '100vh' }}>
+      <Map
+        ref={mapRef}
+        initialViewState={{ longitude: 20, latitude: 10, zoom: 2 }}
+        style={{ width: '100%', height: '100%' }}
+        mapStyle={`https://api.maptiler.com/maps/dataviz-dark/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`}
+        onClick={handleClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => setHoveredCountry(null)}
+        interactiveLayerIds={['country-fill']}
+        cursor="pointer"
+      >
+        <Source id="countries" type="geojson" data="/geo/countries.json">
+          <Layer
+            id="country-fill"
+            type="fill"
+            paint={{
+              'fill-color': fillColor,
+              'fill-opacity': fillOpacity,
+            }}
+          />
+          <Layer
+            id="country-border"
+            type="line"
+            paint={{
+              'line-color': borderColor,
+              'line-width': borderWidth,
+              'line-opacity': 0.6,
+            }}
+          />
+        </Source>
+      </Map>
+      {hoveredCountry && (
+        <div
+          className="pointer-events-none absolute z-30 rounded-lg bg-brand-surface/95 px-3 py-1.5 text-sm text-brand-accent shadow-lg backdrop-blur"
+          style={{ left: hoveredCountry.x + 12, top: hoveredCountry.y - 20 }}
+        >
+          {hoveredCountry.name}
+        </div>
+      )}
+    </div>
   )
 }
