@@ -217,7 +217,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     name: 'German',
     nativeName: 'Deutsch',
     searchAliases: ['Allemand', 'Alemán', 'Tedesco', 'Alemão', 'Kijerumani'],
-    countries: ['DE', 'CH', 'AT', 'LI', 'LU', 'BE'],
+    countries: ['DE', 'CH', 'AT', 'LI', 'LU', 'BE', 'NA'],
     digitalReach: 'regional',
   },
   fr: {
@@ -2470,7 +2470,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer', 'EFT'],
     visa: 'Visa free (90 days)',
     tz: 'Africa/Windhoek',
-    languages: ['en'],
+    languages: ['en', 'af', 'de'],
   },
   {
     code: 'SZ',
