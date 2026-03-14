@@ -11,10 +11,10 @@ Run after implementing features, before pushing, or when asked about test covera
 
 ## Test Infrastructure
 
-| Layer            | Tool            | Count                | Config                 |
-| ---------------- | --------------- | -------------------- | ---------------------- |
-| Unit/Integration | Jest 30         | 785 tests, 44 suites | `jest.config.ts`       |
-| E2E/Visual       | Playwright 1.58 | 124 tests            | `playwright.config.ts` |
+| Layer            | Tool       | Count (see PROGRESS.md) | Config                 |
+| ---------------- | ---------- | ----------------------- | ---------------------- |
+| Unit/Integration | Jest       | 872 tests, 46 suites    | `jest.config.ts`       |
+| E2E/Visual       | Playwright | 159 tests, 7 files      | `playwright.config.ts` |
 
 ## Testing Process
 

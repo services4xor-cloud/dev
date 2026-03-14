@@ -2,6 +2,8 @@
 
 > **The skill that tells you which skills to use.** This is the entry point for all Be[Country] platform work.
 
+**Repo skills:** `.claude/skills/*.md` (22 `becountry-*` skills). Use this skill to choose the right one. After any change to code, docs, or skills, run `becountry-sync`.
+
 ## When to Use
 
 Invoke this skill when starting ANY work session on the Be[X] platform, or when unsure which skill to use for a task.
@@ -87,28 +89,28 @@ USER REQUEST
 
 ## Skill ↔ Documentation Map
 
-| Skill                       | Primary .MD Files                     | Purpose                          |
-| --------------------------- | ------------------------------------- | -------------------------------- |
-| `becountry-status`          | PROGRESS.md                           | Current state of platform        |
-| `becountry-sprint`          | ROADMAP.md, PRD.md, PROGRESS.md       | Sprint planning + prioritization |
-| `becountry-architecture`    | ARCHITECTURE.md                       | Technical structure validation   |
-| `becountry-design-review`   | DESIGN_SYSTEM.md                      | Brand + visual consistency       |
-| `becountry-ui-review`       | DESIGN_SYSTEM.md, PRD.md              | UI functionality + interaction   |
-| `becountry-ux-workflow`     | PRD.md, REQUIREMENTS.md               | User flow + journey mapping      |
-| `becountry-testing`         | TESTING.md                            | Test strategy + coverage         |
-| `becountry-e2e-test`        | TESTING.md, PRD.md                    | End-to-end scenario testing      |
-| `becountry-security`        | ARCHITECTURE.md                       | Security audit + hardening       |
-| `becountry-business-review` | ROADMAP.md, PRD.md                    | Revenue + growth metrics         |
-| `becountry-big-picture`     | ROADMAP.md, PRD.md                    | Strategic vision alignment       |
-| `becountry-requirements`    | REQUIREMENTS.md, PRD.md               | Requirements traceability        |
-| `becountry-data`            | ARCHITECTURE.md, prisma/schema.prisma | Data model + integrity           |
-| `becountry-implement`       | All code files                        | Build features with real DB      |
-| `becountry-ops`             | OPERATIONS.md                         | Monitoring + incident response   |
-| `becountry-deployment`      | ARCHITECTURE.md, HUMAN_MANUAL.md      | Deploy pipeline + environments   |
-| `becountry-country-deploy`  | ARCHITECTURE.md, lib/countries.ts     | Multi-country rollout            |
-| `becountry-human-tasks`     | HUMAN_MANUAL.md                       | Tasks requiring human action     |
-| `becountry-sync`            | All .MD + all skills                  | Bidirectional code↔docs↔skills   |
-| `becountry-push`            | —                                     | Git commit + Vercel deploy       |
+| Skill                       | Primary .MD Files                                | Purpose                          |
+| --------------------------- | ------------------------------------------------ | -------------------------------- |
+| `becountry-status`          | PROGRESS.md                                      | Current state of platform        |
+| `becountry-sprint`          | ROADMAP-LIVE.md, ROADMAP.md, PRD.md, PROGRESS.md | Sprint planning + prioritization |
+| `becountry-architecture`    | ARCHITECTURE.md                                  | Technical structure validation   |
+| `becountry-design-review`   | DESIGN_SYSTEM.md                                 | Brand + visual consistency       |
+| `becountry-ui-review`       | DESIGN_SYSTEM.md, PRD.md                         | UI functionality + interaction   |
+| `becountry-ux-workflow`     | PRD.md, REQUIREMENTS.md                          | User flow + journey mapping      |
+| `becountry-testing`         | TESTING.md                                       | Test strategy + coverage         |
+| `becountry-e2e-test`        | TESTING.md, PRD.md                               | End-to-end scenario testing      |
+| `becountry-security`        | ARCHITECTURE.md                                  | Security audit + hardening       |
+| `becountry-business-review` | ROADMAP.md, PRD.md                               | Revenue + growth metrics         |
+| `becountry-big-picture`     | ROADMAP.md, PRD.md                               | Strategic vision alignment       |
+| `becountry-requirements`    | REQUIREMENTS.md, PRD.md                          | Requirements traceability        |
+| `becountry-data`            | ARCHITECTURE.md, prisma/schema.prisma            | Data model + integrity           |
+| `becountry-implement`       | All code files                                   | Build features with real DB      |
+| `becountry-ops`             | OPERATIONS.md                                    | Monitoring + incident response   |
+| `becountry-deployment`      | ARCHITECTURE.md, HUMAN_MANUAL.md                 | Deploy pipeline + environments   |
+| `becountry-country-deploy`  | ARCHITECTURE.md, lib/countries.ts                | Multi-country rollout            |
+| `becountry-human-tasks`     | HUMAN_MANUAL.md                                  | Tasks requiring human action     |
+| `becountry-sync`            | All .MD + all skills                             | Bidirectional code↔docs↔skills   |
+| `becountry-push`            | —                                                | Git commit + Vercel deploy       |
 
 ## Multi-Country Awareness
 

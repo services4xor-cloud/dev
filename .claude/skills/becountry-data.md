@@ -16,14 +16,13 @@
 
 Read `prisma/schema.prisma` and `ARCHITECTURE.md`:
 
-#### Current Models (16)
+#### Current Models (see `prisma/schema.prisma`)
 
 ```
-User, Account, Session, VerificationToken
-Profile, Path, Chapter, Experience
-Thread, ThreadMembership, Message
-SavedPath, Payment, Referral
-AgentProfile, Forward, SocialPost
+User, Account, Session, VerificationToken, Profile
+Path, Chapter, Experience, SavedPath, Payment, Referral
+Thread, ThreadMembership, AgentProfile, Forward, SocialPost
+Conversation, Message, Friendship, XPEvent
 ```
 
 #### Check Schema Quality

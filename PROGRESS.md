@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 67 (2026-03-13) — BTW Feedback: Quests, Navigation, Interests
+> Last updated: Session 67 (2026-03-13); Skill audit 2026-03-14 (docs/skills/2026-03-14-skill-audit.md)
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -19,7 +19,7 @@
 | Library modules   | 30 (+ semantic-skills.ts — 68 skills × 12 languages)                                      |
 | Mock data modules | 17 (+ messages.ts); admin data deduplicated, all pages import from barrel                 |
 | Jest tests        | 872/872 ✅ (46 suites)                                                                    |
-| Playwright tests  | 144+ ✅ (8 suites incl. demo-flow)                                                        |
+| Playwright tests  | 159 ✅ (7 files incl. demo-flow)                                                          |
 | TypeScript errors | 0                                                                                         |
 | Build             | ✅ passes                                                                                 |
 | Countries         | 120+ selectable (COUNTRY_OPTIONS) + 193 in world-data.ts                                  |

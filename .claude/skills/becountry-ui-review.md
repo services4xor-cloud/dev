@@ -1,3 +1,8 @@
+---
+name: becountry-ui-review
+description: Review Be[Country] UI — components, visual design, interactions, design system compliance, responsive and accessibility.
+---
+
 # Be[Country] UI Functionality & Design Review
 
 > Reviews UI components, visual design, interactions, and design system compliance.
@@ -85,7 +90,6 @@ Verify pages use shared components from `components/`:
 
 ```
 components/ui/GlassCard.tsx    → Card containers
-components/ui/StatusBadge.tsx  → Status indicators
 components/layout/Navbar.tsx   → Navigation
 components/layout/Footer.tsx   → Footer
 ```
@@ -135,4 +139,4 @@ Run Playwright visual tests after review:
 npx playwright test tests/visual/
 ```
 
-All 102 tests must pass. If any fail, investigate before deploying.
+All Playwright tests must pass (run `npx playwright test`). If any fail, investigate before deploying.

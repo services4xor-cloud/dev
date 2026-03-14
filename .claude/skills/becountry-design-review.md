@@ -1,9 +1,9 @@
 ---
 name: becountry-design-review
-description: Review BeKenya UI/UX — brand compliance, accessibility, responsive design, and visual consistency across pages.
+description: Review Be[Country] UI/UX — brand compliance, accessibility, responsive design, and visual consistency across pages.
 ---
 
-# BeKenya Design Review
+# Be[Country] Design Review
 
 ## When to Use
 

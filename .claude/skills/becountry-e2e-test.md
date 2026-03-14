@@ -1,9 +1,9 @@
 ---
 name: becountry-e2e-test
-description: Run end-to-end scenario tests for BeKenya — walk through complete user journeys, verify flows connect, report broken paths.
+description: Run end-to-end scenario tests for Be[Country] — walk through complete user journeys, verify flows connect, report broken paths.
 ---
 
-# BeKenya E2E Scenario Testing
+# Be[Country] E2E Scenario Testing
 
 ## When to Use
 

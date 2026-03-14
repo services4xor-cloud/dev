@@ -1,9 +1,9 @@
 ---
 name: becountry-push
-description: Push BeKenya.com branch to GitHub and verify Vercel deployment — runs pre-push checks, commits, pushes, and monitors deploy.
+description: Push Be[Country] branch to GitHub and verify Vercel deployment — runs pre-push checks, commits, pushes, and monitors deploy.
 ---
 
-# BeKenya Push & Deploy
+# Be[Country] Push & Deploy
 
 ## When to Use
 

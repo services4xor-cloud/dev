@@ -67,8 +67,8 @@ lib/countries.ts or lib/country-selector.ts
   ├── becountry-country-deploy.md (deployment configs)
   └── CLAUDE.md              (country architecture section)
 
-.claude/skills/*.md
-  ├── becountry-process.md   (master skill map)
+.claude/skills/*.md   (repo root; 22 becountry-* skills)
+  ├── becountry-process.md   (master skill map — read to choose skill)
   └── PROGRESS.md            (skill count + categories)
 
 package.json
@@ -141,18 +141,18 @@ If a `.md` file changed:
 
 ### Numbers That Must Match Reality
 
-| Metric             | Source of Truth                       | Docs That Reference It             |
-| ------------------ | ------------------------------------- | ---------------------------------- |
-| Route count        | `ls app/**/page.tsx`                  | PROGRESS.md, CLAUDE.md             |
-| API route count    | `ls app/api/**/route.ts`              | PROGRESS.md, ARCHITECTURE.md       |
-| Test count         | `npm test` output                     | PROGRESS.md, TESTING.md            |
-| Playwright count   | `npx playwright test` output          | PROGRESS.md, TESTING.md            |
-| Lib module count   | `ls lib/*.ts`                         | PROGRESS.md, CLAUDE.md             |
-| Mock module count  | `ls data/mock/*.ts`                   | PROGRESS.md                        |
-| Skill count        | `ls .claude/skills/becountry-*.md`    | PROGRESS.md, becountry-process.md  |
-| Country count      | `COUNTRY_OPTIONS.length`              | PROGRESS.md, CLAUDE.md             |
-| Prisma model count | `grep "^model " prisma/schema.prisma` | ARCHITECTURE.md, becountry-data.md |
-| TS error count     | `npx tsc --noEmit`                    | PROGRESS.md                        |
+| Metric             | Source of Truth                                | Docs That Reference It                            |
+| ------------------ | ---------------------------------------------- | ------------------------------------------------- |
+| Route count        | `ls app/**/page.tsx`                           | PROGRESS.md, CLAUDE.md                            |
+| API route count    | `ls app/api/**/route.ts`                       | PROGRESS.md, ARCHITECTURE.md                      |
+| Test count         | `npm test` output                              | PROGRESS.md, TESTING.md                           |
+| Playwright count   | `npx playwright test` output                   | PROGRESS.md, TESTING.md                           |
+| Lib module count   | `ls lib/*.ts`                                  | PROGRESS.md, CLAUDE.md                            |
+| Mock module count  | `ls data/mock/*.ts`                            | PROGRESS.md                                       |
+| Skill count        | `ls .claude/skills/becountry-*.md` (expect 22) | PROGRESS.md (Current State), becountry-process.md |
+| Country count      | `COUNTRY_OPTIONS.length`                       | PROGRESS.md, CLAUDE.md                            |
+| Prisma model count | `grep "^model " prisma/schema.prisma`          | ARCHITECTURE.md, becountry-data.md                |
+| TS error count     | `npx tsc --noEmit`                             | PROGRESS.md                                       |
 
 ### Content That Must Match
 

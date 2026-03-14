@@ -1,15 +1,15 @@
 ---
 name: becountry-status
-description: Show full status of the BeKenya.com platform — DB health, deployed pages, auth state, email readiness, seed data, and test results.
+description: Show full status of the Be[Country] platform — DB health, deployed pages, auth state, email readiness, seed data, and test results.
 ---
 
-# BeKenya Platform Status
+# Be[Country] Platform Status
 
 When invoked, perform a comprehensive platform health check:
 
 ## Checklist (run all in parallel where possible)
 
-1. **Database Health** — Run `npx prisma db execute --stdin <<< "SELECT count(*) FROM \"User\"" 2>&1` and similar counts for Path, Thread, Experience tables
+1. **Database Health** — Run Prisma/DB checks for User, Profile, Path, Thread, AgentProfile, Experience (see `prisma/schema.prisma` for model list)
 2. **Auth Status** — Check .env.local for NEXTAUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 3. **Email Status** — Check .env.local for RESEND_API_KEY
 4. **TypeScript** — Run `npx tsc --noEmit 2>&1 | tail -5`

@@ -55,16 +55,15 @@ For each step in the flow:
 
 ### 4. Key Flows to Review
 
-| Flow                        | Pages                            | Steps         | Critical Metric   |
-| --------------------------- | -------------------------------- | ------------- | ----------------- |
-| **Compass** (Route Wizard)  | `app/compass/`                   | 4 steps       | Completion rate   |
-| **Onboarding**              | `app/onboarding/`                | 5 steps       | Drop-off per step |
-| **Pioneer Sign-up**         | `app/signup/` → onboarding       | 2+5 steps     | Conversion        |
-| **Anchor Post Path**        | `app/anchors/post-path/`         | Multi-step    | Path publish rate |
-| **Apply to Path** (Chapter) | `app/ventures/` → detail → apply | 3 steps       | Application rate  |
-| **Book Experience**         | `app/experiences/[id]/`          | Detail → book | Booking rate      |
-| **Connect → Message**       | `app/exchange/[id]/` → messages  | 2 steps       | Response rate     |
-| **Password Reset**          | `app/forgot-password/` → reset   | 2 steps       | Completion rate   |
+| Flow                       | Pages                           | Steps         | Critical Metric   |
+| -------------------------- | ------------------------------- | ------------- | ----------------- |
+| **Compass** (Route Wizard) | `app/compass/`                  | 4 steps       | Completion rate   |
+| **Onboarding**             | `app/onboarding/`               | 5 steps       | Drop-off per step |
+| **Pioneer Sign-up**        | `app/signup/` → onboarding      | 2+5 steps     | Conversion        |
+| **Anchor Post Path**       | `app/anchors/post-path/`        | Multi-step    | Path publish rate |
+| **Connect → Message**      | `app/exchange/[id]/` → messages | 2 steps       | Response rate     |
+| **Book Experience**        | `app/experiences/[id]/`         | Detail → book | Booking rate      |
+| **Password Reset**         | `app/forgot-password/` → reset  | 2 steps       | Completion rate   |
 
 ### 5. Output Format
 

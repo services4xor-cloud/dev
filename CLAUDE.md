@@ -24,6 +24,7 @@
 | **`PROGRESS.md`**      | What's done, what's next, blockers | Before building      |
 | **`PRD.md`**           | Product requirements + user flows  | Before features      |
 | **`ROADMAP.md`**       | Phases, sprints, metrics, risks    | Planning             |
+| **`ROADMAP-LIVE.md`**  | Live sprint state, priorities      | Sprint planning      |
 | **`DESIGN_SYSTEM.md`** | Brand tokens, components, rules    | Before any UI        |
 | **`ARCHITECTURE.md`**  | Tech structure, data model, APIs   | Before lib/ or API   |
 | **`REQUIREMENTS.md`**  | User requirements + decisions log  | Before refactoring   |
@@ -211,7 +212,11 @@ Project: tobias-projects-81752e2c / dev
 
 ## 13. Skill Ecosystem (22 skills)
 
-Entry point: `becountry-process` — tells which skill to use for any task.
+**Entry point:** `becountry-process` — read it to choose the right skill for any task.
+
+**Where skills live:** `.claude/skills/*.md` (repo root). Each file has YAML frontmatter `name` and `description` for discovery. Cursor/agent rules (e.g. `bex-*`) may also apply — see workspace rules.
+
+**Rule:** After any change to code, docs, or skills → run `becountry-sync`. Code ↔ docs ↔ skills stay in sync. Non-negotiable.
 
 | Category | Skills                                                                    |
 | -------- | ------------------------------------------------------------------------- |
@@ -224,7 +229,7 @@ Entry point: `becountry-process` — tells which skill to use for any task.
 | Deploy   | `becountry-deployment`, `becountry-push`, `becountry-country-deploy`      |
 | Ops      | `becountry-ops`, `becountry-human-tasks`, `becountry-status`              |
 
-**Sync rule:** Code changes → docs update → skills update. Always bidirectional. `becountry-sync` enforces this.
+**Modern AI-assisted dev:** Use TDD (test first), single source of truth per domain, and sync after every change so agents and humans share the same context.
 
 ---
 
@@ -240,4 +245,4 @@ This platform is a **self-learning system** that optimizes for effectiveness and
 
 ---
 
-_Last updated: Session 54 (2026-03-12)_
+_Last updated: Session 54 (2026-03-12); §13 skill setup 2026-03-14_

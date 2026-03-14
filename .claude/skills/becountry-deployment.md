@@ -16,8 +16,8 @@
 ```bash
 # All must pass before deploy:
 npm run typecheck          # TypeScript: 0 errors
-npm run test               # Jest: 25/25 pass
-npx playwright test        # Playwright: 102/102 pass
+npm test                   # Jest: all pass (see PROGRESS.md for current count)
+npx playwright test        # Playwright: all pass
 npm run build              # Next.js build succeeds
 ```
 
