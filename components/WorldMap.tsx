@@ -142,6 +142,7 @@ export default function WorldMap({ countries, onCountryClick, selectedCountry }:
         initialViewState={{ longitude: 20, latitude: 10, zoom: 2 }}
         style={{ width: '100%', height: '100%' }}
         mapStyle={`https://api.maptiler.com/maps/dataviz-dark/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`}
+        renderWorldCopies={false}
         onClick={handleClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setHoveredCountry(null)}
