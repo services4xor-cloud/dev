@@ -4,18 +4,25 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { DimensionFilter } from '@/types/domain'
 
 /**
- * Universal dimension search — always-visible text box with animated hints.
- * As the user types, shows matching results across ALL 6 dimensions.
- * Supports multi-filter: selecting "German" + "Christianity" intersects on map.
+ * Curated dimension selector — 6 tabs with data-backed options.
+ * Every option is pre-computed from COUNTRY_OPTIONS, sorted by country count.
+ * Tap an option → map lights up. 100% reliable, no typing needed.
  */
 
-interface Suggestion {
-  dimension: string
+interface DimensionOption {
   code: string
   label: string
-  detail: string
-  countryCount: number
+  icon?: string
+  count: number
   countryCodes: string[]
+}
+
+interface DimensionsData {
+  language: DimensionOption[]
+  faith: DimensionOption[]
+  sector: DimensionOption[]
+  location: DimensionOption[]
+  currency: DimensionOption[]
 }
 
 /** What we store per active filter — code for API, label for display */
@@ -27,27 +34,18 @@ export interface ActiveFilter extends DimensionFilter {
 interface DimensionFiltersProps {
   activeFilters: ActiveFilter[]
   onFilterChange: (filters: ActiveFilter[]) => void
-  /** Called with country codes that match current search — for real-time map preview */
+  /** Called with country codes for real-time map preview when hovering/browsing */
   onPreview?: (countryCodes: string[]) => void
 }
 
-const DIMENSION_ICON: Record<string, string> = {
-  language: '🗣️',
-  faith: '☪️',
-  sector: '💼',
-  location: '📍',
-  currency: '💱',
-  culture: '🏛️',
-}
+type DimensionKey = 'language' | 'faith' | 'sector' | 'location' | 'currency'
 
-/** Rotating placeholder examples — one per dimension */
-const PLACEHOLDER_HINTS = [
-  'German, Swahili, Arabic…',
-  'Christianity, Islam, Buddhism…',
-  'Technology, Tourism, Agriculture…',
-  'East Africa, Berlin, Nairobi…',
-  'EUR, USD, KES…',
-  'Maasai, Yoruba, Bavarian…',
+const DIMENSIONS: { key: DimensionKey; label: string; icon: string }[] = [
+  { key: 'language', label: 'Language', icon: '🗣️' },
+  { key: 'faith', label: 'Faith', icon: '☪️' },
+  { key: 'sector', label: 'Sector', icon: '💼' },
+  { key: 'location', label: 'Region', icon: '📍' },
+  { key: 'currency', label: 'Currency', icon: '💱' },
 ]
 
 export default function DimensionFilters({
@@ -55,131 +53,69 @@ export default function DimensionFilters({
   onFilterChange,
   onPreview,
 }: DimensionFiltersProps) {
-  const [query, setQuery] = useState('')
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
-  const [loading, setLoading] = useState(false)
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [hintIndex, setHintIndex] = useState(0)
-  const [isFocused, setIsFocused] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const [dimensions, setDimensions] = useState<DimensionsData | null>(null)
+  const [activeTab, setActiveTab] = useState<DimensionKey | null>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
 
-  // Rotate placeholder hints every 3 seconds (only when not focused and no query)
+  // Load dimension options once
   useEffect(() => {
-    if (isFocused || query.length > 0) return
-    const interval = setInterval(() => {
-      setHintIndex((prev) => {
-        // Skip dimensions that are already selected
-        let next = (prev + 1) % PLACEHOLDER_HINTS.length
-        const activeDims = new Set<string>(activeFilters.map((f) => f.dimension))
-        const dimOrder = ['language', 'faith', 'sector', 'location', 'currency', 'culture']
-        let attempts = 0
-        while (activeDims.has(dimOrder[next]) && attempts < 6) {
-          next = (next + 1) % PLACEHOLDER_HINTS.length
-          attempts++
-        }
-        return next
-      })
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [isFocused, query, activeFilters])
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node) &&
-        inputRef.current &&
-        !inputRef.current.contains(e.target as Node)
-      ) {
-        setShowDropdown(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
-  // Debounced search across all dimensions
-  const searchAllDimensions = useCallback(
-    async (q: string) => {
-      if (q.length < 2) {
-        setSuggestions([])
-        setShowDropdown(false)
-        onPreview?.([])
-        return
-      }
-
-      setLoading(true)
+    async function load() {
       try {
-        const res = await fetch('/api/map/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q }),
-        })
+        const res = await fetch('/api/map/dimensions')
         if (res.ok) {
-          const data = (await res.json()) as { suggestions: Suggestion[] }
-          // Filter out dimensions already selected
-          const activeDims = new Set<string>(activeFilters.map((f) => f.dimension))
-          const filtered = data.suggestions.filter((s) => !activeDims.has(s.dimension))
-          setSuggestions(filtered)
-          setShowDropdown(filtered.length > 0)
-
-          // Aggregate all country codes from suggestions → real-time map preview
-          const previewCodes = new Set<string>()
-          for (const s of filtered) {
-            for (const code of s.countryCodes) previewCodes.add(code)
-          }
-          onPreview?.(Array.from(previewCodes))
+          const data = (await res.json()) as { dimensions: DimensionsData }
+          setDimensions(data.dimensions)
         }
       } catch {
         // silently fail
-      } finally {
-        setLoading(false)
       }
-    },
-    [activeFilters, onPreview]
-  )
+    }
+    void load()
+  }, [])
 
-  // Debounce input
+  // Close panel when clicking outside
   useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => {
-      searchAllDimensions(query)
-    }, 200)
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
+    function handleClickOutside(e: MouseEvent) {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setActiveTab(null)
+        onPreview?.([])
+      }
     }
-  }, [query, searchAllDimensions])
+    if (activeTab) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [activeTab, onPreview])
 
-  const selectSuggestion = (s: Suggestion) => {
-    const newFilter: ActiveFilter = {
-      dimension: s.dimension as DimensionFilter['dimension'],
-      nodeCode: s.code,
-      label: s.label,
-      icon: DIMENSION_ICON[s.dimension],
-    }
-    // Replace existing filter for same dimension, or add new
-    const updated = activeFilters.filter((f) => f.dimension !== s.dimension)
-    updated.push(newFilter)
-    onFilterChange(updated)
-    setQuery('')
-    setSuggestions([])
-    setShowDropdown(false)
-    onPreview?.([]) // Clear preview — confirmed filter takes over
-    // Re-focus for next filter
-    setTimeout(() => inputRef.current?.focus(), 100)
-  }
+  const selectOption = useCallback(
+    (dimension: DimensionKey, option: DimensionOption) => {
+      const newFilter: ActiveFilter = {
+        dimension: dimension as DimensionFilter['dimension'],
+        nodeCode: option.code,
+        label: option.label,
+        icon: option.icon,
+      }
+      const updated = activeFilters.filter((f) => f.dimension !== dimension)
+      updated.push(newFilter)
+      onFilterChange(updated)
+      setActiveTab(null)
+      onPreview?.([]) // Clear preview — confirmed filter takes over
+    },
+    [activeFilters, onFilterChange, onPreview]
+  )
 
   const removeFilter = (dimension: string) => {
     onFilterChange(activeFilters.filter((f) => f.dimension !== dimension))
   }
 
-  const currentPlaceholder = PLACEHOLDER_HINTS[hintIndex]
+  const activeDims = new Set<string>(activeFilters.map((f) => f.dimension))
+  const options = activeTab && dimensions ? dimensions[activeTab] : []
 
   return (
-    <div className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2">
+    <div
+      ref={panelRef}
+      className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2"
+    >
       {/* Active filter tags */}
       {activeFilters.length > 0 && (
         <div className="flex flex-wrap justify-center gap-1.5">
@@ -189,7 +125,7 @@ export default function DimensionFilters({
               onClick={() => removeFilter(f.dimension)}
               className="rounded-full bg-brand-accent/20 px-3 py-1 text-xs text-brand-accent hover:bg-brand-accent/30 transition"
             >
-              {f.icon ?? DIMENSION_ICON[f.dimension] ?? '◆'} {f.label ?? f.nodeCode} ✕
+              {f.icon ?? '◆'} {f.label ?? f.nodeCode} ✕
             </button>
           ))}
           {activeFilters.length > 1 && (
@@ -203,57 +139,62 @@ export default function DimensionFilters({
         </div>
       )}
 
-      {/* Search box — always visible */}
-      <div className="relative w-[320px] sm:w-[420px]">
-        <div className="flex items-center gap-2 rounded-2xl border border-brand-accent/20 bg-brand-surface/95 px-4 py-2.5 backdrop-blur">
-          <span className="text-brand-text-muted text-sm">🔍</span>
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => {
-              setIsFocused(true)
-              if (suggestions.length > 0) setShowDropdown(true)
-            }}
-            onBlur={() => setIsFocused(false)}
-            placeholder={currentPlaceholder}
-            className="flex-1 bg-transparent text-sm text-brand-text placeholder:text-brand-text-muted/50 focus:outline-none"
-          />
-          {loading && <span className="text-xs text-brand-text-muted animate-pulse">…</span>}
-          {activeFilters.length > 0 && !loading && (
-            <span className="text-[10px] text-brand-accent/50">{activeFilters.length}/6</span>
-          )}
-        </div>
-
-        {/* Suggestions dropdown */}
-        {showDropdown && suggestions.length > 0 && (
-          <div
-            ref={dropdownRef}
-            className="absolute bottom-full mb-2 w-full overflow-hidden rounded-xl border border-brand-accent/20 bg-brand-surface shadow-xl backdrop-blur"
-          >
-            <div className="max-h-64 overflow-y-auto py-1">
-              {suggestions.map((s, i) => (
+      {/* Options panel — shows when a dimension tab is active */}
+      {activeTab && options.length > 0 && (
+        <div className="w-[340px] sm:w-[480px] overflow-hidden rounded-xl border border-brand-accent/20 bg-brand-surface/95 shadow-xl backdrop-blur">
+          <div className="max-h-52 overflow-y-auto p-2">
+            <div className="flex flex-wrap gap-1.5">
+              {options.map((opt) => (
                 <button
-                  key={`${s.dimension}-${s.code}-${i}`}
-                  onClick={() => selectSuggestion(s)}
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-brand-accent/10"
+                  key={opt.code}
+                  onClick={() => selectOption(activeTab, opt)}
+                  onMouseEnter={() => onPreview?.(opt.countryCodes)}
+                  onMouseLeave={() => onPreview?.([])}
+                  className="rounded-full border border-brand-accent/10 bg-brand-bg/80 px-3 py-1.5 text-xs text-brand-text transition hover:border-brand-accent/40 hover:bg-brand-accent/10 hover:text-brand-accent"
                 >
-                  <span className="text-base">{DIMENSION_ICON[s.dimension] ?? '◆'}</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-sm font-medium text-brand-text">{s.label}</span>
-                      <span className="text-xs text-brand-text-muted">{s.detail}</span>
-                    </div>
-                    <span className="text-[10px] uppercase tracking-wider text-brand-text-muted/60">
-                      {s.dimension}
-                    </span>
-                  </div>
-                  <span className="text-xs text-brand-accent/70">{s.countryCount}</span>
+                  {opt.label}
+                  <span className="ml-1.5 text-brand-text-muted/50">{opt.count}</span>
                 </button>
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Dimension tab bar — 5 tappable icons */}
+      <div className="flex items-center gap-1 rounded-2xl border border-brand-accent/20 bg-brand-surface/95 px-3 py-2 backdrop-blur">
+        {DIMENSIONS.map((dim) => {
+          const isActive = activeTab === dim.key
+          const isSelected = activeDims.has(dim.key)
+          return (
+            <button
+              key={dim.key}
+              onClick={() => {
+                if (isSelected) {
+                  // Already selected — tap to remove filter
+                  removeFilter(dim.key)
+                  setActiveTab(null)
+                } else {
+                  setActiveTab(isActive ? null : dim.key)
+                  onPreview?.([])
+                }
+              }}
+              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs transition ${
+                isActive
+                  ? 'bg-brand-accent/20 text-brand-accent'
+                  : isSelected
+                    ? 'bg-brand-accent/10 text-brand-accent'
+                    : 'text-brand-text-muted hover:bg-brand-accent/5 hover:text-brand-accent'
+              }`}
+              title={dim.label}
+            >
+              <span className="text-sm">{dim.icon}</span>
+              <span className="hidden sm:inline">{dim.label}</span>
+            </button>
+          )
+        })}
+        {activeFilters.length > 0 && (
+          <span className="ml-1 text-[10px] text-brand-accent/50">{activeFilters.length}/5</span>
         )}
       </div>
     </div>
