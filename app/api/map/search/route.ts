@@ -13,6 +13,7 @@ interface SearchResult {
   label: string
   detail: string
   countryCount: number
+  countryCodes: string[]
 }
 
 /**
@@ -46,16 +47,15 @@ export async function POST(req: NextRequest) {
       (lang.searchAliases && lang.searchAliases.some((a) => a.toLowerCase().includes(q)))
     if (!matches) continue
 
-    const countryCount = COUNTRY_OPTIONS.filter((c) =>
-      c.languages.includes(lang.code as LanguageCode)
-    ).length
+    const matching = COUNTRY_OPTIONS.filter((c) => c.languages.includes(lang.code as LanguageCode))
 
     results.push({
       dimension: 'language',
       code: lang.code,
       label: lang.name,
       detail: lang.nativeName !== lang.name ? lang.nativeName : '',
-      countryCount,
+      countryCount: matching.length,
+      countryCodes: matching.map((c) => c.code),
     })
   }
 
@@ -64,35 +64,37 @@ export async function POST(req: NextRequest) {
     const matches = faith.id.toLowerCase().includes(q) || faith.label.toLowerCase().includes(q)
     if (!matches) continue
 
-    const countryCount = COUNTRY_OPTIONS.filter((c) =>
-      c.topFaiths.includes(faith.id as FaithCode)
-    ).length
+    const matching = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(faith.id as FaithCode))
 
     results.push({
       dimension: 'faith',
       code: faith.id,
       label: faith.label,
       detail: faith.icon,
-      countryCount,
+      countryCount: matching.length,
+      countryCodes: matching.map((c) => c.code),
     })
   }
 
   // 3. SECTOR — search across all unique sectors
-  const sectorCounts = new Map<string, number>()
+  const sectorMap = new Map<string, string[]>()
   for (const country of COUNTRY_OPTIONS) {
     for (const sector of country.topSectors) {
       if (sector.toLowerCase().includes(q)) {
-        sectorCounts.set(sector, (sectorCounts.get(sector) || 0) + 1)
+        const existing = sectorMap.get(sector) || []
+        existing.push(country.code)
+        sectorMap.set(sector, existing)
       }
     }
   }
-  for (const [sector, countryCount] of Array.from(sectorCounts.entries())) {
+  for (const [sector, codes] of Array.from(sectorMap.entries())) {
     results.push({
       dimension: 'sector',
       code: sector.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       label: sector,
       detail: '',
-      countryCount,
+      countryCount: codes.length,
+      countryCodes: codes,
     })
   }
 
@@ -104,20 +106,23 @@ export async function POST(req: NextRequest) {
     )
   })
   // Group by region if the query matches a region
-  const regionCounts = new Map<string, number>()
+  const regionMap = new Map<string, string[]>()
   for (const c of locationMatches) {
     const region = c.region.toLowerCase().replace(/-/g, ' ')
     if (region.includes(q.replace(/-/g, ' '))) {
-      regionCounts.set(c.region, (regionCounts.get(c.region) || 0) + 1)
+      const existing = regionMap.get(c.region) || []
+      existing.push(c.code)
+      regionMap.set(c.region, existing)
     }
   }
-  for (const [region, count] of Array.from(regionCounts.entries())) {
+  for (const [region, codes] of Array.from(regionMap.entries())) {
     results.push({
       dimension: 'location',
       code: region.toLowerCase(),
       label: region.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
       detail: 'Region',
-      countryCount: count,
+      countryCount: codes.length,
+      countryCodes: codes,
     })
   }
   // Individual country matches
@@ -129,43 +134,50 @@ export async function POST(req: NextRequest) {
         label: `${c.flag} ${c.name}`,
         detail: c.region.replace(/-/g, ' '),
         countryCount: 1,
+        countryCodes: [c.code],
       })
     }
   }
 
   // 5. CURRENCY — search by code
-  const currencyCounts = new Map<string, number>()
+  const currencyMap = new Map<string, string[]>()
   for (const c of COUNTRY_OPTIONS) {
     if (c.currency.toLowerCase().includes(q)) {
-      currencyCounts.set(c.currency, (currencyCounts.get(c.currency) || 0) + 1)
+      const existing = currencyMap.get(c.currency) || []
+      existing.push(c.code)
+      currencyMap.set(c.currency, existing)
     }
   }
-  for (const [currency, count] of Array.from(currencyCounts.entries())) {
+  for (const [currency, codes] of Array.from(currencyMap.entries())) {
     results.push({
       dimension: 'currency',
       code: currency.toLowerCase(),
       label: currency,
       detail: '',
-      countryCount: count,
+      countryCount: codes.length,
+      countryCodes: codes,
     })
   }
 
   // 6. CULTURE — search across culture suggestions
-  const cultureCounts = new Map<string, number>()
-  for (const [, cultures] of Object.entries(CULTURE_SUGGESTIONS)) {
+  const cultureMap = new Map<string, string[]>()
+  for (const [countryCode, cultures] of Object.entries(CULTURE_SUGGESTIONS)) {
     for (const culture of cultures) {
       if (culture.toLowerCase().includes(q)) {
-        cultureCounts.set(culture, (cultureCounts.get(culture) || 0) + 1)
+        const existing = cultureMap.get(culture) || []
+        existing.push(countryCode)
+        cultureMap.set(culture, existing)
       }
     }
   }
-  for (const [culture, count] of Array.from(cultureCounts.entries())) {
+  for (const [culture, codes] of Array.from(cultureMap.entries())) {
     results.push({
       dimension: 'culture',
       code: culture.toLowerCase(),
       label: culture,
       detail: '',
-      countryCount: count,
+      countryCount: codes.length,
+      countryCodes: codes,
     })
   }
 

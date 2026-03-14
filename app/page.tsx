@@ -29,6 +29,7 @@ export default function HomePage() {
     if (typeof window === 'undefined') return null
     return sessionStorage.getItem('bex-map-selected-name') || null
   })
+  const [previewCountries, setPreviewCountries] = useState<string[]>([])
   const [menuOpen, setMenuOpen] = useState(false)
   const [unreadMessages, setUnreadMessages] = useState(0)
 
@@ -98,6 +99,7 @@ export default function HomePage() {
     <main className="relative h-screen w-screen overflow-hidden">
       <WorldMap
         countries={countries}
+        previewCountryCodes={previewCountries}
         onCountryClick={(code, name) => {
           if (code === null) {
             setSelectedCountry(null)
@@ -304,7 +306,11 @@ export default function HomePage() {
         </nav>
       )}
 
-      <DimensionFilters activeFilters={filters} onFilterChange={setFilters} />
+      <DimensionFilters
+        activeFilters={filters}
+        onFilterChange={setFilters}
+        onPreview={setPreviewCountries}
+      />
     </main>
   )
 }

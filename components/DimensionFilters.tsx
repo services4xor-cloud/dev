@@ -15,6 +15,7 @@ interface Suggestion {
   label: string
   detail: string
   countryCount: number
+  countryCodes: string[]
 }
 
 /** What we store per active filter — code for API, label for display */
@@ -26,6 +27,8 @@ export interface ActiveFilter extends DimensionFilter {
 interface DimensionFiltersProps {
   activeFilters: ActiveFilter[]
   onFilterChange: (filters: ActiveFilter[]) => void
+  /** Called with country codes that match current search — for real-time map preview */
+  onPreview?: (countryCodes: string[]) => void
 }
 
 const DIMENSION_ICON: Record<string, string> = {
@@ -47,7 +50,11 @@ const PLACEHOLDER_HINTS = [
   'Maasai, Yoruba, Bavarian…',
 ]
 
-export default function DimensionFilters({ activeFilters, onFilterChange }: DimensionFiltersProps) {
+export default function DimensionFilters({
+  activeFilters,
+  onFilterChange,
+  onPreview,
+}: DimensionFiltersProps) {
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [loading, setLoading] = useState(false)
@@ -100,6 +107,7 @@ export default function DimensionFilters({ activeFilters, onFilterChange }: Dime
       if (q.length < 2) {
         setSuggestions([])
         setShowDropdown(false)
+        onPreview?.([])
         return
       }
 
@@ -117,6 +125,13 @@ export default function DimensionFilters({ activeFilters, onFilterChange }: Dime
           const filtered = data.suggestions.filter((s) => !activeDims.has(s.dimension))
           setSuggestions(filtered)
           setShowDropdown(filtered.length > 0)
+
+          // Aggregate all country codes from suggestions → real-time map preview
+          const previewCodes = new Set<string>()
+          for (const s of filtered) {
+            for (const code of s.countryCodes) previewCodes.add(code)
+          }
+          onPreview?.(Array.from(previewCodes))
         }
       } catch {
         // silently fail
@@ -124,7 +139,7 @@ export default function DimensionFilters({ activeFilters, onFilterChange }: Dime
         setLoading(false)
       }
     },
-    [activeFilters]
+    [activeFilters, onPreview]
   )
 
   // Debounce input
@@ -152,6 +167,7 @@ export default function DimensionFilters({ activeFilters, onFilterChange }: Dime
     setQuery('')
     setSuggestions([])
     setShowDropdown(false)
+    onPreview?.([]) // Clear preview — confirmed filter takes over
     // Re-focus for next filter
     setTimeout(() => inputRef.current?.focus(), 100)
   }

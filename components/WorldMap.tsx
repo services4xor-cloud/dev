@@ -21,9 +21,16 @@ interface WorldMapProps {
   countries: MapCountry[]
   onCountryClick: (code: string | null, name?: string) => void
   selectedCountry?: string | null
+  /** Country codes to show as soft preview glow (from search-as-you-type) */
+  previewCountryCodes?: string[]
 }
 
-export default function WorldMap({ countries, onCountryClick, selectedCountry }: WorldMapProps) {
+export default function WorldMap({
+  countries,
+  onCountryClick,
+  selectedCountry,
+  previewCountryCodes = [],
+}: WorldMapProps) {
   const mapRef = useRef<MapRef>(null)
   const [initialViewport] = useState(
     () => getSavedViewport() ?? { longitude: 20, latitude: 10, zoom: 2 }
@@ -77,53 +84,71 @@ export default function WorldMap({ countries, onCountryClick, selectedCountry }:
     [onCountryClick]
   )
 
-  // Build a set of highlighted country codes from filter results
+  // Build sets: confirmed filter results vs preview (search-as-you-type)
   const highlightedCodes = useMemo(() => new Set(countries.map((c) => c.code)), [countries])
+  const previewCodes = useMemo(() => new Set(previewCountryCodes), [previewCountryCodes])
 
   // --- Map style expressions ---
-  // Default: all countries subtle. Selected: bright gold. Filtered: medium. Others: very dim.
+  // 4 tiers: Selected (bright gold) > Confirmed (medium gold) > Preview (soft pulse) > Default (dim)
 
   const fillColor = useMemo(() => {
-    const hasActive = highlightedCodes.size > 0 || !!selectedCountry
+    const hasActive = highlightedCodes.size > 0 || !!selectedCountry || previewCodes.size > 0
     if (!hasActive) return '#C9A227' // uniform subtle gold
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, '#C9A227') // gold for selected
+    if (selectedCountry) expr.push(selectedCountry, '#C9A227')
     for (const code of Array.from(highlightedCodes)) {
       if (code !== selectedCountry) expr.push(code, '#C9A227')
     }
+    // Preview countries — softer warm gold
+    for (const code of Array.from(previewCodes)) {
+      if (code !== selectedCountry && !highlightedCodes.has(code)) {
+        expr.push(code, '#C9A227')
+      }
+    }
     expr.push('#2d3748') // fallback: dark slate
     return expr as unknown as string
-  }, [highlightedCodes, selectedCountry])
+  }, [highlightedCodes, previewCodes, selectedCountry])
 
   const fillOpacity = useMemo(() => {
-    const hasActive = highlightedCodes.size > 0 || !!selectedCountry
-    if (!hasActive) return 0.08 // very subtle default
+    const hasActive = highlightedCodes.size > 0 || !!selectedCountry || previewCodes.size > 0
+    if (!hasActive) return 0.08
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
     if (selectedCountry) expr.push(selectedCountry, 0.5) // selected: bright
     for (const code of Array.from(highlightedCodes)) {
-      if (code !== selectedCountry) expr.push(code, 0.25) // filtered: medium
+      if (code !== selectedCountry) expr.push(code, 0.25) // confirmed: medium
+    }
+    // Preview: soft glow between confirmed and default
+    for (const code of Array.from(previewCodes)) {
+      if (code !== selectedCountry && !highlightedCodes.has(code)) {
+        expr.push(code, 0.15)
+      }
     }
     expr.push(0.04) // others: barely visible
     return expr as unknown as number
-  }, [highlightedCodes, selectedCountry])
+  }, [highlightedCodes, previewCodes, selectedCountry])
 
   const borderColor = useMemo(() => {
-    const hasActive = highlightedCodes.size > 0 || !!selectedCountry
+    const hasActive = highlightedCodes.size > 0 || !!selectedCountry || previewCodes.size > 0
     if (!hasActive) return '#C9A227'
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, '#C9A227') // gold border
+    if (selectedCountry) expr.push(selectedCountry, '#C9A227')
     for (const code of Array.from(highlightedCodes)) {
       if (code !== selectedCountry) expr.push(code, '#C9A227')
     }
+    for (const code of Array.from(previewCodes)) {
+      if (code !== selectedCountry && !highlightedCodes.has(code)) {
+        expr.push(code, '#C9A227')
+      }
+    }
     expr.push('#1f2937') // fallback: very dark border
     return expr as unknown as string
-  }, [highlightedCodes, selectedCountry])
+  }, [highlightedCodes, previewCodes, selectedCountry])
 
   const borderWidth = useMemo(() => {
-    const hasActive = highlightedCodes.size > 0 || !!selectedCountry
+    const hasActive = highlightedCodes.size > 0 || !!selectedCountry || previewCodes.size > 0
     if (!hasActive) return 0.4
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
@@ -131,9 +156,14 @@ export default function WorldMap({ countries, onCountryClick, selectedCountry }:
     for (const code of Array.from(highlightedCodes)) {
       if (code !== selectedCountry) expr.push(code, 1)
     }
+    for (const code of Array.from(previewCodes)) {
+      if (code !== selectedCountry && !highlightedCodes.has(code)) {
+        expr.push(code, 0.6) // preview: subtle border
+      }
+    }
     expr.push(0.2) // others: hairline
     return expr as unknown as number
-  }, [highlightedCodes, selectedCountry])
+  }, [highlightedCodes, previewCodes, selectedCountry])
 
   return (
     <div className="relative" style={{ width: '100%', height: '100vh' }}>
