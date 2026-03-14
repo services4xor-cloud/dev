@@ -13,6 +13,7 @@ export default function HomePage() {
   const [filters, setFilters] = useState<DimensionFilter[]>([])
   const [countries, setCountries] = useState<MapCountry[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
+  const [selectedCountryName, setSelectedCountryName] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [unreadMessages, setUnreadMessages] = useState(0)
 
@@ -64,40 +65,40 @@ export default function HomePage() {
     <main className="relative h-screen w-screen overflow-hidden">
       <WorldMap
         countries={countries}
-        onCountryClick={(code) =>
-          setSelectedCountry((prev) => (code === null ? null : prev === code ? null : code))
-        }
+        onCountryClick={(code, name) => {
+          if (code === null) {
+            setSelectedCountry(null)
+            setSelectedCountryName(null)
+          } else if (code === selectedCountry) {
+            setSelectedCountry(null)
+            setSelectedCountryName(null)
+          } else {
+            setSelectedCountry(code)
+            setSelectedCountryName(name ?? code)
+          }
+        }}
         selectedCountry={selectedCountry}
       />
 
       {/* Top bar */}
       <div className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-4 py-3">
-        {selectedCountry ? (
-          <span className="flex items-center gap-1.5">
-            <button
-              onClick={() => setSelectedCountry(null)}
-              className="text-xl font-bold text-brand-text-muted transition hover:text-brand-accent"
-              title="Clear selection"
-            >
-              Be[
-            </button>
-            <Link
-              href={`/be/${selectedCountry.toLowerCase()}`}
-              className="text-xl font-bold text-brand-accent underline decoration-brand-accent/40 underline-offset-2 transition hover:decoration-brand-accent"
-            >
-              {selectedCountry}
-            </Link>
-            <button
-              onClick={() => setSelectedCountry(null)}
-              className="text-xl font-bold text-brand-text-muted transition hover:text-brand-accent"
-              title="Clear selection"
-            >
-              ]
-            </button>
+        <Link
+          href={selectedCountry ? `/be/${selectedCountry.toLowerCase()}` : '/'}
+          className="text-xl font-bold transition"
+          onClick={(e) => {
+            if (selectedCountry) {
+              // Let the link navigate to the Gate page
+              return
+            }
+            e.preventDefault()
+          }}
+        >
+          <span className={selectedCountry ? 'text-brand-text-muted' : 'text-brand-accent'}>
+            Be[
           </span>
-        ) : (
-          <h1 className="text-xl font-bold text-brand-accent">Be[X]</h1>
-        )}
+          <span className="text-brand-accent">{selectedCountryName ?? 'X'}</span>
+          <span className={selectedCountry ? 'text-brand-text-muted' : 'text-brand-accent'}>]</span>
+        </Link>
         {/* Mobile menu toggle */}
         <button
           className="text-brand-text-muted hover:text-brand-accent transition sm:hidden"
