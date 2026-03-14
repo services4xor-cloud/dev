@@ -135,6 +135,12 @@ export default function HomePage() {
                 Me
               </Link>
               <Link
+                href="/settings"
+                className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+              >
+                Settings
+              </Link>
+              <Link
                 href="/payments"
                 className="text-sm text-brand-text-muted hover:text-brand-accent transition"
               >
@@ -218,6 +224,13 @@ export default function HomePage() {
                 className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
               >
                 Me
+              </Link>
+              <Link
+                href="/settings"
+                onClick={() => setMenuOpen(false)}
+                className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+              >
+                Settings
               </Link>
               <Link
                 href="/payments"

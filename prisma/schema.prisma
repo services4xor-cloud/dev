@@ -25,18 +25,19 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts        Account[]
-  sessions        Session[]
-  node            Node?
-  payments        Payment[]
-  sentMessages    Message[]
-  conversations   Conversation[] @relation("ConversationParticipants")
-  agentChats      AgentChat[]
-  referrals       Referral[] @relation("Referrals")
-  referredBy      Referral[] @relation("ReferredBy")
-  reviewsWritten  Review[]   @relation("ReviewsWritten")
-  reviewsReceived Review[]   @relation("ReviewsReceived")
-  threadPosts     ThreadPost[]
+  accounts          Account[]
+  sessions          Session[]
+  node              Node?
+  payments          Payment[]
+  sentMessages      Message[]
+  conversations     Conversation[] @relation("ConversationParticipants")
+  agentChats        AgentChat[]
+  referrals         Referral[] @relation("Referrals")
+  referredBy        Referral[] @relation("ReferredBy")
+  reviewsWritten    Review[]   @relation("ReviewsWritten")
+  reviewsReceived   Review[]   @relation("ReviewsReceived")
+  threadPosts       ThreadPost[]
+  notificationPrefs NotificationPreference?
 }
 
 enum UserRole {
@@ -302,4 +303,17 @@ model ThreadPost {
 
   @@index([threadId])
   @@index([authorId])
+}
+
+model NotificationPreference {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email     Boolean  @default(true)
+  push      Boolean  @default(false)
+  messages  Boolean  @default(true)
+  matches   Boolean  @default(true)
+  marketing Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
