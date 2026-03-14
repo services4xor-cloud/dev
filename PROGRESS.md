@@ -1,33 +1,63 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 68 (2026-03-14); Be[X] v2 rebuild complete
+> Last updated: Session 69 (2026-03-14); Payments, Admin, Discovery shipped
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
 
 ## Current State
 
-| Metric            | Value                                                                                                                                                                |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phase             | 5 (Be[X] v2 — Graph-Powered Rebuild)                                                                                                                                 |
-| Branch            | `main` (direct push)                                                                                                                                                 |
-| Deploy            | Vercel auto on push                                                                                                                                                  |
-| Core Routes       | 10: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup`                                                   |
-| API routes        | 8: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` |
-| Library modules   | 15+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, identity-context.tsx, etc.)                                                                                     |
-| Jest tests        | 33/33 ✅ (5 suites)                                                                                                                                                  |
-| TypeScript errors | 0                                                                                                                                                                    |
-| Build             | ✅ passes (20 routes)                                                                                                                                                |
-| Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                              |
-| Map               | Fullscreen MapLibre GL JS + 177 countries GeoJSON + dimension filters                                                                                                |
-| AI Agents         | Claude API (claude-sonnet-4-20250514) with graph-powered personas                                                                                                    |
-| Vocabulary        | v2: Explorer/Host/Opportunity/Exchange/Experience/Discovery/Hub/Corridor                                                                                             |
-| Legacy terms      | 0 — zero Pioneer/Anchor/Venture/Compass in lib/, app/, components/, types/                                                                                           |
-| Countries         | 120+ in seed (Node type COUNTRY) + 100+ languages, 8 faiths, ~50 currencies                                                                                          |
-| Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                             |
-| DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                 |
-| Auth              | ✅ NextAuth v4 — Google OAuth, EXPLORER/HOST/AGENT/ADMIN roles                                                                                                       |
+| Metric            | Value                                                                                                                                                                                                                                                                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Phase             | 5 (Be[X] v2 — Graph-Powered Rebuild)                                                                                                                                                                                                                                                                   |
+| Branch            | `main` (direct push)                                                                                                                                                                                                                                                                                   |
+| Deploy            | Vercel auto on push                                                                                                                                                                                                                                                                                    |
+| Core Routes       | 12: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery`                                                                                                                                                               |
+| API routes        | 14: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` |
+| Library modules   | 16+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, identity-context.tsx, etc.)                                                                                                                                                                                                             |
+| Jest tests        | 55/55 ✅ (6 suites)                                                                                                                                                                                                                                                                                    |
+| TypeScript errors | 0                                                                                                                                                                                                                                                                                                      |
+| Build             | ✅ passes (26 routes)                                                                                                                                                                                                                                                                                  |
+| Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                |
+| Map               | Fullscreen MapLibre GL JS + 177 countries GeoJSON + dimension filters                                                                                                                                                                                                                                  |
+| AI Agents         | Claude API (claude-sonnet-4-20250514) with graph-powered personas                                                                                                                                                                                                                                      |
+| Vocabulary        | v2: Explorer/Host/Opportunity/Exchange/Experience/Discovery/Hub/Corridor                                                                                                                                                                                                                               |
+| Legacy terms      | 0 — zero Pioneer/Anchor/Venture/Compass in lib/, app/, components/, types/                                                                                                                                                                                                                             |
+| Countries         | 120+ in seed (Node type COUNTRY) + 100+ languages, 8 faiths, ~50 currencies                                                                                                                                                                                                                            |
+| Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                               |
+| DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                   |
+| Auth              | ✅ NextAuth v4 — Google OAuth, EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                         |
+
+---
+
+## 🔥 Session 69: Payments + Admin + Discovery + UI Fixes
+
+### Payments
+
+- **Payment API** (`/api/payments`) — POST creates payment (validates amount/currency/method), GET lists user's payments
+- **Payment detail** (`/api/payments/[id]`) — GET with owner/ADMIN check
+- **M-Pesa STK Push** (`lib/mpesa.ts`) — Daraja v2 sandbox client, graceful when unconfigured
+- **M-Pesa callback** (`/api/payments/mpesa-callback`) — Public endpoint for Safaricom notifications
+- **22 new tests** covering auth, validation, MPESA flow, IDOR protection
+
+### Admin Dashboard
+
+- **Admin API** (`/api/admin/stats`) — ADMIN-gated platform stats (counts, groupBy, recent users)
+- **Admin page** (`/admin`) — Stat cards grid, node breakdown, payment status, recent users table
+
+### Discovery Wizard
+
+- **Discovery API** (`/api/discovery`) — Corridor finder with cascading filters (country→languages→sectors)
+- **Options API** (`/api/discovery/options`) — Lists all active countries, languages, sectors
+- **Discovery page** (`/discovery`) — 4-step wizard: country select → languages → sectors → corridor results with match scores
+
+### UI Fixes
+
+- **Mobile nav** — Hamburger menu on small screens, dropdown with all links
+- **Filter pills** — `flex-wrap` so all 6 dimension pills visible on any screen
+- **Map selectedCountry** — Now passed from homepage, dynamic highlight styling works
+- **WorldMap** — Fixed Set iteration for TS compatibility
 
 ---
 
