@@ -10,6 +10,7 @@ interface ReviewAuthor {
 
 interface Review {
   id: string
+  authorId: string
   rating: number
   content: string
   createdAt: string
@@ -278,9 +279,7 @@ export default function ReviewSection({ targetId, showForm = false }: ReviewSect
                       <span className="text-xs text-brand-text-muted/60">
                         {formatDate(review.createdAt)}
                       </span>
-                      {session?.user?.id && (
-                        // We can only delete our own — the API enforces this
-                        // Show button only if current user wrote it (we don't have authorId in response, so show for all logged-in, let API reject)
+                      {session?.user?.id === review.authorId && (
                         <button
                           onClick={() => void handleDelete(review.id)}
                           disabled={deletingId === review.id}

@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,
+      authorId: true,
       rating: true,
       content: true,
       createdAt: true,
@@ -57,6 +58,14 @@ export async function POST(request: NextRequest) {
 
   if (targetId === session.user.id) {
     return NextResponse.json({ error: 'Cannot review yourself' }, { status: 400 })
+  }
+
+  // Prevent duplicate reviews
+  const existingReview = await db.review.findFirst({
+    where: { authorId: session.user.id, targetId },
+  })
+  if (existingReview) {
+    return NextResponse.json({ error: 'You have already reviewed this user' }, { status: 409 })
   }
 
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {

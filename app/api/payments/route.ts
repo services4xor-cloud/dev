@@ -102,22 +102,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'phone is required for MPESA payments' }, { status: 400 })
     }
 
-    const result = await stkPush({
-      phone: phoneStr,
-      amount,
-      reference: payment.id,
-      description: descriptionStr ?? 'BeNetwork payment',
-    })
+    try {
+      const result = await stkPush({
+        phone: phoneStr,
+        amount,
+        reference: payment.id,
+        description: descriptionStr ?? 'BeNetwork payment',
+      })
 
-    if (result.checkoutRequestId) {
-      // Store the checkout request ID so the callback can match it
+      if (result.checkoutRequestId) {
+        // Store the checkout request ID so the callback can match it
+        await db.payment.update({
+          where: { id: payment.id },
+          data: {
+            description: `${descriptionStr ?? ''} | ckReq:${result.checkoutRequestId}`.trim(),
+          },
+        })
+      }
+    } catch {
+      // STK push failed — mark payment as FAILED so it doesn't stay PENDING forever
       await db.payment.update({
         where: { id: payment.id },
-        data: { description: `${descriptionStr ?? ''} | ckReq:${result.checkoutRequestId}`.trim() },
+        data: { status: 'FAILED' },
       })
+      return NextResponse.json(
+        { error: 'Payment initiation failed. Please try again.' },
+        { status: 502 }
+      )
     }
-
-    // Return 201 regardless — STK push is async; status resolved via callback
   }
 
   // STRIPE: record created, full integration added when keys are available

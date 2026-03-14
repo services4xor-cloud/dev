@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 72 (2026-03-14); Phase 2A complete + Phase 2B Exchange lifecycle
+> Last updated: Session 73 (2026-03-14); Code review fixes + map antimeridian fix
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -28,6 +28,27 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 73: Code Review Fixes + Map Antimeridian Fix
+
+### Bug Fixes (from code review)
+
+- **M-Pesa STK push failure** — Payment now marked FAILED (not stuck PENDING) when STK push throws. Returns 502 with user-friendly message.
+- **Review uniqueness** — Added `@@unique([authorId, targetId])` to Prisma schema + API duplicate check (returns 409). Prevents multiple reviews per user.
+- **Thread offset validation** — Added `isNaN` guard + `Math.max(0, ...)` to prevent negative offsets.
+- **Thread title length** — Added 200-char limit on thread creation.
+- **ReviewSection delete button** — Now only visible to the review author (API returns `authorId`, component checks `session.user.id === review.authorId`).
+
+### Map Fix
+
+- **Antimeridian stripe artifacts** — Russia, Fiji, and Antarctica polygons crossed the 180°/-180° meridian, causing MapLibre to fill horizontal stripes across the globe. Wrote `scripts/fix-antimeridian.mjs` to split these polygons at the antimeridian. Russia: 10→15 parts, Fiji: 2→3 parts, Antarctica: 2→9 parts. Zero antimeridian crossings remaining. GeoJSON 429 KB (was 606 KB).
+
+### Stats
+
+- Tests: 355/355 (24 suites)
+- TypeScript: 0 errors
 
 ---
 

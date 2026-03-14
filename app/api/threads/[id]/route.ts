@@ -4,8 +4,10 @@ import { db } from '@/lib/db'
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params
   const { searchParams } = new URL(request.url)
-  const limit = Math.min(parseInt(searchParams.get('limit') ?? '20', 10), 100)
-  const offset = parseInt(searchParams.get('offset') ?? '0', 10)
+  const rawLimit = parseInt(searchParams.get('limit') ?? '20', 10)
+  const limit = isNaN(rawLimit) ? 20 : Math.min(Math.max(1, rawLimit), 100)
+  const rawOffset = parseInt(searchParams.get('offset') ?? '0', 10)
+  const offset = isNaN(rawOffset) ? 0 : Math.max(0, rawOffset)
 
   const thread = await db.thread.findUnique({
     where: { id },

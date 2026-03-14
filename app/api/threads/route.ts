@@ -53,6 +53,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'title is required' }, { status: 400 })
   }
 
+  if (title.trim().length > 200) {
+    return NextResponse.json({ error: 'title must be 200 characters or fewer' }, { status: 400 })
+  }
+
   const node = await db.node.findUnique({ where: { id: nodeId } })
   if (!node) {
     return NextResponse.json({ error: 'Node not found' }, { status: 404 })
