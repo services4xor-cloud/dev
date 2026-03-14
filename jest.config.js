@@ -7,6 +7,9 @@ const config = {
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.test.ts', '**/__tests__/**/*.test.tsx'],
   coverageProvider: 'v8',
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
   collectCoverageFrom: [
     'app/api/**/*.ts',
     'lib/**/*.ts',
