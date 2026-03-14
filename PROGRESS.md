@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 70 (2026-03-14); PWA, i18n, reviews, impact, community threads
+> Last updated: Session 71 (2026-03-14); API client utility, expanded sitemap, API client tests
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -28,6 +28,27 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Auth              | ✅ NextAuth v4 — Google OAuth, EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+
+---
+
+## Session 71: API Client Utility + Sitemap Expansion
+
+### API Client (`lib/api-client.ts`)
+
+- **`apiClient<T>()`** — thin fetch wrapper with configurable retry + exponential back-off delay
+- **`ApiClientError`** — typed error class carrying HTTP status code
+- **Convenience methods** — `api.get`, `api.post`, `api.put`, `api.del`
+- Default `Content-Type: application/json` header on every request
+
+### Tests (`__tests__/lib/api-client.test.ts`)
+
+- **8 tests** covering success path, non-ok errors, retry logic, exhausted retries, all convenience methods, header injection
+- All 8 pass; 0 TypeScript errors
+
+### Sitemap (`app/sitemap.ts`)
+
+- Added 6 new URLs: `/threads` (0.7), `/settings` (0.3), `/about` (0.5), `/pricing` (0.5), `/contact` (0.4), `/privacy` (0.3)
+- No duplicates with existing entries
 
 ---
 
