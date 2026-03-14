@@ -39,7 +39,7 @@ export interface NodeWithEdges extends GraphNode {
 // ─── Map types ────────────────────────────────────────────────
 
 export interface DimensionFilter {
-  dimension: 'language' | 'faith' | 'sector' | 'location' | 'currency' | 'culture'
+  dimension: 'language' | 'faith' | 'sector' | 'location' | 'currency' | 'culture' | 'timezone'
   nodeCode: string // e.g., "sw", "islam", "tech"
 }
 

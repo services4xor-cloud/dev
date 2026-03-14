@@ -4,9 +4,14 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import type { DimensionFilter } from '@/types/domain'
 
 /**
- * Curated dimension selector — 5 tabs with data-backed options.
+ * Curated dimension selector — 6 tabs with data-backed options.
  * Multi-select within and across dimensions. More matches = more intense glow.
  * Every option is pre-computed from COUNTRY_OPTIONS — 100% data-backed.
+ *
+ * Filter rows are grouped by source:
+ *   - Each clicked country gets its own enrichment row (e.g., "DE", "KE")
+ *   - Manual selections from tabs go into a "custom" row
+ *   - Already-selected options are hidden from the options panel (no duplicates)
  */
 
 interface DimensionOption {
@@ -32,6 +37,8 @@ export interface ActiveFilter extends DimensionFilter {
   icon?: string
   /** Country codes this filter matches — used for client-side intensity scoring */
   countryCodes?: string[]
+  /** Source of this filter: country code (auto-enriched) or "custom" (manual) */
+  source?: string
 }
 
 interface DimensionFiltersProps {
@@ -51,6 +58,20 @@ const DIMENSIONS: { key: DimensionKey; label: string; icon: string }[] = [
   { key: 'currency', label: 'Currency', icon: '💱' },
   { key: 'timezone', label: 'Timezone', icon: '🕐' },
 ]
+
+/** Country flag emoji from ISO code */
+function countryFlag(code: string): string {
+  try {
+    return String.fromCodePoint(
+      ...code
+        .toUpperCase()
+        .split('')
+        .map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)
+    )
+  } catch {
+    return '🌍'
+  }
+}
 
 export default function DimensionFilters({
   activeFilters,
@@ -97,22 +118,43 @@ export default function DimensionFilters({
     [activeFilters]
   )
 
+  // Group filters by source for row rendering
+  const filterGroups = useMemo(() => {
+    const groups = new Map<string, ActiveFilter[]>()
+    for (const f of activeFilters) {
+      const src = f.source ?? 'custom'
+      const existing = groups.get(src) ?? []
+      existing.push(f)
+      groups.set(src, existing)
+    }
+    return groups
+  }, [activeFilters])
+
+  // Ordered source keys: country codes first (alphabetical), then "custom" last
+  const sourceOrder = useMemo(() => {
+    const keys = Array.from(filterGroups.keys())
+    const countries = keys.filter((k) => k !== 'custom').sort()
+    const custom = keys.includes('custom') ? ['custom'] : []
+    return [...countries, ...custom]
+  }, [filterGroups])
+
   const toggleOption = useCallback(
     (dimension: DimensionKey, option: DimensionOption) => {
       const key = `${dimension}:${option.code}`
       if (selectedCodes.has(key)) {
-        // Deselect — remove this specific filter
+        // Deselect — remove ALL filters with this dimension:nodeCode (any source)
         onFilterChange(
           activeFilters.filter((f) => !(f.dimension === dimension && f.nodeCode === option.code))
         )
       } else {
-        // Select — ADD to filters (multi-select)
+        // Select — ADD as custom filter (manual selection)
         const newFilter: ActiveFilter = {
           dimension: dimension as DimensionFilter['dimension'],
           nodeCode: option.code,
           label: option.label,
           icon: option.icon,
           countryCodes: option.countryCodes,
+          source: 'custom',
         }
         onFilterChange([...activeFilters, newFilter])
       }
@@ -127,66 +169,101 @@ export default function DimensionFilters({
     )
   }
 
+  const removeSource = (source: string) => {
+    onFilterChange(activeFilters.filter((f) => (f.source ?? 'custom') !== source))
+  }
+
   const filtersForDimension = (dim: string) => activeFilters.filter((f) => f.dimension === dim)
-  const options = activeTab && dimensions ? dimensions[activeTab] : []
+
+  // Filter out already-selected options from the dropdown — no duplicates
+  const availableOptions = useMemo(() => {
+    if (!activeTab || !dimensions) return []
+    return dimensions[activeTab].filter((opt) => !selectedCodes.has(`${activeTab}:${opt.code}`))
+  }, [activeTab, dimensions, selectedCodes])
 
   return (
     <div
       ref={panelRef}
       className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2"
     >
-      {/* Active filter tags */}
-      {activeFilters.length > 0 && (
-        <div className="flex flex-wrap justify-center gap-1.5 max-w-[90vw]">
-          {activeFilters.map((f) => (
-            <button
-              key={`${f.dimension}:${f.nodeCode}`}
-              onClick={() => removeFilter(f.dimension, f.nodeCode)}
-              className="rounded-full bg-brand-accent/20 px-3 py-1 text-xs text-brand-accent hover:bg-brand-accent/30 transition"
-            >
-              {f.icon ?? '◆'} {f.label ?? f.nodeCode} ✕
-            </button>
-          ))}
-          {activeFilters.length > 1 && (
-            <button
-              onClick={() => onFilterChange([])}
-              className="rounded-full bg-red-500/10 px-2.5 py-1 text-xs text-red-400/70 hover:bg-red-500/20 transition"
-            >
-              Clear all
-            </button>
+      {/* Active filter rows — grouped by source */}
+      {sourceOrder.length > 0 && (
+        <div className="flex flex-col gap-1.5 max-w-[90vw]">
+          {sourceOrder.map((source) => {
+            const group = filterGroups.get(source) ?? []
+            const isCountry = source !== 'custom'
+            const sourceLabel = isCountry ? `${countryFlag(source)} ${source}` : '✦ Custom'
+            return (
+              <div key={source} className="flex flex-wrap items-center justify-center gap-1.5">
+                {/* Source label + remove-all for this source */}
+                <button
+                  onClick={() => removeSource(source)}
+                  className={`rounded-full px-2.5 py-1 text-[10px] font-medium transition ${
+                    isCountry
+                      ? 'bg-brand-accent/15 text-brand-accent hover:bg-brand-accent/25'
+                      : 'bg-brand-text-muted/10 text-brand-text-muted hover:bg-brand-text-muted/20'
+                  }`}
+                  title={`Remove all ${isCountry ? source : 'custom'} filters`}
+                >
+                  {sourceLabel} ✕
+                </button>
+                {/* Individual filter chips */}
+                {group.map((f) => (
+                  <button
+                    key={`${f.dimension}:${f.nodeCode}`}
+                    onClick={() => removeFilter(f.dimension, f.nodeCode)}
+                    onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
+                    onMouseLeave={() => onPreview?.([])}
+                    className="rounded-full bg-brand-accent/20 px-2.5 py-1 text-xs text-brand-accent hover:bg-brand-accent/30 transition"
+                  >
+                    {f.icon ?? '◆'} {f.label ?? f.nodeCode} ✕
+                  </button>
+                ))}
+              </div>
+            )
+          })}
+          {/* Clear all — only when 2+ sources or many filters */}
+          {(sourceOrder.length > 1 || activeFilters.length > 2) && (
+            <div className="flex justify-center">
+              <button
+                onClick={() => onFilterChange([])}
+                className="rounded-full bg-red-500/10 px-2.5 py-1 text-xs text-red-400/70 hover:bg-red-500/20 transition"
+              >
+                Clear all
+              </button>
+            </div>
           )}
         </div>
       )}
 
-      {/* Options panel — shows when a dimension tab is active */}
-      {activeTab && options.length > 0 && (
+      {/* Options panel — shows when a dimension tab is active, hides already-selected */}
+      {activeTab && availableOptions.length > 0 && (
         <div className="w-[340px] sm:w-[480px] overflow-hidden rounded-xl border border-brand-accent/20 bg-brand-surface/95 shadow-xl backdrop-blur">
           <div className="max-h-52 overflow-y-auto p-2">
             <div className="flex flex-wrap gap-1.5">
-              {options.map((opt) => {
-                const isSelected = selectedCodes.has(`${activeTab}:${opt.code}`)
-                return (
-                  <button
-                    key={opt.code}
-                    onClick={() => toggleOption(activeTab, opt)}
-                    onMouseEnter={() => onPreview?.(opt.countryCodes)}
-                    onMouseLeave={() => onPreview?.([])}
-                    className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                      isSelected
-                        ? 'border-brand-accent bg-brand-accent/20 text-brand-accent'
-                        : 'border-brand-accent/10 bg-brand-bg/80 text-brand-text hover:border-brand-accent/40 hover:bg-brand-accent/10 hover:text-brand-accent'
-                    }`}
-                  >
-                    {isSelected && '✓ '}
-                    {opt.label}
-                    <span className="ml-1.5 text-brand-text-muted/50">{opt.count}</span>
-                  </button>
-                )
-              })}
+              {availableOptions.map((opt) => (
+                <button
+                  key={opt.code}
+                  onClick={() => toggleOption(activeTab, opt)}
+                  onMouseEnter={() => onPreview?.(opt.countryCodes)}
+                  onMouseLeave={() => onPreview?.([])}
+                  className="rounded-full border border-brand-accent/10 bg-brand-bg/80 px-3 py-1.5 text-xs text-brand-text transition hover:border-brand-accent/40 hover:bg-brand-accent/10 hover:text-brand-accent"
+                >
+                  {opt.label}
+                  <span className="ml-1.5 text-brand-text-muted/50">{opt.count}</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>
       )}
+
+      {/* Show message when all options in this dimension are already selected */}
+      {activeTab && availableOptions.length === 0 && dimensions?.[activeTab]?.length ? (
+        <div className="rounded-xl border border-brand-accent/10 bg-brand-surface/95 px-4 py-2 text-xs text-brand-text-muted backdrop-blur">
+          All {activeTab} options selected
+        </div>
+      ) : null}
 
       {/* Dimension tab bar */}
       <div className="flex items-center gap-1 rounded-2xl border border-brand-accent/20 bg-brand-surface/95 px-3 py-2 backdrop-blur">

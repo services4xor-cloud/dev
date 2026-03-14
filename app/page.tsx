@@ -26,20 +26,41 @@ export default function HomePage() {
       return []
     }
   })
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null
-    return sessionStorage.getItem('bex-map-selected') || null
+  // Track multiple enriched countries (additive clicks)
+  const [enrichedCountries, setEnrichedCountries] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const raw = sessionStorage.getItem('bex-map-enriched')
+      return raw ? (JSON.parse(raw) as string[]) : []
+    } catch {
+      return []
+    }
   })
-  const [selectedCountryName, setSelectedCountryName] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null
-    return sessionStorage.getItem('bex-map-selected-name') || null
+  const [enrichedNames, setEnrichedNames] = useState<Record<string, string>>(() => {
+    if (typeof window === 'undefined') return {}
+    try {
+      const raw = sessionStorage.getItem('bex-map-enriched-names')
+      return raw ? (JSON.parse(raw) as Record<string, string>) : {}
+    } catch {
+      return {}
+    }
   })
   const [previewCountries, setPreviewCountries] = useState<string[]>([])
   const [menuOpen, setMenuOpen] = useState(false)
   const [unreadMessages, setUnreadMessages] = useState(0)
 
-  // Persist selection + filters to sessionStorage
+  // The "selected" country for the logo is the most recently enriched
+  const selectedCountry =
+    enrichedCountries.length > 0 ? enrichedCountries[enrichedCountries.length - 1] : null
+  const selectedCountryName = selectedCountry
+    ? (enrichedNames[selectedCountry] ?? selectedCountry)
+    : null
+
+  // Persist enriched countries + filters to sessionStorage
   useEffect(() => {
+    sessionStorage.setItem('bex-map-enriched', JSON.stringify(enrichedCountries))
+    sessionStorage.setItem('bex-map-enriched-names', JSON.stringify(enrichedNames))
+    // Keep legacy keys for backward compat
     if (selectedCountry) {
       sessionStorage.setItem('bex-map-selected', selectedCountry)
     } else {
@@ -50,7 +71,7 @@ export default function HomePage() {
     } else {
       sessionStorage.removeItem('bex-map-selected-name')
     }
-  }, [selectedCountry, selectedCountryName])
+  }, [enrichedCountries, enrichedNames, selectedCountry, selectedCountryName])
 
   useEffect(() => {
     sessionStorage.setItem('bex-map-filters', JSON.stringify(filters))
@@ -77,36 +98,58 @@ export default function HomePage() {
     return scored
   }, [filters])
 
-  // Enrich: when clicking a country, auto-discover related dimensions
-  const enrichCountry = useCallback(
-    async (code: string, name: string) => {
-      try {
-        const res = await fetch('/api/map/enrich', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code }),
-        })
-        if (!res.ok) return
-        const data = (await res.json()) as {
-          filters: ActiveFilter[]
-        }
-        // Set all enrichment filters (replaces previous enrichment)
-        setFilters(data.filters)
-      } catch {
-        // Fallback: just add location filter
-        setFilters([
+  // Enrich: when clicking a country, auto-discover related dimensions and ADD to existing
+  const enrichCountry = useCallback(async (code: string, name: string) => {
+    try {
+      const res = await fetch('/api/map/enrich', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      })
+      if (!res.ok) return
+      const data = (await res.json()) as {
+        filters: ActiveFilter[]
+      }
+      // Tag each enrichment filter with its source country
+      const taggedFilters = data.filters.map((f) => ({
+        ...f,
+        source: code,
+      }))
+      // ADD to existing filters (keep other countries' enrichments + custom)
+      setFilters((prev) => {
+        // Remove any existing filters from THIS country (re-enrich)
+        const withoutThisCountry = prev.filter((f) => f.source !== code)
+        return [...withoutThisCountry, ...taggedFilters]
+      })
+    } catch {
+      // Fallback: just add location filter
+      setFilters((prev) => {
+        const withoutThisCountry = prev.filter((f) => f.source !== code)
+        return [
+          ...withoutThisCountry,
           {
             dimension: 'location' as const,
             nodeCode: name.toLowerCase(),
             label: name,
             icon: '📍',
             countryCodes: [code],
+            source: code,
           },
-        ])
-      }
-    },
-    [setFilters]
-  )
+        ]
+      })
+    }
+  }, [])
+
+  // Remove a country's enrichment — remove its filters and from enriched list
+  const unenrichCountry = useCallback((code: string) => {
+    setFilters((prev) => prev.filter((f) => f.source !== code))
+    setEnrichedCountries((prev) => prev.filter((c) => c !== code))
+    setEnrichedNames((prev) => {
+      const next = { ...prev }
+      delete next[code]
+      return next
+    })
+  }, [])
 
   // Poll for unread notifications every 30 seconds when signed in
   useEffect(() => {
@@ -129,6 +172,23 @@ export default function HomePage() {
     return () => clearInterval(interval)
   }, [session])
 
+  // Handle filter changes from DimensionFilters — sync enriched countries when source rows removed
+  const handleFilterChange = useCallback((newFilters: ActiveFilter[]) => {
+    setFilters(newFilters)
+    // Check if any enriched country lost ALL its filters — remove from enriched list
+    const remainingSources = new Set<string>(
+      newFilters.filter((f) => f.source && f.source !== 'custom').map((f) => f.source!)
+    )
+    setEnrichedCountries((prev) => prev.filter((c) => remainingSources.has(c)))
+    setEnrichedNames((prev) => {
+      const next: Record<string, string> = {}
+      for (const [k, v] of Object.entries(prev)) {
+        if (remainingSources.has(k)) next[k] = v
+      }
+      return next
+    })
+  }, [])
+
   return (
     <main className="relative h-screen w-screen overflow-hidden">
       <WorldMap
@@ -136,16 +196,16 @@ export default function HomePage() {
         previewCountryCodes={previewCountries}
         onCountryClick={(code, name) => {
           if (code === null) {
-            setSelectedCountry(null)
-            setSelectedCountryName(null)
-          } else if (code === selectedCountry) {
-            // Toggle off — clear all enrichment filters
-            setSelectedCountry(null)
-            setSelectedCountryName(null)
-            setFilters([])
+            // Clicked empty space — do nothing (keep enrichments)
+            return
+          }
+          if (enrichedCountries.includes(code)) {
+            // Toggle off — remove this country's enrichment only
+            unenrichCountry(code)
           } else {
-            setSelectedCountry(code)
-            setSelectedCountryName(name ?? code)
+            // Add this country to enriched list
+            setEnrichedCountries((prev) => [...prev, code])
+            setEnrichedNames((prev) => ({ ...prev, [code]: name ?? code }))
             // Auto-enrich: discover all related dimensions for this country
             void enrichCountry(code, name ?? code)
           }
@@ -168,7 +228,11 @@ export default function HomePage() {
           <span className={selectedCountry ? 'text-brand-text-muted' : 'text-brand-accent'}>
             Be[
           </span>
-          <span className="text-brand-accent">{selectedCountryName ?? 'X'}</span>
+          <span className="text-brand-accent">
+            {enrichedCountries.length > 1
+              ? enrichedCountries.join('·')
+              : (selectedCountryName ?? 'X')}
+          </span>
           <span className={selectedCountry ? 'text-brand-text-muted' : 'text-brand-accent'}>]</span>
         </Link>
         {/* Mobile menu toggle */}
@@ -330,7 +394,7 @@ export default function HomePage() {
 
       <DimensionFilters
         activeFilters={filters}
-        onFilterChange={setFilters}
+        onFilterChange={handleFilterChange}
         onPreview={setPreviewCountries}
       />
     </main>
