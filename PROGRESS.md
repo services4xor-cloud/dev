@@ -16,9 +16,9 @@
 | Core Routes       | 12: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery`                                                                                                                                                               |
 | API routes        | 14: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` |
 | Library modules   | 16+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, identity-context.tsx, etc.)                                                                                                                                                                                                             |
-| Jest tests        | 55/55 ✅ (6 suites)                                                                                                                                                                                                                                                                                    |
+| Jest tests        | 132/132 ✅ (13 suites)                                                                                                                                                                                                                                                                                 |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                      |
-| Build             | ✅ passes (30 routes)                                                                                                                                                                                                                                                                                  |
+| Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                    |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                |
 | Map               | Fullscreen MapLibre GL JS + 177 countries GeoJSON + dimension filters                                                                                                                                                                                                                                  |
 | AI Agents         | Claude API (claude-sonnet-4-20250514) with graph-powered personas                                                                                                                                                                                                                                      |
@@ -78,6 +78,22 @@
 - **Map selectedCountry** — Now passed from homepage, dynamic highlight styling works
 - **WorldMap** — Fixed Set iteration for TS compatibility
 - **Nav links** — Added Explorers, Discovery, Refer to desktop + mobile nav
+
+### SEO & Infrastructure
+
+- **Metadata** — All 15+ pages have SEO title/description via layout.tsx + generateMetadata
+- **robots.txt** — Auto-generated, blocks /api/ and /admin/
+- **sitemap.xml** — 6 static URLs with priorities
+- **Error boundary** — Global error.tsx with reset + back to map
+- **404 page** — Custom not-found.tsx with brand styling
+- **Footer** — 3-column responsive footer component (Explore/Account/About)
+- **About page** — Mission, how-it-works, values, CTA
+
+### Explorer Detail + Tests
+
+- **Explorer detail** (`/explorers/[id]`) — Server component, dimension cards, send message link
+- **Explorer API detail** (`/api/explorers/[id]`) — Returns explorer with grouped dimensions
+- **34 new tests** — Discovery (15), Referral (13), Notifications (6), Explorers detail (9), Admin (4)
 
 ---
 
