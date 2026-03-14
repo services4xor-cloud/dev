@@ -17,3 +17,54 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
 }
+
+/* Super Saiyan energy glow for selected country logo */
+@keyframes saiyan-pulse {
+  0% {
+    text-shadow:
+      0 0 4px rgba(201, 162, 39, 0.4),
+      0 0 8px rgba(201, 162, 39, 0.2);
+    filter: brightness(1);
+  }
+  50% {
+    text-shadow:
+      0 0 12px rgba(201, 162, 39, 0.8),
+      0 0 24px rgba(201, 162, 39, 0.4),
+      0 0 40px rgba(201, 162, 39, 0.2);
+    filter: brightness(1.15);
+  }
+  100% {
+    text-shadow:
+      0 0 4px rgba(201, 162, 39, 0.4),
+      0 0 8px rgba(201, 162, 39, 0.2);
+    filter: brightness(1);
+  }
+}
+
+@keyframes saiyan-aura {
+  0% {
+    box-shadow:
+      0 0 6px rgba(201, 162, 39, 0.3),
+      0 0 12px rgba(201, 162, 39, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 14px rgba(201, 162, 39, 0.6),
+      0 0 28px rgba(201, 162, 39, 0.25),
+      0 0 48px rgba(201, 162, 39, 0.1);
+  }
+  100% {
+    box-shadow:
+      0 0 6px rgba(201, 162, 39, 0.3),
+      0 0 12px rgba(201, 162, 39, 0.1);
+  }
+}
+
+.logo-saiyan {
+  animation: saiyan-pulse 2s ease-in-out infinite;
+  border-radius: 8px;
+  padding: 4px 10px;
+  animation:
+    saiyan-pulse 2s ease-in-out infinite,
+    saiyan-aura 2s ease-in-out infinite;
+}

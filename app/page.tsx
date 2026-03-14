@@ -84,7 +84,7 @@ export default function HomePage() {
       <div className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-4 py-3">
         <Link
           href={selectedCountry ? `/be/${selectedCountry.toLowerCase()}` : '/'}
-          className="text-xl font-bold transition"
+          className={`text-xl font-bold transition ${selectedCountry ? 'logo-saiyan' : ''}`}
           onClick={(e) => {
             if (selectedCountry) {
               // Let the link navigate to the Gate page

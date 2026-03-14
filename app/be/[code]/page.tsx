@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const country = getCountry(upperCode)
   const name = country?.name ?? upperCode
   return {
-    title: `Be${upperCode} — ${name}`,
+    title: `Be${name}`,
     description: `Explore ${name} on Be[X] — discover languages, culture, paths, and connections.`,
   }
 }
@@ -52,11 +52,10 @@ export default async function CountryHubPage({ params }: PageProps) {
       <section className="relative overflow-hidden bg-gradient-to-b from-brand-surface via-brand-bg to-brand-bg">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.08),transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 sm:py-20">
-          {flag && <div className="mb-3 text-5xl leading-none sm:mb-4 sm:text-7xl">{flag}</div>}
-          <h1 className="mb-2 text-3xl font-bold tracking-tight text-brand-accent sm:mb-3 sm:text-5xl">
-            Be{upperCode}
+          <h1 className="mb-4 text-3xl font-bold tracking-tight text-brand-accent sm:mb-5 sm:text-5xl">
+            {flag && <span className="mr-3">{flag}</span>}
+            Be{name}
           </h1>
-          <p className="mb-4 text-xl font-light text-brand-text sm:mb-5 sm:text-2xl">{name}</p>
           {region && (
             <span className="inline-block rounded-full border border-brand-accent/30 bg-brand-accent/10 px-3 py-1 text-xs font-medium text-brand-accent sm:px-4 sm:text-sm">
               {region}
