@@ -51,8 +51,20 @@ export default function HomePage() {
           >
             Agent
           </Link>
+          <Link
+            href="/opportunities"
+            className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            Opportunities
+          </Link>
           {session ? (
             <>
+              <Link
+                href="/messages"
+                className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+              >
+                Messages
+              </Link>
               <Link
                 href="/me"
                 className="text-sm text-brand-text-muted hover:text-brand-accent transition"
