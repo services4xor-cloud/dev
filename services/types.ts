@@ -35,18 +35,3 @@ export interface PaymentService {
   ): Promise<{ id: string; amount: number; currency: string; status: string; createdAt: Date }[]>
   sumSuccessful(userId: string): Promise<number>
 }
-
-export interface ThreadService {
-  list(options?: {
-    nodeType?: string
-    limit?: number
-  }): Promise<{ id: string; title: string; nodeId: string; description?: string | null }[]>
-  findById(
-    id: string
-  ): Promise<{
-    id: string
-    title: string
-    description?: string | null
-    node: { label: string; icon?: string | null }
-  } | null>
-}

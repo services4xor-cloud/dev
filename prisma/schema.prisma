@@ -36,7 +36,7 @@ model User {
   referredBy        Referral[] @relation("ReferredBy")
   reviewsWritten    Review[]   @relation("ReviewsWritten")
   reviewsReceived   Review[]   @relation("ReviewsReceived")
-  threadPosts       ThreadPost[]
+
   notifications     Notification[]
   notificationPrefs NotificationPreference?
 }
@@ -106,7 +106,7 @@ model Node {
 
   outEdges   Edge[]   @relation("EdgeFrom")
   inEdges    Edge[]   @relation("EdgeTo")
-  thread     Thread?
+
 
   @@unique([type, code])
   @@index([type])
@@ -278,33 +278,6 @@ model Review {
   @@index([authorId])
   @@index([targetId])
   @@index([nodeId])
-}
-
-model Thread {
-  id          String       @id @default(cuid())
-  nodeId      String       @unique
-  node        Node         @relation(fields: [nodeId], references: [id])
-  title       String
-  description String?      @db.Text
-  posts       ThreadPost[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  @@index([nodeId])
-}
-
-model ThreadPost {
-  id        String   @id @default(cuid())
-  threadId  String
-  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([threadId])
-  @@index([authorId])
 }
 
 model Notification {

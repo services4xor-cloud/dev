@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import type { UserService, NodeService, PaymentService, ThreadService } from './types'
+import type { UserService, NodeService, PaymentService } from './types'
 
 export const userService: UserService = {
   async findById(id) {
@@ -62,27 +62,5 @@ export const paymentService: PaymentService = {
       _sum: { amount: true },
     })
     return result._sum.amount ?? 0
-  },
-}
-
-export const threadService: ThreadService = {
-  async list(options) {
-    return db.thread.findMany({
-      where: options?.nodeType ? { node: { type: options.nodeType as any } } : {},
-      select: { id: true, title: true, nodeId: true, description: true },
-      take: options?.limit,
-      orderBy: { createdAt: 'desc' },
-    })
-  },
-  async findById(id) {
-    return db.thread.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        node: { select: { label: true, icon: true } },
-      },
-    })
   },
 }

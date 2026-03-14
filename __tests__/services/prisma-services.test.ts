@@ -3,11 +3,10 @@ jest.mock('@/lib/db', () => ({
     user: { findUnique: jest.fn(), update: jest.fn() },
     node: { findUnique: jest.fn(), findMany: jest.fn() },
     payment: { findMany: jest.fn(), aggregate: jest.fn() },
-    thread: { findMany: jest.fn(), findUnique: jest.fn() },
   },
 }))
 
-import { userService, nodeService, paymentService, threadService } from '@/services/prisma-services'
+import { userService, nodeService, paymentService } from '@/services/prisma-services'
 
 function getDb() {
   return require('@/lib/db').db
@@ -83,31 +82,5 @@ describe('paymentService', () => {
     db.payment.aggregate.mockResolvedValue({ _sum: { amount: null } })
     const result = await paymentService.sumSuccessful('u1')
     expect(result).toBe(0)
-  })
-})
-
-describe('threadService', () => {
-  beforeEach(() => jest.clearAllMocks())
-
-  test('list returns threads', async () => {
-    const db = getDb()
-    db.thread.findMany.mockResolvedValue([
-      { id: 't1', title: 'Kenya Thread', nodeId: 'n1', description: null },
-    ])
-    const result = await threadService.list()
-    expect(result).toHaveLength(1)
-  })
-
-  test('findById returns thread with node', async () => {
-    const db = getDb()
-    db.thread.findUnique.mockResolvedValue({
-      id: 't1',
-      title: 'Kenya Thread',
-      description: 'Discuss Kenya',
-      node: { label: 'Kenya', icon: '🇰🇪' },
-    })
-    const result = await threadService.findById('t1')
-    expect(result?.title).toBe('Kenya Thread')
-    expect(result?.node.label).toBe('Kenya')
   })
 })

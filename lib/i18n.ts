@@ -32,7 +32,6 @@ const CONTENT: Record<string, ContentDict> = {
     // Navigation
     'nav.startCompass': 'Start Discovery',
     'nav.signIn': 'Sign In',
-    'nav.browseThreads': 'Browse all threads →',
     'nav.switchIdentity': 'Click to switch identity',
     'nav.searchCountries': 'Search countries...',
     'nav.oneIdentity': 'One platform, every identity',
@@ -537,22 +536,6 @@ const CONTENT: Record<string, ContentDict> = {
     'forgotPassword.noAccount': "Don't have an account?",
     'forgotPassword.signUpFree': 'Sign up free',
 
-    // Threads
-    'threads.heroTitle': 'Be{accent}[You]{/accent}',
-    'threads.heroDesc':
-      'Find your people. Every identity — country, tribe, language, interest — has a thread. Join communities that move, work, and thrive together.',
-    'threads.search': 'Search threads...',
-    'threads.filterAll': 'All',
-    'threads.filterCountries': 'Countries',
-    'threads.filterTribes': 'Tribes',
-    'threads.filterLanguages': 'Languages',
-    'threads.filterInterests': 'Interests',
-    'threads.filterSciences': 'Sciences',
-    'threads.filterLocations': 'Locations',
-    'threads.liveData': 'Live data',
-    'threads.threadsCount': '{count} threads',
-    'threads.empty': 'No threads match your search. Try a different term.',
-
     // Charity
     'charity.badge': 'Community-Based Organization · Registered in Kenya',
     'charity.tagline': 'Swahili for "Culture & Heritage"',
@@ -902,29 +885,6 @@ const CONTENT: Record<string, ContentDict> = {
     'agent.ctaTitle': 'Ready to start placing people?',
     'agent.ctaDesc':
       "Join {brand}'s Agent network. No upfront cost. Earn commission on every successful placement.",
-
-    // Thread Detail
-    'thread.notFoundTitle': 'Thread Not Found',
-    'thread.notFoundDesc': "This community doesn't exist yet.",
-    'thread.browseAll': 'Browse All Threads',
-    'thread.allThreads': 'All Threads',
-    'thread.pioneers': 'Explorers',
-    'thread.joined': '✓ Joined',
-    'thread.joinThread': 'Join Thread',
-    'thread.about': 'About {name}',
-    'thread.communitiesWithin': 'Communities within {name}',
-    'thread.pathsIn': 'Opportunities in {name}',
-    'thread.seeAll': 'See all',
-    'thread.findYourPath': 'Find Your Opportunity',
-    'thread.compassDesc':
-      'Use Discovery to find Opportunities matched to your skills and identity.',
-    'thread.startCompass': 'Start Discovery',
-    'thread.relatedThreads': 'Related Threads',
-    'thread.threadStats': 'Thread Stats',
-    'thread.members': 'Members',
-    'thread.type': 'Type',
-    'thread.partOf': 'Part of',
-    'thread.countries': 'Countries',
 
     // Venture Detail
     'venture.notFoundTitle': 'Opportunity Not Found',
@@ -1549,7 +1509,6 @@ const CONTENT: Record<string, ContentDict> = {
   de: {
     'nav.startCompass': 'Discovery starten',
     'nav.signIn': 'Anmelden',
-    'nav.browseThreads': 'Alle Threads durchsuchen →',
     'nav.switchIdentity': 'Klicken um Identität zu wechseln',
     'nav.searchCountries': 'Länder suchen...',
     'nav.oneIdentity': 'Eine Plattform, jede Identität',
@@ -1991,22 +1950,6 @@ const CONTENT: Record<string, ContentDict> = {
     'forgotPassword.noAccount': 'Noch kein Konto?',
     'forgotPassword.signUpFree': 'Kostenlos registrieren',
 
-    // Threads
-    'threads.heroTitle': 'Be{accent}[Du]{/accent}',
-    'threads.heroDesc':
-      'Finde deine Leute. Jede Identität — Land, Stamm, Sprache, Interesse — hat einen Thread. Tritt Gemeinschaften bei, die gemeinsam leben, arbeiten und wachsen.',
-    'threads.search': 'Threads durchsuchen...',
-    'threads.filterAll': 'Alle',
-    'threads.filterCountries': 'Länder',
-    'threads.filterTribes': 'Stämme',
-    'threads.filterLanguages': 'Sprachen',
-    'threads.filterInterests': 'Interessen',
-    'threads.filterSciences': 'Wissenschaften',
-    'threads.filterLocations': 'Standorte',
-    'threads.liveData': 'Live-Daten',
-    'threads.threadsCount': '{count} Threads',
-    'threads.empty': 'Keine Threads gefunden. Versuche einen anderen Suchbegriff.',
-
     // Charity
     'charity.badge': 'Gemeinnützige Organisation · Registriert in Kenia',
     'charity.tagline': 'Swahili für „Kultur & Erbe"',
@@ -2357,29 +2300,6 @@ const CONTENT: Record<string, ContentDict> = {
     'agent.ctaTitle': 'Bereit, Menschen zu vermitteln?',
     'agent.ctaDesc':
       'Tritt dem Agent-Netzwerk von {brand} bei. Keine Vorabkosten. Verdiene Provision bei jeder erfolgreichen Vermittlung.',
-
-    // Thread Detail
-    'thread.notFoundTitle': 'Thread nicht gefunden',
-    'thread.notFoundDesc': 'Diese Community existiert noch nicht.',
-    'thread.browseAll': 'Alle Threads durchsuchen',
-    'thread.allThreads': 'Alle Threads',
-    'thread.pioneers': 'Explorers',
-    'thread.joined': '✓ Beigetreten',
-    'thread.joinThread': 'Thread beitreten',
-    'thread.about': 'Über {name}',
-    'thread.communitiesWithin': 'Communities in {name}',
-    'thread.pathsIn': 'Chancen in {name}',
-    'thread.seeAll': 'Alle anzeigen',
-    'thread.findYourPath': 'Finde deine Chance',
-    'thread.compassDesc':
-      'Nutze Discovery, um Chancen zu finden, die zu deinen Fähigkeiten und deiner Identität passen.',
-    'thread.startCompass': 'Discovery starten',
-    'thread.relatedThreads': 'Verwandte Threads',
-    'thread.threadStats': 'Thread-Statistiken',
-    'thread.members': 'Mitglieder',
-    'thread.type': 'Typ',
-    'thread.partOf': 'Teil von',
-    'thread.countries': 'Länder',
 
     // Venture Detail
     'venture.notFoundTitle': 'Chance nicht gefunden',
@@ -3010,7 +2930,6 @@ const CONTENT: Record<string, ContentDict> = {
   sw: {
     'nav.startCompass': 'Anza Dira',
     'nav.signIn': 'Ingia',
-    'nav.browseThreads': 'Angalia mazungumzo yote →',
     'nav.switchIdentity': 'Bonyeza kubadilisha utambulisho',
     'nav.searchCountries': 'Tafuta nchi...',
     'nav.oneIdentity': 'Jukwaa moja, kila utambulisho',
@@ -3255,22 +3174,6 @@ const CONTENT: Record<string, ContentDict> = {
       'Ikiwa akaunti ipo kwa {email}, utapata kiungo cha kuweka upya hivi karibuni.',
     'forgotPassword.noAccount': 'Huna akaunti?',
     'forgotPassword.signUpFree': 'Jisajili bure',
-
-    // Threads
-    'threads.heroTitle': 'Be{accent}[Wewe]{/accent}',
-    'threads.heroDesc':
-      'Pata watu wako. Kila utambulisho — nchi, kabila, lugha, maslahi — una thread. Jiunge na jamii zinazosonga, kufanya kazi, na kustawi pamoja.',
-    'threads.search': 'Tafuta threads...',
-    'threads.filterAll': 'Zote',
-    'threads.filterCountries': 'Nchi',
-    'threads.filterTribes': 'Makabila',
-    'threads.filterLanguages': 'Lugha',
-    'threads.filterInterests': 'Maslahi',
-    'threads.filterSciences': 'Sayansi',
-    'threads.filterLocations': 'Maeneo',
-    'threads.liveData': 'Data halisi',
-    'threads.threadsCount': 'Threads {count}',
-    'threads.empty': 'Hakuna threads zinazolingana na utafutaji wako. Jaribu neno lingine.',
 
     // Charity
     'charity.badge': 'Shirika la Jamii · Limesajiliwa Kenya',
@@ -3620,29 +3523,6 @@ const CONTENT: Record<string, ContentDict> = {
     'agent.ctaTitle': 'Uko tayari kuanza kuweka watu?',
     'agent.ctaDesc':
       'Jiunge na mtandao wa Agent wa {brand}. Hakuna gharama ya awali. Pata kamisheni kwa kila uwekaji wenye mafanikio.',
-
-    // Thread Detail
-    'thread.notFoundTitle': 'Thread Haijapatikana',
-    'thread.notFoundDesc': 'Jamii hii bado haipo.',
-    'thread.browseAll': 'Vinjari Threads Zote',
-    'thread.allThreads': 'Threads Zote',
-    'thread.pioneers': 'Wavumbuzi',
-    'thread.joined': '✓ Umejiunga',
-    'thread.joinThread': 'Jiunge na Thread',
-    'thread.about': 'Kuhusu {name}',
-    'thread.communitiesWithin': 'Jamii ndani ya {name}',
-    'thread.pathsIn': 'Fursa katika {name}',
-    'thread.seeAll': 'Ona zote',
-    'thread.findYourPath': 'Pata Fursa Yako',
-    'thread.compassDesc':
-      'Tumia Discovery kupata Fursa zinazolingana na ujuzi na utambulisho wako.',
-    'thread.startCompass': 'Anza Discovery',
-    'thread.relatedThreads': 'Threads Zinazohusiana',
-    'thread.threadStats': 'Takwimu za Thread',
-    'thread.members': 'Wanachama',
-    'thread.type': 'Aina',
-    'thread.partOf': 'Sehemu ya',
-    'thread.countries': 'Nchi',
 
     // Venture Detail
     'venture.notFoundTitle': 'Fursa Haijapatikana',
@@ -4472,7 +4352,6 @@ const CONTENT: Record<string, ContentDict> = {
     // Navigation
     'nav.startCompass': 'Lancer la Boussole',
     'nav.signIn': 'Se connecter',
-    'nav.browseThreads': 'Parcourir tous les fils →',
     'nav.switchIdentity': "Cliquez pour changer d'identité",
     'nav.searchCountries': 'Rechercher des pays...',
     'nav.oneIdentity': 'Une plateforme, chaque identité',
@@ -4986,22 +4865,6 @@ const CONTENT: Record<string, ContentDict> = {
     'forgotPassword.noAccount': "Vous n'avez pas de compte ?",
     'forgotPassword.signUpFree': "S'inscrire gratuitement",
 
-    // Threads
-    'threads.heroTitle': 'Be{accent}[Vous]{/accent}',
-    'threads.heroDesc':
-      'Trouvez vos gens. Chaque identité — pays, tribu, langue, intérêt — a un fil. Rejoignez des communautés qui bougent, travaillent et prospèrent ensemble.',
-    'threads.search': 'Rechercher des fils...',
-    'threads.filterAll': 'Tous',
-    'threads.filterCountries': 'Pays',
-    'threads.filterTribes': 'Tribus',
-    'threads.filterLanguages': 'Langues',
-    'threads.filterInterests': 'Intérêts',
-    'threads.filterSciences': 'Sciences',
-    'threads.filterLocations': 'Lieux',
-    'threads.liveData': 'Données en direct',
-    'threads.threadsCount': '{count} fils',
-    'threads.empty': 'Aucun fil ne correspond à votre recherche. Essayez un terme différent.',
-
     // Charity
     'charity.badge': 'Organisation Communautaire · Enregistrée au Kenya',
     'charity.tagline': 'Swahili pour « Culture et Patrimoine »',
@@ -5356,29 +5219,6 @@ const CONTENT: Record<string, ContentDict> = {
     'agent.ctaTitle': 'Prêt à commencer à placer des gens ?',
     'agent.ctaDesc':
       "Rejoignez le réseau d'Agents de {brand}. Aucun coût initial. Gagnez une commission sur chaque placement réussi.",
-
-    // Thread Detail
-    'thread.notFoundTitle': 'Fil Non Trouvé',
-    'thread.notFoundDesc': "Cette communauté n'existe pas encore.",
-    'thread.browseAll': 'Parcourir Tous les Fils',
-    'thread.allThreads': 'Tous les Fils',
-    'thread.pioneers': 'Pionniers',
-    'thread.joined': '✓ Rejoint',
-    'thread.joinThread': 'Rejoindre le Fil',
-    'thread.about': 'À propos de {name}',
-    'thread.communitiesWithin': 'Communautés au sein de {name}',
-    'thread.pathsIn': 'Chemins dans {name}',
-    'thread.seeAll': 'Voir tout',
-    'thread.findYourPath': 'Trouvez Votre Chemin',
-    'thread.compassDesc':
-      'Utilisez la Boussole pour trouver des Chemins correspondant à vos compétences et votre identité.',
-    'thread.startCompass': 'Lancer la Boussole',
-    'thread.relatedThreads': 'Fils Associés',
-    'thread.threadStats': 'Statistiques du Fil',
-    'thread.members': 'Membres',
-    'thread.type': 'Type',
-    'thread.partOf': 'Fait partie de',
-    'thread.countries': 'Pays',
 
     // Venture Detail
     'venture.notFoundTitle': 'Chemin Non Trouvé',

@@ -1,2 +1,2 @@
-export { userService, nodeService, paymentService, threadService } from './prisma-services'
-export type { UserService, NodeService, PaymentService, ThreadService } from './types'
+export { userService, nodeService, paymentService } from './prisma-services'
+export type { UserService, NodeService, PaymentService } from './types'
