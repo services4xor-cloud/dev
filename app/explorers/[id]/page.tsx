@@ -1,4 +1,5 @@
 // @ts-nocheck
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
@@ -70,6 +71,15 @@ function DimensionCard({ relation, items }: { relation: string; items: Dimension
       </div>
     </div>
   )
+}
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const explorer = await getExplorer(params.id)
+  if (!explorer) return { title: 'Explorer Not Found' }
+  return {
+    title: explorer.name,
+    description: `View ${explorer.name}'s identity profile on Be[X] — languages, skills, culture, and connections.`,
+  }
 }
 
 async function getExplorer(id: string): Promise<ExplorerDetail | null> {

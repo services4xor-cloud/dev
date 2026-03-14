@@ -1,9 +1,23 @@
 // @ts-nocheck — async server component (React 18 types don't support async components)
+import type { Metadata } from 'next'
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 
 interface PageProps {
   params: Promise<{ code: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { code } = await params
+  const upperCode = code.toUpperCase()
+  const country = await db.node.findUnique({
+    where: { type_code: { type: 'COUNTRY', code: upperCode } },
+  })
+  const name = country?.label ?? upperCode
+  return {
+    title: `Be${upperCode} — ${name}`,
+    description: `Explore ${name} on Be[X] — discover languages, culture, paths, and connections.`,
+  }
 }
 
 export default async function CountryHubPage({ params }: PageProps) {

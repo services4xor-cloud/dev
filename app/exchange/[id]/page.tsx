@@ -1,9 +1,20 @@
 // @ts-nocheck — async server component (React 18 types don't support async components)
+import type { Metadata } from 'next'
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 
 interface PageProps {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params
+  const node = await db.node.findUnique({ where: { id } })
+  if (!node) return { title: 'Not Found' }
+  return {
+    title: node.label,
+    description: `Explore ${node.label} on Be[X] — connect with people, paths, and experiences.`,
+  }
 }
 
 export default async function ExchangePage({ params }: PageProps) {
