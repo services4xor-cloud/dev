@@ -18,53 +18,77 @@ body {
   color: var(--color-text);
 }
 
-/* Super Saiyan energy glow for selected country logo */
-@keyframes saiyan-pulse {
+/* Super Saiyan charging energy for selected country logo */
+@keyframes saiyan-charge {
   0% {
-    text-shadow:
-      0 0 4px rgba(201, 162, 39, 0.4),
-      0 0 8px rgba(201, 162, 39, 0.2);
+    text-shadow: 0 0 2px rgba(201, 162, 39, 0.2);
     filter: brightness(1);
   }
-  50% {
+  30% {
     text-shadow:
-      0 0 12px rgba(201, 162, 39, 0.8),
-      0 0 24px rgba(201, 162, 39, 0.4),
-      0 0 40px rgba(201, 162, 39, 0.2);
-    filter: brightness(1.15);
+      0 0 6px rgba(201, 162, 39, 0.5),
+      0 0 12px rgba(201, 162, 39, 0.2);
+    filter: brightness(1.05);
+  }
+  60% {
+    text-shadow:
+      0 0 10px rgba(201, 162, 39, 0.7),
+      0 0 20px rgba(201, 162, 39, 0.35),
+      0 0 30px rgba(201, 162, 39, 0.15);
+    filter: brightness(1.12);
+  }
+  85% {
+    text-shadow:
+      0 0 16px rgba(201, 162, 39, 0.9),
+      0 0 32px rgba(201, 162, 39, 0.5),
+      0 0 48px rgba(201, 162, 39, 0.25),
+      0 0 64px rgba(201, 162, 39, 0.1);
+    filter: brightness(1.25);
   }
   100% {
-    text-shadow:
-      0 0 4px rgba(201, 162, 39, 0.4),
-      0 0 8px rgba(201, 162, 39, 0.2);
+    text-shadow: 0 0 2px rgba(201, 162, 39, 0.2);
     filter: brightness(1);
   }
 }
 
-@keyframes saiyan-aura {
+@keyframes saiyan-aura-charge {
   0% {
     box-shadow:
-      0 0 6px rgba(201, 162, 39, 0.3),
-      0 0 12px rgba(201, 162, 39, 0.1);
+      0 0 4px rgba(201, 162, 39, 0.1),
+      inset 0 0 2px rgba(201, 162, 39, 0.05);
   }
-  50% {
+  30% {
     box-shadow:
-      0 0 14px rgba(201, 162, 39, 0.6),
-      0 0 28px rgba(201, 162, 39, 0.25),
-      0 0 48px rgba(201, 162, 39, 0.1);
+      0 0 8px rgba(201, 162, 39, 0.3),
+      0 0 16px rgba(201, 162, 39, 0.1),
+      inset 0 0 4px rgba(201, 162, 39, 0.1);
+  }
+  60% {
+    box-shadow:
+      0 0 14px rgba(201, 162, 39, 0.5),
+      0 0 28px rgba(201, 162, 39, 0.2),
+      0 0 40px rgba(201, 162, 39, 0.08),
+      inset 0 0 6px rgba(201, 162, 39, 0.15);
+  }
+  85% {
+    box-shadow:
+      0 0 20px rgba(201, 162, 39, 0.7),
+      0 0 40px rgba(201, 162, 39, 0.35),
+      0 0 60px rgba(201, 162, 39, 0.15),
+      0 0 80px rgba(201, 162, 39, 0.05),
+      inset 0 0 8px rgba(201, 162, 39, 0.2);
   }
   100% {
     box-shadow:
-      0 0 6px rgba(201, 162, 39, 0.3),
-      0 0 12px rgba(201, 162, 39, 0.1);
+      0 0 4px rgba(201, 162, 39, 0.1),
+      inset 0 0 2px rgba(201, 162, 39, 0.05);
   }
 }
 
 .logo-saiyan {
-  animation: saiyan-pulse 2s ease-in-out infinite;
   border-radius: 8px;
   padding: 4px 10px;
   animation:
-    saiyan-pulse 2s ease-in-out infinite,
-    saiyan-aura 2s ease-in-out infinite;
+    saiyan-charge 3s ease-in infinite,
+    saiyan-aura-charge 3s ease-in infinite;
 }

@@ -5,12 +5,15 @@ interface PageShellProps {
   children: React.ReactNode
   backHref?: string
   backLabel?: string
+  /** Override the header logo text (default: "Be[X]") */
+  title?: string
 }
 
 export default function PageShell({
   children,
   backHref = '/',
   backLabel = '← Back to Map',
+  title,
 }: PageShellProps) {
   return (
     <div className="min-h-screen bg-brand-bg text-brand-text">
@@ -20,7 +23,7 @@ export default function PageShell({
             href="/"
             className="text-lg font-bold text-brand-accent hover:opacity-80 transition-opacity"
           >
-            Be[X]
+            {title ?? 'Be[X]'}
           </Link>
           <Link
             href={backHref}

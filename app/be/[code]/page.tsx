@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import PageShell from '@/components/PageShell'
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
@@ -29,7 +30,6 @@ export default async function CountryHubPage({ params }: PageProps) {
 
   // Derive display values — works for both known and unknown countries
   const name = country?.name ?? upperCode
-  const flag = country?.flag ?? null
   const region = country?.region ?? null
   const currency = country?.currency ?? null
   const payments = country?.payment ?? []
@@ -47,13 +47,20 @@ export default async function CountryHubPage({ params }: PageProps) {
     : []
 
   return (
-    <PageShell backHref="/" backLabel="← Back to Map">
+    <PageShell backHref="/" backLabel="← Back to Map" title={`Be${name}`}>
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-b from-brand-surface via-brand-bg to-brand-bg">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.08),transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 sm:py-20">
-          <h1 className="mb-4 text-3xl font-bold tracking-tight text-brand-accent sm:mb-5 sm:text-5xl">
-            {flag && <span className="mr-3">{flag}</span>}
+          <h1 className="mb-4 flex items-center justify-center gap-3 text-3xl font-bold tracking-tight text-brand-accent sm:mb-5 sm:text-5xl">
+            <Image
+              src={`https://flagcdn.com/w80/${upperCode.toLowerCase()}.png`}
+              alt={`${name} flag`}
+              width={48}
+              height={36}
+              className="inline-block rounded shadow-md sm:h-[48px] sm:w-[64px]"
+              unoptimized
+            />
             Be{name}
           </h1>
           {region && (
