@@ -34,6 +34,10 @@ jest.mock('@/lib/db', () => ({
   },
 }))
 
+jest.mock('@/lib/notifications', () => ({
+  notify: jest.fn(),
+}))
+
 // ---- Imports ----
 
 import { GET as getConversations, POST as postMessage } from '@/app/api/messages/route'

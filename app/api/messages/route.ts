@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { notify } from '@/lib/notifications'
 
 // GET /api/messages — list user's conversations with last message preview
 export async function GET() {
@@ -108,6 +109,16 @@ export async function POST(req: NextRequest) {
   await db.conversation.update({
     where: { id: conversationId },
     data: { lastMessageAt: now },
+  })
+
+  // Notify the recipient
+  const sender = await db.user.findUnique({ where: { id: userId }, select: { name: true } })
+  notify({
+    userId: recipientId,
+    type: 'MESSAGE',
+    title: `New message from ${sender?.name ?? 'someone'}`,
+    body: content.trim().slice(0, 100),
+    link: `/messages`,
   })
 
   return NextResponse.json({ conversationId, message }, { status: 201 })

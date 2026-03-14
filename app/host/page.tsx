@@ -5,6 +5,24 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+interface Exchange {
+  id: string
+  status: string
+  message: string | null
+  createdAt: string
+  explorer: {
+    nodeId: string
+    userId: string | null
+    name: string
+    image: string | null
+  }
+  opportunity: {
+    id: string
+    label: string
+    icon: string | null
+  }
+}
+
 interface Opportunity {
   id: string
   label: string
@@ -56,8 +74,10 @@ export default function HostDashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [stats, setStats] = useState<HostStats | null>(null)
+  const [exchanges, setExchanges] = useState<Exchange[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [updating, setUpdating] = useState<string | null>(null)
 
   const user = session?.user as { id?: string; role?: string } | undefined
   const role = user?.role
@@ -72,12 +92,19 @@ export default function HostDashboardPage() {
     if (status !== 'authenticated') return
     if (role !== 'HOST' && role !== 'ADMIN') return
 
-    fetch('/api/host/stats')
-      .then((res) => {
+    Promise.all([
+      fetch('/api/host/stats').then((res) => {
         if (!res.ok) throw new Error('Failed to load stats')
         return res.json() as Promise<HostStats>
+      }),
+      fetch('/api/exchanges?role=host').then((res) =>
+        res.ok ? (res.json() as Promise<Exchange[]>) : []
+      ),
+    ])
+      .then(([statsData, exchangeData]) => {
+        setStats(statsData)
+        setExchanges(exchangeData)
       })
-      .then(setStats)
       .catch((err: unknown) => setError(err instanceof Error ? err.message : 'Unknown error'))
       .finally(() => setLoading(false))
   }, [status, role])
@@ -196,6 +223,122 @@ export default function HostDashboardPage() {
             </div>
           ))}
         </div>
+
+        {/* Applications section */}
+        {exchanges.length > 0 && (
+          <section className="mb-10">
+            <h2 className="mb-4 text-base font-semibold text-brand-text">
+              Applications ({exchanges.filter((e) => e.status === 'PENDING').length} pending)
+            </h2>
+            <div className="space-y-3">
+              {exchanges.map((ex) => (
+                <div
+                  key={ex.id}
+                  className="rounded-lg border border-brand-accent/20 bg-brand-surface p-4"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        {ex.explorer.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={ex.explorer.image}
+                            alt={ex.explorer.name}
+                            className="h-8 w-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-primary text-xs font-bold text-brand-accent">
+                            {ex.explorer.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-medium text-brand-text">{ex.explorer.name}</p>
+                          <p className="text-xs text-brand-text-muted">
+                            Applied for {ex.opportunity.icon} {ex.opportunity.label}
+                          </p>
+                        </div>
+                      </div>
+                      {ex.message && (
+                        <p className="mt-2 text-xs text-brand-text-muted italic">
+                          &ldquo;{ex.message}&rdquo;
+                        </p>
+                      )}
+                      <p className="mt-1 text-xs text-brand-text-muted/60">
+                        {formatDate(ex.createdAt)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {ex.status === 'PENDING' ? (
+                        <>
+                          <button
+                            onClick={async () => {
+                              setUpdating(ex.id)
+                              try {
+                                const res = await fetch(`/api/exchanges/${ex.id}`, {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ status: 'ACCEPTED' }),
+                                })
+                                if (res.ok) {
+                                  setExchanges((prev) =>
+                                    prev.map((e) =>
+                                      e.id === ex.id ? { ...e, status: 'ACCEPTED' } : e
+                                    )
+                                  )
+                                }
+                              } finally {
+                                setUpdating(null)
+                              }
+                            }}
+                            disabled={updating === ex.id}
+                            className="rounded-md bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 hover:bg-green-500/30 transition disabled:opacity-40"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={async () => {
+                              setUpdating(ex.id)
+                              try {
+                                const res = await fetch(`/api/exchanges/${ex.id}`, {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ status: 'REJECTED' }),
+                                })
+                                if (res.ok) {
+                                  setExchanges((prev) =>
+                                    prev.map((e) =>
+                                      e.id === ex.id ? { ...e, status: 'REJECTED' } : e
+                                    )
+                                  )
+                                }
+                              } finally {
+                                setUpdating(null)
+                              }
+                            }}
+                            disabled={updating === ex.id}
+                            className="rounded-md bg-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/30 transition disabled:opacity-40"
+                          >
+                            Decline
+                          </button>
+                        </>
+                      ) : (
+                        <span
+                          className={`rounded-md px-3 py-1.5 text-xs font-medium ${
+                            ex.status === 'ACCEPTED'
+                              ? 'bg-green-500/15 text-green-400'
+                              : 'bg-red-500/15 text-red-400'
+                          }`}
+                        >
+                          {ex.status}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Opportunities list */}

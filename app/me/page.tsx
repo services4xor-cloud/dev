@@ -262,12 +262,123 @@ function NameEditor({
   )
 }
 
+function AvatarUpload({
+  currentImage,
+  name,
+  onUpload,
+}: {
+  currentImage: string | null
+  name: string
+  onUpload: (photo: string | null) => void
+}) {
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const initials = name
+    .split(' ')
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? '')
+    .join('')
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 512 * 1024) {
+      setError('Image too large (max 512 KB)')
+      return
+    }
+
+    setUploading(true)
+    setError(null)
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result as string)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+
+      const res = await fetch('/api/identity/photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photo: dataUrl }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error ?? 'Upload failed')
+      }
+      const data = await res.json()
+      onUpload(data.image)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setUploading(false)
+      if (fileRef.current) fileRef.current.value = ''
+    }
+  }
+
+  async function handleRemove() {
+    setUploading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/identity/photo', { method: 'DELETE' })
+      if (!res.ok) throw new Error('Failed to remove')
+      onUpload(null)
+    } catch {
+      setError('Failed to remove photo')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <button
+        onClick={() => fileRef.current?.click()}
+        disabled={uploading}
+        className="group relative h-16 w-16 rounded-full overflow-hidden border-2 border-brand-accent/30 hover:border-brand-accent/60 transition"
+        title="Change photo"
+      >
+        {currentImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={currentImage} alt={name} className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-brand-primary text-brand-accent font-bold text-lg">
+            {initials || '?'}
+          </div>
+        )}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition">
+          <span className="text-xs text-white font-medium">{uploading ? '…' : 'Edit'}</span>
+        </div>
+      </button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        onChange={handleFile}
+        className="hidden"
+      />
+      {currentImage && !uploading && (
+        <button
+          onClick={handleRemove}
+          className="text-xs text-brand-text-muted hover:text-red-400 transition"
+        >
+          Remove
+        </button>
+      )}
+      {error && <p className="text-xs text-red-400">{error}</p>}
+    </div>
+  )
+}
+
 export default function MePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [edges, setEdges] = useState<EdgeDisplay[]>([])
   const [loading, setLoading] = useState(true)
   const [displayName, setDisplayName] = useState<string>('')
+  const [profileImage, setProfileImage] = useState<string | null>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -277,6 +388,7 @@ export default function MePage() {
     if (status !== 'authenticated') return
 
     setDisplayName(session.user?.name ?? 'Explorer')
+    setProfileImage((session.user as { image?: string | null })?.image ?? null)
 
     fetch('/api/identity')
       .then((r) => r.json())
@@ -372,7 +484,14 @@ export default function MePage() {
   return (
     <div className="min-h-screen bg-brand-bg p-6">
       <div className="mb-6 flex items-center justify-between">
-        <NameEditor initialName={displayName} onSave={handleSaveName} />
+        <div className="flex items-center gap-4">
+          <AvatarUpload
+            currentImage={profileImage}
+            name={displayName}
+            onUpload={(photo) => setProfileImage(photo)}
+          />
+          <NameEditor initialName={displayName} onSave={handleSaveName} />
+        </div>
         <a href="/" className="text-sm text-brand-text-muted hover:text-brand-accent transition">
           ← Map
         </a>

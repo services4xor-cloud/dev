@@ -2,6 +2,7 @@
 import type { Metadata } from 'next'
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
+import ApplyButton from '@/components/ApplyButton'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -31,6 +32,11 @@ export default async function ExchangePage({ params }: PageProps) {
   if (!node) notFound()
 
   const offeredBy = node.inEdges.filter((e) => e.relation === 'OFFERS').map((e) => e.from)
+  const props = node.properties as {
+    description?: string
+    location?: string
+    sector?: string
+  } | null
 
   return (
     <div className="min-h-screen bg-brand-bg p-6">
@@ -44,6 +50,27 @@ export default async function ExchangePage({ params }: PageProps) {
         {node.icon} {node.label}
       </h1>
       <p className="mb-6 text-sm text-brand-text-muted">{node.type}</p>
+
+      {/* Description */}
+      {props?.description && (
+        <div className="mb-6">
+          <p className="text-sm leading-relaxed text-brand-text">{props.description}</p>
+        </div>
+      )}
+
+      {/* Meta info */}
+      <div className="mb-6 flex flex-wrap gap-4">
+        {props?.sector && (
+          <div className="flex items-center gap-1.5 text-sm text-brand-text-muted">
+            <span className="text-brand-accent">◆</span> {props.sector}
+          </div>
+        )}
+        {props?.location && (
+          <div className="flex items-center gap-1.5 text-sm text-brand-text-muted">
+            📍 {props.location}
+          </div>
+        )}
+      </div>
 
       {offeredBy.length > 0 && (
         <div className="mb-6">
@@ -60,6 +87,13 @@ export default async function ExchangePage({ params }: PageProps) {
               </span>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Apply button (only for EXPERIENCE nodes) */}
+      {node.type === 'EXPERIENCE' && (
+        <div className="mb-8">
+          <ApplyButton opportunityId={node.id} />
         </div>
       )}
 

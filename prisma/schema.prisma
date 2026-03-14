@@ -37,6 +37,7 @@ model User {
   reviewsWritten    Review[]   @relation("ReviewsWritten")
   reviewsReceived   Review[]   @relation("ReviewsReceived")
   threadPosts       ThreadPost[]
+  notifications     Notification[]
   notificationPrefs NotificationPreference?
 }
 
@@ -303,6 +304,29 @@ model ThreadPost {
 
   @@index([threadId])
   @@index([authorId])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  body      String?
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+  @@index([userId, read])
+}
+
+enum NotificationType {
+  MESSAGE
+  MATCH
+  REVIEW
+  PAYMENT
+  SYSTEM
 }
 
 model NotificationPreference {

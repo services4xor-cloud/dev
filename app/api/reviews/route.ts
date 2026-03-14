@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { notify } from '@/lib/notifications'
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -78,6 +79,19 @@ export async function POST(request: NextRequest) {
       rating,
       content: content.trim(),
     },
+  })
+
+  // Notify the review target
+  const author = await db.user.findUnique({
+    where: { id: session.user.id },
+    select: { name: true },
+  })
+  notify({
+    userId: targetId,
+    type: 'REVIEW',
+    title: `${author?.name ?? 'Someone'} left you a ${rating}-star review`,
+    body: content.trim().slice(0, 100),
+    link: `/me`,
   })
 
   return NextResponse.json(review, { status: 201 })
