@@ -33,7 +33,7 @@ function countryFlag(code: string): string {
   }
 }
 
-const DIMENSION_ORDER = ['language', 'sector', 'currency', 'faith'] as const
+const DIMENSION_ORDER = ['language', 'sector', 'faith'] as const
 const DIMENSION_LABELS: Record<string, { label: string; icon: string }> = {
   language: { label: 'Language', icon: '\u{1F5E3}\uFE0F' },
   sector: { label: 'Sector', icon: '\u{1F4BC}' },

@@ -38,61 +38,6 @@ const FAITH_LABELS: Record<string, string> = {
   secular: 'Secular',
 }
 
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  USD: '$',
-  EUR: '€',
-  GBP: '£',
-  JPY: '¥',
-  CHF: '₣',
-  CNY: '¥',
-  INR: '₹',
-  KRW: '₩',
-  BRL: 'R$',
-  ZAR: 'R',
-  NGN: '₦',
-  KES: 'KSh',
-  AUD: 'A$',
-  CAD: 'C$',
-  SEK: 'kr',
-  NOK: 'kr',
-  DKK: 'kr',
-  PLN: 'zł',
-  TRY: '₺',
-  RUB: '₽',
-  THB: '฿',
-  MYR: 'RM',
-  SGD: 'S$',
-  PHP: '₱',
-  IDR: 'Rp',
-  VND: '₫',
-  EGP: 'E£',
-  SAR: '﷼',
-  AED: 'د.إ',
-  ILS: '₪',
-  CZK: 'Kč',
-  HUF: 'Ft',
-  RON: 'lei',
-  XOF: 'CFA',
-  XAF: 'CFA',
-  MAD: 'د.م.',
-  GHS: '₵',
-  ETB: 'Br',
-  COP: 'COL$',
-  MXN: 'MX$',
-  NZD: 'NZ$',
-  PKR: '₨',
-  BDT: '৳',
-}
-
-function fmtCurrency(code: string): string {
-  const sym = CURRENCY_SYMBOLS[code]
-  return sym ? `${code} (${sym})` : code
-}
-
-function formatTz(iana: string): string {
-  return iana.replace(/^.*\//, '').replace(/_/g, ' ')
-}
-
 // ─── Haversine distance (km) ────────────────────────────────────────────────
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371
@@ -193,7 +138,7 @@ export default function CountryDimensions({
   flagPng,
   name,
 }: Props) {
-  const [otherCountryCodes, setOtherCountryCodes] = useState<string[]>([])
+  const [allRouteCodes, setAllRouteCodes] = useState<string[]>([])
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
 
   useEffect(() => {
@@ -201,18 +146,29 @@ export default function CountryDimensions({
       const raw = sessionStorage.getItem('bex-map-enriched')
       if (raw) {
         const all = JSON.parse(raw) as string[]
-        setOtherCountryCodes(all.filter((c) => c !== code.toUpperCase()))
+        // Preserve click order; ensure current page's country is in the list
+        if (!all.includes(code.toUpperCase())) {
+          all.unshift(code.toUpperCase())
+        }
+        setAllRouteCodes(all)
+      } else {
+        setAllRouteCodes([code.toUpperCase()])
       }
     } catch {
-      /* ignore */
+      setAllRouteCodes([code.toUpperCase()])
     }
   }, [code])
 
-  // Fetch exchange rates for this country's currency
+  const otherCountryCodes = allRouteCodes.filter((c) => c !== code.toUpperCase())
+
+  // Fetch exchange rates for the first country's currency in route order
   useEffect(() => {
-    if (!currency || currency === '—') return
-    fetchRates(currency).then(setExchangeRates)
-  }, [currency])
+    const firstCode = allRouteCodes[0]
+    const firstOpt = firstCode ? COUNTRY_OPTIONS.find((o) => o.code === firstCode) : null
+    const baseCurrency = firstOpt?.currency
+    if (!baseCurrency) return
+    fetchRates(baseCurrency).then(setExchangeRates)
+  }, [allRouteCodes])
 
   const otherCountries = otherCountryCodes
     .map((c) => COUNTRY_OPTIONS.find((o) => o.code === c))
@@ -221,27 +177,42 @@ export default function CountryDimensions({
   const hasOthers = otherCountryCodes.length > 0
   const thisOpt = COUNTRY_OPTIONS.find((o) => o.code === code)
 
-  // ─── Build route hops (sequential) ──────────────────────────────────────────
-  const routeCountries = [
-    {
-      code,
-      name,
-      flag: thisOpt?.flag ?? '',
-      currency,
-      tz: timezone ?? thisOpt?.tz ?? '',
-      lat: thisOpt?.lat ?? 0,
-      lng: thisOpt?.lng ?? 0,
-    },
-    ...otherCountries.map((c) => ({
-      code: c!.code,
-      name: c!.name,
-      flag: c!.flag,
-      currency: c!.currency,
-      tz: c!.tz,
-      lat: c!.lat,
-      lng: c!.lng,
-    })),
-  ]
+  // ─── Build route hops in click order ──────────────────────────────────────────
+  const routeCountries = allRouteCodes
+    .map((c) => {
+      const opt = COUNTRY_OPTIONS.find((o) => o.code === c)
+      if (!opt) return null
+      // Use server-provided data for the current page's country
+      if (c === code.toUpperCase()) {
+        return {
+          code,
+          name,
+          flag: opt.flag,
+          currency,
+          tz: timezone ?? opt.tz,
+          lat: opt.lat,
+          lng: opt.lng,
+        }
+      }
+      return {
+        code: opt.code,
+        name: opt.name,
+        flag: opt.flag,
+        currency: opt.currency,
+        tz: opt.tz,
+        lat: opt.lat,
+        lng: opt.lng,
+      }
+    })
+    .filter(Boolean) as {
+    code: string
+    name: string
+    flag: string
+    currency: string
+    tz: string
+    lat: number
+    lng: number
+  }[]
 
   const hops: HopInfo[] = []
   for (let i = 0; i < routeCountries.length - 1; i++) {
@@ -251,10 +222,12 @@ export default function CountryDimensions({
     const fromOffset = getUtcOffsetMinutes(from.tz)
     const toOffset = getUtcOffsetMinutes(to.tz)
     const timeDiffMin = toOffset - fromOffset
-    // Exchange rate: from.currency → to.currency
+    // Exchange rate: from.currency → to.currency (cross-rate via base)
     let rate: number | null = null
-    if (from.currency !== to.currency && exchangeRates[to.currency]) {
-      rate = exchangeRates[to.currency]
+    if (from.currency !== to.currency) {
+      const fromRate = exchangeRates[from.currency] ?? 1
+      const toRate = exchangeRates[to.currency]
+      if (toRate && fromRate) rate = toRate / fromRate
     }
     hops.push({ from, to, distanceKm, timeDiffMin, rate })
   }
@@ -265,9 +238,6 @@ export default function CountryDimensions({
   }
   function sectorOverlap(sector: string): number {
     return otherCountries.filter((c) => c!.topSectors.includes(sector)).length
-  }
-  function currencyOverlap(curr: string): number {
-    return otherCountries.filter((c) => c!.currency === curr).length
   }
   function faithOverlap(faith: string): number {
     return otherCountries.filter((c) => c!.topFaiths.includes(faith as FaithCode)).length
@@ -297,23 +267,6 @@ export default function CountryDimensions({
     return (
       COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(b as FaithCode)).length -
       COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(a as FaithCode)).length
-    )
-  })
-
-  // ─── Currency: collect all unique currencies across selected countries ──────
-  const allCurrencies: string[] = [currency]
-  otherCountries.forEach((c) => {
-    if (!allCurrencies.includes(c!.currency)) allCurrencies.push(c!.currency)
-  })
-  allCurrencies.sort((a, b) => {
-    const aShared =
-      (a === currency ? 1 : 0) + otherCountries.filter((c) => c!.currency === a).length
-    const bShared =
-      (b === currency ? 1 : 0) + otherCountries.filter((c) => c!.currency === b).length
-    if (aShared !== bShared) return bShared - aShared
-    return (
-      COUNTRY_OPTIONS.filter((c) => c.currency === b).length -
-      COUNTRY_OPTIONS.filter((c) => c.currency === a).length
     )
   })
 
@@ -472,55 +425,6 @@ export default function CountryDimensions({
           </div>
         </section>
       )}
-
-      {/* ── Currency ── */}
-      <section>
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
-          Currency
-        </h2>
-        <div className="flex flex-wrap gap-2 sm:gap-3">
-          {allCurrencies.map((curr) => {
-            const overlap = currencyOverlap(curr)
-            const isMine = curr === currency
-            const totalCountries = (isMine ? 1 : 0) + overlap
-            const isShared = hasOthers && totalCountries > 1
-            const reach = COUNTRY_OPTIONS.filter((c) => c.currency === curr).length
-            const rate = curr !== currency ? exchangeRates[curr] : null
-            return (
-              <span
-                key={curr}
-                className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${
-                  isShared
-                    ? 'border-amber-300/50 bg-amber-500/20 text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.2)] ring-1 ring-amber-400/30'
-                    : 'border-amber-400/25 bg-amber-500/10 text-amber-300'
-                }`}
-              >
-                {fmtCurrency(curr)}
-                {rate && (
-                  <span className="text-[10px] text-amber-400/80 sm:text-xs">
-                    1:
-                    {rate < 1
-                      ? rate.toFixed(4)
-                      : rate < 100
-                        ? rate.toFixed(2)
-                        : Math.round(rate).toLocaleString()}
-                  </span>
-                )}
-                {isShared && (
-                  <span className="rounded-full bg-amber-400/30 px-1.5 text-[10px] font-bold text-amber-200 sm:text-xs">
-                    ×{totalCountries}
-                  </span>
-                )}
-                {!isShared && !rate && reach > 1 && (
-                  <span className="rounded-full bg-amber-400/20 px-1.5 text-[10px] text-amber-400/70 sm:text-xs">
-                    {reach}
-                  </span>
-                )}
-              </span>
-            )
-          })}
-        </div>
-      </section>
 
       {/* ── Faiths ── */}
       {sortedFaiths.length > 0 && (
