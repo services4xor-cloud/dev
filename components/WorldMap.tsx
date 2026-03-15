@@ -114,7 +114,7 @@ export default function WorldMap({
     if (!hasActive) return '#C9A227'
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, '#FFF4CC') // selected = blazing
+    if (selectedCountry) expr.push(selectedCountry, '#C9A227') // selected = gold (subtle, readable)
     for (const [code, sc] of Array.from(scoreMap)) {
       if (code !== selectedCountry) expr.push(code, scoreToColor(sc.score))
     }
@@ -132,13 +132,13 @@ export default function WorldMap({
     if (!hasActive) return 0.08
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, 0.55)
+    if (selectedCountry) expr.push(selectedCountry, 0.3) // low enough to see borders + text
 
-    // Graduated intensity: score drives opacity (0.1 base + score * 0.5)
+    // Graduated intensity: score drives opacity — capped low enough to see borders
     for (const [code, sc] of Array.from(scoreMap)) {
       if (code !== selectedCountry) {
-        const opacity = 0.08 + sc.score * 0.5
-        expr.push(code, Math.min(opacity, 0.6))
+        const opacity = 0.06 + sc.score * 0.3
+        expr.push(code, Math.min(opacity, 0.4))
       }
     }
     for (const code of Array.from(previewCodes)) {
