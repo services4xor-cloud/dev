@@ -11,9 +11,9 @@ import {
 /**
  * CountryDimensions — client component for /be/[code] pages.
  *
- * Displays Languages → Sectors → Faith with overlap awareness.
- * Reads sessionStorage for other selected countries and highlights
- * shared values (×2, ×3, etc.) with bright styling + multiplier badges.
+ * Displays Languages → Sectors → Currency → Faith with overlap awareness.
+ * When multiple countries are selected on the map, shows a combined overview
+ * with flags/capitals/timezones and highlights shared dimension values.
  */
 
 interface Props {
@@ -21,6 +21,12 @@ interface Props {
   languages: { code: string; name: string; nativeName?: string }[]
   topSectors: string[]
   topFaiths: string[]
+  currency: string
+  capital: string | null
+  timezone: string | null
+  population: number | null
+  flagPng: string
+  name: string
 }
 
 const FAITH_LABELS: Record<string, string> = {
@@ -33,16 +39,89 @@ const FAITH_LABELS: Record<string, string> = {
   secular: 'Secular',
 }
 
-export default function CountryDimensions({ code, languages, topSectors, topFaiths }: Props) {
+/** Common currency symbols */
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: '$',
+  EUR: '€',
+  GBP: '£',
+  JPY: '¥',
+  CHF: '₣',
+  CNY: '¥',
+  INR: '₹',
+  KRW: '₩',
+  BRL: 'R$',
+  ZAR: 'R',
+  NGN: '₦',
+  KES: 'KSh',
+  AUD: 'A$',
+  CAD: 'C$',
+  SEK: 'kr',
+  NOK: 'kr',
+  DKK: 'kr',
+  PLN: 'zł',
+  TRY: '₺',
+  RUB: '₽',
+  THB: '฿',
+  MYR: 'RM',
+  SGD: 'S$',
+  PHP: '₱',
+  IDR: 'Rp',
+  VND: '₫',
+  EGP: 'E£',
+  SAR: '﷼',
+  AED: 'د.إ',
+  ILS: '₪',
+  CZK: 'Kč',
+  HUF: 'Ft',
+  RON: 'lei',
+  XOF: 'CFA',
+  XAF: 'CFA',
+  MAD: 'د.م.',
+  GHS: '₵',
+  ETB: 'Br',
+  COP: 'COL$',
+  MXN: 'MX$',
+  NZD: 'NZ$',
+  PKR: '₨',
+  BDT: '৳',
+}
+
+function formatCurrency(code: string): string {
+  const sym = CURRENCY_SYMBOLS[code]
+  return sym ? `${code} (${sym})` : code
+}
+
+function formatPop(n: number): string {
+  return n >= 1_000_000
+    ? `${(n / 1_000_000).toFixed(1)}M`
+    : n >= 1_000
+      ? `${(n / 1_000).toFixed(0)}K`
+      : String(n)
+}
+
+function formatTz(iana: string): string {
+  return iana.replace(/^.*\//, '').replace(/_/g, ' ')
+}
+
+export default function CountryDimensions({
+  code,
+  languages,
+  topSectors,
+  topFaiths,
+  currency,
+  capital,
+  timezone,
+  population,
+  flagPng,
+  name,
+}: Props) {
   const [otherCountryCodes, setOtherCountryCodes] = useState<string[]>([])
 
-  // Read other selected countries from sessionStorage
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem('bex-map-enriched')
       if (raw) {
         const all = JSON.parse(raw) as string[]
-        // Other countries = all selected except this one
         setOtherCountryCodes(all.filter((c) => c !== code.toUpperCase()))
       }
     } catch {
@@ -50,64 +129,146 @@ export default function CountryDimensions({ code, languages, topSectors, topFait
     }
   }, [code])
 
-  // Compute overlap counts for each dimension value
   const otherCountries = otherCountryCodes
     .map((c) => COUNTRY_OPTIONS.find((o) => o.code === c))
     .filter(Boolean)
 
-  // Language overlap: how many OTHER selected countries share this language
+  const hasOthers = otherCountryCodes.length > 0
+
+  // ─── Overlap helpers ────────────────────────────────────────────────────────
   function langOverlap(langCode: string): number {
     return otherCountries.filter((c) => c!.languages.includes(langCode as LanguageCode)).length
   }
-
-  // Sector overlap
   function sectorOverlap(sector: string): number {
     return otherCountries.filter((c) => c!.topSectors.includes(sector)).length
   }
-
-  // Faith overlap
+  function currencyOverlap(curr: string): number {
+    return otherCountries.filter((c) => c!.currency === curr).length
+  }
   function faithOverlap(faith: string): number {
     return otherCountries.filter((c) => c!.topFaiths.includes(faith as FaithCode)).length
   }
 
-  // Sort: shared first (by overlap count desc), then unique
+  // ─── Sorted dimension arrays (shared first) ────────────────────────────────
   const sortedLanguages = [...languages].sort((a, b) => {
-    const aOvl = langOverlap(a.code)
-    const bOvl = langOverlap(b.code)
-    if (aOvl !== bOvl) return bOvl - aOvl
-    // Secondary: global reach
-    const aReach = COUNTRY_OPTIONS.filter((c) =>
-      c.languages.includes(a.code as LanguageCode)
-    ).length
-    const bReach = COUNTRY_OPTIONS.filter((c) =>
-      c.languages.includes(b.code as LanguageCode)
-    ).length
-    return bReach - aReach
+    const d = langOverlap(b.code) - langOverlap(a.code)
+    if (d !== 0) return d
+    const aR = COUNTRY_OPTIONS.filter((c) => c.languages.includes(a.code as LanguageCode)).length
+    const bR = COUNTRY_OPTIONS.filter((c) => c.languages.includes(b.code as LanguageCode)).length
+    return bR - aR
   })
 
   const sortedSectors = [...topSectors].sort((a, b) => {
-    const aOvl = sectorOverlap(a)
-    const bOvl = sectorOverlap(b)
-    if (aOvl !== bOvl) return bOvl - aOvl
-    const aReach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(a)).length
-    const bReach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(b)).length
-    return bReach - aReach
+    const d = sectorOverlap(b) - sectorOverlap(a)
+    if (d !== 0) return d
+    return (
+      COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(b)).length -
+      COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(a)).length
+    )
   })
 
   const sortedFaiths = [...topFaiths].sort((a, b) => {
-    const aOvl = faithOverlap(a)
-    const bOvl = faithOverlap(b)
-    if (aOvl !== bOvl) return bOvl - aOvl
-    const aReach = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(a as FaithCode)).length
-    const bReach = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(b as FaithCode)).length
-    return bReach - aReach
+    const d = faithOverlap(b) - faithOverlap(a)
+    if (d !== 0) return d
+    return (
+      COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(b as FaithCode)).length -
+      COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(a as FaithCode)).length
+    )
   })
 
-  const hasOthers = otherCountryCodes.length > 0
+  // ─── Currency: collect all unique currencies across selected countries ──────
+  const allCurrencies: string[] = [currency]
+  otherCountries.forEach((c) => {
+    if (!allCurrencies.includes(c!.currency)) allCurrencies.push(c!.currency)
+  })
+  // Sort: shared first
+  allCurrencies.sort((a, b) => {
+    const aShared =
+      (a === currency ? 1 : 0) + otherCountries.filter((c) => c!.currency === a).length
+    const bShared =
+      (b === currency ? 1 : 0) + otherCountries.filter((c) => c!.currency === b).length
+    if (aShared !== bShared) return bShared - aShared
+    return (
+      COUNTRY_OPTIONS.filter((c) => c.currency === b).length -
+      COUNTRY_OPTIONS.filter((c) => c.currency === a).length
+    )
+  })
+
+  // ─── Combined country overview (when multiple selected) ────────────────────
+  // Build list of all selected countries (this one + others)
+  interface CountryInfo {
+    code: string
+    name: string
+    flag: string
+    capital: string | null
+    timezone: string | null
+    population: number | null
+  }
+  const allSelected: CountryInfo[] = [{ code, name, flag: '', capital, timezone, population }]
+  otherCountries.forEach((c) => {
+    allSelected.push({
+      code: c!.code,
+      name: c!.name,
+      flag: c!.flag,
+      capital: null, // We only have IANA tz from COUNTRY_OPTIONS
+      timezone: c!.tz,
+      population: null,
+    })
+  })
+
+  // Deduplicated capitals & timezones
+  const allCapitals = allSelected.map((c) => c.capital).filter(Boolean) as string[]
+  const uniqueCapitals = Array.from(new Set(allCapitals))
+
+  const allTimezones = allSelected.map((c) => c.timezone).filter(Boolean) as string[]
+  const uniqueTimezones = Array.from(new Set(allTimezones))
 
   return (
     <>
-      {/* Languages */}
+      {/* ── Combined countries overview (multi-select) ── */}
+      {hasOthers && (
+        <section className="rounded-xl border border-brand-accent/15 bg-brand-surface/50 p-4 sm:p-5">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted">
+            Comparing {allSelected.length} Countries
+          </h2>
+          {/* Flags + names row */}
+          <div className="mb-3 flex flex-wrap gap-2 sm:gap-3">
+            {allSelected.map((c) => {
+              const opt = COUNTRY_OPTIONS.find((o) => o.code === c.code)
+              return (
+                <span
+                  key={c.code}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-brand-accent/20 bg-brand-surface px-3 py-1 text-sm text-brand-text sm:px-4"
+                >
+                  <span className="text-base">{opt?.flag ?? ''}</span>
+                  {c.name}
+                </span>
+              )
+            })}
+          </div>
+          {/* Shared quick facts */}
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-brand-text-muted">
+            {uniqueCapitals.length > 0 && (
+              <span>
+                <span className="font-medium text-brand-text">
+                  {uniqueCapitals.length === 1 ? 'Capital' : 'Capitals'}:
+                </span>{' '}
+                {uniqueCapitals.join(', ')}
+              </span>
+            )}
+            {uniqueTimezones.length > 0 && (
+              <span>
+                <span className="font-medium text-brand-text">
+                  {uniqueTimezones.length === 1 ? 'Timezone' : 'Timezones'}:
+                </span>{' '}
+                {uniqueTimezones.map(formatTz).join(', ')}
+              </span>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ── Languages ── */}
       {sortedLanguages.length > 0 && (
         <section>
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
@@ -116,7 +277,7 @@ export default function CountryDimensions({ code, languages, topSectors, topFait
           <div className="flex flex-wrap gap-2 sm:gap-3">
             {sortedLanguages.map((lang) => {
               const overlap = langOverlap(lang.code)
-              const multiplier = overlap + 1 // +1 for this country itself
+              const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
               const reach = COUNTRY_OPTIONS.filter((c) =>
                 c.languages.includes(lang.code as LanguageCode)
@@ -153,7 +314,7 @@ export default function CountryDimensions({ code, languages, topSectors, topFait
         </section>
       )}
 
-      {/* Sectors */}
+      {/* ── Sectors ── */}
       {sortedSectors.length > 0 && (
         <section>
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
@@ -192,7 +353,45 @@ export default function CountryDimensions({ code, languages, topSectors, topFait
         </section>
       )}
 
-      {/* Faiths */}
+      {/* ── Currency ── */}
+      <section>
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
+          Currency
+        </h2>
+        <div className="flex flex-wrap gap-2 sm:gap-3">
+          {allCurrencies.map((curr) => {
+            const overlap = currencyOverlap(curr)
+            const isMine = curr === currency
+            const totalCountries = (isMine ? 1 : 0) + overlap
+            const isShared = hasOthers && totalCountries > 1
+            const reach = COUNTRY_OPTIONS.filter((c) => c.currency === curr).length
+            return (
+              <span
+                key={curr}
+                className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${
+                  isShared
+                    ? 'border-amber-300/50 bg-amber-500/20 text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.2)] ring-1 ring-amber-400/30'
+                    : 'border-amber-400/25 bg-amber-500/10 text-amber-300'
+                }`}
+              >
+                {formatCurrency(curr)}
+                {isShared && (
+                  <span className="rounded-full bg-amber-400/30 px-1.5 text-[10px] font-bold text-amber-200 sm:text-xs">
+                    ×{totalCountries}
+                  </span>
+                )}
+                {!isShared && reach > 1 && (
+                  <span className="rounded-full bg-amber-400/20 px-1.5 text-[10px] text-amber-400/70 sm:text-xs">
+                    {reach}
+                  </span>
+                )}
+              </span>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* ── Faiths ── */}
       {sortedFaiths.length > 0 && (
         <section>
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">

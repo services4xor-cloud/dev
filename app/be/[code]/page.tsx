@@ -30,10 +30,7 @@ export default async function CountryHubPage({ params }: PageProps) {
   const flagPng = data?.flagPng ?? `https://flagcdn.com/w80/${upperCode.toLowerCase()}.png`
   const region = data?.region ?? null
   const currency = data?.currency ?? null
-  const currencyName = data?.currencyName ?? null
-  const currencySymbol = data?.currencySymbol ?? null
   const payments = data?.payment ?? []
-  const visa = data?.visa ?? null
   const capital = data?.capital ?? null
   const tz = data?.timezone ? data.timezone.replace(/^.*\//, '') : null
   const population = data?.population ?? null
@@ -96,18 +93,8 @@ export default async function CountryHubPage({ params }: PageProps) {
               {region}
             </span>
           )}
-          {(currency || payments.length > 0) && (
+          {payments.length > 0 && (
             <div className="mt-3 flex flex-wrap justify-center gap-1.5 sm:gap-2">
-              {currency && (
-                <span
-                  className="inline-block rounded-full border border-brand-accent/20 bg-brand-surface px-2.5 py-0.5 text-xs text-brand-text-muted sm:px-3 sm:py-1 sm:text-sm"
-                  title={currencyName ?? undefined}
-                >
-                  {currencySymbol && currencySymbol !== currency
-                    ? `${currency} (${currencySymbol})`
-                    : currency}
-                </span>
-              )}
               {payments.map((p) => (
                 <span
                   key={p}
@@ -148,12 +135,18 @@ export default async function CountryHubPage({ params }: PageProps) {
       </section>
 
       <div className="mx-auto max-w-4xl space-y-8 px-4 py-8 sm:space-y-10 sm:px-6 sm:py-12">
-        {/* Languages → Sectors → Faiths (overlap-aware client component) */}
+        {/* Languages → Sectors → Currency → Faiths (overlap-aware) */}
         <CountryDimensions
           code={upperCode}
+          name={name}
+          flagPng={flagPng}
           languages={languages}
           topSectors={topSectors}
           topFaiths={topFaiths}
+          currency={currency ?? '—'}
+          capital={capital}
+          timezone={data?.timezone ?? null}
+          population={population}
         />
 
         {/* Action Cards — harmonized with main nav */}
