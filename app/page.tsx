@@ -156,7 +156,7 @@ export default function HomePage() {
       return {}
     }
   })
-  const [previewCountries, setPreviewCountries] = useState<string[]>([])
+  const previewCountries: string[] = [] // preview disabled — keep prop for API compat
   const [menuOpen, setMenuOpen] = useState(false)
   const [unreadMessages, setUnreadMessages] = useState(0)
 
@@ -470,7 +470,7 @@ export default function HomePage() {
             void enrichCountry(nextStep.code, nextStep.name)
           }
         }}
-        onPreview={(codes) => setPreviewCountries(codes)}
+        onPreview={() => {}}
       />
 
       {/* Mobile nav dropdown */}
@@ -553,7 +553,7 @@ export default function HomePage() {
       <DimensionFilters
         activeFilters={filters}
         onFilterChange={handleFilterChange}
-        onPreview={setPreviewCountries}
+        onPreview={() => {}}
       />
     </main>
   )
