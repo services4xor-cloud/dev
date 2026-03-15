@@ -39,8 +39,10 @@ export interface ScoredCountry {
   score: number
   matchCount: number
   dimensions: string[] // which dimension types match
-  dominantDim: string // dimension with most hits (determines hue family)
-  dominantValue: string // specific value in dominant dim (determines shade)
+  dominantDim: string // dimension with most hits → fill color
+  dominantValue: string // specific value in dominant dim → shade
+  secondaryDim: string // second-most hits → border color
+  secondaryValue: string // specific value in secondary dim → border shade
   depth: number // unique dimension count 1-5 (determines intensity)
 }
 
@@ -150,16 +152,11 @@ export default function HomePage() {
 
     const scored = new Map<string, ScoredCountry>()
     for (const [code, entry] of Array.from(countMap.entries())) {
-      // Find dominant dimension (most hits, priority order for ties)
-      let dominantDim = 'language'
-      let dominantValue = ''
-      let maxDimCount = 0
+      // Rank dimensions by hit count (priority order breaks ties)
+      const ranked: { dim: string; count: number; topValue: string }[] = []
       for (const dim of DIM_PRIORITY) {
         const c = entry.dimCounts[dim] || 0
-        if (c > maxDimCount) {
-          maxDimCount = c
-          dominantDim = dim
-          // Find top value within this dimension
+        if (c > 0) {
           const values = entry.dimValues[dim] || {}
           let topVal = ''
           let topValCount = 0
@@ -169,16 +166,23 @@ export default function HomePage() {
               topVal = v
             }
           }
-          dominantValue = topVal
+          ranked.push({ dim, count: c, topValue: topVal })
         }
       }
+      ranked.sort((a, b) => b.count - a.count)
+
+      const dominant = ranked[0] ?? { dim: 'language', count: 0, topValue: '' }
+      const secondary = ranked[1] ?? dominant // fallback to dominant if only 1 dim
+
       scored.set(code, {
         code,
         score: entry.dims.size / 5,
         matchCount: entry.count,
         dimensions: Array.from(entry.dims),
-        dominantDim,
-        dominantValue,
+        dominantDim: dominant.dim,
+        dominantValue: dominant.topValue,
+        secondaryDim: secondary.dim,
+        secondaryValue: secondary.topValue,
         depth: entry.dims.size,
       })
     }
@@ -208,6 +212,8 @@ export default function HomePage() {
             dimensions: [],
             dominantDim: '',
             dominantValue: '',
+            secondaryDim: '',
+            secondaryValue: '',
             depth: 0,
           })
         }

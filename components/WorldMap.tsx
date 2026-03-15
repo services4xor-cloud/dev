@@ -23,8 +23,10 @@ interface ScoredCountry {
   score: number
   matchCount: number
   dimensions: string[]
-  dominantDim: string // dimension with most hits → hue family
-  dominantValue: string // specific value → shade within family
+  dominantDim: string // dimension with most hits → fill color
+  dominantValue: string // specific value → fill shade
+  secondaryDim: string // second-most hits → border color
+  secondaryValue: string // specific value → border shade
   depth: number // unique dimension count 1-5 → intensity
 }
 
@@ -305,10 +307,11 @@ export default function WorldMap({
       expr.push(code, ENRICHED_COLOR)
     }
 
-    // Scored: HSL dimension-family border colors
+    // Scored: border = secondary dimension (shows multi-dim overlap)
+    // If only 1 dimension, secondary falls back to dominant so border matches fill
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        expr.push(code, scoredToColor(sc.dominantDim, sc.dominantValue, sc.depth))
+        expr.push(code, scoredToColor(sc.secondaryDim, sc.secondaryValue, sc.depth))
       }
     }
 
