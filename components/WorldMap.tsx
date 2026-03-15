@@ -36,14 +36,15 @@ interface WorldMapProps {
 /**
  * Color spectrum for dimension matches — cool→warm→white as matches increase.
  * 1 match = teal (cool), 2 = emerald, 3 = gold, 4 = amber, 5 = white-gold (blazing).
- * This creates a "heat map" feel — the more dimensions two countries share, the hotter.
+ * 0 matches = neighbor proximity glow (subtle warm amber, doesn't compete with filters).
  */
 function scoreToColor(score: number, matchCount: number): string {
   if (matchCount >= 5) return '#FFF4CC' // blazing white-gold — full intersection
   if (matchCount >= 4) return '#FFD666' // bright amber — almost perfect match
   if (matchCount >= 3) return '#E8C840' // warm gold — strong connection
   if (matchCount >= 2) return '#4ECDC4' // teal-green — moderate overlap
-  if (score > 0) return '#45B7AA' // cool teal — single dimension
+  if (matchCount >= 1) return '#45B7AA' // cool teal — single dimension
+  if (score > 0) return '#6B5B3E' // warm earth — neighbor proximity only
   return '#2d3748'
 }
 

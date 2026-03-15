@@ -33,8 +33,22 @@ function countryFlag(code: string): string {
 export interface ScoredCountry {
   code: string
   score: number // 0-1 normalized (matchCount / totalFilters)
-  matchCount: number
+  matchCount: number // 0 = neighbor proximity only, 1+ = dimension matches
 }
+
+/** Haversine distance between two lat/lng points in km */
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371
+  const dLat = ((lat2 - lat1) * Math.PI) / 180
+  const dLng = ((lng2 - lng1) * Math.PI) / 180
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+/** Max neighbor detection radius in km (~direct border distance for most countries) */
+const NEIGHBOR_RADIUS_KM = 2500
 
 export default function HomePage() {
   const { data: session } = useSession()
@@ -101,9 +115,9 @@ export default function HomePage() {
 
   // Compute intensity scores from active filters — client-side, no API needed
   // Each filter has countryCodes[]. Count how many filters match each country.
+  // Also adds subtle neighbor proximity glow for countries bordering enriched ones.
   const scoredCountries = useMemo(() => {
     const filtersWithCodes = filters.filter((f) => f.countryCodes && f.countryCodes.length > 0)
-    if (filtersWithCodes.length === 0) return []
 
     const countMap = new Map<string, number>()
     for (const f of filtersWithCodes) {
@@ -112,13 +126,40 @@ export default function HomePage() {
       }
     }
 
-    const total = filtersWithCodes.length
-    const scored: ScoredCountry[] = []
+    const total = filtersWithCodes.length || 1
+    const scored = new Map<string, ScoredCountry>()
     for (const [code, matchCount] of Array.from(countMap.entries())) {
-      scored.push({ code, score: matchCount / total, matchCount })
+      scored.set(code, { code, score: matchCount / total, matchCount })
     }
-    return scored
-  }, [filters])
+
+    // Neighbor proximity: enriched countries cast a subtle glow on nearby countries
+    if (enrichedCountries.length > 0) {
+      const enrichedSet = new Set(enrichedCountries)
+      const enrichedData = enrichedCountries
+        .map((ec) => COUNTRY_OPTIONS.find((c) => c.code === ec))
+        .filter(Boolean) as (typeof COUNTRY_OPTIONS)[number][]
+
+      for (const c of COUNTRY_OPTIONS) {
+        // Skip enriched countries themselves and countries already scored by dimensions
+        if (enrichedSet.has(c.code) || scored.has(c.code)) continue
+
+        // Find closest enriched country
+        let minDist = Infinity
+        for (const ec of enrichedData) {
+          const d = haversineKm(c.lat, c.lng, ec.lat, ec.lng)
+          if (d < minDist) minDist = d
+        }
+
+        if (minDist < NEIGHBOR_RADIUS_KM) {
+          // Score fades linearly with distance: 0.12 at 0km → 0.02 at NEIGHBOR_RADIUS_KM
+          const proximityScore = 0.02 + 0.1 * (1 - minDist / NEIGHBOR_RADIUS_KM)
+          scored.set(c.code, { code: c.code, score: proximityScore, matchCount: 0 })
+        }
+      }
+    }
+
+    return Array.from(scored.values())
+  }, [filters, enrichedCountries])
 
   // Enrich: when clicking a country, auto-discover related dimensions and ADD to existing
   const enrichCountry = useCallback(async (code: string, name: string) => {
