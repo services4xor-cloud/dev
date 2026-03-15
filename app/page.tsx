@@ -468,6 +468,7 @@ export default function HomePage() {
         activeFilters={filters}
         onFilterChange={handleFilterChange}
         onPreview={() => {}}
+        enrichedCountries={enrichedCountries}
       />
     </main>
   )

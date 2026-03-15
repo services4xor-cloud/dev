@@ -55,13 +55,13 @@ function scoreToColor(score: number, matchCount: number): string {
 function enrichedToColor(recency: number): string {
   // recency: 1.0 = most recent, fading to 0 for oldest
   if (recency >= 0.9) return '#FFD700' // blazing gold — current selection
-  if (recency >= 0.5) return '#C9A227' // warm gold — recent
-  return '#8B6914' // faded amber — oldest in path
+  if (recency >= 0.5) return '#E8C840' // warm bright gold — recent
+  return '#C9A227' // standard gold — oldest in path
 }
 
 function enrichedToOpacity(recency: number): number {
-  // Strongest glow for newest, fading trail
-  return 0.15 + recency * 0.25 // range: 0.15 → 0.40
+  // Strong glow for all enriched, strongest for newest
+  return 0.25 + recency * 0.25 // range: 0.25 → 0.50
 }
 
 export default function WorldMap({

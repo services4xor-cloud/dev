@@ -4,14 +4,9 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import type { DimensionFilter } from '@/types/domain'
 
 /**
- * Curated dimension selector — 6 tabs with data-backed options.
- * Multi-select within and across dimensions. More matches = more intense glow.
- *
- * GAMIFICATION: Duplicate filters across country enrichments MERGE.
- *   - Overlaps (×2, ×3…) shown in a bright "Overlap" row at the top
- *   - Unique filters stay in their source rows
- *   - More overlaps = brighter glow → power-up feeling
- *   - Already-selected options hidden from the options panel
+ * Curated dimension selector — 5 tabs with data-backed options.
+ * Country click → one row with all 5 dimensions, color-coded per type.
+ * Click row to remove. Overlaps merge with multiplier glow.
  */
 
 interface DimensionOption {
@@ -48,17 +43,16 @@ interface MergedFilter {
   label: string
   icon: string
   countryCodes: string[]
-  /** How many sources share this filter (×1 = unique, ×2+ = overlap) */
   multiplier: number
-  /** Which sources contribute this filter */
   sources: string[]
 }
 
 interface DimensionFiltersProps {
   activeFilters: ActiveFilter[]
   onFilterChange: (filters: ActiveFilter[]) => void
-  /** Called with country codes for real-time map preview when hovering */
   onPreview?: (countryCodes: string[]) => void
+  /** Ordered list of enriched country codes — newest last, for color coding */
+  enrichedCountries?: string[]
 }
 
 type DimensionKey = 'language' | 'faith' | 'sector' | 'location' | 'currency' | 'timezone'
@@ -85,7 +79,20 @@ function countryFlag(code: string): string {
   }
 }
 
-/** Intensity class based on multiplier — golden gamification levels */
+/**
+ * Dimension-specific chip colors — each type gets a distinct hue
+ * that matches the map's visual language.
+ */
+const DIMENSION_COLORS: Record<string, string> = {
+  language: 'bg-teal-500/20 text-teal-300 border-teal-400/30',
+  faith: 'bg-violet-500/20 text-violet-300 border-violet-400/30',
+  sector: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30',
+  location: 'bg-amber-500/20 text-amber-300 border-amber-400/30',
+  currency: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30',
+  timezone: 'bg-blue-500/20 text-blue-300 border-blue-400/30',
+}
+
+/** Overlap multiplier glow — golden gamification levels */
 function overlapStyle(multiplier: number): string {
   if (multiplier >= 4)
     return 'border-yellow-400/70 bg-gradient-to-r from-yellow-400/30 to-amber-400/30 text-yellow-200 shadow-[0_0_16px_rgba(253,224,71,0.4)] font-semibold'
@@ -96,10 +103,22 @@ function overlapStyle(multiplier: number): string {
   return 'border-brand-accent/30 bg-brand-accent/15 text-brand-accent'
 }
 
+/**
+ * Row glow for enriched countries — newest = brightest gold, oldest = dimmer.
+ * Matches the map's path-fading trail.
+ */
+function enrichedRowStyle(recency: number): string {
+  if (recency >= 0.9)
+    return 'border-yellow-400/40 bg-yellow-400/10 shadow-[0_0_12px_rgba(253,224,71,0.15)]'
+  if (recency >= 0.5) return 'border-brand-accent/30 bg-brand-accent/8'
+  return 'border-brand-accent/15 bg-brand-accent/5'
+}
+
 export default function DimensionFilters({
   activeFilters,
   onFilterChange,
   onPreview,
+  enrichedCountries = [],
 }: DimensionFiltersProps) {
   const [dimensions, setDimensions] = useState<DimensionsData | null>(null)
   const [activeTab, setActiveTab] = useState<DimensionKey | null>(null)
@@ -141,10 +160,19 @@ export default function DimensionFilters({
     [activeFilters]
   )
 
+  // Recency map for enriched countries (matches WorldMap path-fading)
+  const enrichedRecency = useMemo(() => {
+    const m = new Map<string, number>()
+    const len = enrichedCountries.length
+    if (len === 0) return m
+    for (let i = 0; i < len; i++) {
+      m.set(enrichedCountries[i], 0.33 + 0.67 * (i / Math.max(len - 1, 1)))
+    }
+    return m
+  }, [enrichedCountries])
+
   // ─── MERGE LOGIC: detect duplicates across sources ───
-  // Group all filters by dimension:nodeCode → find overlaps
   const { overlaps, sourceRows } = useMemo(() => {
-    // Count how many distinct sources each filter key appears in
     const keyToFilters = new Map<string, ActiveFilter[]>()
     for (const f of activeFilters) {
       const key = `${f.dimension}:${f.nodeCode}`
@@ -153,16 +181,13 @@ export default function DimensionFilters({
       keyToFilters.set(key, arr)
     }
 
-    // Separate overlaps (2+ sources) from uniques
     const overlapList: MergedFilter[] = []
-    const uniqueKeys = new Set<string>() // keys that are overlaps → exclude from source rows
+    const uniqueKeys = new Set<string>()
 
     for (const [key, filters] of Array.from(keyToFilters.entries())) {
       const distinctSources = Array.from(new Set(filters.map((f) => f.source ?? 'custom')))
       if (distinctSources.length >= 2) {
-        // This filter appears in 2+ sources → overlap!
         const first = filters[0]
-        // Merge countryCodes from all instances (union)
         const allCodes = new Set<string>()
         for (const f of filters) {
           for (const c of f.countryCodes ?? []) allCodes.add(c)
@@ -180,14 +205,12 @@ export default function DimensionFilters({
       }
     }
 
-    // Sort overlaps: highest multiplier first
     overlapList.sort((a, b) => b.multiplier - a.multiplier)
 
-    // Build source rows with only UNIQUE (non-overlapping) filters
     const rows = new Map<string, ActiveFilter[]>()
     for (const f of activeFilters) {
       const key = `${f.dimension}:${f.nodeCode}`
-      if (uniqueKeys.has(key)) continue // skip — shown in overlap row
+      if (uniqueKeys.has(key)) continue
       const src = f.source ?? 'custom'
       const arr = rows.get(src) ?? []
       arr.push(f)
@@ -199,7 +222,6 @@ export default function DimensionFilters({
 
   // Ordered source keys: country codes first (alphabetical), then "custom" last
   const sourceOrder = useMemo(() => {
-    // Include sources that have at least 1 unique filter OR contributed to overlaps
     const allSources = new Set<string>()
     for (const f of activeFilters) allSources.add(f.source ?? 'custom')
     const keys = Array.from(allSources)
@@ -212,12 +234,10 @@ export default function DimensionFilters({
     (dimension: DimensionKey, option: DimensionOption) => {
       const key = `${dimension}:${option.code}`
       if (selectedCodes.has(key)) {
-        // Deselect — remove ALL filters with this dimension:nodeCode (any source)
         onFilterChange(
           activeFilters.filter((f) => !(f.dimension === dimension && f.nodeCode === option.code))
         )
       } else {
-        // Select — ADD as custom filter (manual selection)
         const newFilter: ActiveFilter = {
           dimension: dimension as DimensionFilter['dimension'],
           nodeCode: option.code,
@@ -233,19 +253,19 @@ export default function DimensionFilters({
     [activeFilters, onFilterChange, onPreview, selectedCodes]
   )
 
+  const removeSource = (source: string) => {
+    onFilterChange(activeFilters.filter((f) => (f.source ?? 'custom') !== source))
+  }
+
   const removeFilter = (dimension: string, nodeCode: string) => {
     onFilterChange(
       activeFilters.filter((f) => !(f.dimension === dimension && f.nodeCode === nodeCode))
     )
   }
 
-  const removeSource = (source: string) => {
-    onFilterChange(activeFilters.filter((f) => (f.source ?? 'custom') !== source))
-  }
-
   const filtersForDimension = (dim: string) => activeFilters.filter((f) => f.dimension === dim)
 
-  // Filter out already-selected options from the dropdown — no duplicates
+  // Filter out already-selected options from the dropdown
   const availableOptions = useMemo(() => {
     if (!activeTab || !dimensions) return []
     return dimensions[activeTab].filter((opt) => !selectedCodes.has(`${activeTab}:${opt.code}`))
@@ -264,66 +284,61 @@ export default function DimensionFilters({
           {overlaps.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-1.5">
               <span className="text-[10px] font-bold text-yellow-300/80 uppercase tracking-wider px-1">
-                ⚡ Overlap
+                ⚡
               </span>
               {overlaps.map((m) => (
-                <button
+                <span
                   key={`${m.dimension}:${m.nodeCode}`}
-                  onClick={() => removeFilter(m.dimension, m.nodeCode)}
                   onMouseEnter={() => onPreview?.(m.countryCodes)}
                   onMouseLeave={() => onPreview?.([])}
-                  className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${overlapStyle(m.multiplier)}`}
+                  className={`rounded-full border px-2.5 py-1 text-xs font-medium ${overlapStyle(m.multiplier)}`}
                 >
                   {m.icon} {m.label}
                   <span className="ml-1 rounded-full bg-white/10 px-1.5 text-[10px] font-bold">
                     ×{m.multiplier}
                   </span>
-                  <span className="ml-0.5 text-white/40"> ✕</span>
-                </button>
+                </span>
               ))}
             </div>
           )}
 
-          {/* ═══ SOURCE ROWS — unique (non-overlapping) filters per country/custom ═══ */}
+          {/* ═══ SOURCE ROWS — one compact row per country/custom ═══ */}
           {sourceOrder.map((source) => {
             const group = sourceRows.get(source) ?? []
             const isCountry = source !== 'custom'
+            const recency = enrichedRecency.get(source) ?? 0
+            const rowStyle = isCountry ? enrichedRowStyle(recency) : 'border-white/10 bg-white/5'
+
             return (
-              <div key={source} className="flex flex-wrap items-center justify-center gap-1.5">
-                {/* Source label: 🇩🇪 DE for countries, ✦ for custom — compact */}
-                <button
-                  onClick={() => removeSource(source)}
-                  className={`rounded-full px-2 py-1 text-[10px] font-medium transition ${
-                    isCountry
-                      ? 'bg-brand-accent/15 text-brand-accent hover:bg-brand-accent/25'
-                      : 'border border-white/10 bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/70'
-                  }`}
-                  title={`Remove all ${isCountry ? source : 'custom'} filters`}
-                >
-                  {isCountry ? `${countryFlag(source)} ${source}` : '✦'} ✕
-                </button>
-                {/* Unique filter chips — silver for custom, accent for country */}
+              <button
+                key={source}
+                onClick={() => removeSource(source)}
+                className={`flex flex-wrap items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 transition hover:opacity-80 cursor-pointer ${rowStyle}`}
+                title={`Remove ${isCountry ? source : 'custom'} filters`}
+              >
+                {/* Source indicator: flag for countries, ✦ for custom */}
+                <span className="text-sm">{isCountry ? countryFlag(source) : '✦'}</span>
+
+                {/* Dimension chips — color-coded per type, no remove buttons */}
                 {group.map((f) => (
-                  <button
+                  <span
                     key={`${f.dimension}:${f.nodeCode}`}
-                    onClick={() => removeFilter(f.dimension, f.nodeCode)}
-                    onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
+                    onMouseEnter={(e) => {
+                      e.stopPropagation()
+                      onPreview?.(f.countryCodes ?? [])
+                    }}
                     onMouseLeave={() => onPreview?.([])}
-                    className={`rounded-full px-2.5 py-1 text-xs transition ${
-                      isCountry
-                        ? 'bg-brand-accent/15 text-brand-accent hover:bg-brand-accent/25'
-                        : 'border border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80'
-                    }`}
+                    className={`rounded-full border px-2 py-0.5 text-[11px] ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
                   >
-                    {f.icon ?? '◆'} {f.label ?? f.nodeCode} ✕
-                  </button>
+                    {f.icon ?? '◆'} {f.label ?? f.nodeCode}
+                  </span>
                 ))}
-              </div>
+              </button>
             )
           })}
 
           {/* Clear all */}
-          {(sourceOrder.length > 1 || activeFilters.length > 2) && (
+          {sourceOrder.length > 0 && (
             <div className="flex justify-center">
               <button
                 onClick={() => onFilterChange([])}
@@ -336,7 +351,7 @@ export default function DimensionFilters({
         </div>
       )}
 
-      {/* Options panel — shows when a dimension tab is active, hides already-selected */}
+      {/* Options panel — shows when a dimension tab is active */}
       {activeTab && availableOptions.length > 0 && (
         <div className="w-[340px] sm:w-[480px] overflow-hidden rounded-xl border border-brand-accent/20 bg-brand-surface/95 shadow-xl backdrop-blur">
           <div className="max-h-52 overflow-y-auto p-2">
@@ -347,10 +362,10 @@ export default function DimensionFilters({
                   onClick={() => toggleOption(activeTab, opt)}
                   onMouseEnter={() => onPreview?.(opt.countryCodes)}
                   onMouseLeave={() => onPreview?.([])}
-                  className="rounded-full border border-brand-accent/10 bg-brand-bg/80 px-3 py-1.5 text-xs text-brand-text transition hover:border-brand-accent/40 hover:bg-brand-accent/10 hover:text-brand-accent"
+                  className={`rounded-full border px-3 py-1.5 text-xs transition hover:opacity-80 ${DIMENSION_COLORS[activeTab] ?? 'bg-white/10 text-white/60 border-white/20'}`}
                 >
                   {opt.label}
-                  <span className="ml-1.5 text-brand-text-muted/50">{opt.count}</span>
+                  <span className="ml-1.5 opacity-50">{opt.count}</span>
                 </button>
               ))}
             </div>
@@ -358,7 +373,7 @@ export default function DimensionFilters({
         </div>
       )}
 
-      {/* Show message when all options in this dimension are already selected */}
+      {/* All options selected message */}
       {activeTab && availableOptions.length === 0 && dimensions?.[activeTab]?.length ? (
         <div className="rounded-xl border border-brand-accent/10 bg-brand-surface/95 px-4 py-2 text-xs text-brand-text-muted backdrop-blur">
           All {activeTab} options selected
