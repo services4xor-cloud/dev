@@ -370,6 +370,9 @@ export default function WorldMap({
         style={{ width: '100%', height: '100%' }}
         mapStyle={`https://api.maptiler.com/maps/dataviz-dark/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`}
         renderWorldCopies={false}
+        doubleClickZoom={false}
+        minZoom={1.5}
+        maxZoom={6}
         onClick={handleClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setHoveredCountry(null)}
