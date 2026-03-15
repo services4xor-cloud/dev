@@ -10,7 +10,7 @@ import NotificationBadge from '@/components/NotificationBadge'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 
 /** Max enrichment steps — oldest drops off when exceeded (ouroboros) */
-const MAX_PATH_STEPS = 3
+const MAX_PATH_STEPS = 5
 
 /** Country code → name lookup */
 const COUNTRY_NAMES: Record<string, string> = {}
@@ -125,12 +125,11 @@ export default function HomePage() {
       }
     }
 
-    const total = filtersWithCodes.length || 1
     const scored = new Map<string, ScoredCountry>()
     for (const [code, { count, dims }] of Array.from(countMap.entries())) {
       scored.set(code, {
         code,
-        score: count / total,
+        score: dims.size / 5, // normalized by max possible dimensions (5), not raw filter count
         matchCount: count,
         dimensions: Array.from(dims),
       })

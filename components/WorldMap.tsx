@@ -33,44 +33,41 @@ interface WorldMapProps {
   enrichedCountries?: string[]
 }
 
-// ─── Dimension-specific RGB values for color blending ─────────────────────────
+// ─── Dimension colors — perceptually spaced for additive mixing ───────────────
+// Chosen so every 2/3/4/5-way combination produces a visually unique color.
 const DIMENSION_RGB: Record<string, [number, number, number]> = {
-  language: [78, 205, 196], // teal
-  faith: [167, 139, 250], // violet
-  sector: [52, 211, 153], // emerald
-  location: [251, 191, 36], // amber
-  currency: [253, 224, 71], // yellow
+  language: [0, 180, 200], // cyan — cool, distinct from all warm colors
+  faith: [160, 60, 220], // purple — unique hue, stands alone
+  sector: [40, 200, 80], // green — natural, easy to identify
+  location: [240, 150, 0], // orange — warm, contrasts cool dims
+  currency: [220, 50, 100], // rose/magenta — distinct from orange and purple
 }
 
 /**
- * Blend dimension-specific colors based on WHICH dimensions match.
- * Each unique combination produces a distinct color — Language+Faith = blue-purple,
- * Language+Sector = bright green, etc. More matches = brighter (boosted toward white).
+ * ADDITIVE color mixing: each matching dimension adds its color to a dark base.
+ * This produces unique colors for every combination:
+ *   Language only → cyan          Faith only → purple
+ *   Language+Faith → blue-lavender Language+Sector → teal-aqua
+ *   Faith+Region → warm pink      Sector+Currency → deep olive
+ *   All 5 → bright warm white
+ * The more dimensions match, the brighter — but the HUE stays unique per combo.
  */
-function dimensionsToColor(dimensions: string[], matchCount: number): string {
+function dimensionsToColor(dimensions: string[]): string {
   if (dimensions.length === 0) return '#6B5B3E' // neighbor proximity — warm earth
 
-  let r = 0,
-    g = 0,
-    b = 0
+  // Start from dark base — each dimension adds light
+  let r = 20,
+    g = 20,
+    b = 30
+  const intensity = 0.38 // how much each dimension contributes
   for (const d of dimensions) {
-    const rgb = DIMENSION_RGB[d] ?? [200, 200, 200]
-    r += rgb[0]
-    g += rgb[1]
-    b += rgb[2]
+    const rgb = DIMENSION_RGB[d] ?? [120, 120, 120]
+    r += rgb[0] * intensity
+    g += rgb[1] * intensity
+    b += rgb[2] * intensity
   }
-  const n = dimensions.length
-  r = Math.round(r / n)
-  g = Math.round(g / n)
-  b = Math.round(b / n)
 
-  // Boost toward white based on total matches (more = brighter)
-  const boost = Math.min(matchCount / 5, 1) * 0.35
-  r = Math.min(255, Math.round(r + (255 - r) * boost))
-  g = Math.min(255, Math.round(g + (255 - g) * boost))
-  b = Math.min(255, Math.round(b + (255 - b) * boost))
-
-  return `rgb(${r},${g},${b})`
+  return `rgb(${Math.min(255, Math.round(r))},${Math.min(255, Math.round(g))},${Math.min(255, Math.round(b))})`
 }
 
 /** Uniform enriched glow — all selected countries shine equally bright */
@@ -238,10 +235,10 @@ export default function WorldMap({
       expr.push(code, ENRICHED_COLOR)
     }
 
-    // 2. Scored — dimension-blended colors (unique per combination)
+    // 2. Scored — additive dimension colors (unique per combination)
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        expr.push(code, dimensionsToColor(sc.dimensions, sc.matchCount))
+        expr.push(code, dimensionsToColor(sc.dimensions))
       }
     }
 
@@ -267,11 +264,17 @@ export default function WorldMap({
       expr.push(code, ENRICHED_OPACITY)
     }
 
-    // Scored: opacity scales with score, higher floor for visibility
+    // Scored: opacity tied to UNIQUE DIMENSION COUNT (not raw filter count)
+    // 1 dim = 0.18, 2 dims = 0.28, 3 dims = 0.38, 4 dims = 0.48, 5 dims = 0.55
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        const opacity = 0.08 + sc.score * 0.35
-        expr.push(code, Math.min(opacity, 0.45))
+        if (sc.dimensions.length > 0) {
+          const dimOpacity = 0.1 + sc.dimensions.length * 0.1
+          expr.push(code, Math.min(dimOpacity, 0.55))
+        } else {
+          // Neighbor proximity only — subtle
+          expr.push(code, 0.05 + sc.score * 0.1)
+        }
       }
     }
 
@@ -297,10 +300,10 @@ export default function WorldMap({
       expr.push(code, ENRICHED_COLOR)
     }
 
-    // Scored: dimension-blended border colors
+    // Scored: additive dimension border colors
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        expr.push(code, dimensionsToColor(sc.dimensions, sc.matchCount))
+        expr.push(code, dimensionsToColor(sc.dimensions))
       }
     }
 
@@ -325,10 +328,11 @@ export default function WorldMap({
       expr.push(code, ENRICHED_BORDER_WIDTH)
     }
 
-    // Scored: border scales with score
+    // Scored: border scales with dimension count
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        expr.push(code, Math.min(0.4 + sc.score * 2.0, 2.5))
+        const dimWidth = sc.dimensions.length > 0 ? 0.4 + sc.dimensions.length * 0.4 : 0.3
+        expr.push(code, Math.min(dimWidth, 2.5))
       }
     }
 

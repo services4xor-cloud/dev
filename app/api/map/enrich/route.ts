@@ -54,25 +54,17 @@ export async function POST(req: NextRequest) {
   const country = COUNTRY_OPTIONS.find((c) => c.code === code.toUpperCase())
   if (!country) return NextResponse.json({ error: 'Country not found' }, { status: 404 })
 
-  const filters: {
+  // Build filters in display order: Language → Faith → Sector → Region → Currency
+  type Filter = {
     dimension: string
     nodeCode: string
     label: string
     icon: string
     countryCodes: string[]
-  }[] = []
+  }
+  const filters: Filter[] = []
 
-  // 1. Region — geographic cluster (always exactly 1)
-  const regionMatches = COUNTRY_OPTIONS.filter((c) => c.region === country.region)
-  filters.push({
-    dimension: 'location',
-    nodeCode: country.region,
-    label: REGION_LABELS[country.region] ?? country.region,
-    icon: '📍',
-    countryCodes: regionMatches.map((c) => c.code),
-  })
-
-  // 2. Language — pick the language with MOST country reach from this country's languages
+  // 1. Language — pick the language with MOST country reach
   if (country.languages.length > 0) {
     let bestLang = country.languages[0]
     let bestCount = 0
@@ -96,17 +88,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 3. Currency — the country's currency (always exactly 1)
-  const currencyMatches = COUNTRY_OPTIONS.filter((c) => c.currency === country.currency)
-  filters.push({
-    dimension: 'currency',
-    nodeCode: country.currency.toLowerCase(),
-    label: country.currency,
-    icon: '💱',
-    countryCodes: currencyMatches.map((c) => c.code),
-  })
-
-  // 4. Faith — pick the faith with MOST country reach from this country's faiths
+  // 2. Faith — pick the faith with MOST country reach
   if (country.topFaiths.length > 0) {
     let bestFaith = country.topFaiths[0]
     let bestCount = 0
@@ -127,7 +109,7 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // 5. Sector — pick the sector with MOST country reach from this country's sectors
+  // 3. Sector — pick the sector with MOST country reach
   if (country.topSectors.length > 0) {
     let bestSector = country.topSectors[0]
     let bestCount = 0
@@ -147,6 +129,42 @@ export async function POST(req: NextRequest) {
       countryCodes: sectorMatches.map((c) => c.code),
     })
   }
+
+  // 4. Region — geographic cluster, expanded for transcontinental countries
+  const EXTRA_REGIONS: Record<string, string[]> = {
+    RU: ['europe', 'central-asia', 'east-asia'],
+    TR: ['europe', 'middle-east'],
+    EG: ['north-africa', 'middle-east'],
+    KZ: ['central-asia', 'europe'],
+  }
+  const regions = EXTRA_REGIONS[country.code] ?? [country.region]
+  const regionCodes = new Set<string>()
+  for (const r of regions) {
+    for (const c of COUNTRY_OPTIONS) {
+      if (c.region === r) regionCodes.add(c.code)
+    }
+  }
+  const primaryRegion = regions[0]
+  filters.push({
+    dimension: 'location',
+    nodeCode: primaryRegion,
+    label:
+      regions.length > 1
+        ? regions.map((r) => REGION_LABELS[r] ?? r).join(' & ')
+        : (REGION_LABELS[primaryRegion] ?? primaryRegion),
+    icon: '📍',
+    countryCodes: Array.from(regionCodes),
+  })
+
+  // 5. Currency
+  const currencyMatches = COUNTRY_OPTIONS.filter((c) => c.currency === country.currency)
+  filters.push({
+    dimension: 'currency',
+    nodeCode: country.currency.toLowerCase(),
+    label: country.currency,
+    icon: '💱',
+    countryCodes: currencyMatches.map((c) => c.code),
+  })
 
   return NextResponse.json({ country: country.name, filters })
 }
