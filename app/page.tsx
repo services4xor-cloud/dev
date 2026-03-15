@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSession, signOut } from 'next-auth/react'
+import Image from 'next/image'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
@@ -52,35 +53,27 @@ const NEIGHBOR_RADIUS_KM = 2500
 
 export default function HomePage() {
   const { data: session } = useSession()
-  // Restore map state from sessionStorage (survives navigation)
-  const [filters, setFilters] = useState<ActiveFilter[]>(() => {
-    if (typeof window === 'undefined') return []
+  // State — initialized empty to avoid SSR/client hydration mismatch.
+  // SessionStorage is restored in a useEffect below.
+  const [filters, setFilters] = useState<ActiveFilter[]>([])
+  const [enrichedCountries, setEnrichedCountries] = useState<string[]>([])
+  const [enrichedNames, setEnrichedNames] = useState<Record<string, string>>({})
+  const [hydrated, setHydrated] = useState(false)
+
+  // Hydrate from sessionStorage after mount (client-only)
+  useEffect(() => {
     try {
-      const raw = sessionStorage.getItem('bex-map-filters')
-      return raw ? (JSON.parse(raw) as ActiveFilter[]) : []
+      const rawFilters = sessionStorage.getItem('bex-map-filters')
+      if (rawFilters) setFilters(JSON.parse(rawFilters) as ActiveFilter[])
+      const rawEnriched = sessionStorage.getItem('bex-map-enriched')
+      if (rawEnriched) setEnrichedCountries(JSON.parse(rawEnriched) as string[])
+      const rawNames = sessionStorage.getItem('bex-map-enriched-names')
+      if (rawNames) setEnrichedNames(JSON.parse(rawNames) as Record<string, string>)
     } catch {
-      return []
+      // Corrupted storage — start fresh
     }
-  })
-  // Track multiple enriched countries (additive clicks)
-  const [enrichedCountries, setEnrichedCountries] = useState<string[]>(() => {
-    if (typeof window === 'undefined') return []
-    try {
-      const raw = sessionStorage.getItem('bex-map-enriched')
-      return raw ? (JSON.parse(raw) as string[]) : []
-    } catch {
-      return []
-    }
-  })
-  const [enrichedNames, setEnrichedNames] = useState<Record<string, string>>(() => {
-    if (typeof window === 'undefined') return {}
-    try {
-      const raw = sessionStorage.getItem('bex-map-enriched-names')
-      return raw ? (JSON.parse(raw) as Record<string, string>) : {}
-    } catch {
-      return {}
-    }
-  })
+    setHydrated(true)
+  }, [])
   const previewCountries: string[] = [] // preview disabled — keep prop for API compat
   const [menuOpen, setMenuOpen] = useState(false)
   const [unreadMessages, setUnreadMessages] = useState(0)
@@ -92,8 +85,9 @@ export default function HomePage() {
     ? (enrichedNames[selectedCountry] ?? selectedCountry)
     : null
 
-  // Persist enriched countries + filters to sessionStorage
+  // Persist enriched countries + filters to sessionStorage (only after hydration)
   useEffect(() => {
+    if (!hydrated) return
     sessionStorage.setItem('bex-map-enriched', JSON.stringify(enrichedCountries))
     sessionStorage.setItem('bex-map-enriched-names', JSON.stringify(enrichedNames))
     // Keep legacy keys for backward compat
@@ -107,11 +101,12 @@ export default function HomePage() {
     } else {
       sessionStorage.removeItem('bex-map-selected-name')
     }
-  }, [enrichedCountries, enrichedNames, selectedCountry, selectedCountryName])
+  }, [hydrated, enrichedCountries, enrichedNames, selectedCountry, selectedCountryName])
 
   useEffect(() => {
+    if (!hydrated) return
     sessionStorage.setItem('bex-map-filters', JSON.stringify(filters))
-  }, [filters])
+  }, [hydrated, filters])
 
   // Compute intensity scores from active filters — client-side, no API needed
   // Each filter has countryCodes[]. Count how many filters match each country.
@@ -347,27 +342,23 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/me"
-                className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+                className="flex items-center gap-1.5 text-sm text-brand-accent transition hover:text-brand-accent/80"
               >
-                Me
-              </Link>
-              <Link
-                href="/settings"
-                className="text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Settings
-              </Link>
-              <Link
-                href="/payments"
-                className="text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Payments
-              </Link>
-              <Link
-                href="/referral"
-                className="text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Refer
+                {session.user?.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 rounded-full"
+                    unoptimized
+                  />
+                ) : (
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-accent/20 text-[10px] font-bold text-brand-accent">
+                    {(session.user?.name ?? session.user?.email ?? '?')[0].toUpperCase()}
+                  </span>
+                )}
+                {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Me'}
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: '/' })}
@@ -379,9 +370,9 @@ export default function HomePage() {
           ) : (
             <Link
               href="/login"
-              className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+              className="rounded-full border border-brand-accent/30 bg-brand-accent/10 px-3 py-1 text-sm text-brand-accent transition hover:bg-brand-accent/20"
             >
-              Login
+              Sign in
             </Link>
           )}
         </nav>
@@ -407,40 +398,33 @@ export default function HomePage() {
           {session ? (
             <>
               <Link
+                href="/me"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 py-2 text-sm text-brand-accent transition"
+              >
+                {session.user?.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 rounded-full"
+                    unoptimized
+                  />
+                ) : (
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-accent/20 text-[10px] font-bold text-brand-accent">
+                    {(session.user?.name ?? session.user?.email ?? '?')[0].toUpperCase()}
+                  </span>
+                )}
+                {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Me'}
+              </Link>
+              <Link
                 href="/messages"
                 onClick={() => setMenuOpen(false)}
                 className="relative py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
               >
                 Messages
                 <NotificationBadge count={unreadMessages} />
-              </Link>
-              <Link
-                href="/me"
-                onClick={() => setMenuOpen(false)}
-                className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Me
-              </Link>
-              <Link
-                href="/settings"
-                onClick={() => setMenuOpen(false)}
-                className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Settings
-              </Link>
-              <Link
-                href="/payments"
-                onClick={() => setMenuOpen(false)}
-                className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Payments
-              </Link>
-              <Link
-                href="/referral"
-                onClick={() => setMenuOpen(false)}
-                className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Refer
               </Link>
               <button
                 onClick={() => {
@@ -456,9 +440,9 @@ export default function HomePage() {
             <Link
               href="/login"
               onClick={() => setMenuOpen(false)}
-              className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+              className="py-2 text-sm text-brand-accent transition"
             >
-              Login
+              Sign in
             </Link>
           )}
         </nav>
