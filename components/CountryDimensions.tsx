@@ -11,9 +11,8 @@ import {
 /**
  * CountryDimensions — client component for /be/[code] pages.
  *
+ * Shows route hops with distance, flight time, time diff, exchange rates.
  * Displays Languages → Sectors → Currency → Faith with overlap awareness.
- * When multiple countries are selected on the map, shows a combined overview
- * with flags/capitals/timezones and highlights shared dimension values.
  */
 
 interface Props {
@@ -39,7 +38,6 @@ const FAITH_LABELS: Record<string, string> = {
   secular: 'Secular',
 }
 
-/** Common currency symbols */
 const CURRENCY_SYMBOLS: Record<string, string> = {
   USD: '$',
   EUR: '€',
@@ -86,21 +84,101 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   BDT: '৳',
 }
 
-function formatCurrency(code: string): string {
+function fmtCurrency(code: string): string {
   const sym = CURRENCY_SYMBOLS[code]
   return sym ? `${code} (${sym})` : code
 }
 
-function formatPop(n: number): string {
-  return n >= 1_000_000
-    ? `${(n / 1_000_000).toFixed(1)}M`
-    : n >= 1_000
-      ? `${(n / 1_000).toFixed(0)}K`
-      : String(n)
-}
-
 function formatTz(iana: string): string {
   return iana.replace(/^.*\//, '').replace(/_/g, ' ')
+}
+
+// ─── Haversine distance (km) ────────────────────────────────────────────────
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371
+  const toRad = Math.PI / 180
+  const dLat = (lat2 - lat1) * toRad
+  const dLng = (lng2 - lng1) * toRad
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * toRad) * Math.cos(lat2 * toRad) * Math.sin(dLng / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+function fmtDistance(km: number): string {
+  return km >= 1000 ? `${(km / 1000).toFixed(1)}k km` : `${Math.round(km)} km`
+}
+
+function fmtFlightTime(km: number): string {
+  const hours = km / 800 // average cruise speed
+  if (hours < 1) return `~${Math.round(hours * 60)}min`
+  return hours < 10 ? `~${hours.toFixed(1)}h` : `~${Math.round(hours)}h`
+}
+
+// ─── UTC offset from IANA timezone ──────────────────────────────────────────
+function getUtcOffsetMinutes(tz: string): number {
+  try {
+    const now = new Date()
+    const str = now.toLocaleString('en-US', { timeZone: tz, timeZoneName: 'shortOffset' })
+    const match = str.match(/GMT([+-]\d{1,2}(?::?\d{2})?)/)
+    if (!match) return 0
+    const parts = match[1].replace(':', '').match(/^([+-])(\d{1,2})(\d{2})?$/)
+    if (!parts) return 0
+    const sign = parts[1] === '-' ? -1 : 1
+    return sign * (parseInt(parts[2]) * 60 + parseInt(parts[3] ?? '0'))
+  } catch {
+    return 0
+  }
+}
+
+function fmtTimeDiff(minutes: number): string {
+  const abs = Math.abs(minutes)
+  const h = Math.floor(abs / 60)
+  const m = abs % 60
+  const sign = minutes >= 0 ? '+' : '-'
+  if (m === 0) return `${sign}${h}h`
+  return `${sign}${h}h${m}m`
+}
+
+// ─── Exchange rate cache ────────────────────────────────────────────────────
+const rateCache: Record<string, Record<string, number>> = {}
+
+async function fetchRates(base: string): Promise<Record<string, number>> {
+  if (rateCache[base]) return rateCache[base]
+  try {
+    const res = await fetch(`https://open.er-api.com/v6/latest/${base}`)
+    if (!res.ok) return {}
+    const data = await res.json()
+    rateCache[base] = data.rates ?? {}
+    return rateCache[base]
+  } catch {
+    return {}
+  }
+}
+
+// ─── Route hop info ─────────────────────────────────────────────────────────
+interface HopInfo {
+  from: {
+    code: string
+    name: string
+    flag: string
+    currency: string
+    tz: string
+    lat: number
+    lng: number
+  }
+  to: {
+    code: string
+    name: string
+    flag: string
+    currency: string
+    tz: string
+    lat: number
+    lng: number
+  }
+  distanceKm: number
+  timeDiffMin: number
+  rate: number | null // exchange rate from→to currency
 }
 
 export default function CountryDimensions({
@@ -116,6 +194,7 @@ export default function CountryDimensions({
   name,
 }: Props) {
   const [otherCountryCodes, setOtherCountryCodes] = useState<string[]>([])
+  const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
 
   useEffect(() => {
     try {
@@ -125,15 +204,60 @@ export default function CountryDimensions({
         setOtherCountryCodes(all.filter((c) => c !== code.toUpperCase()))
       }
     } catch {
-      // ignore
+      /* ignore */
     }
   }, [code])
+
+  // Fetch exchange rates for this country's currency
+  useEffect(() => {
+    if (!currency || currency === '—') return
+    fetchRates(currency).then(setExchangeRates)
+  }, [currency])
 
   const otherCountries = otherCountryCodes
     .map((c) => COUNTRY_OPTIONS.find((o) => o.code === c))
     .filter(Boolean)
 
   const hasOthers = otherCountryCodes.length > 0
+  const thisOpt = COUNTRY_OPTIONS.find((o) => o.code === code)
+
+  // ─── Build route hops (sequential) ──────────────────────────────────────────
+  const routeCountries = [
+    {
+      code,
+      name,
+      flag: thisOpt?.flag ?? '',
+      currency,
+      tz: timezone ?? thisOpt?.tz ?? '',
+      lat: thisOpt?.lat ?? 0,
+      lng: thisOpt?.lng ?? 0,
+    },
+    ...otherCountries.map((c) => ({
+      code: c!.code,
+      name: c!.name,
+      flag: c!.flag,
+      currency: c!.currency,
+      tz: c!.tz,
+      lat: c!.lat,
+      lng: c!.lng,
+    })),
+  ]
+
+  const hops: HopInfo[] = []
+  for (let i = 0; i < routeCountries.length - 1; i++) {
+    const from = routeCountries[i]
+    const to = routeCountries[i + 1]
+    const distanceKm = haversineKm(from.lat, from.lng, to.lat, to.lng)
+    const fromOffset = getUtcOffsetMinutes(from.tz)
+    const toOffset = getUtcOffsetMinutes(to.tz)
+    const timeDiffMin = toOffset - fromOffset
+    // Exchange rate: from.currency → to.currency
+    let rate: number | null = null
+    if (from.currency !== to.currency && exchangeRates[to.currency]) {
+      rate = exchangeRates[to.currency]
+    }
+    hops.push({ from, to, distanceKm, timeDiffMin, rate })
+  }
 
   // ─── Overlap helpers ────────────────────────────────────────────────────────
   function langOverlap(langCode: string): number {
@@ -181,7 +305,6 @@ export default function CountryDimensions({
   otherCountries.forEach((c) => {
     if (!allCurrencies.includes(c!.currency)) allCurrencies.push(c!.currency)
   })
-  // Sort: shared first
   allCurrencies.sort((a, b) => {
     const aShared =
       (a === currency ? 1 : 0) + otherCountries.filter((c) => c!.currency === a).length
@@ -194,77 +317,74 @@ export default function CountryDimensions({
     )
   })
 
-  // ─── Combined country overview (when multiple selected) ────────────────────
-  // Build list of all selected countries (this one + others)
-  interface CountryInfo {
-    code: string
-    name: string
-    flag: string
-    capital: string | null
-    timezone: string | null
-    population: number | null
-  }
-  const allSelected: CountryInfo[] = [{ code, name, flag: '', capital, timezone, population }]
-  otherCountries.forEach((c) => {
-    allSelected.push({
-      code: c!.code,
-      name: c!.name,
-      flag: c!.flag,
-      capital: null, // We only have IANA tz from COUNTRY_OPTIONS
-      timezone: c!.tz,
-      population: null,
-    })
-  })
-
-  // Deduplicated capitals & timezones
-  const allCapitals = allSelected.map((c) => c.capital).filter(Boolean) as string[]
-  const uniqueCapitals = Array.from(new Set(allCapitals))
-
-  const allTimezones = allSelected.map((c) => c.timezone).filter(Boolean) as string[]
-  const uniqueTimezones = Array.from(new Set(allTimezones))
-
   return (
     <>
-      {/* ── Combined countries overview (multi-select) ── */}
+      {/* ── Route hops (multi-select) ── */}
       {hasOthers && (
-        <section className="rounded-xl border border-brand-accent/15 bg-brand-surface/50 p-4 sm:p-5">
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted">
-            Comparing {allSelected.length} Countries
+        <section className="space-y-3">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-text-muted">
+            Route · {routeCountries.length} Countries
           </h2>
-          {/* Flags + names row */}
-          <div className="mb-3 flex flex-wrap gap-2 sm:gap-3">
-            {allSelected.map((c) => {
-              const opt = COUNTRY_OPTIONS.find((o) => o.code === c.code)
-              return (
-                <span
-                  key={c.code}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-brand-accent/20 bg-brand-surface px-3 py-1 text-sm text-brand-text sm:px-4"
-                >
-                  <span className="text-base">{opt?.flag ?? ''}</span>
-                  {c.name}
+          {hops.map((hop, i) => (
+            <div
+              key={`${hop.from.code}-${hop.to.code}`}
+              className="rounded-xl border border-brand-accent/15 bg-brand-surface/50 p-3 sm:p-4"
+            >
+              {/* From → To with flags */}
+              <div className="mb-2 flex items-center gap-2 text-sm sm:text-base">
+                <span className="inline-flex items-center gap-1 font-medium text-brand-text">
+                  <span className="text-base">{hop.from.flag}</span>
+                  {hop.from.name}
                 </span>
-              )
-            })}
-          </div>
-          {/* Shared quick facts */}
-          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-brand-text-muted">
-            {uniqueCapitals.length > 0 && (
-              <span>
-                <span className="font-medium text-brand-text">
-                  {uniqueCapitals.length === 1 ? 'Capital' : 'Capitals'}:
-                </span>{' '}
-                {uniqueCapitals.join(', ')}
-              </span>
-            )}
-            {uniqueTimezones.length > 0 && (
-              <span>
-                <span className="font-medium text-brand-text">
-                  {uniqueTimezones.length === 1 ? 'Timezone' : 'Timezones'}:
-                </span>{' '}
-                {uniqueTimezones.map(formatTz).join(', ')}
-              </span>
-            )}
-          </div>
+                <span className="text-brand-accent">→</span>
+                <span className="inline-flex items-center gap-1 font-medium text-brand-text">
+                  <span className="text-base">{hop.to.flag}</span>
+                  {hop.to.name}
+                </span>
+              </div>
+              {/* Stats row */}
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-brand-text-muted">
+                <span title="Haversine distance">
+                  <span className="font-medium text-brand-text">{fmtDistance(hop.distanceKm)}</span>
+                </span>
+                <span title="Estimated flight time">
+                  <span className="font-medium text-brand-text">
+                    {fmtFlightTime(hop.distanceKm)}
+                  </span>{' '}
+                  flight
+                </span>
+                {hop.timeDiffMin !== 0 && (
+                  <span title="Time difference">
+                    <span className="font-medium text-brand-text">
+                      {fmtTimeDiff(hop.timeDiffMin)}
+                    </span>{' '}
+                    time
+                  </span>
+                )}
+                {hop.timeDiffMin === 0 && (
+                  <span className="text-brand-text-muted">same timezone</span>
+                )}
+                {hop.from.currency !== hop.to.currency && hop.rate && (
+                  <span title="Exchange rate">
+                    1 {hop.from.currency} ={' '}
+                    <span className="font-medium text-brand-accent">
+                      {hop.rate < 0.01
+                        ? hop.rate.toFixed(5)
+                        : hop.rate < 1
+                          ? hop.rate.toFixed(4)
+                          : hop.rate < 100
+                            ? hop.rate.toFixed(2)
+                            : Math.round(hop.rate).toLocaleString()}{' '}
+                      {hop.to.currency}
+                    </span>
+                  </span>
+                )}
+                {hop.from.currency === hop.to.currency && (
+                  <span className="text-brand-text-muted">same currency ({hop.from.currency})</span>
+                )}
+              </div>
+            </div>
+          ))}
         </section>
       )}
 
@@ -365,6 +485,7 @@ export default function CountryDimensions({
             const totalCountries = (isMine ? 1 : 0) + overlap
             const isShared = hasOthers && totalCountries > 1
             const reach = COUNTRY_OPTIONS.filter((c) => c.currency === curr).length
+            const rate = curr !== currency ? exchangeRates[curr] : null
             return (
               <span
                 key={curr}
@@ -374,13 +495,23 @@ export default function CountryDimensions({
                     : 'border-amber-400/25 bg-amber-500/10 text-amber-300'
                 }`}
               >
-                {formatCurrency(curr)}
+                {fmtCurrency(curr)}
+                {rate && (
+                  <span className="text-[10px] text-amber-400/80 sm:text-xs">
+                    1:
+                    {rate < 1
+                      ? rate.toFixed(4)
+                      : rate < 100
+                        ? rate.toFixed(2)
+                        : Math.round(rate).toLocaleString()}
+                  </span>
+                )}
                 {isShared && (
                   <span className="rounded-full bg-amber-400/30 px-1.5 text-[10px] font-bold text-amber-200 sm:text-xs">
                     ×{totalCountries}
                   </span>
                 )}
-                {!isShared && reach > 1 && (
+                {!isShared && !rate && reach > 1 && (
                   <span className="rounded-full bg-amber-400/20 px-1.5 text-[10px] text-amber-400/70 sm:text-xs">
                     {reach}
                   </span>
