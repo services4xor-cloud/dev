@@ -1,8 +1,21 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
+import { Suspense } from 'react'
 
-export default function LoginPage() {
+const ERROR_MESSAGES: Record<string, string> = {
+  Callback: 'Google login is not configured yet. Please try again later.',
+  OAuthSignin: 'Could not start Google sign-in. Please try again.',
+  OAuthCallback: 'Google sign-in failed. Please try again.',
+  Default: 'Something went wrong. Please try again.',
+}
+
+function LoginContent() {
+  const searchParams = useSearchParams()
+  const error = searchParams.get('error')
+  const errorMessage = error ? (ERROR_MESSAGES[error] ?? ERROR_MESSAGES.Default) : null
+
   return (
     <div className="flex min-h-screen flex-col bg-brand-bg">
       {/* Header */}
@@ -20,6 +33,13 @@ export default function LoginPage() {
 
       <div className="flex flex-1 items-center justify-center px-4">
         <div className="w-full max-w-sm space-y-8 text-center">
+          {/* Error banner */}
+          {errorMessage && (
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+              {errorMessage}
+            </div>
+          )}
+
           {/* Branding */}
           <div>
             <h2 className="text-3xl font-bold text-brand-accent">Welcome</h2>
@@ -54,11 +74,55 @@ export default function LoginPage() {
             Sign in with Google
           </button>
 
+          {/* Coming soon — greyed out */}
+          <button
+            disabled
+            className="flex w-full items-center justify-center gap-3 rounded-md border border-[#747775]/40 bg-white/60 px-4 py-3 text-sm font-medium text-[#1f1f1f]/40 cursor-not-allowed"
+          >
+            <svg className="h-5 w-5 opacity-40" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+            </svg>
+            Sign in with Apple
+            <span className="ml-auto rounded bg-brand-accent/10 px-1.5 py-0.5 text-[10px] text-brand-accent">
+              soon
+            </span>
+          </button>
+
+          <button
+            disabled
+            className="flex w-full items-center justify-center gap-3 rounded-md border border-[#747775]/40 bg-white/60 px-4 py-3 text-sm font-medium text-[#1f1f1f]/40 cursor-not-allowed"
+          >
+            <svg
+              className="h-5 w-5 opacity-40"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </svg>
+            Magic Link
+            <span className="ml-auto rounded bg-brand-accent/10 px-1.5 py-0.5 text-[10px] text-brand-accent">
+              soon
+            </span>
+          </button>
+
           <p className="text-xs text-brand-text-muted/60">
             No password needed. Your identity, your data.
           </p>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   )
 }

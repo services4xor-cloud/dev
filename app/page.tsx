@@ -440,7 +440,7 @@ export default function HomePage() {
               href="/login"
               className="rounded-full border border-brand-accent/30 bg-brand-accent/10 px-3 py-1 text-sm text-brand-accent transition hover:bg-brand-accent/20"
             >
-              Sign in
+              Sign Up
             </Link>
           )}
         </nav>
@@ -510,7 +510,7 @@ export default function HomePage() {
               onClick={() => setMenuOpen(false)}
               className="py-2 text-sm text-brand-accent transition"
             >
-              Sign in
+              Sign Up
             </Link>
           )}
         </nav>

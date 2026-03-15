@@ -150,6 +150,11 @@ interface HopInfo {
   fromCurrency: string
   toCurrency: string
   rate: number | null
+  /** Rate from the route's starting currency to toCurrency (shown when toCurrency is new) */
+  startCurrency: string
+  startRate: number | null
+  /** Whether toCurrency first appears in this hop */
+  isNewCurrency: boolean
 }
 
 export default function DimensionOverlapBar({
@@ -192,14 +197,19 @@ export default function DimensionOverlapBar({
       return
     }
 
-    // Build hops sequentially
+    // Build hops sequentially, tracking which currencies we've seen
     const newHops: HopInfo[] = []
+    const seenCurrencies = new Set<string>([countries[0]!.currency])
+    const startCurrency = countries[0]!.currency
+
     for (let i = 0; i < countries.length - 1; i++) {
       const from = countries[i]!
       const to = countries[i + 1]!
       const distanceKm = haversineKm(from.lat, from.lng, to.lat, to.lng)
       const fromOffset = getUtcOffsetMinutes(from.tz)
       const toOffset = getUtcOffsetMinutes(to.tz)
+      const isNewCurrency = !seenCurrencies.has(to.currency)
+      seenCurrencies.add(to.currency)
       newHops.push({
         fromCode: from.code,
         fromName: from.name,
@@ -212,19 +222,31 @@ export default function DimensionOverlapBar({
         fromCurrency: from.currency,
         toCurrency: to.currency,
         rate: null,
+        startCurrency,
+        startRate: null,
+        isNewCurrency,
       })
     }
 
-    // Fetch exchange rates for the first country's currency
-    const baseCurrency = countries[0]!.currency
-    fetchRates(baseCurrency).then((rates) => {
+    // Fetch exchange rates for the first country's currency (= route start)
+    fetchRates(startCurrency).then((rates) => {
       const updated = newHops.map((hop) => {
-        if (hop.fromCurrency === hop.toCurrency) return hop
-        // For non-first hops, calculate cross-rate via base currency
-        const fromRate = rates[hop.fromCurrency] ?? 1
-        const toRate = rates[hop.toCurrency]
-        const rate = toRate && fromRate ? toRate / fromRate : null
-        return { ...hop, rate }
+        let rate = hop.rate
+        let startRate = hop.startRate
+
+        if (hop.fromCurrency !== hop.toCurrency) {
+          // Cross-rate: hop.from → hop.to via the base (start) currency
+          const fromRate = rates[hop.fromCurrency] ?? 1
+          const toRate = rates[hop.toCurrency]
+          rate = toRate && fromRate ? toRate / fromRate : null
+        }
+
+        // Start→destination rate for newly appearing currencies
+        if (hop.isNewCurrency && hop.toCurrency !== hop.startCurrency) {
+          startRate = rates[hop.toCurrency] ?? null
+        }
+
+        return { ...hop, rate, startRate }
       })
       setHops(updated)
     })
@@ -398,21 +420,42 @@ export default function DimensionOverlapBar({
                   <span>same tz</span>
                 )}
                 {hop.fromCurrency !== hop.toCurrency && hop.rate ? (
-                  <span>
-                    1 {hop.fromCurrency} ={' '}
-                    <span className="font-medium text-brand-accent">
-                      {hop.rate < 0.01
-                        ? hop.rate.toFixed(5)
-                        : hop.rate < 1
-                          ? hop.rate.toFixed(4)
-                          : hop.rate < 100
-                            ? hop.rate.toFixed(2)
-                            : Math.round(hop.rate).toLocaleString()}{' '}
-                      {hop.toCurrency}
+                  <>
+                    <span>
+                      1 {hop.fromCurrency} ={' '}
+                      <span className="font-medium text-brand-accent">
+                        {hop.rate < 0.01
+                          ? hop.rate.toFixed(5)
+                          : hop.rate < 1
+                            ? hop.rate.toFixed(4)
+                            : hop.rate < 100
+                              ? hop.rate.toFixed(2)
+                              : Math.round(hop.rate).toLocaleString()}{' '}
+                        {hop.toCurrency}
+                      </span>
                     </span>
-                  </span>
+                    {/* Show start→destination rate if this is a new currency and not the first hop */}
+                    {hop.isNewCurrency &&
+                      hop.startCurrency !== hop.fromCurrency &&
+                      hop.startRate && (
+                        <span className="text-brand-text-muted/60">
+                          (1 {hop.startCurrency} ={' '}
+                          <span className="font-medium text-brand-accent/70">
+                            {hop.startRate < 0.01
+                              ? hop.startRate.toFixed(5)
+                              : hop.startRate < 1
+                                ? hop.startRate.toFixed(4)
+                                : hop.startRate < 100
+                                  ? hop.startRate.toFixed(2)
+                                  : Math.round(hop.startRate).toLocaleString()}{' '}
+                            {hop.toCurrency}
+                          </span>
+                          )
+                        </span>
+                      )}
+                  </>
                 ) : hop.fromCurrency === hop.toCurrency ? (
-                  <span>same currency</span>
+                  <span>same currency ({hop.fromCurrency})</span>
                 ) : null}
               </div>
             ))}

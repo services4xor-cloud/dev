@@ -32,7 +32,7 @@ All credentials exist locally in `.env`. They need to be added to Vercel for pro
 ```
 DATABASE_URL          = (your Neon connection string)
 NEXTAUTH_SECRET       = (your secret)
-NEXTAUTH_URL          = https://dev-git-main-tobias-projects-81752e2c.vercel.app
+NEXTAUTH_URL          = https://dev-plum-rho.vercel.app
 GOOGLE_CLIENT_ID      = (your Google client ID)
 GOOGLE_CLIENT_SECRET  = (your Google client secret)
 RESEND_API_KEY        = (your Resend key)
@@ -48,7 +48,7 @@ NEXT_PUBLIC_COUNTRY_CODE = KE
 1. Go to https://console.cloud.google.com → APIs & Services → Credentials → your OAuth Client
 2. Under "Authorized redirect URIs", add:
    ```
-   https://dev-git-main-tobias-projects-81752e2c.vercel.app/api/auth/callback/google
+   https://dev-plum-rho.vercel.app/api/auth/callback/google
    ```
    (`http://localhost:3000/api/auth/callback/google` should already be there)
 3. Save.

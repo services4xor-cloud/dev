@@ -102,28 +102,25 @@ async function fetchRates(base: string): Promise<Record<string, number>> {
 }
 
 // ─── Route hop info ─────────────────────────────────────────────────────────
+interface HopCountry {
+  code: string
+  name: string
+  flag: string
+  currency: string
+  tz: string
+  lat: number
+  lng: number
+}
+
 interface HopInfo {
-  from: {
-    code: string
-    name: string
-    flag: string
-    currency: string
-    tz: string
-    lat: number
-    lng: number
-  }
-  to: {
-    code: string
-    name: string
-    flag: string
-    currency: string
-    tz: string
-    lat: number
-    lng: number
-  }
+  from: HopCountry
+  to: HopCountry
   distanceKm: number
   timeDiffMin: number
   rate: number | null // exchange rate from→to currency
+  startCurrency: string // the route's starting currency
+  startRate: number | null // rate from start currency to to.currency
+  isNewCurrency: boolean // whether to.currency first appears in this hop
 }
 
 export default function CountryDimensions({
@@ -215,6 +212,9 @@ export default function CountryDimensions({
   }[]
 
   const hops: HopInfo[] = []
+  const seenCurrencies = new Set<string>(routeCountries[0] ? [routeCountries[0].currency] : [])
+  const startCurrency = routeCountries[0]?.currency ?? ''
+
   for (let i = 0; i < routeCountries.length - 1; i++) {
     const from = routeCountries[i]
     const to = routeCountries[i + 1]
@@ -222,6 +222,8 @@ export default function CountryDimensions({
     const fromOffset = getUtcOffsetMinutes(from.tz)
     const toOffset = getUtcOffsetMinutes(to.tz)
     const timeDiffMin = toOffset - fromOffset
+    const isNewCurrency = !seenCurrencies.has(to.currency)
+    seenCurrencies.add(to.currency)
     // Exchange rate: from.currency → to.currency (cross-rate via base)
     let rate: number | null = null
     if (from.currency !== to.currency) {
@@ -229,7 +231,12 @@ export default function CountryDimensions({
       const toRate = exchangeRates[to.currency]
       if (toRate && fromRate) rate = toRate / fromRate
     }
-    hops.push({ from, to, distanceKm, timeDiffMin, rate })
+    // Start→destination rate for newly appearing currencies
+    let startRate: number | null = null
+    if (isNewCurrency && to.currency !== startCurrency) {
+      startRate = exchangeRates[to.currency] ?? null
+    }
+    hops.push({ from, to, distanceKm, timeDiffMin, rate, startCurrency, startRate, isNewCurrency })
   }
 
   // ─── Overlap helpers ────────────────────────────────────────────────────────
@@ -318,19 +325,40 @@ export default function CountryDimensions({
                   <span className="text-brand-text-muted">same timezone</span>
                 )}
                 {hop.from.currency !== hop.to.currency && hop.rate && (
-                  <span title="Exchange rate">
-                    1 {hop.from.currency} ={' '}
-                    <span className="font-medium text-brand-accent">
-                      {hop.rate < 0.01
-                        ? hop.rate.toFixed(5)
-                        : hop.rate < 1
-                          ? hop.rate.toFixed(4)
-                          : hop.rate < 100
-                            ? hop.rate.toFixed(2)
-                            : Math.round(hop.rate).toLocaleString()}{' '}
-                      {hop.to.currency}
+                  <>
+                    <span title="Exchange rate">
+                      1 {hop.from.currency} ={' '}
+                      <span className="font-medium text-brand-accent">
+                        {hop.rate < 0.01
+                          ? hop.rate.toFixed(5)
+                          : hop.rate < 1
+                            ? hop.rate.toFixed(4)
+                            : hop.rate < 100
+                              ? hop.rate.toFixed(2)
+                              : Math.round(hop.rate).toLocaleString()}{' '}
+                        {hop.to.currency}
+                      </span>
                     </span>
-                  </span>
+                    {/* Cumulative: start currency → new destination currency */}
+                    {hop.isNewCurrency &&
+                      hop.startCurrency !== hop.from.currency &&
+                      hop.startRate && (
+                        <span className="text-brand-text-muted/60" title="From route start">
+                          (1 {hop.startCurrency} ={' '}
+                          <span className="font-medium text-brand-accent/70">
+                            {hop.startRate < 0.01
+                              ? hop.startRate.toFixed(5)
+                              : hop.startRate < 1
+                                ? hop.startRate.toFixed(4)
+                                : hop.startRate < 100
+                                  ? hop.startRate.toFixed(2)
+                                  : Math.round(hop.startRate).toLocaleString()}{' '}
+                            {hop.to.currency}
+                          </span>
+                          )
+                        </span>
+                      )}
+                  </>
                 )}
                 {hop.from.currency === hop.to.currency && (
                   <span className="text-brand-text-muted">same currency ({hop.from.currency})</span>
