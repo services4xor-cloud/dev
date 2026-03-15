@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import PageShell from '@/components/PageShell'
+import CountryDimensions from '@/components/CountryDimensions'
 import { getCountryData } from '@/lib/country-api'
 import { COUNTRY_OPTIONS, type LanguageCode, type FaithCode } from '@/lib/country-selector'
 
@@ -56,16 +57,6 @@ export default async function CountryHubPage({ params }: PageProps) {
     const bReach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(b)).length
     return bReach - aReach
   })
-
-  const faithLabels: Record<string, string> = {
-    christianity: 'Christianity',
-    islam: 'Islam',
-    hinduism: 'Hinduism',
-    buddhism: 'Buddhism',
-    judaism: 'Judaism',
-    traditional: 'Traditional',
-    secular: 'Secular',
-  }
 
   // Format population for display
   const popDisplay = population
@@ -157,95 +148,13 @@ export default async function CountryHubPage({ params }: PageProps) {
       </section>
 
       <div className="mx-auto max-w-4xl space-y-8 px-4 py-8 sm:space-y-10 sm:px-6 sm:py-12">
-        {/* Languages */}
-        {languages.length > 0 && (
-          <section>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
-              Languages
-            </h2>
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              {languages.map((lang) => {
-                const reach = COUNTRY_OPTIONS.filter((c) =>
-                  c.languages.includes(lang.code as LanguageCode)
-                ).length
-                return (
-                  <span
-                    key={lang.code}
-                    className="flex items-center gap-1.5 rounded-full border border-teal-400/25 bg-teal-500/10 px-3 py-1.5 text-sm font-medium text-teal-300 sm:px-5 sm:py-2 sm:text-base"
-                  >
-                    {lang.name}
-                    {lang.nativeName && lang.nativeName !== lang.name && (
-                      <span className="text-xs text-brand-text-muted sm:text-sm">
-                        ({lang.nativeName})
-                      </span>
-                    )}
-                    {reach > 1 && (
-                      <span className="rounded-full bg-teal-400/20 px-1.5 text-[10px] text-teal-400/70 sm:text-xs">
-                        {reach}
-                      </span>
-                    )}
-                  </span>
-                )
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* Faiths */}
-        {topFaiths.length > 0 && (
-          <section>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
-              Faiths
-            </h2>
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              {topFaiths.map((faith) => {
-                const reach = COUNTRY_OPTIONS.filter((c) =>
-                  c.topFaiths.includes(faith as FaithCode)
-                ).length
-                return (
-                  <span
-                    key={faith}
-                    className="flex items-center gap-1.5 rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-1.5 text-sm font-medium text-violet-300 sm:px-5 sm:py-2 sm:text-base"
-                  >
-                    {faithLabels[faith] ?? faith}
-                    {reach > 1 && (
-                      <span className="rounded-full bg-violet-400/20 px-1.5 text-[10px] text-violet-400/70 sm:text-xs">
-                        {reach}
-                      </span>
-                    )}
-                  </span>
-                )
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* Sectors */}
-        {topSectors.length > 0 && (
-          <section>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
-              Top Sectors
-            </h2>
-            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-              {topSectors.map((sector) => {
-                const reach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(sector)).length
-                return (
-                  <span
-                    key={sector}
-                    className="flex items-center justify-center gap-1.5 rounded-xl border border-lime-400/15 bg-lime-500/10 px-3 py-2 text-center text-xs text-lime-300 sm:px-4 sm:text-sm"
-                  >
-                    {sector}
-                    {reach > 1 && (
-                      <span className="rounded-full bg-lime-400/20 px-1.5 text-[10px] text-lime-400/70">
-                        {reach}
-                      </span>
-                    )}
-                  </span>
-                )
-              })}
-            </div>
-          </section>
-        )}
+        {/* Languages → Sectors → Faiths (overlap-aware client component) */}
+        <CountryDimensions
+          code={upperCode}
+          languages={languages}
+          topSectors={topSectors}
+          topFaiths={topFaiths}
+        />
 
         {/* Action Cards — harmonized with main nav */}
         <section>

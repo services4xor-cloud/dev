@@ -204,17 +204,37 @@ function mapRestCountry(rc: RestCountry): CountryData {
   // Get static Be[X] data if available
   const staticData = COUNTRY_OPTIONS.find((c) => c.code === rc.cca2)
 
-  // Map languages: REST Countries uses ISO 639-2 (3-letter), we use 639-1 (2-letter)
+  // Map languages: merge REST Countries (official) + static data (ethnic/tribal)
+  const langSet = new Set<string>()
   const languages: CountryData['languages'] = []
+
+  // Start with REST Countries API languages (ISO 639-2 → 639-1)
   if (rc.languages) {
     for (const [iso3, langName] of Object.entries(rc.languages)) {
       const iso1 = ISO639_2_TO_1[iso3]
       const registryLang = iso1 ? LANGUAGE_REGISTRY[iso1 as LanguageCode] : null
-      languages.push({
-        code: iso1 ?? iso3,
-        name: registryLang?.name ?? langName,
-        nativeName: registryLang?.nativeName,
-      })
+      const code = iso1 ?? iso3
+      if (!langSet.has(code)) {
+        langSet.add(code)
+        languages.push({
+          code,
+          name: registryLang?.name ?? langName,
+          nativeName: registryLang?.nativeName,
+        })
+      }
+    }
+  }
+
+  // Merge ethnic/tribal languages from static COUNTRY_OPTIONS
+  if (staticData) {
+    for (const lc of staticData.languages) {
+      if (!langSet.has(lc)) {
+        langSet.add(lc)
+        const lang = LANGUAGE_REGISTRY[lc]
+        if (lang) {
+          languages.push({ code: lc, name: lang.name, nativeName: lang.nativeName })
+        }
+      }
     }
   }
 
