@@ -59,8 +59,8 @@ type DimensionKey = 'language' | 'faith' | 'sector' | 'currency' | 'timezone'
 const DIMENSIONS: { key: DimensionKey; label: string; icon: string }[] = [
   { key: 'language', label: 'Language', icon: '🗣️' },
   { key: 'sector', label: 'Sector', icon: '💼' },
-  { key: 'faith', label: 'Faith', icon: '☪️' },
   { key: 'currency', label: 'Currency', icon: '💱' },
+  { key: 'faith', label: 'Faith', icon: '☪️' },
 ]
 
 /** Country flag emoji from ISO code */
@@ -229,6 +229,17 @@ export default function DimensionFilters({
       const src = f.source ?? 'custom'
       const arr = rows.get(src) ?? []
       arr.push(f)
+      rows.set(src, arr)
+    }
+
+    // Sort chips within each row by dimension display order
+    const dimOrder = DIMENSIONS.map((d) => d.key)
+    for (const [src, arr] of rows) {
+      arr.sort(
+        (a, b) =>
+          dimOrder.indexOf(a.dimension as DimensionKey) -
+          dimOrder.indexOf(b.dimension as DimensionKey)
+      )
       rows.set(src, arr)
     }
 

@@ -31,7 +31,7 @@ function countryFlag(code: string): string {
 }
 
 /** Dimension priority for determining dominant color */
-const DIM_PRIORITY = ['language', 'sector', 'faith', 'currency']
+const DIM_PRIORITY = ['language', 'sector', 'currency', 'faith']
 
 /** Ranked dimension slot: dim name + top value for color derivation */
 interface DimSlot {

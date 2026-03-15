@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   const country = COUNTRY_OPTIONS.find((c) => c.code === code.toUpperCase())
   if (!country) return NextResponse.json({ error: 'Country not found' }, { status: 404 })
 
-  // Build filters in display order: Language → Sector → Faith → Currency
+  // Build filters in display order: Language → Sector → Currency → Faith
   type Filter = {
     dimension: string
     nodeCode: string
@@ -91,7 +91,17 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // 3. Faith — pick the faith with MOST country reach
+  // 3. Currency
+  const currencyMatches = COUNTRY_OPTIONS.filter((c) => c.currency === country.currency)
+  filters.push({
+    dimension: 'currency',
+    nodeCode: country.currency.toLowerCase(),
+    label: country.currency,
+    icon: '💱',
+    countryCodes: currencyMatches.map((c) => c.code),
+  })
+
+  // 4. Faith — pick the faith with MOST country reach
   if (country.topFaiths.length > 0) {
     let bestFaith = country.topFaiths[0]
     let bestCount = 0
@@ -111,16 +121,6 @@ export async function POST(req: NextRequest) {
       countryCodes: matching.map((c) => c.code),
     })
   }
-
-  // 4. Currency
-  const currencyMatches = COUNTRY_OPTIONS.filter((c) => c.currency === country.currency)
-  filters.push({
-    dimension: 'currency',
-    nodeCode: country.currency.toLowerCase(),
-    label: country.currency,
-    icon: '💱',
-    countryCodes: currencyMatches.map((c) => c.code),
-  })
 
   return NextResponse.json({ country: country.name, filters })
 }
