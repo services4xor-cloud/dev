@@ -92,15 +92,63 @@ const DIMENSION_COLORS: Record<string, string> = {
   timezone: 'bg-blue-500/20 text-blue-300 border-blue-400/30',
 }
 
-/** Overlap multiplier glow — golden gamification levels */
-function overlapStyle(multiplier: number): string {
-  if (multiplier >= 4)
-    return 'border-yellow-400/70 bg-gradient-to-r from-yellow-400/30 to-amber-400/30 text-yellow-200 shadow-[0_0_16px_rgba(253,224,71,0.4)] font-semibold'
-  if (multiplier >= 3)
-    return 'border-yellow-300/50 bg-gradient-to-r from-yellow-300/20 to-amber-300/20 text-yellow-300 shadow-[0_0_10px_rgba(253,224,71,0.25)]'
-  if (multiplier >= 2)
-    return 'border-brand-accent/50 bg-brand-accent/25 text-brand-accent shadow-[0_0_6px_rgba(201,162,39,0.2)]'
-  return 'border-brand-accent/30 bg-brand-accent/15 text-brand-accent'
+/** Overlap multiplier glow — dimension-colored with intensity based on multiplier */
+const DIMENSION_OVERLAP_COLORS: Record<
+  string,
+  { base: string; glow2: string; glow3: string; glow4: string }
+> = {
+  language: {
+    base: 'bg-teal-500/20 text-teal-300 border-teal-400/30',
+    glow2: 'bg-teal-500/30 text-teal-200 border-teal-400/50 shadow-[0_0_6px_rgba(45,212,191,0.2)]',
+    glow3: 'bg-teal-500/40 text-teal-200 border-teal-300/60 shadow-[0_0_10px_rgba(45,212,191,0.3)]',
+    glow4:
+      'bg-teal-500/50 text-teal-100 border-teal-300/70 shadow-[0_0_16px_rgba(45,212,191,0.4)] font-semibold',
+  },
+  faith: {
+    base: 'bg-violet-500/20 text-violet-300 border-violet-400/30',
+    glow2:
+      'bg-violet-500/30 text-violet-200 border-violet-400/50 shadow-[0_0_6px_rgba(139,92,246,0.2)]',
+    glow3:
+      'bg-violet-500/40 text-violet-200 border-violet-300/60 shadow-[0_0_10px_rgba(139,92,246,0.3)]',
+    glow4:
+      'bg-violet-500/50 text-violet-100 border-violet-300/70 shadow-[0_0_16px_rgba(139,92,246,0.4)] font-semibold',
+  },
+  sector: {
+    base: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30',
+    glow2:
+      'bg-emerald-500/30 text-emerald-200 border-emerald-400/50 shadow-[0_0_6px_rgba(16,185,129,0.2)]',
+    glow3:
+      'bg-emerald-500/40 text-emerald-200 border-emerald-300/60 shadow-[0_0_10px_rgba(16,185,129,0.3)]',
+    glow4:
+      'bg-emerald-500/50 text-emerald-100 border-emerald-300/70 shadow-[0_0_16px_rgba(16,185,129,0.4)] font-semibold',
+  },
+  location: {
+    base: 'bg-amber-500/20 text-amber-300 border-amber-400/30',
+    glow2:
+      'bg-amber-500/30 text-amber-200 border-amber-400/50 shadow-[0_0_6px_rgba(245,158,11,0.2)]',
+    glow3:
+      'bg-amber-500/40 text-amber-200 border-amber-300/60 shadow-[0_0_10px_rgba(245,158,11,0.3)]',
+    glow4:
+      'bg-amber-500/50 text-amber-100 border-amber-300/70 shadow-[0_0_16px_rgba(245,158,11,0.4)] font-semibold',
+  },
+  currency: {
+    base: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30',
+    glow2:
+      'bg-yellow-500/30 text-yellow-200 border-yellow-400/50 shadow-[0_0_6px_rgba(234,179,8,0.2)]',
+    glow3:
+      'bg-yellow-500/40 text-yellow-200 border-yellow-300/60 shadow-[0_0_10px_rgba(234,179,8,0.3)]',
+    glow4:
+      'bg-yellow-500/50 text-yellow-100 border-yellow-300/70 shadow-[0_0_16px_rgba(234,179,8,0.4)] font-semibold',
+  },
+}
+
+function overlapStyle(dimension: string, multiplier: number): string {
+  const colors = DIMENSION_OVERLAP_COLORS[dimension]
+  if (!colors) return 'border-brand-accent/30 bg-brand-accent/15 text-brand-accent'
+  if (multiplier >= 4) return colors.glow4
+  if (multiplier >= 3) return colors.glow3
+  if (multiplier >= 2) return colors.glow2
+  return colors.base
 }
 
 /** Uniform bright glow for all enriched country rows — all selections equal */
@@ -274,7 +322,7 @@ export default function DimensionFilters({
                   key={`${m.dimension}:${m.nodeCode}`}
                   onMouseEnter={() => onPreview?.(m.countryCodes)}
                   onMouseLeave={() => onPreview?.([])}
-                  className={`rounded-full border px-2.5 py-1 text-xs font-medium ${overlapStyle(m.multiplier)}`}
+                  className={`rounded-full border px-2.5 py-1 text-xs font-medium ${overlapStyle(m.dimension, m.multiplier)}`}
                 >
                   {m.icon} {m.label}
                   <span className="ml-1 rounded-full bg-white/10 px-1.5 text-[10px] font-bold">
