@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import type { ActiveFilter } from '@/components/DimensionFilters'
-import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
 
 /**
  * DimensionOverlapBar — shared context bar for Agent + Opportunities pages.
@@ -33,7 +33,7 @@ function countryFlag(code: string): string {
   }
 }
 
-const DIMENSION_ORDER = ['language', 'sector', 'faith'] as const
+const DIMENSION_ORDER = ['language', 'sector', 'currency', 'faith'] as const
 const DIMENSION_LABELS: Record<string, { label: string; icon: string }> = {
   language: { label: 'Language', icon: '\u{1F5E3}\uFE0F' },
   sector: { label: 'Sector', icon: '\u{1F4BC}' },
@@ -167,15 +167,81 @@ export default function DimensionOverlapBar({
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null)
   const [hops, setHops] = useState<HopInfo[]>([])
 
-  // Load from sessionStorage on mount
+  // Load from sessionStorage on mount — amplify to ALL dimensions per country
   useEffect(() => {
     try {
-      const rawFilters = sessionStorage.getItem('bex-map-filters')
-      if (rawFilters) setFilters(JSON.parse(rawFilters) as ActiveFilter[])
       const rawEnriched = sessionStorage.getItem('bex-map-enriched')
-      if (rawEnriched) setEnrichedCountries(JSON.parse(rawEnriched) as string[])
+      const enriched = rawEnriched ? (JSON.parse(rawEnriched) as string[]) : []
+      if (rawEnriched) setEnrichedCountries(enriched)
+
       const rawNames = sessionStorage.getItem('bex-map-enriched-names')
       if (rawNames) setEnrichedNames(JSON.parse(rawNames) as Record<string, string>)
+
+      // Amplify: expand each enriched country to ALL its dimensions
+      // Map only stores 1 per type — agent/opportunities need the full picture
+      const rawFilters = sessionStorage.getItem('bex-map-filters')
+      const mapFilters = rawFilters ? (JSON.parse(rawFilters) as ActiveFilter[]) : []
+      const customFilters = mapFilters.filter((f) => f.source === 'custom' || !f.source)
+
+      const amplified: ActiveFilter[] = [...customFilters]
+      for (const countryCode of enriched) {
+        const country = COUNTRY_OPTIONS.find((c) => c.code === countryCode)
+        if (!country) continue
+
+        // ALL languages
+        for (const langCode of country.languages) {
+          const langInfo = LANGUAGE_REGISTRY[langCode]
+          if (!langInfo) continue
+          const matching = COUNTRY_OPTIONS.filter((c) => c.languages.includes(langCode))
+          amplified.push({
+            dimension: 'language',
+            nodeCode: langCode,
+            label: langInfo.name,
+            icon: '\u{1F5E3}\uFE0F',
+            countryCodes: matching.map((c) => c.code),
+            source: countryCode,
+          })
+        }
+
+        // ALL sectors
+        for (const sector of country.topSectors) {
+          const matching = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(sector))
+          amplified.push({
+            dimension: 'sector',
+            nodeCode: sector.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            label: sector,
+            icon: '\u{1F4BC}',
+            countryCodes: matching.map((c) => c.code),
+            source: countryCode,
+          })
+        }
+
+        // Currency
+        const currencyMatches = COUNTRY_OPTIONS.filter((c) => c.currency === country.currency)
+        amplified.push({
+          dimension: 'currency',
+          nodeCode: country.currency.toLowerCase(),
+          label: country.currency,
+          icon: '\u{1F4B1}',
+          countryCodes: currencyMatches.map((c) => c.code),
+          source: countryCode,
+        })
+
+        // ALL faiths
+        for (const faith of country.topFaiths) {
+          const matching = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(faith))
+          amplified.push({
+            dimension: 'faith',
+            nodeCode: faith,
+            label: faith.charAt(0).toUpperCase() + faith.slice(1),
+            icon: '\u262A\uFE0F',
+            countryCodes: matching.map((c) => c.code),
+            source: countryCode,
+          })
+        }
+      }
+
+      setFilters(amplified)
     } catch {
       // ignore
     }
