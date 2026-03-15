@@ -46,17 +46,9 @@ export async function POST(req: NextRequest) {
   }
   const filters: Filter[] = []
 
-  // 1. Language — pick the language with MOST country reach
+  // 1. Language — use the PRIMARY language (first in list = official/dominant)
   if (country.languages.length > 0) {
-    let bestLang = country.languages[0]
-    let bestCount = 0
-    for (const lang of country.languages) {
-      const count = COUNTRY_OPTIONS.filter((c) => c.languages.includes(lang)).length
-      if (count > bestCount) {
-        bestCount = count
-        bestLang = lang
-      }
-    }
+    const bestLang = country.languages[0]
     const langInfo = LANGUAGE_REGISTRY[bestLang]
     const matching = COUNTRY_OPTIONS.filter((c) => c.languages.includes(bestLang))
     if (langInfo) {
