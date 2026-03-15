@@ -232,11 +232,11 @@ export default async function CountryHubPage({ params }: PageProps) {
                 return (
                   <span
                     key={sector}
-                    className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-400/15 bg-emerald-500/10 px-3 py-2 text-center text-xs text-emerald-300 sm:px-4 sm:text-sm"
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-lime-400/15 bg-lime-500/10 px-3 py-2 text-center text-xs text-lime-300 sm:px-4 sm:text-sm"
                   >
                     {sector}
                     {reach > 1 && (
-                      <span className="rounded-full bg-emerald-400/20 px-1.5 text-[10px] text-emerald-400/70">
+                      <span className="rounded-full bg-lime-400/20 px-1.5 text-[10px] text-lime-400/70">
                         {reach}
                       </span>
                     )}

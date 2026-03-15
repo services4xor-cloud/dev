@@ -86,9 +86,9 @@ function countryFlag(code: string): string {
 const DIMENSION_COLORS: Record<string, string> = {
   language: 'bg-teal-500/20 text-teal-300 border-teal-400/30',
   faith: 'bg-violet-500/20 text-violet-300 border-violet-400/30',
-  sector: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30',
+  sector: 'bg-lime-500/20 text-lime-300 border-lime-400/30',
   location: 'bg-amber-500/20 text-amber-300 border-amber-400/30',
-  currency: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30',
+  currency: 'bg-rose-500/20 text-rose-300 border-rose-400/30',
   timezone: 'bg-blue-500/20 text-blue-300 border-blue-400/30',
 }
 
@@ -114,13 +114,11 @@ const DIMENSION_OVERLAP_COLORS: Record<
       'bg-violet-500/50 text-violet-100 border-violet-300/70 shadow-[0_0_16px_rgba(139,92,246,0.4)] font-semibold',
   },
   sector: {
-    base: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30',
-    glow2:
-      'bg-emerald-500/30 text-emerald-200 border-emerald-400/50 shadow-[0_0_6px_rgba(16,185,129,0.2)]',
-    glow3:
-      'bg-emerald-500/40 text-emerald-200 border-emerald-300/60 shadow-[0_0_10px_rgba(16,185,129,0.3)]',
+    base: 'bg-lime-500/20 text-lime-300 border-lime-400/30',
+    glow2: 'bg-lime-500/30 text-lime-200 border-lime-400/50 shadow-[0_0_6px_rgba(132,204,22,0.2)]',
+    glow3: 'bg-lime-500/40 text-lime-200 border-lime-300/60 shadow-[0_0_10px_rgba(132,204,22,0.3)]',
     glow4:
-      'bg-emerald-500/50 text-emerald-100 border-emerald-300/70 shadow-[0_0_16px_rgba(16,185,129,0.4)] font-semibold',
+      'bg-lime-500/50 text-lime-100 border-lime-300/70 shadow-[0_0_16px_rgba(132,204,22,0.4)] font-semibold',
   },
   location: {
     base: 'bg-amber-500/20 text-amber-300 border-amber-400/30',
@@ -132,13 +130,11 @@ const DIMENSION_OVERLAP_COLORS: Record<
       'bg-amber-500/50 text-amber-100 border-amber-300/70 shadow-[0_0_16px_rgba(245,158,11,0.4)] font-semibold',
   },
   currency: {
-    base: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30',
-    glow2:
-      'bg-yellow-500/30 text-yellow-200 border-yellow-400/50 shadow-[0_0_6px_rgba(234,179,8,0.2)]',
-    glow3:
-      'bg-yellow-500/40 text-yellow-200 border-yellow-300/60 shadow-[0_0_10px_rgba(234,179,8,0.3)]',
+    base: 'bg-rose-500/20 text-rose-300 border-rose-400/30',
+    glow2: 'bg-rose-500/30 text-rose-200 border-rose-400/50 shadow-[0_0_6px_rgba(244,63,94,0.2)]',
+    glow3: 'bg-rose-500/40 text-rose-200 border-rose-300/60 shadow-[0_0_10px_rgba(244,63,94,0.3)]',
     glow4:
-      'bg-yellow-500/50 text-yellow-100 border-yellow-300/70 shadow-[0_0_16px_rgba(234,179,8,0.4)] font-semibold',
+      'bg-rose-500/50 text-rose-100 border-rose-300/70 shadow-[0_0_16px_rgba(244,63,94,0.4)] font-semibold',
   },
 }
 

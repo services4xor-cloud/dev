@@ -40,11 +40,11 @@ interface WorldMapProps {
 // Depth (1-5 matching dimensions) controls saturation + lightness.
 // Result: English=teal-A, German=teal-B (same family, distinguishable).
 const DIMENSION_HUE: Record<string, number> = {
-  language: 178, // teal/cyan
-  faith: 272, // purple
-  sector: 152, // green
-  location: 38, // amber/orange
-  currency: 335, // rose/magenta
+  language: 190, // cyan/teal
+  faith: 275, // purple
+  sector: 90, // lime/chartreuse — distinct from teal
+  location: 28, // orange
+  currency: 330, // rose/pink — distinct from orange
 }
 
 /** Simple string hash for consistent value→shade mapping */
