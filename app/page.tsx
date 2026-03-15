@@ -33,16 +33,20 @@ function countryFlag(code: string): string {
 /** Dimension priority for determining dominant color */
 const DIM_PRIORITY = ['language', 'faith', 'sector', 'location', 'currency']
 
-/** Country with intensity score: tracks dominant dimension for map coloring */
+/** Ranked dimension slot: dim name + top value for color derivation */
+interface DimSlot {
+  dim: string
+  value: string
+}
+
+/** Country with intensity score: ranked dimensions for multi-ring border coloring */
 export interface ScoredCountry {
   code: string
   score: number
   matchCount: number
   dimensions: string[] // which dimension types match
-  dominantDim: string // dimension with most hits → fill color
-  dominantValue: string // specific value in dominant dim → shade
-  secondaryDim: string // second-most hits → border color
-  secondaryValue: string // specific value in secondary dim → border shade
+  /** Ranked dimension slots: [0]=fill, [1]=outer border, [2]=mid border, [3]=inner border, [4]=thinnest */
+  ranked: DimSlot[]
   depth: number // unique dimension count 1-5 (determines intensity)
 }
 
@@ -171,18 +175,17 @@ export default function HomePage() {
       }
       ranked.sort((a, b) => b.count - a.count)
 
-      const dominant = ranked[0] ?? { dim: 'language', count: 0, topValue: '' }
-      const secondary = ranked[1] ?? dominant // fallback to dominant if only 1 dim
+      // Build ranked slots — pad to 5 with fallback to first
+      const slots: DimSlot[] = ranked.map((r) => ({ dim: r.dim, value: r.topValue }))
+      const fallback: DimSlot = slots[0] ?? { dim: '', value: '' }
+      while (slots.length < 5) slots.push(fallback)
 
       scored.set(code, {
         code,
         score: entry.dims.size / 5,
         matchCount: entry.count,
         dimensions: Array.from(entry.dims),
-        dominantDim: dominant.dim,
-        dominantValue: dominant.topValue,
-        secondaryDim: secondary.dim,
-        secondaryValue: secondary.topValue,
+        ranked: slots,
         depth: entry.dims.size,
       })
     }
@@ -205,15 +208,13 @@ export default function HomePage() {
 
         if (minDist < NEIGHBOR_RADIUS_KM) {
           const proximityScore = 0.02 + 0.1 * (1 - minDist / NEIGHBOR_RADIUS_KM)
+          const empty: DimSlot = { dim: '', value: '' }
           scored.set(c.code, {
             code: c.code,
             score: proximityScore,
             matchCount: 0,
             dimensions: [],
-            dominantDim: '',
-            dominantValue: '',
-            secondaryDim: '',
-            secondaryValue: '',
+            ranked: [empty, empty, empty, empty, empty],
             depth: 0,
           })
         }

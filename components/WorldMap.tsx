@@ -17,16 +17,19 @@ function getSavedViewport() {
   }
 }
 
-/** Country score: dominant dimension determines color family, depth determines intensity */
+interface DimSlot {
+  dim: string
+  value: string
+}
+
+/** Country score: ranked dimensions for fill + concentric border rings */
 interface ScoredCountry {
   code: string
   score: number
   matchCount: number
   dimensions: string[]
-  dominantDim: string // dimension with most hits → fill color
-  dominantValue: string // specific value → fill shade
-  secondaryDim: string // second-most hits → border color
-  secondaryValue: string // specific value → border shade
+  /** Ranked: [0]=fill, [1]=outer ring, [2]=mid ring, [3]=inner ring, [4]=thinnest */
+  ranked: DimSlot[]
   depth: number // unique dimension count 1-5 → intensity
 }
 
@@ -245,7 +248,7 @@ export default function WorldMap({
     // 2. Scored — HSL dimension-family colors (hue=dimension, shade=value, intensity=depth)
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        expr.push(code, scoredToColor(sc.dominantDim, sc.dominantValue, sc.depth))
+        expr.push(code, scoredToColor(sc.ranked[0].dim, sc.ranked[0].value, sc.depth))
       }
     }
 
@@ -296,62 +299,68 @@ export default function WorldMap({
     return expr as unknown as number
   }, [scoreMap, previewCodes, enrichedCountries, enrichedSet])
 
-  const borderColor = useMemo(() => {
+  // ─── Concentric border rings: each ranked dimension gets its own ring ────────
+  // Ring 0 (outermost, widest) = ranked[1] (2nd dimension)
+  // Ring 1 (middle)            = ranked[2] (3rd dimension)
+  // Ring 2 (inner, thinnest)   = ranked[3] (4th dimension)
+  // ranked[0] is the fill color. Countries with only 1 dim: all rings = same as fill.
+  const ringStyles = useMemo(() => {
+    const RING_WIDTHS = [4.0, 2.5, 1.2] // outer → inner
+    const RING_SLOTS = [1, 2, 3] // which ranked[] index each ring uses
+    const RING_OPACITIES = [0.75, 0.85, 0.95] // inner rings slightly more opaque
     const hasActive = scoreMap.size > 0 || enrichedSet.size > 0 || previewCodes.size > 0
-    if (!hasActive) return '#C9A227'
 
-    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-
-    // Enriched: bright gold border
-    for (const code of enrichedCountries) {
-      expr.push(code, ENRICHED_COLOR)
-    }
-
-    // Scored: border = secondary dimension (shows multi-dim overlap)
-    // If only 1 dimension, secondary falls back to dominant so border matches fill
-    for (const [code, sc] of Array.from(scoreMap)) {
-      if (!enrichedSet.has(code)) {
-        expr.push(code, scoredToColor(sc.secondaryDim, sc.secondaryValue, sc.depth))
+    return RING_SLOTS.map((slotIdx, ringIdx) => {
+      if (!hasActive) {
+        return {
+          color: '#C9A227' as unknown as string,
+          width: (ringIdx === 0 ? 0.3 : 0) as unknown as number,
+          opacity: 0.4,
+        }
       }
-    }
 
-    for (const code of Array.from(previewCodes)) {
-      if (!enrichedSet.has(code) && !scoreMap.has(code)) {
-        expr.push(code, '#5B8A84')
+      const colorExpr: unknown[] = ['match', ['get', 'ISO_A2']]
+      const widthExpr: unknown[] = ['match', ['get', 'ISO_A2']]
+
+      // Enriched: gold rings
+      for (const code of enrichedCountries) {
+        colorExpr.push(code, ENRICHED_COLOR)
+        widthExpr.push(code, ENRICHED_BORDER_WIDTH)
       }
-    }
 
-    expr.push('#1f2937')
-    return expr as unknown as string
-  }, [scoreMap, previewCodes, enrichedCountries, enrichedSet])
-
-  const borderWidth = useMemo(() => {
-    const hasActive = scoreMap.size > 0 || enrichedSet.size > 0 || previewCodes.size > 0
-    if (!hasActive) return 0.4
-
-    const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-
-    // Enriched: uniform thick border
-    for (const code of enrichedCountries) {
-      expr.push(code, ENRICHED_BORDER_WIDTH)
-    }
-
-    // Scored: border scales with depth (unique dimension count)
-    for (const [code, sc] of Array.from(scoreMap)) {
-      if (!enrichedSet.has(code)) {
-        const dimWidth = sc.depth > 0 ? 1.0 + sc.depth * 0.5 : 0.5
-        expr.push(code, Math.min(dimWidth, 3.5))
+      // Scored: ring color from ranked[slotIdx], visible only if country has enough dims
+      for (const [code, sc] of Array.from(scoreMap)) {
+        if (!enrichedSet.has(code)) {
+          const slot = sc.ranked[slotIdx]
+          if (sc.depth > slotIdx) {
+            // This country has enough dimensions for this ring
+            colorExpr.push(code, scoredToColor(slot.dim, slot.value, sc.depth))
+            widthExpr.push(code, RING_WIDTHS[ringIdx])
+          } else {
+            // Not enough dims — collapse to transparent (width 0)
+            colorExpr.push(code, 'transparent')
+            widthExpr.push(code, 0)
+          }
+        }
       }
-    }
 
-    for (const code of Array.from(previewCodes)) {
-      if (!enrichedSet.has(code) && !scoreMap.has(code)) {
-        expr.push(code, 0.6)
+      // Preview
+      for (const code of Array.from(previewCodes)) {
+        if (!enrichedSet.has(code) && !scoreMap.has(code)) {
+          colorExpr.push(code, ringIdx === 0 ? '#5B8A84' : 'transparent')
+          widthExpr.push(code, ringIdx === 0 ? 0.6 : 0)
+        }
       }
-    }
 
-    expr.push(0.2)
-    return expr as unknown as number
+      colorExpr.push(ringIdx === 0 ? '#1f2937' : 'transparent')
+      widthExpr.push(ringIdx === 0 ? 0.2 : 0)
+
+      return {
+        color: colorExpr as unknown as string,
+        width: widthExpr as unknown as number,
+        opacity: RING_OPACITIES[ringIdx],
+      }
+    })
   }, [scoreMap, previewCodes, enrichedCountries, enrichedSet])
 
   return (
@@ -379,15 +388,19 @@ export default function WorldMap({
               'fill-opacity': fillOpacity,
             }}
           />
-          <Layer
-            id="country-border"
-            type="line"
-            paint={{
-              'line-color': borderColor,
-              'line-width': borderWidth,
-              'line-opacity': 0.6,
-            }}
-          />
+          {/* Concentric border rings — outer=2nd dim, mid=3rd dim, inner=4th dim */}
+          {ringStyles.map((ring, i) => (
+            <Layer
+              key={`ring-${i}`}
+              id={`country-border-ring-${i}`}
+              type="line"
+              paint={{
+                'line-color': ring.color,
+                'line-width': ring.width,
+                'line-opacity': ring.opacity,
+              }}
+            />
+          ))}
         </Source>
 
         {/* Connection arcs between enriched countries */}
