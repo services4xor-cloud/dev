@@ -339,8 +339,8 @@ export default function WorldMap({
     // Scored: border scales with depth (unique dimension count)
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        const dimWidth = sc.depth > 0 ? 0.4 + sc.depth * 0.4 : 0.3
-        expr.push(code, Math.min(dimWidth, 2.5))
+        const dimWidth = sc.depth > 0 ? 1.0 + sc.depth * 0.5 : 0.5
+        expr.push(code, Math.min(dimWidth, 3.5))
       }
     }
 
