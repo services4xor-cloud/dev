@@ -74,77 +74,7 @@ export async function GET() {
   )
   sectorOptions.sort((a, b) => b.count - a.count)
 
-  // 4. LOCATION — continents first (biggest grouping), then sub-regions
-  // Map sub-regions to their parent continent
-  const CONTINENT_MAP: Record<string, string> = {
-    'east-africa': 'Africa',
-    'west-africa': 'Africa',
-    'central-africa': 'Africa',
-    'north-africa': 'Africa',
-    'southern-africa': 'Africa',
-    'middle-east': 'Middle East',
-    europe: 'Europe',
-    'south-asia': 'Asia',
-    'southeast-asia': 'Asia',
-    'east-asia': 'Asia',
-    'central-asia': 'Asia',
-    americas: 'North America',
-    'south-america': 'South America',
-    'central-america-caribbean': 'Central America & Caribbean',
-    oceania: 'Oceania',
-  }
-  const CONTINENT_ICONS: Record<string, string> = {
-    Africa: '🌍',
-    Asia: '🌏',
-    Europe: '🌍',
-    'North America': '🌎',
-    'South America': '🌎',
-    'Central America & Caribbean': '🌎',
-    Oceania: '🌏',
-    'Middle East': '🕌',
-  }
-
-  // Build continent aggregates
-  const continentMap = new Map<string, Set<string>>()
-  const regionMap = new Map<string, string[]>()
-  for (const c of COUNTRY_OPTIONS) {
-    // Sub-region
-    const existing = regionMap.get(c.region) || []
-    existing.push(c.code)
-    regionMap.set(c.region, existing)
-    // Continent
-    const continent = CONTINENT_MAP[c.region] ?? c.region
-    const continentSet = continentMap.get(continent) ?? new Set<string>()
-    continentSet.add(c.code)
-    continentMap.set(continent, continentSet)
-  }
-
-  // Continents first — sorted by size (descending)
-  const continentOptions: DimensionOption[] = Array.from(continentMap.entries())
-    .sort((a, b) => b[1].size - a[1].size)
-    .map(([continent, codes]) => ({
-      code: `continent-${continent.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-      label: continent,
-      icon: CONTINENT_ICONS[continent] ?? '📍',
-      count: codes.size,
-      countryCodes: Array.from(codes),
-    }))
-
-  // Sub-regions second — sorted by size
-  const subRegionOptions: DimensionOption[] = Array.from(regionMap.entries())
-    .sort((a, b) => b[1].length - a[1].length)
-    .map(([region, codes]) => ({
-      code: region.toLowerCase(),
-      label: region.replace(/-/g, ' ').replace(/\b\w/g, (ch) => ch.toUpperCase()),
-      icon: '📍',
-      count: codes.length,
-      countryCodes: codes,
-    }))
-
-  // Combine: continents first, then sub-regions
-  const locationOptions: DimensionOption[] = [...continentOptions, ...subRegionOptions]
-
-  // 5. CURRENCY — from unique currencies
+  // 4. CURRENCY — from unique currencies
   const currencyMap = new Map<string, string[]>()
   for (const c of COUNTRY_OPTIONS) {
     const existing = currencyMap.get(c.currency) || []
@@ -216,7 +146,7 @@ export async function GET() {
   )
   currencyOptions.sort((a, b) => b.count - a.count)
 
-  // 6. TIMEZONE — group by UTC offset band for meaningful clusters
+  // 5. TIMEZONE — group by UTC offset band for meaningful clusters
   const tzBandMap = new Map<string, string[]>()
   for (const c of COUNTRY_OPTIONS) {
     // Extract UTC offset band from IANA timezone (group into broad bands)
@@ -252,7 +182,6 @@ export async function GET() {
       language: languageOptions.slice(0, 30),
       faith: faithOptions,
       sector: sectorOptions,
-      location: locationOptions,
       currency: currencyOptions,
       timezone: timezoneOptions,
     },

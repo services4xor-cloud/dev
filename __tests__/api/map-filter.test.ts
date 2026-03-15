@@ -135,16 +135,6 @@ describe('POST /api/map/filter', () => {
     expect(res.status).toBe(400)
   })
 
-  test('location filter matches by region or country name', async () => {
-    const req = makeRequest({ filters: [{ dimension: 'location', nodeCode: 'east africa' }] })
-    const res = await POST(req)
-    const data = await res.json()
-
-    const codes = data.countries.map((c: { code: string }) => c.code)
-    expect(codes).toContain('KE')
-    expect(codes).toContain('TZ')
-  })
-
   test('searchAliases: "suaheli" (German for Swahili) matches KE/TZ', async () => {
     const req = makeRequest({ filters: [{ dimension: 'language', nodeCode: 'suaheli' }] })
     const res = await POST(req)

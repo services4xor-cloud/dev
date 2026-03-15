@@ -225,15 +225,6 @@ function filterByDimension(filter: DimensionFilter) {
     case 'faith':
       return COUNTRY_OPTIONS.filter((c) => c.topFaiths.some((f) => faithMatchesQuery(f, nodeCode)))
 
-    case 'location':
-      // Match by region name or country name (normalize hyphens/spaces)
-      return COUNTRY_OPTIONS.filter((c) => {
-        const region = c.region.toLowerCase().replace(/-/g, ' ')
-        const name = c.name.toLowerCase()
-        const query = nodeCode.replace(/-/g, ' ')
-        return region.includes(query) || name.includes(query)
-      })
-
     case 'culture':
       // Culture data not yet in COUNTRY_OPTIONS — return empty for now
       return []

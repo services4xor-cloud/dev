@@ -17,7 +17,7 @@ interface SearchResult {
 }
 
 /**
- * Universal dimension search — searches ALL 6 dimensions simultaneously.
+ * Universal dimension search — searches ALL 5 dimensions simultaneously.
  * Returns top suggestions sorted by relevance (country count).
  *
  * Used by the map search box for real-time autocomplete.
@@ -98,48 +98,7 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // 4. LOCATION — search by country name or region
-  const locationMatches = COUNTRY_OPTIONS.filter((c) => {
-    return (
-      c.name.toLowerCase().includes(q) ||
-      c.region.toLowerCase().replace(/-/g, ' ').includes(q.replace(/-/g, ' '))
-    )
-  })
-  // Group by region if the query matches a region
-  const regionMap = new Map<string, string[]>()
-  for (const c of locationMatches) {
-    const region = c.region.toLowerCase().replace(/-/g, ' ')
-    if (region.includes(q.replace(/-/g, ' '))) {
-      const existing = regionMap.get(c.region) || []
-      existing.push(c.code)
-      regionMap.set(c.region, existing)
-    }
-  }
-  for (const [region, codes] of Array.from(regionMap.entries())) {
-    results.push({
-      dimension: 'location',
-      code: region.toLowerCase(),
-      label: region.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-      detail: 'Region',
-      countryCount: codes.length,
-      countryCodes: codes,
-    })
-  }
-  // Individual country matches
-  for (const c of locationMatches) {
-    if (c.name.toLowerCase().includes(q)) {
-      results.push({
-        dimension: 'location',
-        code: c.name.toLowerCase(),
-        label: `${c.flag} ${c.name}`,
-        detail: c.region.replace(/-/g, ' '),
-        countryCount: 1,
-        countryCodes: [c.code],
-      })
-    }
-  }
-
-  // 5. CURRENCY — search by code
+  // 4. CURRENCY — search by code
   const currencyMap = new Map<string, string[]>()
   for (const c of COUNTRY_OPTIONS) {
     if (c.currency.toLowerCase().includes(q)) {
@@ -159,7 +118,7 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // 6. CULTURE — search across culture suggestions
+  // 5. CULTURE — search across culture suggestions
   const cultureMap = new Map<string, string[]>()
   for (const [countryCode, cultures] of Object.entries(CULTURE_SUGGESTIONS)) {
     for (const culture of cultures) {

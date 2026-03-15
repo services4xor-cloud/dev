@@ -8,30 +8,35 @@ import { getUserNode } from '@/lib/graph'
 // Returns all active EXPERIENCE nodes with OFFERS edges (who's offering)
 
 export async function GET() {
-  const experiences = await db.node.findMany({
-    where: { type: 'EXPERIENCE', active: true },
-    include: {
-      inEdges: {
-        where: { relation: 'OFFERS' },
-        include: { from: true },
+  try {
+    const experiences = await db.node.findMany({
+      where: { type: 'EXPERIENCE', active: true },
+      include: {
+        inEdges: {
+          where: { relation: 'OFFERS' },
+          include: { from: true },
+        },
       },
-    },
-    orderBy: { createdAt: 'desc' },
-    take: 50,
-  })
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    })
 
-  const result = experiences.map((node) => {
-    const hostEdge = node.inEdges[0] ?? null
-    return {
-      id: node.id,
-      label: node.label,
-      icon: node.icon ?? '💼',
-      properties: node.properties,
-      host: hostEdge ? { label: hostEdge.from.label, icon: hostEdge.from.icon ?? '🏢' } : null,
-    }
-  })
+    const result = experiences.map((node) => {
+      const hostEdge = node.inEdges[0] ?? null
+      return {
+        id: node.id,
+        label: node.label,
+        icon: node.icon ?? '💼',
+        properties: node.properties,
+        host: hostEdge ? { label: hostEdge.from.label, icon: hostEdge.from.icon ?? '🏢' } : null,
+      }
+    })
 
-  return NextResponse.json(result)
+    return NextResponse.json(result)
+  } catch {
+    // Table may not exist yet — return empty list gracefully
+    return NextResponse.json([])
+  }
 }
 
 // ─── POST /api/opportunities ──────────────────────────────────

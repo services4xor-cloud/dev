@@ -1,9 +1,13 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Providers from '@/components/Providers'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
+
+export const viewport: Viewport = {
+  themeColor: '#5C0A14',
+}
 
 export const metadata: Metadata = {
   title: { default: 'Be[X] — Identity-First Life Routing', template: '%s | Be[X]' },
@@ -16,7 +20,6 @@ export const metadata: Metadata = {
     locale: 'en_US',
   },
   twitter: { card: 'summary_large_image' },
-  themeColor: '#5C0A14',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,

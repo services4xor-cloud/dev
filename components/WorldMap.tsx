@@ -28,9 +28,9 @@ interface ScoredCountry {
   score: number
   matchCount: number
   dimensions: string[]
-  /** Ranked: [0]=fill, [1]=outer ring, [2]=mid ring, [3]=inner ring, [4]=thinnest */
+  /** Ranked: [0]=fill, [1]=outer ring, [2]=mid ring, [3]=inner ring */
   ranked: DimSlot[]
-  depth: number // unique dimension count 1-5 → intensity
+  depth: number // unique dimension count 1-4 → intensity
 }
 
 interface WorldMapProps {
@@ -41,15 +41,14 @@ interface WorldMapProps {
 }
 
 // ─── HSL-based dimension color system ─────────────────────────────────────────
-// Each dimension has a base hue. Specific values shift ±8° within the family.
-// Depth (1-5 matching dimensions) controls saturation + lightness.
+// Each dimension has a base hue ~90° apart for maximum distinction.
+// Depth (1-4 matching dimensions) controls saturation + lightness.
 // Result: English=teal-A, German=teal-B (same family, distinguishable).
 const DIMENSION_HUE: Record<string, number> = {
-  language: 190, // cyan/teal
-  faith: 275, // purple
-  sector: 90, // lime/chartreuse — distinct from teal
-  location: 28, // orange
-  currency: 330, // rose/pink — distinct from orange
+  language: 185, // teal/cyan
+  sector: 90, // lime/chartreuse
+  faith: 275, // purple/violet
+  currency: 345, // rose/magenta
 }
 
 /** Simple string hash for consistent value→shade mapping */
@@ -73,9 +72,9 @@ function scoredToColor(dominantDim: string, dominantValue: string, depth: number
   const valueOffset = (strHash(dominantValue) % 17) - 8
   const hue = (baseHue + valueOffset + 360) % 360
 
-  // Depth 1→5 determines vibrancy: subtle dark → vivid bright
-  const sat = 40 + depth * 11 // 51% → 95%
-  const light = 28 + depth * 7 // 35% → 63%
+  // Depth 1→4 determines vibrancy: subtle dark → vivid bright
+  const sat = 38 + depth * 15 // 53% → 98%
+  const light = 26 + depth * 9 // 35% → 62%
 
   return `hsl(${hue},${sat}%,${light}%)`
 }
@@ -274,12 +273,12 @@ export default function WorldMap({
       expr.push(code, ENRICHED_OPACITY)
     }
 
-    // Scored: opacity tied to depth (unique dimension count 1-5)
-    // depth 1 = 0.20, depth 2 = 0.30, depth 3 = 0.40, depth 4 = 0.50, depth 5 = 0.55
+    // Scored: opacity tied to depth (unique dimension count 1-4)
+    // depth 1 = 0.22, depth 2 = 0.34, depth 3 = 0.46, depth 4 = 0.55
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
         if (sc.depth > 0) {
-          const dimOpacity = 0.1 + sc.depth * 0.1
+          const dimOpacity = 0.1 + sc.depth * 0.12
           expr.push(code, Math.min(dimOpacity, 0.55))
         } else {
           // Neighbor proximity only — subtle

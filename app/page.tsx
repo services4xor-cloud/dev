@@ -31,7 +31,7 @@ function countryFlag(code: string): string {
 }
 
 /** Dimension priority for determining dominant color */
-const DIM_PRIORITY = ['language', 'faith', 'sector', 'location', 'currency']
+const DIM_PRIORITY = ['language', 'sector', 'faith', 'currency']
 
 /** Ranked dimension slot: dim name + top value for color derivation */
 interface DimSlot {
@@ -45,9 +45,9 @@ export interface ScoredCountry {
   score: number
   matchCount: number
   dimensions: string[] // which dimension types match
-  /** Ranked dimension slots: [0]=fill, [1]=outer border, [2]=mid border, [3]=inner border, [4]=thinnest */
+  /** Ranked dimension slots: [0]=fill, [1]=outer ring, [2]=inner ring, [3]=thinnest */
   ranked: DimSlot[]
-  depth: number // unique dimension count 1-5 (determines intensity)
+  depth: number // unique dimension count 1-4 (determines intensity)
 }
 
 /** Haversine distance between two lat/lng points in km */
@@ -175,14 +175,14 @@ export default function HomePage() {
       }
       ranked.sort((a, b) => b.count - a.count)
 
-      // Build ranked slots — pad to 5 with fallback to first
+      // Build ranked slots — pad to 4 with fallback to first
       const slots: DimSlot[] = ranked.map((r) => ({ dim: r.dim, value: r.topValue }))
       const fallback: DimSlot = slots[0] ?? { dim: '', value: '' }
-      while (slots.length < 5) slots.push(fallback)
+      while (slots.length < 4) slots.push(fallback)
 
       scored.set(code, {
         code,
-        score: entry.dims.size / 5,
+        score: entry.dims.size / 4,
         matchCount: entry.count,
         dimensions: Array.from(entry.dims),
         ranked: slots,
@@ -214,7 +214,7 @@ export default function HomePage() {
             score: proximityScore,
             matchCount: 0,
             dimensions: [],
-            ranked: [empty, empty, empty, empty, empty],
+            ranked: [empty, empty, empty, empty],
             depth: 0,
           })
         }
@@ -248,16 +248,16 @@ export default function HomePage() {
         return [...withoutThisCountry, ...taggedFilters]
       })
     } catch {
-      // Fallback: just add location filter
+      // Fallback: just add language filter for the country
       setFilters((prev) => {
         const withoutThisCountry = prev.filter((f) => f.source !== code)
         return [
           ...withoutThisCountry,
           {
-            dimension: 'location' as const,
-            nodeCode: name.toLowerCase(),
+            dimension: 'language' as const,
+            nodeCode: code.toLowerCase(),
             label: name,
-            icon: '📍',
+            icon: '🗣️',
             countryCodes: [code],
             source: code,
           },

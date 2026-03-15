@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import type { ActiveFilter } from '@/components/DimensionFilters'
+import DimensionOverlapBar from '@/components/DimensionOverlapBar'
 
 interface OpportunityHost {
   label: string
@@ -49,18 +49,8 @@ export default function OpportunitiesPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-
-  const [mapFilters, setMapFilters] = useState<ActiveFilter[]>([])
-
-  // Load active filters from sessionStorage (set by map page)
-  useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem('bex-map-filters')
-      if (raw) setMapFilters(JSON.parse(raw) as ActiveFilter[])
-    } catch {
-      // ignore
-    }
-  }, [])
+  const [focusedValue, setFocusedValue] = useState<string | null>(null)
+  const [filterSector, setFilterSector] = useState<string | null>(null)
 
   const role = (session?.user as { role?: string } | undefined)?.role
   const canPost = role === 'HOST' || role === 'ADMIN'
@@ -81,6 +71,34 @@ export default function OpportunitiesPage() {
     }
     void fetchOpportunities()
   }, [])
+
+  // Dimension click → filter opportunities by matching sector
+  const handleDimensionClick = useCallback(
+    (dimension: string, value: string) => {
+      const key = `${dimension}:${value}`
+      if (focusedValue === key) {
+        setFocusedValue(null)
+        setFilterSector(null)
+      } else {
+        setFocusedValue(key)
+        // Only sector dimension can meaningfully filter opportunities
+        if (dimension === 'sector') {
+          setFilterSector(value)
+        } else {
+          setFilterSector(null)
+        }
+      }
+    },
+    [focusedValue]
+  )
+
+  // Filter opportunities by sector if a sector chip is focused
+  const filteredOpportunities = filterSector
+    ? opportunities.filter((opp) => {
+        const sector = opp.properties?.sector?.toLowerCase() ?? ''
+        return sector.includes(filterSector.toLowerCase().replace(/-/g, ' '))
+      })
+    : opportunities
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -116,7 +134,7 @@ export default function OpportunitiesPage() {
 
   return (
     <div className="min-h-screen bg-brand-bg">
-      {/* Header — matches agent page layout */}
+      {/* Header */}
       <header className="border-b border-brand-accent/10 px-6 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div>
@@ -131,29 +149,13 @@ export default function OpportunitiesPage() {
             )}
           </div>
           <a href="/" className="text-sm text-brand-text-muted hover:text-brand-accent transition">
-            ← Map
+            &larr; Map
           </a>
         </div>
       </header>
 
-      {/* Active context bar — shows what dimensions the user selected on map */}
-      {mapFilters.length > 0 && (
-        <div className="border-b border-brand-accent/5 bg-brand-surface/50 px-6 py-2">
-          <div className="mx-auto flex max-w-5xl flex-wrap gap-1.5">
-            <span className="text-[10px] uppercase tracking-wider text-brand-text-muted/50 self-center mr-1">
-              Context:
-            </span>
-            {mapFilters.map((f) => (
-              <span
-                key={f.dimension}
-                className="rounded-full bg-brand-accent/10 px-2.5 py-0.5 text-xs text-brand-accent"
-              >
-                {f.icon ?? '◆'} {f.label ?? f.nodeCode}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Dimension overlap context bar */}
+      <DimensionOverlapBar onDimensionClick={handleDimensionClick} focusedValue={focusedValue} />
 
       <div className="mx-auto max-w-5xl px-6 py-8">
         {/* Success banner */}
@@ -249,7 +251,7 @@ export default function OpportunitiesPage() {
                   maxLength={10}
                   value={form.icon}
                   onChange={(e) => setForm((f) => ({ ...f, icon: e.target.value }))}
-                  placeholder="💼"
+                  placeholder="\u{1F4BC}"
                   className="w-32 rounded-lg border border-white/10 bg-brand-bg px-4 py-2 text-sm text-brand-text placeholder-brand-text-muted/50 outline-none focus:border-brand-accent/40"
                 />
               </div>
@@ -261,7 +263,7 @@ export default function OpportunitiesPage() {
                 disabled={submitting}
                 className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-brand-accent transition hover:opacity-90 disabled:opacity-50"
               >
-                {submitting ? 'Posting…' : 'Post Opportunity'}
+                {submitting ? 'Posting\u2026' : 'Post Opportunity'}
               </button>
             </div>
           </form>
@@ -269,12 +271,27 @@ export default function OpportunitiesPage() {
 
         {/* Opportunities Grid */}
         {loading ? (
-          <div className="text-center py-16 text-brand-text-muted">Loading opportunities…</div>
-        ) : opportunities.length === 0 ? (
+          <div className="text-center py-16 text-brand-text-muted">Loading opportunities\u2026</div>
+        ) : filteredOpportunities.length === 0 ? (
           <div className="rounded-xl border border-white/5 bg-brand-surface px-8 py-16 text-center">
-            <div className="mb-3 text-4xl">🌍</div>
-            <p className="text-brand-text-muted">No opportunities yet.</p>
-            {canPost && (
+            <div className="mb-3 text-4xl">{'\u{1F30D}'}</div>
+            <p className="text-brand-text-muted">
+              {filterSector
+                ? 'No opportunities match this sector filter.'
+                : 'No opportunities yet.'}
+            </p>
+            {filterSector && (
+              <button
+                onClick={() => {
+                  setFocusedValue(null)
+                  setFilterSector(null)
+                }}
+                className="mt-2 text-sm text-brand-accent/70 hover:text-brand-accent transition"
+              >
+                Clear filter
+              </button>
+            )}
+            {!filterSector && canPost && (
               <p className="mt-1 text-sm text-brand-text-muted/70">
                 Be the first to post one using the button above.
               </p>
@@ -282,7 +299,7 @@ export default function OpportunitiesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {opportunities.map((opp) => (
+            {filteredOpportunities.map((opp) => (
               <Link
                 key={opp.id}
                 href={`/exchange/${opp.id}`}
@@ -305,13 +322,13 @@ export default function OpportunitiesPage() {
                 <div className="space-y-1">
                   {opp.properties?.sector && (
                     <div className="flex items-center gap-1.5 text-xs text-brand-text-muted">
-                      <span className="text-brand-accent/70">◆</span>
+                      <span className="text-brand-accent/70">{'\u25C6'}</span>
                       {opp.properties.sector}
                     </div>
                   )}
                   {opp.properties?.location && (
                     <div className="flex items-center gap-1.5 text-xs text-brand-text-muted">
-                      <span className="text-brand-accent/70">📍</span>
+                      <span className="text-brand-accent/70">{'\u{1F4CD}'}</span>
                       {opp.properties.location}
                     </div>
                   )}

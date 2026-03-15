@@ -12,24 +12,6 @@ import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
  * German (6 countries) for language impact.
  */
 
-const REGION_LABELS: Record<string, string> = {
-  'east-africa': 'East Africa',
-  'west-africa': 'West Africa',
-  'central-africa': 'Central Africa',
-  'north-africa': 'North Africa',
-  'southern-africa': 'Southern Africa',
-  'middle-east': 'Middle East',
-  europe: 'Europe',
-  americas: 'Americas',
-  'central-america-caribbean': 'Central America & Caribbean',
-  'south-america': 'South America',
-  'south-asia': 'South Asia',
-  'southeast-asia': 'Southeast Asia',
-  'east-asia': 'East Asia',
-  'central-asia': 'Central Asia',
-  oceania: 'Oceania',
-}
-
 const FAITH_LABELS: Record<string, string> = {
   christianity: 'Christianity',
   islam: 'Islam',
@@ -54,7 +36,7 @@ export async function POST(req: NextRequest) {
   const country = COUNTRY_OPTIONS.find((c) => c.code === code.toUpperCase())
   if (!country) return NextResponse.json({ error: 'Country not found' }, { status: 404 })
 
-  // Build filters in display order: Language → Faith → Sector → Region → Currency
+  // Build filters in display order: Language → Sector → Faith → Currency
   type Filter = {
     dimension: string
     nodeCode: string
@@ -88,28 +70,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 2. Faith — pick the faith with MOST country reach
-  if (country.topFaiths.length > 0) {
-    let bestFaith = country.topFaiths[0]
-    let bestCount = 0
-    for (const faith of country.topFaiths) {
-      const count = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(faith)).length
-      if (count > bestCount) {
-        bestCount = count
-        bestFaith = faith
-      }
-    }
-    const matching = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(bestFaith))
-    filters.push({
-      dimension: 'faith',
-      nodeCode: bestFaith,
-      label: FAITH_LABELS[bestFaith] ?? bestFaith,
-      icon: '☪️',
-      countryCodes: matching.map((c) => c.code),
-    })
-  }
-
-  // 3. Sector — pick the sector with MOST country reach
+  // 2. Sector — pick the sector with MOST country reach
   if (country.topSectors.length > 0) {
     let bestSector = country.topSectors[0]
     let bestCount = 0
@@ -130,33 +91,28 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // 4. Region — geographic cluster, expanded for transcontinental countries
-  const EXTRA_REGIONS: Record<string, string[]> = {
-    RU: ['europe', 'central-asia', 'east-asia'],
-    TR: ['europe', 'middle-east'],
-    EG: ['north-africa', 'middle-east'],
-    KZ: ['central-asia', 'europe'],
-  }
-  const regions = EXTRA_REGIONS[country.code] ?? [country.region]
-  const regionCodes = new Set<string>()
-  for (const r of regions) {
-    for (const c of COUNTRY_OPTIONS) {
-      if (c.region === r) regionCodes.add(c.code)
+  // 3. Faith — pick the faith with MOST country reach
+  if (country.topFaiths.length > 0) {
+    let bestFaith = country.topFaiths[0]
+    let bestCount = 0
+    for (const faith of country.topFaiths) {
+      const count = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(faith)).length
+      if (count > bestCount) {
+        bestCount = count
+        bestFaith = faith
+      }
     }
+    const matching = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(bestFaith))
+    filters.push({
+      dimension: 'faith',
+      nodeCode: bestFaith,
+      label: FAITH_LABELS[bestFaith] ?? bestFaith,
+      icon: '☪️',
+      countryCodes: matching.map((c) => c.code),
+    })
   }
-  const primaryRegion = regions[0]
-  filters.push({
-    dimension: 'location',
-    nodeCode: primaryRegion,
-    label:
-      regions.length > 1
-        ? regions.map((r) => REGION_LABELS[r] ?? r).join(' & ')
-        : (REGION_LABELS[primaryRegion] ?? primaryRegion),
-    icon: '📍',
-    countryCodes: Array.from(regionCodes),
-  })
 
-  // 5. Currency
+  // 4. Currency
   const currencyMatches = COUNTRY_OPTIONS.filter((c) => c.currency === country.currency)
   filters.push({
     dimension: 'currency',

@@ -4,8 +4,8 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import type { DimensionFilter } from '@/types/domain'
 
 /**
- * Curated dimension selector — 5 tabs with data-backed options.
- * Country click → one row with all 5 dimensions, color-coded per type.
+ * Curated dimension selector — 4 tabs with data-backed options.
+ * Country click → one row with all 4 dimensions, color-coded per type.
  * Click row to remove. Overlaps merge with multiplier glow.
  */
 
@@ -21,7 +21,6 @@ interface DimensionsData {
   language: DimensionOption[]
   faith: DimensionOption[]
   sector: DimensionOption[]
-  location: DimensionOption[]
   currency: DimensionOption[]
   timezone: DimensionOption[]
 }
@@ -55,13 +54,12 @@ interface DimensionFiltersProps {
   enrichedCountries?: string[]
 }
 
-type DimensionKey = 'language' | 'faith' | 'sector' | 'location' | 'currency' | 'timezone'
+type DimensionKey = 'language' | 'faith' | 'sector' | 'currency' | 'timezone'
 
 const DIMENSIONS: { key: DimensionKey; label: string; icon: string }[] = [
   { key: 'language', label: 'Language', icon: '🗣️' },
-  { key: 'faith', label: 'Faith', icon: '☪️' },
   { key: 'sector', label: 'Sector', icon: '💼' },
-  { key: 'location', label: 'Region', icon: '📍' },
+  { key: 'faith', label: 'Faith', icon: '☪️' },
   { key: 'currency', label: 'Currency', icon: '💱' },
 ]
 
@@ -85,9 +83,8 @@ function countryFlag(code: string): string {
  */
 const DIMENSION_COLORS: Record<string, string> = {
   language: 'bg-teal-500/20 text-teal-300 border-teal-400/30',
-  faith: 'bg-violet-500/20 text-violet-300 border-violet-400/30',
   sector: 'bg-lime-500/20 text-lime-300 border-lime-400/30',
-  location: 'bg-amber-500/20 text-amber-300 border-amber-400/30',
+  faith: 'bg-violet-500/20 text-violet-300 border-violet-400/30',
   currency: 'bg-rose-500/20 text-rose-300 border-rose-400/30',
   timezone: 'bg-blue-500/20 text-blue-300 border-blue-400/30',
 }
@@ -119,15 +116,6 @@ const DIMENSION_OVERLAP_COLORS: Record<
     glow3: 'bg-lime-500/40 text-lime-200 border-lime-300/60 shadow-[0_0_10px_rgba(132,204,22,0.3)]',
     glow4:
       'bg-lime-500/50 text-lime-100 border-lime-300/70 shadow-[0_0_16px_rgba(132,204,22,0.4)] font-semibold',
-  },
-  location: {
-    base: 'bg-amber-500/20 text-amber-300 border-amber-400/30',
-    glow2:
-      'bg-amber-500/30 text-amber-200 border-amber-400/50 shadow-[0_0_6px_rgba(245,158,11,0.2)]',
-    glow3:
-      'bg-amber-500/40 text-amber-200 border-amber-300/60 shadow-[0_0_10px_rgba(245,158,11,0.3)]',
-    glow4:
-      'bg-amber-500/50 text-amber-100 border-amber-300/70 shadow-[0_0_16px_rgba(245,158,11,0.4)] font-semibold',
   },
   currency: {
     base: 'bg-rose-500/20 text-rose-300 border-rose-400/30',

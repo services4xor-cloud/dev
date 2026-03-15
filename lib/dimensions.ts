@@ -316,7 +316,6 @@ export interface DimensionMeta {
 }
 
 export const DIMENSION_META: DimensionMeta[] = [
-  { key: 'location', label: 'Location', labelKey: 'me.dimLocation', icon: '📍' },
   { key: 'languages', label: 'Languages', labelKey: 'me.dimLanguages', icon: '🗣️' },
   { key: 'faith', label: 'Faith', labelKey: 'me.dimFaith', icon: '🙏' },
   { key: 'craft', label: 'Craft', labelKey: 'me.dimCraft', icon: '🛠️' },

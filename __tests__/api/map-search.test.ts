@@ -27,13 +27,12 @@ describe('POST /api/map/search', () => {
     expect(data.suggestions).toEqual([])
   })
 
-  test('"german" returns language + location suggestions', async () => {
+  test('"german" returns language suggestions', async () => {
     const res = await POST(makeRequest({ query: 'german' }))
     const data = (await res.json()) as { suggestions: Suggestion[] }
 
     const dims = data.suggestions.map((s) => s.dimension)
     expect(dims).toContain('language') // German language
-    expect(dims).toContain('location') // Germany country
 
     const langSuggestion = data.suggestions.find(
       (s) => s.dimension === 'language' && s.label === 'German'
@@ -70,17 +69,6 @@ describe('POST /api/map/search', () => {
     expect(currencyHit).toBeDefined()
     expect(currencyHit!.label).toBe('EUR')
     expect(currencyHit!.countryCount).toBeGreaterThanOrEqual(10)
-  })
-
-  test('"east africa" returns location suggestion', async () => {
-    const res = await POST(makeRequest({ query: 'east africa' }))
-    const data = (await res.json()) as { suggestions: Suggestion[] }
-
-    const locationHit = data.suggestions.find(
-      (s) => s.dimension === 'location' && s.detail === 'Region'
-    )
-    expect(locationHit).toBeDefined()
-    expect(locationHit!.countryCount).toBeGreaterThanOrEqual(2)
   })
 
   test('"maasai" returns culture suggestion', async () => {
