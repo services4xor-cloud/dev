@@ -351,17 +351,17 @@ function MessagesInner() {
   return (
     <div className="flex h-screen flex-col bg-brand-bg">
       {/* Top bar */}
-      <div className="flex items-center justify-between border-b border-white/5 px-4 py-3">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/"
-            className="text-sm text-brand-text-muted hover:text-brand-accent transition"
-          >
-            ← Back
-          </Link>
-          <h1 className="text-lg font-semibold text-brand-accent">Messages</h1>
+      <header className="border-b border-brand-accent/10 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-brand-accent">Messages</h1>
+            <p className="text-sm text-brand-text-muted">Connect with Pioneers and Anchors</p>
+          </div>
+          <a href="/" className="text-sm text-brand-text-muted hover:text-brand-accent transition">
+            &larr; Map
+          </a>
         </div>
-      </div>
+      </header>
 
       {/* Split layout */}
       <div className="flex min-h-0 flex-1">

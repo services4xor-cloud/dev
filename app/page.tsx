@@ -399,15 +399,15 @@ export default function HomePage() {
           >
             Opportunities
           </Link>
+          <Link
+            href="/messages"
+            className="relative text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            Messages
+            {session && <NotificationBadge count={unreadMessages} />}
+          </Link>
           {session ? (
             <>
-              <Link
-                href="/messages"
-                className="relative text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Messages
-                <NotificationBadge count={unreadMessages} />
-              </Link>
               <Link
                 href="/me"
                 className="flex items-center gap-1.5 text-sm text-brand-accent transition hover:text-brand-accent/80"
@@ -463,6 +463,14 @@ export default function HomePage() {
           >
             Opportunities
           </Link>
+          <Link
+            href="/messages"
+            onClick={() => setMenuOpen(false)}
+            className="relative py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            Messages
+            {session && <NotificationBadge count={unreadMessages} />}
+          </Link>
           {session ? (
             <>
               <Link
@@ -485,14 +493,6 @@ export default function HomePage() {
                   </span>
                 )}
                 {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Me'}
-              </Link>
-              <Link
-                href="/messages"
-                onClick={() => setMenuOpen(false)}
-                className="relative py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Messages
-                <NotificationBadge count={unreadMessages} />
               </Link>
               <button
                 onClick={() => {
