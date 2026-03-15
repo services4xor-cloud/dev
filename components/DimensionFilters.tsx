@@ -103,15 +103,9 @@ function overlapStyle(multiplier: number): string {
   return 'border-brand-accent/30 bg-brand-accent/15 text-brand-accent'
 }
 
-/**
- * Row glow for enriched countries — newest = brightest gold, oldest = dimmer.
- * Matches the map's path-fading trail.
- */
-function enrichedRowStyle(recency: number): string {
-  if (recency >= 0.9)
-    return 'border-yellow-400/40 bg-yellow-400/10 shadow-[0_0_12px_rgba(253,224,71,0.15)]'
-  if (recency >= 0.5) return 'border-brand-accent/30 bg-brand-accent/8'
-  return 'border-brand-accent/15 bg-brand-accent/5'
+/** Uniform bright glow for all enriched country rows — all selections equal */
+function enrichedRowStyle(): string {
+  return 'border-yellow-400/40 bg-yellow-400/10 shadow-[0_0_12px_rgba(253,224,71,0.15)]'
 }
 
 export default function DimensionFilters({
@@ -159,17 +153,6 @@ export default function DimensionFilters({
     () => new Set<string>(activeFilters.map((f) => `${f.dimension}:${f.nodeCode}`)),
     [activeFilters]
   )
-
-  // Recency map for enriched countries (matches WorldMap path-fading)
-  const enrichedRecency = useMemo(() => {
-    const m = new Map<string, number>()
-    const len = enrichedCountries.length
-    if (len === 0) return m
-    for (let i = 0; i < len; i++) {
-      m.set(enrichedCountries[i], 0.33 + 0.67 * (i / Math.max(len - 1, 1)))
-    }
-    return m
-  }, [enrichedCountries])
 
   // ─── MERGE LOGIC: detect duplicates across sources ───
   const { overlaps, sourceRows } = useMemo(() => {
@@ -306,8 +289,7 @@ export default function DimensionFilters({
           {sourceOrder.map((source) => {
             const group = sourceRows.get(source) ?? []
             const isCountry = source !== 'custom'
-            const recency = enrichedRecency.get(source) ?? 0
-            const rowStyle = isCountry ? enrichedRowStyle(recency) : 'border-white/10 bg-white/5'
+            const rowStyle = isCountry ? enrichedRowStyle() : 'border-white/10 bg-white/5'
 
             return (
               <button

@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import PageShell from '@/components/PageShell'
 import { getCountryData } from '@/lib/country-api'
+import { COUNTRY_OPTIONS, type LanguageCode, type FaithCode } from '@/lib/country-selector'
 
 interface PageProps {
   params: Promise<{ code: string }>
@@ -35,9 +36,26 @@ export default async function CountryHubPage({ params }: PageProps) {
   const capital = data?.capital ?? null
   const tz = data?.timezone ? data.timezone.replace(/^.*\//, '') : null
   const population = data?.population ?? null
-  const topSectors = data?.topSectors ?? []
-  const topFaiths = data?.topFaiths ?? []
-  const languages = data?.languages ?? []
+  // Sort by global influence: most shared across countries → first
+  const languages = [...(data?.languages ?? [])].sort((a, b) => {
+    const aReach = COUNTRY_OPTIONS.filter((c) =>
+      c.languages.includes(a.code as LanguageCode)
+    ).length
+    const bReach = COUNTRY_OPTIONS.filter((c) =>
+      c.languages.includes(b.code as LanguageCode)
+    ).length
+    return bReach - aReach
+  })
+  const topFaiths = [...(data?.topFaiths ?? [])].sort((a, b) => {
+    const aReach = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(a as FaithCode)).length
+    const bReach = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(b as FaithCode)).length
+    return bReach - aReach
+  })
+  const topSectors = [...(data?.topSectors ?? [])].sort((a, b) => {
+    const aReach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(a)).length
+    const bReach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(b)).length
+    return bReach - aReach
+  })
 
   const faithLabels: Record<string, string> = {
     christianity: 'Christianity',
@@ -146,19 +164,29 @@ export default async function CountryHubPage({ params }: PageProps) {
               Languages
             </h2>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              {languages.map((lang) => (
-                <span
-                  key={lang.code}
-                  className="rounded-full border border-teal-400/25 bg-teal-500/10 px-3 py-1.5 text-sm font-medium text-teal-300 sm:px-5 sm:py-2 sm:text-base"
-                >
-                  {lang.name}
-                  {lang.nativeName && lang.nativeName !== lang.name && (
-                    <span className="ml-1 text-xs text-brand-text-muted sm:ml-1.5 sm:text-sm">
-                      ({lang.nativeName})
-                    </span>
-                  )}
-                </span>
-              ))}
+              {languages.map((lang) => {
+                const reach = COUNTRY_OPTIONS.filter((c) =>
+                  c.languages.includes(lang.code as LanguageCode)
+                ).length
+                return (
+                  <span
+                    key={lang.code}
+                    className="flex items-center gap-1.5 rounded-full border border-teal-400/25 bg-teal-500/10 px-3 py-1.5 text-sm font-medium text-teal-300 sm:px-5 sm:py-2 sm:text-base"
+                  >
+                    {lang.name}
+                    {lang.nativeName && lang.nativeName !== lang.name && (
+                      <span className="text-xs text-brand-text-muted sm:text-sm">
+                        ({lang.nativeName})
+                      </span>
+                    )}
+                    {reach > 1 && (
+                      <span className="rounded-full bg-teal-400/20 px-1.5 text-[10px] text-teal-400/70 sm:text-xs">
+                        {reach}
+                      </span>
+                    )}
+                  </span>
+                )
+              })}
             </div>
           </section>
         )}
@@ -170,14 +198,24 @@ export default async function CountryHubPage({ params }: PageProps) {
               Faiths
             </h2>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              {topFaiths.map((faith) => (
-                <span
-                  key={faith}
-                  className="rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-1.5 text-sm font-medium text-violet-300 sm:px-5 sm:py-2 sm:text-base"
-                >
-                  {faithLabels[faith] ?? faith}
-                </span>
-              ))}
+              {topFaiths.map((faith) => {
+                const reach = COUNTRY_OPTIONS.filter((c) =>
+                  c.topFaiths.includes(faith as FaithCode)
+                ).length
+                return (
+                  <span
+                    key={faith}
+                    className="flex items-center gap-1.5 rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-1.5 text-sm font-medium text-violet-300 sm:px-5 sm:py-2 sm:text-base"
+                  >
+                    {faithLabels[faith] ?? faith}
+                    {reach > 1 && (
+                      <span className="rounded-full bg-violet-400/20 px-1.5 text-[10px] text-violet-400/70 sm:text-xs">
+                        {reach}
+                      </span>
+                    )}
+                  </span>
+                )
+              })}
             </div>
           </section>
         )}
@@ -189,14 +227,22 @@ export default async function CountryHubPage({ params }: PageProps) {
               Top Sectors
             </h2>
             <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-              {topSectors.map((sector) => (
-                <span
-                  key={sector}
-                  className="rounded-xl border border-emerald-400/15 bg-emerald-500/10 px-3 py-2 text-center text-xs text-emerald-300 sm:px-4 sm:text-sm"
-                >
-                  {sector}
-                </span>
-              ))}
+              {topSectors.map((sector) => {
+                const reach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(sector)).length
+                return (
+                  <span
+                    key={sector}
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-400/15 bg-emerald-500/10 px-3 py-2 text-center text-xs text-emerald-300 sm:px-4 sm:text-sm"
+                  >
+                    {sector}
+                    {reach > 1 && (
+                      <span className="rounded-full bg-emerald-400/20 px-1.5 text-[10px] text-emerald-400/70">
+                        {reach}
+                      </span>
+                    )}
+                  </span>
+                )
+              })}
             </div>
           </section>
         )}

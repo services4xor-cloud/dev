@@ -30,11 +30,12 @@ function countryFlag(code: string): string {
   }
 }
 
-/** Country with intensity score: how many active filters match this country */
+/** Country with intensity score: tracks WHICH dimensions match for color blending */
 export interface ScoredCountry {
   code: string
   score: number // 0-1 normalized (matchCount / totalFilters)
   matchCount: number // 0 = neighbor proximity only, 1+ = dimension matches
+  dimensions: string[] // which dimension types match (e.g. ['language', 'faith'])
 }
 
 /** Haversine distance between two lat/lng points in km */
@@ -108,23 +109,31 @@ export default function HomePage() {
     sessionStorage.setItem('bex-map-filters', JSON.stringify(filters))
   }, [hydrated, filters])
 
-  // Compute intensity scores from active filters — client-side, no API needed
-  // Each filter has countryCodes[]. Count how many filters match each country.
+  // Compute intensity scores — tracks WHICH dimensions match for color blending.
   // Also adds subtle neighbor proximity glow for countries bordering enriched ones.
   const scoredCountries = useMemo(() => {
     const filtersWithCodes = filters.filter((f) => f.countryCodes && f.countryCodes.length > 0)
 
-    const countMap = new Map<string, number>()
+    // Track count AND which dimension types match per country
+    const countMap = new Map<string, { count: number; dims: Set<string> }>()
     for (const f of filtersWithCodes) {
       for (const code of f.countryCodes!) {
-        countMap.set(code, (countMap.get(code) || 0) + 1)
+        const entry = countMap.get(code) ?? { count: 0, dims: new Set() }
+        entry.count++
+        entry.dims.add(f.dimension)
+        countMap.set(code, entry)
       }
     }
 
     const total = filtersWithCodes.length || 1
     const scored = new Map<string, ScoredCountry>()
-    for (const [code, matchCount] of Array.from(countMap.entries())) {
-      scored.set(code, { code, score: matchCount / total, matchCount })
+    for (const [code, { count, dims }] of Array.from(countMap.entries())) {
+      scored.set(code, {
+        code,
+        score: count / total,
+        matchCount: count,
+        dimensions: Array.from(dims),
+      })
     }
 
     // Neighbor proximity: enriched countries cast a subtle glow on nearby countries
@@ -135,10 +144,8 @@ export default function HomePage() {
         .filter(Boolean) as (typeof COUNTRY_OPTIONS)[number][]
 
       for (const c of COUNTRY_OPTIONS) {
-        // Skip enriched countries themselves and countries already scored by dimensions
         if (enrichedSet.has(c.code) || scored.has(c.code)) continue
 
-        // Find closest enriched country
         let minDist = Infinity
         for (const ec of enrichedData) {
           const d = haversineKm(c.lat, c.lng, ec.lat, ec.lng)
@@ -146,9 +153,13 @@ export default function HomePage() {
         }
 
         if (minDist < NEIGHBOR_RADIUS_KM) {
-          // Score fades linearly with distance: 0.12 at 0km → 0.02 at NEIGHBOR_RADIUS_KM
           const proximityScore = 0.02 + 0.1 * (1 - minDist / NEIGHBOR_RADIUS_KM)
-          scored.set(c.code, { code: c.code, score: proximityScore, matchCount: 0 })
+          scored.set(c.code, {
+            code: c.code,
+            score: proximityScore,
+            matchCount: 0,
+            dimensions: [],
+          })
         }
       }
     }
@@ -297,7 +308,7 @@ export default function HomePage() {
           </span>
           <span className="text-brand-accent">
             {enrichedCountries.length > 1
-              ? enrichedCountries.join('·')
+              ? enrichedCountries.join('→')
               : (selectedCountryName ?? 'X')}
           </span>
           <span className={selectedCountry ? 'text-brand-text-muted' : 'text-brand-accent'}>]</span>
