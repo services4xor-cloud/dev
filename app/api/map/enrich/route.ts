@@ -4,12 +4,9 @@ import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
 /**
  * POST /api/map/enrich
  *
- * Given a country code, returns exactly 5 dimension filters — one per dimension.
- * Each filter picks the value with MAXIMUM global reach (most country matches)
- * from the country's available options in that dimension.
- *
- * This maximizes map glow: click Germany → French (30 countries) beats
- * German (6 countries) for language impact.
+ * Given a country code, returns ALL dimension filters for that country.
+ * Every language, sector, faith, and currency becomes a filter with its
+ * matching country codes — so the Explorer sees exactly what glows and why.
  */
 
 const FAITH_LABELS: Record<string, string> = {
@@ -18,8 +15,10 @@ const FAITH_LABELS: Record<string, string> = {
   hinduism: 'Hinduism',
   buddhism: 'Buddhism',
   judaism: 'Judaism',
+  shinto: 'Shinto',
   traditional: 'Traditional',
   secular: 'Secular',
+  other: 'Other',
 }
 
 export async function POST(req: NextRequest) {
@@ -36,7 +35,6 @@ export async function POST(req: NextRequest) {
   const country = COUNTRY_OPTIONS.find((c) => c.code === code.toUpperCase())
   if (!country) return NextResponse.json({ error: 'Country not found' }, { status: 404 })
 
-  // Build filters in display order: Language → Sector → Currency → Faith
   type Filter = {
     dimension: string
     nodeCode: string
@@ -46,44 +44,33 @@ export async function POST(req: NextRequest) {
   }
   const filters: Filter[] = []
 
-  // 1. Language — use the PRIMARY language (first in list = official/dominant)
-  if (country.languages.length > 0) {
-    const bestLang = country.languages[0]
-    const langInfo = LANGUAGE_REGISTRY[bestLang]
-    const matching = COUNTRY_OPTIONS.filter((c) => c.languages.includes(bestLang))
-    if (langInfo) {
-      filters.push({
-        dimension: 'language',
-        nodeCode: bestLang,
-        label: langInfo.name,
-        icon: '🗣️',
-        countryCodes: matching.map((c) => c.code),
-      })
-    }
-  }
-
-  // 2. Sector — pick the sector with MOST country reach
-  if (country.topSectors.length > 0) {
-    let bestSector = country.topSectors[0]
-    let bestCount = 0
-    for (const sector of country.topSectors) {
-      const count = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(sector)).length
-      if (count > bestCount) {
-        bestCount = count
-        bestSector = sector
-      }
-    }
-    const sectorMatches = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(bestSector))
+  // ALL languages for this country
+  for (const langCode of country.languages) {
+    const langInfo = LANGUAGE_REGISTRY[langCode]
+    if (!langInfo) continue
+    const matching = COUNTRY_OPTIONS.filter((c) => c.languages.includes(langCode))
     filters.push({
-      dimension: 'sector',
-      nodeCode: bestSector.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      label: bestSector,
-      icon: '💼',
-      countryCodes: sectorMatches.map((c) => c.code),
+      dimension: 'language',
+      nodeCode: langCode,
+      label: langInfo.name,
+      icon: '🗣️',
+      countryCodes: matching.map((c) => c.code),
     })
   }
 
-  // 3. Currency
+  // ALL sectors for this country
+  for (const sector of country.topSectors) {
+    const matching = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(sector))
+    filters.push({
+      dimension: 'sector',
+      nodeCode: sector.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      label: sector,
+      icon: '💼',
+      countryCodes: matching.map((c) => c.code),
+    })
+  }
+
+  // Currency (always one)
   const currencyMatches = COUNTRY_OPTIONS.filter((c) => c.currency === country.currency)
   filters.push({
     dimension: 'currency',
@@ -93,22 +80,13 @@ export async function POST(req: NextRequest) {
     countryCodes: currencyMatches.map((c) => c.code),
   })
 
-  // 4. Faith — pick the faith with MOST country reach
-  if (country.topFaiths.length > 0) {
-    let bestFaith = country.topFaiths[0]
-    let bestCount = 0
-    for (const faith of country.topFaiths) {
-      const count = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(faith)).length
-      if (count > bestCount) {
-        bestCount = count
-        bestFaith = faith
-      }
-    }
-    const matching = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(bestFaith))
+  // ALL faiths for this country
+  for (const faith of country.topFaiths) {
+    const matching = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(faith))
     filters.push({
       dimension: 'faith',
-      nodeCode: bestFaith,
-      label: FAITH_LABELS[bestFaith] ?? bestFaith,
+      nodeCode: faith,
+      label: FAITH_LABELS[faith] ?? faith,
       icon: '☪️',
       countryCodes: matching.map((c) => c.code),
     })
