@@ -234,14 +234,13 @@ export default function DimensionFilters({
 
     // Sort chips within each row by dimension display order
     const dimOrder = DIMENSIONS.map((d) => d.key)
-    for (const [src, arr] of rows) {
+    rows.forEach((arr) => {
       arr.sort(
         (a, b) =>
           dimOrder.indexOf(a.dimension as DimensionKey) -
           dimOrder.indexOf(b.dimension as DimensionKey)
       )
-      rows.set(src, arr)
-    }
+    })
 
     return { overlaps: overlapList, sourceRows: rows }
   }, [activeFilters])

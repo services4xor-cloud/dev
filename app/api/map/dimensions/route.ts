@@ -179,7 +179,7 @@ export async function GET() {
 
   return NextResponse.json({
     dimensions: {
-      language: languageOptions.slice(0, 30),
+      language: languageOptions,
       faith: faithOptions,
       sector: sectorOptions,
       currency: currencyOptions,

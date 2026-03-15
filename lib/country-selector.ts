@@ -151,6 +151,29 @@ export type LanguageCode =
   | 'ay'
   | 'gn'
   | 'kl'
+  // Ethnic/tribal languages
+  | 'ki'
+  | 'luo'
+  | 'kln'
+  | 'luy'
+  | 'kam'
+  | 'mas'
+  | 'bm'
+  | 'mn_bm'
+  | 'dyu'
+  | 'ber'
+  | 'bem'
+  | 'tum'
+  | 'lua'
+  | 'pa'
+  | 'sd'
+  | 'bal'
+  | 'jv'
+  | 'su'
+  | 'ceb'
+  | 'ilo'
+  | 'nah'
+  | 'yua'
 
 export interface Language {
   code: LanguageCode
@@ -758,7 +781,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     code: 'ff',
     name: 'Fula',
     nativeName: 'Fulfulde',
-    countries: ['SN', 'GN', 'ML', 'NG', 'CM'],
+    countries: ['SN', 'GN', 'ML', 'NG', 'CM', 'BF', 'GM'],
     digitalReach: 'local',
   },
   ak: {
@@ -830,6 +853,157 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
     name: 'Bislama',
     nativeName: 'Bislama',
     countries: ['VU'],
+    digitalReach: 'local',
+  },
+  // ── Ethnic/tribal languages — Africa ──────────────────────────────
+  ki: {
+    code: 'ki',
+    name: 'Kikuyu',
+    nativeName: 'Gĩkũyũ',
+    countries: ['KE'],
+    digitalReach: 'local',
+  },
+  luo: {
+    code: 'luo',
+    name: 'Dholuo',
+    nativeName: 'Dholuo',
+    countries: ['KE', 'TZ'],
+    digitalReach: 'local',
+  },
+  kln: {
+    code: 'kln',
+    name: 'Kalenjin',
+    nativeName: 'Kalenjin',
+    countries: ['KE'],
+    digitalReach: 'local',
+  },
+  luy: {
+    code: 'luy',
+    name: 'Luhya',
+    nativeName: 'Luluhya',
+    countries: ['KE'],
+    digitalReach: 'local',
+  },
+  kam: {
+    code: 'kam',
+    name: 'Kamba',
+    nativeName: 'Kĩkamba',
+    countries: ['KE'],
+    digitalReach: 'local',
+  },
+  mas: {
+    code: 'mas',
+    name: 'Maasai',
+    nativeName: 'Maa',
+    countries: ['KE', 'TZ'],
+    digitalReach: 'local',
+  },
+  bm: {
+    code: 'bm',
+    name: 'Bambara',
+    nativeName: 'Bamanankan',
+    countries: ['ML', 'BF', 'SN', 'CI'],
+    digitalReach: 'local',
+  },
+  mn_bm: {
+    code: 'mn_bm',
+    name: 'Mandinka',
+    nativeName: 'Mandinka',
+    countries: ['GM', 'SN', 'GN', 'GW'],
+    digitalReach: 'local',
+  },
+  dyu: {
+    code: 'dyu',
+    name: 'Dyula',
+    nativeName: 'Julakan',
+    countries: ['CI', 'BF'],
+    digitalReach: 'local',
+  },
+  ber: {
+    code: 'ber',
+    name: 'Berber/Tamazight',
+    nativeName: 'ⵜⴰⵎⴰⵣⵉⵖⵜ',
+    countries: ['MA', 'DZ'],
+    digitalReach: 'local',
+  },
+  bem: {
+    code: 'bem',
+    name: 'Bemba',
+    nativeName: 'Chibemba',
+    countries: ['ZM'],
+    digitalReach: 'local',
+  },
+  tum: {
+    code: 'tum',
+    name: 'Tumbuka',
+    nativeName: 'Chitumbuka',
+    countries: ['MW', 'ZM'],
+    digitalReach: 'local',
+  },
+  lua: {
+    code: 'lua',
+    name: 'Luba-Kasai',
+    nativeName: 'Tshiluba',
+    countries: ['CD'],
+    digitalReach: 'local',
+  },
+  // ── Ethnic/tribal languages — Asia ──────────────────────────────
+  pa: {
+    code: 'pa',
+    name: 'Punjabi',
+    nativeName: 'ਪੰਜਾਬੀ',
+    countries: ['IN', 'PK'],
+    digitalReach: 'regional',
+  },
+  sd: { code: 'sd', name: 'Sindhi', nativeName: 'سنڌي', countries: ['PK'], digitalReach: 'local' },
+  bal: {
+    code: 'bal',
+    name: 'Balochi',
+    nativeName: 'بلۆچی',
+    countries: ['PK', 'IR'],
+    digitalReach: 'local',
+  },
+  jv: {
+    code: 'jv',
+    name: 'Javanese',
+    nativeName: 'Basa Jawa',
+    countries: ['ID'],
+    digitalReach: 'local',
+  },
+  su: {
+    code: 'su',
+    name: 'Sundanese',
+    nativeName: 'Basa Sunda',
+    countries: ['ID'],
+    digitalReach: 'local',
+  },
+  ceb: {
+    code: 'ceb',
+    name: 'Cebuano',
+    nativeName: 'Sugbuanon',
+    countries: ['PH'],
+    digitalReach: 'local',
+  },
+  ilo: {
+    code: 'ilo',
+    name: 'Ilocano',
+    nativeName: 'Ilokano',
+    countries: ['PH'],
+    digitalReach: 'local',
+  },
+  // ── Ethnic/tribal languages — Americas ──────────────────────────
+  nah: {
+    code: 'nah',
+    name: 'Nahuatl',
+    nativeName: 'Nāhuatl',
+    countries: ['MX'],
+    digitalReach: 'local',
+  },
+  yua: {
+    code: 'yua',
+    name: 'Yucatec Maya',
+    nativeName: "Maaya t'aan",
+    countries: ['MX', 'GT'],
     digitalReach: 'local',
   },
   // ── European languages ────────────────────────────────────────────
@@ -1269,7 +1443,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['M-Pesa', 'Airtel Money', 'Bank App (Equity/KCB)', 'Visa/Mastercard', 'PayPal'],
     visa: 'Home market',
     tz: 'Africa/Nairobi',
-    languages: ['en', 'sw'],
+    languages: ['en', 'sw', 'ki', 'luo', 'kln', 'luy', 'kam', 'mas', 'so', 'om'],
     topFaiths: ['christianity', 'islam'],
   },
   {
@@ -1291,7 +1465,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     ],
     visa: 'EAC Free Movement',
     tz: 'Africa/Kampala',
-    languages: ['en', 'sw'],
+    languages: ['en', 'sw', 'lg'],
     topFaiths: ['christianity', 'islam'],
   },
   {
@@ -1307,7 +1481,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['M-Pesa', 'Tigo Pesa', 'Airtel Money', 'Bank App (NMB/CRDB)', 'Visa/Mastercard'],
     visa: 'EAC Free Movement',
     tz: 'Africa/Dar_es_Salaam',
-    languages: ['sw', 'en'],
+    languages: ['sw', 'en', 'mas'],
     topFaiths: ['christianity', 'islam', 'traditional'],
   },
   {
@@ -1347,7 +1521,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer', 'OPay', 'PalmPay', 'Paystack', 'Visa/Mastercard'],
     visa: 'eVisa available',
     tz: 'Africa/Lagos',
-    languages: ['en', 'ha', 'yo', 'ig'],
+    languages: ['en', 'ha', 'yo', 'ig', 'ff'],
     topFaiths: ['islam', 'christianity'],
   },
   {
@@ -1374,7 +1548,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     ],
     visa: 'Visa free',
     tz: 'Africa/Accra',
-    languages: ['en'],
+    languages: ['en', 'ak', 'ee', 'ha'],
     topFaiths: ['christianity', 'islam', 'traditional'],
   },
   // ── Southern Africa ──────────────────────────────────────────────────────
@@ -1634,7 +1808,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     ],
     visa: 'eVisa available',
     tz: 'Asia/Kolkata',
-    languages: ['hi', 'en'],
+    languages: ['hi', 'en', 'bn', 'te', 'mr', 'ta', 'gu', 'kn', 'ml', 'pa', 'ur'],
     topFaiths: ['hinduism', 'islam', 'christianity'],
   },
   // ── South-East Asia ─────────────────────────────────────────────────────
@@ -1709,7 +1883,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['telebirr', 'CBE Birr', 'Amole', 'Bank App (CBE/Dashen)', 'Visa/Mastercard'],
     visa: 'Visa free',
     tz: 'Africa/Addis_Ababa',
-    languages: ['am', 'om'],
+    languages: ['am', 'om', 'ti', 'so'],
     topFaiths: ['christianity', 'islam'],
   },
   {
@@ -1867,7 +2041,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Airtel Money', 'Bank Transfer'],
     visa: 'Visa free',
     tz: 'Africa/Blantyre',
-    languages: ['en', 'ny'],
+    languages: ['en', 'ny', 'tum'],
     topFaiths: ['christianity', 'islam'],
   },
   {
@@ -1888,7 +2062,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['MTN MoMo', 'Airtel Money', 'Bank Transfer'],
     visa: 'Visa free',
     tz: 'Africa/Lusaka',
-    languages: ['en', 'ny'],
+    languages: ['en', 'ny', 'bem'],
     topFaiths: ['christianity'],
   },
   {
@@ -1981,7 +2155,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Orange Money', 'Wave', 'Bank Transfer'],
     visa: 'Visa on arrival',
     tz: 'Africa/Dakar',
-    languages: ['fr', 'wo'],
+    languages: ['fr', 'wo', 'ff'],
     topFaiths: ['islam'],
   },
   {
@@ -2002,7 +2176,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Orange Money', 'MTN MoMo', 'Bank Transfer'],
     visa: 'eVisa available',
     tz: 'Africa/Abidjan',
-    languages: ['fr'],
+    languages: ['fr', 'dyu', 'bm'],
     topFaiths: ['islam', 'christianity', 'traditional'],
   },
   {
@@ -2023,7 +2197,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['MTN MoMo', 'Orange Money', 'Bank Transfer'],
     visa: 'eVisa available',
     tz: 'Africa/Douala',
-    languages: ['fr', 'en'],
+    languages: ['fr', 'en', 'ff'],
     topFaiths: ['christianity', 'islam', 'traditional'],
   },
   {
@@ -2046,7 +2220,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Orange Money', 'Bank Transfer'],
     visa: 'Visa required',
     tz: 'Africa/Bamako',
-    languages: ['fr', 'ff'],
+    languages: ['fr', 'bm', 'ff'],
     topFaiths: ['islam'],
   },
   {
@@ -2069,7 +2243,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Orange Money', 'Bank Transfer'],
     visa: 'eVisa available',
     tz: 'Africa/Ouagadougou',
-    languages: ['fr'],
+    languages: ['fr', 'dyu', 'ff'],
     topFaiths: ['islam', 'christianity', 'traditional'],
   },
   {
@@ -2101,7 +2275,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Orange Money', 'Bank Transfer'],
     visa: 'eVisa available',
     tz: 'Africa/Conakry',
-    languages: ['fr', 'ff'],
+    languages: ['fr', 'ff', 'mn_bm'],
     topFaiths: ['islam', 'christianity'],
   },
   {
@@ -2186,7 +2360,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Mobile Money', 'Bank Transfer'],
     visa: 'Visa free',
     tz: 'Africa/Banjul',
-    languages: ['en', 'wo'],
+    languages: ['en', 'wo', 'mn_bm', 'ff'],
     topFaiths: ['islam'],
   },
   {
@@ -2262,7 +2436,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['M-Pesa', 'Airtel Money', 'Orange Money'],
     visa: 'Visa on arrival',
     tz: 'Africa/Kinshasa',
-    languages: ['fr', 'sw', 'ln', 'kg', 'lu'],
+    languages: ['fr', 'sw', 'ln', 'kg', 'lu', 'lua'],
     topFaiths: ['christianity'],
   },
   {
@@ -2425,7 +2599,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer', 'Wafacash'],
     visa: 'Visa required',
     tz: 'Africa/Casablanca',
-    languages: ['ar', 'fr'],
+    languages: ['ar', 'fr', 'ber'],
     topFaiths: ['islam'],
   },
   {
@@ -2447,7 +2621,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer'],
     visa: 'Visa required',
     tz: 'Africa/Algiers',
-    languages: ['ar', 'fr'],
+    languages: ['ar', 'fr', 'ber'],
     topFaiths: ['islam'],
   },
   {
@@ -3184,7 +3358,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['JazzCash', 'Easypaisa', 'Bank Transfer'],
     visa: 'eVisa available',
     tz: 'Asia/Karachi',
-    languages: ['ur', 'en'],
+    languages: ['ur', 'en', 'pa', 'ps', 'sd', 'bal'],
     topFaiths: ['islam'],
   },
   {
@@ -3289,7 +3463,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['GoPay', 'OVO', 'DANA', 'Bank Transfer'],
     visa: 'Visa on arrival (30 days)',
     tz: 'Asia/Jakarta',
-    languages: ['id'],
+    languages: ['id', 'jv', 'su'],
     topFaiths: ['islam', 'christianity', 'hinduism'],
   },
   {
@@ -3357,7 +3531,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['GCash', 'Maya', 'Bank Transfer'],
     visa: 'Visa free (30 days)',
     tz: 'Asia/Manila',
-    languages: ['tl', 'en'],
+    languages: ['tl', 'en', 'ceb', 'ilo'],
     topFaiths: ['christianity', 'islam'],
   },
   {
@@ -3789,7 +3963,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     ],
     visa: 'Visa required',
     tz: 'America/Mexico_City',
-    languages: ['es'],
+    languages: ['es', 'nah', 'yua'],
     topFaiths: ['christianity'],
   },
   {
