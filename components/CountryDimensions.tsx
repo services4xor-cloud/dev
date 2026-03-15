@@ -457,39 +457,54 @@ export default function CountryDimensions({
         </section>
       )}
 
-      {/* ── Currency ── */}
+      {/* ── Currencies (all from route) ── */}
       {currency && (
         <section>
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
-            Currency
+            {hasOthers ? 'Currencies' : 'Currency'}
           </h2>
           <div className="flex flex-wrap gap-2 sm:gap-3">
             {(() => {
-              const overlap = currencyOverlap(currency)
-              const multiplier = overlap + 1
-              const isShared = hasOthers && overlap > 0
-              const reach = COUNTRY_OPTIONS.filter((c) => c.currency === currency).length
-              return (
-                <span
-                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${
-                    isShared
-                      ? 'border-rose-300/50 bg-rose-500/20 text-rose-200 shadow-[0_0_10px_rgba(244,63,94,0.2)] ring-1 ring-rose-400/30'
-                      : 'border-rose-400/25 bg-rose-500/10 text-rose-300'
-                  }`}
-                >
-                  {currency}
-                  {isShared && (
-                    <span className="rounded-full bg-rose-400/30 px-1.5 text-[10px] font-bold text-rose-200 sm:text-xs">
-                      ×{multiplier}
+              // Collect all unique currencies across route countries, current country first
+              const currencyMap = new Map<string, string[]>()
+              currencyMap.set(currency, [code.toUpperCase()])
+              for (const other of otherCountries) {
+                const cur = other!.currency
+                const existing = currencyMap.get(cur) ?? []
+                existing.push(other!.code)
+                currencyMap.set(cur, existing)
+              }
+              return Array.from(currencyMap.entries())
+                .sort((a, b) => b[1].length - a[1].length)
+                .map(([cur, codes]) => {
+                  const isShared = codes.length >= 2
+                  const reach = COUNTRY_OPTIONS.filter((c) => c.currency === cur).length
+                  const isCurrent = cur === currency
+                  return (
+                    <span
+                      key={cur}
+                      className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${
+                        isShared
+                          ? 'border-rose-300/50 bg-rose-500/20 text-rose-200 shadow-[0_0_10px_rgba(244,63,94,0.2)] ring-1 ring-rose-400/30'
+                          : isCurrent
+                            ? 'border-rose-400/25 bg-rose-500/10 text-rose-300'
+                            : 'border-rose-400/15 bg-rose-500/5 text-rose-300/60'
+                      }`}
+                    >
+                      {cur}
+                      {isShared && (
+                        <span className="rounded-full bg-rose-400/30 px-1.5 text-[10px] font-bold text-rose-200 sm:text-xs">
+                          ×{codes.length}
+                        </span>
+                      )}
+                      {!isShared && reach > 1 && (
+                        <span className="rounded-full bg-rose-400/20 px-1.5 text-[10px] text-rose-400/70 sm:text-xs">
+                          {reach}
+                        </span>
+                      )}
                     </span>
-                  )}
-                  {!isShared && reach > 1 && (
-                    <span className="rounded-full bg-rose-400/20 px-1.5 text-[10px] text-rose-400/70 sm:text-xs">
-                      {reach}
-                    </span>
-                  )}
-                </span>
-              )
+                  )
+                })
             })()}
           </div>
         </section>
