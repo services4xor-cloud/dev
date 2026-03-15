@@ -1,4 +1,4 @@
-# Be[Country] Platform — CLAUDE.md
+# Be[X] Platform — CLAUDE.md
 
 > **READ THIS FIRST.** Agentic operating manual. Every session starts here.
 > Branch: `main` | Repo: `services4xor-cloud/dev` | Deploy: Vercel auto on push
@@ -7,116 +7,91 @@
 
 ## 1. Mission
 
-**Be[X]** is an identity-first life-routing platform for everyone. People define who they are — country, tribe, language, craft, faith — and the platform connects them to paths, people, and experiences that match their identity.
+**Be[X]** is an identity-first life-routing platform. People define who they are — country, language, craft, faith — and the platform connects them to opportunities, people, and experiences that match their identity.
 
-**Scale vision:** Be[X] where X = Country, Tribe, Ethnicity, Location, Resource, Skill — anything the user defines as important in their profile. One codebase, infinite identities. Start with countries (BeKenya), expand to tribes (BeMaasai), locations (BeNairobi), crafts (BeEngineer). Every deployment serves all countries and languages — the user's profile dimensions determine their Be[X] context.
+**Be[X]** where X = Country, Tribe, Location, Skill — anything the Explorer defines. One codebase, all countries and languages. The Explorer's profile dimensions determine their Be[X] context.
 
-**Current deployment:** BeKenya. `NEXT_PUBLIC_COUNTRY_CODE=KE`.
-**Active deployments:** Kenya (KE), Germany (DE), Switzerland (CH) — same codebase, different env vars.
-
----
-
-## 2. Document Index
-
-| Doc                    | Purpose                            | When to Read         |
-| ---------------------- | ---------------------------------- | -------------------- |
-| **`CLAUDE.md`** ←      | Master agent gateway               | Every session        |
-| **`PROGRESS.md`**      | What's done, what's next, blockers | Before building      |
-| **`PRD.md`**           | Product requirements + user flows  | Before features      |
-| **`ROADMAP.md`**       | Phases, sprints, metrics, risks    | Planning             |
-| **`ROADMAP-LIVE.md`**  | Live sprint state, priorities      | Sprint planning      |
-| **`DESIGN_SYSTEM.md`** | Brand tokens, components, rules    | Before any UI        |
-| **`ARCHITECTURE.md`**  | Tech structure, data model, APIs   | Before lib/ or API   |
-| **`REQUIREMENTS.md`**  | User requirements + decisions log  | Before refactoring   |
-| **`TESTING.md`**       | Jest + Playwright strategy         | Before tests         |
-| **`HUMAN_MANUAL.md`**  | Steps only humans can do           | Env-var blockers     |
-| **`OPERATIONS.md`**    | Agent decision tree + mistake log  | Debug agent behavior |
-| **`ASK.md`**           | Agent questions for owner (async)  | When questions arise |
-
-**After every feature:** Update `PROGRESS.md`. Not optional.
-**After ANY change:** Run `becountry-sync` — code, docs, and skills MUST stay in sync. Not optional.
-**Questions for owner:** Write to `ASK.md`. Never interrupt the session.
+**Active deployments:** Kenya (KE), Germany (DE), Switzerland (CH) — same codebase, different `NEXT_PUBLIC_COUNTRY_CODE`.
 
 ---
 
-## 3. Vocabulary — Enforce Always
+## 2. Vocabulary — Enforce Always
 
-| Say This    | Never Say                    | Meaning                             |
-| ----------- | ---------------------------- | ----------------------------------- |
-| **Pioneer** | user, job seeker, candidate  | Person seeking paths/experiences    |
-| **Anchor**  | employer, company, recruiter | Org offering Paths                  |
-| **Path**    | job, vacancy, listing        | What Anchors post                   |
-| **Chapter** | application, submission      | Pioneer engaging a Path             |
-| **Venture** | tour, booking, gig           | Experience + professional placement |
-| **Compass** | search, finder, filter       | 4-step smart route wizard           |
-| **Gate**    | country page                 | `/be/[country]` landing             |
-| **Route**   | migration path               | Country corridor (KE→DE, KE→GB…)    |
+Source of truth: `lib/vocabulary.ts` — import `VOCAB`, never hardcode.
 
-Source: `lib/vocabulary.ts` — import `VOCAB`, never hardcode.
+| Say This        | Never Say                    | Meaning                           |
+| --------------- | ---------------------------- | --------------------------------- |
+| **Explorer**    | user, job seeker, candidate  | Person seeking opportunities      |
+| **Host**        | employer, company, recruiter | Org offering Opportunities        |
+| **Opportunity** | job, vacancy, listing        | What Hosts post                   |
+| **Exchange**    | application, submission      | Explorer engaging an Opportunity  |
+| **Experience**  | tour, booking, gig           | Cultural + professional placement |
+| **Discovery**   | search, finder, filter       | Identity capture + matching       |
+| **Hub**         | dashboard                    | Explorer or Host dashboard        |
+| **Corridor**    | migration path               | Country route (KE→DE, KE→GB...)   |
+
+**Legacy terms (removed from codebase, never reintroduce):** Pioneer, Anchor, Path, Chapter, Venture, Compass, Gate.
 
 ---
 
-## 4. Autonomous Operation
+## 3. Autonomous Operation
 
 **Full autonomous operation granted.** No approval needed for code.
 
-### Always do:
+**Always do:** Create/edit/delete files. Run npm/git/prisma/next/jest. Commit + push to `main`. Update `PROGRESS.md` after features. Write questions to `ASK.md`.
 
-- Create / edit / delete any file
-- Run `npm`, `git`, `prisma`, `next`, `jest` commands
-- Commit + push to `main` after every meaningful change
-- **SYNC: When code changes → update affected docs + skills. When docs change → update code + skills. Always.**
-- Update `PROGRESS.md` after completing each feature
-- Write questions to `ASK.md` (never interrupt session)
-- Optimize for effectiveness and efficiency — learn from every session, never repeat mistakes
-
-### Never do:
-
-- Real financial transactions (live M-Pesa / Stripe)
-- Expose credentials in committed code
-- Delete the GitHub repository or modify DNS
+**Never do:** Real financial transactions. Expose credentials. Delete the repo or modify DNS.
 
 ---
 
-## 5. Build Rules
+## 4. Build Rules
 
-1. **TDD** — Test first, then implement, then refactor. No production code without a test
-2. **Boy Scout Rule** — Leave code cleaner than you found it. Every feature ends with cleanup
-3. **`'use client'`** at line 1 for any file with `onClick`, `useState`, `useEffect`
-4. **`prisma generate`** before `next build` (in `package.json`)
-5. **Mock data** in `data/mock/` — for tests only. Real app uses Prisma + Neon PostgreSQL
-6. **Brand colors** via Tailwind design tokens from `DESIGN_SYSTEM.md`
-7. **Data sources** — single source of truth per domain (see `lib/` modules)
-8. **KISS** — keep it simple, no over-engineering. DRY. YAGNI
+1. **TDD** — Test first, implement, refactor
+2. **`'use client'`** at line 1 for any file with `onClick`, `useState`, `useEffect`
+3. **`prisma generate`** before `next build` (in `package.json`)
+4. **Brand colors** via Tailwind tokens from `DESIGN_SYSTEM.md`
+5. **Single source of truth** per domain (see `lib/` modules)
+6. **KISS** — DRY, YAGNI, no over-engineering
 
 ---
 
-## 6. Brand Quick Ref
+## 5. Brand Quick Ref
 
 ```
-Primary:    #5C0A14  → bg-brand-primary, btn-primary
+Primary:    #5C0A14  → bg-brand-primary
 Accent:     #C9A227  → text-brand-accent, border-brand-accent/30
 Background: #0A0A0F  → bg-brand-bg
 Surface:    #111118  → bg-brand-surface
 ```
 
-Full rules → **`DESIGN_SYSTEM.md`**
+Full rules → `DESIGN_SYSTEM.md`
 
 ---
 
-## 7. Tech Stack
+## 6. Tech Stack
 
-| Layer      | Tech                                          |
-| ---------- | --------------------------------------------- |
-| Framework  | Next.js 14 App Router (TypeScript)            |
-| Styling    | Tailwind CSS + golden ratio φ=1.618 tokens    |
-| ORM        | Prisma 5 + PostgreSQL (Neon)                  |
-| Auth       | NextAuth.js v4 (Google + email/password)      |
-| Payments   | M-Pesa Daraja v2 (KE) · Stripe (INT)          |
-| Email      | Resend (branded templates)                    |
-| Testing    | Jest 30 (25/25) · Playwright 1.58 (102/102)   |
-| CI/CD      | GitHub Actions → Vercel (auto-deploy on push) |
-| Formatting | Prettier + ESLint + Husky pre-commit          |
+| Layer      | Tech                                            |
+| ---------- | ----------------------------------------------- |
+| Framework  | Next.js 14 App Router (TypeScript)              |
+| Styling    | Tailwind CSS + golden ratio φ=1.618 tokens      |
+| DB         | Prisma 5 + PostgreSQL (Neon) — hybrid graph     |
+| Auth       | NextAuth.js v4 (Google OAuth + Magic Link)      |
+| AI         | Anthropic Claude API (claude-sonnet-4-20250514) |
+| Payments   | M-Pesa Daraja v2 (KE) · Stripe (INT)            |
+| Email      | Resend                                          |
+| Testing    | Jest 30 (361/361, 24 suites) · Playwright       |
+| CI/CD      | GitHub Actions → Vercel (auto-deploy on push)   |
+| Formatting | Prettier + ESLint + Husky pre-commit            |
+
+---
+
+## 7. Architecture
+
+**Hybrid graph model:** Node + Edge tables in PostgreSQL (triple-store pattern) alongside relational auth/payment/messaging.
+
+**14 Prisma models:** User, Account, Session, VerificationToken, Node, Edge, Payment, Conversation, Message, AgentChat, Referral, Review, Notification, NotificationPreference
+
+**Data flow:** Map (country selection) → sessionStorage → Agent/Opportunities pages. Dimensions flow as filters between pages via `bex-map-enriched`, `bex-map-filters`, `bex-map-enriched-names`.
 
 ---
 
@@ -124,71 +99,85 @@ Full rules → **`DESIGN_SYSTEM.md`**
 
 ```
 app/
-├── page.tsx                  # Homepage
-├── compass/                  # 4-step route wizard
-├── ventures/                 # Unified Paths + Experiences feed
-├── experiences/[id]/         # Detail + booking
-├── pioneers/dashboard/       # Pioneer hub (5 tabs)
-├── anchors/dashboard/        # Anchor hub (5 tabs)
-├── anchors/post-path/        # Path creation wizard
-├── onboarding/               # 5-step Pioneer identity capture
-├── be/[country]/             # Country Gates
-├── offerings/                # International offerings
-├── charity/                  # UTAMADUNI CBO
-├── admin/                    # Admin dashboard
-├── about, pricing, contact, business, login, signup,
-│   profile, referral, privacy, fashion/, media/
-└── api/                      # API routes
+├── page.tsx              # Homepage — fullscreen map (MapLibre GL JS, 177 countries)
+├── agent/                # AI route advisor (Claude API)
+├── opportunities/        # Opportunity feed + dimension filtering
+├── profile/              # Explorer profile
+├── discovery/            # Identity capture + matching
+├── exchange/[id]/        # Exchange detail
+├── explorers/            # Explorer directory
+├── host/                 # Host dashboard
+├── onboarding/           # Identity onboarding flow
+├── be/[country]/         # Country detail pages
+├── me/                   # Explorer hub
+├── messages/             # Messaging
+├── notifications/        # Notifications
+├── payments/             # Payment management
+├── admin/                # Admin dashboard
+├── about/ pricing/ contact/ login/ signup/ referral/
+│   privacy/ settings/ offline/
+└── api/                  # 19 API route groups
+    ├── auth/ map/ agent/ identity/ onboarding/
+    ├── opportunities/ exchanges/ explorers/ host/
+    ├── messages/ notifications/ payments/ referral/
+    ├── discovery/ reviews/ users/ impact/ admin/ country/
+    └── ...
 
-lib/                          # Core libraries (vocabulary, countries, compass, matching, etc.)
-types/                        # domain.ts + api.ts
-services/                     # Service interfaces
-data/mock/                    # 15 mock modules + barrel export
-components/                   # Shared UI
-__tests__/                    # Jest (25/25)
-tests/visual/                 # Playwright (102/102)
-prisma/schema.prisma          # DB schema
+lib/                      # Core libraries (22 modules)
+├── vocabulary.ts         # BeNetwork terms (Explorer/Host/Opportunity/...)
+├── country-selector.ts   # 120+ countries, 100+ languages, proximity engine
+├── ai.ts                 # Claude AI agent — persona builder + chat
+├── graph.ts              # Graph queries (Node/Edge)
+├── auth.ts               # NextAuth config (authOptions)
+├── db.ts                 # Prisma client
+├── dimensions.ts         # Dimension filter logic
+├── dimension-scoring.ts  # 8-dimension human scoring
+├── semantic-skills.ts    # 68 skills × 12 languages
+├── countries.ts          # Deployment configs (brand, payment, sectors)
+├── i18n.ts               # Internationalization
+├── validation.ts         # Zod schemas
+├── mpesa.ts              # M-Pesa integration
+├── email.ts              # Resend email
+├── matching.ts           # 4-dimension scoring
+├── compass.ts            # Route corridors
+├── geo.ts                # Geography utils
+├── endonyms.ts           # Country native names
+├── identity-context.tsx  # React identity context
+├── notifications.ts      # Notification helpers
+├── country-api.ts        # Country API client
+└── api-client.ts         # Generic API client
+
+types/domain.ts           # Core entities + enums
+components/               # Shared UI components
+__tests__/                # Jest (361 tests, 24 suites)
+prisma/schema.prisma      # DB schema (14 models)
 ```
 
 ---
 
-## 9. Country Architecture
-
-```typescript
-NEXT_PUBLIC_COUNTRY_CODE=KE  → BeKenya   (M-Pesa, KES)
-NEXT_PUBLIC_COUNTRY_CODE=DE  → BeGermany (Stripe SEPA, EUR)
-NEXT_PUBLIC_COUNTRY_CODE=NG  → BeNigeria (Flutterwave, NGN)
-// Same codebase → different Vercel projects
-```
-
-**Be[X] Identity:** X is dynamic per user profile — country, tribe, ethnicity, location, craft, skill. Every deployment serves all countries and languages.
-
----
-
-## 10. Commands
+## 9. Commands
 
 ```bash
 npm run dev             # localhost:3000
 npm run build           # prisma generate + next build
-npm run test            # Jest (25/25)
+npm run test            # Jest (361/361)
 npm run format          # Prettier
 npm run typecheck       # TypeScript strict
-npx playwright test     # Playwright (102/102)
-npx prisma db push      # Sync schema
+npx playwright test     # Playwright E2E
+npx prisma db push      # Sync schema to Neon
+npx prisma generate     # Regenerate Prisma client
 ```
 
 ---
 
-## 11. Session Workflow
+## 10. Session Workflow
 
 ```
 1. Read PROGRESS.md    → current state
-2. Read PRD.md         → what to build
-3. Build               → follow DESIGN_SYSTEM.md for UI
-4. Test                → npm run test && npx playwright test
-5. Sync                → run becountry-sync (code ↔ docs ↔ skills)
-6. Update PROGRESS.md  → log what's done
-7. Commit + push       → Vercel auto-deploys
+2. Build               → follow DESIGN_SYSTEM.md for UI
+3. Test                → npm run test
+4. Update PROGRESS.md  → log what's done
+5. Commit + push       → Vercel auto-deploys
 ```
 
 | Error               | Fix                                     |
@@ -201,48 +190,39 @@ npx prisma db push      # Sync schema
 
 ---
 
-## 12. Deploy
+## 11. Deploy
 
 ```
-GitHub push → CI (lint + typecheck + jest + playwright) → Vercel
+GitHub push → CI (lint + typecheck + jest) → Vercel
 Project: tobias-projects-81752e2c / dev
 ```
 
 ---
 
-## 13. Skill Ecosystem (22 skills)
+## 12. Skills (6)
 
-**Entry point:** `becountry-process` — read it to choose the right skill for any task.
+Skills live in `.claude/skills/*.md`. Only these exist:
 
-**Where skills live:** `.claude/skills/*.md` (repo root). Each file has YAML frontmatter `name` and `description` for discovery. Cursor/agent rules (e.g. `bex-*`) may also apply — see workspace rules.
-
-**Rule:** After any change to code, docs, or skills → run `becountry-sync`. Code ↔ docs ↔ skills stay in sync. Non-negotiable.
-
-| Category | Skills                                                                    |
-| -------- | ------------------------------------------------------------------------- |
-| Process  | `becountry-process` (orchestrator), `becountry-sync` (code↔docs↔skills)   |
-| Planning | `becountry-sprint`, `becountry-requirements`, `becountry-big-picture`     |
-| Build    | `becountry-architecture`, `becountry-data`                                |
-| Design   | `becountry-design-review`, `becountry-ui-review`, `becountry-ux-workflow` |
-| Quality  | `becountry-testing`, `becountry-e2e-test`, `becountry-security`           |
-| Business | `becountry-business-review`                                               |
-| Deploy   | `becountry-deployment`, `becountry-push`, `becountry-country-deploy`      |
-| Ops      | `becountry-ops`, `becountry-human-tasks`, `becountry-status`              |
-
-**Modern AI-assisted dev:** Use TDD (test first), single source of truth per domain, and sync after every change so agents and humans share the same context.
+| Skill          | Purpose                                   |
+| -------------- | ----------------------------------------- |
+| `bex-push`     | Pre-push checks + deploy verification     |
+| `bex-status`   | Full platform health check                |
+| `bex-security` | Security audit (auth, API, OWASP)         |
+| `bex-cleanup`  | Boy Scout Rule — leave code cleaner       |
+| `bex-deploy`   | Deployment pipeline + multi-country setup |
+| `bex-review`   | Design + UI review (brand, a11y, vocab)   |
 
 ---
 
-## 14. Self-Learning System
+## 13. Docs
 
-This platform is a **self-learning system** that optimizes for effectiveness and efficiency:
-
-- **Learn from mistakes:** Log errors in `OPERATIONS.md`, never repeat them
-- **Improve processes:** When a skill is insufficient, update it
-- **Measure outcomes:** Track test counts, build times, deploy success rates
-- **Reduce waste:** DRY, YAGNI, KISS — no unnecessary code or docs
-- **Feedback loops:** Every review skill produces actionable findings that feed back into build skills
+| Doc                    | Purpose                            |
+| ---------------------- | ---------------------------------- |
+| **`PROGRESS.md`**      | What's done, what's next, blockers |
+| **`DESIGN_SYSTEM.md`** | Brand tokens, components, rules    |
+| **`HUMAN_MANUAL.md`**  | Steps only humans can do           |
+| **`ASK.md`**           | Agent questions for owner (async)  |
 
 ---
 
-_Last updated: Session 54 (2026-03-12); §13 skill setup 2026-03-14_
+_Last updated: Session 74 (2026-03-15)_
