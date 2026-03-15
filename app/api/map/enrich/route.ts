@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
+import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
 
 /**
  * POST /api/map/enrich
@@ -34,13 +34,31 @@ export async function POST(req: NextRequest) {
     countryCodes: string[]
   }[] = []
 
-  // 1. Location — the country itself
+  // 1. Region — all countries in the same geographic region
+  const regionLabels: Record<string, string> = {
+    'east-africa': 'East Africa',
+    'west-africa': 'West Africa',
+    'central-africa': 'Central Africa',
+    'north-africa': 'North Africa',
+    'southern-africa': 'Southern Africa',
+    'middle-east': 'Middle East',
+    europe: 'Europe',
+    americas: 'Americas',
+    'central-america-caribbean': 'Central America & Caribbean',
+    'south-america': 'South America',
+    'south-asia': 'South Asia',
+    'southeast-asia': 'Southeast Asia',
+    'east-asia': 'East Asia',
+    'central-asia': 'Central Asia',
+    oceania: 'Oceania',
+  }
+  const regionMatches = COUNTRY_OPTIONS.filter((c) => c.region === country.region)
   filters.push({
     dimension: 'location',
-    nodeCode: country.name.toLowerCase(),
-    label: country.name,
+    nodeCode: country.region,
+    label: regionLabels[country.region] ?? country.region,
     icon: '📍',
-    countryCodes: [country.code],
+    countryCodes: regionMatches.map((c) => c.code),
   })
 
   // 2. Languages — all countries sharing primary language
@@ -93,31 +111,19 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // 5. Timezone band — same IANA prefix
-  const tzPrefix = country.tz.split('/')[0]
-  const tzLabel =
-    tzPrefix === 'Europe'
-      ? 'Europe'
-      : tzPrefix === 'Africa'
-        ? 'Africa'
-        : tzPrefix === 'Asia'
-          ? 'Asia'
-          : tzPrefix === 'America'
-            ? 'Americas'
-            : tzPrefix === 'Pacific'
-              ? 'Pacific'
-              : tzPrefix === 'Australia'
-                ? 'Oceania'
-                : tzPrefix
-  const tzMatches = COUNTRY_OPTIONS.filter((c) => c.tz.startsWith(tzPrefix))
-  if (tzMatches.length > 1) {
-    filters.push({
-      dimension: 'timezone',
-      nodeCode: tzLabel.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      label: tzLabel,
-      icon: '🕐',
-      countryCodes: tzMatches.map((c) => c.code),
-    })
+  // 5. Sector — top sector shared with other countries
+  if (country.topSectors.length > 0) {
+    const primarySector = country.topSectors[0]
+    const sectorMatches = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(primarySector))
+    if (sectorMatches.length > 1) {
+      filters.push({
+        dimension: 'sector',
+        nodeCode: primarySector.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        label: primarySector,
+        icon: '💼',
+        countryCodes: sectorMatches.map((c) => c.code),
+      })
+    }
   }
 
   return NextResponse.json({ country: country.name, filters })

@@ -27,16 +27,47 @@ interface WorldMapProps {
   /** Countries with intensity scores from active filters */
   scoredCountries?: ScoredCountry[]
   onCountryClick: (code: string | null, name?: string) => void
-  selectedCountry?: string | null
   /** Country codes for soft preview glow (hover state) */
   previewCountryCodes?: string[]
+  /** Ordered list of enriched country codes — newest last, used for path-fading glow */
+  enrichedCountries?: string[]
+}
+
+/**
+ * Color spectrum for dimension matches — cool→warm→white as matches increase.
+ * 1 match = teal (cool), 2 = emerald, 3 = gold, 4 = amber, 5 = white-gold (blazing).
+ * This creates a "heat map" feel — the more dimensions two countries share, the hotter.
+ */
+function scoreToColor(score: number, matchCount: number): string {
+  if (matchCount >= 5) return '#FFF4CC' // blazing white-gold — full intersection
+  if (matchCount >= 4) return '#FFD666' // bright amber — almost perfect match
+  if (matchCount >= 3) return '#E8C840' // warm gold — strong connection
+  if (matchCount >= 2) return '#4ECDC4' // teal-green — moderate overlap
+  if (score > 0) return '#45B7AA' // cool teal — single dimension
+  return '#2d3748'
+}
+
+/**
+ * Path-fading glow for enriched (clicked) countries.
+ * Most recent = brightest gold, older = progressively dimmer with cooler hue.
+ */
+function enrichedToColor(recency: number): string {
+  // recency: 1.0 = most recent, fading to 0 for oldest
+  if (recency >= 0.9) return '#FFD700' // blazing gold — current selection
+  if (recency >= 0.5) return '#C9A227' // warm gold — recent
+  return '#8B6914' // faded amber — oldest in path
+}
+
+function enrichedToOpacity(recency: number): number {
+  // Strongest glow for newest, fading trail
+  return 0.15 + recency * 0.25 // range: 0.15 → 0.40
 }
 
 export default function WorldMap({
   scoredCountries = [],
   onCountryClick,
-  selectedCountry,
   previewCountryCodes = [],
+  enrichedCountries = [],
 }: WorldMapProps) {
   const mapRef = useRef<MapRef>(null)
   const [initialViewport] = useState(
@@ -89,107 +120,152 @@ export default function WorldMap({
     [onCountryClick]
   )
 
-  // Build scored map + preview set
+  // Build scored map + preview set + enriched recency map
   const scoreMap = useMemo(() => {
     const m: globalThis.Map<string, ScoredCountry> = new globalThis.Map()
     for (const sc of scoredCountries) m.set(sc.code, sc)
     return m
   }, [scoredCountries])
+
   const previewCodes = useMemo(() => new Set<string>(previewCountryCodes), [previewCountryCodes])
 
-  // --- Map style expressions ---
-  // Graduated intensity: score 0.2 = dim, score 0.5 = medium, score 1.0 = blazing
-  // 5 tiers: Selected > High score > Medium score > Low score > Preview > Default
+  // Recency map: newest enriched = 1.0, oldest = lowest
+  const enrichedRecency = useMemo(() => {
+    const m = new globalThis.Map<string, number>()
+    const len = enrichedCountries.length
+    if (len === 0) return m
+    for (let i = 0; i < len; i++) {
+      // Linear fade: oldest = 0.33, newest = 1.0 (never fully transparent)
+      m.set(enrichedCountries[i], 0.33 + 0.67 * (i / Math.max(len - 1, 1)))
+    }
+    return m
+  }, [enrichedCountries])
 
-  // Color graduation: score drives color from dim amber → gold → white-gold
-  const scoreToColor = (score: number): string => {
-    if (score >= 0.8) return '#FFF4CC' // blazing white-gold (4-5 dimensions)
-    if (score >= 0.6) return '#E8C840' // bright gold (3 dimensions)
-    if (score >= 0.4) return '#C9A227' // standard gold (2 dimensions)
-    return '#A07820' // warm amber (1 dimension)
-  }
+  const enrichedSet = useMemo(() => new Set(enrichedCountries), [enrichedCountries])
+
+  // --- Map style expressions ---
+  // Priority: enriched countries (path glow) > scored countries (dimension heat) > preview > default
 
   const fillColor = useMemo(() => {
-    const hasActive = scoreMap.size > 0 || !!selectedCountry || previewCodes.size > 0
+    const hasActive = scoreMap.size > 0 || enrichedSet.size > 0 || previewCodes.size > 0
     if (!hasActive) return '#C9A227'
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, '#C9A227') // selected = gold (subtle, readable)
-    for (const [code, sc] of Array.from(scoreMap)) {
-      if (code !== selectedCountry) expr.push(code, scoreToColor(sc.score))
+
+    // 1. Enriched countries — path-fading gold trail
+    for (const code of enrichedCountries) {
+      const recency = enrichedRecency.get(code) ?? 0.5
+      expr.push(code, enrichedToColor(recency))
     }
-    for (const code of Array.from(previewCodes)) {
-      if (code !== selectedCountry && !scoreMap.has(code)) {
-        expr.push(code, '#8B6914') // preview = muted gold
+
+    // 2. Scored countries — dimension heat spectrum
+    for (const [code, sc] of Array.from(scoreMap)) {
+      if (!enrichedSet.has(code)) {
+        expr.push(code, scoreToColor(sc.score, sc.matchCount))
       }
     }
-    expr.push('#2d3748')
+
+    // 3. Preview countries
+    for (const code of Array.from(previewCodes)) {
+      if (!enrichedSet.has(code) && !scoreMap.has(code)) {
+        expr.push(code, '#5B8A84') // muted teal for preview
+      }
+    }
+
+    expr.push('#2d3748') // default
     return expr as unknown as string
-  }, [scoreMap, previewCodes, selectedCountry])
+  }, [scoreMap, previewCodes, enrichedCountries, enrichedSet, enrichedRecency])
 
   const fillOpacity = useMemo(() => {
-    const hasActive = scoreMap.size > 0 || !!selectedCountry || previewCodes.size > 0
+    const hasActive = scoreMap.size > 0 || enrichedSet.size > 0 || previewCodes.size > 0
     if (!hasActive) return 0.08
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, 0.3) // low enough to see borders + text
 
-    // Graduated intensity: score drives opacity — capped low enough to see borders
+    // Enriched: path-fading opacity
+    for (const code of enrichedCountries) {
+      const recency = enrichedRecency.get(code) ?? 0.5
+      expr.push(code, enrichedToOpacity(recency))
+    }
+
+    // Scored: heat-mapped opacity
     for (const [code, sc] of Array.from(scoreMap)) {
-      if (code !== selectedCountry) {
-        const opacity = 0.06 + sc.score * 0.3
+      if (!enrichedSet.has(code)) {
+        const opacity = 0.06 + sc.score * 0.32
         expr.push(code, Math.min(opacity, 0.4))
       }
     }
+
+    // Preview: soft
     for (const code of Array.from(previewCodes)) {
-      if (code !== selectedCountry && !scoreMap.has(code)) {
-        expr.push(code, 0.15) // preview: soft
+      if (!enrichedSet.has(code) && !scoreMap.has(code)) {
+        expr.push(code, 0.12)
       }
     }
-    expr.push(0.04)
+
+    expr.push(0.04) // default
     return expr as unknown as number
-  }, [scoreMap, previewCodes, selectedCountry])
+  }, [scoreMap, previewCodes, enrichedCountries, enrichedSet, enrichedRecency])
 
   const borderColor = useMemo(() => {
-    const hasActive = scoreMap.size > 0 || !!selectedCountry || previewCodes.size > 0
+    const hasActive = scoreMap.size > 0 || enrichedSet.size > 0 || previewCodes.size > 0
     if (!hasActive) return '#C9A227'
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, '#C9A227')
-    for (const [code] of Array.from(scoreMap)) {
-      if (code !== selectedCountry) expr.push(code, '#C9A227')
+
+    // Enriched: gold borders with recency glow
+    for (const code of enrichedCountries) {
+      const recency = enrichedRecency.get(code) ?? 0.5
+      expr.push(code, enrichedToColor(recency))
     }
-    for (const code of Array.from(previewCodes)) {
-      if (code !== selectedCountry && !scoreMap.has(code)) {
-        expr.push(code, '#C9A227')
+
+    // Scored: teal-to-gold spectrum for borders too
+    for (const [code, sc] of Array.from(scoreMap)) {
+      if (!enrichedSet.has(code)) {
+        expr.push(code, scoreToColor(sc.score, sc.matchCount))
       }
     }
+
+    // Preview
+    for (const code of Array.from(previewCodes)) {
+      if (!enrichedSet.has(code) && !scoreMap.has(code)) {
+        expr.push(code, '#5B8A84')
+      }
+    }
+
     expr.push('#1f2937')
     return expr as unknown as string
-  }, [scoreMap, previewCodes, selectedCountry])
+  }, [scoreMap, previewCodes, enrichedCountries, enrichedSet, enrichedRecency])
 
   const borderWidth = useMemo(() => {
-    const hasActive = scoreMap.size > 0 || !!selectedCountry || previewCodes.size > 0
+    const hasActive = scoreMap.size > 0 || enrichedSet.size > 0 || previewCodes.size > 0
     if (!hasActive) return 0.4
 
     const expr: unknown[] = ['match', ['get', 'ISO_A2']]
-    if (selectedCountry) expr.push(selectedCountry, 2.5)
 
-    // Border also scales with score
+    // Enriched: thick border for current, thinner for trail
+    for (const code of enrichedCountries) {
+      const recency = enrichedRecency.get(code) ?? 0.5
+      expr.push(code, 1.0 + recency * 1.8) // 1.0 → 2.8
+    }
+
+    // Scored: border scales with match intensity
     for (const [code, sc] of Array.from(scoreMap)) {
-      if (code !== selectedCountry) {
-        const width = 0.4 + sc.score * 2.0
-        expr.push(code, Math.min(width, 2.5))
+      if (!enrichedSet.has(code)) {
+        expr.push(code, Math.min(0.4 + sc.score * 2.0, 2.5))
       }
     }
+
+    // Preview
     for (const code of Array.from(previewCodes)) {
-      if (code !== selectedCountry && !scoreMap.has(code)) {
+      if (!enrichedSet.has(code) && !scoreMap.has(code)) {
         expr.push(code, 0.6)
       }
     }
+
     expr.push(0.2)
     return expr as unknown as number
-  }, [scoreMap, previewCodes, selectedCountry])
+  }, [scoreMap, previewCodes, enrichedCountries, enrichedSet, enrichedRecency])
 
   return (
     <div className="relative" style={{ width: '100%', height: '100vh' }}>
