@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
@@ -376,12 +376,12 @@ export default function HomePage() {
             Opportunities
           </Link>
           {session ? (
-            <button
-              onClick={() => signOut({ callbackUrl: '/' })}
-              className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+            <Link
+              href="/profile"
+              className="text-sm text-brand-accent hover:text-brand-accent/80 transition"
             >
-              Sign out
-            </button>
+              {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Pioneer'}
+            </Link>
           ) : (
             <Link
               href="/login"
@@ -411,15 +411,13 @@ export default function HomePage() {
             Opportunities
           </Link>
           {session ? (
-            <button
-              onClick={() => {
-                signOut({ callbackUrl: '/' })
-                setMenuOpen(false)
-              }}
-              className="py-2 text-left text-sm text-brand-text-muted hover:text-brand-accent transition"
+            <Link
+              href="/profile"
+              onClick={() => setMenuOpen(false)}
+              className="py-2 text-sm text-brand-accent hover:text-brand-accent/80 transition"
             >
-              Sign out
-            </button>
+              {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Pioneer'}
+            </Link>
           ) : (
             <Link
               href="/login"
