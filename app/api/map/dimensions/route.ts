@@ -88,16 +88,18 @@ export async function GET() {
     'southeast-asia': 'Asia',
     'east-asia': 'Asia',
     'central-asia': 'Asia',
-    americas: 'Americas',
-    'south-america': 'Americas',
-    'central-america-caribbean': 'Americas',
+    americas: 'North America',
+    'south-america': 'South America',
+    'central-america-caribbean': 'Central America & Caribbean',
     oceania: 'Oceania',
   }
   const CONTINENT_ICONS: Record<string, string> = {
     Africa: '🌍',
     Asia: '🌏',
     Europe: '🌍',
-    Americas: '🌎',
+    'North America': '🌎',
+    'South America': '🌎',
+    'Central America & Caribbean': '🌎',
     Oceania: '🌏',
     'Middle East': '🕌',
   }

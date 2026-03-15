@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback } from 'react'
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
@@ -34,6 +34,95 @@ export interface ScoredCountry {
   code: string
   score: number // 0-1 normalized (matchCount / totalFilters)
   matchCount: number
+}
+
+/** Elegant next-step teaser — fades in, holds 4s, fades out. Best option only. */
+function NextStepTeaser({
+  nextStep,
+  enrichedCountries,
+  onAccept,
+  onPreview,
+}: {
+  nextStep: { code: string; name: string; score: number; matchCount: number } | null
+  enrichedCountries: string[]
+  onAccept: () => void
+  onPreview: (codes: string[]) => void
+}) {
+  const [visible, setVisible] = useState(false)
+  const [rendered, setRendered] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const prevCodeRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    // Only trigger when nextStep changes to a NEW suggestion
+    if (!nextStep) {
+      setVisible(false)
+      setTimeout(() => setRendered(false), 500) // wait for fade-out
+      prevCodeRef.current = null
+      return
+    }
+    if (nextStep.code === prevCodeRef.current) return // same suggestion, don't re-trigger
+    prevCodeRef.current = nextStep.code
+
+    // Fade in after brief delay
+    setRendered(true)
+    const showTimer = setTimeout(() => setVisible(true), 100)
+
+    // Auto-hide after 5 seconds
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      setVisible(false)
+      setTimeout(() => setRendered(false), 500)
+    }, 5000)
+
+    return () => {
+      clearTimeout(showTimer)
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [nextStep])
+
+  if (!nextStep || !rendered) return null
+
+  return (
+    <div
+      className={`absolute left-0 right-0 top-12 z-20 flex justify-center px-4 py-1.5 transition-all duration-500 ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+      }`}
+    >
+      <button
+        onClick={() => {
+          onAccept()
+          setVisible(false)
+          setTimeout(() => setRendered(false), 500)
+        }}
+        onMouseEnter={() => {
+          onPreview([nextStep.code])
+          // Pause auto-hide on hover
+          if (timerRef.current) clearTimeout(timerRef.current)
+        }}
+        onMouseLeave={() => {
+          onPreview([])
+          // Resume auto-hide
+          timerRef.current = setTimeout(() => {
+            setVisible(false)
+            setTimeout(() => setRendered(false), 500)
+          }, 2000)
+        }}
+        className="group flex items-center gap-2 rounded-full border border-brand-accent/20 bg-brand-surface/90 px-4 py-1.5 backdrop-blur-md shadow-lg shadow-brand-accent/5 transition-all hover:border-brand-accent/40 hover:shadow-brand-accent/15"
+      >
+        <span className="text-base">{countryFlag(nextStep.code)}</span>
+        <span className="text-xs font-medium text-brand-accent group-hover:underline">
+          {nextStep.name}
+        </span>
+        <span className="rounded-full bg-brand-accent/20 px-2 py-0.5 text-[10px] font-semibold text-brand-accent">
+          {Math.round(nextStep.score * 100)}%
+        </span>
+        <span className="text-[10px] text-brand-text-muted/60">
+          {enrichedCountries.length}/{MAX_PATH_STEPS}
+        </span>
+      </button>
+    </div>
+  )
 }
 
 export default function HomePage() {
@@ -362,41 +451,27 @@ export default function HomePage() {
         </nav>
       </div>
 
-      {/* Next best step — subtle suggestion bar under nav */}
-      {nextStep && (
-        <div className="absolute left-0 right-0 top-12 z-20 flex justify-center px-4 py-1.5">
-          <button
-            onClick={() => {
-              if (!enrichedCountries.includes(nextStep.code)) {
-                setEnrichedCountries((prev) => {
-                  const next = [...prev, nextStep.code]
-                  if (next.length > MAX_PATH_STEPS) {
-                    const dropped = next[0]
-                    setFilters((f) => f.filter((fl) => fl.source !== dropped))
-                    return next.slice(1)
-                  }
-                  return next
-                })
-                setEnrichedNames((prev) => ({ ...prev, [nextStep.code]: nextStep.name }))
-                void enrichCountry(nextStep.code, nextStep.name)
+      {/* Next best step — elegant teaser that fades in then out */}
+      <NextStepTeaser
+        nextStep={nextStep}
+        enrichedCountries={enrichedCountries}
+        onAccept={() => {
+          if (nextStep && !enrichedCountries.includes(nextStep.code)) {
+            setEnrichedCountries((prev) => {
+              const next = [...prev, nextStep.code]
+              if (next.length > MAX_PATH_STEPS) {
+                const dropped = next[0]
+                setFilters((f) => f.filter((fl) => fl.source !== dropped))
+                return next.slice(1)
               }
-            }}
-            onMouseEnter={() => setPreviewCountries([nextStep.code])}
-            onMouseLeave={() => setPreviewCountries([])}
-            className="group flex items-center gap-2 rounded-full border border-brand-accent/15 bg-brand-surface/80 px-3 py-1 backdrop-blur transition hover:border-brand-accent/30 hover:bg-brand-accent/10"
-          >
-            <span className="text-[10px] text-brand-text-muted">Next step</span>
-            <span className="text-sm">{countryFlag(nextStep.code)}</span>
-            <span className="text-xs text-brand-accent group-hover:underline">{nextStep.name}</span>
-            <span className="rounded-full bg-brand-accent/15 px-1.5 text-[9px] text-brand-accent">
-              {Math.round(nextStep.score * 100)}%
-            </span>
-            <span className="text-[10px] text-brand-text-muted">
-              {enrichedCountries.length}/{MAX_PATH_STEPS}
-            </span>
-          </button>
-        </div>
-      )}
+              return next
+            })
+            setEnrichedNames((prev) => ({ ...prev, [nextStep.code]: nextStep.name }))
+            void enrichCountry(nextStep.code, nextStep.name)
+          }
+        }}
+        onPreview={(codes) => setPreviewCountries(codes)}
+      />
 
       {/* Mobile nav dropdown */}
       {menuOpen && (

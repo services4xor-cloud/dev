@@ -85,15 +85,15 @@ function countryFlag(code: string): string {
   }
 }
 
-/** Intensity class based on multiplier — gamification levels */
+/** Intensity class based on multiplier — golden gamification levels */
 function overlapStyle(multiplier: number): string {
   if (multiplier >= 4)
-    return 'border-yellow-300/60 bg-yellow-300/25 text-yellow-200 shadow-[0_0_12px_rgba(253,224,71,0.3)]'
+    return 'border-yellow-400/70 bg-gradient-to-r from-yellow-400/30 to-amber-400/30 text-yellow-200 shadow-[0_0_16px_rgba(253,224,71,0.4)] font-semibold'
   if (multiplier >= 3)
-    return 'border-brand-accent/50 bg-brand-accent/30 text-brand-accent shadow-[0_0_8px_rgba(201,162,39,0.25)]'
+    return 'border-yellow-300/50 bg-gradient-to-r from-yellow-300/20 to-amber-300/20 text-yellow-300 shadow-[0_0_10px_rgba(253,224,71,0.25)]'
   if (multiplier >= 2)
-    return 'border-brand-accent/40 bg-brand-accent/20 text-brand-accent shadow-[0_0_4px_rgba(201,162,39,0.15)]'
-  return 'border-brand-accent/20 bg-brand-accent/15 text-brand-accent'
+    return 'border-brand-accent/50 bg-brand-accent/25 text-brand-accent shadow-[0_0_6px_rgba(201,162,39,0.2)]'
+  return 'border-brand-accent/30 bg-brand-accent/15 text-brand-accent'
 }
 
 export default function DimensionFilters({
@@ -288,30 +288,32 @@ export default function DimensionFilters({
           {sourceOrder.map((source) => {
             const group = sourceRows.get(source) ?? []
             const isCountry = source !== 'custom'
-            const sourceLabel = isCountry ? `${countryFlag(source)} ${source}` : '✦ Custom'
-            // Show source label even if all its filters are merged (so user can remove the source)
             return (
               <div key={source} className="flex flex-wrap items-center justify-center gap-1.5">
-                {/* Source label + remove-all for this source */}
+                {/* Source label: 🇩🇪 DE for countries, ✦ for custom — compact */}
                 <button
                   onClick={() => removeSource(source)}
-                  className={`rounded-full px-2.5 py-1 text-[10px] font-medium transition ${
+                  className={`rounded-full px-2 py-1 text-[10px] font-medium transition ${
                     isCountry
                       ? 'bg-brand-accent/15 text-brand-accent hover:bg-brand-accent/25'
-                      : 'bg-brand-text-muted/10 text-brand-text-muted hover:bg-brand-text-muted/20'
+                      : 'border border-white/10 bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/70'
                   }`}
                   title={`Remove all ${isCountry ? source : 'custom'} filters`}
                 >
-                  {sourceLabel} ✕
+                  {isCountry ? `${countryFlag(source)} ${source}` : '✦'} ✕
                 </button>
-                {/* Unique filter chips (overlaps are shown above) */}
+                {/* Unique filter chips — silver for custom, accent for country */}
                 {group.map((f) => (
                   <button
                     key={`${f.dimension}:${f.nodeCode}`}
                     onClick={() => removeFilter(f.dimension, f.nodeCode)}
                     onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
                     onMouseLeave={() => onPreview?.([])}
-                    className="rounded-full bg-brand-accent/15 px-2.5 py-1 text-xs text-brand-accent hover:bg-brand-accent/25 transition"
+                    className={`rounded-full px-2.5 py-1 text-xs transition ${
+                      isCountry
+                        ? 'bg-brand-accent/15 text-brand-accent hover:bg-brand-accent/25'
+                        : 'border border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80'
+                    }`}
                   >
                     {f.icon ?? '◆'} {f.label ?? f.nodeCode} ✕
                   </button>
