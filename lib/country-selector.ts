@@ -1498,7 +1498,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'EAC Free Movement',
     tz: 'Africa/Kigali',
     languages: ['rw', 'en', 'fr'],
-    topFaiths: ['christianity'],
+    topFaiths: ['christianity', 'islam'],
   },
   // ── West Africa ──────────────────────────────────────────────────────────
   {
@@ -1580,7 +1580,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     visa: 'General Work Visa / Critical Skills',
     tz: 'Africa/Johannesburg',
     languages: ['zu', 'xh', 'af', 'en', 'st', 'tn', 'ts', 'ss', 've', 'nr'],
-    topFaiths: ['christianity'],
+    topFaiths: ['christianity', 'traditional', 'islam'],
   },
   // ── Middle East ──────────────────────────────────────────────────────────
   {
@@ -1685,7 +1685,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     ],
     visa: 'UK visa required',
     tz: 'Europe/London',
-    languages: ['en'],
+    languages: ['en', 'cy'],
     topFaiths: ['christianity', 'secular', 'islam'],
   },
   {
@@ -1731,7 +1731,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Carte Bancaire', 'Apple Pay', 'PayPal', 'Google Pay', 'Klarna'],
     visa: 'Schengen visa required',
     tz: 'Europe/Paris',
-    languages: ['fr'],
+    languages: ['fr', 'en'],
     topFaiths: ['christianity', 'secular', 'islam'],
   },
   // ── Americas ─────────────────────────────────────────────────────────────
@@ -1883,7 +1883,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['telebirr', 'CBE Birr', 'Amole', 'Bank App (CBE/Dashen)', 'Visa/Mastercard'],
     visa: 'Visa free',
     tz: 'Africa/Addis_Ababa',
-    languages: ['am', 'om', 'ti', 'so'],
+    languages: ['am', 'om', 'ti', 'so', 'en'],
     topFaiths: ['christianity', 'islam'],
   },
   {
@@ -1894,7 +1894,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     lng: 46.2,
     region: 'east-africa',
     corridorStrength: 'partner',
-    topSectors: ['Agriculture & Food', 'Technology & IT', 'Financial Services'],
+    topSectors: ['Agriculture & Food', 'Logistics & Trade', 'Financial Services'],
     currency: 'SOS',
     payment: ['EVC Plus', 'Zaad', 'Hawala'],
     visa: 'eVisa available',
@@ -1938,7 +1938,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer', 'Cash'],
     visa: 'Visa free',
     tz: 'Africa/Asmara',
-    languages: ['ti', 'ar'],
+    languages: ['ti', 'ar', 'en'],
     topFaiths: ['christianity', 'islam'],
   },
   {
@@ -2009,7 +2009,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['M-Pesa', 'e-Mola', 'Bank Transfer'],
     visa: 'Visa on arrival',
     tz: 'Africa/Maputo',
-    languages: ['pt'],
+    languages: ['pt', 'sw'],
     topFaiths: ['christianity', 'islam', 'traditional'],
   },
   {
@@ -3066,7 +3066,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bizum', 'Apple Pay', 'PayPal', 'Google Pay', 'Klarna'],
     visa: 'Schengen visa required',
     tz: 'Europe/Madrid',
-    languages: ['es'],
+    languages: ['es', 'ca', 'eu', 'gl'],
     topFaiths: ['christianity', 'secular'],
   },
   {
@@ -3252,7 +3252,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['SEPA', 'PayPal', 'Apple Pay'],
     visa: 'Schengen visa required',
     tz: 'Europe/Bucharest',
-    languages: ['ro'],
+    languages: ['ro', 'hu'],
     topFaiths: ['christianity'],
   },
   {
@@ -3311,8 +3311,8 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Troy', 'BKM Express', 'iyzico'],
     visa: 'Visa free (90 days)',
     tz: 'Europe/Istanbul',
-    languages: ['tr'],
-    topFaiths: ['islam'],
+    languages: ['tr', 'ku'],
+    topFaiths: ['islam', 'secular'],
   },
   {
     code: 'RU',
@@ -3380,7 +3380,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['bKash', 'Nagad', 'Rocket', 'Bank Transfer'],
     visa: 'Visa on arrival',
     tz: 'Asia/Dhaka',
-    languages: ['bn'],
+    languages: ['bn', 'en'],
     topFaiths: ['islam', 'hinduism'],
   },
   {
@@ -3401,7 +3401,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['FriMi', 'Bank Transfer', 'Cash'],
     visa: 'eVisa available',
     tz: 'Asia/Colombo',
-    languages: ['si', 'ta'],
+    languages: ['si', 'ta', 'en'],
     topFaiths: ['buddhism', 'hinduism', 'islam', 'christianity'],
   },
   {
@@ -3422,8 +3422,24 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['eSewa', 'Khalti', 'Bank Transfer'],
     visa: 'Visa on arrival',
     tz: 'Asia/Kathmandu',
-    languages: ['ne'],
+    languages: ['ne', 'en'],
     topFaiths: ['hinduism', 'buddhism'],
+  },
+  {
+    code: 'MV',
+    name: 'Maldives',
+    flag: '🇲🇻',
+    lat: 3.203,
+    lng: 73.221,
+    region: 'south-asia',
+    corridorStrength: 'emerging',
+    topSectors: ['Tourism & Hospitality', 'Fisheries & Marine', 'Logistics & Trade'],
+    currency: 'MVR',
+    payment: ['BML App', 'Bank Transfer', 'Visa/Mastercard'],
+    visa: 'Visa on arrival (30 days)',
+    tz: 'Indian/Maldives',
+    languages: ['dv', 'en'],
+    topFaiths: ['islam'],
   },
   {
     code: 'AF',
@@ -4384,6 +4400,27 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     topFaiths: ['christianity', 'islam'],
   },
   {
+    code: 'MT',
+    name: 'Malta',
+    flag: '🇲🇹',
+    lat: 35.937,
+    lng: 14.376,
+    region: 'europe',
+    corridorStrength: 'emerging',
+    topSectors: [
+      'Tourism & Hospitality',
+      'Financial Services',
+      'Technology & IT',
+      'Logistics & Trade',
+    ],
+    currency: 'EUR',
+    payment: ['SEPA', 'Visa/Mastercard', 'PayPal', 'Apple Pay'],
+    visa: 'Schengen visa required',
+    tz: 'Europe/Malta',
+    languages: ['mt', 'en'],
+    topFaiths: ['christianity'],
+  },
+  {
     code: 'EE',
     name: 'Estonia',
     flag: '🇪🇪',
@@ -4622,7 +4659,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer'],
     visa: 'Visa free (90 days)',
     tz: 'Europe/Kyiv',
-    languages: ['uk'],
+    languages: ['uk', 'ru'],
     topFaiths: ['christianity'],
   },
   {
@@ -4666,7 +4703,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Shetab Network', 'Cash', 'Bank Transfer'],
     visa: 'Visa on arrival',
     tz: 'Asia/Tehran',
-    languages: ['fa'],
+    languages: ['fa', 'ku', 'az'],
     topFaiths: ['islam'],
   },
   {
@@ -5000,7 +5037,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     payment: ['Bank Transfer'],
     visa: 'Visa free (90 days)',
     tz: 'America/Guatemala',
-    languages: ['es'],
+    languages: ['es', 'yua'],
     topFaiths: ['christianity'],
   },
   {
