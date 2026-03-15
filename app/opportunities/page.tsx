@@ -5,6 +5,50 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import DimensionOverlapBar from '@/components/DimensionOverlapBar'
 
+/** Greeting in user's browser language */
+const GREETINGS: Record<string, string> = {
+  en: 'Hello',
+  de: 'Hallo',
+  fr: 'Bonjour',
+  es: 'Hola',
+  pt: 'Olá',
+  it: 'Ciao',
+  nl: 'Hallo',
+  pl: 'Cześć',
+  ru: 'Привет',
+  uk: 'Привіт',
+  ja: 'こんにちは',
+  ko: '안녕하세요',
+  zh: '你好',
+  ar: 'مرحبا',
+  hi: 'नमस्ते',
+  sw: 'Habari',
+  tr: 'Merhaba',
+  th: 'สวัสดี',
+  vi: 'Xin chào',
+  id: 'Halo',
+  ms: 'Halo',
+  ro: 'Bună',
+  cs: 'Ahoj',
+  hu: 'Szia',
+  sv: 'Hej',
+  no: 'Hei',
+  da: 'Hej',
+  fi: 'Hei',
+  el: 'Γεια σου',
+  he: 'שלום',
+  bn: 'হ্যালো',
+  ta: 'வணக்கம்',
+  te: 'హలో',
+  fa: 'سلام',
+}
+
+function getBrowserGreeting(): string {
+  if (typeof navigator === 'undefined') return GREETINGS.en
+  const lang = navigator.language?.slice(0, 2)?.toLowerCase()
+  return GREETINGS[lang] ?? GREETINGS.en
+}
+
 interface OpportunityHost {
   label: string
   icon: string
@@ -51,6 +95,12 @@ export default function OpportunitiesPage() {
   const [success, setSuccess] = useState(false)
   const [focusedValue, setFocusedValue] = useState<string | null>(null)
   const [filterSector, setFilterSector] = useState<string | null>(null)
+
+  const [greeting, setGreeting] = useState('Hello')
+
+  useEffect(() => {
+    setGreeting(getBrowserGreeting())
+  }, [])
 
   const role = (session?.user as { role?: string } | undefined)?.role
   const canPost = role === 'HOST' || role === 'ADMIN'
@@ -138,7 +188,7 @@ export default function OpportunitiesPage() {
       <header className="border-b border-brand-accent/10 px-6 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-brand-accent">Opportunities</h1>
+            <h1 className="text-xl font-bold text-brand-accent">{greeting} — Opportunities</h1>
             {canPost && (
               <button
                 onClick={() => setShowForm((v) => !v)}

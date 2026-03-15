@@ -6,10 +6,60 @@ import DimensionOverlapBar from '@/components/DimensionOverlapBar'
 import type { AgentDimensions } from '@/types/domain'
 import type { ActiveFilter } from '@/components/DimensionFilters'
 
+/** Greeting in user's browser language */
+const GREETINGS: Record<string, string> = {
+  en: 'Hello',
+  de: 'Hallo',
+  fr: 'Bonjour',
+  es: 'Hola',
+  pt: 'Olá',
+  it: 'Ciao',
+  nl: 'Hallo',
+  pl: 'Cześć',
+  ru: 'Привет',
+  uk: 'Привіт',
+  ja: 'こんにちは',
+  ko: '안녕하세요',
+  zh: '你好',
+  ar: 'مرحبا',
+  hi: 'नमस्ते',
+  sw: 'Habari',
+  tr: 'Merhaba',
+  th: 'สวัสดี',
+  vi: 'Xin chào',
+  id: 'Halo',
+  ms: 'Halo',
+  ro: 'Bună',
+  cs: 'Ahoj',
+  hu: 'Szia',
+  sv: 'Hej',
+  no: 'Hei',
+  da: 'Hej',
+  fi: 'Hei',
+  el: 'Γεια σου',
+  he: 'שלום',
+  bn: 'হ্যালো',
+  ta: 'வணக்கம்',
+  te: 'హలో',
+  fa: 'سلام',
+}
+
+function getBrowserGreeting(): string {
+  if (typeof navigator === 'undefined') return GREETINGS.en
+  const lang = navigator.language?.slice(0, 2)?.toLowerCase()
+  return GREETINGS[lang] ?? GREETINGS.en
+}
+
 export default function AgentPage() {
   const [filters, setFilters] = useState<ActiveFilter[]>([])
   const [focusedValue, setFocusedValue] = useState<string | null>(null)
   const [focusHint, setFocusHint] = useState<string | null>(null)
+  const [greeting, setGreeting] = useState('Hello')
+
+  // Detect browser language on mount
+  useEffect(() => {
+    setGreeting(getBrowserGreeting())
+  }, [])
 
   // Load active filters from sessionStorage (set by map page)
   useEffect(() => {
@@ -88,7 +138,7 @@ export default function AgentPage() {
       <header className="border-b border-brand-accent/10 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-brand-accent">Be[X] Agent</h1>
+            <h1 className="text-xl font-bold text-brand-accent">{greeting} — Be[X] Agent</h1>
             <p className="text-sm text-brand-text-muted">
               AI persona shaped by your dimension crossings
             </p>

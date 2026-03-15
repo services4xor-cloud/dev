@@ -2,11 +2,9 @@
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSession, signOut } from 'next-auth/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
-import NotificationBadge from '@/components/NotificationBadge'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 
 /** Max enrichment steps — oldest drops off when exceeded (ouroboros) */
@@ -89,7 +87,6 @@ export default function HomePage() {
   }, [])
   const previewCountries: string[] = [] // preview disabled — keep prop for API compat
   const [menuOpen, setMenuOpen] = useState(false)
-  const [unreadMessages, setUnreadMessages] = useState(0)
 
   // The "selected" country for the logo is the most recently enriched
   const selectedCountry =
@@ -277,27 +274,6 @@ export default function HomePage() {
     })
   }, [])
 
-  // Poll for unread notifications every 30 seconds when signed in
-  useEffect(() => {
-    if (!session) return
-
-    const fetchNotifications = async () => {
-      try {
-        const res = await fetch('/api/notifications')
-        if (res.ok) {
-          const data = (await res.json()) as { unreadMessages: number; pendingPayments: number }
-          setUnreadMessages(data.unreadMessages)
-        }
-      } catch {
-        // silently ignore network errors
-      }
-    }
-
-    fetchNotifications()
-    const interval = setInterval(fetchNotifications, 30_000)
-    return () => clearInterval(interval)
-  }, [session])
-
   // Handle filter changes from DimensionFilters — sync enriched countries when source rows removed
   const handleFilterChange = useCallback((newFilters: ActiveFilter[]) => {
     setFilters(newFilters)
@@ -399,42 +375,13 @@ export default function HomePage() {
           >
             Opportunities
           </Link>
-          <Link
-            href="/messages"
-            className="relative text-sm text-brand-text-muted hover:text-brand-accent transition"
-          >
-            Messages
-            {session && <NotificationBadge count={unreadMessages} />}
-          </Link>
           {session ? (
-            <>
-              <Link
-                href="/me"
-                className="flex items-center gap-1.5 text-sm text-brand-accent transition hover:text-brand-accent/80"
-              >
-                {session.user?.image ? (
-                  <Image
-                    src={session.user.image}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="h-5 w-5 rounded-full"
-                    unoptimized
-                  />
-                ) : (
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-accent/20 text-[10px] font-bold text-brand-accent">
-                    {(session.user?.name ?? session.user?.email ?? '?')[0].toUpperCase()}
-                  </span>
-                )}
-                {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Me'}
-              </Link>
-              <button
-                onClick={() => signOut({ callbackUrl: '/' })}
-                className="text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Sign out
-              </button>
-            </>
+            <button
+              onClick={() => signOut({ callbackUrl: '/' })}
+              className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+            >
+              Sign out
+            </button>
           ) : (
             <Link
               href="/login"
@@ -463,47 +410,16 @@ export default function HomePage() {
           >
             Opportunities
           </Link>
-          <Link
-            href="/messages"
-            onClick={() => setMenuOpen(false)}
-            className="relative py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
-          >
-            Messages
-            {session && <NotificationBadge count={unreadMessages} />}
-          </Link>
           {session ? (
-            <>
-              <Link
-                href="/me"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 py-2 text-sm text-brand-accent transition"
-              >
-                {session.user?.image ? (
-                  <Image
-                    src={session.user.image}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="h-5 w-5 rounded-full"
-                    unoptimized
-                  />
-                ) : (
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-accent/20 text-[10px] font-bold text-brand-accent">
-                    {(session.user?.name ?? session.user?.email ?? '?')[0].toUpperCase()}
-                  </span>
-                )}
-                {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Me'}
-              </Link>
-              <button
-                onClick={() => {
-                  signOut({ callbackUrl: '/' })
-                  setMenuOpen(false)
-                }}
-                className="py-2 text-left text-sm text-brand-text-muted hover:text-brand-accent transition"
-              >
-                Sign out
-              </button>
-            </>
+            <button
+              onClick={() => {
+                signOut({ callbackUrl: '/' })
+                setMenuOpen(false)
+              }}
+              className="py-2 text-left text-sm text-brand-text-muted hover:text-brand-accent transition"
+            >
+              Sign out
+            </button>
           ) : (
             <Link
               href="/login"
