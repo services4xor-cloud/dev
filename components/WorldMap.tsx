@@ -17,57 +17,62 @@ function getSavedViewport() {
   }
 }
 
-/** Country with intensity score — tracks WHICH dimensions match for color blending */
+/** Country score: dominant dimension determines color family, depth determines intensity */
 interface ScoredCountry {
   code: string
-  score: number // 0-1 normalized
+  score: number
   matchCount: number
-  dimensions: string[] // which dimension types match (e.g. ['language', 'faith'])
+  dimensions: string[]
+  dominantDim: string // dimension with most hits → hue family
+  dominantValue: string // specific value → shade within family
+  depth: number // unique dimension count 1-5 → intensity
 }
 
 interface WorldMapProps {
   scoredCountries?: ScoredCountry[]
   onCountryClick: (code: string | null, name?: string) => void
   previewCountryCodes?: string[]
-  /** Ordered list of enriched country codes — used for connection lines */
   enrichedCountries?: string[]
 }
 
-// ─── Dimension colors — perceptually spaced for additive mixing ───────────────
-// Chosen so every 2/3/4/5-way combination produces a visually unique color.
-const DIMENSION_RGB: Record<string, [number, number, number]> = {
-  language: [0, 180, 200], // cyan — cool, distinct from all warm colors
-  faith: [160, 60, 220], // purple — unique hue, stands alone
-  sector: [40, 200, 80], // green — natural, easy to identify
-  location: [240, 150, 0], // orange — warm, contrasts cool dims
-  currency: [220, 50, 100], // rose/magenta — distinct from orange and purple
+// ─── HSL-based dimension color system ─────────────────────────────────────────
+// Each dimension has a base hue. Specific values shift ±8° within the family.
+// Depth (1-5 matching dimensions) controls saturation + lightness.
+// Result: English=teal-A, German=teal-B (same family, distinguishable).
+const DIMENSION_HUE: Record<string, number> = {
+  language: 178, // teal/cyan
+  faith: 272, // purple
+  sector: 152, // green
+  location: 38, // amber/orange
+  currency: 335, // rose/magenta
+}
+
+/** Simple string hash for consistent value→shade mapping */
+function strHash(s: string): number {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) & 0xffff
+  return h
 }
 
 /**
- * ADDITIVE color mixing: each matching dimension adds its color to a dark base.
- * This produces unique colors for every combination:
- *   Language only → cyan          Faith only → purple
- *   Language+Faith → blue-lavender Language+Sector → teal-aqua
- *   Faith+Region → warm pink      Sector+Currency → deep olive
- *   All 5 → bright warm white
- * The more dimensions match, the brighter — but the HUE stays unique per combo.
+ * Convert scored country to HSL color.
+ * Hue = dimension family ± value offset. Sat+Light = depth.
+ * Each specific value (English, German, Christianity, Islam) gets a unique,
+ * consistent shade within its dimension's color family.
  */
-function dimensionsToColor(dimensions: string[]): string {
-  if (dimensions.length === 0) return '#6B5B3E' // neighbor proximity — warm earth
+function scoredToColor(dominantDim: string, dominantValue: string, depth: number): string {
+  if (!dominantDim) return '#6B5B3E' // neighbor proximity
 
-  // Start from dark base — each dimension adds light
-  let r = 20,
-    g = 20,
-    b = 30
-  const intensity = 0.38 // how much each dimension contributes
-  for (const d of dimensions) {
-    const rgb = DIMENSION_RGB[d] ?? [120, 120, 120]
-    r += rgb[0] * intensity
-    g += rgb[1] * intensity
-    b += rgb[2] * intensity
-  }
+  const baseHue = DIMENSION_HUE[dominantDim] ?? 178
+  // Specific value shifts hue ±8° for distinguishable shades within the family
+  const valueOffset = (strHash(dominantValue) % 17) - 8
+  const hue = (baseHue + valueOffset + 360) % 360
 
-  return `rgb(${Math.min(255, Math.round(r))},${Math.min(255, Math.round(g))},${Math.min(255, Math.round(b))})`
+  // Depth 1→5 determines vibrancy: subtle dark → vivid bright
+  const sat = 40 + depth * 11 // 51% → 95%
+  const light = 28 + depth * 7 // 35% → 63%
+
+  return `hsl(${hue},${sat}%,${light}%)`
 }
 
 /** Uniform enriched glow — all selected countries shine equally bright */
@@ -235,10 +240,10 @@ export default function WorldMap({
       expr.push(code, ENRICHED_COLOR)
     }
 
-    // 2. Scored — additive dimension colors (unique per combination)
+    // 2. Scored — HSL dimension-family colors (hue=dimension, shade=value, intensity=depth)
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        expr.push(code, dimensionsToColor(sc.dimensions))
+        expr.push(code, scoredToColor(sc.dominantDim, sc.dominantValue, sc.depth))
       }
     }
 
@@ -264,12 +269,12 @@ export default function WorldMap({
       expr.push(code, ENRICHED_OPACITY)
     }
 
-    // Scored: opacity tied to UNIQUE DIMENSION COUNT (not raw filter count)
-    // 1 dim = 0.18, 2 dims = 0.28, 3 dims = 0.38, 4 dims = 0.48, 5 dims = 0.55
+    // Scored: opacity tied to depth (unique dimension count 1-5)
+    // depth 1 = 0.20, depth 2 = 0.30, depth 3 = 0.40, depth 4 = 0.50, depth 5 = 0.55
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        if (sc.dimensions.length > 0) {
-          const dimOpacity = 0.1 + sc.dimensions.length * 0.1
+        if (sc.depth > 0) {
+          const dimOpacity = 0.1 + sc.depth * 0.1
           expr.push(code, Math.min(dimOpacity, 0.55))
         } else {
           // Neighbor proximity only — subtle
@@ -300,10 +305,10 @@ export default function WorldMap({
       expr.push(code, ENRICHED_COLOR)
     }
 
-    // Scored: additive dimension border colors
+    // Scored: HSL dimension-family border colors
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        expr.push(code, dimensionsToColor(sc.dimensions))
+        expr.push(code, scoredToColor(sc.dominantDim, sc.dominantValue, sc.depth))
       }
     }
 
@@ -328,10 +333,10 @@ export default function WorldMap({
       expr.push(code, ENRICHED_BORDER_WIDTH)
     }
 
-    // Scored: border scales with dimension count
+    // Scored: border scales with depth (unique dimension count)
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        const dimWidth = sc.dimensions.length > 0 ? 0.4 + sc.dimensions.length * 0.4 : 0.3
+        const dimWidth = sc.depth > 0 ? 0.4 + sc.depth * 0.4 : 0.3
         expr.push(code, Math.min(dimWidth, 2.5))
       }
     }

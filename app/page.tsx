@@ -30,12 +30,18 @@ function countryFlag(code: string): string {
   }
 }
 
-/** Country with intensity score: tracks WHICH dimensions match for color blending */
+/** Dimension priority for determining dominant color */
+const DIM_PRIORITY = ['language', 'faith', 'sector', 'location', 'currency']
+
+/** Country with intensity score: tracks dominant dimension for map coloring */
 export interface ScoredCountry {
   code: string
-  score: number // 0-1 normalized (matchCount / totalFilters)
-  matchCount: number // 0 = neighbor proximity only, 1+ = dimension matches
-  dimensions: string[] // which dimension types match (e.g. ['language', 'faith'])
+  score: number
+  matchCount: number
+  dimensions: string[] // which dimension types match
+  dominantDim: string // dimension with most hits (determines hue family)
+  dominantValue: string // specific value in dominant dim (determines shade)
+  depth: number // unique dimension count 1-5 (determines intensity)
 }
 
 /** Haversine distance between two lat/lng points in km */
@@ -114,24 +120,66 @@ export default function HomePage() {
   const scoredCountries = useMemo(() => {
     const filtersWithCodes = filters.filter((f) => f.countryCodes && f.countryCodes.length > 0)
 
-    // Track count AND which dimension types match per country
-    const countMap = new Map<string, { count: number; dims: Set<string> }>()
+    // Track per-dimension counts and values for dominant-dimension coloring
+    const countMap = new Map<
+      string,
+      {
+        count: number
+        dims: Set<string>
+        dimCounts: Record<string, number>
+        dimValues: Record<string, Record<string, number>>
+      }
+    >()
     for (const f of filtersWithCodes) {
       for (const code of f.countryCodes!) {
-        const entry = countMap.get(code) ?? { count: 0, dims: new Set() }
+        const entry = countMap.get(code) ?? {
+          count: 0,
+          dims: new Set(),
+          dimCounts: {},
+          dimValues: {},
+        }
         entry.count++
         entry.dims.add(f.dimension)
+        entry.dimCounts[f.dimension] = (entry.dimCounts[f.dimension] || 0) + 1
+        if (!entry.dimValues[f.dimension]) entry.dimValues[f.dimension] = {}
+        entry.dimValues[f.dimension][f.nodeCode] =
+          (entry.dimValues[f.dimension][f.nodeCode] || 0) + 1
         countMap.set(code, entry)
       }
     }
 
     const scored = new Map<string, ScoredCountry>()
-    for (const [code, { count, dims }] of Array.from(countMap.entries())) {
+    for (const [code, entry] of Array.from(countMap.entries())) {
+      // Find dominant dimension (most hits, priority order for ties)
+      let dominantDim = 'language'
+      let dominantValue = ''
+      let maxDimCount = 0
+      for (const dim of DIM_PRIORITY) {
+        const c = entry.dimCounts[dim] || 0
+        if (c > maxDimCount) {
+          maxDimCount = c
+          dominantDim = dim
+          // Find top value within this dimension
+          const values = entry.dimValues[dim] || {}
+          let topVal = ''
+          let topValCount = 0
+          for (const [v, vc] of Object.entries(values)) {
+            if (vc > topValCount) {
+              topValCount = vc
+              topVal = v
+            }
+          }
+          dominantValue = topVal
+        }
+      }
       scored.set(code, {
         code,
-        score: dims.size / 5, // normalized by max possible dimensions (5), not raw filter count
-        matchCount: count,
-        dimensions: Array.from(dims),
+        score: entry.dims.size / 5,
+        matchCount: entry.count,
+        dimensions: Array.from(entry.dims),
+        dominantDim,
+        dominantValue,
+        depth: entry.dims.size,
       })
     }
 
@@ -158,6 +206,9 @@ export default function HomePage() {
             score: proximityScore,
             matchCount: 0,
             dimensions: [],
+            dominantDim: '',
+            dominantValue: '',
+            depth: 0,
           })
         }
       }
