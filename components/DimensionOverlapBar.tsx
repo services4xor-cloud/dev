@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import type { ActiveFilter } from '@/components/DimensionFilters'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 
 /**
  * DimensionOverlapBar — shared context bar for Agent + Opportunities pages.
  *
  * Reads enriched countries + filters from sessionStorage (set by map page).
- * Shows country chips (removable with red X) + dimension overlap matrix.
+ * Shows country chips (removable with red X) + route hops + dimension overlap matrix.
  * Writes back on removal for two-way sync with the map.
  */
 
@@ -76,6 +77,81 @@ interface OverlapValue {
   countryCodes: string[] // all country codes matched by this filter
 }
 
+// ─── Route hop utilities ────────────────────────────────────────────────────
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371
+  const toRad = Math.PI / 180
+  const dLat = (lat2 - lat1) * toRad
+  const dLng = (lng2 - lng1) * toRad
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * toRad) * Math.cos(lat2 * toRad) * Math.sin(dLng / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+function fmtDistance(km: number): string {
+  return km >= 1000 ? `${(km / 1000).toFixed(1)}k km` : `${Math.round(km)} km`
+}
+
+function fmtFlightTime(km: number): string {
+  const hours = km / 800
+  if (hours < 1) return `~${Math.round(hours * 60)}min`
+  return hours < 10 ? `~${hours.toFixed(1)}h` : `~${Math.round(hours)}h`
+}
+
+function getUtcOffsetMinutes(tz: string): number {
+  try {
+    const now = new Date()
+    const str = now.toLocaleString('en-US', { timeZone: tz, timeZoneName: 'shortOffset' })
+    const match = str.match(/GMT([+-]\d{1,2}(?::?\d{2})?)/)
+    if (!match) return 0
+    const parts = match[1].replace(':', '').match(/^([+-])(\d{1,2})(\d{2})?$/)
+    if (!parts) return 0
+    const sign = parts[1] === '-' ? -1 : 1
+    return sign * (parseInt(parts[2]) * 60 + parseInt(parts[3] ?? '0'))
+  } catch {
+    return 0
+  }
+}
+
+function fmtTimeDiff(minutes: number): string {
+  const abs = Math.abs(minutes)
+  const h = Math.floor(abs / 60)
+  const m = abs % 60
+  const sign = minutes >= 0 ? '+' : '-'
+  if (m === 0) return `${sign}${h}h`
+  return `${sign}${h}h${m}m`
+}
+
+const rateCache: Record<string, Record<string, number>> = {}
+
+async function fetchRates(base: string): Promise<Record<string, number>> {
+  if (rateCache[base]) return rateCache[base]
+  try {
+    const res = await fetch(`https://open.er-api.com/v6/latest/${base}`)
+    if (!res.ok) return {}
+    const data = await res.json()
+    rateCache[base] = data.rates ?? {}
+    return rateCache[base]
+  } catch {
+    return {}
+  }
+}
+
+interface HopInfo {
+  fromCode: string
+  fromName: string
+  fromFlag: string
+  toCode: string
+  toName: string
+  toFlag: string
+  distanceKm: number
+  timeDiffMin: number
+  fromCurrency: string
+  toCurrency: string
+  rate: number | null
+}
+
 export default function DimensionOverlapBar({
   onDimensionClick,
   focusedValue,
@@ -84,6 +160,7 @@ export default function DimensionOverlapBar({
   const [enrichedCountries, setEnrichedCountries] = useState<string[]>([])
   const [enrichedNames, setEnrichedNames] = useState<Record<string, string>>({})
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null)
+  const [hops, setHops] = useState<HopInfo[]>([])
 
   // Load from sessionStorage on mount
   useEffect(() => {
@@ -98,6 +175,63 @@ export default function DimensionOverlapBar({
       // ignore
     }
   }, [])
+
+  // Compute route hops when enriched countries change
+  useEffect(() => {
+    if (enrichedCountries.length < 2) {
+      setHops([])
+      return
+    }
+
+    const countries = enrichedCountries
+      .map((c) => COUNTRY_OPTIONS.find((o) => o.code === c))
+      .filter(Boolean)
+
+    if (countries.length < 2) {
+      setHops([])
+      return
+    }
+
+    // Build hops sequentially
+    const newHops: HopInfo[] = []
+    for (let i = 0; i < countries.length - 1; i++) {
+      const from = countries[i]!
+      const to = countries[i + 1]!
+      const distanceKm = haversineKm(from.lat, from.lng, to.lat, to.lng)
+      const fromOffset = getUtcOffsetMinutes(from.tz)
+      const toOffset = getUtcOffsetMinutes(to.tz)
+      newHops.push({
+        fromCode: from.code,
+        fromName: from.name,
+        fromFlag: from.flag,
+        toCode: to.code,
+        toName: to.name,
+        toFlag: to.flag,
+        distanceKm,
+        timeDiffMin: toOffset - fromOffset,
+        fromCurrency: from.currency,
+        toCurrency: to.currency,
+        rate: null,
+      })
+    }
+
+    // Fetch exchange rates for the first country's currency
+    const baseCurrency = countries[0]!.currency
+    fetchRates(baseCurrency).then((rates) => {
+      const updated = newHops.map((hop) => {
+        if (hop.fromCurrency === hop.toCurrency) return hop
+        // For non-first hops, calculate cross-rate via base currency
+        const fromRate = rates[hop.fromCurrency] ?? 1
+        const toRate = rates[hop.toCurrency]
+        const rate = toRate && fromRate ? toRate / fromRate : null
+        return { ...hop, rate }
+      })
+      setHops(updated)
+    })
+
+    // Set hops immediately (without rates), rates will update async
+    setHops(newHops)
+  }, [enrichedCountries])
 
   // Write back to sessionStorage on changes (two-way sync)
   const syncToStorage = useCallback(
@@ -228,6 +362,60 @@ export default function DimensionOverlapBar({
                 Clear all
               </button>
             )}
+          </div>
+        )}
+
+        {/* ═══ Route hops (compact) ═══ */}
+        {hops.length > 0 && (
+          <div className="space-y-1">
+            {hops.map((hop) => (
+              <div
+                key={`${hop.fromCode}-${hop.toCode}`}
+                className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-brand-accent/10 bg-brand-bg/50 px-3 py-1.5 text-[11px] text-brand-text-muted"
+              >
+                <span className="font-medium text-brand-text">
+                  {hop.fromFlag} {hop.fromName}
+                  <span className="mx-1.5 text-brand-accent">→</span>
+                  {hop.toFlag} {hop.toName}
+                </span>
+                <span>
+                  <span className="font-medium text-brand-text">{fmtDistance(hop.distanceKm)}</span>
+                </span>
+                <span>
+                  <span className="font-medium text-brand-text">
+                    {fmtFlightTime(hop.distanceKm)}
+                  </span>{' '}
+                  flight
+                </span>
+                {hop.timeDiffMin !== 0 ? (
+                  <span>
+                    <span className="font-medium text-brand-text">
+                      {fmtTimeDiff(hop.timeDiffMin)}
+                    </span>{' '}
+                    time
+                  </span>
+                ) : (
+                  <span>same tz</span>
+                )}
+                {hop.fromCurrency !== hop.toCurrency && hop.rate ? (
+                  <span>
+                    1 {hop.fromCurrency} ={' '}
+                    <span className="font-medium text-brand-accent">
+                      {hop.rate < 0.01
+                        ? hop.rate.toFixed(5)
+                        : hop.rate < 1
+                          ? hop.rate.toFixed(4)
+                          : hop.rate < 100
+                            ? hop.rate.toFixed(2)
+                            : Math.round(hop.rate).toLocaleString()}{' '}
+                      {hop.toCurrency}
+                    </span>
+                  </span>
+                ) : hop.fromCurrency === hop.toCurrency ? (
+                  <span>same currency</span>
+                ) : null}
+              </div>
+            ))}
           </div>
         )}
 
