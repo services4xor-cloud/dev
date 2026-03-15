@@ -36,7 +36,18 @@ export default async function CountryHubPage({ params }: PageProps) {
   const tz = data?.timezone ? data.timezone.replace(/^.*\//, '') : null
   const population = data?.population ?? null
   const topSectors = data?.topSectors ?? []
+  const topFaiths = data?.topFaiths ?? []
   const languages = data?.languages ?? []
+
+  const faithLabels: Record<string, string> = {
+    christianity: 'Christianity',
+    islam: 'Islam',
+    hinduism: 'Hinduism',
+    buddhism: 'Buddhism',
+    judaism: 'Judaism',
+    traditional: 'Traditional',
+    secular: 'Secular',
+  }
 
   // Format population for display
   const popDisplay = population
@@ -138,7 +149,7 @@ export default async function CountryHubPage({ params }: PageProps) {
               {languages.map((lang) => (
                 <span
                   key={lang.code}
-                  className="rounded-full border border-brand-accent/25 bg-brand-surface px-3 py-1.5 text-sm font-medium text-brand-accent sm:px-5 sm:py-2 sm:text-base"
+                  className="rounded-full border border-teal-400/25 bg-teal-500/10 px-3 py-1.5 text-sm font-medium text-teal-300 sm:px-5 sm:py-2 sm:text-base"
                 >
                   {lang.name}
                   {lang.nativeName && lang.nativeName !== lang.name && (
@@ -146,6 +157,25 @@ export default async function CountryHubPage({ params }: PageProps) {
                       ({lang.nativeName})
                     </span>
                   )}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Faiths */}
+        {topFaiths.length > 0 && (
+          <section>
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
+              Faiths
+            </h2>
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              {topFaiths.map((faith) => (
+                <span
+                  key={faith}
+                  className="rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-1.5 text-sm font-medium text-violet-300 sm:px-5 sm:py-2 sm:text-base"
+                >
+                  {faithLabels[faith] ?? faith}
                 </span>
               ))}
             </div>
@@ -162,7 +192,7 @@ export default async function CountryHubPage({ params }: PageProps) {
               {topSectors.map((sector) => (
                 <span
                   key={sector}
-                  className="rounded-xl border border-brand-accent/10 bg-brand-surface px-3 py-2 text-center text-xs text-brand-text sm:px-4 sm:text-sm"
+                  className="rounded-xl border border-emerald-400/15 bg-emerald-500/10 px-3 py-2 text-center text-xs text-emerald-300 sm:px-4 sm:text-sm"
                 >
                   {sector}
                 </span>

@@ -31,6 +31,7 @@ export interface CountryData {
   population: number
   // Be[X]-specific (from static registry)
   topSectors: string[]
+  topFaiths: string[]
   payment: string[]
   visa: string
   corridorStrength: string
@@ -241,6 +242,7 @@ function mapRestCountry(rc: RestCountry): CountryData {
     population: rc.population,
     // Be[X]-specific: from static registry, with sensible defaults
     topSectors: staticData?.topSectors ?? [],
+    topFaiths: staticData?.topFaiths ?? [],
     payment: staticData?.payment ?? ['Bank Transfer'],
     visa: staticData?.visa ?? 'Visa required',
     corridorStrength: staticData?.corridorStrength ?? 'frontier',
@@ -301,6 +303,7 @@ function getStaticFallback(code: string): CountryData | null {
     timezone: s.tz,
     population: 0,
     topSectors: s.topSectors,
+    topFaiths: s.topFaiths,
     payment: s.payment,
     visa: s.visa,
     corridorStrength: s.corridorStrength,
