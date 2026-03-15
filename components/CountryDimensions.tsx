@@ -249,6 +249,9 @@ export default function CountryDimensions({
   function faithOverlap(faith: string): number {
     return otherCountries.filter((c) => c!.topFaiths.includes(faith as FaithCode)).length
   }
+  function currencyOverlap(cur: string): number {
+    return otherCountries.filter((c) => c!.currency === cur).length
+  }
 
   // ─── Sorted dimension arrays (shared first) ────────────────────────────────
   const sortedLanguages = [...languages].sort((a, b) => {
@@ -450,6 +453,44 @@ export default function CountryDimensions({
                 </span>
               )
             })}
+          </div>
+        </section>
+      )}
+
+      {/* ── Currency ── */}
+      {currency && (
+        <section>
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-text-muted sm:mb-4">
+            Currency
+          </h2>
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            {(() => {
+              const overlap = currencyOverlap(currency)
+              const multiplier = overlap + 1
+              const isShared = hasOthers && overlap > 0
+              const reach = COUNTRY_OPTIONS.filter((c) => c.currency === currency).length
+              return (
+                <span
+                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${
+                    isShared
+                      ? 'border-rose-300/50 bg-rose-500/20 text-rose-200 shadow-[0_0_10px_rgba(244,63,94,0.2)] ring-1 ring-rose-400/30'
+                      : 'border-rose-400/25 bg-rose-500/10 text-rose-300'
+                  }`}
+                >
+                  {currency}
+                  {isShared && (
+                    <span className="rounded-full bg-rose-400/30 px-1.5 text-[10px] font-bold text-rose-200 sm:text-xs">
+                      ×{multiplier}
+                    </span>
+                  )}
+                  {!isShared && reach > 1 && (
+                    <span className="rounded-full bg-rose-400/20 px-1.5 text-[10px] text-rose-400/70 sm:text-xs">
+                      {reach}
+                    </span>
+                  )}
+                </span>
+              )
+            })()}
           </div>
         </section>
       )}
