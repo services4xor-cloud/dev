@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import type { DimensionFilter } from '@/types/domain'
+import { DEPTH_SHAPES } from '@/components/WorldMap'
 
 /**
  * Curated dimension selector — 4 tabs with data-backed options.
@@ -313,19 +314,36 @@ export default function DimensionFilters({
               <span className="text-[10px] font-bold text-yellow-300/80 uppercase tracking-wider px-1">
                 ⚡
               </span>
-              {overlaps.map((m) => (
-                <span
-                  key={`${m.dimension}:${m.nodeCode}`}
-                  onMouseEnter={() => onPreview?.(m.countryCodes)}
-                  onMouseLeave={() => onPreview?.([])}
-                  className={`rounded-full border px-2.5 py-1 text-xs font-medium ${overlapStyle(m.dimension, m.multiplier)}`}
-                >
-                  {m.icon} {m.label}
-                  <span className="ml-1 rounded-full bg-white/10 px-1.5 text-[10px] font-bold">
-                    ×{m.multiplier}
+              {overlaps.map((m) => {
+                const shape = DEPTH_SHAPES[Math.min(m.multiplier, 5)]
+                return (
+                  <span
+                    key={`${m.dimension}:${m.nodeCode}`}
+                    onMouseEnter={() => onPreview?.(m.countryCodes)}
+                    onMouseLeave={() => onPreview?.([])}
+                    className={`rounded-full border px-2.5 py-1 text-xs font-medium ${overlapStyle(m.dimension, m.multiplier)}`}
+                  >
+                    {m.icon} {m.label}
+                    <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-white/10 px-1.5 text-[10px] font-bold">
+                      {shape && (
+                        <svg
+                          width="10"
+                          height="10"
+                          viewBox={shape.viewBox}
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinejoin="round"
+                          className="inline-block"
+                        >
+                          <path d={shape.path} />
+                        </svg>
+                      )}
+                      ×{m.multiplier}
+                    </span>
                   </span>
-                </span>
-              ))}
+                )
+              })}
             </div>
           )}
 

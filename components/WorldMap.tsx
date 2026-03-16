@@ -59,25 +59,50 @@ function strHash(s: string): number {
 }
 
 /**
- * Convert scored country to HSL color.
- * Hue = dimension family ± value offset. Sat+Light = depth.
- * Each specific value (English, German, Christianity, Islam) gets a unique,
- * consistent shade within its dimension's color family.
+ * Convert scored country to HSL fill color.
+ * Hue = dimension family ± value offset. Sat+Light = depth (exponential).
  */
 function scoredToColor(dominantDim: string, dominantValue: string, depth: number): string {
   if (!dominantDim) return '#6B5B3E' // neighbor proximity
 
   const baseHue = DIMENSION_HUE[dominantDim] ?? 178
-  // Specific value shifts hue ±8° for distinguishable shades within the family
   const valueOffset = (strHash(dominantValue) % 17) - 8
   const hue = (baseHue + valueOffset + 360) % 360
 
-  // Depth 1→4 determines vibrancy: subtle dark → vivid bright
-  const sat = 38 + depth * 15 // 53% → 98%
-  const light = 26 + depth * 9 // 35% → 62%
+  // Exponential vibrancy: each depth level is dramatically more vivid
+  const sat = 40 + depth * 15 // 55% → 100%
+  const light = 28 + depth * 10 // 38% → 68%
 
   return `hsl(${hue},${sat}%,${light}%)`
 }
+
+/**
+ * Contour line color — lighter version of fill for topographic effect.
+ * Same hue family but higher lightness, like elevation rings on a topo map.
+ */
+function scoredToContourColor(dominantDim: string, dominantValue: string): string {
+  if (!dominantDim) return 'transparent'
+
+  const baseHue = DIMENSION_HUE[dominantDim] ?? 178
+  const valueOffset = (strHash(dominantValue) % 17) - 8
+  const hue = (baseHue + valueOffset + 360) % 360
+
+  return `hsl(${hue},65%,72%)`
+}
+
+/** Depth shape SVG paths — used in tooltip and legend */
+export const DEPTH_SHAPES: { path: string; viewBox: string; label: string }[] = [
+  { path: '', viewBox: '0 0 1 1', label: '' }, // depth 0 — unused
+  { path: '', viewBox: '0 0 1 1', label: '' }, // depth 1 — fill only, no shape
+  { path: 'M2 7h12', viewBox: '0 0 16 14', label: '×2' }, // line
+  { path: 'M8 2L14 12H2Z', viewBox: '0 0 16 14', label: '×3' }, // triangle
+  { path: 'M2 2h12v10H2z', viewBox: '0 0 16 14', label: '×4' }, // rectangle
+  {
+    path: 'M8 0l2.5 5.1 5.5.8-4 3.9.9 5.5L8 12.8l-4.9 2.5.9-5.5-4-3.9 5.5-.8z',
+    viewBox: '0 0 16 15.3',
+    label: '×5',
+  }, // star
+]
 
 /** Uniform enriched glow — all selected countries shine equally bright */
 const ENRICHED_COLOR = '#FFD700'
@@ -141,6 +166,7 @@ export default function WorldMap({
   )
   const [hoveredCountry, setHoveredCountry] = useState<{
     name: string
+    code: string
     x: number
     y: number
   } | null>(null)
@@ -168,6 +194,7 @@ export default function WorldMap({
     if (features?.[0]?.properties?.name) {
       setHoveredCountry({
         name: features[0].properties.name,
+        code: (features[0].properties.ISO_A2 as string) ?? '',
         x: e.point.x,
         y: e.point.y,
       })
@@ -279,13 +306,13 @@ export default function WorldMap({
       expr.push(code, ENRICHED_OPACITY)
     }
 
-    // Scored: opacity tied to depth (unique dimension count 1-4)
-    // depth 1 = 0.22, depth 2 = 0.34, depth 3 = 0.46, depth 4 = 0.55
+    // Scored: EXPONENTIAL opacity — each depth level ~2× visual weight of previous
+    // depth 1 = 0.12, depth 2 = 0.30, depth 3 = 0.55, depth 4 = 0.80
+    const DEPTH_OPACITY = [0, 0.12, 0.3, 0.55, 0.8]
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
         if (sc.depth > 0) {
-          const dimOpacity = 0.1 + sc.depth * 0.12
-          expr.push(code, Math.min(dimOpacity, 0.55))
+          expr.push(code, DEPTH_OPACITY[Math.min(sc.depth, 4)])
         } else {
           // Neighbor proximity only — subtle
           expr.push(code, 0.05 + sc.score * 0.1)
@@ -304,69 +331,106 @@ export default function WorldMap({
     return expr as unknown as number
   }, [scoreMap, previewCodes, enrichedCountries, enrichedSet])
 
-  // ─── Concentric border rings: each ranked dimension gets its own ring ────────
-  // Ring 0 (outermost, widest) = ranked[1] (2nd dimension)
-  // Ring 1 (middle)            = ranked[2] (3rd dimension)
-  // Ring 2 (inner, thinnest)   = ranked[3] (4th dimension)
-  // ranked[0] is the fill color. Countries with only 1 dim: all rings = same as fill.
-  const ringStyles = useMemo(() => {
-    const RING_WIDTHS = [4.0, 2.5, 1.2] // outer → inner
-    const RING_SLOTS = [1, 2, 3] // which ranked[] index each ring uses
-    const RING_OPACITIES = [0.75, 0.85, 0.95] // inner rings slightly more opaque
+  // ─── Outer border: width scales with depth ─────────────────────────────────
+  // Depth 1=0.8px, 2=1.5px, 3=2.5px, 4=4px — thicker = deeper
+  const borderStyle = useMemo(() => {
+    const DEPTH_BORDER_WIDTH = [0.3, 0.8, 1.5, 2.5, 4.0] // index = depth
     const hasActive = scoreMap.size > 0 || enrichedSet.size > 0 || previewCodes.size > 0
 
-    return RING_SLOTS.map((slotIdx, ringIdx) => {
+    if (!hasActive) {
+      return {
+        color: '#C9A227' as unknown as string,
+        width: 0.3 as unknown as number,
+        opacity: 0.4,
+      }
+    }
+
+    const colorExpr: unknown[] = ['match', ['get', 'ISO_A2']]
+    const widthExpr: unknown[] = ['match', ['get', 'ISO_A2']]
+
+    // Enriched: gold border
+    for (const code of enrichedCountries) {
+      colorExpr.push(code, ENRICHED_COLOR)
+      widthExpr.push(code, ENRICHED_BORDER_WIDTH)
+    }
+
+    // Scored: same color as fill, width scales with depth
+    for (const [code, sc] of Array.from(scoreMap)) {
+      if (!enrichedSet.has(code)) {
+        colorExpr.push(code, scoredToColor(sc.ranked[0].dim, sc.ranked[0].value, sc.depth))
+        widthExpr.push(code, DEPTH_BORDER_WIDTH[Math.min(sc.depth, 4)])
+      }
+    }
+
+    // Preview
+    for (const code of Array.from(previewCodes)) {
+      if (!enrichedSet.has(code) && !scoreMap.has(code)) {
+        colorExpr.push(code, '#5B8A84')
+        widthExpr.push(code, 0.6)
+      }
+    }
+
+    colorExpr.push('#1f2937')
+    widthExpr.push(0.2)
+
+    return {
+      color: colorExpr as unknown as string,
+      width: widthExpr as unknown as number,
+      opacity: 0.85,
+    }
+  }, [scoreMap, previewCodes, enrichedCountries, enrichedSet])
+
+  // ─── Topographic contour lines: inset borders showing depth ────────────────
+  // Depth 2 = 1 contour, Depth 3 = 2 contours, Depth 4 = 3 contours
+  // Uses line-offset (negative = inward) to create elevation-ring effect
+  const contourStyles = useMemo(() => {
+    const CONTOUR_OFFSETS = [-3, -6, -9] // px inward from polygon boundary
+    const hasActive = scoreMap.size > 0 || enrichedSet.size > 0
+
+    return CONTOUR_OFFSETS.map((offset, contourIdx) => {
       if (!hasActive) {
         return {
-          color: '#C9A227' as unknown as string,
-          width: (ringIdx === 0 ? 0.3 : 0) as unknown as number,
-          opacity: 0.4,
+          color: 'transparent' as unknown as string,
+          width: 0 as unknown as number,
+          offset,
+          opacity: 0,
         }
       }
 
       const colorExpr: unknown[] = ['match', ['get', 'ISO_A2']]
       const widthExpr: unknown[] = ['match', ['get', 'ISO_A2']]
 
-      // Enriched: gold rings
+      // Enriched: gold contours (subtle)
       for (const code of enrichedCountries) {
-        colorExpr.push(code, ENRICHED_COLOR)
-        widthExpr.push(code, ENRICHED_BORDER_WIDTH)
+        colorExpr.push(code, '#FFD700')
+        widthExpr.push(code, 0.8)
       }
 
-      // Scored: ring color from ranked[slotIdx], visible only if country has enough dims
+      // Scored: contour visible only if depth > contourIdx + 1
+      // depth 2 → contour 0 only | depth 3 → contours 0,1 | depth 4 → all 3
       for (const [code, sc] of Array.from(scoreMap)) {
         if (!enrichedSet.has(code)) {
-          const slot = sc.ranked[slotIdx]
-          if (sc.depth > slotIdx) {
-            // This country has enough dimensions for this ring
-            colorExpr.push(code, scoredToColor(slot.dim, slot.value, sc.depth))
-            widthExpr.push(code, RING_WIDTHS[ringIdx])
+          if (sc.depth > contourIdx + 1) {
+            colorExpr.push(code, scoredToContourColor(sc.ranked[0].dim, sc.ranked[0].value))
+            widthExpr.push(code, 1.0)
           } else {
-            // Not enough dims — collapse to transparent (width 0)
             colorExpr.push(code, 'transparent')
             widthExpr.push(code, 0)
           }
         }
       }
 
-      // Preview
-      for (const code of Array.from(previewCodes)) {
-        if (!enrichedSet.has(code) && !scoreMap.has(code)) {
-          colorExpr.push(code, ringIdx === 0 ? '#5B8A84' : 'transparent')
-          widthExpr.push(code, ringIdx === 0 ? 0.6 : 0)
-        }
-      }
-
-      colorExpr.push(ringIdx === 0 ? '#1f2937' : 'transparent')
-      widthExpr.push(ringIdx === 0 ? 0.2 : 0)
+      colorExpr.push('transparent')
+      widthExpr.push(0)
 
       return {
         color: colorExpr as unknown as string,
         width: widthExpr as unknown as number,
-        opacity: RING_OPACITIES[ringIdx],
+        offset,
+        opacity: 0.5,
       }
     })
-  }, [scoreMap, previewCodes, enrichedCountries, enrichedSet])
+  }, [scoreMap, enrichedCountries, enrichedSet])
 
   return (
     <div className="relative" style={{ width: '100%', height: '100vh' }}>
@@ -396,16 +460,27 @@ export default function WorldMap({
               'fill-opacity': fillOpacity,
             }}
           />
-          {/* Concentric border rings — outer=2nd dim, mid=3rd dim, inner=4th dim */}
-          {ringStyles.map((ring, i) => (
+          {/* Outer border — width scales with depth */}
+          <Layer
+            id="country-border"
+            type="line"
+            paint={{
+              'line-color': borderStyle.color,
+              'line-width': borderStyle.width,
+              'line-opacity': borderStyle.opacity,
+            }}
+          />
+          {/* Topographic contour lines — inset borders showing depth */}
+          {contourStyles.map((contour, i) => (
             <Layer
-              key={`ring-${i}`}
-              id={`country-border-ring-${i}`}
+              key={`contour-${i}`}
+              id={`country-contour-${i}`}
               type="line"
               paint={{
-                'line-color': ring.color,
-                'line-width': ring.width,
-                'line-opacity': ring.opacity,
+                'line-color': contour.color,
+                'line-width': contour.width,
+                'line-opacity': contour.opacity,
+                'line-offset': contour.offset,
               }}
             />
           ))}
@@ -470,13 +545,61 @@ export default function WorldMap({
         )}
       </Map>
 
-      {/* Hover tooltip */}
-      {hoveredCountry && (
-        <div
-          className="pointer-events-none absolute z-30 rounded-lg bg-brand-surface/95 px-3 py-1.5 text-sm text-brand-accent shadow-lg backdrop-blur"
-          style={{ left: hoveredCountry.x + 12, top: hoveredCountry.y - 20 }}
-        >
-          {hoveredCountry.name}
+      {/* Hover tooltip — shows country name + depth shape when scored */}
+      {hoveredCountry &&
+        (() => {
+          const sc = scoreMap.get(hoveredCountry.code)
+          const depth = sc?.depth ?? 0
+          const shape = depth >= 2 ? DEPTH_SHAPES[Math.min(depth, 5)] : null
+          return (
+            <div
+              className="pointer-events-none absolute z-30 flex items-center gap-2 rounded-lg bg-brand-surface/95 px-3 py-1.5 text-sm text-brand-accent shadow-lg backdrop-blur"
+              style={{ left: hoveredCountry.x + 12, top: hoveredCountry.y - 20 }}
+            >
+              {hoveredCountry.name}
+              {shape && (
+                <span className="flex items-center gap-1 rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-bold text-brand-accent/80">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox={shape.viewBox}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  >
+                    <path d={shape.path} />
+                  </svg>
+                  {shape.label}
+                </span>
+              )}
+            </div>
+          )
+        })()}
+
+      {/* Depth legend — floating mini-key showing shape meanings */}
+      {scoreMap.size > 0 && (
+        <div className="absolute bottom-24 right-4 z-20 flex flex-col gap-1 rounded-lg border border-white/10 bg-brand-surface/90 px-2.5 py-2 text-[10px] text-white/60 backdrop-blur">
+          <span className="mb-0.5 font-semibold text-white/40 uppercase tracking-wider">Depth</span>
+          {[2, 3, 4, 5].map((d) => {
+            const s = DEPTH_SHAPES[d]
+            return (
+              <div key={d} className="flex items-center gap-1.5">
+                <svg
+                  width="12"
+                  height="10"
+                  viewBox={s.viewBox}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                >
+                  <path d={s.path} />
+                </svg>
+                <span>{s.label}</span>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

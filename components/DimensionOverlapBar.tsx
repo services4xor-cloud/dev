@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import type { ActiveFilter } from '@/components/DimensionFilters'
+import { DEPTH_SHAPES } from '@/components/WorldMap'
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
 
 /**
@@ -618,7 +619,24 @@ export default function DimensionOverlapBar({
                               {countryFlag(s)}
                             </span>
                           ))}
-                          <span className="ml-0.5 rounded-full bg-white/10 px-1.5 text-[10px] font-bold">
+                          <span className="ml-0.5 inline-flex items-center gap-0.5 rounded-full bg-white/10 px-1.5 text-[10px] font-bold">
+                            {(() => {
+                              const shape = DEPTH_SHAPES[Math.min(v.sources.length, 5)]
+                              return shape ? (
+                                <svg
+                                  width="10"
+                                  height="10"
+                                  viewBox={shape.viewBox}
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="1.5"
+                                  strokeLinejoin="round"
+                                  className="inline-block"
+                                >
+                                  <path d={shape.path} />
+                                </svg>
+                              ) : null
+                            })()}
                             &times;{v.sources.length}
                           </span>
                         </span>
