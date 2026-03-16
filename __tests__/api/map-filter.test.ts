@@ -165,7 +165,7 @@ describe('POST /api/map/filter', () => {
     expect(codes).toContain('DE') // Germany — high English proficiency
     expect(codes).toContain('SE') // Sweden — very high English proficiency
     expect(codes).toContain('NL') // Netherlands — very high English proficiency
-    expect(codes).not.toContain('JP') // Japan — low English proficiency
+    expect(codes).not.toContain('SO') // Somalia — no English in languages
   })
 
   test('suggestions: "sw" returns Swahili suggestion with country count', async () => {
