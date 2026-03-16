@@ -33,6 +33,8 @@ export interface ActiveFilter extends DimensionFilter {
   countryCodes?: string[]
   /** Source of this filter: country code (auto-enriched) or "custom" (manual) */
   source?: string
+  /** Whether this is the primary/dominant value for this dimension in the source country */
+  isPrimary?: boolean
 }
 
 /** Merged filter for display — combines duplicates across sources */

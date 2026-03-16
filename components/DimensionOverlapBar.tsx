@@ -95,6 +95,7 @@ interface OverlapValue {
   label: string
   icon: string
   sources: string[] // country codes that share this value
+  primarySources: string[] // country codes where this is the PRIMARY (dominant) value
   countryCodes: string[] // all country codes matched by this filter
 }
 
@@ -209,8 +210,9 @@ export default function DimensionOverlapBar({
         const country = COUNTRY_OPTIONS.find((c) => c.code === countryCode)
         if (!country) continue
 
-        // ALL languages
-        for (const langCode of country.languages) {
+        // ALL languages — first = primary (dominant/official)
+        for (let i = 0; i < country.languages.length; i++) {
+          const langCode = country.languages[i]
           const langInfo = LANGUAGE_REGISTRY[langCode]
           if (!langInfo) continue
           const matching = COUNTRY_OPTIONS.filter((c) => c.languages.includes(langCode))
@@ -221,11 +223,13 @@ export default function DimensionOverlapBar({
             icon: '\u{1F5E3}\uFE0F',
             countryCodes: matching.map((c) => c.code),
             source: countryCode,
+            isPrimary: i === 0,
           })
         }
 
-        // ALL sectors
-        for (const sector of country.topSectors) {
+        // ALL sectors — first = primary industry
+        for (let i = 0; i < country.topSectors.length; i++) {
+          const sector = country.topSectors[i]
           const matching = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(sector))
           amplified.push({
             dimension: 'sector',
@@ -234,10 +238,11 @@ export default function DimensionOverlapBar({
             icon: '\u{1F4BC}',
             countryCodes: matching.map((c) => c.code),
             source: countryCode,
+            isPrimary: i === 0,
           })
         }
 
-        // Currency
+        // Currency — always primary (1 per country)
         const currencyMatches = COUNTRY_OPTIONS.filter((c) => c.currency === country.currency)
         amplified.push({
           dimension: 'currency',
@@ -246,10 +251,12 @@ export default function DimensionOverlapBar({
           icon: '\u{1F4B1}',
           countryCodes: currencyMatches.map((c) => c.code),
           source: countryCode,
+          isPrimary: true,
         })
 
-        // ALL faiths
-        for (const faith of country.topFaiths) {
+        // ALL faiths — first = dominant faith
+        for (let i = 0; i < country.topFaiths.length; i++) {
+          const faith = country.topFaiths[i]
           const matching = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(faith))
           amplified.push({
             dimension: 'faith',
@@ -258,6 +265,7 @@ export default function DimensionOverlapBar({
             icon: '\u262A\uFE0F',
             countryCodes: matching.map((c) => c.code),
             source: countryCode,
+            isPrimary: i === 0,
           })
         }
       }
@@ -389,7 +397,13 @@ export default function DimensionOverlapBar({
     for (const dim of DIMENSION_ORDER) {
       const valueMap = new Map<
         string,
-        { label: string; icon: string; sources: Set<string>; countryCodes: Set<string> }
+        {
+          label: string
+          icon: string
+          sources: Set<string>
+          primarySources: Set<string>
+          countryCodes: Set<string>
+        }
       >()
 
       for (const f of filters) {
@@ -399,14 +413,20 @@ export default function DimensionOverlapBar({
           label: f.label ?? f.nodeCode,
           icon: f.icon ?? '\u25C6',
           sources: new Set<string>(),
+          primarySources: new Set<string>(),
           countryCodes: new Set<string>(),
         }
-        if (f.source && f.source !== 'custom') entry.sources.add(f.source)
+        if (f.source && f.source !== 'custom') {
+          entry.sources.add(f.source)
+          if (f.isPrimary) {
+            entry.primarySources.add(f.source)
+          }
+        }
         for (const c of f.countryCodes ?? []) entry.countryCodes.add(c)
         valueMap.set(key, entry)
       }
 
-      // Sort: shared (2+) first by source count desc, then unique (1)
+      // Sort: shared (2+) first by primary source count desc, then total source count
       const values = Array.from(valueMap.entries())
         .map(([nodeCode, v]) => ({
           dimension: dim,
@@ -414,9 +434,13 @@ export default function DimensionOverlapBar({
           label: v.label,
           icon: v.icon,
           sources: Array.from(v.sources),
+          primarySources: Array.from(v.primarySources),
           countryCodes: Array.from(v.countryCodes),
         }))
-        .sort((a, b) => b.sources.length - a.sources.length)
+        .sort(
+          (a, b) =>
+            b.primarySources.length - a.primarySources.length || b.sources.length - a.sources.length
+        )
 
       if (values.length > 0) result[dim] = values
     }
@@ -567,8 +591,9 @@ export default function DimensionOverlapBar({
                 {values.map((v) => {
                   const isShared = v.sources.length >= 2
                   const isFocused = focusedValue === `${dim}:${v.nodeCode}`
-                  const overlap = v.sources.length - 1 // 0=unique, 1=common, 2=shiny, 3=ultra, 4+=legendary
-                  const rarity = rarityClass(overlap)
+                  // Rarity based on PRIMARY sources (dominant trait), not all sources
+                  const primaryOverlap = v.primarySources.length - 1
+                  const rarity = rarityClass(primaryOverlap)
                   const colorClass = isFocused
                     ? DIMENSION_COLORS_FOCUSED[dim]
                     : isShared

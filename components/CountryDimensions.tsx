@@ -240,6 +240,7 @@ export default function CountryDimensions({
   }
 
   // ─── Overlap helpers ────────────────────────────────────────────────────────
+  // Total overlap: any position in the array (used for sorting/display)
   function langOverlap(langCode: string): number {
     return otherCountries.filter((c) => c!.languages.includes(langCode as LanguageCode)).length
   }
@@ -251,6 +252,17 @@ export default function CountryDimensions({
   }
   function currencyOverlap(cur: string): number {
     return otherCountries.filter((c) => c!.currency === cur).length
+  }
+  // Primary overlap: only counts countries where this is the DOMINANT (first) value
+  // Used for rarity glow — "do they share the same dominant trait?"
+  function primaryLangOverlap(langCode: string): number {
+    return otherCountries.filter((c) => c!.languages[0] === langCode).length
+  }
+  function primarySectorOverlap(sector: string): number {
+    return otherCountries.filter((c) => c!.topSectors[0] === sector).length
+  }
+  function primaryFaithOverlap(faith: string): number {
+    return otherCountries.filter((c) => c!.topFaiths[0] === faith).length
   }
 
   // ─── Rarity system: overlap count → shiny tier (level 0-4) ─────────────────
@@ -420,12 +432,15 @@ export default function CountryDimensions({
             Languages
           </h2>
           <div className="flex flex-wrap gap-2 sm:gap-3">
-            {sortedLanguages.map((lang) => {
+            {sortedLanguages.map((lang, idx) => {
               const overlap = langOverlap(lang.code)
               const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
               const reach = langReach[lang.code] ?? 0
-              const rarity = isShared ? rarityClass(overlap) : ''
+              // Rarity: based on primary overlap (dominant language match)
+              // Current country's value is primary if it's first in list (idx === 0)
+              const pOverlap = idx === 0 ? primaryLangOverlap(lang.code) : 0
+              const rarity = isShared ? rarityClass(pOverlap) : ''
               return (
                 <span
                   key={lang.code}
@@ -466,12 +481,13 @@ export default function CountryDimensions({
             Top Sectors
           </h2>
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-            {sortedSectors.map((sector) => {
+            {sortedSectors.map((sector, idx) => {
               const overlap = sectorOverlap(sector)
               const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
               const reach = sectorReach[sector] ?? 0
-              const rarity = isShared ? rarityClass(overlap) : ''
+              const pOverlap = idx === 0 ? primarySectorOverlap(sector) : 0
+              const rarity = isShared ? rarityClass(pOverlap) : ''
               return (
                 <span
                   key={sector}
@@ -563,12 +579,13 @@ export default function CountryDimensions({
             Faiths
           </h2>
           <div className="flex flex-wrap gap-2 sm:gap-3">
-            {sortedFaiths.map((faith) => {
+            {sortedFaiths.map((faith, idx) => {
               const overlap = faithOverlap(faith)
               const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
               const reach = faithReach[faith] ?? 0
-              const rarity = isShared ? rarityClass(overlap) : ''
+              const pOverlap = idx === 0 ? primaryFaithOverlap(faith) : 0
+              const rarity = isShared ? rarityClass(pOverlap) : ''
               return (
                 <span
                   key={faith}
