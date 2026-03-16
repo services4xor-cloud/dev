@@ -4,12 +4,10 @@ import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
 /**
  * POST /api/map/enrich
  *
- * Given a country code, returns exactly 5 dimension filters — one per dimension.
- * Each filter picks the value with MAXIMUM global reach (most country matches)
- * from the country's available options in that dimension.
- *
- * This maximizes map glow: click Germany → French (30 countries) beats
- * German (6 countries) for language impact.
+ * Given a country code, returns exactly 4 dimension filters — one per dimension.
+ * Each filter picks the PRIMARY value for that country (first in array = most
+ * dominant/characteristic). This ensures clicking a country shows what it's
+ * actually known for: Kenya → Agriculture, Japan → Automotive, etc.
  */
 
 const FAITH_LABELS: Record<string, string> = {
@@ -96,23 +94,15 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 2. Sector — pick the sector with MOST country reach
+  // 2. Sector — use the PRIMARY sector (first in list = what the country is known for)
   if (country.topSectors.length > 0) {
-    let bestSector = country.topSectors[0]
-    let bestCount = 0
-    for (const sector of country.topSectors) {
-      const count = (SECTOR_COUNTRIES.get(sector) ?? []).length
-      if (count > bestCount) {
-        bestCount = count
-        bestSector = sector
-      }
-    }
+    const primarySector = country.topSectors[0]
     filters.push({
       dimension: 'sector',
-      nodeCode: bestSector.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      label: bestSector,
+      nodeCode: primarySector.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      label: primarySector,
       icon: '💼',
-      countryCodes: SECTOR_COUNTRIES.get(bestSector) ?? [],
+      countryCodes: SECTOR_COUNTRIES.get(primarySector) ?? [],
     })
   }
 
@@ -125,23 +115,15 @@ export async function POST(req: NextRequest) {
     countryCodes: CURRENCY_COUNTRIES.get(country.currency) ?? [],
   })
 
-  // 4. Faith — pick the faith with MOST country reach
+  // 4. Faith — use the PRIMARY faith (first in list = dominant faith of the country)
   if (country.topFaiths.length > 0) {
-    let bestFaith = country.topFaiths[0]
-    let bestCount = 0
-    for (const faith of country.topFaiths) {
-      const count = (FAITH_COUNTRIES.get(faith) ?? []).length
-      if (count > bestCount) {
-        bestCount = count
-        bestFaith = faith
-      }
-    }
+    const primaryFaith = country.topFaiths[0]
     filters.push({
       dimension: 'faith',
-      nodeCode: bestFaith,
-      label: FAITH_LABELS[bestFaith] ?? bestFaith,
+      nodeCode: primaryFaith,
+      label: FAITH_LABELS[primaryFaith] ?? primaryFaith,
       icon: '☪️',
-      countryCodes: FAITH_COUNTRIES.get(bestFaith) ?? [],
+      countryCodes: FAITH_COUNTRIES.get(primaryFaith) ?? [],
     })
   }
 
