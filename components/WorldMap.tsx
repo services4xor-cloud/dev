@@ -72,12 +72,9 @@ function scoredToColor(dominantDim: string, dominantValue: string, depth: number
   const valueOffset = (strHash(dominantValue) % 17) - 8
   const hue = (baseHue + valueOffset + 360) % 360
 
-  // Depth 1→4 vibrancy: VERY VISIBLE on dark map background
-  // Level 1: noticeable, Level 2: bright, Level 3: vivid, Level 4: blazing
-  const SAT = [0, 65, 80, 92, 100] // idx=depth
-  const LIT = [0, 48, 58, 68, 78]
-  const sat = SAT[depth] ?? 98
-  const light = LIT[depth] ?? 70
+  // Depth 1→4 determines vibrancy: subtle dark → vivid bright
+  const sat = 38 + depth * 15 // 53% → 98%
+  const light = 26 + depth * 9 // 35% → 62%
 
   return `hsl(${hue},${sat}%,${light}%)`
 }
@@ -282,12 +279,13 @@ export default function WorldMap({
       expr.push(code, ENRICHED_OPACITY)
     }
 
-    // Scored: opacity per rarity level — HIGH visibility on dark map
-    const DEPTH_OPACITY = [0, 0.4, 0.55, 0.7, 0.85]
+    // Scored: opacity tied to depth (unique dimension count 1-4)
+    // depth 1 = 0.22, depth 2 = 0.34, depth 3 = 0.46, depth 4 = 0.55
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
         if (sc.depth > 0) {
-          expr.push(code, DEPTH_OPACITY[sc.depth] ?? 0.68)
+          const dimOpacity = 0.1 + sc.depth * 0.12
+          expr.push(code, Math.min(dimOpacity, 0.55))
         } else {
           // Neighbor proximity only — subtle
           expr.push(code, 0.05 + sc.score * 0.1)
@@ -312,7 +310,7 @@ export default function WorldMap({
   // Ring 2 (inner, thinnest)   = ranked[3] (4th dimension)
   // ranked[0] is the fill color. Countries with only 1 dim: all rings = same as fill.
   const ringStyles = useMemo(() => {
-    const RING_WIDTHS = [4.5, 3.0, 1.5] // outer → inner (wider for more drama)
+    const RING_WIDTHS = [4.0, 2.5, 1.2] // outer → inner
     const RING_SLOTS = [1, 2, 3] // which ranked[] index each ring uses
     const RING_OPACITIES = [0.75, 0.85, 0.95] // inner rings slightly more opaque
     const hasActive = scoreMap.size > 0 || enrichedSet.size > 0 || previewCodes.size > 0
@@ -336,18 +334,13 @@ export default function WorldMap({
       }
 
       // Scored: ring color from ranked[slotIdx], visible only if country has enough dims
-      // Exception: ring 0 (outermost) also shows for depth-1 using the fill color
       for (const [code, sc] of Array.from(scoreMap)) {
         if (!enrichedSet.has(code)) {
+          const slot = sc.ranked[slotIdx]
           if (sc.depth > slotIdx) {
             // This country has enough dimensions for this ring
-            const slot = sc.ranked[slotIdx]
             colorExpr.push(code, scoredToColor(slot.dim, slot.value, sc.depth))
             widthExpr.push(code, RING_WIDTHS[ringIdx])
-          } else if (ringIdx === 0 && sc.depth >= 1) {
-            // Depth-1 countries: outermost ring in fill color for visibility
-            colorExpr.push(code, scoredToColor(sc.ranked[0].dim, sc.ranked[0].value, sc.depth))
-            widthExpr.push(code, 2.0)
           } else {
             // Not enough dims — collapse to transparent (width 0)
             colorExpr.push(code, 'transparent')
