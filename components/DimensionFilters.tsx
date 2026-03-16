@@ -317,49 +317,51 @@ export default function DimensionFilters({
           )}
 
           {/* ═══ SHARED CHIPS — grouped by multiplier tier ═══ */}
-          {filtersByTier.map(([tier, chips]) => {
-            const shape = DEPTH_SHAPES[Math.min(tier, 5)]
-            return (
-              <div key={tier} className="flex flex-wrap items-center justify-center gap-1.5">
-                {/* Tier label — only show ×N for shared (tier >= 2) */}
-                {tier >= 2 && (
-                  <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-yellow-300/80 uppercase tracking-wider px-1">
-                    {shape && (
-                      <svg
-                        width="10"
-                        height="10"
-                        viewBox={shape.viewBox}
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinejoin="round"
-                        className="inline-block"
-                      >
-                        <path d={shape.path} />
-                      </svg>
-                    )}
-                    ×{tier}
-                  </span>
-                )}
-                {chips.map((m) => (
-                  <button
-                    key={`${m.dimension}:${m.nodeCode}`}
-                    onMouseEnter={() => onPreview?.(m.countryCodes)}
-                    onMouseLeave={() => onPreview?.([])}
-                    onClick={() => removeFilter(m.dimension, m.nodeCode)}
-                    className={`rounded-full border px-2.5 py-1 text-xs font-medium transition hover:opacity-80 cursor-pointer ${
-                      tier >= 2
-                        ? overlapStyle(m.dimension, tier)
-                        : (DIMENSION_COLORS[m.dimension] ??
-                          'bg-white/10 text-white/60 border-white/20')
-                    }`}
-                  >
-                    {m.icon} {m.label}
-                  </button>
-                ))}
-              </div>
-            )
-          })}
+          {filtersByTier
+            .filter(([tier]) => enrichedCountries.length <= 1 || tier >= 2)
+            .map(([tier, chips]) => {
+              const shape = DEPTH_SHAPES[Math.min(tier, 5)]
+              return (
+                <div key={tier} className="flex flex-wrap items-center justify-center gap-1.5">
+                  {/* Tier label — only show ×N for shared (tier >= 2) */}
+                  {tier >= 2 && (
+                    <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-yellow-300/80 uppercase tracking-wider px-1">
+                      {shape && (
+                        <svg
+                          width="10"
+                          height="10"
+                          viewBox={shape.viewBox}
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinejoin="round"
+                          className="inline-block"
+                        >
+                          <path d={shape.path} />
+                        </svg>
+                      )}
+                      ×{tier}
+                    </span>
+                  )}
+                  {chips.map((m) => (
+                    <button
+                      key={`${m.dimension}:${m.nodeCode}`}
+                      onMouseEnter={() => onPreview?.(m.countryCodes)}
+                      onMouseLeave={() => onPreview?.([])}
+                      onClick={() => removeFilter(m.dimension, m.nodeCode)}
+                      className={`rounded-full border px-2.5 py-1 text-xs font-medium transition hover:opacity-80 cursor-pointer ${
+                        tier >= 2
+                          ? overlapStyle(m.dimension, tier)
+                          : (DIMENSION_COLORS[m.dimension] ??
+                            'bg-white/10 text-white/60 border-white/20')
+                      }`}
+                    >
+                      {m.icon} {m.label}
+                    </button>
+                  ))}
+                </div>
+              )
+            })}
         </div>
       )}
 
