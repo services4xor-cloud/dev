@@ -47,6 +47,7 @@ interface MergedFilter {
   countryCodes: string[]
   multiplier: number
   sources: string[]
+  isPrimary: boolean
 }
 
 interface DimensionFiltersProps {
@@ -211,6 +212,7 @@ export default function DimensionFilters({
         countryCodes: Array.from(allCodes),
         multiplier: distinctSources.length,
         sources: distinctSources,
+        isPrimary: filters.some((f) => f.isPrimary),
       })
     }
 
@@ -319,7 +321,9 @@ export default function DimensionFilters({
           {/* ═══ SHARED CHIPS — grouped by multiplier tier ═══ */}
           {filtersByTier
             .filter(([tier]) => enrichedCountries.length <= 1 || tier >= 2)
-            .map(([tier, chips]) => {
+            .map(([tier, allChips]) => {
+              // ×1 tier: only show primary chips (1 per dimension per country)
+              const chips = tier === 1 ? allChips.filter((c) => c.isPrimary) : allChips
               const shape = DEPTH_SHAPES[Math.min(tier, 5)]
               return (
                 <div key={tier} className="flex flex-wrap items-center justify-center gap-1.5">
