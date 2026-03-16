@@ -138,11 +138,6 @@ function overlapStyle(dimension: string, multiplier: number): string {
   return colors.base
 }
 
-/** Uniform bright glow for all enriched country rows — all selections equal */
-function enrichedRowStyle(): string {
-  return 'border-yellow-400/40 bg-yellow-400/10 shadow-[0_0_12px_rgba(253,224,71,0.15)]'
-}
-
 export default function DimensionFilters({
   activeFilters,
   onFilterChange,
@@ -189,8 +184,9 @@ export default function DimensionFilters({
     [activeFilters]
   )
 
-  // ─── MERGE LOGIC: detect duplicates across sources ───
-  const { overlaps, sourceRows } = useMemo(() => {
+  // ─── MERGE LOGIC: group ALL filters by (dimension, nodeCode) across sources ───
+  // Every chip gets a multiplier = how many source countries share it
+  const mergedFilters = useMemo(() => {
     const keyToFilters = new Map<string, ActiveFilter[]>()
     for (const f of activeFilters) {
       const key = `${f.dimension}:${f.nodeCode}`
@@ -199,64 +195,51 @@ export default function DimensionFilters({
       keyToFilters.set(key, arr)
     }
 
-    const overlapList: MergedFilter[] = []
-    const uniqueKeys = new Set<string>()
-
-    for (const [key, filters] of Array.from(keyToFilters.entries())) {
+    const result: MergedFilter[] = []
+    for (const [, filters] of Array.from(keyToFilters.entries())) {
       const distinctSources = Array.from(new Set(filters.map((f) => f.source ?? 'custom')))
-      if (distinctSources.length >= 2) {
-        const first = filters[0]
-        const allCodes = new Set<string>()
-        for (const f of filters) {
-          for (const c of f.countryCodes ?? []) allCodes.add(c)
-        }
-        overlapList.push({
-          dimension: first.dimension,
-          nodeCode: first.nodeCode,
-          label: first.label ?? first.nodeCode,
-          icon: first.icon ?? '◆',
-          countryCodes: Array.from(allCodes),
-          multiplier: distinctSources.length,
-          sources: distinctSources,
-        })
-        uniqueKeys.add(key)
+      const first = filters[0]
+      const allCodes = new Set<string>()
+      for (const f of filters) {
+        for (const c of f.countryCodes ?? []) allCodes.add(c)
       }
+      result.push({
+        dimension: first.dimension,
+        nodeCode: first.nodeCode,
+        label: first.label ?? first.nodeCode,
+        icon: first.icon ?? '◆',
+        countryCodes: Array.from(allCodes),
+        multiplier: distinctSources.length,
+        sources: distinctSources,
+      })
     }
 
-    overlapList.sort((a, b) => b.multiplier - a.multiplier)
-
-    const rows = new Map<string, ActiveFilter[]>()
-    for (const f of activeFilters) {
-      const key = `${f.dimension}:${f.nodeCode}`
-      if (uniqueKeys.has(key)) continue
-      const src = f.source ?? 'custom'
-      const arr = rows.get(src) ?? []
-      arr.push(f)
-      rows.set(src, arr)
-    }
-
-    // Sort chips within each row by dimension display order
+    // Sort: highest multiplier first, then by dimension order, then label
     const dimOrder = DIMENSIONS.map((d) => d.key)
-    rows.forEach((arr) => {
-      arr.sort(
-        (a, b) =>
-          dimOrder.indexOf(a.dimension as DimensionKey) -
-          dimOrder.indexOf(b.dimension as DimensionKey)
-      )
+    result.sort((a, b) => {
+      const mDiff = b.multiplier - a.multiplier
+      if (mDiff !== 0) return mDiff
+      const dDiff =
+        dimOrder.indexOf(a.dimension as DimensionKey) -
+        dimOrder.indexOf(b.dimension as DimensionKey)
+      if (dDiff !== 0) return dDiff
+      return a.label.localeCompare(b.label)
     })
 
-    return { overlaps: overlapList, sourceRows: rows }
+    return result
   }, [activeFilters])
 
-  // Ordered source keys: country codes first (alphabetical), then "custom" last
-  const sourceOrder = useMemo(() => {
-    const allSources = new Set<string>()
-    for (const f of activeFilters) allSources.add(f.source ?? 'custom')
-    const keys = Array.from(allSources)
-    const countries = keys.filter((k) => k !== 'custom').sort()
-    const custom = keys.includes('custom') ? ['custom'] : []
-    return [...countries, ...custom]
-  }, [activeFilters])
+  // Group merged filters by multiplier tier for display
+  const filtersByTier = useMemo(() => {
+    const tiers = new Map<number, MergedFilter[]>()
+    for (const f of mergedFilters) {
+      const arr = tiers.get(f.multiplier) ?? []
+      arr.push(f)
+      tiers.set(f.multiplier, arr)
+    }
+    // Sort tiers descending (×5 first, then ×4, ×3, ×2, ×1)
+    return Array.from(tiers.entries()).sort((a, b) => b[0] - a[0])
+  }, [mergedFilters])
 
   const toggleOption = useCallback(
     (dimension: DimensionKey, option: DimensionOption) => {
@@ -308,90 +291,75 @@ export default function DimensionFilters({
     >
       {hasAnyFilters && (
         <div className="flex flex-col gap-1.5 max-w-[90vw]">
-          {/* ═══ OVERLAP ROW — merged duplicates with multiplier badges ═══ */}
-          {overlaps.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-1.5">
-              <span className="text-[10px] font-bold text-yellow-300/80 uppercase tracking-wider px-1">
-                ⚡
-              </span>
-              {overlaps.map((m) => {
-                const shape = DEPTH_SHAPES[Math.min(m.multiplier, 5)]
-                return (
-                  <span
+          {/* ═══ ROUTE BANNER — Country A → Country B → Country C ═══ */}
+          {enrichedCountries.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-1">
+              {enrichedCountries.map((code, i) => (
+                <span key={code} className="inline-flex items-center gap-1">
+                  {i > 0 && <span className="text-brand-accent/60 text-xs">→</span>}
+                  <button
+                    onClick={() => removeSource(code)}
+                    className="rounded-full border border-yellow-400/30 bg-yellow-400/10 px-2 py-0.5 text-sm transition hover:bg-yellow-400/20 hover:border-yellow-400/50"
+                    title={`Remove ${code}`}
+                  >
+                    {countryFlag(code)}
+                  </button>
+                </span>
+              ))}
+              <button
+                onClick={() => onFilterChange([])}
+                className="ml-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400/70 hover:bg-red-500/20 transition"
+                title="Clear all"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {/* ═══ SHARED CHIPS — grouped by multiplier tier ═══ */}
+          {filtersByTier.map(([tier, chips]) => {
+            const shape = DEPTH_SHAPES[Math.min(tier, 5)]
+            return (
+              <div key={tier} className="flex flex-wrap items-center justify-center gap-1.5">
+                {/* Tier label — only show ×N for shared (tier >= 2) */}
+                {tier >= 2 && (
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-yellow-300/80 uppercase tracking-wider px-1">
+                    {shape && (
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox={shape.viewBox}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinejoin="round"
+                        className="inline-block"
+                      >
+                        <path d={shape.path} />
+                      </svg>
+                    )}
+                    ×{tier}
+                  </span>
+                )}
+                {chips.map((m) => (
+                  <button
                     key={`${m.dimension}:${m.nodeCode}`}
                     onMouseEnter={() => onPreview?.(m.countryCodes)}
                     onMouseLeave={() => onPreview?.([])}
-                    className={`rounded-full border px-2.5 py-1 text-xs font-medium ${overlapStyle(m.dimension, m.multiplier)}`}
+                    onClick={() => removeFilter(m.dimension, m.nodeCode)}
+                    className={`rounded-full border px-2.5 py-1 text-xs font-medium transition hover:opacity-80 cursor-pointer ${
+                      tier >= 2
+                        ? overlapStyle(m.dimension, tier)
+                        : (DIMENSION_COLORS[m.dimension] ??
+                          'bg-white/10 text-white/60 border-white/20')
+                    }`}
                   >
                     {m.icon} {m.label}
-                    <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-white/10 px-1.5 text-[10px] font-bold">
-                      {shape && (
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox={shape.viewBox}
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinejoin="round"
-                          className="inline-block"
-                        >
-                          <path d={shape.path} />
-                        </svg>
-                      )}
-                      ×{m.multiplier}
-                    </span>
-                  </span>
-                )
-              })}
-            </div>
-          )}
-
-          {/* ═══ SOURCE ROWS — one compact row per country/custom ═══ */}
-          {sourceOrder.map((source) => {
-            const group = sourceRows.get(source) ?? []
-            const isCountry = source !== 'custom'
-            const rowStyle = isCountry ? enrichedRowStyle() : 'border-white/10 bg-white/5'
-
-            return (
-              <button
-                key={source}
-                onClick={() => removeSource(source)}
-                className={`flex flex-wrap items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 transition hover:opacity-80 cursor-pointer ${rowStyle}`}
-                title={`Remove ${isCountry ? source : 'custom'} filters`}
-              >
-                {/* Source indicator: flag for countries, ✦ for custom */}
-                <span className="text-sm">{isCountry ? countryFlag(source) : '✦'}</span>
-
-                {/* Dimension chips — color-coded per type, no remove buttons */}
-                {group.map((f) => (
-                  <span
-                    key={`${f.dimension}:${f.nodeCode}`}
-                    onMouseEnter={(e) => {
-                      e.stopPropagation()
-                      onPreview?.(f.countryCodes ?? [])
-                    }}
-                    onMouseLeave={() => onPreview?.([])}
-                    className={`rounded-full border px-2 py-0.5 text-[11px] ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
-                  >
-                    {f.icon ?? '◆'} {f.label ?? f.nodeCode}
-                  </span>
+                  </button>
                 ))}
-              </button>
+              </div>
             )
           })}
-
-          {/* Clear all */}
-          {sourceOrder.length > 0 && (
-            <div className="flex justify-center">
-              <button
-                onClick={() => onFilterChange([])}
-                className="rounded-full bg-red-500/10 px-2.5 py-1 text-xs text-red-400/70 hover:bg-red-500/20 transition"
-              >
-                Clear all
-              </button>
-            </div>
-          )}
         </div>
       )}
 
