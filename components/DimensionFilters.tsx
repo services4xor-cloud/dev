@@ -329,8 +329,8 @@ export default function DimensionFilters({
             </div>
           )}
 
-          {/* ═══ SOURCE ROWS — one compact row per country/custom ═══ */}
-          {sourceOrder.map((source) => {
+          {/* ═══ SOURCE ROWS — commented out for now, kept for later ═══ */}
+          {/* {sourceOrder.map((source) => {
             const group = sourceRows.get(source) ?? []
             const isCountry = source !== 'custom'
             const rowStyle = isCountry ? enrichedRowStyle() : 'border-white/10 bg-white/5'
@@ -342,10 +342,8 @@ export default function DimensionFilters({
                 className={`flex flex-wrap items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 transition hover:opacity-80 cursor-pointer ${rowStyle}`}
                 title={`Remove ${isCountry ? source : 'custom'} filters`}
               >
-                {/* Source indicator: flag for countries, ✦ for custom */}
                 <span className="text-sm">{isCountry ? countryFlag(source) : '✦'}</span>
 
-                {/* Dimension chips — color-coded per type, no remove buttons */}
                 {group.map((f) => (
                   <span
                     key={`${f.dimension}:${f.nodeCode}`}
@@ -361,10 +359,10 @@ export default function DimensionFilters({
                 ))}
               </button>
             )
-          })}
+          })} */}
 
           {/* Clear all */}
-          {sourceOrder.length > 0 && (
+          {hasAnyFilters && (
             <div className="flex justify-center">
               <button
                 onClick={() => onFilterChange([])}
