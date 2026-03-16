@@ -72,10 +72,10 @@ function scoredToColor(dominantDim: string, dominantValue: string, depth: number
   const valueOffset = (strHash(dominantValue) % 17) - 8
   const hue = (baseHue + valueOffset + 360) % 360
 
-  // Depth 1→4 vibrancy: each level CLEARLY distinct (level 0-4 rarity system)
-  // Level 1: visible glow, Level 2: warm, Level 3: vivid, Level 4: blazing
-  const SAT = [0, 55, 70, 88, 98] // idx=depth
-  const LIT = [0, 40, 52, 65, 76]
+  // Depth 1→4 vibrancy: VERY VISIBLE on dark map background
+  // Level 1: noticeable, Level 2: bright, Level 3: vivid, Level 4: blazing
+  const SAT = [0, 65, 80, 92, 100] // idx=depth
+  const LIT = [0, 48, 58, 68, 78]
   const sat = SAT[depth] ?? 98
   const light = LIT[depth] ?? 70
 
@@ -282,9 +282,8 @@ export default function WorldMap({
       expr.push(code, ENRICHED_OPACITY)
     }
 
-    // Scored: opacity per rarity level — each tier CLEARLY distinct
-    // Level 1 = visible, Level 2 = warm, Level 3 = vivid, Level 4 = blazing
-    const DEPTH_OPACITY = [0, 0.25, 0.4, 0.58, 0.75]
+    // Scored: opacity per rarity level — HIGH visibility on dark map
+    const DEPTH_OPACITY = [0, 0.4, 0.55, 0.7, 0.85]
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
         if (sc.depth > 0) {
