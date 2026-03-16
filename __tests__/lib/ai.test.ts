@@ -34,7 +34,7 @@ describe('AI agent', () => {
           label: 'Kenya',
           connections: [{ relation: 'OFFICIAL_LANG', target: 'Swahili', targetType: 'LANGUAGE' }],
           enriched: {
-            topSectors: ['Agriculture & Tea Export', 'Technology & M-Pesa'],
+            topSectors: ['Agriculture and Tea Export', 'Technology and M-Pesa'],
             visa: 'N/A (home country)',
             payment: ['M-Pesa', 'Airtel Money'],
             currency: 'KES',
@@ -59,7 +59,7 @@ describe('AI agent', () => {
       expect(prompt).toContain('COUNTRY: Kenya')
       expect(prompt).toContain('LANGUAGE: Swahili')
       // Enriched data should be in the prompt
-      expect(prompt).toContain('Technology & M-Pesa')
+      expect(prompt).toContain('Technology and M-Pesa')
       expect(prompt).toContain('M-Pesa')
       expect(prompt).toContain('Kiswahili')
     })
