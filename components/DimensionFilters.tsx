@@ -307,7 +307,27 @@ export default function DimensionFilters({
     >
       {hasAnyFilters && (
         <div className="flex flex-col gap-1.5 max-w-[90vw]">
-          {/* ═══ OVERLAP ROW — moved to map overlay in page.tsx ═══ */}
+          {/* ═══ OVERLAP ROW — merged duplicates with multiplier badges ═══ */}
+          {overlaps.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-1.5">
+              <span className="text-[10px] font-bold text-yellow-300/80 uppercase tracking-wider px-1">
+                ⚡
+              </span>
+              {overlaps.map((m) => (
+                <span
+                  key={`${m.dimension}:${m.nodeCode}`}
+                  onMouseEnter={() => onPreview?.(m.countryCodes)}
+                  onMouseLeave={() => onPreview?.([])}
+                  className={`rounded-full border px-2.5 py-1 text-xs font-medium ${overlapStyle(m.dimension, m.multiplier)}`}
+                >
+                  {m.icon} {m.label}
+                  <span className="ml-1 rounded-full bg-white/10 px-1.5 text-[10px] font-bold">
+                    ×{m.multiplier}
+                  </span>
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* ═══ SOURCE ROWS — commented out for now, kept for later ═══ */}
           {/* {sourceOrder.map((source) => {
