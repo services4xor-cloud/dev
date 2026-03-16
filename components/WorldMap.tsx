@@ -22,15 +22,17 @@ interface DimSlot {
   value: string
 }
 
-/** Country score: ranked dimensions for fill + concentric border rings */
+/** Country score: ranked dimensions for fill + currency for borders */
 interface ScoredCountry {
   code: string
   score: number
   matchCount: number
   dimensions: string[]
-  /** Ranked: [0]=fill, [1]=outer ring, [2]=mid ring, [3]=inner ring */
+  /** Ranked fill: [0]=fill, [1]=outer ring, [2]=mid ring (language/sector/faith only) */
   ranked: DimSlot[]
-  depth: number // unique dimension count 1-4 → intensity
+  depth: number // fill dimension count 1-3 → intensity
+  /** Currency value for border coloring — always priority 1 for borders */
+  currencyValue?: string
 }
 
 interface WorldMapProps {
@@ -331,10 +333,9 @@ export default function WorldMap({
     return expr as unknown as number
   }, [scoreMap, previewCodes, enrichedCountries, enrichedSet])
 
-  // ─── Outer border: width scales with depth ─────────────────────────────────
-  // Depth 1=0.8px, 2=1.5px, 3=2.5px, 4=4px — thicker = deeper
+  // ─── Outer border: CURRENCY color (priority 1) ─────────────────────────────
+  // Currency always renders as border color. Width scales if currency is shared.
   const borderStyle = useMemo(() => {
-    const DEPTH_BORDER_WIDTH = [0.3, 0.8, 1.5, 2.5, 4.0] // index = depth
     const hasActive = scoreMap.size > 0 || enrichedSet.size > 0 || previewCodes.size > 0
 
     if (!hasActive) {
@@ -348,17 +349,25 @@ export default function WorldMap({
     const colorExpr: unknown[] = ['match', ['get', 'ISO_A2']]
     const widthExpr: unknown[] = ['match', ['get', 'ISO_A2']]
 
-    // Enriched: gold border
+    // Enriched: gold border (selected countries always gold)
     for (const code of enrichedCountries) {
       colorExpr.push(code, ENRICHED_COLOR)
       widthExpr.push(code, ENRICHED_BORDER_WIDTH)
     }
 
-    // Scored: same color as fill, width scales with depth
+    // Scored: currency → border color (rose hue 345), width scales with total depth
+    const DEPTH_BORDER_WIDTH = [0.3, 1.0, 1.8, 2.8, 4.0]
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
-        colorExpr.push(code, scoredToColor(sc.ranked[0].dim, sc.ranked[0].value, sc.depth))
-        widthExpr.push(code, DEPTH_BORDER_WIDTH[Math.min(sc.depth, 4)])
+        if (sc.currencyValue) {
+          // Currency dimension → rose/magenta border
+          colorExpr.push(code, scoredToColor('currency', sc.currencyValue, Math.max(sc.depth, 1)))
+          widthExpr.push(code, DEPTH_BORDER_WIDTH[Math.min(sc.depth + 1, 4)])
+        } else {
+          // No currency match → subtle fill-colored border
+          colorExpr.push(code, scoredToColor(sc.ranked[0].dim, sc.ranked[0].value, sc.depth))
+          widthExpr.push(code, DEPTH_BORDER_WIDTH[Math.min(sc.depth, 4)])
+        }
       }
     }
 
