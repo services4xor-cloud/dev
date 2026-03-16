@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 74 (2026-03-16); Country data completeness audit
+> Last updated: Session 75 (2026-03-16); Rarity system + performance + mobile fixes
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -28,6 +28,35 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 75: Performance + Rarity System + Mobile Fixes
+
+### Performance Optimization
+
+- **Map enrich API** — Pre-computed module-level `Map<string, string[]>` for language/sector/currency/faith lookups. O(1) instead of O(n) filter scans.
+- **WorldMap proximity** — Latitude pre-check (`|Δlat| × 111 > radius → skip`) before haversine distance calculation.
+
+### Dimension Ordering Fix
+
+- **Primary-first ordering** — `be/[country]` page now preserves `COUNTRY_OPTIONS` array order (primary/official language first). Server-side global-reach sort removed. Multi-country overlap sorting happens client-side only.
+
+### Pokemon-Style Rarity System (CSS-only, GPU-accelerated)
+
+- **5-tier system** — Level 0 (no match, dim), Level 1 (common — subtle glow), Level 2 (shiny — outer halo), Level 3 (ultra — breathing pulse), Level 4 (legendary — diagonal shimmer sweep + multi-layer glow)
+- **Dimension-aware hues** — `--rarity-hue` CSS custom property per dimension (teal=language, lime=sector, violet=faith, rose=currency)
+- **Applied to:** Country detail chips (`CountryDimensions`), Map country polygons (discrete depth tables), Agent + Opportunities dimension chips (`DimensionOverlapBar`)
+- **Map depth tables** — Discrete SAT/LIT/opacity arrays for more dramatic visual jumps between tiers
+
+### Mobile Fixes
+
+- **Tooltip auto-clear** — 800ms timer after country click, then fade out (no sticky tooltips)
+- **PageShell back button** — `shrink-0` on back link, `truncate` + `min-w-0` on title prevents overflow
+
+### Stats
+
+- Tests: 361/361 (24 suites), TypeScript: 0 errors
 
 ---
 
