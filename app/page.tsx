@@ -31,6 +31,51 @@ function countryFlag(code: string): string {
 /** Dimension priority for determining dominant color */
 const DIM_PRIORITY = ['language', 'sector', 'currency', 'faith']
 
+/** Dimension-specific chip colors matching the map's HSL hue system */
+const DIM_CHIP_COLORS: Record<
+  string,
+  { base: string; x2: string; x3: string; x4: string; x5: string }
+> = {
+  language: {
+    base: 'bg-teal-500/20 text-teal-300 border-teal-400/30',
+    x2: 'bg-teal-500/25 text-teal-200 border-teal-400/40 shadow-[0_0_6px_rgba(45,212,191,0.25)]',
+    x3: 'bg-teal-500/35 text-teal-200 border-teal-300/55 shadow-[0_0_10px_rgba(45,212,191,0.35)]',
+    x4: 'bg-teal-500/45 text-teal-100 border-teal-300/65 shadow-[0_0_14px_rgba(45,212,191,0.45)]',
+    x5: 'bg-teal-500/55 text-teal-100 border-teal-200/75 shadow-[0_0_20px_rgba(45,212,191,0.55)] font-semibold',
+  },
+  sector: {
+    base: 'bg-lime-500/20 text-lime-300 border-lime-400/30',
+    x2: 'bg-lime-500/25 text-lime-200 border-lime-400/40 shadow-[0_0_6px_rgba(132,204,22,0.25)]',
+    x3: 'bg-lime-500/35 text-lime-200 border-lime-300/55 shadow-[0_0_10px_rgba(132,204,22,0.35)]',
+    x4: 'bg-lime-500/45 text-lime-100 border-lime-300/65 shadow-[0_0_14px_rgba(132,204,22,0.45)]',
+    x5: 'bg-lime-500/55 text-lime-100 border-lime-200/75 shadow-[0_0_20px_rgba(132,204,22,0.55)] font-semibold',
+  },
+  faith: {
+    base: 'bg-violet-500/20 text-violet-300 border-violet-400/30',
+    x2: 'bg-violet-500/25 text-violet-200 border-violet-400/40 shadow-[0_0_6px_rgba(139,92,246,0.25)]',
+    x3: 'bg-violet-500/35 text-violet-200 border-violet-300/55 shadow-[0_0_10px_rgba(139,92,246,0.35)]',
+    x4: 'bg-violet-500/45 text-violet-100 border-violet-300/65 shadow-[0_0_14px_rgba(139,92,246,0.45)]',
+    x5: 'bg-violet-500/55 text-violet-100 border-violet-200/75 shadow-[0_0_20px_rgba(139,92,246,0.55)] font-semibold',
+  },
+  currency: {
+    base: 'bg-rose-500/20 text-rose-300 border-rose-400/30',
+    x2: 'bg-rose-500/25 text-rose-200 border-rose-400/40 shadow-[0_0_6px_rgba(244,63,94,0.25)]',
+    x3: 'bg-rose-500/35 text-rose-200 border-rose-300/55 shadow-[0_0_10px_rgba(244,63,94,0.35)]',
+    x4: 'bg-rose-500/45 text-rose-100 border-rose-300/65 shadow-[0_0_14px_rgba(244,63,94,0.45)]',
+    x5: 'bg-rose-500/55 text-rose-100 border-rose-200/75 shadow-[0_0_20px_rgba(244,63,94,0.55)] font-semibold',
+  },
+}
+
+function chipStyle(dimension: string, multiplier: number): string {
+  const colors = DIM_CHIP_COLORS[dimension]
+  if (!colors) return 'bg-white/10 text-white/60 border-white/20'
+  if (multiplier >= 5) return colors.x5
+  if (multiplier >= 4) return colors.x4
+  if (multiplier >= 3) return colors.x3
+  if (multiplier >= 2) return colors.x2
+  return colors.base
+}
+
 /** Ranked dimension slot: dim name + top value for color derivation */
 interface DimSlot {
   dim: string
@@ -117,6 +162,39 @@ export default function HomePage() {
     if (!hydrated) return
     sessionStorage.setItem('bex-map-filters', JSON.stringify(filters))
   }, [hydrated, filters])
+
+  // ─── OVERLAP CHIPS: dimension values shared across ×2–×5 countries ──────────
+  const mapOverlaps = useMemo(() => {
+    const keyToSources = new Map<string, { filter: ActiveFilter; sources: Set<string> }>()
+    for (const f of filters) {
+      const key = `${f.dimension}:${f.nodeCode}`
+      const entry = keyToSources.get(key) ?? { filter: f, sources: new Set<string>() }
+      entry.sources.add(f.source ?? 'custom')
+      keyToSources.set(key, entry)
+    }
+    const result: {
+      dimension: string
+      nodeCode: string
+      label: string
+      icon: string
+      multiplier: number
+      countryCodes: string[]
+    }[] = []
+    for (const [, entry] of Array.from(keyToSources.entries())) {
+      if (entry.sources.size >= 2) {
+        result.push({
+          dimension: entry.filter.dimension,
+          nodeCode: entry.filter.nodeCode,
+          label: entry.filter.label ?? entry.filter.nodeCode,
+          icon: entry.filter.icon ?? '◆',
+          multiplier: Math.min(entry.sources.size, 5),
+          countryCodes: entry.filter.countryCodes ?? [],
+        })
+      }
+    }
+    result.sort((a, b) => b.multiplier - a.multiplier)
+    return result
+  }, [filters])
 
   // Compute intensity scores — tracks WHICH dimensions match for color blending.
   // Also adds subtle neighbor proximity glow for countries bordering enriched ones.
@@ -326,6 +404,24 @@ export default function HomePage() {
         }}
         enrichedCountries={enrichedCountries}
       />
+
+      {/* ═══ MAP OVERLAY — ×2–×5 overlap chips ═══ */}
+      {mapOverlaps.length > 0 && (
+        <div className="absolute left-4 top-14 z-20 flex flex-col gap-1.5 max-w-[260px]">
+          {mapOverlaps.map((m) => (
+            <span
+              key={`${m.dimension}:${m.nodeCode}`}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs backdrop-blur-sm transition-all ${chipStyle(m.dimension, m.multiplier)}`}
+            >
+              <span>{m.icon}</span>
+              <span className="truncate">{m.label}</span>
+              <span className="rounded-full bg-white/15 px-1.5 text-[10px] font-bold">
+                ×{m.multiplier}
+              </span>
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Top bar */}
       <div className="absolute left-0 right-0 top-0 z-30 flex items-center justify-between px-4 py-3">
