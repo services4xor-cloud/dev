@@ -72,11 +72,12 @@ function scoredToColor(dominantDim: string, dominantValue: string, depth: number
   const valueOffset = (strHash(dominantValue) % 17) - 8
   const hue = (baseHue + valueOffset + 360) % 360
 
-  // Depth 1→4 determines vibrancy: subtle dark → vivid bright
-  const sat = 38 + depth * 15 // 53% → 98%
-  const light = 26 + depth * 9 // 35% → 62%
+  // Depth 1→4 determines vibrancy: subtle → vivid (shiny rarity curve)
+  // Rank 1: muted, Rank 2: noticeable, Rank 3: bright, Rank 4: blazing
+  const sat = depth <= 2 ? 38 + depth * 15 : 60 + depth * 10 // 53→68 → 90→100
+  const light = depth <= 2 ? 26 + depth * 9 : 32 + depth * 10 // 35→44 → 62→72
 
-  return `hsl(${hue},${sat}%,${light}%)`
+  return `hsl(${hue},${Math.min(sat, 100)}%,${Math.min(light, 72)}%)`
 }
 
 /** Uniform enriched glow — all selected countries shine equally bright */
@@ -273,13 +274,13 @@ export default function WorldMap({
       expr.push(code, ENRICHED_OPACITY)
     }
 
-    // Scored: opacity tied to depth (unique dimension count 1-4)
-    // depth 1 = 0.22, depth 2 = 0.34, depth 3 = 0.46, depth 4 = 0.55
+    // Scored: opacity tied to depth — shiny rarity curve
+    // depth 1 = 0.22, depth 2 = 0.34, depth 3 = 0.52, depth 4 = 0.68
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
         if (sc.depth > 0) {
-          const dimOpacity = 0.1 + sc.depth * 0.12
-          expr.push(code, Math.min(dimOpacity, 0.55))
+          const dimOpacity = sc.depth <= 2 ? 0.1 + sc.depth * 0.12 : 0.2 + sc.depth * 0.12
+          expr.push(code, Math.min(dimOpacity, 0.68))
         } else {
           // Neighbor proximity only — subtle
           expr.push(code, 0.05 + sc.score * 0.1)

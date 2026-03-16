@@ -92,3 +92,93 @@ body {
     saiyan-charge 3s ease-in infinite,
     saiyan-aura-charge 3s ease-in infinite;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SHINY RARITY SYSTEM — Pokemon-style tiers for dimension overlap chips
+   Rank 1 = Common (no class needed — default chip styling)
+   Rank 2 = Shiny — elevated glow, brighter border
+   Rank 3 = Ultra — pulsing glow animation
+   Rank 4 = Legendary — shimmer sweep + multi-layer glow
+   All GPU-accelerated: box-shadow, opacity, background-position
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Rank 2: Shiny ─────────────────────────────────────────────────────── */
+.rarity-shiny {
+  --shiny-color: var(--rarity-hue, 185);
+  box-shadow:
+    0 0 8px hsla(var(--shiny-color), 70%, 55%, 0.35),
+    0 0 2px hsla(var(--shiny-color), 80%, 65%, 0.2);
+  border-color: hsla(var(--shiny-color), 70%, 65%, 0.5) !important;
+}
+
+/* ── Rank 3: Ultra — breathing glow ────────────────────────────────────── */
+@keyframes ultra-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px hsla(var(--rarity-hue, 185), 70%, 55%, 0.3),
+      0 0 3px hsla(var(--rarity-hue, 185), 80%, 65%, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 14px hsla(var(--rarity-hue, 185), 75%, 60%, 0.5),
+      0 0 28px hsla(var(--rarity-hue, 185), 70%, 55%, 0.2),
+      0 0 4px hsla(var(--rarity-hue, 185), 80%, 70%, 0.3);
+  }
+}
+
+.rarity-ultra {
+  --ultra-color: var(--rarity-hue, 185);
+  animation: ultra-pulse 2.5s ease-in-out infinite;
+  border-color: hsla(var(--ultra-color), 75%, 70%, 0.6) !important;
+  background-image: linear-gradient(
+    135deg,
+    hsla(var(--ultra-color), 60%, 50%, 0.12) 0%,
+    transparent 50%,
+    hsla(var(--ultra-color), 60%, 50%, 0.08) 100%
+  );
+}
+
+/* ── Rank 4: Legendary — shimmer sweep + intense layered glow ──────────── */
+@keyframes legendary-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes legendary-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 10px hsla(var(--rarity-hue, 185), 80%, 60%, 0.4),
+      0 0 20px hsla(var(--rarity-hue, 185), 70%, 55%, 0.2),
+      0 0 4px hsla(45, 90%, 60%, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 16px hsla(var(--rarity-hue, 185), 85%, 65%, 0.6),
+      0 0 36px hsla(var(--rarity-hue, 185), 75%, 58%, 0.3),
+      0 0 52px hsla(var(--rarity-hue, 185), 70%, 50%, 0.12),
+      0 0 6px hsla(45, 90%, 65%, 0.25);
+  }
+}
+
+.rarity-legendary {
+  --legend-color: var(--rarity-hue, 185);
+  animation:
+    legendary-glow 2s ease-in-out infinite,
+    legendary-shimmer 3s linear infinite;
+  border-color: hsla(var(--legend-color), 80%, 72%, 0.7) !important;
+  background-image: linear-gradient(
+    110deg,
+    transparent 20%,
+    hsla(var(--legend-color), 80%, 75%, 0.15) 40%,
+    hsla(45, 90%, 70%, 0.1) 50%,
+    hsla(var(--legend-color), 80%, 75%, 0.15) 60%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+}

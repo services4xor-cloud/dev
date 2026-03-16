@@ -253,6 +253,27 @@ export default function CountryDimensions({
     return otherCountries.filter((c) => c!.currency === cur).length
   }
 
+  // ─── Rarity system: overlap count → shiny tier ─────────────────────────────
+  // 0 = common (rank 1), 1 = shiny (rank 2), 2 = ultra (rank 3), 3+ = legendary (rank 4)
+  const RARITY_HUE: Record<string, number> = {
+    language: 185,
+    sector: 90,
+    faith: 275,
+    currency: 345,
+  }
+
+  function rarityClass(overlap: number): string {
+    if (overlap >= 3) return 'rarity-legendary'
+    if (overlap === 2) return 'rarity-ultra'
+    if (overlap === 1) return 'rarity-shiny'
+    return ''
+  }
+
+  function rarityStyle(dim: string): React.CSSProperties | undefined {
+    const hue = RARITY_HUE[dim]
+    return hue !== undefined ? ({ '--rarity-hue': String(hue) } as React.CSSProperties) : undefined
+  }
+
   // ─── Pre-compute reach maps (O(n) once, not O(n) per chip) ─────────────────
   const langReach = useMemo(() => {
     const map: Record<string, number> = {}
@@ -403,12 +424,14 @@ export default function CountryDimensions({
               const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
               const reach = langReach[lang.code] ?? 0
+              const rarity = isShared ? rarityClass(overlap) : ''
               return (
                 <span
                   key={lang.code}
-                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${
+                  style={isShared ? rarityStyle('language') : undefined}
+                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${rarity} ${
                     isShared
-                      ? 'border-teal-300/50 bg-teal-500/20 text-teal-200 shadow-[0_0_10px_rgba(45,212,191,0.2)] ring-1 ring-teal-400/30'
+                      ? 'border-teal-300/50 bg-teal-500/20 text-teal-200'
                       : 'border-teal-400/25 bg-teal-500/10 text-teal-300'
                   }`}
                 >
@@ -447,12 +470,14 @@ export default function CountryDimensions({
               const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
               const reach = sectorReach[sector] ?? 0
+              const rarity = isShared ? rarityClass(overlap) : ''
               return (
                 <span
                   key={sector}
-                  className={`flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-center text-xs sm:px-4 sm:text-sm transition-all ${
+                  style={isShared ? rarityStyle('sector') : undefined}
+                  className={`flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-center text-xs sm:px-4 sm:text-sm transition-all ${rarity} ${
                     isShared
-                      ? 'border-lime-300/50 bg-lime-500/20 text-lime-200 shadow-[0_0_10px_rgba(132,204,22,0.2)] ring-1 ring-lime-400/30'
+                      ? 'border-lime-300/50 bg-lime-500/20 text-lime-200'
                       : 'border-lime-400/15 bg-lime-500/10 text-lime-300'
                   }`}
                 >
@@ -497,12 +522,15 @@ export default function CountryDimensions({
                   const isShared = codes.length >= 2
                   const reach = currencyReach[cur] ?? 0
                   const isCurrent = cur === currency
+                  const curOverlap = codes.length - 1 // how many other countries share
+                  const rarity = isShared ? rarityClass(curOverlap) : ''
                   return (
                     <span
                       key={cur}
-                      className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${
+                      style={isShared ? rarityStyle('currency') : undefined}
+                      className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${rarity} ${
                         isShared
-                          ? 'border-rose-300/50 bg-rose-500/20 text-rose-200 shadow-[0_0_10px_rgba(244,63,94,0.2)] ring-1 ring-rose-400/30'
+                          ? 'border-rose-300/50 bg-rose-500/20 text-rose-200'
                           : isCurrent
                             ? 'border-rose-400/25 bg-rose-500/10 text-rose-300'
                             : 'border-rose-400/15 bg-rose-500/5 text-rose-300/60'
@@ -539,12 +567,14 @@ export default function CountryDimensions({
               const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
               const reach = faithReach[faith] ?? 0
+              const rarity = isShared ? rarityClass(overlap) : ''
               return (
                 <span
                   key={faith}
-                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${
+                  style={isShared ? rarityStyle('faith') : undefined}
+                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium sm:px-5 sm:py-2 sm:text-base transition-all ${rarity} ${
                     isShared
-                      ? 'border-violet-300/50 bg-violet-500/20 text-violet-200 shadow-[0_0_10px_rgba(139,92,246,0.2)] ring-1 ring-violet-400/30'
+                      ? 'border-violet-300/50 bg-violet-500/20 text-violet-200'
                       : 'border-violet-400/25 bg-violet-500/10 text-violet-300'
                   }`}
                 >
