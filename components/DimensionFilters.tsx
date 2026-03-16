@@ -293,34 +293,33 @@ export default function DimensionFilters({
     >
       {hasAnyFilters && (
         <div className="flex flex-col gap-1.5 max-w-[90vw]">
-          {/* ═══ ROUTE BANNER — Country A → Country B → Country C ═══ */}
-          {enrichedCountries.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-1">
-              {enrichedCountries.map((code, i) => (
-                <span key={code} className="inline-flex items-center gap-1">
-                  {i > 0 && <span className="text-brand-accent/60 text-xs">→</span>}
-                  <button
-                    onClick={() => removeSource(code)}
-                    className="rounded-full border border-yellow-400/30 bg-yellow-400/10 px-2 py-0.5 text-sm transition hover:bg-yellow-400/20 hover:border-yellow-400/50"
-                    title={`Remove ${code}`}
-                  >
-                    {countryFlag(code)}
-                  </button>
-                </span>
-              ))}
+          {/* ═══ PER-COUNTRY ROWS — flag + 4 primary chips each ═══ */}
+          {enrichedCountries.map((code) => {
+            const countryFilters = activeFilters.filter((f) => f.source === code && f.isPrimary)
+            if (countryFilters.length === 0) return null
+            return (
               <button
-                onClick={() => onFilterChange([])}
-                className="ml-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400/70 hover:bg-red-500/20 transition"
-                title="Clear all"
+                key={code}
+                onClick={() => removeSource(code)}
+                className="flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1.5 transition hover:opacity-80 cursor-pointer shadow-[0_0_12px_rgba(253,224,71,0.15)]"
+                title={`Remove ${code} filters`}
               >
-                ✕
+                <span className="text-sm">{countryFlag(code)}</span>
+                {countryFilters.map((f) => (
+                  <span
+                    key={`${f.dimension}:${f.nodeCode}`}
+                    className={`rounded-full border px-2 py-0.5 text-[11px] ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
+                  >
+                    {f.icon ?? '◆'} {f.label ?? f.nodeCode}
+                  </span>
+                ))}
               </button>
-            </div>
-          )}
+            )
+          })}
 
-          {/* ═══ SHARED CHIPS — grouped by multiplier tier ═══ */}
+          {/* ═══ SHARED CHIPS — grouped by multiplier tier (×2+) ═══ */}
           {filtersByTier
-            .filter(([tier]) => enrichedCountries.length <= 1 || tier >= 2)
+            .filter(([tier]) => tier >= 2)
             .map(([tier, allChips]) => {
               // ×1 tier: only show primary chips (1 per dimension per country)
               const chips = tier === 1 ? allChips.filter((c) => c.isPrimary) : allChips
