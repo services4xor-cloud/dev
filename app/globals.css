@@ -95,14 +95,23 @@ body {
 
 /* ═══════════════════════════════════════════════════════════════════════════
    SHINY RARITY SYSTEM — Pokemon-style tiers for dimension overlap chips
-   Rank 1 = Common (no class needed — default chip styling)
-   Rank 2 = Shiny — elevated glow, brighter border
-   Rank 3 = Ultra — pulsing glow animation
-   Rank 4 = Legendary — shimmer sweep + multi-layer glow
+   Level 0 = Unmatched (no class — dim default)
+   Level 1 = Common match — subtle inner glow, slightly elevated
+   Level 2 = Shiny — outer glow halo, brighter border
+   Level 3 = Ultra — breathing pulse animation + gradient overlay
+   Level 4 = Legendary — diagonal shimmer sweep + multi-layer glow
    All GPU-accelerated: box-shadow, opacity, background-position
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Rank 2: Shiny ─────────────────────────────────────────────────────── */
+/* ── Level 1: Common match — subtle inner glow ─────────────────────────── */
+.rarity-common {
+  box-shadow:
+    0 0 4px hsla(var(--rarity-hue, 185), 50%, 50%, 0.2),
+    inset 0 0 3px hsla(var(--rarity-hue, 185), 40%, 55%, 0.1);
+  border-color: hsla(var(--rarity-hue, 185), 55%, 55%, 0.35) !important;
+}
+
+/* ── Level 2: Shiny ────────────────────────────────────────────────────── */
 .rarity-shiny {
   --shiny-color: var(--rarity-hue, 185);
   box-shadow:

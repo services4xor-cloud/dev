@@ -253,8 +253,8 @@ export default function CountryDimensions({
     return otherCountries.filter((c) => c!.currency === cur).length
   }
 
-  // ─── Rarity system: overlap count → shiny tier ─────────────────────────────
-  // 0 = common (rank 1), 1 = shiny (rank 2), 2 = ultra (rank 3), 3+ = legendary (rank 4)
+  // ─── Rarity system: overlap count → shiny tier (level 0-4) ─────────────────
+  // Level 0 = unmatched (no class). Level 1 = common match. 2 = shiny. 3 = ultra. 4 = legendary.
   const RARITY_HUE: Record<string, number> = {
     language: 185,
     sector: 90,
@@ -263,10 +263,11 @@ export default function CountryDimensions({
   }
 
   function rarityClass(overlap: number): string {
-    if (overlap >= 3) return 'rarity-legendary'
-    if (overlap === 2) return 'rarity-ultra'
-    if (overlap === 1) return 'rarity-shiny'
-    return ''
+    if (overlap >= 4) return 'rarity-legendary' // Level 4: 5+ countries share
+    if (overlap === 3) return 'rarity-ultra' // Level 3: 4 countries share
+    if (overlap === 2) return 'rarity-shiny' // Level 2: 3 countries share
+    if (overlap === 1) return 'rarity-common' // Level 1: 2 countries share
+    return '' // Level 0: unique to this country
   }
 
   function rarityStyle(dim: string): React.CSSProperties | undefined {

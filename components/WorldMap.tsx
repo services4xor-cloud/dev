@@ -72,12 +72,14 @@ function scoredToColor(dominantDim: string, dominantValue: string, depth: number
   const valueOffset = (strHash(dominantValue) % 17) - 8
   const hue = (baseHue + valueOffset + 360) % 360
 
-  // Depth 1→4 determines vibrancy: subtle → vivid (shiny rarity curve)
-  // Rank 1: muted, Rank 2: noticeable, Rank 3: bright, Rank 4: blazing
-  const sat = depth <= 2 ? 38 + depth * 15 : 60 + depth * 10 // 53→68 → 90→100
-  const light = depth <= 2 ? 26 + depth * 9 : 32 + depth * 10 // 35→44 → 62→72
+  // Depth 1→4 vibrancy: each level visibly distinct (level 0-4 rarity system)
+  // Level 1: muted, Level 2: warm, Level 3: vivid, Level 4: blazing
+  const SAT = [0, 48, 62, 82, 98] // idx=depth
+  const LIT = [0, 32, 42, 56, 70]
+  const sat = SAT[depth] ?? 98
+  const light = LIT[depth] ?? 70
 
-  return `hsl(${hue},${Math.min(sat, 100)}%,${Math.min(light, 72)}%)`
+  return `hsl(${hue},${sat}%,${light}%)`
 }
 
 /** Uniform enriched glow — all selected countries shine equally bright */
@@ -161,6 +163,9 @@ export default function WorldMap({
     return () => saveViewport()
   }, [saveViewport])
 
+  // Tooltip: show on hover (desktop), briefly flash on tap (mobile), then auto-clear
+  const tooltipTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const handleMouseMove = useCallback((e: MapLayerMouseEvent) => {
     const features = e.features
     if (features?.[0]?.properties?.name) {
@@ -182,6 +187,9 @@ export default function WorldMap({
       } else {
         onCountryClick(null)
       }
+      // On touch/mobile: clear tooltip after brief flash
+      if (tooltipTimer.current) clearTimeout(tooltipTimer.current)
+      tooltipTimer.current = setTimeout(() => setHoveredCountry(null), 800)
     },
     [onCountryClick]
   )
@@ -274,13 +282,13 @@ export default function WorldMap({
       expr.push(code, ENRICHED_OPACITY)
     }
 
-    // Scored: opacity tied to depth — shiny rarity curve
-    // depth 1 = 0.22, depth 2 = 0.34, depth 3 = 0.52, depth 4 = 0.68
+    // Scored: opacity per rarity level — each tier visibly distinct
+    // Level 1 = 0.18, Level 2 = 0.30, Level 3 = 0.48, Level 4 = 0.68
+    const DEPTH_OPACITY = [0, 0.18, 0.3, 0.48, 0.68]
     for (const [code, sc] of Array.from(scoreMap)) {
       if (!enrichedSet.has(code)) {
         if (sc.depth > 0) {
-          const dimOpacity = sc.depth <= 2 ? 0.1 + sc.depth * 0.12 : 0.2 + sc.depth * 0.12
-          expr.push(code, Math.min(dimOpacity, 0.68))
+          expr.push(code, DEPTH_OPACITY[sc.depth] ?? 0.68)
         } else {
           // Neighbor proximity only — subtle
           expr.push(code, 0.05 + sc.score * 0.1)
