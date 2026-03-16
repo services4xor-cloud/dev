@@ -28,8 +28,8 @@ function countryFlag(code: string): string {
   }
 }
 
-/** Dimension priority for fill color — currency excluded (it renders as borders) */
-const DIM_PRIORITY = ['language', 'sector', 'faith']
+/** Dimension priority for determining dominant color */
+const DIM_PRIORITY = ['language', 'sector', 'currency', 'faith']
 
 /** Ranked dimension slot: dim name + top value for color derivation */
 interface DimSlot {
@@ -37,17 +37,15 @@ interface DimSlot {
   value: string
 }
 
-/** Country with intensity score: ranked dimensions for fill + currency for borders */
+/** Country with intensity score: ranked dimensions for multi-ring border coloring */
 export interface ScoredCountry {
   code: string
   score: number
   matchCount: number
-  dimensions: string[] // which dimension types match (all, including currency)
-  /** Ranked fill slots: [0]=fill, [1]=outer ring, [2]=inner ring (language/sector/faith only) */
+  dimensions: string[] // which dimension types match
+  /** Ranked dimension slots: [0]=fill, [1]=outer ring, [2]=inner ring, [3]=thinnest */
   ranked: DimSlot[]
-  depth: number // unique fill dimension count 1-3 (determines intensity)
-  /** Currency value for border coloring — always priority 1 for borders */
-  currencyValue?: string
+  depth: number // unique dimension count 1-4 (determines intensity)
 }
 
 /** Haversine distance between two lat/lng points in km */
@@ -155,7 +153,7 @@ export default function HomePage() {
 
     const scored = new Map<string, ScoredCountry>()
     for (const [code, entry] of Array.from(countMap.entries())) {
-      // Rank FILL dimensions by hit count (currency excluded — it's for borders)
+      // Rank dimensions by hit count (priority order breaks ties)
       const ranked: { dim: string; count: number; topValue: string }[] = []
       for (const dim of DIM_PRIORITY) {
         const c = entry.dimCounts[dim] || 0
@@ -174,28 +172,10 @@ export default function HomePage() {
       }
       ranked.sort((a, b) => b.count - a.count)
 
-      // Extract currency value separately (for border coloring)
-      let currencyValue: string | undefined
-      const currVals = entry.dimValues['currency']
-      if (currVals) {
-        let topVal = ''
-        let topCount = 0
-        for (const [v, vc] of Object.entries(currVals)) {
-          if (vc > topCount) {
-            topCount = vc
-            topVal = v
-          }
-        }
-        currencyValue = topVal
-      }
-
-      // Build ranked fill slots — pad to 3 with fallback to first
+      // Build ranked slots — pad to 4 with fallback to first
       const slots: DimSlot[] = ranked.map((r) => ({ dim: r.dim, value: r.topValue }))
       const fallback: DimSlot = slots[0] ?? { dim: '', value: '' }
       while (slots.length < 4) slots.push(fallback)
-
-      // Fill depth = language/sector/faith only (max 3)
-      const fillDims = Array.from(entry.dims).filter((d) => d !== 'currency')
 
       scored.set(code, {
         code,
@@ -203,8 +183,7 @@ export default function HomePage() {
         matchCount: entry.count,
         dimensions: Array.from(entry.dims),
         ranked: slots,
-        depth: fillDims.length,
-        currencyValue,
+        depth: entry.dims.size,
       })
     }
 
