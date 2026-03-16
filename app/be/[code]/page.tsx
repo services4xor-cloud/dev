@@ -4,7 +4,6 @@ import Link from 'next/link'
 import PageShell from '@/components/PageShell'
 import CountryDimensions from '@/components/CountryDimensions'
 import { getCountryData } from '@/lib/country-api'
-import { COUNTRY_OPTIONS, type LanguageCode, type FaithCode } from '@/lib/country-selector'
 
 interface PageProps {
   params: Promise<{ code: string }>
@@ -34,26 +33,11 @@ export default async function CountryHubPage({ params }: PageProps) {
   const capital = data?.capital ?? null
   const tz = data?.timezone ? data.timezone.replace(/^.*\//, '') : null
   const population = data?.population ?? null
-  // Sort by global influence: most shared across countries → first
-  const languages = [...(data?.languages ?? [])].sort((a, b) => {
-    const aReach = COUNTRY_OPTIONS.filter((c) =>
-      c.languages.includes(a.code as LanguageCode)
-    ).length
-    const bReach = COUNTRY_OPTIONS.filter((c) =>
-      c.languages.includes(b.code as LanguageCode)
-    ).length
-    return bReach - aReach
-  })
-  const topFaiths = [...(data?.topFaiths ?? [])].sort((a, b) => {
-    const aReach = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(a as FaithCode)).length
-    const bReach = COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(b as FaithCode)).length
-    return bReach - aReach
-  })
-  const topSectors = [...(data?.topSectors ?? [])].sort((a, b) => {
-    const aReach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(a)).length
-    const bReach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(b)).length
-    return bReach - aReach
-  })
+  // Preserve priority order from COUNTRY_OPTIONS (primary/official first).
+  // Multi-country overlap sorting happens client-side in CountryDimensions.
+  const languages = data?.languages ?? []
+  const topFaiths = data?.topFaiths ?? []
+  const topSectors = data?.topSectors ?? []
 
   // Format population for display
   const popDisplay = population

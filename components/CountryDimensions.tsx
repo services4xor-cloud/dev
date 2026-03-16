@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   COUNTRY_OPTIONS,
   LANGUAGE_REGISTRY,
@@ -253,32 +253,51 @@ export default function CountryDimensions({
     return otherCountries.filter((c) => c!.currency === cur).length
   }
 
-  // ─── Sorted dimension arrays (shared first) ────────────────────────────────
-  const sortedLanguages = [...languages].sort((a, b) => {
-    const d = langOverlap(b.code) - langOverlap(a.code)
-    if (d !== 0) return d
-    const aR = COUNTRY_OPTIONS.filter((c) => c.languages.includes(a.code as LanguageCode)).length
-    const bR = COUNTRY_OPTIONS.filter((c) => c.languages.includes(b.code as LanguageCode)).length
-    return bR - aR
-  })
+  // ─── Pre-compute reach maps (O(n) once, not O(n) per chip) ─────────────────
+  const langReach = useMemo(() => {
+    const map: Record<string, number> = {}
+    for (const c of COUNTRY_OPTIONS) for (const l of c.languages) map[l] = (map[l] || 0) + 1
+    return map
+  }, [])
+  const sectorReach = useMemo(() => {
+    const map: Record<string, number> = {}
+    for (const c of COUNTRY_OPTIONS) for (const s of c.topSectors) map[s] = (map[s] || 0) + 1
+    return map
+  }, [])
+  const faithReach = useMemo(() => {
+    const map: Record<string, number> = {}
+    for (const c of COUNTRY_OPTIONS) for (const f of c.topFaiths) map[f] = (map[f] || 0) + 1
+    return map
+  }, [])
+  const currencyReach = useMemo(() => {
+    const map: Record<string, number> = {}
+    for (const c of COUNTRY_OPTIONS) map[c.currency] = (map[c.currency] || 0) + 1
+    return map
+  }, [])
 
-  const sortedSectors = [...topSectors].sort((a, b) => {
-    const d = sectorOverlap(b) - sectorOverlap(a)
-    if (d !== 0) return d
-    return (
-      COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(b)).length -
-      COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(a)).length
-    )
-  })
+  // ─── Sorted dimension arrays ──────────────────────────────────────────────
+  // Single country: preserve original priority order from COUNTRY_OPTIONS
+  // Multi country: sort shared-first, then by global reach
+  const sortedLanguages = hasOthers
+    ? [...languages].sort((a, b) => {
+        const d = langOverlap(b.code) - langOverlap(a.code)
+        return d !== 0 ? d : (langReach[b.code] ?? 0) - (langReach[a.code] ?? 0)
+      })
+    : languages
 
-  const sortedFaiths = [...topFaiths].sort((a, b) => {
-    const d = faithOverlap(b) - faithOverlap(a)
-    if (d !== 0) return d
-    return (
-      COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(b as FaithCode)).length -
-      COUNTRY_OPTIONS.filter((c) => c.topFaiths.includes(a as FaithCode)).length
-    )
-  })
+  const sortedSectors = hasOthers
+    ? [...topSectors].sort((a, b) => {
+        const d = sectorOverlap(b) - sectorOverlap(a)
+        return d !== 0 ? d : (sectorReach[b] ?? 0) - (sectorReach[a] ?? 0)
+      })
+    : topSectors
+
+  const sortedFaiths = hasOthers
+    ? [...topFaiths].sort((a, b) => {
+        const d = faithOverlap(b) - faithOverlap(a)
+        return d !== 0 ? d : (faithReach[b] ?? 0) - (faithReach[a] ?? 0)
+      })
+    : topFaiths
 
   return (
     <>
@@ -383,9 +402,7 @@ export default function CountryDimensions({
               const overlap = langOverlap(lang.code)
               const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
-              const reach = COUNTRY_OPTIONS.filter((c) =>
-                c.languages.includes(lang.code as LanguageCode)
-              ).length
+              const reach = langReach[lang.code] ?? 0
               return (
                 <span
                   key={lang.code}
@@ -429,7 +446,7 @@ export default function CountryDimensions({
               const overlap = sectorOverlap(sector)
               const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
-              const reach = COUNTRY_OPTIONS.filter((c) => c.topSectors.includes(sector)).length
+              const reach = sectorReach[sector] ?? 0
               return (
                 <span
                   key={sector}
@@ -478,7 +495,7 @@ export default function CountryDimensions({
                 .sort((a, b) => b[1].length - a[1].length)
                 .map(([cur, codes]) => {
                   const isShared = codes.length >= 2
-                  const reach = COUNTRY_OPTIONS.filter((c) => c.currency === cur).length
+                  const reach = currencyReach[cur] ?? 0
                   const isCurrent = cur === currency
                   return (
                     <span
@@ -521,9 +538,7 @@ export default function CountryDimensions({
               const overlap = faithOverlap(faith)
               const multiplier = overlap + 1
               const isShared = hasOthers && overlap > 0
-              const reach = COUNTRY_OPTIONS.filter((c) =>
-                c.topFaiths.includes(faith as FaithCode)
-              ).length
+              const reach = faithReach[faith] ?? 0
               return (
                 <span
                   key={faith}

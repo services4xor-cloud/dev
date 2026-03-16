@@ -199,8 +199,11 @@ export default function HomePage() {
 
         let minDist = Infinity
         for (const ec of enrichedData) {
+          // Quick lat-only pre-check: 1° lat ≈ 111 km, skip if too far
+          if (Math.abs(c.lat - ec.lat) * 111 > NEIGHBOR_RADIUS_KM) continue
           const d = haversineKm(c.lat, c.lng, ec.lat, ec.lng)
           if (d < minDist) minDist = d
+          if (minDist < NEIGHBOR_RADIUS_KM) break // already qualifies
         }
 
         if (minDist < NEIGHBOR_RADIUS_KM) {
