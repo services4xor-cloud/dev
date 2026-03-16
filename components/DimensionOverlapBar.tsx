@@ -56,6 +56,27 @@ const DIMENSION_COLORS_BRIGHT: Record<string, string> = {
   currency: 'bg-rose-500/30 text-rose-200 border-rose-400/50 shadow-[0_0_6px_rgba(244,63,94,0.2)]',
 }
 
+// ─── Rarity system: CSS-only glow tiers keyed by overlap depth ──────────────
+const RARITY_HUE: Record<string, number> = {
+  language: 185, // teal
+  sector: 90, // lime
+  faith: 275, // violet
+  currency: 345, // rose
+}
+
+function rarityClass(overlap: number): string {
+  if (overlap >= 4) return 'rarity-legendary'
+  if (overlap === 3) return 'rarity-ultra'
+  if (overlap === 2) return 'rarity-shiny'
+  if (overlap === 1) return 'rarity-common'
+  return ''
+}
+
+function rarityStyle(dim: string): React.CSSProperties | undefined {
+  const hue = RARITY_HUE[dim]
+  return hue !== undefined ? ({ '--rarity-hue': String(hue) } as React.CSSProperties) : undefined
+}
+
 const DIMENSION_COLORS_FOCUSED: Record<string, string> = {
   language:
     'bg-teal-500/40 text-teal-100 border-teal-300/60 shadow-[0_0_10px_rgba(45,212,191,0.3)] ring-1 ring-teal-400/40',
@@ -546,6 +567,8 @@ export default function DimensionOverlapBar({
                 {values.map((v) => {
                   const isShared = v.sources.length >= 2
                   const isFocused = focusedValue === `${dim}:${v.nodeCode}`
+                  const overlap = v.sources.length - 1 // 0=unique, 1=common, 2=shiny, 3=ultra, 4+=legendary
+                  const rarity = rarityClass(overlap)
                   const colorClass = isFocused
                     ? DIMENSION_COLORS_FOCUSED[dim]
                     : isShared
@@ -556,9 +579,10 @@ export default function DimensionOverlapBar({
                     <button
                       key={v.nodeCode}
                       onClick={() => onDimensionClick?.(dim, v.nodeCode, v.countryCodes)}
-                      className={`rounded-full border px-2.5 py-0.5 text-xs transition-all duration-150 cursor-pointer hover:opacity-90 ${colorClass} ${
+                      className={`rounded-full border px-2.5 py-0.5 text-xs transition-all duration-150 cursor-pointer hover:opacity-90 ${colorClass} ${rarity} ${
                         !isShared && !isFocused ? 'opacity-50' : ''
                       }`}
+                      style={isShared ? rarityStyle(dim) : undefined}
                     >
                       {v.label}
                       {/* Country flags for shared values */}
