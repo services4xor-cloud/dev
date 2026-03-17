@@ -247,12 +247,20 @@ export default function DimensionFilters({
 
   const toggleOption = useCallback(
     (dimension: DimensionKey, option: DimensionOption) => {
-      const key = `${dimension}:${option.code}`
-      if (selectedCodes.has(key)) {
+      // Check if a CUSTOM version already exists (not enriched)
+      const hasCustom = activeFilters.some(
+        (f) => f.dimension === dimension && f.nodeCode === option.code && f.source === 'custom'
+      )
+      if (hasCustom) {
+        // Remove only the custom copy, keep enriched
         onFilterChange(
-          activeFilters.filter((f) => !(f.dimension === dimension && f.nodeCode === option.code))
+          activeFilters.filter(
+            (f) =>
+              !(f.dimension === dimension && f.nodeCode === option.code && f.source === 'custom')
+          )
         )
       } else {
+        // Add as custom — even if enriched version exists (boosts multiplier)
         const newFilter: ActiveFilter = {
           dimension: dimension as DimensionFilter['dimension'],
           nodeCode: option.code,
@@ -267,26 +275,45 @@ export default function DimensionFilters({
       setActiveTab(null)
       onPreview?.([])
     },
-    [activeFilters, onFilterChange, onPreview, selectedCodes]
+    [activeFilters, onFilterChange, onPreview]
   )
 
   const removeSource = (source: string) => {
     onFilterChange(activeFilters.filter((f) => (f.source ?? 'custom') !== source))
   }
 
-  const removeFilter = (dimension: string, nodeCode: string) => {
+  /** Remove filter — source-aware to avoid killing duplicates across sources.
+   *  'custom' removes only manual chip. Other sources remove all enriched copies. */
+  const removeFilter = (dimension: string, nodeCode: string, sourceFilter?: string) => {
     onFilterChange(
-      activeFilters.filter((f) => !(f.dimension === dimension && f.nodeCode === nodeCode))
+      activeFilters.filter((f) => {
+        if (f.dimension !== dimension || f.nodeCode !== nodeCode) return true
+        // If removing a specific source (e.g. 'custom'), only remove that one
+        if (sourceFilter) return (f.source ?? 'custom') !== sourceFilter
+        // Otherwise remove all NON-custom copies (enriched from countries)
+        return f.source === 'custom'
+      })
     )
   }
 
   const filtersForDimension = (dim: string) => activeFilters.filter((f) => f.dimension === dim)
 
-  // Filter out already-selected options from the dropdown
+  // Build set of custom-selected codes (only hide options with existing CUSTOM source)
+  const customCodes = useMemo(
+    () =>
+      new Set<string>(
+        activeFilters
+          .filter((f) => f.source === 'custom')
+          .map((f) => `${f.dimension}:${f.nodeCode}`)
+      ),
+    [activeFilters]
+  )
+
+  // Filter out options that already have a CUSTOM version (enriched ones stay available)
   const availableOptions = useMemo(() => {
     if (!activeTab || !dimensions) return []
-    return dimensions[activeTab].filter((opt) => !selectedCodes.has(`${activeTab}:${opt.code}`))
-  }, [activeTab, dimensions, selectedCodes])
+    return dimensions[activeTab].filter((opt) => !customCodes.has(`${activeTab}:${opt.code}`))
+  }, [activeTab, dimensions, customCodes])
 
   const hasAnyFilters = activeFilters.length > 0
 
@@ -382,7 +409,7 @@ export default function DimensionFilters({
                 .map((f) => (
                   <button
                     key={`custom-${f.dimension}:${f.nodeCode}`}
-                    onClick={() => removeFilter(f.dimension, f.nodeCode)}
+                    onClick={() => removeFilter(f.dimension, f.nodeCode, 'custom')}
                     onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
                     onMouseLeave={() => onPreview?.([])}
                     className={`rounded-full border-2 border-dashed px-2 py-0.5 text-[10px] font-medium transition hover:scale-105 cursor-pointer ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
