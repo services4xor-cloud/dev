@@ -123,8 +123,13 @@ export default function HomePage() {
   // Multi-country: all filters used to detect every possible overlap (×2, ×3, etc).
   const scoredCountries = useMemo(() => {
     const singleCountry = enrichedCountries.length < 2
+    // Single-country: only primary + custom filters. Multi-country: all filters.
+    // Custom (manual) selections always affect the map regardless of mode.
     const filtersWithCodes = filters.filter(
-      (f) => f.countryCodes && f.countryCodes.length > 0 && (!singleCountry || f.isPrimary)
+      (f) =>
+        f.countryCodes &&
+        f.countryCodes.length > 0 &&
+        (!singleCountry || f.isPrimary || f.source === 'custom')
     )
 
     // Track per-dimension counts and values for dominant-dimension coloring

@@ -260,6 +260,8 @@ export default function DimensionFilters({
         }
         onFilterChange([...activeFilters, newFilter])
       }
+      // Collapse picker → show bubble again
+      setActiveTab(null)
       onPreview?.([])
     },
     [activeFilters, onFilterChange, onPreview, selectedCodes]
@@ -290,8 +292,8 @@ export default function DimensionFilters({
       ref={panelRef}
       className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2"
     >
-      {/* ═══ SOAP BUBBLE — compact, scrollable, dismissable ═══ */}
-      {hasAnyFilters && (
+      {/* ═══ SOAP BUBBLE — hidden when dimension picker is open ═══ */}
+      {hasAnyFilters && !activeTab && (
         <div className="relative max-w-[92vw] max-h-[35vh] rounded-[22px] border border-white/[0.12] bg-white/[0.04] backdrop-blur-md shadow-[0_0_20px_rgba(255,255,255,0.04),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden">
           {/* Bubble sheen */}
           <div className="pointer-events-none absolute inset-x-3 top-0.5 h-[4px] rounded-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent z-10" />
@@ -363,6 +365,21 @@ export default function DimensionFilters({
                       </button>
                     ))
                   )}
+
+              {/* Custom/manual chips — always visible, ✦ marker */}
+              {activeFilters
+                .filter((f) => f.source === 'custom')
+                .map((f) => (
+                  <button
+                    key={`custom-${f.dimension}:${f.nodeCode}`}
+                    onClick={() => removeFilter(f.dimension, f.nodeCode)}
+                    onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
+                    onMouseLeave={() => onPreview?.([])}
+                    className={`rounded-full border-2 border-dashed px-2 py-0.5 text-[10px] font-medium transition hover:scale-105 cursor-pointer ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
+                  >
+                    ✦ {f.label ?? f.nodeCode}
+                  </button>
+                ))}
             </div>
           </div>
         </div>
