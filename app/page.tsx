@@ -119,9 +119,13 @@ export default function HomePage() {
   }, [hydrated, filters])
 
   // Compute intensity scores — tracks WHICH dimensions match for color blending.
-  // Also adds subtle neighbor proximity glow for countries bordering enriched ones.
+  // Single-country: only primary filters affect map (matches the 4 shown chips).
+  // Multi-country: all filters used to detect every possible overlap (×2, ×3, etc).
   const scoredCountries = useMemo(() => {
-    const filtersWithCodes = filters.filter((f) => f.countryCodes && f.countryCodes.length > 0)
+    const singleCountry = enrichedCountries.length < 2
+    const filtersWithCodes = filters.filter(
+      (f) => f.countryCodes && f.countryCodes.length > 0 && (!singleCountry || f.isPrimary)
+    )
 
     // Track per-dimension counts and values for dominant-dimension coloring
     const countMap = new Map<

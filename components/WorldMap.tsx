@@ -577,31 +577,7 @@ export default function WorldMap({
           )
         })()}
 
-      {/* Depth legend — floating mini-key showing shape meanings */}
-      {scoreMap.size > 0 && (
-        <div className="absolute bottom-24 right-4 z-20 flex flex-col gap-1 rounded-lg border border-white/10 bg-brand-surface/90 px-2.5 py-2 text-[10px] text-white/60 backdrop-blur">
-          <span className="mb-0.5 font-semibold text-white/40 uppercase tracking-wider">Depth</span>
-          {[2, 3, 4, 5].map((d) => {
-            const s = DEPTH_SHAPES[d]
-            return (
-              <div key={d} className="flex items-center gap-1.5">
-                <svg
-                  width="12"
-                  height="10"
-                  viewBox={s.viewBox}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                >
-                  <path d={s.path} />
-                </svg>
-                <span>{s.label}</span>
-              </div>
-            )
-          })}
-        </div>
-      )}
+      {/* Depth legend removed — ×N labels on chips are sufficient */}
     </div>
   )
 }
