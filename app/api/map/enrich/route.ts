@@ -4,9 +4,9 @@ import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
 /**
  * POST /api/map/enrich
  *
- * Given a country code, returns ALL dimension values across 4 dimensions
- * (language, sector, currency, faith) — mirroring what /be/[code] shows.
- * First value in each dimension array is marked isPrimary for rarity/glow.
+ * Given a country code, returns exactly 4 dimension filters — one per dimension.
+ * Each filter picks the PRIMARY value for that country (first in array = most
+ * dominant/characteristic). Map only highlights countries matching these 4 values.
  */
 
 const FAITH_LABELS: Record<string, string> = {
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
   const country = COUNTRY_BY_CODE.get(code.toUpperCase())
   if (!country) return NextResponse.json({ error: 'Country not found' }, { status: 404 })
 
-  // Build filters: ALL values across 4 dimensions (same as /be/[code] page)
+  // Build exactly 4 filters — one PRIMARY value per dimension
   type Filter = {
     dimension: string
     nodeCode: string
@@ -79,36 +79,36 @@ export async function POST(req: NextRequest) {
   }
   const filters: Filter[] = []
 
-  // 1. Languages — ALL languages, first is primary
-  for (let i = 0; i < country.languages.length; i++) {
-    const lang = country.languages[i]
-    const langInfo = LANGUAGE_REGISTRY[lang]
+  // 1. Language — PRIMARY only (first = official/dominant)
+  if (country.languages.length > 0) {
+    const bestLang = country.languages[0]
+    const langInfo = LANGUAGE_REGISTRY[bestLang]
     if (langInfo) {
       filters.push({
         dimension: 'language',
-        nodeCode: lang,
+        nodeCode: bestLang,
         label: langInfo.name,
         icon: '🗣️',
-        countryCodes: LANG_COUNTRIES.get(lang) ?? [],
-        isPrimary: i === 0,
+        countryCodes: LANG_COUNTRIES.get(bestLang) ?? [],
+        isPrimary: true,
       })
     }
   }
 
-  // 2. Sectors — ALL sectors, first is primary
-  for (let i = 0; i < country.topSectors.length; i++) {
-    const sector = country.topSectors[i]
+  // 2. Sector — PRIMARY only (first = what the country is known for)
+  if (country.topSectors.length > 0) {
+    const primarySector = country.topSectors[0]
     filters.push({
       dimension: 'sector',
-      nodeCode: sector.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      label: sector,
+      nodeCode: primarySector.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      label: primarySector,
       icon: '💼',
-      countryCodes: SECTOR_COUNTRIES.get(sector) ?? [],
-      isPrimary: i === 0,
+      countryCodes: SECTOR_COUNTRIES.get(primarySector) ?? [],
+      isPrimary: true,
     })
   }
 
-  // 3. Currency (single value, always primary)
+  // 3. Currency (single value)
   filters.push({
     dimension: 'currency',
     nodeCode: country.currency.toLowerCase(),
@@ -118,16 +118,16 @@ export async function POST(req: NextRequest) {
     isPrimary: true,
   })
 
-  // 4. Faiths — ALL faiths, first is primary
-  for (let i = 0; i < country.topFaiths.length; i++) {
-    const faith = country.topFaiths[i]
+  // 4. Faith — PRIMARY only (first = dominant faith)
+  if (country.topFaiths.length > 0) {
+    const primaryFaith = country.topFaiths[0]
     filters.push({
       dimension: 'faith',
-      nodeCode: faith,
-      label: FAITH_LABELS[faith] ?? faith,
+      nodeCode: primaryFaith,
+      label: FAITH_LABELS[primaryFaith] ?? primaryFaith,
       icon: '☪️',
-      countryCodes: FAITH_COUNTRIES.get(faith) ?? [],
-      isPrimary: i === 0,
+      countryCodes: FAITH_COUNTRIES.get(primaryFaith) ?? [],
+      isPrimary: true,
     })
   }
 
