@@ -117,7 +117,7 @@ describe('POST /api/agent/chat', () => {
     const body = await res.text()
     expect(body).toBe('Hello from Kenya!')
 
-    expect(mockBuildPersonaPrompt).toHaveBeenCalledWith({ country: 'KE' })
+    expect(mockBuildPersonaPrompt).toHaveBeenCalledWith({ country: 'KE' }, undefined)
     expect(mockChatWithAgent).toHaveBeenCalledWith(
       'You are a Be[X] agent...',
       expect.arrayContaining([{ role: 'user', content: 'Tell me about Kenya' }])

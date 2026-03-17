@@ -8,12 +8,19 @@ interface ChatMessage {
   content: string
 }
 
+interface EnrichedContext {
+  countries: string[]
+  allValues: Record<string, string[]>
+  customChips: { dimension: string; label: string }[]
+}
+
 interface AgentChatProps {
   dimensions: AgentDimensions
+  enrichedContext?: EnrichedContext
   onClose?: () => void
 }
 
-export default function AgentChat({ dimensions, onClose }: AgentChatProps) {
+export default function AgentChat({ dimensions, enrichedContext, onClose }: AgentChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -38,6 +45,7 @@ export default function AgentChat({ dimensions, onClose }: AgentChatProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           dimensions,
+          enrichedContext,
           message: userMessage,
           conversationId,
         }),

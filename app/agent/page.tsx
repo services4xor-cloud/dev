@@ -91,19 +91,49 @@ export default function AgentPage() {
     }
   }, [])
 
-  // Convert filters to AgentDimensions for the chat
+  // Convert ALL filters to AgentDimensions — pass everything for rich context
   const dimensions: AgentDimensions = {}
+  const allDimValues: Record<string, string[]> = {}
   for (const f of filters) {
-    if (f.dimension === 'language') dimensions.language = f.nodeCode
-    if (f.dimension === 'faith') dimensions.faith = f.nodeCode
-    if (f.dimension === 'sector') dimensions.sector = f.nodeCode
-    if (f.dimension === 'culture') dimensions.culture = f.nodeCode
+    const dim = f.dimension
+    if (!allDimValues[dim]) allDimValues[dim] = []
+    const label = f.label ?? f.nodeCode
+    if (!allDimValues[dim].includes(label)) allDimValues[dim].push(label)
+    // Set primary (first encountered) for graph lookup
+    if (dim === 'language' && !dimensions.language) dimensions.language = f.nodeCode
+    if (dim === 'faith' && !dimensions.faith) dimensions.faith = f.nodeCode
+    if (dim === 'sector' && !dimensions.sector) dimensions.sector = f.nodeCode
+    if (dim === 'currency' && !dimensions.currency) dimensions.currency = f.nodeCode
+    if (dim === 'culture' && !dimensions.culture) dimensions.culture = f.nodeCode
+  }
+  // Enriched countries from map
+  let enrichedCountries: string[] = []
+  try {
+    const raw = typeof window !== 'undefined' ? sessionStorage.getItem('bex-map-enriched') : null
+    if (raw) enrichedCountries = JSON.parse(raw) as string[]
+  } catch {
+    /* ignore */
+  }
+  // Pass first country for graph lookup
+  if (!dimensions.country && enrichedCountries.length > 0) {
+    dimensions.country = enrichedCountries[0]
   }
   // Fallback country from map selection
   if (!dimensions.country) {
     const selected =
       typeof window !== 'undefined' ? sessionStorage.getItem('bex-map-selected') : null
     if (selected) dimensions.country = selected
+  }
+  // Attach extra context for the prompt builder
+  const enrichedContext = {
+    countries: enrichedCountries,
+    allValues: allDimValues,
+    customChips: filters
+      .filter((f) => f.source === 'custom')
+      .map((f) => ({
+        dimension: f.dimension,
+        label: f.label ?? f.nodeCode,
+      })),
   }
 
   // Focus handler — clicking a dimension chip primes the agent conversation
@@ -160,7 +190,7 @@ export default function AgentPage() {
       )}
 
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col p-4">
-        <AgentChat dimensions={dimensions} />
+        <AgentChat dimensions={dimensions} enrichedContext={enrichedContext} />
       </main>
     </div>
   )

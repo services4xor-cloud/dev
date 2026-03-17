@@ -1,5 +1,5 @@
 /**
- * Tests for lib/ai.ts — AI agent persona builder (enriched with COUNTRY_OPTIONS)
+ * Tests for lib/ai.ts — AI Life Advisor persona builder
  */
 import { buildPersonaPrompt } from '@/lib/ai'
 
@@ -55,7 +55,7 @@ describe('AI agent', () => {
       const prompt = await buildPersonaPrompt({ country: 'KE', language: 'sw' })
 
       expect(typeof prompt).toBe('string')
-      expect(prompt).toContain('Route Advisor')
+      expect(prompt).toContain('Life Advisor')
       expect(prompt).toContain('COUNTRY: Kenya')
       expect(prompt).toContain('LANGUAGE: Swahili')
       // Enriched data should be in the prompt
@@ -87,10 +87,10 @@ describe('AI agent', () => {
 
       const prompt = await buildPersonaPrompt({})
 
-      expect(prompt).toContain('Your behavior')
-      expect(prompt).toContain('culturally aware')
-      expect(prompt).toContain('Never make up statistics')
-      expect(prompt).toContain('Be[X] vocabulary')
+      expect(prompt).toContain('How You Behave')
+      expect(prompt).toContain('cultures')
+      expect(prompt).toContain('Never fabricate')
+      expect(prompt).toContain('Be[X]')
     })
 
     test('handles empty context gracefully', async () => {
@@ -100,7 +100,7 @@ describe('AI agent', () => {
       const prompt = await buildPersonaPrompt({ country: 'ZZ' })
 
       expect(typeof prompt).toBe('string')
-      expect(prompt).toContain('Route Advisor')
+      expect(prompt).toContain('Life Advisor')
     })
 
     test('groups connections by relation type', async () => {
@@ -152,6 +152,44 @@ describe('AI agent', () => {
       expect(prompt).toContain('Automotive Manufacturing')
       expect(prompt).toContain('Corridor strength: direct')
       expect(prompt).toContain('German (Deutsch)')
+    })
+
+    test('includes enriched context with all selected values', async () => {
+      const { buildAgentContext } = require('@/lib/graph')
+      buildAgentContext.mockResolvedValue([])
+
+      const prompt = await buildPersonaPrompt(
+        { country: 'KE' },
+        {
+          countries: ['KE', 'DE'],
+          allValues: {
+            language: ['English', 'German'],
+            sector: ['Technology and IT'],
+            currency: ['KES', 'EUR'],
+            faith: ['Christianity'],
+          },
+          customChips: [{ dimension: 'language', label: 'Swahili' }],
+        }
+      )
+
+      expect(prompt).toContain('KE → DE')
+      expect(prompt).toContain('English, German')
+      expect(prompt).toContain('KES, EUR')
+      expect(prompt).toContain('✦ Swahili')
+      expect(prompt).toContain('hand-picked')
+    })
+
+    test('single country prompt focuses on home base', async () => {
+      const { buildAgentContext } = require('@/lib/graph')
+      buildAgentContext.mockResolvedValue([])
+
+      const prompt = await buildPersonaPrompt(
+        { country: 'KE' },
+        { countries: ['KE'], allValues: { language: ['English'] } }
+      )
+
+      expect(prompt).toContain('Home base')
+      expect(prompt).toContain('KE')
     })
   })
 })

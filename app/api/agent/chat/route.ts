@@ -16,14 +16,23 @@ export async function POST(req: NextRequest) {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  let body: { dimensions?: Record<string, string>; message?: string; conversationId?: string }
+  let body: {
+    dimensions?: Record<string, string>
+    enrichedContext?: {
+      countries?: string[]
+      allValues?: Record<string, string[]>
+      customChips?: { dimension: string; label: string }[]
+    }
+    message?: string
+    conversationId?: string
+  }
   try {
     body = await req.json()
   } catch {
     return new Response('Invalid JSON', { status: 400 })
   }
 
-  const { dimensions, message, conversationId } = body
+  const { dimensions, enrichedContext, message, conversationId } = body
   if (!message || typeof message !== 'string' || !dimensions) {
     return new Response('Missing message or dimensions', { status: 400 })
   }
@@ -46,8 +55,8 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Build persona from graph
-  const systemPrompt = await buildPersonaPrompt(dimensions)
+  // Build persona from graph + enriched context
+  const systemPrompt = await buildPersonaPrompt(dimensions, enrichedContext)
 
   // Add new user message, cap history to last 50 turns to limit AI cost
   history.push({ role: 'user', content: message })
