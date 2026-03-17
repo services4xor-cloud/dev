@@ -359,8 +359,8 @@ export default function DimensionFilters({
                 )}
             </div>
 
-            {/* Chips — compact flow */}
-            <div className="flex flex-wrap gap-1.5">
+            {/* Chips — compact flow, bigger on desktop */}
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {/* Single country: primary chips — sorted by dimension priority */}
               {enrichedCountries.length < 2 &&
                 activeFilters
@@ -378,7 +378,7 @@ export default function DimensionFilters({
                       onClick={() => removeFilter(f.dimension, f.nodeCode)}
                       onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
                       onMouseLeave={() => onPreview?.([])}
-                      className={`rounded-full border px-2 py-0.5 text-[10px] font-medium transition hover:scale-105 cursor-pointer ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
+                      className={`rounded-full border px-2 py-0.5 text-[10px] sm:px-3 sm:py-1 sm:text-xs font-medium transition hover:scale-105 cursor-pointer ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
                     >
                       {f.icon ?? '◆'} {f.label ?? f.nodeCode}
                     </button>
@@ -395,10 +395,10 @@ export default function DimensionFilters({
                         onMouseEnter={() => onPreview?.(m.countryCodes)}
                         onMouseLeave={() => onPreview?.([])}
                         onClick={() => removeFilter(m.dimension, m.nodeCode)}
-                        className={`rounded-full border px-2 py-0.5 text-[10px] font-medium transition hover:scale-105 cursor-pointer ${overlapStyle(m.dimension, tier)}`}
+                        className={`rounded-full border px-2 py-0.5 text-[10px] sm:px-3 sm:py-1 sm:text-xs font-medium transition hover:scale-105 cursor-pointer ${overlapStyle(m.dimension, tier)}`}
                       >
                         {m.icon} {m.label}
-                        <span className="ml-1 text-[9px] opacity-60">×{tier}</span>
+                        <span className="ml-1 text-[9px] sm:text-[10px] opacity-60">×{tier}</span>
                       </button>
                     ))
                   )}
@@ -412,7 +412,7 @@ export default function DimensionFilters({
                     onClick={() => removeFilter(f.dimension, f.nodeCode, 'custom')}
                     onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
                     onMouseLeave={() => onPreview?.([])}
-                    className={`rounded-full border-2 border-dashed px-2 py-0.5 text-[10px] font-medium transition hover:scale-105 cursor-pointer ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
+                    className={`rounded-full border-2 border-dashed px-2 py-0.5 text-[10px] sm:px-3 sm:py-1 sm:text-xs font-medium transition hover:scale-105 cursor-pointer ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
                   >
                     ✦ {f.label ?? f.nodeCode}
                   </button>
