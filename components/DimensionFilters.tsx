@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import type { DimensionFilter } from '@/types/domain'
-import { DEPTH_SHAPES } from '@/components/WorldMap'
 
 /**
  * Curated dimension selector — 4 tabs with data-backed options.
@@ -291,95 +290,69 @@ export default function DimensionFilters({
       ref={panelRef}
       className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2"
     >
+      {/* ═══ SOAP BUBBLE — single unified container for flags + all chips ═══ */}
       {hasAnyFilters && (
-        <div className="flex flex-col gap-1.5 max-w-[90vw]">
-          {/* ═══ SINGLE COUNTRY: flag + primary chips row ═══ */}
-          {enrichedCountries.length < 2 &&
-            enrichedCountries.map((code) => {
-              const countryFilters = activeFilters.filter(
-                (f) => f.source === code && f.isPrimary
-              )
-              if (countryFilters.length === 0) return null
-              return (
-                <button
-                  key={code}
-                  onClick={() => removeSource(code)}
-                  className="flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1.5 transition hover:opacity-80 cursor-pointer shadow-[0_0_12px_rgba(253,224,71,0.15)]"
-                  title={`Remove ${code} filters`}
-                >
-                  <span className="text-sm">{countryFlag(code)}</span>
-                  {countryFilters.map((f) => (
-                    <span
-                      key={`${f.dimension}:${f.nodeCode}`}
-                      className={`rounded-full border px-2 py-0.5 text-[11px] ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
+        <div className="relative max-w-[90vw] rounded-[28px] border border-white/[0.12] bg-white/[0.04] px-4 py-3 backdrop-blur-md shadow-[0_0_24px_rgba(255,255,255,0.04),inset_0_1px_0_rgba(255,255,255,0.06)]">
+          {/* Bubble sheen highlight */}
+          <div className="pointer-events-none absolute inset-x-4 top-1 h-[6px] rounded-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {/* Country flag bubbles */}
+            {enrichedCountries.map((code) => (
+              <button
+                key={`flag-${code}`}
+                onClick={() => removeSource(code)}
+                className="h-8 w-8 flex items-center justify-center rounded-full border border-white/[0.15] bg-white/[0.06] text-base transition hover:bg-red-500/20 hover:border-red-400/30 shadow-[0_0_8px_rgba(255,255,255,0.03)]"
+                title={`Remove ${code}`}
+              >
+                {countryFlag(code)}
+              </button>
+            ))}
+
+            {/* Divider between flags and chips */}
+            {enrichedCountries.length > 0 && <div className="mx-0.5 h-5 w-px bg-white/10" />}
+
+            {/* Single country: primary chips only */}
+            {enrichedCountries.length < 2 &&
+              activeFilters
+                .filter((f) => f.isPrimary && enrichedCountries.includes(f.source ?? ''))
+                .map((f) => (
+                  <button
+                    key={`${f.dimension}:${f.nodeCode}`}
+                    onClick={() => removeFilter(f.dimension, f.nodeCode)}
+                    onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
+                    onMouseLeave={() => onPreview?.([])}
+                    className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition hover:scale-105 cursor-pointer shadow-[0_0_6px_rgba(255,255,255,0.03)] ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
+                  >
+                    {f.icon ?? '◆'} {f.label ?? f.nodeCode}
+                  </button>
+                ))}
+
+            {/* Multi-country: all ×2+ overlap chips grouped by tier */}
+            {enrichedCountries.length >= 2 &&
+              filtersByTier
+                .filter(([tier]) => tier >= 2)
+                .flatMap(([tier, chips]) =>
+                  chips.map((m) => (
+                    <button
+                      key={`${m.dimension}:${m.nodeCode}`}
+                      onMouseEnter={() => onPreview?.(m.countryCodes)}
+                      onMouseLeave={() => onPreview?.([])}
+                      onClick={() => removeFilter(m.dimension, m.nodeCode)}
+                      className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition hover:scale-105 cursor-pointer shadow-[0_0_6px_rgba(255,255,255,0.03)] ${overlapStyle(m.dimension, tier)}`}
                     >
-                      {f.icon ?? '◆'} {f.label ?? f.nodeCode}
-                    </span>
-                  ))}
-                </button>
-              )
-            })}
+                      {m.icon} {m.label}
+                      <span className="ml-1 text-[9px] opacity-70">×{tier}</span>
+                    </button>
+                  ))
+                )}
 
-          {/* ═══ MULTI-COUNTRY: compact flag bar (click flag to deselect) ═══ */}
-          {enrichedCountries.length >= 2 && (
-            <div className="flex items-center justify-center gap-1">
-              {enrichedCountries.map((code) => (
-                <button
-                  key={code}
-                  onClick={() => removeSource(code)}
-                  className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-sm transition hover:bg-red-500/20 hover:border-red-400/30"
-                  title={`Remove ${code}`}
-                >
-                  {countryFlag(code)}
-                </button>
-              ))}
-              {filtersByTier.filter(([tier]) => tier >= 2).length === 0 && (
-                <span className="text-[10px] text-brand-text-muted ml-1">
-                  no shared dimensions
-                </span>
+            {/* No overlaps hint */}
+            {enrichedCountries.length >= 2 &&
+              filtersByTier.filter(([tier]) => tier >= 2).length === 0 && (
+                <span className="text-[10px] text-white/30">no shared dimensions</span>
               )}
-            </div>
-          )}
-
-          {/* ═══ SHARED CHIPS — grouped by multiplier tier (×2+), shown only in multi-country ═══ */}
-          {enrichedCountries.length >= 2 &&
-            filtersByTier
-              .filter(([tier]) => tier >= 2)
-              .map(([tier, chips]) => {
-                const shape = DEPTH_SHAPES[Math.min(tier, 5)]
-                return (
-                  <div key={tier} className="flex flex-wrap items-center justify-center gap-1.5">
-                    <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-yellow-300/80 uppercase tracking-wider px-1">
-                      {shape && (
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox={shape.viewBox}
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinejoin="round"
-                          className="inline-block"
-                        >
-                          <path d={shape.path} />
-                        </svg>
-                      )}
-                      ×{tier}
-                    </span>
-                    {chips.map((m) => (
-                      <button
-                        key={`${m.dimension}:${m.nodeCode}`}
-                        onMouseEnter={() => onPreview?.(m.countryCodes)}
-                        onMouseLeave={() => onPreview?.([])}
-                        onClick={() => removeFilter(m.dimension, m.nodeCode)}
-                        className={`rounded-full border px-2.5 py-1 text-xs font-medium transition hover:opacity-80 cursor-pointer ${overlapStyle(m.dimension, tier)}`}
-                      >
-                        {m.icon} {m.label}
-                      </button>
-                    ))}
-                  </div>
-                )
-              })}
+          </div>
         </div>
       )}
 
