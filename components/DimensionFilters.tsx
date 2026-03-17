@@ -59,10 +59,13 @@ interface DimensionFiltersProps {
 
 type DimensionKey = 'language' | 'faith' | 'sector' | 'currency' | 'timezone'
 
+/** Priority order: currency > language > sector > faith.
+ *  Currency is most differentiating (unique per country) in ×1 mode,
+ *  most revealing of economic corridors in ×2+ mode. */
 const DIMENSIONS: { key: DimensionKey; label: string; icon: string }[] = [
+  { key: 'currency', label: 'Currency', icon: '💱' },
   { key: 'language', label: 'Language', icon: '🗣️' },
   { key: 'sector', label: 'Sector', icon: '💼' },
-  { key: 'currency', label: 'Currency', icon: '💱' },
   { key: 'faith', label: 'Faith', icon: '☪️' },
 ]
 
@@ -331,10 +334,17 @@ export default function DimensionFilters({
 
             {/* Chips — compact flow */}
             <div className="flex flex-wrap gap-1.5">
-              {/* Single country: primary chips */}
+              {/* Single country: primary chips — sorted by dimension priority */}
               {enrichedCountries.length < 2 &&
                 activeFilters
                   .filter((f) => f.isPrimary && enrichedCountries.includes(f.source ?? ''))
+                  .sort((a, b) => {
+                    const order = DIMENSIONS.map((d) => d.key)
+                    return (
+                      order.indexOf(a.dimension as DimensionKey) -
+                      order.indexOf(b.dimension as DimensionKey)
+                    )
+                  })
                   .map((f) => (
                     <button
                       key={`${f.dimension}:${f.nodeCode}`}

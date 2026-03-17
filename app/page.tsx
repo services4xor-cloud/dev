@@ -28,8 +28,8 @@ function countryFlag(code: string): string {
   }
 }
 
-/** Dimension priority for determining dominant color */
-const DIM_PRIORITY = ['language', 'sector', 'currency', 'faith']
+/** Dimension priority for determining dominant color: currency > language > sector > faith */
+const DIM_PRIORITY = ['currency', 'language', 'sector', 'faith']
 
 /** Ranked dimension slot: dim name + top value for color derivation */
 interface DimSlot {
@@ -120,17 +120,36 @@ export default function HomePage() {
 
   // Compute intensity scores — tracks WHICH dimensions match for color blending.
   // Single-country: only primary filters affect map (matches the 4 shown chips).
-  // Multi-country: all filters used to detect every possible overlap (×2, ×3, etc).
+  // Multi-country: only ×2+ overlap filters affect map (matches the overlap chips shown).
   const scoredCountries = useMemo(() => {
     const singleCountry = enrichedCountries.length < 2
-    // Single-country: only primary + custom filters. Multi-country: all filters.
-    // Custom (manual) selections always affect the map regardless of mode.
-    const filtersWithCodes = filters.filter(
-      (f) =>
-        f.countryCodes &&
-        f.countryCodes.length > 0 &&
-        (!singleCountry || f.isPrimary || f.source === 'custom')
-    )
+
+    // Determine which (dimension:nodeCode) keys appear in ×2+ distinct sources
+    // so multi-country mode only shows overlapping dimensions on the map.
+    let overlapKeys: Set<string> | null = null
+    if (!singleCountry) {
+      const keyToSources = new Map<string, Set<string>>()
+      for (const f of filters) {
+        if (!f.countryCodes?.length) continue
+        const key = `${f.dimension}:${f.nodeCode}`
+        const sources = keyToSources.get(key) ?? new Set()
+        sources.add(f.source ?? 'custom')
+        keyToSources.set(key, sources)
+      }
+      overlapKeys = new Set<string>()
+      for (const [key, sources] of Array.from(keyToSources.entries())) {
+        if (sources.size >= 2) overlapKeys.add(key)
+      }
+    }
+
+    // Single-country: only primary + custom filters.
+    // Multi-country: only ×2+ overlap filters + custom.
+    const filtersWithCodes = filters.filter((f) => {
+      if (!f.countryCodes?.length) return false
+      if (f.source === 'custom') return true // manual always affects map
+      if (singleCountry) return !!f.isPrimary
+      return overlapKeys!.has(`${f.dimension}:${f.nodeCode}`)
+    })
 
     // Track per-dimension counts and values for dominant-dimension coloring
     const countMap = new Map<
