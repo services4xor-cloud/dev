@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
   },
   twitter: { card: 'summary_large_image' },
+  icons: { icon: '/icon.svg' },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
