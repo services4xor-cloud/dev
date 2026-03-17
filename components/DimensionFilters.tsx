@@ -293,41 +293,62 @@ export default function DimensionFilters({
     >
       {hasAnyFilters && (
         <div className="flex flex-col gap-1.5 max-w-[90vw]">
-          {/* ═══ PER-COUNTRY ROWS — flag + 4 primary chips each ═══ */}
-          {enrichedCountries.map((code) => {
-            const countryFilters = activeFilters.filter((f) => f.source === code && f.isPrimary)
-            if (countryFilters.length === 0) return null
-            return (
-              <button
-                key={code}
-                onClick={() => removeSource(code)}
-                className="flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1.5 transition hover:opacity-80 cursor-pointer shadow-[0_0_12px_rgba(253,224,71,0.15)]"
-                title={`Remove ${code} filters`}
-              >
-                <span className="text-sm">{countryFlag(code)}</span>
-                {countryFilters.map((f) => (
-                  <span
-                    key={`${f.dimension}:${f.nodeCode}`}
-                    className={`rounded-full border px-2 py-0.5 text-[11px] ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
-                  >
-                    {f.icon ?? '◆'} {f.label ?? f.nodeCode}
-                  </span>
-                ))}
-              </button>
-            )
-          })}
-
-          {/* ═══ SHARED CHIPS — grouped by multiplier tier (×2+) ═══ */}
-          {filtersByTier
-            .filter(([tier]) => tier >= 2)
-            .map(([tier, allChips]) => {
-              // ×1 tier: only show primary chips (1 per dimension per country)
-              const chips = tier === 1 ? allChips.filter((c) => c.isPrimary) : allChips
-              const shape = DEPTH_SHAPES[Math.min(tier, 5)]
+          {/* ═══ SINGLE COUNTRY: flag + primary chips row ═══ */}
+          {enrichedCountries.length < 2 &&
+            enrichedCountries.map((code) => {
+              const countryFilters = activeFilters.filter(
+                (f) => f.source === code && f.isPrimary
+              )
+              if (countryFilters.length === 0) return null
               return (
-                <div key={tier} className="flex flex-wrap items-center justify-center gap-1.5">
-                  {/* Tier label — only show ×N for shared (tier >= 2) */}
-                  {tier >= 2 && (
+                <button
+                  key={code}
+                  onClick={() => removeSource(code)}
+                  className="flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1.5 transition hover:opacity-80 cursor-pointer shadow-[0_0_12px_rgba(253,224,71,0.15)]"
+                  title={`Remove ${code} filters`}
+                >
+                  <span className="text-sm">{countryFlag(code)}</span>
+                  {countryFilters.map((f) => (
+                    <span
+                      key={`${f.dimension}:${f.nodeCode}`}
+                      className={`rounded-full border px-2 py-0.5 text-[11px] ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
+                    >
+                      {f.icon ?? '◆'} {f.label ?? f.nodeCode}
+                    </span>
+                  ))}
+                </button>
+              )
+            })}
+
+          {/* ═══ MULTI-COUNTRY: compact flag bar (click flag to deselect) ═══ */}
+          {enrichedCountries.length >= 2 && (
+            <div className="flex items-center justify-center gap-1">
+              {enrichedCountries.map((code) => (
+                <button
+                  key={code}
+                  onClick={() => removeSource(code)}
+                  className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-sm transition hover:bg-red-500/20 hover:border-red-400/30"
+                  title={`Remove ${code}`}
+                >
+                  {countryFlag(code)}
+                </button>
+              ))}
+              {filtersByTier.filter(([tier]) => tier >= 2).length === 0 && (
+                <span className="text-[10px] text-brand-text-muted ml-1">
+                  no shared dimensions
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* ═══ SHARED CHIPS — grouped by multiplier tier (×2+), shown only in multi-country ═══ */}
+          {enrichedCountries.length >= 2 &&
+            filtersByTier
+              .filter(([tier]) => tier >= 2)
+              .map(([tier, chips]) => {
+                const shape = DEPTH_SHAPES[Math.min(tier, 5)]
+                return (
+                  <div key={tier} className="flex flex-wrap items-center justify-center gap-1.5">
                     <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-yellow-300/80 uppercase tracking-wider px-1">
                       {shape && (
                         <svg
@@ -345,26 +366,20 @@ export default function DimensionFilters({
                       )}
                       ×{tier}
                     </span>
-                  )}
-                  {chips.map((m) => (
-                    <button
-                      key={`${m.dimension}:${m.nodeCode}`}
-                      onMouseEnter={() => onPreview?.(m.countryCodes)}
-                      onMouseLeave={() => onPreview?.([])}
-                      onClick={() => removeFilter(m.dimension, m.nodeCode)}
-                      className={`rounded-full border px-2.5 py-1 text-xs font-medium transition hover:opacity-80 cursor-pointer ${
-                        tier >= 2
-                          ? overlapStyle(m.dimension, tier)
-                          : (DIMENSION_COLORS[m.dimension] ??
-                            'bg-white/10 text-white/60 border-white/20')
-                      }`}
-                    >
-                      {m.icon} {m.label}
-                    </button>
-                  ))}
-                </div>
-              )
-            })}
+                    {chips.map((m) => (
+                      <button
+                        key={`${m.dimension}:${m.nodeCode}`}
+                        onMouseEnter={() => onPreview?.(m.countryCodes)}
+                        onMouseLeave={() => onPreview?.([])}
+                        onClick={() => removeFilter(m.dimension, m.nodeCode)}
+                        className={`rounded-full border px-2.5 py-1 text-xs font-medium transition hover:opacity-80 cursor-pointer ${overlapStyle(m.dimension, tier)}`}
+                      >
+                        {m.icon} {m.label}
+                      </button>
+                    ))}
+                  </div>
+                )
+              })}
         </div>
       )}
 
