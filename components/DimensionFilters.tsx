@@ -329,12 +329,50 @@ export default function DimensionFilters({
                 )}
             </div>
 
-            {/* Chips — compact flow */}
+            {/* Chips — custom ✦ first, then country/overlap chips */}
             <div className="flex flex-wrap gap-1.5">
-              {/* Single country: primary chips */}
+              {/* ✦ Custom/manual chips — always on top, dashed border */}
+              {activeFilters
+                .filter((f) => f.source === 'custom')
+                .map((f) => {
+                  // Check if this custom chip also appears in a merged overlap
+                  const merged = mergedFilters.find(
+                    (m) => m.dimension === f.dimension && m.nodeCode === f.nodeCode
+                  )
+                  const mult = merged && merged.multiplier > 1 ? merged.multiplier : 0
+                  return (
+                    <button
+                      key={`custom-${f.dimension}:${f.nodeCode}`}
+                      onClick={() => removeFilter(f.dimension, f.nodeCode)}
+                      onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
+                      onMouseLeave={() => onPreview?.([])}
+                      className={`rounded-full border-2 border-dashed px-2 py-0.5 text-[10px] font-medium transition hover:scale-105 cursor-pointer ${
+                        mult >= 2
+                          ? overlapStyle(f.dimension, mult)
+                          : (DIMENSION_COLORS[f.dimension] ??
+                            'bg-white/10 text-white/60 border-white/20')
+                      }`}
+                    >
+                      ✦ {f.label ?? f.nodeCode}
+                      {mult >= 2 && <span className="ml-1 text-[9px] opacity-60">×{mult}</span>}
+                    </button>
+                  )
+                })}
+
+              {/* Single country: primary chips (skip if already shown as custom) */}
               {enrichedCountries.length < 2 &&
                 activeFilters
-                  .filter((f) => f.isPrimary && enrichedCountries.includes(f.source ?? ''))
+                  .filter(
+                    (f) =>
+                      f.isPrimary &&
+                      enrichedCountries.includes(f.source ?? '') &&
+                      !activeFilters.some(
+                        (c) =>
+                          c.source === 'custom' &&
+                          c.dimension === f.dimension &&
+                          c.nodeCode === f.nodeCode
+                      )
+                  )
                   .map((f) => (
                     <button
                       key={`${f.dimension}:${f.nodeCode}`}
@@ -347,39 +385,34 @@ export default function DimensionFilters({
                     </button>
                   ))}
 
-              {/* Multi-country: ×2+ overlap chips */}
+              {/* Multi-country: ×2+ overlap chips (skip if already shown as custom) */}
               {enrichedCountries.length >= 2 &&
                 filtersByTier
                   .filter(([tier]) => tier >= 2)
                   .flatMap(([tier, chips]) =>
-                    chips.map((m) => (
-                      <button
-                        key={`${m.dimension}:${m.nodeCode}`}
-                        onMouseEnter={() => onPreview?.(m.countryCodes)}
-                        onMouseLeave={() => onPreview?.([])}
-                        onClick={() => removeFilter(m.dimension, m.nodeCode)}
-                        className={`rounded-full border px-2 py-0.5 text-[10px] font-medium transition hover:scale-105 cursor-pointer ${overlapStyle(m.dimension, tier)}`}
-                      >
-                        {m.icon} {m.label}
-                        <span className="ml-1 text-[9px] opacity-60">×{tier}</span>
-                      </button>
-                    ))
+                    chips
+                      .filter(
+                        (m) =>
+                          !activeFilters.some(
+                            (c) =>
+                              c.source === 'custom' &&
+                              c.dimension === m.dimension &&
+                              c.nodeCode === m.nodeCode
+                          )
+                      )
+                      .map((m) => (
+                        <button
+                          key={`${m.dimension}:${m.nodeCode}`}
+                          onMouseEnter={() => onPreview?.(m.countryCodes)}
+                          onMouseLeave={() => onPreview?.([])}
+                          onClick={() => removeFilter(m.dimension, m.nodeCode)}
+                          className={`rounded-full border px-2 py-0.5 text-[10px] font-medium transition hover:scale-105 cursor-pointer ${overlapStyle(m.dimension, tier)}`}
+                        >
+                          {m.icon} {m.label}
+                          <span className="ml-1 text-[9px] opacity-60">×{tier}</span>
+                        </button>
+                      ))
                   )}
-
-              {/* Custom/manual chips — always visible, ✦ marker */}
-              {activeFilters
-                .filter((f) => f.source === 'custom')
-                .map((f) => (
-                  <button
-                    key={`custom-${f.dimension}:${f.nodeCode}`}
-                    onClick={() => removeFilter(f.dimension, f.nodeCode)}
-                    onMouseEnter={() => onPreview?.(f.countryCodes ?? [])}
-                    onMouseLeave={() => onPreview?.([])}
-                    className={`rounded-full border-2 border-dashed px-2 py-0.5 text-[10px] font-medium transition hover:scale-105 cursor-pointer ${DIMENSION_COLORS[f.dimension] ?? 'bg-white/10 text-white/60 border-white/20'}`}
-                  >
-                    ✦ {f.label ?? f.nodeCode}
-                  </button>
-                ))}
             </div>
           </div>
         </div>
