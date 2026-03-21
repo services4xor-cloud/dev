@@ -150,7 +150,7 @@ export async function chatWithAgent(
   messages: { role: 'user' | 'assistant'; content: string }[]
 ) {
   const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6-20250527',
     max_tokens: 1024,
     system: systemPrompt,
     messages,
@@ -167,7 +167,7 @@ export function streamChatWithAgent(
   messages: { role: 'user' | 'assistant'; content: string }[]
 ) {
   return anthropic.messages.stream({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6-20250527',
     max_tokens: 1024,
     system: systemPrompt,
     messages,

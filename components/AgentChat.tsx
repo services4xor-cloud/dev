@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
 import type { AgentDimensions } from '@/types/domain'
 
 interface ChatMessage {
@@ -24,6 +25,7 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [needsAuth, setNeedsAuth] = useState(false)
   const [conversationId, setConversationId] = useState<string>()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -51,6 +53,12 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
         }),
       })
 
+      if (res.status === 401) {
+        setNeedsAuth(true)
+        setMessages((prev) => prev.slice(0, -1))
+        return
+      }
+
       if (!res.ok) {
         throw new Error(`Agent error (${res.status})`)
       }
@@ -68,6 +76,33 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
     } finally {
       setLoading(false)
     }
+  }
+
+  if (needsAuth) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center rounded-xl border border-brand-accent/20 bg-brand-surface px-6 py-12 text-center">
+        <div className="mb-4 text-4xl">🔒</div>
+        <h3 className="mb-2 text-lg font-semibold text-brand-accent">Hold on, Explorer!</h3>
+        <p className="mb-1 text-sm text-brand-text-muted">
+          The agent needs to know who you are before it can guide your journey.
+        </p>
+        <p className="mb-6 text-xs text-brand-text-muted/60">
+          Sign in and your dimensions will shape a personal life advisor.
+        </p>
+        <a
+          href="/login"
+          className="rounded-lg bg-brand-primary px-6 py-2.5 text-sm font-medium text-brand-accent transition hover:opacity-90"
+        >
+          Sign in to start exploring
+        </a>
+        <button
+          onClick={() => setNeedsAuth(false)}
+          className="mt-3 text-xs text-brand-text-muted/50 transition hover:text-brand-text-muted"
+        >
+          back to chat
+        </button>
+      </div>
+    )
   }
 
   return (
@@ -98,7 +133,13 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
                 : 'mr-8 bg-brand-surface text-brand-text'
             }`}
           >
-            {msg.content}
+            {msg.role === 'assistant' ? (
+              <div className="prose prose-sm prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:text-brand-accent prose-strong:text-brand-accent prose-a:text-brand-accent">
+                <ReactMarkdown>{msg.content}</ReactMarkdown>
+              </div>
+            ) : (
+              msg.content
+            )}
           </div>
         ))}
         {loading && (

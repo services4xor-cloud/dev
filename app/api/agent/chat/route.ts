@@ -96,7 +96,9 @@ export async function POST(req: NextRequest) {
         'X-Conversation-Id': chatId ?? '',
       },
     })
-  } catch {
-    return new Response('Agent error', { status: 500 })
+  } catch (err) {
+    console.error('[agent/chat] Error:', err)
+    const msg = err instanceof Error ? err.message : 'Agent error'
+    return new Response(msg, { status: 500 })
   }
 }
