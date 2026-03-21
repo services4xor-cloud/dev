@@ -331,7 +331,7 @@ export default function DimensionFilters({
           {/* Clear-all × button — top right corner */}
           <button
             onClick={() => onFilterChange([])}
-            className="absolute right-1.5 top-1.5 z-10 h-5 w-5 flex items-center justify-center rounded-full border border-red-500/40 bg-red-500/20 text-[10px] text-red-400 transition hover:bg-red-500/40 hover:text-red-200"
+            className="absolute right-2 top-2 z-10 h-6 w-6 flex items-center justify-center rounded-full border border-red-400/50 bg-red-500/30 text-xs font-bold text-red-300 transition hover:bg-red-500/50 hover:text-white"
             title="Clear all"
           >
             ×
