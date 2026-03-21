@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback } from 'react'
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
-import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
 
 /** Max enrichment steps — oldest drops off when exceeded (ouroboros) */
 const MAX_PATH_STEPS = 5
@@ -94,6 +94,52 @@ export default function HomePage() {
   const selectedCountryName = selectedCountry
     ? (enrichedNames[selectedCountry] ?? selectedCountry)
     : null
+
+  // ── Logo [X] animation — swish + language flash on country change ──
+  const [logoDisplay, setLogoDisplay] = useState<string>('X')
+  const [logoAnim, setLogoAnim] = useState<'idle' | 'swish-out' | 'swish-in'>('idle')
+  const prevEnrichedRef = useRef<string[]>([])
+  useEffect(() => {
+    const prev = prevEnrichedRef.current
+    prevEnrichedRef.current = enrichedCountries
+    if (!enrichedCountries.length) {
+      setLogoDisplay('X')
+      setLogoAnim('idle')
+      return
+    }
+    // Detect if a new country was added (not just removed)
+    const newCode = enrichedCountries.find((c) => !prev.includes(c))
+    const finalText =
+      enrichedCountries.length > 1 ? enrichedCountries.join('→') : (selectedCountryName ?? 'X')
+    if (!newCode) {
+      setLogoDisplay(finalText)
+      return
+    }
+    // Get language(s) for the new country
+    const co = COUNTRY_OPTIONS.find((c) => c.code === newCode)
+    const langs = co?.languages
+      ?.slice(0, 3)
+      .map((l) => LANGUAGE_REGISTRY[l]?.nativeName ?? LANGUAGE_REGISTRY[l]?.name ?? l)
+    const langText = langs?.length ? langs.join(' · ') : newCode
+
+    // Phase 1: swish out old content
+    setLogoAnim('swish-out')
+    setTimeout(() => {
+      // Phase 2: show language, swish in
+      setLogoDisplay(langText)
+      setLogoAnim('swish-in')
+      setTimeout(() => {
+        // Phase 3: swish out language
+        setLogoAnim('swish-out')
+        setTimeout(() => {
+          // Phase 4: show final country text, swish in
+          setLogoDisplay(finalText)
+          setLogoAnim('swish-in')
+          setTimeout(() => setLogoAnim('idle'), 350)
+        }, 250)
+      }, 800)
+    }, 250)
+  }, [enrichedCountries, selectedCountryName])
 
   // Persist enriched countries + filters to sessionStorage (only after hydration)
   useEffect(() => {
@@ -370,10 +416,18 @@ export default function HomePage() {
           <span className={selectedCountry ? 'text-brand-text-muted' : 'text-brand-accent'}>
             Be[
           </span>
-          <span className="text-brand-accent">
-            {enrichedCountries.length > 1
-              ? enrichedCountries.join('→')
-              : (selectedCountryName ?? 'X')}
+          <span className="inline-block overflow-hidden align-bottom">
+            <span
+              className={`inline-block text-brand-accent transition-all duration-300 ease-out ${
+                logoAnim === 'swish-out'
+                  ? 'translate-x-full opacity-0'
+                  : logoAnim === 'swish-in'
+                    ? 'translate-x-0 opacity-100'
+                    : ''
+              }`}
+            >
+              {logoDisplay}
+            </span>
           </span>
           <span className={selectedCountry ? 'text-brand-text-muted' : 'text-brand-accent'}>]</span>
         </Link>
