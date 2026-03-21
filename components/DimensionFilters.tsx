@@ -324,7 +324,7 @@ export default function DimensionFilters({
     >
       {/* ═══ SOAP BUBBLE — hidden when dimension picker is open ═══ */}
       {hasAnyFilters && !activeTab && (
-        <div className="relative max-w-[92vw] max-h-[35vh] rounded-[22px] border border-white/[0.12] bg-white/[0.04] backdrop-blur-md shadow-[0_0_20px_rgba(255,255,255,0.04),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden">
+        <div className="relative max-w-[92vw] max-h-[35vh] rounded-[22px] border border-white/[0.15] bg-brand-bg/80 backdrop-blur-lg shadow-[0_0_20px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden">
           {/* Bubble sheen */}
           <div className="pointer-events-none absolute inset-x-3 top-0.5 h-[4px] rounded-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent z-10" />
 

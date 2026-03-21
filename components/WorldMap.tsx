@@ -6,7 +6,7 @@ import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 
 const MAP_STATE_KEY = 'bex-map-viewport'
 const MAP_PROJECTION_KEY = 'bex-map-projection'
-type MapProjectionMode = 'mercator' | 'globe'
+export type MapProjectionMode = 'mercator' | 'globe'
 
 function getSavedViewport() {
   if (typeof window === 'undefined') return null
@@ -40,6 +40,7 @@ interface WorldMapProps {
   onCountryClick: (code: string | null, name?: string) => void
   previewCountryCodes?: string[]
   enrichedCountries?: string[]
+  projection?: MapProjectionMode
 }
 
 // ─── HSL-based dimension color system ─────────────────────────────────────────
@@ -161,6 +162,7 @@ export default function WorldMap({
   onCountryClick,
   previewCountryCodes = [],
   enrichedCountries = [],
+  projection: projectionProp,
 }: WorldMapProps) {
   const mapRef = useRef<MapRef>(null)
   const [initialViewport] = useState(
@@ -172,11 +174,13 @@ export default function WorldMap({
     x: number
     y: number
   } | null>(null)
-  const [projectionMode, setProjectionMode] = useState<MapProjectionMode>('mercator')
+  // Use prop if provided, otherwise fall back to internal state
+  const [internalProjection, setInternalProjection] = useState<MapProjectionMode>('mercator')
   useEffect(() => {
     const saved = sessionStorage.getItem(MAP_PROJECTION_KEY) as MapProjectionMode | null
-    if (saved) setProjectionMode(saved)
+    if (saved) setInternalProjection(saved)
   }, [])
+  const projectionMode = projectionProp ?? internalProjection
 
   const saveViewport = useCallback(() => {
     const map = mapRef.current
@@ -188,15 +192,6 @@ export default function WorldMap({
       JSON.stringify({ longitude: center.lng, latitude: center.lat, zoom })
     )
   }, [])
-
-  const toggleProjection = useCallback(() => {
-    saveViewport()
-    setProjectionMode((prev) => {
-      const next = prev === 'mercator' ? 'globe' : 'mercator'
-      sessionStorage.setItem(MAP_PROJECTION_KEY, next)
-      return next
-    })
-  }, [saveViewport])
 
   useEffect(() => {
     return () => saveViewport()
@@ -584,16 +579,6 @@ export default function WorldMap({
           </Source>
         )}
       </Map>
-
-      {/* Projection toggle — top-right, below nav */}
-      <button
-        onClick={toggleProjection}
-        className="absolute right-3 top-14 z-20 flex items-center gap-1.5 rounded-full border border-brand-accent/20 bg-brand-surface/90 px-3 py-1.5 text-xs font-medium text-brand-text-muted shadow-lg backdrop-blur transition hover:border-brand-accent/40 hover:text-brand-accent"
-        title={projectionMode === 'mercator' ? 'Globe view' : 'Flat map'}
-      >
-        <span className="text-sm">{projectionMode === 'mercator' ? '🌍' : '🗺️'}</span>
-        {projectionMode === 'mercator' ? 'Globe' : 'Flat'}
-      </button>
 
       {/* Hover tooltip — shows country name + depth shape when scored */}
       {hoveredCountry &&

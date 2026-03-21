@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import WorldMap from '@/components/WorldMap'
+import WorldMap, { type MapProjectionMode } from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 
@@ -87,6 +87,18 @@ export default function HomePage() {
   }, [])
   const previewCountries: string[] = [] // preview disabled — keep prop for API compat
   const [menuOpen, setMenuOpen] = useState(false)
+  const [projection, setProjection] = useState<MapProjectionMode>('mercator')
+  useEffect(() => {
+    const saved = sessionStorage.getItem('bex-map-projection') as MapProjectionMode | null
+    if (saved) setProjection(saved)
+  }, [])
+  const toggleProjection = useCallback(() => {
+    setProjection((prev) => {
+      const next = prev === 'mercator' ? 'globe' : 'mercator'
+      sessionStorage.setItem('bex-map-projection', next)
+      return next
+    })
+  }, [])
 
   // The "selected" country for the logo is the most recently enriched
   const selectedCountry =
@@ -380,6 +392,7 @@ export default function HomePage() {
           }
         }}
         enrichedCountries={enrichedCountries}
+        projection={projection}
       />
 
       {/* Top bar */}
@@ -429,6 +442,13 @@ export default function HomePage() {
         </button>
         {/* Desktop nav */}
         <nav className="hidden items-center gap-3 sm:flex">
+          <button
+            onClick={toggleProjection}
+            className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+            title={projection === 'mercator' ? 'Globe view' : 'Flat map'}
+          >
+            {projection === 'mercator' ? '🌍 Globe' : '🗺️ Flat'}
+          </button>
           <Link
             href="/agent"
             className="text-sm text-brand-text-muted hover:text-brand-accent transition"
@@ -462,6 +482,15 @@ export default function HomePage() {
       {/* Mobile nav dropdown */}
       {menuOpen && (
         <nav className="absolute left-0 right-0 top-12 z-40 flex flex-col gap-1 bg-brand-surface/95 px-4 py-3 backdrop-blur sm:hidden">
+          <button
+            onClick={() => {
+              toggleProjection()
+              setMenuOpen(false)
+            }}
+            className="py-2 text-left text-sm text-brand-text-muted hover:text-brand-accent transition"
+          >
+            {projection === 'mercator' ? '🌍 Globe View' : '🗺️ Flat Map'}
+          </button>
           <Link
             href="/agent"
             onClick={() => setMenuOpen(false)}
