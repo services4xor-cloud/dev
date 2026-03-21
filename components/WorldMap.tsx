@@ -5,6 +5,8 @@ import { Map, Source, Layer, type MapRef, type MapLayerMouseEvent } from 'react-
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 
 const MAP_STATE_KEY = 'bex-map-viewport'
+const MAP_PROJECTION_KEY = 'bex-map-projection'
+type MapProjectionMode = 'mercator' | 'globe'
 
 function getSavedViewport() {
   if (typeof window === 'undefined') return null
@@ -170,6 +172,11 @@ export default function WorldMap({
     x: number
     y: number
   } | null>(null)
+  const [projectionMode, setProjectionMode] = useState<MapProjectionMode>('mercator')
+  useEffect(() => {
+    const saved = sessionStorage.getItem(MAP_PROJECTION_KEY) as MapProjectionMode | null
+    if (saved) setProjectionMode(saved)
+  }, [])
 
   const saveViewport = useCallback(() => {
     const map = mapRef.current
@@ -181,6 +188,15 @@ export default function WorldMap({
       JSON.stringify({ longitude: center.lng, latitude: center.lat, zoom })
     )
   }, [])
+
+  const toggleProjection = useCallback(() => {
+    saveViewport()
+    setProjectionMode((prev) => {
+      const next = prev === 'mercator' ? 'globe' : 'mercator'
+      sessionStorage.setItem(MAP_PROJECTION_KEY, next)
+      return next
+    })
+  }, [saveViewport])
 
   useEffect(() => {
     return () => saveViewport()
@@ -205,6 +221,28 @@ export default function WorldMap({
 
   const handleClick = useCallback(
     (e: MapLayerMouseEvent) => {
+      // In globe mode, check if click is on the visible hemisphere
+      if (projectionMode === 'globe' && e.features?.[0]) {
+        const map = mapRef.current
+        if (map) {
+          const center = map.getCenter()
+          const feat = e.features[0].properties
+          // Get the country's centroid from COUNTRY_OPTIONS
+          const co = COUNTRY_OPTIONS.find((c) => c.code === feat?.ISO_A2)
+          if (co) {
+            // Angular distance between map center and country centroid
+            const toRad = Math.PI / 180
+            const dLat = Math.abs(center.lat - co.lat) * toRad
+            const dLng = Math.abs(center.lng - co.lng) * toRad
+            const a =
+              Math.sin(dLat / 2) ** 2 +
+              Math.cos(center.lat * toRad) * Math.cos(co.lat * toRad) * Math.sin(dLng / 2) ** 2
+            const angularDist = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+            // If country centroid is on the far side (>90°), reject click
+            if (angularDist > Math.PI / 2) return
+          }
+        }
+      }
       const features = e.features
       if (features?.[0]?.properties?.ISO_A2) {
         onCountryClick(features[0].properties.ISO_A2, features[0].properties.name as string)
@@ -215,7 +253,7 @@ export default function WorldMap({
       if (tooltipTimer.current) clearTimeout(tooltipTimer.current)
       tooltipTimer.current = setTimeout(() => setHoveredCountry(null), 800)
     },
-    [onCountryClick]
+    [onCountryClick, projectionMode]
   )
 
   const scoreMap = useMemo(() => {
@@ -435,10 +473,12 @@ export default function WorldMap({
   return (
     <div className="relative" style={{ width: '100%', height: '100vh' }}>
       <Map
+        key={projectionMode}
         ref={mapRef}
         initialViewState={initialViewport}
         style={{ width: '100%', height: '100%' }}
         mapStyle={`https://api.maptiler.com/maps/dataviz-dark/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`}
+        projection={projectionMode}
         renderWorldCopies={false}
         doubleClickZoom={false}
         minZoom={1.5}
@@ -544,6 +584,16 @@ export default function WorldMap({
           </Source>
         )}
       </Map>
+
+      {/* Projection toggle — top-right, below nav */}
+      <button
+        onClick={toggleProjection}
+        className="absolute right-3 top-14 z-20 flex items-center gap-1.5 rounded-full border border-brand-accent/20 bg-brand-surface/90 px-3 py-1.5 text-xs font-medium text-brand-text-muted shadow-lg backdrop-blur transition hover:border-brand-accent/40 hover:text-brand-accent"
+        title={projectionMode === 'mercator' ? 'Globe view' : 'Flat map'}
+      >
+        <span className="text-sm">{projectionMode === 'mercator' ? '🌍' : '🗺️'}</span>
+        {projectionMode === 'mercator' ? 'Globe' : 'Flat'}
+      </button>
 
       {/* Hover tooltip — shows country name + depth shape when scored */}
       {hoveredCountry &&
