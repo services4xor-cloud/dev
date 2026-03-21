@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import ReactMarkdown from 'react-markdown'
 import type { AgentDimensions } from '@/types/domain'
 
@@ -22,10 +23,10 @@ interface AgentChatProps {
 }
 
 export default function AgentChat({ dimensions, enrichedContext, onClose }: AgentChatProps) {
+  const { status } = useSession()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [needsAuth, setNeedsAuth] = useState(false)
   const [conversationId, setConversationId] = useState<string>()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -35,6 +36,9 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return
+
+    // Client-side guard — no fetch, no tokens wasted
+    if (status !== 'authenticated') return
 
     const userMessage = input.trim()
     setInput('')
@@ -52,12 +56,6 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
           conversationId,
         }),
       })
-
-      if (res.status === 401) {
-        setNeedsAuth(true)
-        setMessages((prev) => prev.slice(0, -1))
-        return
-      }
 
       if (!res.ok) {
         throw new Error(`Agent error (${res.status})`)
@@ -78,7 +76,8 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
     }
   }
 
-  if (needsAuth) {
+  // Show auth gate immediately — no network call needed
+  if (status === 'unauthenticated') {
     return (
       <div className="flex h-full flex-col items-center justify-center rounded-xl border border-brand-accent/20 bg-brand-surface px-6 py-12 text-center">
         <div className="mb-4 text-4xl">🔒</div>
@@ -95,12 +94,6 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
         >
           Sign in to start exploring
         </a>
-        <button
-          onClick={() => setNeedsAuth(false)}
-          className="mt-3 text-xs text-brand-text-muted/50 transition hover:text-brand-text-muted"
-        >
-          back to chat
-        </button>
       </div>
     )
   }
