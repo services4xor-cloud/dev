@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import WorldMap from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
-import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 
 /** Max enrichment steps — oldest drops off when exceeded (ouroboros) */
 const MAX_PATH_STEPS = 5
@@ -95,49 +95,30 @@ export default function HomePage() {
     ? (enrichedNames[selectedCountry] ?? selectedCountry)
     : null
 
-  // ── Logo [X] animation — swish + language flash on country change ──
+  // ── Logo [X] swish animation on country change ──
   const [logoDisplay, setLogoDisplay] = useState<string>('X')
   const [logoAnim, setLogoAnim] = useState<'idle' | 'swish-out' | 'swish-in'>('idle')
   const prevEnrichedRef = useRef<string[]>([])
   useEffect(() => {
     const prev = prevEnrichedRef.current
     prevEnrichedRef.current = enrichedCountries
-    if (!enrichedCountries.length) {
-      setLogoDisplay('X')
-      setLogoAnim('idle')
-      return
-    }
-    // Detect if a new country was added (not just removed)
-    const newCode = enrichedCountries.find((c) => !prev.includes(c))
-    const finalText =
-      enrichedCountries.length > 1 ? enrichedCountries.join('→') : (selectedCountryName ?? 'X')
-    if (!newCode) {
+    const finalText = !enrichedCountries.length
+      ? 'X'
+      : enrichedCountries.length > 1
+        ? enrichedCountries.join('→')
+        : (selectedCountryName ?? 'X')
+    // No change or no new country added — just update text
+    const hasNew = enrichedCountries.some((c) => !prev.includes(c))
+    if (!hasNew && enrichedCountries.length >= prev.length) {
       setLogoDisplay(finalText)
       return
     }
-    // Get language(s) for the new country
-    const co = COUNTRY_OPTIONS.find((c) => c.code === newCode)
-    const langs = co?.languages
-      ?.slice(0, 3)
-      .map((l) => LANGUAGE_REGISTRY[l]?.nativeName ?? LANGUAGE_REGISTRY[l]?.name ?? l)
-    const langText = langs?.length ? langs.join(' · ') : newCode
-
-    // Phase 1: swish out old content
+    // Swish out → swap text → swish in
     setLogoAnim('swish-out')
     setTimeout(() => {
-      // Phase 2: show language, swish in
-      setLogoDisplay(langText)
+      setLogoDisplay(finalText)
       setLogoAnim('swish-in')
-      setTimeout(() => {
-        // Phase 3: swish out language
-        setLogoAnim('swish-out')
-        setTimeout(() => {
-          // Phase 4: show final country text, swish in
-          setLogoDisplay(finalText)
-          setLogoAnim('swish-in')
-          setTimeout(() => setLogoAnim('idle'), 350)
-        }, 250)
-      }, 800)
+      setTimeout(() => setLogoAnim('idle'), 350)
     }, 250)
   }, [enrichedCountries, selectedCountryName])
 
@@ -405,7 +386,7 @@ export default function HomePage() {
       <div className="absolute left-0 right-0 top-0 z-30 flex items-center justify-between px-4 py-3">
         <Link
           href={selectedCountry ? `/be/${selectedCountry.toLowerCase()}` : '/'}
-          className={`text-xl font-bold transition ${selectedCountry ? 'logo-saiyan' : ''}`}
+          className={`text-xl font-bold transition ${selectedCountry ? 'rounded-lg bg-brand-surface/60 px-2.5 py-1 backdrop-blur' : ''}`}
           onClick={(e) => {
             if (selectedCountry) {
               return
