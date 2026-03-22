@@ -1998,7 +1998,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     corridorStrength: 'partner',
     topSectors: ['Agriculture and Food', 'Mining and Natural Resources', 'Tourism and Hospitality'],
     currency: 'BIF',
-    payment: ['Lumicash', 'Ecocash', 'Bank Transfer'],
+    payment: ['Lumicash', 'EcoCash', 'Bank Transfer'],
     visa: 'EAC Free Movement',
     tz: 'Africa/Bujumbura',
     languages: ['rn', 'fr'],

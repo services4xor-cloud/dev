@@ -16,14 +16,14 @@ interface PricingTier {
 
 const tiers: PricingTier[] = [
   {
-    name: 'Pioneer',
+    name: 'Explorer',
     price: 'Free',
-    description: 'Everything you need to discover your path and connect with the world.',
+    description: 'Everything you need to discover your route and connect with the world.',
     features: [
       'Create your identity profile',
       'Browse opportunities',
-      'Use Compass discovery wizard',
-      'Connect with other Pioneers',
+      'Use Discovery wizard',
+      'Connect with other Explorers',
       'AI Agent conversations',
     ],
     highlighted: true,
@@ -32,16 +32,16 @@ const tiers: PricingTier[] = [
     comingSoon: false,
   },
   {
-    name: 'Anchor',
+    name: 'Host',
     badge: 'Coming Soon',
     price: 'Contact us',
-    description: 'Post opportunities and find the right Pioneers for your organisation.',
+    description: 'Post opportunities and find the right Explorers for your organisation.',
     features: [
-      'Post unlimited Paths',
+      'Post unlimited Opportunities',
       'Featured listings',
       'Analytics dashboard',
       'Priority support',
-      'Chapter management tools',
+      'Exchange management tools',
     ],
     highlighted: false,
     cta: 'Contact Us',
@@ -54,7 +54,7 @@ const tiers: PricingTier[] = [
     price: 'Contact us',
     description: 'Custom solutions for organisations operating across multiple corridors.',
     features: [
-      'Everything in Anchor',
+      'Everything in Host',
       'Custom Route corridors',
       'API access',
       'Dedicated support',
@@ -74,8 +74,8 @@ export default function PricingPage() {
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold text-brand-text">Simple, Honest Pricing</h2>
           <p className="mx-auto max-w-xl text-brand-text-muted">
-            Start free as a Pioneer. When you&apos;re ready to post Paths and grow your network as
-            an Anchor, we&apos;ll be ready for you.
+            Start free as an Explorer. When you&apos;re ready to post Opportunities and grow your
+            network as a Host, we&apos;ll be ready for you.
           </p>
         </div>
 
@@ -153,7 +153,7 @@ export default function PricingPage() {
         {/* Footer note */}
         <div className="mt-16 border-t border-brand-accent/10 pt-12 text-center">
           <p className="text-sm text-brand-text-muted">
-            All plans include access to the full Be[X] network. Pioneers always free.{' '}
+            All plans include access to the full Be[X] network. Explorers always free.{' '}
             <Link href="/contact" className="text-brand-accent hover:opacity-80 transition-opacity">
               Questions? Contact us.
             </Link>

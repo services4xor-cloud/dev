@@ -466,7 +466,7 @@ export default function HomePage() {
               href="/profile"
               className="text-sm text-brand-accent hover:text-brand-accent/80 transition"
             >
-              {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Pioneer'}
+              {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Explorer'}
             </Link>
           ) : (
             <Link
@@ -511,7 +511,7 @@ export default function HomePage() {
               onClick={() => setMenuOpen(false)}
               className="py-2 text-sm text-brand-accent hover:text-brand-accent/80 transition"
             >
-              {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Pioneer'}
+              {session.user?.name ?? session.user?.email?.split('@')[0] ?? 'Explorer'}
             </Link>
           ) : (
             <Link

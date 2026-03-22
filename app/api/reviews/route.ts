@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
+import { Prisma } from '@prisma/client'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { notify } from '@/lib/notifications'
@@ -60,14 +61,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Cannot review yourself' }, { status: 400 })
   }
 
-  // Prevent duplicate reviews
-  const existingReview = await db.review.findFirst({
-    where: { authorId: session.user.id, targetId },
-  })
-  if (existingReview) {
-    return NextResponse.json({ error: 'You have already reviewed this user' }, { status: 409 })
-  }
-
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
     return NextResponse.json({ error: 'Rating must be between 1 and 5' }, { status: 400 })
   }
@@ -80,28 +73,35 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Content must be 500 characters or fewer' }, { status: 400 })
   }
 
-  const review = await db.review.create({
-    data: {
-      authorId: session.user.id,
-      targetId,
-      nodeId: nodeId ?? null,
-      rating,
-      content: content.trim(),
-    },
-  })
+  try {
+    const review = await db.review.create({
+      data: {
+        authorId: session.user.id,
+        targetId,
+        nodeId: nodeId ?? null,
+        rating,
+        content: content.trim(),
+      },
+    })
 
-  // Notify the review target
-  const author = await db.user.findUnique({
-    where: { id: session.user.id },
-    select: { name: true },
-  })
-  notify({
-    userId: targetId,
-    type: 'REVIEW',
-    title: `${author?.name ?? 'Someone'} left you a ${rating}-star review`,
-    body: content.trim().slice(0, 100),
-    link: `/me`,
-  })
+    // Notify the review target
+    const author = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true },
+    })
+    notify({
+      userId: targetId,
+      type: 'REVIEW',
+      title: `${author?.name ?? 'Someone'} left you a ${rating}-star review`,
+      body: content.trim().slice(0, 100),
+      link: `/me`,
+    })
 
-  return NextResponse.json(review, { status: 201 })
+    return NextResponse.json(review, { status: 201 })
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      return NextResponse.json({ error: 'You have already reviewed this user' }, { status: 409 })
+    }
+    throw error
+  }
 }

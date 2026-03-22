@@ -124,7 +124,7 @@ function emailFooter(
     <p class="footer-links">
       <a href="https://bekenya.com">Home</a>
       <a href="https://bekenya.com/ventures">Experiences</a>
-      <a href="https://bekenya.com/compass">Discovery</a>
+      <a href="https://bekenya.com/discovery">Discovery</a>
       <a href="https://bekenya.com/about">About</a>
     </p>
     <p class="footer-unsub">${unsubscribeText}</p>
@@ -196,7 +196,7 @@ export const EMAIL_TEMPLATES: Record<
         </ol>
 
         <div class="cta-block">
-          <a href="${data.ctaUrl || 'https://bekenya.com/compass'}" class="cta-btn">
+          <a href="${data.ctaUrl || 'https://bekenya.com/discovery'}" class="cta-btn">
             Start Your Discovery &rarr;
           </a>
         </div>
@@ -243,7 +243,7 @@ export const EMAIL_TEMPLATES: Record<
         </p>
 
         <div class="cta-block">
-          <a href="${data.chapterUrl || 'https://bekenya.com/compass'}" class="cta-btn">
+          <a href="${data.chapterUrl || 'https://bekenya.com/discovery'}" class="cta-btn">
             View Your Exchange
           </a>
         </div>
@@ -283,7 +283,7 @@ export const EMAIL_TEMPLATES: Record<
         </div>
 
         <div class="cta-block">
-          <a href="${data.chapterUrl || 'https://bekenya.com/compass'}" class="cta-btn${data.status === 'accepted' ? '-green' : ''}">
+          <a href="${data.chapterUrl || 'https://bekenya.com/discovery'}" class="cta-btn${data.status === 'accepted' ? '-green' : ''}">
             ${data.status === 'accepted' ? 'View Your Offer' : 'View Exchange Details'}
           </a>
         </div>
@@ -385,7 +385,7 @@ export const EMAIL_TEMPLATES: Record<
         </p>
 
         <div class="cta-block">
-          <a href="${data.pathUrl || 'https://bekenya.com/compass'}" class="cta-btn">
+          <a href="${data.pathUrl || 'https://bekenya.com/discovery'}" class="cta-btn">
             Open an Exchange &rarr;
           </a>
         </div>
@@ -451,7 +451,7 @@ export const EMAIL_TEMPLATES: Record<
             <span class="stat-label">New Matches</span>
           </div>
           <div class="stat">
-            <span class="stat-value">${data.openChapters || '0'}</span>
+            <span class="stat-value">${data.openExchanges || '0'}</span>
             <span class="stat-label">Open Exchanges</span>
           </div>
           <div class="stat">
@@ -466,7 +466,7 @@ export const EMAIL_TEMPLATES: Record<
         <div class="info-card">
           <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">Top Match This Week</p>
           <p style="font-size:16px;font-weight:700;color:#111827;margin:0 0 4px;">${data.topPathTitle}</p>
-          <p style="font-size:13px;color:#5C0A14;margin:0;">${data.topPathAnchor || ''} &bull; ${data.topPathScore || '—'}% match</p>
+          <p style="font-size:13px;color:#5C0A14;margin:0;">${data.topPathHost || ''} &bull; ${data.topPathScore || '—'}% match</p>
         </div>`
             : ''
         }
@@ -476,13 +476,13 @@ export const EMAIL_TEMPLATES: Record<
             ? `
         <p class="p">
           <span class="highlight">${data.platformJobCount}</span> new opportunities were posted on the platform this week.
-          Your Compass is continuously scanning for the best matches.
+          Your Discovery is continuously scanning for the best matches.
         </p>`
             : ''
         }
 
         <div class="cta-block">
-          <a href="${data.digestUrl || 'https://bekenya.com/compass'}" class="cta-btn">
+          <a href="${data.digestUrl || 'https://bekenya.com/discovery'}" class="cta-btn">
             View Your Matches
           </a>
         </div>
@@ -495,7 +495,7 @@ export const EMAIL_TEMPLATES: Record<
         </p>
       </div>
       ${emailFooter()}`,
-      `${data.newMatches || '0'} new matches, ${data.openChapters || '0'} open exchanges this week.`
+      `${data.newMatches || '0'} new matches, ${data.openExchanges || '0'} open exchanges this week.`
     ),
   }),
 
@@ -657,67 +657,67 @@ export async function sendEmail(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Send explorer welcome email after onboarding completion */
-export async function sendPioneerWelcome(
+export async function sendExplorerWelcome(
   email: string,
   name: string,
   matchCount: number,
-  pioneerType: string,
+  explorerType: string,
   countryFrom = 'KE',
   targetCountry = 'Global'
 ): Promise<EmailResult> {
   return sendEmail(email, 'pioneer_welcome', {
     name,
     matchCount: String(matchCount),
-    pioneerType,
+    pioneerType: explorerType,
     countryFrom,
     targetCountry,
-    ctaUrl: 'https://bekenya.com/compass',
+    ctaUrl: 'https://bekenya.com/discovery',
   })
 }
 
 /** Notify explorer when a new opportunity matches their profile */
-export async function sendNewPathMatch(
+export async function sendNewOpportunityMatch(
   email: string,
-  pioneerName: string,
-  pathTitle: string,
-  anchorName: string,
+  explorerName: string,
+  opportunityTitle: string,
+  hostName: string,
   location: string,
   matchScore: number,
   salary: string,
   topSkill: string,
-  pathUrl: string
+  opportunityUrl: string
 ): Promise<EmailResult> {
   return sendEmail(email, 'new_path_match', {
-    pioneerName,
-    pathTitle,
-    anchorName,
+    pioneerName: explorerName,
+    pathTitle: opportunityTitle,
+    anchorName: hostName,
     location,
     matchScore: String(matchScore),
     salary,
     topSkill,
-    pathUrl,
+    pathUrl: opportunityUrl,
     openDays: '7',
   })
 }
 
 /** Notify host when an explorer opens an exchange on their opportunity */
-export async function sendAnchorChapterNotification(
-  anchorEmail: string,
-  pioneerName: string,
-  pioneerCountry: string,
-  pioneerType: string,
-  pathTitle: string,
+export async function sendHostExchangeNotification(
+  hostEmail: string,
+  explorerName: string,
+  explorerCountry: string,
+  explorerType: string,
+  opportunityTitle: string,
   matchScore: number,
-  pioneerMessage: string,
+  explorerMessage: string,
   reviewUrl: string
 ): Promise<EmailResult> {
-  return sendEmail(anchorEmail, 'anchor_new_chapter', {
-    pioneerName,
-    pioneerCountry,
-    pioneerType,
-    pathTitle,
+  return sendEmail(hostEmail, 'anchor_new_chapter', {
+    pioneerName: explorerName,
+    pioneerCountry: explorerCountry,
+    pioneerType: explorerType,
+    pathTitle: opportunityTitle,
     matchScore: String(matchScore),
-    pioneerMessage,
+    pioneerMessage: explorerMessage,
     reviewUrl,
   })
 }

@@ -355,7 +355,7 @@ function MessagesInner() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-brand-accent">Messages</h1>
-            <p className="text-sm text-brand-text-muted">Connect with Pioneers and Anchors</p>
+            <p className="text-sm text-brand-text-muted">Connect with Explorers and Hosts</p>
           </div>
           <a href="/" className="text-sm text-brand-text-muted hover:text-brand-accent transition">
             &larr; Map

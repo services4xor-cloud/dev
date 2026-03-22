@@ -44,7 +44,7 @@ function LoginContent() {
           <div>
             <h2 className="text-3xl font-bold text-brand-accent">Welcome</h2>
             <p className="mt-2 text-sm text-brand-text-muted">
-              Sign in to explore paths, connect with Pioneers, and shape your route.
+              Sign in to explore opportunities, connect with Explorers, and shape your route.
             </p>
           </div>
 

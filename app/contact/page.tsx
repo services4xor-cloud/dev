@@ -7,8 +7,9 @@ export default function ContactPage() {
         <div className="mb-12">
           <h2 className="mb-4 text-3xl font-bold text-brand-text">Get in Touch</h2>
           <p className="max-w-xl text-brand-text-muted">
-            We&apos;d love to hear from you. Whether you&apos;re a Pioneer looking for paths, an
-            Anchor with opportunities to share, or have feedback about the platform — reach out.
+            We&apos;d love to hear from you. Whether you&apos;re an Explorer looking for
+            opportunities, a Host with offerings to share, or have feedback about the platform —
+            reach out.
           </p>
         </div>
 

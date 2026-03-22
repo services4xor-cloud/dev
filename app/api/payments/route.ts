@@ -16,7 +16,7 @@ function getSessionUserId(session: Awaited<ReturnType<typeof getServerSession>>)
 
 /**
  * GET /api/payments
- * List the authenticated Pioneer's payment history.
+ * List the authenticated Explorer's payment history.
  */
 export async function GET() {
   const session = await getServerSession(authOptions)

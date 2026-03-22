@@ -62,7 +62,7 @@ export default function ProfilePage() {
     redirect('/login')
   }
 
-  const name = session?.user?.name ?? session?.user?.email?.split('@')[0] ?? 'Pioneer'
+  const name = session?.user?.name ?? session?.user?.email?.split('@')[0] ?? 'Explorer'
 
   return (
     <div className="flex min-h-screen flex-col bg-brand-bg">
