@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 75 (2026-03-16); Rarity system + performance + mobile fixes
+> Last updated: Session 76 (2026-03-23); Maintenance — vocabulary cleanup, dead code, deps
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -16,7 +16,7 @@
 | Core Routes       | 20+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/notifications` `/about` `/pricing` `/contact` `/privacy` `/offline`                                                                                                                                                                                                                                                                                                                      |
 | API routes        | 25+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/identity/photo` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` `/api/exchanges` `/api/exchanges/[id]` `/api/users/[id]` |
 | Library modules   | 20+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, i18n.ts, validation.ts, identity-context.tsx, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| Jest tests        | 361/361 ✅ (24 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Jest tests        | 376/376 ✅ (25 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -28,6 +28,34 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 76: Maintenance — Vocabulary Cleanup, Dead Code, Dependencies
+
+### Vocabulary Compliance
+
+- **Email templates** — Renamed all 5 legacy template keys: `pioneer_welcome` → `explorer_welcome`, `chapter_opened` → `exchange_opened`, `chapter_status_update` → `exchange_status_update`, `new_path_match` → `new_opportunity_match`, `anchor_new_chapter` → `host_new_exchange`. Updated convenience wrappers and comment docs.
+- **i18n keys** — Renamed 92 `pioneer.*` keys → `explorer.*` across all 4 languages (EN, DE, SW, FR).
+- **German translations** — Fixed "Pionier" → "Entdecker", "Weg" → "Chance" for Opportunity context.
+- **Swahili translations** — Fixed "Mtaalamu" → "Mgunduzi" (Explorer), "Njia" → "Fursa" (Opportunity).
+- **English i18n** — Fixed "Path Category/Type" → "Opportunity Category/Type", "Full/Part/Seasonal Path" → "Full-time/Part-time/Seasonal", "Preview Path" → "Preview Opportunity".
+- **ApplyButton** — "Application submitted" → "Exchange submitted", "Submit Application" → "Submit Exchange".
+- **ExplorerStories** — "job titles" → "opportunity titles".
+- **Email footer** — Fixed `/ventures` → `/opportunities` link.
+
+### Dead Code Removal
+
+- **compass.ts** — Removed unused `CompassReading` interface and `detectCountryFromIP()` function (zero imports found).
+
+### Dependencies
+
+- **@swc/core** — Updated to 1.15.21 (patch).
+- **Audit:** 10 vulnerabilities remain (all tied to major version upgrades: Next.js 14→16, React 18→19). No non-breaking fixes available.
+
+### Stats
+
+- Tests: 376/376 (25 suites), TypeScript: 0 errors
 
 ---
 
