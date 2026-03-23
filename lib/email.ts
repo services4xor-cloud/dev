@@ -11,7 +11,7 @@
  *
  * Usage:
  *   import { sendEmail } from '@/lib/email'
- *   await sendEmail('user@example.com', 'pioneer_welcome', { name: 'Alice', ... }) // template key unchanged
+ *   await sendEmail('user@example.com', 'explorer_welcome', { name: 'Alice', ... })
  */
 
 // eslint-disable-next-line no-console
@@ -22,12 +22,12 @@ const logger = { info: console.log, warn: console.warn, error: console.error, de
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type EmailTemplate =
-  | 'pioneer_welcome'
-  | 'chapter_opened'
-  | 'chapter_status_update'
+  | 'explorer_welcome'
+  | 'exchange_opened'
+  | 'exchange_status_update'
   | 'safari_booking_confirmation'
-  | 'new_path_match'
-  | 'anchor_new_chapter'
+  | 'new_opportunity_match'
+  | 'host_new_exchange'
   | 'weekly_digest'
   | 'password_reset'
   | 'utamaduni_donation_receipt'
@@ -123,7 +123,7 @@ function emailFooter(
     <p class="footer-brand">BeKenya</p>
     <p class="footer-links">
       <a href="https://bekenya.com">Home</a>
-      <a href="https://bekenya.com/ventures">Experiences</a>
+      <a href="https://bekenya.com/opportunities">Opportunities</a>
       <a href="https://bekenya.com/discovery">Discovery</a>
       <a href="https://bekenya.com/about">About</a>
     </p>
@@ -140,7 +140,7 @@ export const EMAIL_TEMPLATES: Record<
   (data: Record<string, string>) => { subject: string; html: string }
 > = {
   // ── 1. Explorer Welcome ──────────────────────────────────────────────────────
-  pioneer_welcome: (data) => ({
+  explorer_welcome: (data) => ({
     subject: `Welcome to the BeNetwork, ${data.name || 'Explorer'}!`,
     html: emailWrapper(
       `${emailHeader()}
@@ -213,7 +213,7 @@ export const EMAIL_TEMPLATES: Record<
   }),
 
   // ── 2. Exchange Opened (Explorer notified when exchange is created) ───────────
-  chapter_opened: (data) => ({
+  exchange_opened: (data) => ({
     subject: `Exchange opened: ${data.pathTitle || 'Your Application'}`,
     html: emailWrapper(
       `${emailHeader()}
@@ -254,7 +254,7 @@ export const EMAIL_TEMPLATES: Record<
   }),
 
   // ── 3. Exchange Status Update (Host responded) ───────────────────────────
-  chapter_status_update: (data) => ({
+  exchange_status_update: (data) => ({
     subject: `Exchange update: ${data.status || 'New update'} on ${data.pathTitle || 'your application'}`,
     html: emailWrapper(
       `${emailHeader()}
@@ -347,7 +347,7 @@ export const EMAIL_TEMPLATES: Record<
   }),
 
   // ── 5. New Opportunity Match ──────────────────────────────────────────────────────
-  new_path_match: (data) => ({
+  new_opportunity_match: (data) => ({
     subject: `New match: ${data.pathTitle || 'An Opportunity'} at ${data.anchorName || 'a Host'} (${data.matchScore || '—'}% match)`,
     html: emailWrapper(
       `${emailHeader()}
@@ -396,7 +396,7 @@ export const EMAIL_TEMPLATES: Record<
   }),
 
   // ── 6. Host: New Exchange Notification ────────────────────────────────────
-  anchor_new_chapter: (data) => ({
+  host_new_exchange: (data) => ({
     subject: `New exchange opened by ${data.pioneerName || 'an Explorer'} — ${data.matchScore || '—'}% match`,
     html: emailWrapper(
       `${emailHeader('BeNetwork Host Hub', 'Your Explorers are waiting.')}
@@ -665,7 +665,7 @@ export async function sendExplorerWelcome(
   countryFrom = 'KE',
   targetCountry = 'Global'
 ): Promise<EmailResult> {
-  return sendEmail(email, 'pioneer_welcome', {
+  return sendEmail(email, 'explorer_welcome', {
     name,
     matchCount: String(matchCount),
     pioneerType: explorerType,
@@ -687,7 +687,7 @@ export async function sendNewOpportunityMatch(
   topSkill: string,
   opportunityUrl: string
 ): Promise<EmailResult> {
-  return sendEmail(email, 'new_path_match', {
+  return sendEmail(email, 'new_opportunity_match', {
     pioneerName: explorerName,
     pathTitle: opportunityTitle,
     anchorName: hostName,
@@ -711,7 +711,7 @@ export async function sendHostExchangeNotification(
   explorerMessage: string,
   reviewUrl: string
 ): Promise<EmailResult> {
-  return sendEmail(hostEmail, 'anchor_new_chapter', {
+  return sendEmail(hostEmail, 'host_new_exchange', {
     pioneerName: explorerName,
     pioneerCountry: explorerCountry,
     pioneerType: explorerType,

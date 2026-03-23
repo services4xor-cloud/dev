@@ -12,7 +12,7 @@ const stories = [
     from: 'Mombasa, Kenya',
     to: 'Zurich, Switzerland',
     quote:
-      'As an engineer, I found hosts who valued my skills and understood my culture. The matching went beyond just job titles.',
+      'As an engineer, I found hosts who valued my skills and understood my culture. The matching went beyond just opportunity titles.',
     dimension: 'Craft',
   },
   {

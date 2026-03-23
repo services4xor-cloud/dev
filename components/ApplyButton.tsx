@@ -52,7 +52,7 @@ export default function ApplyButton({ opportunityId }: { opportunityId: string }
   if (state === 'done') {
     return (
       <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
-        Application submitted! The host will review it.
+        Exchange submitted! The Host will review it.
       </div>
     )
   }
@@ -83,7 +83,7 @@ export default function ApplyButton({ opportunityId }: { opportunityId: string }
             disabled={state === 'sending'}
             className="rounded-lg bg-brand-primary px-5 py-2 text-sm font-semibold text-brand-accent transition hover:opacity-90 disabled:opacity-40"
           >
-            {state === 'sending' ? 'Sending…' : 'Submit Application'}
+            {state === 'sending' ? 'Sending…' : 'Submit Exchange'}
           </button>
           <button
             onClick={() => {

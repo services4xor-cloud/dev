@@ -1,21 +1,7 @@
 // THE COMPASS — Smart routing engine
 // Auto-detects user location, matches to target countries, shows relevant paths
 
-import { ExplorerType } from './vocabulary'
 import { COUNTRIES, CountryCode } from './countries'
-
-export interface CompassReading {
-  fromCountry: string // ISO2: detected origin
-  fromCountryName: string
-  toCountry: string // ISO2: where they want to go
-  toCountryName: string
-  explorerType: ExplorerType | null
-  routeStrength: 'direct' | 'partner' | 'emerging' // how well this route is supported
-  matchScore: number // 0-100
-  topExperiences: string[] // recommended experience IDs
-  visaNote: string
-  paymentNote: string
-}
 
 // Country route relationships — which corridors are most active
 export const COUNTRY_ROUTES: Record<
@@ -221,23 +207,6 @@ export function generateRoute(from: string, to: string): RouteEntry | null {
     visaNote,
     paymentMethods: Array.from(paymentNames),
     strength,
-  }
-}
-
-// Geolocation → country code mapping (simplified)
-export async function detectCountryFromIP(): Promise<{
-  country: string
-  countryName: string
-}> {
-  try {
-    const res = await fetch('https://ipapi.co/json/')
-    const data = await res.json()
-    return {
-      country: data.country_code || 'KE',
-      countryName: data.country_name || 'Kenya',
-    }
-  } catch {
-    return { country: 'KE', countryName: 'Kenya' } // default to Kenya
   }
 }
 
