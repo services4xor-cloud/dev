@@ -145,7 +145,7 @@ export const EMAIL_TEMPLATES: Record<
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
-        <div class="badge">${data.pioneerType || 'Explorer'} Explorer</div>
+        <div class="badge">${data.explorerType || 'Explorer'} Explorer</div>
         <h1 class="h1">Welcome to the BeNetwork, ${data.name || 'Explorer'}!</h1>
         <p class="p">
           You've taken the first step on your journey. Discovery is calibrated,
@@ -214,25 +214,25 @@ export const EMAIL_TEMPLATES: Record<
 
   // ── 2. Exchange Opened (Explorer notified when exchange is created) ───────────
   exchange_opened: (data) => ({
-    subject: `Exchange opened: ${data.pathTitle || 'Your Application'}`,
+    subject: `Exchange opened: ${data.opportunityTitle || 'Your Application'}`,
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
         <div class="badge-green">Exchange Opened</div>
-        <h1 class="h1">Your exchange is live, ${data.pioneerName || 'Explorer'}!</h1>
+        <h1 class="h1">Your exchange is live, ${data.explorerName || 'Explorer'}!</h1>
         <p class="p">
-          You've successfully opened an Exchange for <strong>${data.pathTitle || 'this Opportunity'}</strong>.
+          You've successfully opened an Exchange for <strong>${data.opportunityTitle || 'this Opportunity'}</strong>.
           The Host has been notified and will respond within 48 hours.
         </p>
 
         <div class="info-card">
           <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:#374151;">Exchange Details</p>
           <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;width:130px;">Opportunity</td><td style="font-size:13px;color:#111827;font-weight:600;">${data.pathTitle || '—'}</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Host</td><td style="font-size:13px;color:#111827;">${data.anchorName || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;width:130px;">Opportunity</td><td style="font-size:13px;color:#111827;font-weight:600;">${data.opportunityTitle || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Host</td><td style="font-size:13px;color:#111827;">${data.hostName || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Location</td><td style="font-size:13px;color:#111827;">${data.location || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Match Score</td><td style="font-size:13px;color:#5C0A14;font-weight:700;">${data.matchScore || '—'}%</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Reference</td><td style="font-size:13px;color:#111827;">${data.chapterId || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Reference</td><td style="font-size:13px;color:#111827;">${data.exchangeId || '—'}</td></tr>
           </table>
           ${data.matchScore ? `<div class="score-bar"><div class="score-fill" style="width:${Math.min(100, Number(data.matchScore))}%;"></div></div>` : ''}
         </div>
@@ -243,19 +243,19 @@ export const EMAIL_TEMPLATES: Record<
         </p>
 
         <div class="cta-block">
-          <a href="${data.chapterUrl || 'https://bekenya.com/discovery'}" class="cta-btn">
+          <a href="${data.exchangeUrl || 'https://bekenya.com/discovery'}" class="cta-btn">
             View Your Exchange
           </a>
         </div>
       </div>
       ${emailFooter()}`,
-      `Your exchange for ${data.pathTitle || 'this Opportunity'} is now live.`
+      `Your exchange for ${data.opportunityTitle || 'this Opportunity'} is now live.`
     ),
   }),
 
   // ── 3. Exchange Status Update (Host responded) ───────────────────────────
   exchange_status_update: (data) => ({
-    subject: `Exchange update: ${data.status || 'New update'} on ${data.pathTitle || 'your application'}`,
+    subject: `Exchange update: ${data.status || 'New update'} on ${data.opportunityTitle || 'your application'}`,
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
@@ -265,31 +265,31 @@ export const EMAIL_TEMPLATES: Record<
         <h1 class="h1">
           ${
             data.status === 'accepted'
-              ? `Congratulations, ${data.pioneerName || 'Explorer'}!`
-              : `Update on your exchange, ${data.pioneerName || 'Explorer'}`
+              ? `Congratulations, ${data.explorerName || 'Explorer'}!`
+              : `Update on your exchange, ${data.explorerName || 'Explorer'}`
           }
         </h1>
         <p class="p">
-          ${data.anchorName || 'The Host'} has reviewed your exchange for
-          <strong>${data.pathTitle || 'the Opportunity'}</strong>.
+          ${data.hostName || 'The Host'} has reviewed your exchange for
+          <strong>${data.opportunityTitle || 'the Opportunity'}</strong>.
         </p>
 
         <div class="info-card" style="${data.status === 'accepted' ? 'border-color:#86efac;background:#f0fdf4;' : ''}">
           <p style="margin:0 0 8px;font-size:16px;font-weight:700;color:${data.status === 'accepted' ? '#006600' : '#374151'};">
             Status: ${data.status || 'Updated'}
           </p>
-          ${data.anchorMessage ? `<p class="p-sm" style="margin-top:12px;font-style:italic;">"${data.anchorMessage}"</p>` : ''}
+          ${data.hostMessage ? `<p class="p-sm" style="margin-top:12px;font-style:italic;">"${data.hostMessage}"</p>` : ''}
           ${data.nextStep ? `<p class="p-sm" style="margin-top:8px;"><strong>Next step:</strong> ${data.nextStep}</p>` : ''}
         </div>
 
         <div class="cta-block">
-          <a href="${data.chapterUrl || 'https://bekenya.com/discovery'}" class="cta-btn${data.status === 'accepted' ? '-green' : ''}">
+          <a href="${data.exchangeUrl || 'https://bekenya.com/discovery'}" class="cta-btn${data.status === 'accepted' ? '-green' : ''}">
             ${data.status === 'accepted' ? 'View Your Offer' : 'View Exchange Details'}
           </a>
         </div>
       </div>
       ${emailFooter()}`,
-      `${data.anchorName || 'A Host'} has responded to your exchange.`
+      `${data.hostName || 'A Host'} has responded to your exchange.`
     ),
   }),
 
@@ -348,23 +348,23 @@ export const EMAIL_TEMPLATES: Record<
 
   // ── 5. New Opportunity Match ──────────────────────────────────────────────────────
   new_opportunity_match: (data) => ({
-    subject: `New match: ${data.pathTitle || 'An Opportunity'} at ${data.anchorName || 'a Host'} (${data.matchScore || '—'}% match)`,
+    subject: `New match: ${data.opportunityTitle || 'An Opportunity'} at ${data.hostName || 'a Host'} (${data.matchScore || '—'}% match)`,
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
         <div class="badge">New Match</div>
         <h1 class="h1">Discovery found a new Opportunity for you!</h1>
         <p class="p">
-          Based on your profile, <strong>${data.anchorName || 'a Host'}</strong> has opened an Opportunity
+          Based on your profile, <strong>${data.hostName || 'a Host'}</strong> has opened an Opportunity
           that matches your skills and goals.
         </p>
 
         <div class="info-card">
           <p style="font-size:18px;font-weight:700;color:#111827;margin:0 0 8px;">
-            ${data.pathTitle || 'Untitled Opportunity'}
+            ${data.opportunityTitle || 'Untitled Opportunity'}
           </p>
           <p style="font-size:13px;color:#5C0A14;font-weight:600;margin:0 0 16px;">
-            ${data.anchorName || 'Host'} &bull; ${data.location || 'Location TBC'}
+            ${data.hostName || 'Host'} &bull; ${data.location || 'Location TBC'}
           </p>
           ${data.salary ? `<p style="font-size:14px;color:#374151;margin:0 0 16px;"><strong>Compensation:</strong> ${data.salary}</p>` : ''}
 
@@ -385,39 +385,39 @@ export const EMAIL_TEMPLATES: Record<
         </p>
 
         <div class="cta-block">
-          <a href="${data.pathUrl || 'https://bekenya.com/discovery'}" class="cta-btn">
+          <a href="${data.opportunityUrl || 'https://bekenya.com/discovery'}" class="cta-btn">
             Open an Exchange &rarr;
           </a>
         </div>
       </div>
       ${emailFooter()}`,
-      `${data.matchScore || '—'}% match: ${data.pathTitle || 'A new opportunity'} at ${data.anchorName || 'a Host'}`
+      `${data.matchScore || '—'}% match: ${data.opportunityTitle || 'A new opportunity'} at ${data.hostName || 'a Host'}`
     ),
   }),
 
   // ── 6. Host: New Exchange Notification ────────────────────────────────────
   host_new_exchange: (data) => ({
-    subject: `New exchange opened by ${data.pioneerName || 'an Explorer'} — ${data.matchScore || '—'}% match`,
+    subject: `New exchange opened by ${data.explorerName || 'an Explorer'} — ${data.matchScore || '—'}% match`,
     html: emailWrapper(
       `${emailHeader('BeNetwork Host Hub', 'Your Explorers are waiting.')}
       <div class="body">
         <div class="badge">New Exchange</div>
         <h1 class="h1">An Explorer opened an exchange on your Opportunity</h1>
         <p class="p">
-          <strong>${data.pioneerName || 'An Explorer'}</strong> from <strong>${data.pioneerCountry || '—'}</strong>
-          has applied to your Opportunity: <strong>${data.pathTitle || '—'}</strong>.
+          <strong>${data.explorerName || 'An Explorer'}</strong> from <strong>${data.explorerCountry || '—'}</strong>
+          has applied to your Opportunity: <strong>${data.opportunityTitle || '—'}</strong>.
         </p>
 
         <div class="info-card">
           <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;width:130px;">Explorer</td><td style="font-size:13px;color:#111827;font-weight:600;">${data.pioneerName || '—'}</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">From</td><td style="font-size:13px;color:#111827;">${data.pioneerCountry || '—'}</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Type</td><td style="font-size:13px;color:#111827;">${data.pioneerType || '—'} Explorer</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Opportunity</td><td style="font-size:13px;color:#111827;">${data.pathTitle || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;width:130px;">Explorer</td><td style="font-size:13px;color:#111827;font-weight:600;">${data.explorerName || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">From</td><td style="font-size:13px;color:#111827;">${data.explorerCountry || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Type</td><td style="font-size:13px;color:#111827;">${data.explorerType || '—'} Explorer</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Opportunity</td><td style="font-size:13px;color:#111827;">${data.opportunityTitle || '—'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Match Score</td><td style="font-size:13px;color:#5C0A14;font-weight:700;">${data.matchScore || '—'}%</td></tr>
           </table>
           ${data.matchScore ? `<div class="score-bar"><div class="score-fill" style="width:${Math.min(100, Number(data.matchScore))}%;"></div></div>` : ''}
-          ${data.pioneerMessage ? `<p class="p-sm" style="margin-top:12px;font-style:italic;border-left:3px solid #5C0A14;padding-left:12px;">"${data.pioneerMessage}"</p>` : ''}
+          ${data.explorerMessage ? `<p class="p-sm" style="margin-top:12px;font-style:italic;border-left:3px solid #5C0A14;padding-left:12px;">"${data.explorerMessage}"</p>` : ''}
         </div>
 
         <p class="p">
@@ -432,7 +432,7 @@ export const EMAIL_TEMPLATES: Record<
         </div>
       </div>
       ${emailFooter('You received this because you are a Host on bekenya.com.')}`,
-      `${data.pioneerName || 'An Explorer'} wants to join your opportunity.`
+      `${data.explorerName || 'An Explorer'} wants to join your opportunity.`
     ),
   }),
 
@@ -461,12 +461,12 @@ export const EMAIL_TEMPLATES: Record<
         </div>
 
         ${
-          data.topPathTitle
+          data.topOpportunityTitle
             ? `
         <div class="info-card">
           <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">Top Match This Week</p>
-          <p style="font-size:16px;font-weight:700;color:#111827;margin:0 0 4px;">${data.topPathTitle}</p>
-          <p style="font-size:13px;color:#5C0A14;margin:0;">${data.topPathHost || ''} &bull; ${data.topPathScore || '—'}% match</p>
+          <p style="font-size:16px;font-weight:700;color:#111827;margin:0 0 4px;">${data.topOpportunityTitle}</p>
+          <p style="font-size:13px;color:#5C0A14;margin:0;">${data.topOpportunityHost || ''} &bull; ${data.topOpportunityScore || '—'}% match</p>
         </div>`
             : ''
         }
@@ -668,7 +668,7 @@ export async function sendExplorerWelcome(
   return sendEmail(email, 'explorer_welcome', {
     name,
     matchCount: String(matchCount),
-    pioneerType: explorerType,
+    explorerType,
     countryFrom,
     targetCountry,
     ctaUrl: 'https://bekenya.com/discovery',
@@ -688,14 +688,14 @@ export async function sendNewOpportunityMatch(
   opportunityUrl: string
 ): Promise<EmailResult> {
   return sendEmail(email, 'new_opportunity_match', {
-    pioneerName: explorerName,
-    pathTitle: opportunityTitle,
-    anchorName: hostName,
+    explorerName,
+    opportunityTitle,
+    hostName,
     location,
     matchScore: String(matchScore),
     salary,
     topSkill,
-    pathUrl: opportunityUrl,
+    opportunityUrl,
     openDays: '7',
   })
 }
@@ -712,67 +712,12 @@ export async function sendHostExchangeNotification(
   reviewUrl: string
 ): Promise<EmailResult> {
   return sendEmail(hostEmail, 'host_new_exchange', {
-    pioneerName: explorerName,
-    pioneerCountry: explorerCountry,
-    pioneerType: explorerType,
-    pathTitle: opportunityTitle,
+    explorerName,
+    explorerCountry,
+    explorerType,
+    opportunityTitle,
     matchScore: String(matchScore),
-    pioneerMessage: explorerMessage,
+    explorerMessage,
     reviewUrl,
   })
-}
-
-/** Send safari booking confirmation after M-Pesa payment */
-export async function sendSafariBookingConfirmation(
-  email: string,
-  guestName: string,
-  packageName: string,
-  date: string,
-  guests: number,
-  meetingPoint: string,
-  amount: string,
-  mpesaReceipt: string,
-  bookingRef: string,
-  bookingUrl: string
-): Promise<EmailResult> {
-  return sendEmail(email, 'safari_booking_confirmation', {
-    guestName,
-    packageName,
-    date,
-    guests: String(guests),
-    meetingPoint,
-    amount,
-    mpesaReceipt,
-    bookingRef,
-    bookingUrl,
-  })
-}
-
-/** Send UTAMADUNI donation receipt */
-export async function sendDonationReceipt(
-  email: string,
-  donorName: string,
-  amount: string,
-  paymentMethod: string,
-  mpesaReceipt: string,
-  childrenCount: string,
-  region: string
-): Promise<EmailResult> {
-  const receiptRef = `UTM-${mpesaReceipt || Date.now()}`
-  return sendEmail(email, 'utamaduni_donation_receipt', {
-    donorName,
-    amount,
-    paymentMethod,
-    date: new Date().toLocaleDateString('en-KE', { dateStyle: 'long' }),
-    receiptRef,
-    childrenCount,
-    region,
-    impactUrl: 'https://bekenya.com/utamaduni',
-  })
-}
-
-/** Send password reset email */
-export async function sendPasswordReset(email: string, resetToken: string): Promise<EmailResult> {
-  const resetUrl = `https://bekenya.com/auth/reset?token=${resetToken}`
-  return sendEmail(email, 'password_reset', { email, resetUrl })
 }

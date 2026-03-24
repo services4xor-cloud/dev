@@ -24,14 +24,14 @@ export interface ExplorerProfile {
   yearsExperience?: number
 }
 
-export interface PathOpportunity {
+export interface OpportunityProfile {
   id: string
   title: string
   hostName: string
   category: string
   location: string // Country name or code
   requiredSkills: string[]
-  preferredCountries: string[] // Origin countries preferred by anchor
+  preferredCountries: string[] // Origin countries preferred by Host
   remoteOk: boolean
   experienceYears?: number
   explorerTypes: ExplorerType[]
@@ -49,7 +49,10 @@ export interface MatchResult {
 
 // ─── Core Scoring Function ────────────────────────────────────────────────────
 
-export function scoreExplorerPath(explorer: ExplorerProfile, path: PathOpportunity): MatchResult {
+export function scoreExplorerPath(
+  explorer: ExplorerProfile,
+  path: OpportunityProfile
+): MatchResult {
   let score = 0
   const reasons: string[] = []
   const gaps: string[] = []
@@ -182,30 +185,4 @@ export function scoreExplorerPath(explorer: ExplorerProfile, path: PathOpportuni
     routeStrength,
     recommendationLabel,
   }
-}
-
-// ─── Rank Multiple Paths for a Explorer ───────────────────────────────────────
-
-export function rankPathsForExplorer(
-  explorer: ExplorerProfile,
-  paths: PathOpportunity[]
-): MatchResult[] {
-  return paths.map((path) => scoreExplorerPath(explorer, path)).sort((a, b) => b.score - a.score)
-}
-
-// ─── Filter Helpers ───────────────────────────────────────────────────────────
-
-/** Return only paths that score at or above the given threshold */
-export function filterByMinScore(results: MatchResult[], minScore: number): MatchResult[] {
-  return results.filter((r) => r.score >= minScore)
-}
-
-/** Return only direct-route matches */
-export function filterDirectRoutes(results: MatchResult[]): MatchResult[] {
-  return results.filter((r) => r.isDirectRoute)
-}
-
-/** Return the top N results */
-export function topN(results: MatchResult[], n: number): MatchResult[] {
-  return results.slice(0, n)
 }

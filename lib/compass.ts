@@ -217,24 +217,3 @@ export function getRouteKey(from: string, to: string): string {
 export function getRouteInfo(from: string, to: string) {
   return COUNTRY_ROUTES[getRouteKey(from, to)] ?? generateRoute(from, to)
 }
-
-export function getRecommendedRoutes(fromCountry: string): string[] {
-  // Start with curated routes
-  const curated = Object.keys(COUNTRY_ROUTES)
-    .filter((k) => k.startsWith(`${fromCountry}-`))
-    .map((k) => k.split('-')[1])
-
-  const seen = new Set(curated)
-
-  // Add generated routes for every other country in COUNTRIES
-  for (const code of Object.keys(COUNTRIES)) {
-    if (code === fromCountry || seen.has(code)) continue
-    const route = generateRoute(fromCountry, code)
-    if (route) {
-      curated.push(code)
-      seen.add(code)
-    }
-  }
-
-  return curated
-}

@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 76 (2026-03-23); Maintenance — vocabulary cleanup, dead code, deps
+> Last updated: Session 76 (2026-03-24); Maintenance — vocabulary cleanup, dead code removal, dependency updates
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -31,11 +31,11 @@
 
 ---
 
-## Session 76: Maintenance — Vocabulary Cleanup, Dead Code, Dependencies
+## Session 76: Maintenance — Vocabulary, Dead Code, Dependencies
 
 ### Vocabulary Compliance
 
-- **Email templates** — Renamed all 5 legacy template keys: `pioneer_welcome` → `explorer_welcome`, `chapter_opened` → `exchange_opened`, `chapter_status_update` → `exchange_status_update`, `new_path_match` → `new_opportunity_match`, `anchor_new_chapter` → `host_new_exchange`. Updated convenience wrappers and comment docs.
+- **Email templates** — Renamed all 5 legacy template keys: `pioneer_welcome` → `explorer_welcome`, `chapter_opened` → `exchange_opened`, `chapter_status_update` → `exchange_status_update`, `new_path_match` → `new_opportunity_match`, `anchor_new_chapter` → `host_new_exchange`. Updated all template data fields (`pioneerName` → `explorerName`, `anchorName` → `hostName`, `pathTitle` → `opportunityTitle`, etc.)
 - **i18n keys** — Renamed 92 `pioneer.*` keys → `explorer.*` across all 4 languages (EN, DE, SW, FR).
 - **German translations** — Fixed "Pionier" → "Entdecker", "Weg" → "Chance" for Opportunity context.
 - **Swahili translations** — Fixed "Mtaalamu" → "Mgunduzi" (Explorer), "Njia" → "Fursa" (Opportunity).
@@ -43,15 +43,27 @@
 - **ApplyButton** — "Application submitted" → "Exchange submitted", "Submit Application" → "Submit Exchange".
 - **ExplorerStories** — "job titles" → "opportunity titles".
 - **Email footer** — Fixed `/ventures` → `/opportunities` link.
+- **lib/matching.ts** — Renamed `PathOpportunity` → `OpportunityProfile`, fixed "anchor" → "Host" in comments.
 
 ### Dead Code Removal
 
-- **compass.ts** — Removed unused `CompassReading` interface and `detectCountryFromIP()` function (zero imports found).
+- **compass.ts** — Removed unused `CompassReading` interface, `detectCountryFromIP()`, and `getRecommendedRoutes()` (zero imports)
+- **matching.ts** — Removed unused `rankPathsForExplorer()`, `filterByMinScore()`, `filterDirectRoutes()`, `topN()` (4 functions, 0 imports)
+- **endonyms.ts** — Removed unused `getCountrySearchTerms()`, `searchCountries()` (2 functions, 0 imports)
+- **email.ts** — Removed unused `sendSafariBookingConfirmation()`, `sendDonationReceipt()`, `sendPasswordReset()` wrappers (3 functions, 0 imports)
 
 ### Dependencies
 
-- **@swc/core** — Updated to 1.15.21 (patch).
+- **npm update** — All packages updated within semver ranges (minor/patch)
+- **axios removed** — Unused dependency (codebase uses `fetch` exclusively via `lib/api-client.ts`)
 - **Audit:** 10 vulnerabilities remain (all tied to major version upgrades: Next.js 14→16, React 18→19). No non-breaking fixes available.
+
+### Data Correctness Audit
+
+- **185 countries** — All verified with ≥2 languages, ≥2 payment methods, ≥3 sectors, ≥1 faith ✅
+- **14 Prisma models** — Confirmed matching CLAUDE.md ✅
+- **Vocabulary (lib/vocabulary.ts)** — VOCAB object matches CLAUDE.md specification ✅
+- **Type definitions (types/domain.ts)** — All types consistent with Prisma schema ✅
 
 ### Stats
 
