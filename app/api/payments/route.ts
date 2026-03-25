@@ -28,6 +28,7 @@ export async function GET() {
   const payments = await db.payment.findMany({
     where: { userId },
     orderBy: { createdAt: 'desc' },
+    take: 100,
   })
 
   return NextResponse.json(payments)

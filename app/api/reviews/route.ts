@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
   const reviews = await db.review.findMany({
     where: { targetId },
     orderBy: { createdAt: 'desc' },
+    take: 100,
     select: {
       id: true,
       authorId: true,

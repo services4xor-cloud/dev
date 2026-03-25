@@ -194,22 +194,25 @@ function scoreMarket(
   return { score, highlight: `Market demand in ${them.country}: ${score}/20` }
 }
 
+/** Build a lookup Set of lowercase strings + canonical IDs for a skill list */
+function buildSkillKeys(skills: string[]): Set<string> {
+  const keys = new Set<string>()
+  for (const s of skills) {
+    keys.add(lower(s))
+    const id = resolveSkillId(s)
+    if (id) keys.add(id)
+  }
+  return keys
+}
+
 /** Semantic-aware intersect: matches skills by string OR canonical skill ID */
 function semanticIntersect(a: string[], b: string[]): string[] {
+  const bKeys = buildSkillKeys(b)
   const result: string[] = []
-  const usedB = new Set<number>()
-
   for (const skillA of a) {
     const idA = resolveSkillId(skillA)
-    for (let i = 0; i < b.length; i++) {
-      if (usedB.has(i)) continue
-      const idB = resolveSkillId(b[i])
-      // Match if same string (case-insensitive) OR same canonical ID
-      if (lower(skillA) === lower(b[i]) || (idA && idB && idA === idB)) {
-        result.push(skillA)
-        usedB.add(i)
-        break
-      }
+    if (bKeys.has(lower(skillA)) || (idA && bKeys.has(idA))) {
+      result.push(skillA)
     }
   }
   return result
@@ -217,13 +220,10 @@ function semanticIntersect(a: string[], b: string[]): string[] {
 
 /** Semantic-aware complement: skills in theirs that are NOT in mine (by string or ID) */
 function semanticComplement(mine: string[], theirs: string[]): string[] {
+  const mineKeys = buildSkillKeys(mine)
   return theirs.filter((skill) => {
     const id = resolveSkillId(skill)
-    const isShared = mine.some((m) => {
-      const mId = resolveSkillId(m)
-      return lower(m) === lower(skill) || (mId && id && mId === id)
-    })
-    return !isShared
+    return !mineKeys.has(lower(skill)) && !(id && mineKeys.has(id))
   })
 }
 

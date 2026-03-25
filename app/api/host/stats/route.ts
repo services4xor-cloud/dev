@@ -29,54 +29,60 @@ export async function GET() {
     return new Response('Forbidden: Host or Admin role required', { status: 403 })
   }
 
-  // Find the user's graph Node
-  const userNode = await db.node.findFirst({
-    where: { type: 'USER', userId: user.id },
-  })
+  try {
+    // Find the user's graph Node
+    const userNode = await db.node.findFirst({
+      where: { type: 'USER', userId: user.id },
+    })
 
-  // Find all EXPERIENCE nodes connected via OFFERS edge from this user's node
-  const offerEdges =
-    userNode !== null
-      ? await db.edge.findMany({
-          where: {
-            fromId: userNode.id,
-            relation: 'OFFERS',
-            to: { type: 'EXPERIENCE' },
-          },
-          include: { to: true },
-          orderBy: { createdAt: 'desc' },
-        })
-      : []
+    // Find EXPERIENCE nodes connected via OFFERS edge (capped at 200)
+    const offerEdges =
+      userNode !== null
+        ? await db.edge.findMany({
+            where: {
+              fromId: userNode.id,
+              relation: 'OFFERS',
+              to: { type: 'EXPERIENCE' },
+            },
+            include: { to: true },
+            orderBy: { createdAt: 'desc' },
+            take: 200,
+          })
+        : []
 
-  // Payments for this user
-  const payments = await db.payment.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: 'desc' },
-  })
+    // Recent payments for this user (capped at 100)
+    const payments = await db.payment.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    })
 
-  const totalRevenue = payments
-    .filter((p) => p.status === 'SUCCESS')
-    .reduce((sum, p) => sum + p.amount, 0)
+    const totalRevenue = payments
+      .filter((p) => p.status === 'SUCCESS')
+      .reduce((sum, p) => sum + p.amount, 0)
 
-  const recentPayments = payments.slice(0, 5)
+    const recentPayments = payments.slice(0, 5)
 
-  return NextResponse.json({
-    opportunities: offerEdges.map((edge) => ({
-      id: edge.to.id,
-      label: edge.to.label,
-      icon: edge.to.icon,
-      properties: edge.to.properties,
-      createdAt: edge.to.createdAt,
-    })),
-    totalOpportunities: offerEdges.length,
-    totalPayments: payments.length,
-    totalRevenue,
-    recentPayments: recentPayments.map((p) => ({
-      id: p.id,
-      amount: p.amount,
-      currency: p.currency,
-      status: p.status,
-      createdAt: p.createdAt,
-    })),
-  })
+    return NextResponse.json({
+      opportunities: offerEdges.map((edge) => ({
+        id: edge.to.id,
+        label: edge.to.label,
+        icon: edge.to.icon,
+        properties: edge.to.properties,
+        createdAt: edge.to.createdAt,
+      })),
+      totalOpportunities: offerEdges.length,
+      totalPayments: payments.length,
+      totalRevenue,
+      recentPayments: recentPayments.map((p) => ({
+        id: p.id,
+        amount: p.amount,
+        currency: p.currency,
+        status: p.status,
+        createdAt: p.createdAt,
+      })),
+    })
+  } catch {
+    return NextResponse.json({ error: 'Failed to load host stats' }, { status: 500 })
+  }
 }
