@@ -2,21 +2,21 @@
  * Be[Country] Platform — Country & Language Data Engine
  *
  * SINGLE SOURCE OF TRUTH for:
- *   - All selectable countries (for compass, onboarding, route planning)
+ *   - All selectable countries (for Discovery, onboarding, route planning)
  *   - Language registry (for collaboration matching + corridor strength)
  *   - Geographic coordinates (for proximity clustering)
  *   - Region clusters (for visual grouping in UI)
  *   - Corridor strength (direct / partner / emerging)
  *
  * KEY CONCEPT: Language + Location = Collaboration
- *   A Explorer's languages and location together determine the strongest
+ *   An Explorer's languages and location together determine the strongest
  *   corridors. A Swahili-speaking Explorer in Kenya has a direct corridor
  *   to Tanzania/Uganda. A German-speaking Explorer has a direct corridor
  *   to Germany/Austria/Switzerland.
  *
  * Used by:
- *   - components/CountryPrioritySelector.tsx (compass step 1 + onboarding)
- *   - app/compass/page.tsx
+ *   - components/CountryPrioritySelector.tsx (Discovery step 1 + onboarding)
+ *   - app/discovery/page.tsx
  *   - app/onboarding/page.tsx
  *
  * DO NOT duplicate country or language lists elsewhere. Import from here.
@@ -1618,7 +1618,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Careem Pay',
       'Tabby',
     ],
-    visa: 'Employment visa via employer',
+    visa: 'Employment visa via Host',
     tz: 'Asia/Dubai',
     languages: ['ar', 'en'],
     topFaiths: ['islam', 'christianity', 'hinduism'],
@@ -2803,7 +2803,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
       'Visa/Mastercard',
       'Tamara',
     ],
-    visa: 'Work visa via employer',
+    visa: 'Work visa via Host',
     tz: 'Asia/Riyadh',
     languages: ['ar', 'en'],
     topFaiths: ['islam'],
@@ -2846,7 +2846,7 @@ export const COUNTRY_OPTIONS: CountryOption[] = [
     ],
     currency: 'KWD',
     payment: ['Bank Transfer', 'KNET'],
-    visa: 'Work visa via employer',
+    visa: 'Work visa via Host',
     tz: 'Asia/Kuwait',
     languages: ['ar', 'en'],
     topFaiths: ['islam'],

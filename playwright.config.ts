@@ -18,17 +18,13 @@ export const VIEWPORTS = {
 // All pages to test (smoke + brand)
 export const PAGES = [
   '/',
-  '/compass',
-  '/ventures',
-  '/offerings',
+  '/discovery',
+  '/opportunities',
   '/about',
-  '/pioneers/dashboard',
-  '/anchors/dashboard',
-  '/agents',
-  '/agents/dashboard',
+  '/host',
+  '/agent',
   '/onboarding',
   '/be/ke',
-  '/charity',
   '/pricing',
   '/contact',
   '/login',
@@ -36,6 +32,8 @@ export const PAGES = [
   '/exchange',
   '/messages',
   '/me',
+  '/explorers',
+  '/notifications',
   '/not-found-test', // triggers 404
 ] as const
 

@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 76 (2026-03-24); Maintenance — vocabulary cleanup, dead code removal, dependency updates
+> Last updated: Session 76 (2026-03-26); Maintenance — vocabulary audit, security fixes, data cleanup
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -31,43 +31,37 @@
 
 ---
 
-## Session 76: Maintenance — Vocabulary, Dead Code, Dependencies
+## Session 76: Maintenance — Vocabulary Audit + Security + Data Cleanup
 
-### Vocabulary Compliance
+### Vocabulary Compliance (Phase 1 — earlier)
 
-- **Email templates** — Renamed all 5 legacy template keys: `pioneer_welcome` → `explorer_welcome`, `chapter_opened` → `exchange_opened`, `chapter_status_update` → `exchange_status_update`, `new_path_match` → `new_opportunity_match`, `anchor_new_chapter` → `host_new_exchange`. Updated all template data fields (`pioneerName` → `explorerName`, `anchorName` → `hostName`, `pathTitle` → `opportunityTitle`, etc.)
+- **Email templates** — Renamed all 5 legacy template keys: `pioneer_welcome` → `explorer_welcome`, `chapter_opened` → `exchange_opened`, etc.
 - **i18n keys** — Renamed 92 `pioneer.*` keys → `explorer.*` across all 4 languages (EN, DE, SW, FR).
-- **German translations** — Fixed "Pionier" → "Entdecker", "Weg" → "Chance" for Opportunity context.
-- **Swahili translations** — Fixed "Mtaalamu" → "Mgunduzi" (Explorer), "Njia" → "Fursa" (Opportunity).
-- **English i18n** — Fixed "Path Category/Type" → "Opportunity Category/Type", "Full/Part/Seasonal Path" → "Full-time/Part-time/Seasonal", "Preview Path" → "Preview Opportunity".
-- **ApplyButton** — "Application submitted" → "Exchange submitted", "Submit Application" → "Submit Exchange".
-- **ExplorerStories** — "job titles" → "opportunity titles".
-- **Email footer** — Fixed `/ventures` → `/opportunities` link.
-- **lib/matching.ts** — Renamed `PathOpportunity` → `OpportunityProfile`, fixed "anchor" → "Host" in comments.
+- **German/Swahili translations** — Fixed "Pionier" → "Entdecker", "Mtaalamu" → "Mgunduzi".
+- **ApplyButton** — "Application submitted" → "Exchange submitted".
+- **Dead code removed** — compass.ts (3 unused functions), matching.ts (4), endonyms.ts (2), email.ts (3).
+- **axios removed** — Unused dependency.
 
-### Dead Code Removal
+### Vocabulary Compliance (Phase 2 — deep audit)
 
-- **compass.ts** — Removed unused `CompassReading` interface, `detectCountryFromIP()`, and `getRecommendedRoutes()` (zero imports)
-- **matching.ts** — Removed unused `rankPathsForExplorer()`, `filterByMinScore()`, `filterDirectRoutes()`, `topN()` (4 functions, 0 imports)
-- **endonyms.ts** — Removed unused `getCountrySearchTerms()`, `searchCountries()` (2 functions, 0 imports)
-- **email.ts** — Removed unused `sendSafariBookingConfirmation()`, `sendDonationReceipt()`, `sendPasswordReset()` wrappers (3 functions, 0 imports)
+- **i18n.ts** — 167+ additional legacy key/value renames across 12 language sections (Venture→Experience, Chapter→Exchange, Compass→Discovery, Dashboard→Hub)
+- **countries.ts** — 14 country descriptions: "Your compass for" → "Your guide to", "ventures" → "experiences", "employers" → "Hosts"
+- **country-selector.ts** — Comments + visa descriptions updated (employer→Host, compass→Discovery)
+- **compass.ts** — Comments updated (Compass navigation concept → Corridor Engine)
+- **next.config.js** — Legacy redirects now point to current routes (/ventures→/opportunities, /anchors/dashboard→/host)
+- **playwright.config.ts** — Test pages updated to current route structure
+- **UI pages** — host/page.tsx (Dashboard→Hub, Listings→Opportunities), pricing/page.tsx, admin/page.tsx + layout
+- **Test data** — messages.test.ts + onboarding.test.ts mock names (Pioneer/Anchor → Explorer/Host)
+- **Result:** Zero legacy terms remaining in app/, lib/, components/, __tests__/
 
-### Dependencies
+### Security
 
-- **npm update** — All packages updated within semver ranges (minor/patch)
-- **axios removed** — Unused dependency (codebase uses `fetch` exclusively via `lib/api-client.ts`)
-- **Audit:** 10 vulnerabilities remain (all tied to major version upgrades: Next.js 14→16, React 18→19). No non-breaking fixes available.
-
-### Data Correctness Audit
-
-- **185 countries** — All verified with ≥2 languages, ≥2 payment methods, ≥3 sectors, ≥1 faith ✅
-- **14 Prisma models** — Confirmed matching CLAUDE.md ✅
-- **Vocabulary (lib/vocabulary.ts)** — VOCAB object matches CLAUDE.md specification ✅
-- **Type definitions (types/domain.ts)** — All types consistent with Prisma schema ✅
+- **npm audit fix** — picomatch ReDoS + yaml stack overflow vulnerabilities patched
+- **Remaining:** next@14 + eslint-config-next@14 have known CVEs, but upgrade to v16 is breaking (separate migration needed)
 
 ### Stats
 
-- Tests: 376/376 (25 suites), TypeScript: 0 errors
+- Tests: 376/376 (25 suites), TypeScript: 0 errors, ESLint: 0 warnings
 
 ---
 

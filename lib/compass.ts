@@ -1,5 +1,5 @@
-// THE COMPASS — Smart routing engine
-// Auto-detects user location, matches to target countries, shows relevant paths
+// THE CORRIDOR ENGINE — Smart routing engine
+// Auto-detects Explorer location, matches to target countries, shows relevant corridors
 
 import { COUNTRIES, CountryCode } from './countries'
 
@@ -32,7 +32,7 @@ export const COUNTRY_ROUTES: Record<
   'KE-AE': {
     targetCountries: ['AE'],
     primarySectors: ['Hospitality', 'Logistics', 'Construction', 'Domestic Work'],
-    visaNote: 'UAE employment visa through employer. High demand for Kenyan hospitality workers.',
+    visaNote: 'UAE employment visa through Host. High demand for Kenyan hospitality workers.',
     paymentMethods: ['M-Pesa', 'Bank Transfer', 'Western Union'],
     strength: 'direct',
   },

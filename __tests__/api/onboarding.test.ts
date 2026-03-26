@@ -36,7 +36,7 @@ function makeSession(overrides: Record<string, unknown> = {}) {
   return {
     user: {
       id: 'user-1',
-      name: 'Alice Pioneer',
+      name: 'Alice Explorer',
       email: 'alice@example.com',
       ...overrides,
     },

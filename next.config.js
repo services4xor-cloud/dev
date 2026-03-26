@@ -36,13 +36,17 @@ const nextConfig = {
       },
     ]
   },
-  // Redirects: old /jobs → /ventures
+  // Redirects: legacy routes → current vocabulary
   async redirects() {
     return [
-      { source: '/jobs', destination: '/ventures', permanent: true },
-      { source: '/jobs/:path*', destination: '/ventures/:path*', permanent: true },
-      { source: '/employers/dashboard', destination: '/anchors/dashboard', permanent: true },
-      { source: '/post-job', destination: '/anchors/post-path', permanent: true },
+      { source: '/jobs', destination: '/opportunities', permanent: true },
+      { source: '/jobs/:path*', destination: '/opportunities/:path*', permanent: true },
+      { source: '/ventures', destination: '/opportunities', permanent: true },
+      { source: '/ventures/:path*', destination: '/opportunities/:path*', permanent: true },
+      { source: '/employers/dashboard', destination: '/host', permanent: true },
+      { source: '/anchors/dashboard', destination: '/host', permanent: true },
+      { source: '/post-job', destination: '/host', permanent: true },
+      { source: '/anchors/post-path', destination: '/host', permanent: true },
     ]
   },
   // Experimental

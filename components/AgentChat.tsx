@@ -76,7 +76,7 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
     }
   }
 
-  // Show auth gate immediately — no network call needed
+  // Show auth check immediately — no network call needed
   if (status === 'unauthenticated') {
     return (
       <div className="flex h-full flex-col items-center justify-center rounded-xl border border-brand-accent/20 bg-brand-surface px-6 py-12 text-center">

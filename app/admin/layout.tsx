@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Admin Dashboard',
+  title: 'Admin Hub',
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {

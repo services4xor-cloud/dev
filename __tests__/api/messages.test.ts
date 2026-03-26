@@ -54,7 +54,7 @@ function getDb() {
 
 function makeSession(overrides: Record<string, unknown> = {}) {
   return {
-    user: { id: 'user-1', name: 'Alice Pioneer', email: 'alice@example.com', ...overrides },
+    user: { id: 'user-1', name: 'Alice Explorer', email: 'alice@example.com', ...overrides },
     expires: '2099-01-01',
   }
 }
@@ -73,7 +73,7 @@ function makeGetConversationRequest(conversationId: string): NextRequest {
 
 // ---- Shared mock data ----
 
-const mockParticipant = { id: 'user-2', name: 'Bob Anchor', image: null }
+const mockParticipant = { id: 'user-2', name: 'Bob Host', image: null }
 
 const mockMessage = {
   id: 'msg-1',
@@ -86,7 +86,7 @@ const mockMessage = {
 
 const mockConversation = {
   id: 'conv-1',
-  participants: [{ id: 'user-1', name: 'Alice Pioneer', image: null }, mockParticipant],
+  participants: [{ id: 'user-1', name: 'Alice Explorer', image: null }, mockParticipant],
   messages: [mockMessage],
   lastMessageAt: new Date('2026-01-01T10:00:00Z'),
 }
@@ -426,7 +426,7 @@ describe('GET /api/messages/[id]', () => {
       messages: [
         {
           ...mockMessage,
-          sender: { id: 'user-2', name: 'Bob Anchor', image: null },
+          sender: { id: 'user-2', name: 'Bob Host', image: null },
         },
       ],
     }

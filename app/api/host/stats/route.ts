@@ -14,7 +14,7 @@ function getSessionUser(
 
 /**
  * GET /api/host/stats
- * Returns dashboard stats for the authenticated Host.
+ * Returns Hub stats for the authenticated Host.
  * Requires HOST or ADMIN role.
  */
 export async function GET() {
