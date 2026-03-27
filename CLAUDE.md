@@ -79,7 +79,7 @@ Full rules → `DESIGN_SYSTEM.md`
 | AI         | Anthropic Claude API (claude-sonnet-4-20250514) |
 | Payments   | M-Pesa Daraja v2 (KE) · Stripe (INT)            |
 | Email      | Resend                                          |
-| Testing    | Jest 30 (361/361, 24 suites) · Playwright       |
+| Testing    | Jest 30 (376/376, 25 suites) · Playwright       |
 | CI/CD      | GitHub Actions → Vercel (auto-deploy on push)   |
 | Formatting | Prettier + ESLint + Husky pre-commit            |
 
@@ -149,7 +149,7 @@ lib/                      # Core libraries (22 modules)
 
 types/domain.ts           # Core entities + enums
 components/               # Shared UI components
-__tests__/                # Jest (361 tests, 24 suites)
+__tests__/                # Jest (361 tests, 25 suites)
 prisma/schema.prisma      # DB schema (14 models)
 ```
 
@@ -160,7 +160,7 @@ prisma/schema.prisma      # DB schema (14 models)
 ```bash
 npm run dev             # localhost:3000
 npm run build           # prisma generate + next build
-npm run test            # Jest (361/361)
+npm run test            # Jest (376/376)
 npm run format          # Prettier
 npm run typecheck       # TypeScript strict
 npx playwright test     # Playwright E2E
@@ -225,4 +225,4 @@ Skills live in `.claude/skills/*.md`. Only these exist:
 
 ---
 
-_Last updated: Session 74 (2026-03-15)_
+_Last updated: Session 76 (2026-03-27)_

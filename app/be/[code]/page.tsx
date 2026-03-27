@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const name = data?.name ?? code.toUpperCase()
   return {
     title: `Be${name}`,
-    description: `Explore ${name} on Be[X] — discover languages, culture, paths, and connections.`,
+    description: `Explore ${name} on Be[X] — discover languages, culture, opportunities, and connections.`,
   }
 }
 
@@ -155,7 +155,7 @@ export default async function CountryHubPage({ params }: PageProps) {
             >
               <div className="mb-2 text-2xl">🚀</div>
               <p className="text-sm font-semibold text-brand-text group-hover:text-brand-accent">
-                Browse Paths
+                Browse Opportunities
               </p>
               <p className="mt-1 text-xs text-brand-text-muted">Opportunities in {name}</p>
             </Link>

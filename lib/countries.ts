@@ -890,110 +890,99 @@ export const COUNTRY_META: Record<string, CountrySEOMeta> = {
   KE: {
     title: 'BeKenya — Find Where You Belong. Go There.',
     description:
-      'An identity-first discovery platform for Explorers. Safari paths, professional experiences, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
+      'An identity-first discovery platform for Explorers. Safari corridors, professional experiences, community impact — Kenya-first, globally connected. M-Pesa, Stripe, Flutterwave.',
     twitter: '@BeKenya',
     brandName: 'BeKenya',
   },
   DE: {
-    title: 'BeGermany — Find Your Path in Germany.',
+    title: 'BeGermany — Find Your Way in Germany.',
     description:
-      'Your compass for professional paths, experiences, and community in Germany. SEPA payments, skilled worker routes, European connections.',
+      'Your guide to professional opportunities, experiences, and community in Germany. SEPA payments, skilled worker routes, European connections.',
     twitter: '@BeGermany',
     brandName: 'BeGermany',
   },
   CH: {
-    title: 'BeSwitzerland — Find Your Path in Switzerland.',
+    title: 'BeSwitzerland — Find Your Way in Switzerland.',
     description:
-      'Your compass for professional paths, alpine experiences, and community in Switzerland. TWINT, Stripe, cross-border routes.',
+      'Your guide to professional opportunities, alpine experiences, and community in Switzerland. TWINT, Stripe, cross-border routes.',
     twitter: '@BeSwitzerland',
     brandName: 'BeSwitzerland',
   },
   TH: {
-    title: 'BeThailand — Find Your Path in Thailand.',
+    title: 'BeThailand — Find Your Way in Thailand.',
     description:
-      'Your compass for professional paths, tourism ventures, and community in Thailand. PromptPay, Stripe, cultural exchange.',
+      'Your guide to professional opportunities, tourism experiences, and community in Thailand. PromptPay, Stripe, cultural exchange.',
     twitter: '@BeThailand',
     brandName: 'BeThailand',
   },
   US: {
-    title: 'BeAmerica — Find Your Path in the United States.',
+    title: 'BeAmerica — Find Your Way in the United States.',
     description:
-      'Your compass for professional paths, innovation hubs, and diverse communities across America. ACH, Stripe, global connections.',
+      'Your guide to professional opportunities, innovation hubs, and diverse communities across America. ACH, Stripe, global connections.',
     twitter: '@BeAmerica',
     brandName: 'BeAmerica',
   },
   NG: {
-    title: 'BeNigeria — Find Your Path in Nigeria.',
+    title: 'BeNigeria — Find Your Way in Nigeria.',
     description:
-      "Your compass for tech, creative, and professional paths in Nigeria. Flutterwave, Paystack, Africa's largest economy.",
+      "Your guide to tech, creative, and professional opportunities in Nigeria. Flutterwave, Paystack, Africa's largest economy.",
     twitter: '@BeNigeria',
     brandName: 'BeNigeria',
   },
   GH: {
-    title: 'BeGhana — Find Your Path in Ghana.',
+    title: 'BeGhana — Find Your Way in Ghana.',
     description:
-      'Your compass for professional paths, cultural heritage, and community in Ghana. MTN MoMo, Flutterwave, West African connections.',
+      'Your guide to professional opportunities, cultural heritage, and community in Ghana. MTN MoMo, Flutterwave, West African connections.',
     twitter: '@BeGhana',
     brandName: 'BeGhana',
   },
   ZA: {
-    title: 'BeSouthAfrica — Find Your Path in South Africa.',
+    title: 'BeSouthAfrica — Find Your Way in South Africa.',
     description:
-      'Your compass for professional paths, wildlife ventures, and community in South Africa. EFT, Stripe, continental gateway.',
+      'Your guide to professional opportunities, wildlife experiences, and community in South Africa. EFT, Stripe, continental gateway.',
     twitter: '@BeSouthAfrica',
     brandName: 'BeSouthAfrica',
   },
   UG: {
-    title: 'BeUganda — Find Your Path in Uganda.',
+    title: 'BeUganda — Find Your Way in Uganda.',
     description:
-      'Your compass for professional paths, gorilla trekking ventures, and community in Uganda. MTN MoMo, Airtel Money, East African routes.',
+      'Your guide to professional opportunities, gorilla trekking experiences, and community in Uganda. MTN MoMo, Airtel Money, East African routes.',
     twitter: '@BeUganda',
     brandName: 'BeUganda',
   },
   TZ: {
-    title: 'BeTanzania — Find Your Path in Tanzania.',
+    title: 'BeTanzania — Find Your Way in Tanzania.',
     description:
-      'Your compass for professional paths, Serengeti ventures, and community in Tanzania. M-Pesa, Tigo Pesa, East African connections.',
+      'Your guide to professional opportunities, Serengeti experiences, and community in Tanzania. M-Pesa, Tigo Pesa, East African connections.',
     twitter: '@BeTanzania',
     brandName: 'BeTanzania',
   },
   IN: {
-    title: 'BeIndia — Find Your Path in India.',
+    title: 'BeIndia — Find Your Way in India.',
     description:
-      'Your compass for technology paths, cultural experiences, and community across India. UPI, Razorpay, global talent hub.',
+      'Your guide to technology opportunities, cultural experiences, and community across India. UPI, Razorpay, global talent hub.',
     twitter: '@BeIndia',
     brandName: 'BeIndia',
   },
   AE: {
-    title: 'BeUAE — Find Your Path in the UAE.',
+    title: 'BeUAE — Find Your Way in the UAE.',
     description:
-      'Your compass for professional paths, business ventures, and community in the UAE. Apple Pay, Stripe, global business hub.',
+      'Your guide to professional opportunities, business experiences, and community in the UAE. Apple Pay, Stripe, global business hub.',
     twitter: '@BeUAE',
     brandName: 'BeUAE',
   },
   CA: {
-    title: 'BeCanada — Find Your Path in Canada.',
+    title: 'BeCanada — Find Your Way in Canada.',
     description:
-      'Your compass for professional paths, natural adventures, and multicultural community in Canada. Interac, Stripe, immigration pathways.',
+      'Your guide to professional opportunities, natural adventures, and multicultural community in Canada. Interac, Stripe, immigration corridors.',
     twitter: '@BeCanada',
     brandName: 'BeCanada',
   },
   GB: {
-    title: 'BeUK — Find Your Path in the United Kingdom.',
+    title: 'BeUK — Find Your Way in the United Kingdom.',
     description:
-      'Your compass for professional paths, cultural experiences, and community in the UK. Faster Payments, Stripe, global connections.',
+      'Your guide to professional opportunities, cultural experiences, and community in the UK. Faster Payments, Stripe, global connections.',
     twitter: '@BeUK',
     brandName: 'BeUK',
   },
-}
-
-/** Get active country config (from env var or default to Kenya) */
-export function getCountryConfig(): CountryConfig {
-  const code = (process.env.NEXT_PUBLIC_COUNTRY_CODE as CountryCode) || 'KE'
-  return COUNTRIES[code] ?? COUNTRIES.KE
-}
-
-/** Get all country configs for the landing page selector */
-export function getAllCountries(): CountryConfig[] {
-  return Object.values(COUNTRIES)
 }

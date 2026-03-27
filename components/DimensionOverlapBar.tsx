@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import type { ActiveFilter } from '@/components/DimensionFilters'
 import { DEPTH_SHAPES } from '@/components/WorldMap'
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
+import { haversineKm, fmtDistance, fmtFlightTime, getUtcOffsetMinutes } from '@/lib/geo'
 
 /**
  * DimensionOverlapBar — shared context bar for Agent + Opportunities pages.
@@ -101,41 +102,6 @@ interface OverlapValue {
 }
 
 // ─── Route hop utilities ────────────────────────────────────────────────────
-function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371
-  const toRad = Math.PI / 180
-  const dLat = (lat2 - lat1) * toRad
-  const dLng = (lng2 - lng1) * toRad
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(lat1 * toRad) * Math.cos(lat2 * toRad) * Math.sin(dLng / 2) ** 2
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-}
-
-function fmtDistance(km: number): string {
-  return km >= 1000 ? `${(km / 1000).toFixed(1)}k km` : `${Math.round(km)} km`
-}
-
-function fmtFlightTime(km: number): string {
-  const hours = km / 800
-  if (hours < 1) return `~${Math.round(hours * 60)}min`
-  return hours < 10 ? `~${hours.toFixed(1)}h` : `~${Math.round(hours)}h`
-}
-
-function getUtcOffsetMinutes(tz: string): number {
-  try {
-    const now = new Date()
-    const str = now.toLocaleString('en-US', { timeZone: tz, timeZoneName: 'shortOffset' })
-    const match = str.match(/GMT([+-]\d{1,2}(?::?\d{2})?)/)
-    if (!match) return 0
-    const parts = match[1].replace(':', '').match(/^([+-])(\d{1,2})(\d{2})?$/)
-    if (!parts) return 0
-    const sign = parts[1] === '-' ? -1 : 1
-    return sign * (parseInt(parts[2]) * 60 + parseInt(parts[3] ?? '0'))
-  } catch {
-    return 0
-  }
-}
 
 function fmtTimeDiff(minutes: number): string {
   const abs = Math.abs(minutes)

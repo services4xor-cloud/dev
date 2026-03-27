@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 75 (2026-03-16); Rarity system + performance + mobile fixes
+> Last updated: Session 76 (2026-03-27); Maintenance — vocabulary cleanup, dependency updates, code deduplication
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -16,7 +16,7 @@
 | Core Routes       | 20+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/notifications` `/about` `/pricing` `/contact` `/privacy` `/offline`                                                                                                                                                                                                                                                                                                                      |
 | API routes        | 25+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/identity/photo` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` `/api/exchanges` `/api/exchanges/[id]` `/api/users/[id]` |
 | Library modules   | 20+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, i18n.ts, validation.ts, identity-context.tsx, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| Jest tests        | 361/361 ✅ (24 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Jest tests        | 376/376 ✅ (25 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -28,6 +28,42 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 76: Maintenance — Vocabulary, Dependencies, Code Quality
+
+### Vocabulary Compliance Sweep
+
+- **i18n.ts** — Fixed 150+ legacy value strings across 4 languages (EN, DE, SW, FR): "paths" → "Opportunities"/"Chancen"/"Fursa"/"Opportunités", "compass" → "Discovery", "ventures" → "Experiences"
+- **countries.ts** — Fixed 14 country taglines: removed "paths", "compass", "ventures" from COUNTRY_META descriptions
+- **App pages** — Fixed metadata descriptions in `layout.tsx`, `be/[code]/page.tsx`, `exchange/[id]/page.tsx`, `about/page.tsx`
+- **Components** — Fixed "job titles" → "opportunity titles" in `ExplorerStories.tsx`
+- **Test fixtures** — Renamed "Alice Pioneer" → "Alice Explorer", "Bob Anchor" → "Bob Host" in test files
+
+### Dead Code Removal
+
+- **Deleted `lib/compass.ts`** — 272 lines, entirely unused (zero imports across codebase)
+- **Removed unused functions** — `getCountryConfig()` and `getAllCountries()` from `countries.ts` (never imported)
+- **Removed unused dependency** — `@google/generative-ai` from package.json (never imported, platform uses Anthropic)
+
+### Code Deduplication
+
+- **Extracted shared geo utilities to `lib/geo.ts`** — `haversineKm()`, `fmtDistance()`, `fmtFlightTime()`, `getUtcOffsetMinutes()` were duplicated identically in `CountryDimensions.tsx` and `DimensionOverlapBar.tsx`. Now single source of truth in `lib/geo.ts`.
+
+### Dependency Updates
+
+- **Patch updates** — `@swc/core`, `maplibre-gl` updated to latest within semver range
+- **Audit fix** — Fixed 2 non-breaking vulnerabilities via `npm audit fix`
+- **Remaining 40 vulns** — All in transitive deps (Next.js 14 → picomatch/yaml); require Next.js 16 major upgrade
+
+### Data Verification
+
+- **185 countries** — All verified: no duplicates, no empty arrays, ≥2 languages, ≥2 payments, ≥3 sectors, ≥1 faith, regionally accurate data
+
+### Stats
+
+- Tests: 376/376 (25 suites), TypeScript: 0 errors
 
 ---
 

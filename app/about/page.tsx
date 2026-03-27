@@ -38,7 +38,7 @@ const steps = [
     number: '02',
     title: 'Discover your corridors',
     detail:
-      'The platform maps corridors between countries that align with your profile, surfacing paths other Explorers have walked.',
+      'The platform maps corridors between countries that align with your profile, surfacing opportunities other Explorers have discovered.',
   },
   {
     number: '03',
@@ -61,7 +61,7 @@ export default function AboutPage() {
       <HeroSection
         title="About"
         highlight="Be[X]"
-        description="Be[X] is an identity-first life-routing platform. X is whatever defines you — your country, your tribe, your craft, your faith. We connect people to paths, people, and experiences that match who they truly are."
+        description="Be[X] is an identity-first life-routing platform. X is whatever defines you — your country, your tribe, your craft, your faith. We connect people to opportunities, people, and experiences that match who they truly are."
       />
 
       {/* Mission */}

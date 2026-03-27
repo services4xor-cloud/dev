@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!node) return { title: 'Not Found' }
   return {
     title: node.label,
-    description: `Explore ${node.label} on Be[X] — connect with people, paths, and experiences.`,
+    description: `Explore ${node.label} on Be[X] — connect with people, opportunities, and experiences.`,
   }
 }
 

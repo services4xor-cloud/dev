@@ -237,7 +237,7 @@ const CONTENT: Record<string, ContentDict> = {
     // Discovery page
     'compass.active': 'Your Discovery is active',
     'compass.ready': 'Your Discovery is ready.',
-    'compass.letsFind': "Let's find your path.",
+    'compass.letsFind': "Let's find your way.",
     'compass.stepOf': 'Step {step} of {total}',
     'compass.whereAre': 'Where are you currently based?',
     'compass.currentlyIn': 'Currently in {name}',
@@ -263,9 +263,9 @@ const CONTENT: Record<string, ContentDict> = {
     'compass.pioneer': 'Explorer',
 
     // Country-specific hero
-    'hero.tagline.KE': 'Global Paths, Paid via M-Pesa',
-    'hero.tagline.DE': 'Your Path to Germany',
-    'hero.tagline.CH': 'Your Path to Switzerland',
+    'hero.tagline.KE': 'Global Opportunities, Paid via M-Pesa',
+    'hero.tagline.DE': 'Your Way to Germany',
+    'hero.tagline.CH': 'Your Way to Switzerland',
 
     // Homepage — returning user dashboard
     'home.welcomeBack': 'Welcome back, {name}',
@@ -274,7 +274,7 @@ const CONTENT: Record<string, ContentDict> = {
     'home.exchange': 'Exchange',
     'home.whatNext': 'What to do next',
     'home.browseExchange': 'Browse the Exchange',
-    'home.browseExchangeDesc': 'Find people and paths matched to you',
+    'home.browseExchangeDesc': 'Find people and opportunities matched to you',
     'home.chatPioneers': 'Chat with Explorers',
     'home.chatPioneersDesc': 'Start conversations with your matches',
     'home.refineIdentity': 'Refine Your Identity',
@@ -302,7 +302,7 @@ const CONTENT: Record<string, ContentDict> = {
     'home.focus': 'Focus',
     'home.visitingFrom': 'Visiting from {country}?',
     'home.visitingFromDesc':
-      'Explore the {from} ↔ {to} corridor — paths, agents, and opportunities connecting both countries.',
+      'Explore the {from} ↔ {to} corridor — opportunities, agents, and experiences connecting both countries.',
     'home.viewRoutes': 'View Routes',
     'home.corridorRoute': '{from} → {to} Route',
     'home.corridorRouteDesc': 'Explore your cross-border corridor in Discovery',
@@ -326,26 +326,26 @@ const CONTENT: Record<string, ContentDict> = {
     'exchange.noMatchesDesc': 'Try changing your filters or updating your interests',
     'exchange.setupIdentity': 'Set Up Your Identity First',
     'exchange.setupIdentityDesc':
-      'Select your languages on the homepage to unlock the Exchange and start connecting with people and paths.',
+      'Select your languages on the homepage to unlock the Exchange and start connecting with people and opportunities.',
     'exchange.goDiscovery': 'Go to Discovery',
 
     // World page
     'world.title': 'My World',
     'world.subtitle':
-      'Your network of people, paths, and communities — scored by relevance to your identity.',
+      'Your network of people, opportunities, and communities — scored by relevance to your identity.',
     'world.focus': 'Focus',
     'world.focusDesc': 'Showing your most relevant connections',
     'world.selectNode': 'Select a node',
     'world.selectNodeDesc': 'Click on any node in the graph to see details and take action.',
     'world.viewProfile': 'View Profile',
-    'world.viewPath': 'View Path',
+    'world.viewPath': 'View Opportunity',
     'world.viewCommunity': 'View Community',
     'world.people': 'People',
     'world.paths': 'Opportunities',
     'world.communities': 'Communities',
     'world.setupIdentity': 'Set Up Your Identity First',
     'world.setupIdentityDesc':
-      'Select your languages on the homepage to unlock your World network and start connecting with people, paths, and communities.',
+      'Select your languages on the homepage to unlock your World network and start connecting with people, opportunities, and communities.',
     'world.goDiscovery': 'Go to Discovery',
     'world.you': 'You',
     'world.pioneer': 'Explorer',
@@ -466,20 +466,20 @@ const CONTENT: Record<string, ContentDict> = {
     'about.badge': 'Identity-first life-routing platform',
     'about.heroTitle': 'Work should be for {accent}everyone.{/accent}',
     'about.heroDesc':
-      'BeNetwork is an identity-first life-routing platform for everyone — connecting people to paths, opportunities, and experiences through open trade, fair compensation, and direct connections.',
+      'BeNetwork is an identity-first life-routing platform for everyone — connecting people to opportunities and experiences through open trade, fair compensation, and direct connections.',
     'about.startCompass': 'Start My Discovery',
     'about.postPath': 'Post an Opportunity',
     'about.mission': 'Our Mission',
     'about.missionTitle': 'Define who you are. {accent}Find where you belong.{/accent}',
     'about.missionDesc':
-      'BeNetwork connects everyone to paths, people, and experiences that match their identity. Country, tribe, language, craft, faith — you define it, we route it.',
+      'BeNetwork connects everyone to opportunities, people, and experiences that match their identity. Country, tribe, language, craft, faith — you define it, we route it.',
     'about.missionP1':
       'People everywhere deserve direct access to opportunities that match who they are. BeNetwork removes intermediaries and gatekeepers, building corridors that connect identities across 50+ countries.',
     'about.missionP2':
       'We connect Explorers directly with Hosts across 50+ countries. Payments flow through M-Pesa, Flutterwave, and local rails — not through foreign banks. Routes are built on real visa corridors, not wishful thinking.',
     'about.howItWorks': 'How It Works',
     'about.values': 'Our Values',
-    'about.valuesTitle': 'Values that guide every path',
+    'about.valuesTitle': 'Values that guide every journey',
     'about.valuesSubtitle': 'What We Stand For',
     'about.team': 'Our Team',
     'about.sectors': 'Industries',
@@ -491,7 +491,7 @@ const CONTENT: Record<string, ContentDict> = {
     'about.impactDesc':
       'Our community arm. Supporting conservation workers, local guides, and cultural educators across East Africa. Every booking through {brand} contributes.',
     'about.learnImpact': 'Learn about {name}',
-    'about.ctaTitle': 'Ready to find your path?',
+    'about.ctaTitle': 'Ready to find your opportunity?',
     'about.ctaDesc':
       "Start your Discovery. Tell us where you are and where you want to go. We'll build your route.",
 
@@ -504,7 +504,7 @@ const CONTENT: Record<string, ContentDict> = {
     'contact.emailPlaceholder': 'you@example.com',
     'contact.subject': 'Subject',
     'contact.subjectPlaceholder': 'Select a topic...',
-    'contact.subjectPath': 'Path posting help',
+    'contact.subjectPath': 'Opportunity posting help',
     'contact.subjectPayment': 'Payment issue',
     'contact.subjectAccount': 'Account problem',
     'contact.subjectScam': 'Report a scam',
@@ -627,10 +627,10 @@ const CONTENT: Record<string, ContentDict> = {
     'business.badge': 'Legal Entity',
     'business.subtitle': 'A Family. A Mission. A Structure.',
     'business.heroDesc':
-      'The legal and operational home of the BeNetwork platform and all Be[Country] ventures. Registered in Kenya. Built for the world.',
+      'The legal and operational home of the BeNetwork platform and all Be[Country] experiences. Registered in Kenya. Built for the world.',
     'business.missionTitle': 'Our Mission',
     'business.missionDesc':
-      'Dignified work and opportunity for everyone, everywhere. We connect Explorers (people seeking their path) with Hosts (employers and partners) across borders, currencies, and cultures — starting in Kenya, scaling globally.',
+      'Dignified work and opportunity for everyone, everywhere. We connect Explorers (people seeking their way) with Hosts (employers and partners) across borders, currencies, and cultures — starting in Kenya, scaling globally.',
     'business.legalTitle': 'Legal Status',
     'business.incorporation': 'Incorporation',
     'business.certOfInc': 'Certificate of Incorporation',
@@ -685,10 +685,10 @@ const CONTENT: Record<string, ContentDict> = {
     'fashion.missionQuote':
       'Fashion that empowers. Every model is an Explorer. Every garment tells a story.',
     'fashion.missionDesc':
-      "{brand} Fashion exists because Africa's creative talent deserves global opportunity — without the exploitation, without the gatekeepers. We build safe, paid, professional pathways from Kenya to the world.",
-    'fashion.pathsTitle': 'Three Paths in Fashion',
+      "{brand} Fashion exists because Africa's creative talent deserves global opportunity — without the exploitation, without the gatekeepers. We build safe, paid, professional opportunities from Kenya to the world.",
+    'fashion.pathsTitle': 'Three Opportunities in Fashion',
     'fashion.pathsDesc':
-      'Whether you walk the runway, sketch the collection, or capture the image — there is a path with your name on it.',
+      'Whether you walk the runway, sketch the collection, or capture the image — there is an opportunity with your name on it.',
     'fashion.modelTitle': 'Model',
     'fashion.modelDesc':
       'Professional photoshoots, brand campaigns, catalog work. Safe. Paid. Professional. Every engagement on your terms.',
@@ -702,12 +702,12 @@ const CONTENT: Record<string, ContentDict> = {
     'fashion.protectionsDesc': 'Every Explorer is protected. Full stop.',
     'fashion.openPaths': 'Open Fashion Opportunities',
     'fashion.openPathsDesc': 'Paid opportunities waiting for the right Explorer',
-    'fashion.viewAll': 'View all paths →',
+    'fashion.viewAll': 'View all opportunities →',
     'fashion.apply': 'Apply',
     'fashion.partnersTitle': 'Partner Hosts',
     'fashion.partnersDesc':
       'Organisations that trust {brand} Fashion to connect them with verified, talented Explorers',
-    'fashion.ctaTitle': 'Ready to walk your path?',
+    'fashion.ctaTitle': 'Ready to start your journey?',
     'fashion.ctaDesc':
       'Join {brand} Fashion as an Explorer. Set your rates. Choose your shoots. Build your career with dignity.',
     'fashion.exploreMedia': 'Explore Media Division →',
@@ -726,14 +726,14 @@ const CONTENT: Record<string, ContentDict> = {
       'These clients have budgets. They want genuine, locally-created content — not stock footage. And they struggle to find reliable, talented creators in Kenya.',
     'media.opportunityGap': 'That is the gap {brand} Media exists to fill.',
     'media.statPlatforms': 'Platforms Reached',
-    'media.statPaths': 'Media Paths',
+    'media.statPaths': 'Media Opportunities',
     'media.statPayments': 'Local Payments',
     'media.whoHiring': 'Who Is Hiring?',
-    'media.pathsTitle': 'Media Paths Available',
+    'media.pathsTitle': 'Media Opportunities Available',
     'media.pathsDesc': 'Every creative skill has a market. Find where your talent earns.',
     'media.featuredTitle': 'Featured Projects',
     'media.featuredDesc':
-      "Real commissions from real Hosts. These paths are open — apply and tell Africa's story.",
+      "Real commissions from real Hosts. These opportunities are open — apply and tell Africa's story.",
     'media.applyNow': 'Apply Now',
     'media.socialTitle': 'Social Media Automation',
     'media.socialTagline': 'Create content + we auto-distribute to 9 platforms',
@@ -761,9 +761,9 @@ const CONTENT: Record<string, ContentDict> = {
     'offerings.titleDefault': 'Where Do You Want {accent}to Go?{/accent}',
     'offerings.titleDest': 'Offerings in {accent}{country}{/accent}',
     'offerings.descDefault':
-      'Select a destination below, or browse recommended routes based on your location. Travel, work, or build — your path starts here.',
+      'Select a destination below, or browse recommended routes based on your location. Travel, work, or build — your journey starts here.',
     'offerings.descDest':
-      'Explore what {country} has to offer — experiences, professional paths, and business opportunities tailored to your route.',
+      'Explore what {country} has to offer — experiences, professional opportunities, and business opportunities tailored to your route.',
     'offerings.all': 'All',
     'offerings.recommended': 'Recommended Destinations from {country}',
     'offerings.explore': 'Explore',
@@ -772,7 +772,7 @@ const CONTENT: Record<string, ContentDict> = {
     'offerings.ecoTourism': 'Eco-Tourism',
     'offerings.professionalSectors': 'Professional Sectors in {country}',
     'offerings.sectors': '{count} sectors',
-    'offerings.paths': '{count}+ paths',
+    'offerings.paths': '{count}+ opportunities',
     'offerings.tradeCorridors': 'Trade Corridors',
     'offerings.active': '{count} active',
     'offerings.keySectors': 'Key Sectors',
@@ -804,7 +804,7 @@ const CONTENT: Record<string, ContentDict> = {
     'beCountry.popularDesc': 'What Explorers from {country} are looking for right now.',
     'beCountry.crossTitle': 'Looking for opportunities beyond {country}?',
     'beCountry.crossDesc':
-      'Discovery finds the best routes for you — matching your skills to opportunities across borders, and helping you navigate visa requirements, payment methods, and the fastest path to your next exchange.',
+      'Discovery finds the best routes for you — matching your skills to opportunities across borders, and helping you navigate visa requirements, payment methods, and the fastest way to your next exchange.',
     'beCountry.openCompass': 'Open Discovery',
     'beCountry.allVentures': 'All Experiences',
     'beCountry.exploreOther': 'Explore other Be[Country] platforms:',
@@ -1021,7 +1021,7 @@ const CONTENT: Record<string, ContentDict> = {
     'anchor.compassRecs': 'Discovery Recommendations',
     'anchor.compassRecsDesc': 'Explorers matching your open opportunities',
     'anchor.invite': 'Invite',
-    'anchor.pathPerformance': 'Path Performance',
+    'anchor.pathPerformance': 'Opportunity Performance',
 
     // Agent Dashboard
     'agentDash.tabDemand': 'Demand Feed',
@@ -1047,7 +1047,8 @@ const CONTENT: Record<string, ContentDict> = {
     'agentDash.networkSize': 'Network Size',
     'agentDash.workers': '{count} workers',
     'agentDash.successfulPlacements': 'Successful Placements',
-    'agentDash.noPlacementsYet': 'No placements yet. Keep forwarding paths to your network!',
+    'agentDash.noPlacementsYet':
+      'No placements yet. Keep forwarding opportunities to your network!',
     'agentDash.sent': 'Sent',
     'agentDash.clicked': 'Clicked',
     'agentDash.signedUp': 'Signed Up',
@@ -1060,18 +1061,18 @@ const CONTENT: Record<string, ContentDict> = {
     'postPath.stepOf': 'Step {step} of 6',
     'postPath.back': 'Back',
     'postPath.continue': 'Continue',
-    'postPath.previewPath': 'Preview Path',
+    'postPath.previewPath': 'Preview Opportunity',
     // Step 1
     'postPath.nameYourPath': 'Name your Opportunity',
     'postPath.nameDesc': 'Give it a title that resonates — Explorers connect with what they feel.',
     'postPath.pathTitle': 'Opportunity Title',
     'postPath.pathTitlePlaceholder': 'e.g. Senior Wildlife Guide — Big Five Specialist',
     'postPath.pathTitleHint': 'Be specific. Explorers scan fast — a precise title wins.',
-    'postPath.pathCategory': 'Path Category',
-    'postPath.pathType': 'Path Type',
-    'postPath.fullPath': 'Full Path',
-    'postPath.partPath': 'Part Path',
-    'postPath.seasonalPath': 'Seasonal Path',
+    'postPath.pathCategory': 'Opportunity Category',
+    'postPath.pathType': 'Opportunity Type',
+    'postPath.fullPath': 'Full-Time',
+    'postPath.partPath': 'Part-Time',
+    'postPath.seasonalPath': 'Seasonal',
     'postPath.location': 'Location',
     'postPath.locationPlaceholder': 'e.g. Laikipia, Kenya',
     'postPath.remotePossible': 'Remote Possible?',
@@ -1176,7 +1177,7 @@ const CONTENT: Record<string, ContentDict> = {
     'admin.verifiedLabel': '✓ Verified',
     'admin.pendingLabel': '⚠ Pending',
     'admin.verify': 'Verify',
-    'admin.pathTitle': 'Path Title',
+    'admin.pathTitle': 'Opportunity Title',
     'admin.matchAvg': 'Match Avg',
     'admin.status': 'Status',
     'admin.posted': 'Posted',
@@ -1257,7 +1258,7 @@ const CONTENT: Record<string, ContentDict> = {
     'exchange.card.craft': 'Craft',
     'exchange.card.skillsNeeded': 'Skills needed',
     'exchange.card.connectChat': '💬 Connect & Chat',
-    'exchange.card.viewPath': 'View Path →',
+    'exchange.card.viewPath': 'View Opportunity →',
 
     // Cookie Consent
     'cookie.title': 'We respect your privacy',
@@ -1456,7 +1457,7 @@ const CONTENT: Record<string, ContentDict> = {
     'reach.canHost': 'Can Host',
     'reach.canHost.desc': 'Can provide accommodation or workspace for visitors',
     'reach.canInvest': 'Can Invest',
-    'reach.canInvest.desc': 'Has resources to invest in ventures or partnerships',
+    'reach.canInvest.desc': 'Has resources to invest in experiences or partnerships',
     'reach.digitalOnly': 'Digital Only',
     'reach.digitalOnly.desc': 'Available for remote collaboration exclusively',
     'reach.canMentor': 'Can Mentor',
@@ -1572,7 +1573,7 @@ const CONTENT: Record<string, ContentDict> = {
     'payments.secure': 'Alle Transaktionen sind sicher und transparent',
 
     // Country-specific hero
-    'hero.tagline.KE': 'Globale Wege, bezahlt via M-Pesa',
+    'hero.tagline.KE': 'Globale Chancen, bezahlt via M-Pesa',
     'hero.tagline.DE': 'Dein Weg nach Deutschland',
     'hero.tagline.CH': 'Dein Weg in die Schweiz',
 
@@ -1583,7 +1584,7 @@ const CONTENT: Record<string, ContentDict> = {
     'home.exchange': 'Austausch',
     'home.whatNext': 'Was als nächstes',
     'home.browseExchange': 'Austausch durchsuchen',
-    'home.browseExchangeDesc': 'Finde Leute und Wege, die zu dir passen',
+    'home.browseExchangeDesc': 'Finde Leute und Chancen, die zu dir passen',
     'home.chatPioneers': 'Mit Entdeckern chatten',
     'home.chatPioneersDesc': 'Starte Gespräche mit deinen Matches',
     'home.refineIdentity': 'Identität verfeinern',
@@ -1593,7 +1594,7 @@ const CONTENT: Record<string, ContentDict> = {
     'home.seeAll': 'Alle anzeigen',
     'home.sharedLanguages': 'Gemeinsame Sprachen',
     'home.startConversation': 'Gespräch starten',
-    'home.pathsForYou': 'Wege für dich',
+    'home.pathsForYou': 'Chancen für dich',
     'home.pathsForYouDesc': 'Möglichkeiten passend zu deinen Interessen und Fähigkeiten',
     'home.countries': 'Länder',
     'home.youSpeak': 'du sprichst',
@@ -1611,7 +1612,7 @@ const CONTENT: Record<string, ContentDict> = {
     'home.focus': 'Fokus',
     'home.visitingFrom': 'Besuch aus {country}?',
     'home.visitingFromDesc':
-      'Erkunde den {from} ↔ {to} Korridor — Wege, Agenten und Möglichkeiten, die beide Länder verbinden.',
+      'Erkunde den {from} ↔ {to} Korridor — Chancen, Agenten und Möglichkeiten, die beide Länder verbinden.',
     'home.viewRoutes': 'Routen anzeigen',
     'home.corridorRoute': '{from} → {to} Route',
     'home.corridorRouteDesc': 'Erkunde deinen grenzüberschreitenden Korridor in der Discovery',
@@ -1621,11 +1622,11 @@ const CONTENT: Record<string, ContentDict> = {
 
     // Exchange-Seite
     'exchange.title': 'Austausch',
-    'exchange.subtitle': 'Entdecker und Wege passend zu deiner Identität',
+    'exchange.subtitle': 'Entdecker und Chancen passend zu deiner Identität',
     'exchange.home': 'Startseite',
     'exchange.all': 'Alle',
     'exchange.people': 'Personen',
-    'exchange.paths': 'Wege',
+    'exchange.paths': 'Chancen',
     'exchange.allSectors': 'Alle Branchen',
     'exchange.focus': 'Fokus',
     'exchange.focusDesc': 'Zeigt Ergebnisse gefiltert nach deinem Fokusthema',
@@ -1636,50 +1637,50 @@ const CONTENT: Record<string, ContentDict> = {
       'Versuche deine Filter zu ändern oder deine Interessen zu aktualisieren',
     'exchange.setupIdentity': 'Richte zuerst deine Identität ein',
     'exchange.setupIdentityDesc':
-      'Wähle deine Sprachen auf der Startseite, um den Austausch freizuschalten und dich mit Personen und Wegen zu verbinden.',
+      'Wähle deine Sprachen auf der Startseite, um den Austausch freizuschalten und dich mit Personen und Chancen zu verbinden.',
     'exchange.goDiscovery': 'Zur Entdeckung',
 
     // Welt-Seite
     'world.title': 'Meine Welt',
     'world.subtitle':
-      'Dein Netzwerk aus Personen, Wegen und Gemeinschaften — bewertet nach Relevanz für deine Identität.',
+      'Dein Netzwerk aus Personen, Chancen und Gemeinschaften — bewertet nach Relevanz für deine Identität.',
     'world.focus': 'Fokus',
     'world.focusDesc': 'Zeigt deine relevantesten Verbindungen',
     'world.selectNode': 'Wähle einen Knoten',
     'world.selectNodeDesc':
       'Klicke auf einen Knoten im Graphen, um Details zu sehen und Aktionen durchzuführen.',
     'world.viewProfile': 'Profil ansehen',
-    'world.viewPath': 'Weg ansehen',
+    'world.viewPath': 'Chance ansehen',
     'world.viewCommunity': 'Gemeinschaft ansehen',
     'world.people': 'Personen',
-    'world.paths': 'Wege',
+    'world.paths': 'Chancen',
     'world.communities': 'Gemeinschaften',
     'world.setupIdentity': 'Richte zuerst deine Identität ein',
     'world.setupIdentityDesc':
-      'Wähle deine Sprachen auf der Startseite, um dein Welt-Netzwerk freizuschalten und dich mit Personen, Wegen und Gemeinschaften zu verbinden.',
+      'Wähle deine Sprachen auf der Startseite, um dein Welt-Netzwerk freizuschalten und dich mit Personen, Chancen und Gemeinschaften zu verbinden.',
     'world.goDiscovery': 'Zur Entdeckung',
     'world.you': 'Du',
-    'world.pioneer': 'Pionier',
-    'world.path': 'Weg',
+    'world.pioneer': 'Entdecker',
+    'world.path': 'Chance',
     'world.community': 'Gemeinschaft',
 
     // Discovery-Seite
     'compass.title': 'Routen-Discovery',
     'compass.pageHeadline': 'Finde deine Route',
     'compass.pageSubtitle':
-      'Entdecke die besten Korridore für deine Fähigkeiten, Sprachen und Ziele. Jede Route verbindet dich mit Wegen, Entdeckern und Möglichkeiten im Ausland.',
+      'Entdecke die besten Korridore für deine Fähigkeiten, Sprachen und Ziele. Jede Route verbindet dich mit Chancen, Entdeckern und Erfahrungen im Ausland.',
     'compass.yourOrigin': 'Dein Ausgangspunkt',
     'compass.routesFrom': 'Routen von {country}',
     'compass.corridors': '{count} Korridore',
     'compass.routesTo': 'Routen nach {country}',
     'compass.visaInfo': 'Visum-Info',
     'compass.paymentMethods': 'Zahlungsmethoden',
-    'compass.explorePaths': 'Wege erkunden',
+    'compass.explorePaths': 'Chancen erkunden',
     'compass.findPioneers': 'Entdecker finden',
     'compass.viewGate': '{country} anzeigen',
     'compass.noRoutes': 'Noch keine Routen kartiert',
     'compass.noRoutesDesc':
-      'Routen für {country} werden kartiert. In der Zwischenzeit erkunde Wege im Austausch oder verbinde dich mit Entdeckern.',
+      'Routen für {country} werden kartiert. In der Zwischenzeit erkunde Chancen im Austausch oder verbinde dich mit Entdeckern.',
     'compass.exploreExchange': 'Austausch erkunden',
     'compass.directRoute': 'Direkte Route',
     'compass.partnerRoute': 'Partner-Route',
@@ -1884,7 +1885,7 @@ const CONTENT: Record<string, ContentDict> = {
     'about.badge': 'Identitäts-basierte Lebensrouting-Plattform',
     'about.heroTitle': 'Arbeit sollte für {accent}alle{/accent} sein.',
     'about.heroDesc':
-      'BeNetwork ist eine identitätsbasierte Lebensrouting-Plattform für alle — sie verbindet Menschen mit Pfaden, Möglichkeiten und Erfahrungen durch offenen Handel, faire Vergütung und direkte Verbindungen.',
+      'BeNetwork ist eine identitätsbasierte Lebensrouting-Plattform für alle — sie verbindet Menschen mit Chancen und Erfahrungen durch offenen Handel, faire Vergütung und direkte Verbindungen.',
     'about.startCompass': 'Meine Discovery starten',
     'about.postPath': 'Eine Chance posten',
     'about.mission': 'Unsere Mission',
@@ -1905,7 +1906,7 @@ const CONTENT: Record<string, ContentDict> = {
     'about.impactDesc':
       'Unser Community-Arm. Unterstützt Naturschützer, lokale Guides und kulturelle Pädagogen in Ostafrika. Jede Buchung über {brand} trägt bei.',
     'about.learnImpact': 'Mehr über {name} erfahren',
-    'about.ctaTitle': 'Bereit, deinen Pfad zu finden?',
+    'about.ctaTitle': 'Bereit, deine Chance zu finden?',
     'about.ctaDesc':
       'Starte deine Discovery. Sag uns, wo du bist und wohin du willst. Wir bauen deine Route.',
 
@@ -1918,7 +1919,7 @@ const CONTENT: Record<string, ContentDict> = {
     'contact.emailPlaceholder': 'du@beispiel.de',
     'contact.subject': 'Betreff',
     'contact.subjectPlaceholder': 'Thema wählen...',
-    'contact.subjectPath': 'Hilfe beim Pfad-Posting',
+    'contact.subjectPath': 'Hilfe beim Chancen-Posting',
     'contact.subjectPayment': 'Zahlungsproblem',
     'contact.subjectAccount': 'Kontoproblem',
     'contact.subjectScam': 'Betrug melden',
@@ -2099,10 +2100,10 @@ const CONTENT: Record<string, ContentDict> = {
     'fashion.missionQuote':
       'Mode, die stärkt. Jedes Model ist ein Entdecker. Jedes Kleidungsstück erzählt eine Geschichte.',
     'fashion.missionDesc':
-      '{brand} Fashion existiert, weil Afrikas kreatives Talent globale Chancen verdient — ohne Ausbeutung, ohne Türsteher. Wir bauen sichere, bezahlte, professionelle Wege von Kenia in die Welt.',
-    'fashion.pathsTitle': 'Drei Wege in der Mode',
+      '{brand} Fashion existiert, weil Afrikas kreatives Talent globale Chancen verdient — ohne Ausbeutung, ohne Türsteher. Wir bauen sichere, bezahlte, professionelle Möglichkeiten von Kenia in die Welt.',
+    'fashion.pathsTitle': 'Drei Chancen in der Mode',
     'fashion.pathsDesc':
-      'Ob du über den Laufsteg gehst, die Kollektion entwirfst oder das Bild einfängst — es gibt einen Weg mit deinem Namen.',
+      'Ob du über den Laufsteg gehst, die Kollektion entwirfst oder das Bild einfängst — es gibt eine Chance mit deinem Namen.',
     'fashion.modelTitle': 'Model',
     'fashion.modelDesc':
       'Professionelle Fotoshootings, Markenkampagnen, Katalogarbeit. Sicher. Bezahlt. Professionell. Jedes Engagement zu deinen Bedingungen.',
@@ -2121,7 +2122,7 @@ const CONTENT: Record<string, ContentDict> = {
     'fashion.partnersTitle': 'Partner-Hosts',
     'fashion.partnersDesc':
       'Organisationen, die {brand} Fashion vertrauen, um sie mit verifizierten, talentierten Entdeckern zu verbinden',
-    'fashion.ctaTitle': 'Bereit, deinen Weg zu gehen?',
+    'fashion.ctaTitle': 'Bereit, deine Reise zu starten?',
     'fashion.ctaDesc':
       'Werde {brand} Fashion Entdecker. Setze deine Preise. Wähle deine Shoots. Baue deine Karriere mit Würde auf.',
     'fashion.exploreMedia': 'Media-Division erkunden →',
@@ -2140,10 +2141,10 @@ const CONTENT: Record<string, ContentDict> = {
       'Diese Kunden haben Budgets. Sie wollen echte, lokal erstellte Inhalte — keine Stock-Aufnahmen. Und sie haben Schwierigkeiten, zuverlässige, talentierte Kreative in Kenia zu finden.',
     'media.opportunityGap': 'Das ist die Lücke, die {brand} Media füllt.',
     'media.statPlatforms': 'Plattformen erreicht',
-    'media.statPaths': 'Media-Chancen',
+    'media.statPaths': 'Media-Möglichkeiten',
     'media.statPayments': 'Lokale Zahlungen',
     'media.whoHiring': 'Wer stellt ein?',
-    'media.pathsTitle': 'Verfügbare Media-Chancen',
+    'media.pathsTitle': 'Verfügbare Media-Möglichkeiten',
     'media.pathsDesc': 'Jede kreative Fähigkeit hat einen Markt. Finde, wo dein Talent verdient.',
     'media.featuredTitle': 'Ausgewählte Projekte',
     'media.featuredDesc':
@@ -2175,9 +2176,9 @@ const CONTENT: Record<string, ContentDict> = {
     'offerings.titleDefault': 'Wohin möchtest du {accent}gehen?{/accent}',
     'offerings.titleDest': 'Angebote in {accent}{country}{/accent}',
     'offerings.descDefault':
-      'Wähle unten ein Ziel aus oder durchstöbere empfohlene Routen basierend auf deinem Standort. Reisen, arbeiten oder aufbauen — dein Weg beginnt hier.',
+      'Wähle unten ein Ziel aus oder durchstöbere empfohlene Routen basierend auf deinem Standort. Reisen, arbeiten oder aufbauen — deine Reise beginnt hier.',
     'offerings.descDest':
-      'Entdecke, was {country} zu bieten hat — Erlebnisse, berufliche Pfade und Geschäftsmöglichkeiten für deine Route.',
+      'Entdecke, was {country} zu bieten hat — Erlebnisse, berufliche Chancen und Geschäftsmöglichkeiten für deine Route.',
     'offerings.all': 'Alle',
     'offerings.recommended': 'Empfohlene Ziele ab {country}',
     'offerings.explore': 'Erkunden',
@@ -2186,7 +2187,7 @@ const CONTENT: Record<string, ContentDict> = {
     'offerings.ecoTourism': 'Ökotourismus',
     'offerings.professionalSectors': 'Berufliche Sektoren in {country}',
     'offerings.sectors': '{count} Sektoren',
-    'offerings.paths': '{count}+ Pfade',
+    'offerings.paths': '{count}+ Chancen',
     'offerings.tradeCorridors': 'Handelskorridore',
     'offerings.active': '{count} aktiv',
     'offerings.keySectors': 'Schlüsselsektoren',
@@ -2218,7 +2219,7 @@ const CONTENT: Record<string, ContentDict> = {
     'beCountry.popularDesc': 'Wonach Entdecker aus {country} gerade suchen.',
     'beCountry.crossTitle': 'Suchst du Chancen jenseits von {country}?',
     'beCountry.crossDesc':
-      'Discovery findet die besten Routen für dich — es gleicht deine Fähigkeiten mit Möglichkeiten über Grenzen hinweg ab und hilft dir bei Visa-Anforderungen, Zahlungsmethoden und dem schnellsten Weg zu deinem nächsten Exchange.',
+      'Discovery findet die besten Routen für dich — es gleicht deine Fähigkeiten mit Möglichkeiten über Grenzen hinweg ab und hilft dir bei Visa-Anforderungen, Zahlungsmethoden und der schnellsten Route zu deinem nächsten Exchange.',
     'beCountry.openCompass': 'Discovery öffnen',
     'beCountry.allVentures': 'Alle Experiences',
     'beCountry.exploreOther': 'Entdecke andere Be[Country]-Plattformen:',
@@ -2436,7 +2437,7 @@ const CONTENT: Record<string, ContentDict> = {
     'anchor.compassRecs': 'Discovery-Empfehlungen',
     'anchor.compassRecsDesc': 'Entdecker, die zu Ihren offenen Chancen passen',
     'anchor.invite': 'Einladen',
-    'anchor.pathPerformance': 'Path-Performance',
+    'anchor.pathPerformance': 'Chancen-Performance',
 
     // Agent Dashboard
     'agentDash.tabDemand': 'Nachfrage-Feed',
@@ -2463,7 +2464,7 @@ const CONTENT: Record<string, ContentDict> = {
     'agentDash.workers': '{count} Arbeiter',
     'agentDash.successfulPlacements': 'Erfolgreiche Vermittlungen',
     'agentDash.noPlacementsYet':
-      'Noch keine Vermittlungen. Leiten Sie weiter Paths an Ihr Netzwerk weiter!',
+      'Noch keine Vermittlungen. Leiten Sie weiter Chancen an Ihr Netzwerk weiter!',
     'agentDash.sent': 'Gesendet',
     'agentDash.clicked': 'Geklickt',
     'agentDash.signedUp': 'Registriert',
@@ -2656,8 +2657,8 @@ const CONTENT: Record<string, ContentDict> = {
     'discovery.nav.skip': 'Überspringen',
 
     // Exchange Card
-    'exchange.card.pioneer': 'Pionier',
-    'exchange.card.path': 'Weg',
+    'exchange.card.pioneer': 'Entdecker',
+    'exchange.card.path': 'Chance',
     'exchange.card.explorer': 'Entdecker',
     'exchange.card.host': 'Gastgeber',
     'exchange.card.scorePerfect': 'Perfekt',
@@ -2674,7 +2675,7 @@ const CONTENT: Record<string, ContentDict> = {
     'exchange.card.craft': 'Handwerk',
     'exchange.card.skillsNeeded': 'Benötigte Fähigkeiten',
     'exchange.card.connectChat': '💬 Verbinden & Chatten',
-    'exchange.card.viewPath': 'Weg ansehen →',
+    'exchange.card.viewPath': 'Chance ansehen →',
 
     // Cookie Consent
     'cookie.title': 'Wir respektieren Ihre Privatsphäre',
@@ -2830,7 +2831,7 @@ const CONTENT: Record<string, ContentDict> = {
     'me.headline': 'Überschrift',
     'me.headlinePlaceholder': 'Kurze Vorstellung über dich...',
     'me.pioneerType': 'Explorer-Typ',
-    'me.pioneerTypeDescription': 'Was beschreibt deinen Weg am besten',
+    'me.pioneerTypeDescription': 'Was beschreibt deine Reise am besten',
     'me.experience': 'Berufserfahrung (Jahre)',
     'me.experiencePlaceholder': 'z.B. 5',
     'me.externalProfiles': 'Externe Profile',
@@ -3108,7 +3109,7 @@ const CONTENT: Record<string, ContentDict> = {
     'about.badge': 'Jukwaa la kuongoza maisha kwa utambulisho',
     'about.heroTitle': 'Kazi inapaswa kuwa ya {accent}kila mtu.{/accent}',
     'about.heroDesc':
-      'BeNetwork ni jukwaa la kuongoza maisha kwa utambulisho kwa kila mtu — linaunganisha watu na njia, fursa, na uzoefu kupitia biashara huru, malipo ya haki, na uhusiano wa moja kwa moja.',
+      'BeNetwork ni jukwaa la kuongoza maisha kwa utambulisho kwa kila mtu — linaunganisha watu na fursa na uzoefu kupitia biashara huru, malipo ya haki, na uhusiano wa moja kwa moja.',
     'about.startCompass': 'Anza Ugunduzi Wangu',
     'about.postPath': 'Weka Fursa',
     'about.mission': 'Misheni Yetu',
@@ -3401,7 +3402,7 @@ const CONTENT: Record<string, ContentDict> = {
     'offerings.descDefault':
       'Chagua marudio hapa chini, au vinjari njia zinazopendekezwa kulingana na mahali pako. Safiri, fanya kazi, au jenga — njia yako inaanza hapa.',
     'offerings.descDest':
-      'Chunguza {country} ina nini cha kutoa — matembezi, njia za kitaalamu, na fursa za biashara zinazofaa njia yako.',
+      'Chunguza {country} ina nini cha kutoa — matembezi, fursa za kitaalamu, na fursa za biashara zinazofaa njia yako.',
     'offerings.all': 'Zote',
     'offerings.recommended': 'Maeneo Yanayopendekezwa kutoka {country}',
     'offerings.explore': 'Chunguza',
@@ -3410,7 +3411,7 @@ const CONTENT: Record<string, ContentDict> = {
     'offerings.ecoTourism': 'Utalii wa Kiikolojia',
     'offerings.professionalSectors': 'Sekta za Kitaalamu katika {country}',
     'offerings.sectors': 'sekta {count}',
-    'offerings.paths': 'njia {count}+',
+    'offerings.paths': 'fursa {count}+',
     'offerings.tradeCorridors': 'Korido za Biashara',
     'offerings.active': '{count} hai',
     'offerings.keySectors': 'Sekta Kuu',
@@ -3436,7 +3437,7 @@ const CONTENT: Record<string, ContentDict> = {
     'beCountry.payDesc': 'Tunasaidia njia za malipo ambazo nchi yako inaamini.',
     'beCountry.sectorsTitle': 'Sekta Zinazoangaziwa katika {country}',
     'beCountry.sectorsDesc': 'Gundua sekta zinazoendelea zaidi sasa hivi.',
-    'beCountry.openPaths': 'paths wazi',
+    'beCountry.openPaths': 'fursa wazi',
     'beCountry.partner': 'Mshirika: {name}',
     'beCountry.popularTitle': 'Utafutaji Maarufu',
     'beCountry.popularDesc': 'Wavumbuzi kutoka {country} wanatafuta nini sasa hivi.',
@@ -3826,8 +3827,8 @@ const CONTENT: Record<string, ContentDict> = {
     'admin.setupGuides': 'Miongozo ya Usanidi',
 
     // Exchange Card
-    'exchange.card.pioneer': 'Mtaalamu',
-    'exchange.card.path': 'Njia',
+    'exchange.card.pioneer': 'Mgunduzi',
+    'exchange.card.path': 'Fursa',
     'exchange.card.explorer': 'Mgunduzi',
     'exchange.card.host': 'Mwenyeji',
     'exchange.card.scorePerfect': 'Kamili',
@@ -3844,7 +3845,7 @@ const CONTENT: Record<string, ContentDict> = {
     'exchange.card.craft': 'Ufundi',
     'exchange.card.skillsNeeded': 'Ujuzi unaohitajika',
     'exchange.card.connectChat': '💬 Ungana & Zungumza',
-    'exchange.card.viewPath': 'Tazama Njia →',
+    'exchange.card.viewPath': 'Tazama Fursa →',
 
     // Cookie Consent
     'cookie.title': 'Tunaheshimu faragha yako',
@@ -4159,7 +4160,7 @@ const CONTENT: Record<string, ContentDict> = {
     'home.exchange': 'Kubadilishana',
     'home.whatNext': 'Nini cha kufanya sasa',
     'home.browseExchange': 'Vinjari Kubadilishana',
-    'home.browseExchangeDesc': 'Tafuta watu na njia zinazolingana nawe',
+    'home.browseExchangeDesc': 'Tafuta watu na fursa zinazolingana nawe',
     'home.chatPioneers': 'Zungumza na Wavumbuzi',
     'home.chatPioneersDesc': 'Anza mazungumzo na wanaolingana nawe',
     'home.refineIdentity': 'Boresha Utambulisho Wako',
@@ -4445,7 +4446,7 @@ const CONTENT: Record<string, ContentDict> = {
     'auth.createAccount': 'Créez votre compte',
     'auth.freeForever': 'Gratuit pour toujours. Pas de carte de crédit.',
     'auth.iAmA': 'Je suis un...',
-    'auth.findMyPath': 'Trouver mon chemin',
+    'auth.findMyPath': 'Trouver mon opportunité',
     'auth.openPathsTalent': 'Ouvrir des Opportunités pour les talents',
     'auth.continueAs': 'Continuer en tant que {role} →',
     'auth.back': '← Retour',
@@ -4489,7 +4490,7 @@ const CONTENT: Record<string, ContentDict> = {
     'ventures.creativeDesc': 'Art, médias, mode',
     'ventures.communityDesc': 'ONG, enseignement, bénévolat',
     'ventures.curatedForRoute': 'Sélectionné pour votre itinéraire',
-    'ventures.openPaths': 'Chemins Ouverts.',
+    'ventures.openPaths': 'Opportunités Ouvertes.',
     'ventures.realVentures': 'Expériences Réelles.',
     'ventures.chapterStarts': 'Votre Exchange Commence Ici.',
     'ventures.showAll': 'Afficher toutes les expériences',
@@ -4508,7 +4509,7 @@ const CONTENT: Record<string, ContentDict> = {
     'ventures.perPerson': '/ personne',
     'ventures.highSeason': 'Haute saison',
     'ventures.explorerVentures': 'Expériences Explorateur',
-    'ventures.featuredPaths': 'Chemins en vedette',
+    'ventures.featuredPaths': 'Opportunités en vedette',
     'ventures.open': '{count} ouvert{s}',
 
     // Onboarding
@@ -4590,9 +4591,9 @@ const CONTENT: Record<string, ContentDict> = {
     'compass.pioneer': 'Explorateur',
 
     // Country-specific hero
-    'hero.tagline.KE': 'Chemins mondiaux, payés via M-Pesa',
-    'hero.tagline.DE': "Votre Chemin vers l'Allemagne",
-    'hero.tagline.CH': 'Votre Chemin vers la Suisse',
+    'hero.tagline.KE': 'Opportunités mondiales, payées via M-Pesa',
+    'hero.tagline.DE': "Votre Route vers l'Allemagne",
+    'hero.tagline.CH': 'Votre Route vers la Suisse',
 
     // Homepage — returning user dashboard
     'home.welcomeBack': 'Bon retour, {name}',
@@ -4601,7 +4602,7 @@ const CONTENT: Record<string, ContentDict> = {
     'home.exchange': 'Échange',
     'home.whatNext': 'Que faire ensuite',
     'home.browseExchange': "Parcourir l'Échange",
-    'home.browseExchangeDesc': 'Trouvez des personnes et des chemins qui vous correspondent',
+    'home.browseExchangeDesc': 'Trouvez des personnes et des opportunités qui vous correspondent',
     'home.chatPioneers': 'Discuter avec les Explorateurs',
     'home.chatPioneersDesc': 'Démarrez des conversations avec vos correspondances',
     'home.refineIdentity': 'Affiner Votre Identité',
@@ -4611,7 +4612,7 @@ const CONTENT: Record<string, ContentDict> = {
     'home.seeAll': 'Voir tout',
     'home.sharedLanguages': 'Langues partagées',
     'home.startConversation': 'Démarrer une Conversation',
-    'home.pathsForYou': 'Chemins Pour Vous',
+    'home.pathsForYou': 'Opportunités Pour Vous',
     'home.pathsForYouDesc': 'Opportunités correspondant à vos intérêts et votre métier',
     'home.countries': 'Pays',
     'home.youSpeak': 'vous parlez',
@@ -4639,11 +4640,11 @@ const CONTENT: Record<string, ContentDict> = {
 
     // Exchange page
     'exchange.title': 'Échange',
-    'exchange.subtitle': 'Explorateurs et Chemins correspondant à votre identité',
+    'exchange.subtitle': 'Explorateurs et Opportunités correspondant à votre identité',
     'exchange.home': 'Accueil',
     'exchange.all': 'Tous',
     'exchange.people': 'Personnes',
-    'exchange.paths': 'Chemins',
+    'exchange.paths': 'Opportunités',
     'exchange.allSectors': 'Tous les Secteurs',
     'exchange.focus': 'Focus',
     'exchange.focusDesc': 'Affichage des résultats filtrés par votre sujet de focus',
@@ -4653,30 +4654,30 @@ const CONTENT: Record<string, ContentDict> = {
     'exchange.noMatchesDesc': 'Essayez de modifier vos filtres ou de mettre à jour vos intérêts',
     'exchange.setupIdentity': "Configurez d'abord Votre Identité",
     'exchange.setupIdentityDesc':
-      "Sélectionnez vos langues sur la page d'accueil pour débloquer l'Échange et commencer à vous connecter avec des personnes et des chemins.",
+      "Sélectionnez vos langues sur la page d'accueil pour débloquer l'Échange et commencer à vous connecter avec des personnes et des opportunités.",
     'exchange.goDiscovery': 'Aller à la Découverte',
 
     // World page
     'world.title': 'Mon Monde',
     'world.subtitle':
-      'Votre réseau de personnes, chemins et communautés — évalué par pertinence avec votre identité.',
+      'Votre réseau de personnes, opportunités et communautés — évalué par pertinence avec votre identité.',
     'world.focus': 'Focus',
     'world.focusDesc': 'Affichage de vos connexions les plus pertinentes',
     'world.selectNode': 'Sélectionnez un nœud',
     'world.selectNodeDesc': 'Cliquez sur un nœud du graphe pour voir les détails et agir.',
     'world.viewProfile': 'Voir le Profil',
-    'world.viewPath': 'Voir le Chemin',
+    'world.viewPath': "Voir l'Opportunité",
     'world.viewCommunity': 'Voir la Communauté',
     'world.people': 'Personnes',
-    'world.paths': 'Chemins',
+    'world.paths': 'Opportunités',
     'world.communities': 'Communautés',
     'world.setupIdentity': "Configurez d'abord Votre Identité",
     'world.setupIdentityDesc':
-      "Sélectionnez vos langues sur la page d'accueil pour débloquer votre réseau Monde et commencer à vous connecter avec des personnes, chemins et communautés.",
+      "Sélectionnez vos langues sur la page d'accueil pour débloquer votre réseau Monde et commencer à vous connecter avec des personnes, opportunités et communautés.",
     'world.goDiscovery': 'Aller à la Découverte',
     'world.you': 'Vous',
     'world.pioneer': 'Explorateur',
-    'world.path': 'Chemin',
+    'world.path': 'Opportunité',
     'world.community': 'Communauté',
 
     // Discovery page (page-level keys)
@@ -4720,7 +4721,7 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.skipToContent': 'Passer au contenu principal',
 
     // Common
-    'common.pioneers': 'pionniers',
+    'common.pioneers': 'explorateurs',
     'common.active': 'Actif',
     'common.home': 'Accueil',
     'common.back': 'Retour',
@@ -4755,7 +4756,7 @@ const CONTENT: Record<string, ContentDict> = {
     'pricing.planBasic': 'Basique',
     'pricing.planFeatured': 'En vedette',
     'pricing.planPremium': 'Premium',
-    'pricing.descBasic': 'Commencez à recruter gratuitement — 1 Chemin actif',
+    'pricing.descBasic': 'Commencez à recruter gratuitement — 1 Opportunité active',
     'pricing.descFeatured': 'Démarquez-vous et attirez 3× plus de Explorateurs qualifiés',
     'pricing.descPremium': 'Visibilité maximale + support dédié',
 
@@ -4783,9 +4784,9 @@ const CONTENT: Record<string, ContentDict> = {
     'exchangeDetail.posted': 'Publié',
     'exchangeDetail.chaptersOpened': 'Exchanges Ouverts',
     'exchangeDetail.sector': 'Secteur',
-    'exchangeDetail.aboutPath': 'À propos de ce Chemin',
+    'exchangeDetail.aboutPath': 'À propos de cette Opportunité',
     'exchangeDetail.skillsRequired': 'Compétences Requises',
-    'exchangeDetail.applyForPath': 'Postuler pour ce Chemin',
+    'exchangeDetail.applyForPath': 'Postuler pour cette Opportunité',
     'exchangeDetail.opensConversationAnchor': "Ouvre une conversation avec l'Hôte",
     'exchangeDetail.postedBy': 'Publié par',
 
@@ -4794,24 +4795,24 @@ const CONTENT: Record<string, ContentDict> = {
     'about.badge': "Plateforme de routage de vie axée sur l'identité",
     'about.heroTitle': 'Le travail devrait être pour {accent}tout le monde.{/accent}',
     'about.heroDesc':
-      "BeNetwork est une plateforme de routage de vie axée sur l'identité pour tous — connectant les gens à des chemins, opportunités et expériences grâce au commerce ouvert, à une rémunération équitable et à des connexions directes.",
+      "BeNetwork est une plateforme de routage de vie axée sur l'identité pour tous — connectant les gens à des opportunités et expériences grâce au commerce ouvert, à une rémunération équitable et à des connexions directes.",
     'about.startCompass': 'Lancer Ma Découverte',
     'about.postPath': 'Poster une Opportunité',
     'about.mission': 'Notre Mission',
     'about.missionTitle': 'Définissez qui vous êtes. {accent}Trouvez où vous appartenez.{/accent}',
     'about.missionDesc':
-      'BeNetwork connecte chacun à des chemins, des personnes et des expériences qui correspondent à son identité. Pays, tribu, langue, métier, foi — vous le définissez, nous le routons.',
+      'BeNetwork connecte chacun à des opportunités, des personnes et des expériences qui correspondent à son identité. Pays, tribu, langue, métier, foi — vous le définissez, nous le routons.',
     'about.missionP1':
       'Partout, les gens méritent un accès direct aux opportunités qui correspondent à qui ils sont. BeNetwork supprime les intermédiaires et les gardiens, construisant des corridors qui connectent les identités à travers plus de 50 pays.',
     'about.missionP2':
       'Nous connectons les Explorateurs directement avec les Hôtes dans plus de 50 pays. Les paiements passent par M-Pesa, Flutterwave et les rails locaux — pas par les banques étrangères. Les itinéraires sont construits sur de vrais corridors de visa, pas sur des vœux pieux.',
     'about.howItWorks': 'Comment Ça Fonctionne',
     'about.values': 'Nos Valeurs',
-    'about.valuesTitle': 'Des valeurs qui guident chaque chemin',
+    'about.valuesTitle': 'Des valeurs qui guident chaque parcours',
     'about.valuesSubtitle': 'Ce que Nous Défendons',
     'about.team': 'Notre Équipe',
     'about.sectors': 'Industries',
-    'about.sectorsTitle': 'Des chemins dans chaque secteur',
+    'about.sectorsTitle': 'Des opportunités dans chaque secteur',
     'about.payments': 'Rails de Paiement',
     'about.paymentsTitle': "L'argent circule là où vous allez",
     'about.paymentsDesc':
@@ -4957,7 +4958,7 @@ const CONTENT: Record<string, ContentDict> = {
     'business.badge': 'Entité Juridique',
     'business.subtitle': 'Une Famille. Une Mission. Une Structure.',
     'business.heroDesc':
-      'Le foyer juridique et opérationnel de la plateforme BeNetwork et de tous les ventures Be[Country]. Enregistré au Kenya. Construit pour le monde.',
+      'Le foyer juridique et opérationnel de la plateforme BeNetwork et de toutes les expériences Be[Country]. Enregistré au Kenya. Construit pour le monde.',
     'business.missionTitle': 'Notre Mission',
     'business.missionDesc':
       'Un travail digne et des opportunités pour tous, partout. Nous connectons les Explorateurs avec les Hôtes à travers les frontières, les devises et les cultures — en commençant par le Kenya, en évoluant mondialement.',
@@ -5016,9 +5017,9 @@ const CONTENT: Record<string, ContentDict> = {
       'La mode qui responsabilise. Chaque mannequin est un Explorateur. Chaque vêtement raconte une histoire.',
     'fashion.missionDesc':
       "{brand} Fashion existe parce que le talent créatif africain mérite des opportunités mondiales — sans l'exploitation, sans les gardiens. Nous construisons des parcours sûrs, rémunérés et professionnels du Kenya au monde.",
-    'fashion.pathsTitle': 'Trois Chemins dans la Mode',
+    'fashion.pathsTitle': 'Trois Opportunités dans la Mode',
     'fashion.pathsDesc':
-      "Que vous défilez sur le podium, dessiniez la collection ou capturiez l'image — il y a un chemin avec votre nom dessus.",
+      "Que vous défilez sur le podium, dessiniez la collection ou capturiez l'image — il y a une opportunité avec votre nom dessus.",
     'fashion.modelTitle': 'Mannequin',
     'fashion.modelDesc':
       'Shootings photo professionnels, campagnes de marque, travail de catalogue. Sûr. Rémunéré. Professionnel. Chaque mission selon vos conditions.',
@@ -5030,14 +5031,14 @@ const CONTENT: Record<string, ContentDict> = {
       "Photographie, stylisme, coiffure et maquillage, décor de plateau. Tout le monde derrière l'objectif. Soyez la vision derrière la marque.",
     'fashion.protectionsTitle': 'Ce qui Rend {brand} Fashion Différent',
     'fashion.protectionsDesc': 'Chaque Explorateur est protégé. Point final.',
-    'fashion.openPaths': 'Chemins Mode Ouverts',
+    'fashion.openPaths': 'Opportunités Mode Ouvertes',
     'fashion.openPathsDesc': 'Des opportunités rémunérées en attente du bon Explorateur',
-    'fashion.viewAll': 'Voir tous les chemins →',
+    'fashion.viewAll': 'Voir toutes les opportunités →',
     'fashion.apply': 'Postuler',
     'fashion.partnersTitle': 'Hôtes Partenaires',
     'fashion.partnersDesc':
       'Les organisations qui font confiance à {brand} Fashion pour les connecter avec des Explorateurs vérifiés et talentueux',
-    'fashion.ctaTitle': 'Prêt à marcher sur votre opportunité ?',
+    'fashion.ctaTitle': 'Prêt à commencer votre parcours ?',
     'fashion.ctaDesc':
       'Rejoignez {brand} Fashion en tant que Explorateur. Fixez vos tarifs. Choisissez vos shootings. Construisez votre carrière avec dignité.',
     'fashion.exploreMedia': 'Explorer la Division Médias →',
@@ -5056,14 +5057,14 @@ const CONTENT: Record<string, ContentDict> = {
       "Ces clients ont des budgets. Ils veulent du contenu authentique, créé localement — pas des images d'archives. Et ils ont du mal à trouver des créateurs fiables et talentueux au Kenya.",
     'media.opportunityGap': "C'est le vide que {brand} Media existe pour combler.",
     'media.statPlatforms': 'Plateformes Atteintes',
-    'media.statPaths': 'Chemins Médias',
+    'media.statPaths': 'Opportunités Médias',
     'media.statPayments': 'Paiements Locaux',
     'media.whoHiring': 'Qui Recrute ?',
-    'media.pathsTitle': 'Chemins Médias Disponibles',
+    'media.pathsTitle': 'Opportunités Médias Disponibles',
     'media.pathsDesc': 'Chaque compétence créative a un marché. Trouvez où votre talent rapporte.',
     'media.featuredTitle': 'Projets en Vedette',
     'media.featuredDesc':
-      "De vraies commissions de vrais Hôtes. Ces chemins sont ouverts — postulez et racontez l'histoire de l'Afrique.",
+      "De vraies commissions de vrais Hôtes. Ces opportunités sont ouvertes — postulez et racontez l'histoire de l'Afrique.",
     'media.applyNow': 'Postuler Maintenant',
     'media.socialTitle': 'Automatisation des Réseaux Sociaux',
     'media.socialTagline':
@@ -5094,7 +5095,7 @@ const CONTENT: Record<string, ContentDict> = {
     'offerings.descDefault':
       'Sélectionnez une destination ci-dessous, ou parcourez les itinéraires recommandés selon votre localisation. Voyagez, travaillez ou construisez — votre opportunité commence ici.',
     'offerings.descDest':
-      'Explorez ce que {country} a à offrir — expériences, chemins professionnels et opportunités commerciales adaptés à votre itinéraire.',
+      'Explorez ce que {country} a à offrir — expériences, opportunités professionnelles et commerciales adaptées à votre itinéraire.',
     'offerings.all': 'Tout',
     'offerings.recommended': 'Destinations Recommandées depuis {country}',
     'offerings.explore': 'Explorer',
@@ -5103,7 +5104,7 @@ const CONTENT: Record<string, ContentDict> = {
     'offerings.ecoTourism': 'Écotourisme',
     'offerings.professionalSectors': 'Secteurs Professionnels en {country}',
     'offerings.sectors': '{count} secteurs',
-    'offerings.paths': '{count}+ chemins',
+    'offerings.paths': '{count}+ opportunités',
     'offerings.tradeCorridors': 'Corridors Commerciaux',
     'offerings.active': '{count} actif{s}',
     'offerings.keySectors': 'Secteurs Clés',
@@ -5130,13 +5131,13 @@ const CONTENT: Record<string, ContentDict> = {
       'Nous prenons en charge les méthodes de paiement en lesquelles votre pays a confiance.',
     'beCountry.sectorsTitle': 'Secteurs en Vedette en {country}',
     'beCountry.sectorsDesc': 'Explorez les secteurs de recrutement les plus actifs en ce moment.',
-    'beCountry.openPaths': 'chemins ouverts',
+    'beCountry.openPaths': 'opportunités ouvertes',
     'beCountry.partner': 'Partenaire : {name}',
     'beCountry.popularTitle': 'Recherches Populaires',
     'beCountry.popularDesc': 'Ce que les Explorateurs de {country} recherchent en ce moment.',
-    'beCountry.crossTitle': 'Vous cherchez des chemins au-delà de {country} ?',
+    'beCountry.crossTitle': 'Vous cherchez des opportunités au-delà de {country} ?',
     'beCountry.crossDesc':
-      'La Découverte trouve les meilleurs itinéraires pour vous — en faisant correspondre vos compétences aux opportunités au-delà des frontières, et en vous aidant à naviguer les exigences de visa, les méthodes de paiement et le chemin le plus rapide vers votre prochain échange.',
+      'La Découverte trouve les meilleurs itinéraires pour vous — en faisant correspondre vos compétences aux opportunités au-delà des frontières, et en vous aidant à naviguer les exigences de visa, les méthodes de paiement et la route la plus rapide vers votre prochain échange.',
     'beCountry.openCompass': 'Ouvrir la Découverte',
     'beCountry.allVentures': 'Tous les Expériences',
     'beCountry.exploreOther': "Explorez d'autres plateformes Be[Country] :",
@@ -5146,9 +5147,9 @@ const CONTENT: Record<string, ContentDict> = {
     'pioneer.profile': 'Profil',
     'pioneer.openChapters': 'Exchanges Ouverts',
     'pioneer.newMatches': 'Nouvelles Correspondances',
-    'pioneer.topPaths': 'Meilleurs Chemins Pour Vous',
+    'pioneer.topPaths': 'Meilleures Opportunités Pour Vous',
     'pioneer.updateCompass': 'Mettre à jour la Découverte',
-    'pioneer.browseAllPaths': 'Parcourir Tous les Opportunités',
+    'pioneer.browseAllPaths': 'Parcourir Toutes les Opportunités',
     'pioneer.noChapters': "Vous n'avez encore ouvert aucun exchange.",
     'pioneer.browseVentures': 'Parcourir les Expériences →',
     'pioneer.opened': 'Ouvert',
@@ -5221,12 +5222,12 @@ const CONTENT: Record<string, ContentDict> = {
       "Rejoignez le réseau d'Agents de {brand}. Aucun coût initial. Gagnez une commission sur chaque placement réussi.",
 
     // Experience Detail
-    'venture.notFoundTitle': 'Chemin Non Trouvé',
+    'venture.notFoundTitle': 'Opportunité Non Trouvée',
     'venture.notFoundDesc': "Cette expérience n'existe pas ou a été clôturée.",
     'venture.browseAll': 'Parcourir Tous les Expériences',
     'venture.backToVentures': 'Retour aux Expériences',
     'venture.remoteOk': 'Télétravail OK',
-    'venture.aboutPath': 'À Propos de ce Chemin',
+    'venture.aboutPath': 'À Propos de cette Opportunité',
     'venture.whatYouDo': 'Ce Que Vous Ferez',
     'venture.requirements': 'Ce Que Nous Recherchons',
     'venture.benefits': 'Ce Que Vous Obtiendrez',
@@ -5239,7 +5240,7 @@ const CONTENT: Record<string, ContentDict> = {
       "L'Hôte examinera votre profil. Consultez votre tableau de bord pour les mises à jour.",
     'venture.goToDashboard': 'Aller au Tableau de Bord →',
     'venture.chapterNote': 'Ouvrir un {chapter} partage votre profil avec cette {anchor}.',
-    'venture.similarPaths': 'Chemins Similaires',
+    'venture.similarPaths': 'Opportunités Similaires',
     'venture.professional': 'Professionnel',
     'venture.explorer': 'Explorateur',
     'venture.creative': 'Créatif',
@@ -5256,11 +5257,11 @@ const CONTENT: Record<string, ContentDict> = {
     'notif.preferences': 'Préférences',
     'notif.tabAll': 'Tous',
     'notif.tabUnread': 'Non lus',
-    'notif.tabPaths': 'Chemins',
+    'notif.tabPaths': 'Opportunités',
     'notif.tabChapters': 'Exchanges',
     'notif.tabCompass': 'Découverte',
     'notif.tabCommunity': 'Communauté',
-    'notif.typePath': 'Chemin',
+    'notif.typePath': 'Opportunité',
     'notif.typeChapter': 'Exchange',
     'notif.typeCompass': 'Découverte',
     'notif.typeCommunity': 'Communauté',
@@ -5269,7 +5270,8 @@ const CONTENT: Record<string, ContentDict> = {
     'notif.thisWeek': 'Cette Semaine',
     'notif.earlier': 'Plus tôt',
     'notif.emptyTitle': 'Votre découverte est calme pour le moment.',
-    'notif.emptyDesc': 'Revenez bientôt — de nouveaux chemins et mises à jour apparaîtront ici.',
+    'notif.emptyDesc':
+      'Revenez bientôt — de nouvelles opportunités et mises à jour apparaîtront ici.',
     'notif.browsePaths': 'Parcourir les Opportunités',
     'notif.prefFooter': 'Les notifications sont envoyées via WhatsApp et email.',
     'notif.updatePrefs': 'Mettre à jour les préférences →',
@@ -5333,20 +5335,20 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.seasonAll': "Toute l'année",
 
     // Host Dashboard
-    'anchor.activePaths': 'Chemins Actifs',
+    'anchor.activePaths': 'Opportunités Actives',
     'anchor.totalChapters': 'Total Exchanges',
     'anchor.pioneersMatched': 'Explorateurs Correspondants',
     'anchor.views7d': 'Vues (7j)',
-    'anchor.yourPaths': 'Vos Chemins',
-    'anchor.newPath': 'Nouveau Chemin',
-    'anchor.openNewPath': 'Ouvrir un nouveau Chemin',
+    'anchor.yourPaths': 'Vos Opportunités',
+    'anchor.newPath': 'Nouvelle Opportunité',
+    'anchor.openNewPath': 'Ouvrir une nouvelle Opportunité',
     'anchor.toggle': 'Basculer',
     'anchor.chapters': 'exchanges',
     'anchor.views': 'vues',
     'anchor.avgMatch': '{score}% correspondance moyenne',
     'anchor.recentChapters': 'Ouvertures de Exchanges Récentes',
     'anchor.match': 'correspondance',
-    'anchor.tabPaths': 'Chemins',
+    'anchor.tabPaths': 'Opportunités',
     'anchor.tabChapters': 'Exchanges',
     'anchor.tabInsights': 'Aperçus',
     'anchor.filterAll': 'Tous',
@@ -5364,8 +5366,8 @@ const CONTENT: Record<string, ContentDict> = {
     'agentDash.tabEarnings': 'Gains',
     'agentDash.totalEarned': 'total gagné',
     'agentDash.agentHub': 'Hub Agent',
-    'agentDash.pathsMatching': 'Chemins correspondant à votre territoire et vos secteurs',
-    'agentDash.openPaths': '{count} chemins ouverts',
+    'agentDash.pathsMatching': 'Opportunités correspondant à votre territoire et vos secteurs',
+    'agentDash.openPaths': '{count} opportunités ouvertes',
     'agentDash.needed': '{count} recherché{s}',
     'agentDash.forwardWhatsApp': 'Transmettre via WhatsApp',
     'agentDash.copyLink': 'Copier le Lien',
@@ -5383,7 +5385,7 @@ const CONTENT: Record<string, ContentDict> = {
     'agentDash.workers': '{count} travailleurs',
     'agentDash.successfulPlacements': 'Placements Réussis',
     'agentDash.noPlacementsYet':
-      'Aucun placement pour le moment. Continuez à transmettre des chemins à votre réseau !',
+      'Aucun placement pour le moment. Continuez à transmettre des opportunités à votre réseau !',
     'agentDash.sent': 'Envoyé',
     'agentDash.clicked': 'Cliqué',
     'agentDash.signedUp': 'Inscrit',
@@ -5391,33 +5393,33 @@ const CONTENT: Record<string, ContentDict> = {
     'agentDash.placed': 'Placé',
 
     // Post Path Wizard
-    'postPath.openNew': 'Ouvrir un Nouveau Chemin',
+    'postPath.openNew': 'Ouvrir une Nouvelle Opportunité',
     'postPath.subtitle':
       'Ouvrir une Opportunité est la manière dont les Hôtes construisent leur tribu.',
     'postPath.stepOf': 'Étape {step} sur 6',
     'postPath.back': 'Retour',
     'postPath.continue': 'Continuer',
-    'postPath.previewPath': 'Aperçu du Chemin',
-    'postPath.nameYourPath': 'Nommez votre Chemin',
+    'postPath.previewPath': "Aperçu de l'Opportunité",
+    'postPath.nameYourPath': 'Nommez votre Opportunité',
     'postPath.nameDesc':
       "Donnez-lui un titre qui résonne — les Explorateurs se connectent à ce qu'ils ressentent.",
-    'postPath.pathTitle': 'Titre du Chemin',
+    'postPath.pathTitle': "Titre de l'Opportunité",
     'postPath.pathTitlePlaceholder': 'ex. Guide Safari Senior — Spécialiste Big Five',
     'postPath.pathTitleHint':
       "Soyez précis. Les Explorateurs parcourent vite — un titre précis l'emporte.",
-    'postPath.pathCategory': 'Catégorie du Chemin',
-    'postPath.pathType': 'Type de Chemin',
-    'postPath.fullPath': 'Chemin Complet',
-    'postPath.partPath': 'Chemin Partiel',
-    'postPath.seasonalPath': 'Chemin Saisonnier',
+    'postPath.pathCategory': "Catégorie de l'Opportunité",
+    'postPath.pathType': "Type d'Opportunité",
+    'postPath.fullPath': 'Temps Plein',
+    'postPath.partPath': 'Temps Partiel',
+    'postPath.seasonalPath': 'Saisonnier',
     'postPath.location': 'Lieu',
     'postPath.locationPlaceholder': 'ex. Laikipia, Kenya',
     'postPath.remotePossible': 'Télétravail Possible ?',
     'postPath.onSiteOnly': 'Sur site uniquement',
     'postPath.remoteOk': 'Télétravail OK',
     'postPath.tellStory': "Racontez l'histoire aux Explorateurs",
-    'postPath.tellStoryDesc': "Décrivez le chemin — ce qu'ils feront, vivront et apporteront.",
-    'postPath.pathDescription': 'Description du Chemin',
+    'postPath.tellStoryDesc': "Décrivez l'opportunité — ce qu'ils feront, vivront et apporteront.",
+    'postPath.pathDescription': "Description de l'Opportunité",
     'postPath.descriptionHint':
       'Minimum 100 caractères. La Découverte utilise ceci pour trouver des Explorateurs.',
     'postPath.chars': '{count} caractères',
@@ -5434,7 +5436,7 @@ const CONTENT: Record<string, ContentDict> = {
     'postPath.suggestedFor': 'Suggéré pour {category}',
     'postPath.addOneSkill':
       'Ajoutez au moins 1 compétence pour que la Découverte trouve les bons Explorateurs pour cette opportunité.',
-    'postPath.whoIsFor': "À qui s'adresse ce Chemin ?",
+    'postPath.whoIsFor': "À qui s'adresse cette Opportunité ?",
     'postPath.whoIsForDesc':
       'Aidez la Découverte à router les bons Explorateurs vers votre opportunité.',
     'postPath.pioneerTypes': 'Types de Explorateurs',
@@ -5443,7 +5445,7 @@ const CONTENT: Record<string, ContentDict> = {
     'postPath.preferredOrigins': 'Origines Préférées des Explorateurs',
     'postPath.preferredOriginsHint':
       'Les Explorateurs de ces pays seront pondérés plus fortement dans le routage de la Découverte. Laissez vide pour mondial.',
-    'postPath.whatPay': 'Combien le chemin paie-t-il ?',
+    'postPath.whatPay': "Combien l'opportunité paie-t-elle ?",
     'postPath.whatPayDesc': 'Être transparent sur la rémunération attire des Explorateurs engagés.',
     'postPath.compensationRange': 'Fourchette de Rémunération',
     'postPath.minimum': 'Minimum',
@@ -5457,16 +5459,16 @@ const CONTENT: Record<string, ContentDict> = {
     'postPath.paymentMethods': 'Méthodes de Paiement Acceptées',
     'postPath.paymentMethodsHint':
       "Comment ce Explorateur sera-t-il payé ? Sélectionnez tout ce qui s'applique.",
-    'postPath.reviewPath': 'Vérifiez votre Chemin',
+    'postPath.reviewPath': 'Vérifiez votre Opportunité',
     'postPath.reviewPathDesc': 'Voici comment il apparaîtra aux Explorateurs dans le BeNetwork.',
-    'postPath.aboutThisPath': 'À propos de ce Chemin',
+    'postPath.aboutThisPath': 'À propos de cette Opportunité',
     'postPath.skillsNeeded': 'Compétences Nécessaires',
-    'postPath.readyToOpen': 'Prêt à ouvrir ce Chemin ?',
+    'postPath.readyToOpen': 'Prêt à ouvrir cette Opportunité ?',
     'postPath.readyDesc':
       'La Découverte commencera immédiatement à faire correspondre les Explorateurs à votre opportunité. Vous verrez les échanges arriver dans votre tableau de bord.',
-    'postPath.openThisPath': 'Ouvrir ce Chemin',
-    'postPath.openingPath': 'Ouverture du Chemin...',
-    'postPath.pathIsOpen': 'Le Chemin est Ouvert !',
+    'postPath.openThisPath': 'Ouvrir cette Opportunité',
+    'postPath.openingPath': "Ouverture de l'Opportunité...",
+    'postPath.pathIsOpen': "L'Opportunité est Ouverte !",
     'postPath.compassRouting':
       'La Découverte route maintenant les Explorateurs vers {title}. Vous verrez les échanges arriver sous peu.',
     'postPath.goToDashboard': 'Aller au Tableau de Bord',
@@ -5482,12 +5484,12 @@ const CONTENT: Record<string, ContentDict> = {
     'admin.tabOverview': "Vue d'ensemble",
     'admin.tabPioneers': 'Explorateurs',
     'admin.tabAnchors': 'Hôtes',
-    'admin.tabPaths': 'Chemins',
+    'admin.tabPaths': 'Opportunités',
     'admin.tabSocial': 'Réseaux Sociaux',
     'admin.tabSettings': 'Paramètres',
     'admin.pioneers': 'Explorateurs',
     'admin.anchors': 'Hôtes',
-    'admin.openPaths': 'Chemins Ouverts',
+    'admin.openPaths': 'Opportunités Ouvertes',
     'admin.chapters': 'Exchanges',
     'admin.venturesBooked': 'Expériences Réservées',
     'admin.revenueThisMonth': 'Revenus ce Mois',
@@ -5513,7 +5515,7 @@ const CONTENT: Record<string, ContentDict> = {
     'admin.verifiedLabel': '✓ Vérifié',
     'admin.pendingLabel': '⚠ En attente',
     'admin.verify': 'Vérifier',
-    'admin.pathTitle': 'Titre du Chemin',
+    'admin.pathTitle': "Titre de l'Opportunité",
     'admin.matchAvg': 'Correspondance Moy.',
     'admin.status': 'Statut',
     'admin.posted': 'Publié',
@@ -5577,7 +5579,7 @@ const CONTENT: Record<string, ContentDict> = {
 
     // Exchange Card
     'exchange.card.pioneer': 'Explorateur',
-    'exchange.card.path': 'Chemin',
+    'exchange.card.path': 'Opportunité',
     'exchange.card.explorer': 'Explorateur',
     'exchange.card.host': 'Hôte',
     'exchange.card.scorePerfect': 'Parfait',
@@ -5594,7 +5596,7 @@ const CONTENT: Record<string, ContentDict> = {
     'exchange.card.craft': 'Métier',
     'exchange.card.skillsNeeded': 'Compétences recherchées',
     'exchange.card.connectChat': '💬 Connecter et Discuter',
-    'exchange.card.viewPath': 'Voir le Chemin →',
+    'exchange.card.viewPath': "Voir l'Opportunité →",
 
     // Cookie Consent
     'cookie.title': 'Nous respectons votre vie privée',
@@ -5701,7 +5703,7 @@ const CONTENT: Record<string, ContentDict> = {
     'me.savedItemsHint': 'Sauvegardez des Opportunités et Expériences pour les retrouver ici',
     'me.noExchanges': 'Aucun échange pour le moment',
     'me.exchangesHint': 'Ouvrez un Exchange sur une Opportunité pour commencer votre parcours',
-    'me.defaultPath': 'Chemin',
+    'me.defaultPath': 'Opportunité',
     'me.unknownAnchor': 'Hôte Inconnu',
     'me.referralsSent': 'Parrainages Envoyés',
     'me.successful': 'Réussis',
@@ -5800,7 +5802,8 @@ const CONTENT: Record<string, ContentDict> = {
     'reach.canHost': 'Peut Accueillir',
     'reach.canHost.desc': 'Peut fournir un hébergement ou un espace de travail aux visiteurs',
     'reach.canInvest': 'Peut Investir',
-    'reach.canInvest.desc': 'Dispose de ressources pour investir dans des ventures ou partenariats',
+    'reach.canInvest.desc':
+      'Dispose de ressources pour investir dans des expériences ou partenariats',
     'reach.digitalOnly': 'Numérique Uniquement',
     'reach.digitalOnly.desc': 'Disponible exclusivement pour la collaboration à distance',
     'reach.canMentor': 'Peut Mentorer',

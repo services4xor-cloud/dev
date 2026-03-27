@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: { default: 'Be[X] — Identity-First Life Routing', template: '%s | Be[X]' },
   description:
-    'Define who you are — country, tribe, language, craft, faith — and connect to paths, people, and experiences that match your identity.',
+    'Define who you are — country, tribe, language, craft, faith — and connect to opportunities, people, and experiences that match your identity.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://becountry.com'),
   openGraph: {
     type: 'website',
