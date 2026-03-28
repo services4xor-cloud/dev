@@ -265,75 +265,7 @@ const ENDONYMS: Record<string, Record<string, string>> = {
 // Derived from COUNTRY_OPTIONS — first language in each country's languages[] array
 // is the default. No hardcoded map needed.
 
-import { COUNTRY_OPTIONS } from '@/lib/country-selector'
-
-/** Lazy-built lookup: country code → first language from COUNTRY_OPTIONS */
-let _defaultLangCache: Record<string, string> | null = null
-function getDefaultLangMap(): Record<string, string> {
-  if (!_defaultLangCache) {
-    _defaultLangCache = {}
-    for (const c of COUNTRY_OPTIONS) {
-      _defaultLangCache[c.code] = c.languages[0] ?? 'en'
-    }
-  }
-  return _defaultLangCache
-}
-
 // ─── Public API ──────────────────────────────────────────────────────────────
-
-/**
- * Get a country's name in a specific language.
- * Falls back to English, then to the country code itself.
- *
- * @example
- * getLocalizedCountryName('DE', 'de') // → "Deutschland"
- * getLocalizedCountryName('KE', 'de') // → "Kenia"
- * getLocalizedCountryName('DE', 'en') // → "Germany"
- * getLocalizedCountryName('XX', 'en') // → "XX" (unknown country)
- */
-export function getLocalizedCountryName(countryCode: string, languageCode: string): string {
-  const cc = countryCode.toUpperCase()
-  const lc = languageCode.toLowerCase()
-
-  // Try Intl.DisplayNames first (zero maintenance, supports all languages)
-  try {
-    // Only use Intl if the locale is actually supported (avoids silent fallback to system default)
-    if (Intl.DisplayNames.supportedLocalesOf([lc]).length > 0) {
-      const displayNames = new Intl.DisplayNames([lc], { type: 'region' })
-      const name = displayNames.of(cc)
-      if (name && name !== cc) return name
-    }
-  } catch {
-    // Fall through to manual map
-  }
-
-  // Fallback to manual map for edge cases
-  return ENDONYMS[cc]?.[lc] ?? ENDONYMS[cc]?.['en'] ?? cc
-}
-
-/**
- * Get the default display language for a country.
- * Used when the user hasn't explicitly set a language preference.
- */
-export function getDefaultLanguage(countryCode: string): string {
-  return getDefaultLangMap()[countryCode.toUpperCase()] ?? 'en'
-}
-
-/**
- * Get all endonym variants for a country (for search matching).
- * Returns all language variants so "Kenia", "Kenya", "Ujerumani" all match.
- *
- * @example
- * getCountrySearchTerms('DE') // → ["Germany", "Deutschland", "Allemagne", "Ujerumani"]
- */
-export function getCountrySearchTerms(countryCode: string): string[] {
-  const cc = countryCode.toUpperCase()
-  const names = ENDONYMS[cc]
-  if (!names) return [cc]
-
-  // Deduplicate (some languages share the same name)
-  return Array.from(new Set(Object.values(names)))
-}
 
 /**
  * Search across all countries using any language variant.

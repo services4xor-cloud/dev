@@ -59,6 +59,14 @@
 - **68 skills** — All translations complete (en, de, fr, sw + 8 more), no duplicates
 - **Endonyms** — 22 manual + 163 via Intl.DisplayNames API fallback, spot-checked accurate
 
+### Dead Code Removal
+
+- **Deleted `lib/identity-context.tsx`** — 60 lines, React context never imported anywhere
+- **Deleted `lib/hooks/use-translation.ts`** — Translation hook never imported anywhere
+- **Removed proximity engine from `country-selector.ts`** — 175 lines: `distanceKm()`, `proximityLabel()`, `sortedByProximity()`, `getGroupedCountries()`, `isNearby()`, `NEARBY_KM`, `CORRIDOR_BADGE`, `priorityChar()`, `MAX_COUNTRY_SELECTIONS`, `getCountriesBySharedLanguage()`, `getCountriesForLanguage()`, `getAllLanguages()`, `languageOverlap()`, `getGroupedByLanguage()`, `langCodeToName()`, `REGION_CLUSTERS`, `RegionClusterConfig` — all zero external imports
+- **Removed unused exports from `dimensions.ts`** — `REACH_OPTIONS`, `ReachOption`, `ReachId`, `getCultureSuggestionsForCountry()`, `getFaithOption()`, `getReachOption()`, `DIMENSION_META`, `DimensionMeta` — all zero imports
+- **Removed unused exports from `endonyms.ts`** — `getLocalizedCountryName()`, `getDefaultLanguage()`, `getCountrySearchTerms()`, `getDefaultLangMap()` — all zero imports
+
 ### Stats
 
 - Tests: 376/376 (25 suites), TypeScript: 0 errors, Build: passes on CI (font fetch requires network)
