@@ -125,7 +125,7 @@ export default function HostDashboardPage() {
   if (role !== 'HOST' && role !== 'ADMIN') {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-brand-bg px-6 text-center">
-        <p className="text-lg font-semibold text-brand-text">This dashboard is for Hosts</p>
+        <p className="text-lg font-semibold text-brand-text">This Hub is for Hosts</p>
         <p className="text-sm text-brand-text-muted">
           Your current role does not have access to this area.
         </p>
@@ -183,7 +183,7 @@ export default function HostDashboardPage() {
         <div className="mb-10 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-brand-text sm:text-3xl">
-              Host Dashboard
+              Host Hub
             </h1>
             <p className="mt-1 text-sm text-brand-text-muted">
               Manage your opportunities and track activity

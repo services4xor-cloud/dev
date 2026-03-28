@@ -190,7 +190,7 @@ export const EMAIL_TEMPLATES: Record<
             <div class="step-num">3</div>
             <div>
               <strong>Connect with a Host</strong><br/>
-              <span style="font-size:13px;color:#6b7280;">Hosts are employers and guides who open their Opportunities to Explorers like you.</span>
+              <span style="font-size:13px;color:#6b7280;">Hosts are organisations and guides who open their Opportunities to Explorers like you.</span>
             </div>
           </li>
         </ol>
@@ -255,7 +255,7 @@ export const EMAIL_TEMPLATES: Record<
 
   // ── 3. Exchange Status Update (Host responded) ───────────────────────────
   chapter_status_update: (data) => ({
-    subject: `Exchange update: ${data.status || 'New update'} on ${data.pathTitle || 'your application'}`,
+    subject: `Exchange update: ${data.status || 'New update'} on ${data.pathTitle || 'your Exchange'}`,
     html: emailWrapper(
       `${emailHeader()}
       <div class="body">
@@ -426,7 +426,7 @@ export const EMAIL_TEMPLATES: Record<
         </p>
 
         <div class="cta-block">
-          <a href="${data.reviewUrl || 'https://bekenya.com/dashboard'}" class="cta-btn">
+          <a href="${data.reviewUrl || 'https://bekenya.com/me'}" class="cta-btn">
             Review &amp; Respond
           </a>
         </div>

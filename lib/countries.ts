@@ -122,7 +122,7 @@ const kenyaConfig: CountryConfig = {
       id: 'stripe',
       name: 'Stripe',
       logo: 'S',
-      description: 'Cards (international employers)',
+      description: 'Cards (international Hosts)',
       currencies: ['USD', 'EUR', 'GBP'],
     },
     {

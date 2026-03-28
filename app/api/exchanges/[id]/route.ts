@@ -71,8 +71,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     notify({
       userId: edge.from.userId,
       type: 'MATCH',
-      title: `Your application was ${newStatus.toLowerCase()}`,
-      body: `${hostName?.name ?? 'A host'} ${newStatus === 'ACCEPTED' ? 'accepted' : 'declined'} your application for ${edge.to.label}`,
+      title: `Your Exchange was ${newStatus.toLowerCase()}`,
+      body: `${hostName?.name ?? 'A host'} ${newStatus === 'ACCEPTED' ? 'accepted' : 'declined'} your Exchange for ${edge.to.label}`,
       link: '/me',
     })
   }

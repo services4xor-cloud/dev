@@ -38,8 +38,8 @@ const tiers: PricingTier[] = [
     description: 'Post opportunities and find the right Explorers for your organisation.',
     features: [
       'Post unlimited Opportunities',
-      'Featured listings',
-      'Analytics dashboard',
+      'Featured Opportunities',
+      'Analytics Hub',
       'Priority support',
       'Exchange management tools',
     ],

@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 76 (2026-03-27); Maintenance — vocabulary cleanup, dependency updates, code deduplication
+> Last updated: Session 77 (2026-03-28); Maintenance — dependency updates, vocabulary compliance, data verification
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -28,6 +28,40 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 77: Maintenance — Dependencies, Vocabulary, Data Verification
+
+### Dependency Updates
+
+- **npm update** — All patch/minor dependencies updated to latest within semver range
+- **npm audit fix** — Fixed non-breaking vulnerabilities
+- **Remaining 10 vulns** — All in transitive deps (Next.js 14 → minimatch/glob/cookie); require Next.js 16 major upgrade
+
+### Vocabulary Compliance Sweep (User-Facing Text)
+
+- **lib/i18n.ts** — Fixed 20+ user-facing strings across EN + DE:
+  - "job board" → "recruitment platform", "job opportunities" → "opportunities"
+  - "employers" → "Hosts"/"organisations", "workers" → "talent"/"Explorers"
+  - "dashboard" → "Hub" (12 occurrences across EN + DE)
+  - "Arbeitgeber" → "Organisationen", "Arbeiter" → "Talente"/"Explorer", "Stellenangebote" → "Opportunities"
+- **app/pricing/page.tsx** — "Featured listings" → "Featured Opportunities", "Analytics dashboard" → "Analytics Hub"
+- **app/host/page.tsx** — "Host Dashboard" → "Host Hub" (2 occurrences)
+- **app/api/exchanges/[id]/route.ts** — "your application" → "your Exchange" in notification text
+- **lib/email.ts** — "employers" → "organisations", "your application" → "your Exchange", "/dashboard" → "/me"
+- **lib/country-selector.ts** — "Work visa via employer" → "Work visa via Host" (3 occurrences)
+- **lib/countries.ts** — "international employers" → "international Hosts"
+
+### Data Verification
+
+- **185 countries** — All verified: no duplicates, no empty arrays, correct currencies, accurate languages
+- **68 skills** — All translations complete (en, de, fr, sw + 8 more), no duplicates
+- **Endonyms** — 22 manual + 163 via Intl.DisplayNames API fallback, spot-checked accurate
+
+### Stats
+
+- Tests: 376/376 (25 suites), TypeScript: 0 errors, Build: passes on CI (font fetch requires network)
 
 ---
 
