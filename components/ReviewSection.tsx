@@ -105,12 +105,17 @@ export default function ReviewSection({ targetId, showForm = false }: ReviewSect
 
   const fetchReviews = useCallback(async () => {
     setLoading(true)
+    setError(null)
     try {
       const res = await fetch(`/api/reviews?targetId=${encodeURIComponent(targetId)}`)
       if (res.ok) {
         const json = (await res.json()) as ReviewsResponse
         setData(json)
+      } else {
+        setError('Could not load reviews.')
       }
+    } catch {
+      setError('Could not load reviews.')
     } finally {
       setLoading(false)
     }

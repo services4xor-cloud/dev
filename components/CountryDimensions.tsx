@@ -50,17 +50,23 @@ function fmtTimeDiff(minutes: number): string {
   return `${sign}${h}h${m}m`
 }
 
-// ─── Exchange rate cache ────────────────────────────────────────────────────
-const rateCache: Record<string, Record<string, number>> = {}
+// ─── Exchange rate cache (bounded to 50 entries) ───────────────────────────
+const rateCache = new Map<string, Record<string, number>>()
+const MAX_CACHE_SIZE = 50
 
 async function fetchRates(base: string): Promise<Record<string, number>> {
-  if (rateCache[base]) return rateCache[base]
+  if (rateCache.has(base)) return rateCache.get(base)!
   try {
     const res = await fetch(`https://open.er-api.com/v6/latest/${base}`)
     if (!res.ok) return {}
     const data = await res.json()
-    rateCache[base] = data.rates ?? {}
-    return rateCache[base]
+    const rates = data.rates ?? {}
+    if (rateCache.size >= MAX_CACHE_SIZE) {
+      const oldest = rateCache.keys().next().value!
+      rateCache.delete(oldest)
+    }
+    rateCache.set(base, rates)
+    return rates
   } catch {
     return {}
   }

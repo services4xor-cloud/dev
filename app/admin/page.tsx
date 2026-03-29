@@ -86,7 +86,7 @@ export default function AdminDashboard() {
   if (status === 'loading' || loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-brand-bg">
-        <p className="text-brand-text-muted">Loading dashboard...</p>
+        <p className="text-brand-text-muted">Loading Hub...</p>
       </main>
     )
   }

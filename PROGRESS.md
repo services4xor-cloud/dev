@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 77 (2026-03-28); Maintenance — dependency updates, vocabulary compliance, data verification
+> Last updated: Session 78 (2026-03-29); Maintenance — vocabulary, dead code, translations, code quality
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -28,6 +28,47 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 78: Maintenance — Vocabulary, Dead Code, Translations, Code Quality
+
+### Vocabulary Compliance (4 languages)
+
+- **lib/i18n.ts** — Fixed 20+ "booking/Buchung/réservation" violations across EN, DE, FR, SW:
+  - EN: "from every booking" → "from every experience" (4 strings)
+  - DE: "von jeder Buchung" → "von jedem Erlebnis" (4 strings)
+  - FR: "de chaque réservation" → "de chaque expérience" (4 strings)
+  - SW: Corrected mistranslation — "uhifadhi" (conservation) → "tajriba" (experience) in 5 strings
+- **lib/email.ts** — Fixed 7 "booking" → "experience" in safari confirmation email template
+- **app/admin/page.tsx** — "Loading dashboard..." → "Loading Hub..."
+- **lib/i18n.ts** — Fixed `venture.chapterNote` legacy placeholder: `{chapter}` → "Exchange", `{anchor}` → "Host"
+
+### Dead Code Removal (9 files deleted)
+
+- **Deleted `lib/dimension-scoring.ts`** — 466 lines, 7 exports, zero imports anywhere
+- **Deleted `services/index.ts`** — Re-export file, zero external imports
+- **Deleted `services/types.ts`** — Interface file, inlined types into `prisma-services.ts`
+- **Deleted 6 unused components:**
+  - `CountryPanel.tsx`, `DashboardTabs.tsx`, `ImpactCounter.tsx`
+  - `NotificationBadge.tsx`, `Skeleton.tsx`, `WizardShell.tsx`
+
+### Missing German Translations (9 keys added)
+
+- `onboarding.step`, `onboarding.complete`, `onboarding.network`, `onboarding.other`, `onboarding.calibrated`, `onboarding.whatsapp`
+- `ventures.available`, `ventures.open`, `ventures.pioneersNeeded`, `ventures.highSeason`, `ventures.explorerVentures`, `ventures.featuredPaths`
+- `about.team`
+
+### Code Quality Fixes
+
+- **`app/api/agent/chat/route.ts`** — Fixed error exposure: no longer leaks API error messages to clients
+- **`components/ReviewSection.tsx`** — Added error handling for failed review fetches (was stuck on loading indefinitely)
+- **`components/CountryDimensions.tsx`** — Bounded exchange rate cache to 50 entries (was unbounded memory leak)
+- **`services/prisma-services.ts`** — Inlined type interfaces from deleted `types.ts`
+
+### Stats
+
+- Tests: 376/376 (25 suites), TypeScript: 0 errors, Build: passes on CI (font fetch requires network)
 
 ---
 

@@ -1,5 +1,36 @@
 import { db } from '@/lib/db'
-import type { UserService, NodeService, PaymentService } from './types'
+
+interface UserService {
+  findById(
+    id: string
+  ): Promise<{ id: string; name: string | null; email: string; role: string } | null>
+  findByEmail(
+    email: string
+  ): Promise<{ id: string; name: string | null; email: string; role: string } | null>
+  updateRole(id: string, role: string): Promise<void>
+}
+
+interface NodeService {
+  findByTypeAndCode(
+    type: string,
+    code: string
+  ): Promise<{ id: string; type: string; code: string; label: string; icon: string | null } | null>
+  findByUserId(
+    userId: string
+  ): Promise<{ id: string; type: string; code: string; label: string } | null>
+  listByType(
+    type: string,
+    options?: { limit?: number; active?: boolean }
+  ): Promise<{ id: string; type: string; code: string; label: string; icon: string | null }[]>
+}
+
+interface PaymentService {
+  listByUserId(
+    userId: string,
+    options?: { limit?: number }
+  ): Promise<{ id: string; amount: number; currency: string; status: string; createdAt: Date }[]>
+  sumSuccessful(userId: string): Promise<number>
+}
 
 export const userService: UserService = {
   async findById(id) {

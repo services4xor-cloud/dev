@@ -98,7 +98,6 @@ export async function POST(req: NextRequest) {
     })
   } catch (err) {
     console.error('[agent/chat] Error:', err)
-    const msg = err instanceof Error ? err.message : 'Agent error'
-    return new Response(msg, { status: 500 })
+    return new Response('Something went wrong — please try again.', { status: 500 })
   }
 }

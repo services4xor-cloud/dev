@@ -295,11 +295,11 @@ export const EMAIL_TEMPLATES: Record<
 
   // ── 4. Safari Booking Confirmation ────────────────────────────────────────
   safari_booking_confirmation: (data) => ({
-    subject: `Booking confirmed: ${data.packageName || 'Your Safari'} — Ref ${data.bookingRef || ''}`,
+    subject: `Experience confirmed: ${data.packageName || 'Your Safari'} — Ref ${data.bookingRef || ''}`,
     html: emailWrapper(
       `${emailHeader('BeKenya Experiences', 'Wildlife. Adventure. Memory.')}
       <div class="body">
-        <div class="badge-green">Booking Confirmed</div>
+        <div class="badge-green">Experience Confirmed</div>
         <h1 class="h1">Your adventure is booked, ${data.guestName || 'Explorer'}!</h1>
         <p class="p">
           Your M-Pesa payment has been received and your safari is confirmed.
@@ -316,7 +316,7 @@ export const EMAIL_TEMPLATES: Record<
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Meeting Point</td><td style="font-size:13px;color:#111827;">${data.meetingPoint || 'Nairobi — details to follow'}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Amount Paid</td><td style="font-size:13px;color:#006600;font-weight:700;">${data.amount || ''}</td></tr>
             <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">M-Pesa Receipt</td><td style="font-size:13px;color:#111827;font-family:monospace;">${data.mpesaReceipt || '—'}</td></tr>
-            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Booking Ref</td><td style="font-size:13px;color:#111827;font-family:monospace;">${data.bookingRef || '—'}</td></tr>
+            <tr><td style="padding:6px 0;font-size:13px;color:#6b7280;">Experience Ref</td><td style="font-size:13px;color:#111827;font-family:monospace;">${data.bookingRef || '—'}</td></tr>
           </table>
         </div>
 
@@ -326,22 +326,22 @@ export const EMAIL_TEMPLATES: Record<
           <li>Camera or phone with charged battery</li>
           <li>Water &amp; light snacks</li>
           <li>Sunscreen and insect repellent</li>
-          <li>This booking reference</li>
+          <li>This experience reference</li>
         </ul>
 
         <div class="cta-block">
           <a href="${data.bookingUrl || 'https://bekenya.com/experiences'}" class="cta-btn-green">
-            View Booking Details
+            View Experience Details
           </a>
         </div>
 
         <hr class="divider" />
         <p class="p-sm" style="text-align:center;">
-          Questions about your booking? WhatsApp us or reply to this email.<br/>
+          Questions about your experience? WhatsApp us or reply to this email.<br/>
           We're here to make your safari unforgettable.
         </p>
       </div>
-      ${emailFooter('You received this because you made a booking at bekenya.com/experiences.')}`,
+      ${emailFooter('You received this because you booked an experience at bekenya.com/experiences.')}`,
       `Your safari is confirmed! Ref: ${data.bookingRef || ''}`
     ),
   }),

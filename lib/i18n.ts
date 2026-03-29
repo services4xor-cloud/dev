@@ -50,7 +50,7 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.startCompass': 'Start My Discovery',
     'hero.browseVentures': 'Browse Experiences',
     'hero.pioneersTrust': 'Explorers active today',
-    'hero.everyBooking': '{amount} from every booking',
+    'hero.everyBooking': '{amount} from every experience',
     'hero.fundsCommunity': 'funds {partner} community work',
 
     // BeNetwork section
@@ -76,7 +76,7 @@ const CONTENT: Record<string, ContentDict> = {
 
     // Impact partner
     'impact.headline': 'Every experience supports {partner}',
-    'impact.contribution': '{amount} from every booking. Automatically. Always.',
+    'impact.contribution': '{amount} from every experience. Automatically. Always.',
     'impact.learnMore': 'Learn about {partner} →',
 
     // Expansion
@@ -489,7 +489,7 @@ const CONTENT: Record<string, ContentDict> = {
     'about.paymentsDesc':
       'We support local payment methods across every corridor — so your income arrives in your hands.',
     'about.impactDesc':
-      'Our community arm. Supporting conservation workers, local guides, and cultural educators across East Africa. Every booking through {brand} contributes.',
+      'Our community arm. Supporting conservation workers, local guides, and cultural educators across East Africa. Every experience through {brand} contributes.',
     'about.learnImpact': 'Learn about {name}',
     'about.ctaTitle': 'Ready to find your opportunity?',
     'about.ctaDesc':
@@ -903,7 +903,7 @@ const CONTENT: Record<string, ContentDict> = {
     'venture.chapterOpened': 'Exchange Opened!',
     'venture.chapterReview': 'The Host will review your profile. Check your Hub for updates.',
     'venture.goToDashboard': 'Go to Hub →',
-    'venture.chapterNote': 'Opening an {chapter} shares your profile with this {anchor}.',
+    'venture.chapterNote': 'Opening an Exchange shares your profile with this Host.',
     'venture.similarPaths': 'Similar Opportunities',
     'venture.professional': 'Professional',
     'venture.explorer': 'Explorer',
@@ -968,7 +968,7 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.bookVenture': 'Book This Experience',
     'exp.freeCancel': '48hr free cancel',
     'exp.verifiedProvider': 'Verified provider',
-    'exp.fundsWork': 'from your booking funds {name} community work',
+    'exp.fundsWork': 'from your experience funds {name} community work',
     'exp.maxGroupSize': 'Max group size',
     'exp.people': '{count} people',
     'exp.provider': 'Provider',
@@ -977,13 +977,13 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.bookNow': 'Book Now',
     'exp.youreGoing': "You're going!",
     'exp.adventureConfirmed': 'Your adventure to {destination} is confirmed.',
-    'exp.bookingConfirmed': 'Booking Confirmed',
+    'exp.bookingConfirmed': 'Experience Confirmed',
     'exp.amountPaid': 'Amount paid',
     'exp.payment': 'Payment',
     'exp.reference': 'Reference',
     'exp.madeImpact': 'You just made an impact',
     'exp.impactNote':
-      '{amount} from your booking goes directly to {name} Community Based Organisation — funding education, healthcare, and opportunity in Kenya.',
+      '{amount} from your experience goes directly to {name} Community Based Organisation — funding education, healthcare, and opportunity in Kenya.',
     'exp.confirmationSent':
       'Confirmation sent to your phone. Provider will contact you within 24 hours with detailed pickup instructions.',
     'exp.myDashboard': 'My Hub →',
@@ -1527,7 +1527,7 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.startCompass': 'Meine Entdeckung starten',
     'hero.browseVentures': 'Erlebnisse durchsuchen',
     'hero.pioneersTrust': 'Aktive Entdecker heute',
-    'hero.everyBooking': '{amount} von jeder Buchung',
+    'hero.everyBooking': '{amount} von jedem Erlebnis',
     'hero.fundsCommunity': 'finanziert {partner} Gemeinschaftsarbeit',
 
     'network.label': 'Das BeNetwork',
@@ -1549,7 +1549,7 @@ const CONTENT: Record<string, ContentDict> = {
     'experiences.book': 'Dieses Erlebnis buchen →',
 
     'impact.headline': 'Jedes Erlebnis unterstützt {partner}',
-    'impact.contribution': '{amount} von jeder Buchung. Automatisch. Immer.',
+    'impact.contribution': '{amount} von jedem Erlebnis. Automatisch. Immer.',
     'impact.learnMore': 'Mehr über {partner} erfahren →',
 
     'expansion.headline': '{brandName} ist erst der Anfang.',
@@ -1770,15 +1770,27 @@ const CONTENT: Record<string, ContentDict> = {
     'ventures.postPath': 'Eine Chance posten →',
     'ventures.featured': 'Empfohlen',
     'ventures.remote': 'Remote',
+    'ventures.pioneersNeeded': '{count} Explorer benötigt',
+    'ventures.available': '{count} verfügbar',
     'ventures.perPerson': '/ Person',
+    'ventures.highSeason': 'Hochsaison',
+    'ventures.explorerVentures': 'Explorer-Erlebnisse',
+    'ventures.featuredPaths': 'Empfohlene Chancen',
+    'ventures.open': '{count} offen',
 
     // Onboarding
+    'onboarding.step': 'Schritt {step} von {total}',
+    'onboarding.complete': '% abgeschlossen',
     'onboarding.welcome': 'Willkommen im BeNetwork, Entdecker!',
+    'onboarding.network': 'Netzwerk',
     'onboarding.whatKind': 'Was für ein Entdecker bist du?',
     'onboarding.pickOne': 'Wähle den, der am besten zu dir passt. Du kannst es später ändern.',
     'onboarding.whereNow': 'Wo bist du gerade?',
+    'onboarding.other': '🌍 Andere',
+    'onboarding.calibrated': 'Verstanden — dein Profil wird für {country} kalibriert.',
     'onboarding.whereTo': 'Wohin möchtest du?',
     'onboarding.whatSkills': 'Welche Fähigkeiten bringst du mit?',
+    'onboarding.whatsapp': 'WhatsApp-Nummer',
     'onboarding.continue': 'Weiter →',
     'onboarding.openChapter': 'Meinen ersten Exchange öffnen',
     'onboarding.add': 'Hinzufügen',
@@ -1897,6 +1909,7 @@ const CONTENT: Record<string, ContentDict> = {
     'about.values': 'Unsere Werte',
     'about.valuesTitle': 'Werte, die jede Chance leiten',
     'about.valuesSubtitle': 'Wofür wir stehen',
+    'about.team': 'Unser Team',
     'about.sectors': 'Branchen',
     'about.sectorsTitle': 'Chancen in jeder Branche',
     'about.payments': 'Zahlungskanäle',
@@ -1904,7 +1917,7 @@ const CONTENT: Record<string, ContentDict> = {
     'about.paymentsDesc':
       'Wir unterstützen lokale Zahlungsmethoden in jedem Korridor — damit dein Einkommen in deinen Händen ankommt.',
     'about.impactDesc':
-      'Unser Community-Arm. Unterstützt Naturschützer, lokale Guides und kulturelle Pädagogen in Ostafrika. Jede Buchung über {brand} trägt bei.',
+      'Unser Community-Arm. Unterstützt Naturschützer, lokale Guides und kulturelle Pädagogen in Ostafrika. Jedes Erlebnis über {brand} trägt bei.',
     'about.learnImpact': 'Mehr über {name} erfahren',
     'about.ctaTitle': 'Bereit, deine Chance zu finden?',
     'about.ctaDesc':
@@ -2384,7 +2397,7 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.bookVenture': 'Dieses Erlebnis buchen',
     'exp.freeCancel': '48h kostenlose Stornierung',
     'exp.verifiedProvider': 'Verifizierter Anbieter',
-    'exp.fundsWork': 'aus Ihrer Buchung finanziert {name} Gemeinschaftsarbeit',
+    'exp.fundsWork': 'aus Ihrem Erlebnis finanziert {name} Gemeinschaftsarbeit',
     'exp.maxGroupSize': 'Max. Gruppengröße',
     'exp.people': '{count} Personen',
     'exp.provider': 'Anbieter',
@@ -2393,13 +2406,13 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.bookNow': 'Jetzt buchen',
     'exp.youreGoing': 'Sie reisen!',
     'exp.adventureConfirmed': 'Ihr Abenteuer nach {destination} ist bestätigt.',
-    'exp.bookingConfirmed': 'Buchung bestätigt',
+    'exp.bookingConfirmed': 'Erlebnis bestätigt',
     'exp.amountPaid': 'Bezahlter Betrag',
     'exp.payment': 'Zahlung',
     'exp.reference': 'Referenz',
     'exp.madeImpact': 'Sie haben gerade einen Beitrag geleistet',
     'exp.impactNote':
-      '{amount} aus Ihrer Buchung geht direkt an {name} Community Based Organisation — Finanzierung von Bildung, Gesundheit und Chancen in Kenia.',
+      '{amount} aus Ihrem Erlebnis geht direkt an {name} Community Based Organisation — Finanzierung von Bildung, Gesundheit und Chancen in Kenia.',
     'exp.confirmationSent':
       'Bestätigung an Ihr Telefon gesendet. Der Anbieter wird Sie innerhalb von 24 Stunden mit detaillierten Abholinformationen kontaktieren.',
     'exp.myDashboard': 'Mein Hub →',
@@ -2948,7 +2961,7 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.startCompass': 'Anza Ugunduzi Wangu',
     'hero.browseVentures': 'Vinjari Experiences',
     'hero.pioneersTrust': 'Wavumbuzi hai leo',
-    'hero.everyBooking': '{amount} kutoka kila uhifadhi',
+    'hero.everyBooking': '{amount} kutoka kila tajriba',
     'hero.fundsCommunity': 'inafadhili kazi ya jamii ya {partner}',
 
     'network.label': 'BeNetwork',
@@ -3128,7 +3141,7 @@ const CONTENT: Record<string, ContentDict> = {
     'about.paymentsDesc':
       'Tunaunga mkono njia za malipo za ndani katika kila korrido — ili mapato yako yafike mikononi mwako.',
     'about.impactDesc':
-      'Mkono wetu wa jamii. Tunaunga mkono wahifadhi, waongoza wa ndani, na walimu wa kitamaduni kote Afrika Mashariki. Kila uhifadhi kupitia {brand} unachangia.',
+      'Mkono wetu wa jamii. Tunaunga mkono wahifadhi, waongoza wa ndani, na walimu wa kitamaduni kote Afrika Mashariki. Kila tajriba kupitia {brand} inachangia.',
     'about.learnImpact': 'Jifunze kuhusu {name}',
     'about.ctaTitle': 'Uko tayari kupata fursa yako?',
     'about.ctaDesc':
@@ -3607,7 +3620,7 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.bookVenture': 'Hifadhi Experience Hii',
     'exp.freeCancel': 'Kufuta bure saa 48',
     'exp.verifiedProvider': 'Mtoa huduma aliyethibitishwa',
-    'exp.fundsWork': 'kutoka uhifadhi wako inafadhili kazi ya jamii ya {name}',
+    'exp.fundsWork': 'kutoka tajriba yako inafadhili kazi ya jamii ya {name}',
     'exp.maxGroupSize': 'Ukubwa wa juu wa kundi',
     'exp.people': 'watu {count}',
     'exp.provider': 'Mtoa huduma',
@@ -3616,13 +3629,13 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.bookNow': 'Hifadhi Sasa',
     'exp.youreGoing': 'Unaenda!',
     'exp.adventureConfirmed': 'Matembezi yako kwa {destination} yamethibitishwa.',
-    'exp.bookingConfirmed': 'Uhifadhi Umethibitishwa',
+    'exp.bookingConfirmed': 'Tajriba Imethibitishwa',
     'exp.amountPaid': 'Kiasi kilicholipwa',
     'exp.payment': 'Malipo',
     'exp.reference': 'Rejeleo',
     'exp.madeImpact': 'Umefanya athari',
     'exp.impactNote':
-      '{amount} kutoka uhifadhi wako unaenda moja kwa moja kwa {name} Community Based Organisation — kufadhili elimu, afya, na fursa nchini Kenya.',
+      '{amount} kutoka tajriba yako inaenda moja kwa moja kwa {name} Community Based Organisation — kufadhili elimu, afya, na fursa nchini Kenya.',
     'exp.confirmationSent':
       'Uthibitisho umetumwa kwa simu yako. Mtoa huduma atawasiliana nawe ndani ya masaa 24 na maelekezo ya kuchukua kwa undani.',
     'exp.myDashboard': 'Dashboard Yangu →',
@@ -4371,7 +4384,7 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.startCompass': 'Lancer Ma Découverte',
     'hero.browseVentures': 'Parcourir les Expériences',
     'hero.pioneersTrust': "Explorateurs actifs aujourd'hui",
-    'hero.everyBooking': '{amount} de chaque réservation',
+    'hero.everyBooking': '{amount} de chaque expérience',
     'hero.fundsCommunity': 'finance le travail communautaire de {partner}',
 
     // BeNetwork section
@@ -4397,7 +4410,7 @@ const CONTENT: Record<string, ContentDict> = {
 
     // Impact partner
     'impact.headline': 'Chaque expérience soutient {partner}',
-    'impact.contribution': '{amount} de chaque réservation. Automatiquement. Toujours.',
+    'impact.contribution': '{amount} de chaque expérience. Automatiquement. Toujours.',
     'impact.learnMore': 'En savoir plus sur {partner} →',
 
     // Expansion
@@ -4818,7 +4831,7 @@ const CONTENT: Record<string, ContentDict> = {
     'about.paymentsDesc':
       'Nous prenons en charge les méthodes de paiement locales dans chaque corridor — pour que vos revenus arrivent entre vos mains.',
     'about.impactDesc':
-      "Notre branche communautaire. Soutenant les travailleurs de la conservation, les guides locaux et les éducateurs culturels à travers l'Afrique de l'Est. Chaque réservation via {brand} contribue.",
+      "Notre branche communautaire. Soutenant les travailleurs de la conservation, les guides locaux et les éducateurs culturels à travers l'Afrique de l'Est. Chaque expérience via {brand} contribue.",
     'about.learnImpact': 'En savoir plus sur {name}',
     'about.ctaTitle': 'Prêt à trouver votre opportunité ?',
     'about.ctaDesc':
@@ -5305,7 +5318,7 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.bookVenture': 'Réserver cette Expérience',
     'exp.freeCancel': 'Annulation gratuite 48h',
     'exp.verifiedProvider': 'Prestataire vérifié',
-    'exp.fundsWork': 'de votre réservation finance le travail communautaire de {name}',
+    'exp.fundsWork': 'de votre expérience finance le travail communautaire de {name}',
     'exp.maxGroupSize': 'Taille maximale du groupe',
     'exp.people': '{count} personnes',
     'exp.provider': 'Prestataire',
@@ -5314,13 +5327,13 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.bookNow': 'Réserver Maintenant',
     'exp.youreGoing': 'Vous y allez !',
     'exp.adventureConfirmed': 'Votre aventure à {destination} est confirmée.',
-    'exp.bookingConfirmed': 'Réservation Confirmée',
+    'exp.bookingConfirmed': 'Expérience Confirmée',
     'exp.amountPaid': 'Montant payé',
     'exp.payment': 'Paiement',
     'exp.reference': 'Référence',
     'exp.madeImpact': 'Vous venez de créer un impact',
     'exp.impactNote':
-      "{amount} de votre réservation va directement à {name} Organisation Communautaire — finançant l'éducation, la santé et les opportunités au Kenya.",
+      "{amount} de votre expérience va directement à {name} Organisation Communautaire — finançant l'éducation, la santé et les opportunités au Kenya.",
     'exp.confirmationSent':
       'Confirmation envoyée sur votre téléphone. Le prestataire vous contactera sous 24 heures avec les instructions détaillées de prise en charge.',
     'exp.myDashboard': 'Mon Tableau de Bord →',
