@@ -98,20 +98,6 @@ export async function createEdge(
 }
 
 /**
- * Deletes all edges between two nodes with a given relation type.
- *
- * @param fromId - Database ID of the source node
- * @param toId - Database ID of the target node
- * @param relation - The edge relation type to delete
- * @returns Prisma batch delete result with the count of deleted records
- */
-export async function deleteEdge(fromId: string, toId: string, relation: EdgeRelation) {
-  return db.edge.deleteMany({
-    where: { fromId, toId, relation },
-  })
-}
-
-/**
  * Retrieves all outgoing edges from a user's graph node, optionally filtered by relation type.
  *
  * @param userId - The platform user ID

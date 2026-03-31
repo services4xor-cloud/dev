@@ -266,27 +266,3 @@ const ENDONYMS: Record<string, Record<string, string>> = {
 // is the default. No hardcoded map needed.
 
 // ─── Public API ──────────────────────────────────────────────────────────────
-
-/**
- * Search across all countries using any language variant.
- * Returns matching country codes.
- *
- * @example
- * searchCountries('Kenia') // → ['KE']
- * searchCountries('deutsch') // → ['DE'] (partial match on 'Deutschland')
- */
-export function searchCountries(query: string): string[] {
-  const q = query.toLowerCase()
-  const matches: string[] = []
-
-  for (const [cc, names] of Object.entries(ENDONYMS)) {
-    for (const name of Object.values(names)) {
-      if (name.toLowerCase().includes(q)) {
-        matches.push(cc)
-        break
-      }
-    }
-  }
-
-  return matches
-}

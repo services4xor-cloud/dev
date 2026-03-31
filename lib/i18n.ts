@@ -60,13 +60,6 @@ const CONTENT: Record<string, ContentDict> = {
       'No jargon. No CVs rotting in inboxes. Just Explorers, Hosts, and Discoverers — finding each other.',
 
     // Discovery CTA
-    'compass.headline': 'Where do you want to go?',
-    'compass.subtitle':
-      "Tell us your journey in 3 quick steps. We'll match you with Opportunities, Hosts, and communities — anywhere in the world.",
-    'compass.step1': 'Choose destinations',
-    'compass.step2': 'Confirm origin',
-    'compass.step3': 'Your Explorer type',
-    'compass.originHint': "We'll start with {country} as your origin",
 
     // Experiences
     'experiences.label': '{country} Experiences',
@@ -235,32 +228,6 @@ const CONTENT: Record<string, ContentDict> = {
     'onboarding.openingChapter': 'Opening your exchange...',
 
     // Discovery page
-    'compass.active': 'Your Discovery is active',
-    'compass.ready': 'Your Discovery is ready.',
-    'compass.letsFind': "Let's find your way.",
-    'compass.stepOf': 'Step {step} of {total}',
-    'compass.whereAre': 'Where are you currently based?',
-    'compass.currentlyIn': 'Currently in {name}',
-    'compass.autoDetected': 'Auto-detected · tap to change',
-    'compass.change': 'Change',
-    'compass.locationHint':
-      'We use your location to find the strongest routes and payment corridors.',
-    'compass.confirmed': 'Confirmed — {name} →',
-    'compass.whatKind': 'What kind of Explorer are you?',
-    'compass.yourRoute': 'Your Route',
-    'compass.alsoExploring': 'Also exploring:',
-    'compass.visaRoute': 'Visa Route',
-    'compass.payments': 'Payments',
-    'compass.topSectors': 'Top Sectors',
-    'compass.navigateDifferent': '← Navigate a different route',
-    'compass.stepLabel1': 'Destinations',
-    'compass.stepLabel2': 'Your Origin',
-    'compass.stepLabel3': 'Explorer Type',
-    'compass.stepLabel4': 'Your Route',
-    'compass.seeOpenPaths': 'See Open Opportunities →',
-    'compass.selectPioneerType': 'Select your Explorer type',
-    'compass.back': '← Back',
-    'compass.pioneer': 'Explorer',
 
     // Country-specific hero
     'hero.tagline.KE': 'Global Opportunities, Paid via M-Pesa',
@@ -353,32 +320,6 @@ const CONTENT: Record<string, ContentDict> = {
     'world.community': 'Community',
 
     // Discovery page (page-level keys — distinct from wizard CTA keys above)
-    'compass.title': 'Route Discovery',
-    'compass.pageHeadline': 'Find Your Route',
-    'compass.pageSubtitle':
-      'Discover the best corridors for your skills, languages, and goals. Each Route connects you to Opportunities, Explorers, and experiences abroad.',
-    'compass.yourOrigin': 'Your origin',
-    'compass.routesFrom': 'Routes from {country}',
-    'compass.corridors': '{count} corridors',
-    'compass.routesTo': 'Routes to {country}',
-    'compass.visaInfo': 'Visa Info',
-    'compass.paymentMethods': 'Payment Methods',
-    'compass.explorePaths': 'Explore Opportunities',
-    'compass.findPioneers': 'Find Explorers',
-    'compass.viewGate': 'View {country}',
-    'compass.noRoutes': 'No routes mapped yet',
-    'compass.noRoutesDesc':
-      'Routes for {country} are being mapped. In the meantime, explore Opportunities on the Exchange or connect with Explorers.',
-    'compass.exploreExchange': 'Explore Exchange',
-    'compass.directRoute': 'Direct Route',
-    'compass.partnerRoute': 'Partner Route',
-    'compass.emergingRoute': 'Emerging Route',
-    'compass.yourMatch': 'Your Profile Match',
-    'compass.youSpeak': 'You speak {languages} — spoken here',
-    'compass.craftMatch': 'Your craft aligns: {crafts}',
-    'compass.readyToTravel': "You're ready to travel",
-    'compass.canHost': 'You can host visitors',
-    'compass.marketSignals': 'market signals in this corridor',
 
     // IdentitySwitcher + Nav UI labels
     'nav.activeIdentity': 'Active Identity',
@@ -887,28 +828,6 @@ const CONTENT: Record<string, ContentDict> = {
       "Join {brand}'s Agent network. No upfront cost. Earn commission on every successful placement.",
 
     // Experience Detail
-    'venture.notFoundTitle': 'Opportunity Not Found',
-    'venture.notFoundDesc': "This experience doesn't exist or has been closed.",
-    'venture.browseAll': 'Browse All Experiences',
-    'venture.backToVentures': 'Back to Experiences',
-    'venture.remoteOk': 'Remote OK',
-    'venture.aboutPath': 'About This Opportunity',
-    'venture.whatYouDo': "What You'll Do",
-    'venture.requirements': "What We're Looking For",
-    'venture.benefits': "What You'll Get",
-    'venture.compensation': 'Compensation',
-    'venture.posted': 'Posted',
-    'venture.pioneersNeeded': 'Explorers Needed',
-    'venture.anchor': 'Host',
-    'venture.chapterOpened': 'Exchange Opened!',
-    'venture.chapterReview': 'The Host will review your profile. Check your Hub for updates.',
-    'venture.goToDashboard': 'Go to Hub →',
-    'venture.chapterNote': 'Opening an Exchange shares your profile with this Host.',
-    'venture.similarPaths': 'Similar Opportunities',
-    'venture.professional': 'Professional',
-    'venture.explorer': 'Explorer',
-    'venture.creative': 'Creative',
-    'venture.community': 'Community',
 
     // Notifications
     'notif.title': 'Notifications',
@@ -998,30 +917,6 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.seasonAll': 'Year-Round',
 
     // Host Dashboard
-    'anchor.activePaths': 'Active Opportunities',
-    'anchor.totalChapters': 'Total Exchanges',
-    'anchor.pioneersMatched': 'Explorers Matched',
-    'anchor.views7d': 'Views (7d)',
-    'anchor.yourPaths': 'Your Opportunities',
-    'anchor.newPath': 'New Opportunity',
-    'anchor.openNewPath': 'Open a new Opportunity',
-    'anchor.toggle': 'Toggle',
-    'anchor.chapters': 'exchanges',
-    'anchor.views': 'views',
-    'anchor.avgMatch': '{score}% avg match',
-    'anchor.recentChapters': 'Recent Exchange Openings',
-    'anchor.match': 'match',
-    'anchor.tabPaths': 'Opportunities',
-    'anchor.tabChapters': 'Exchanges',
-    'anchor.tabInsights': 'Insights',
-    'anchor.filterAll': 'All',
-    'anchor.shortlist': 'Shortlist',
-    'anchor.decline': 'Decline',
-    'anchor.noChapters': 'No exchanges in this category yet.',
-    'anchor.compassRecs': 'Discovery Recommendations',
-    'anchor.compassRecsDesc': 'Explorers matching your open opportunities',
-    'anchor.invite': 'Invite',
-    'anchor.pathPerformance': 'Opportunity Performance',
 
     // Agent Dashboard
     'agentDash.tabDemand': 'Demand Feed',
@@ -1535,14 +1430,6 @@ const CONTENT: Record<string, ContentDict> = {
     'network.subtitle':
       'Kein Fachjargon. Keine Lebensläufe in Postfächern. Nur Entdecker, Hosts und Entdecker — die sich finden.',
 
-    'compass.headline': 'Wohin möchtest du?',
-    'compass.subtitle':
-      'Erzähl uns deine Reise in 3 schnellen Schritten. Wir finden Chancen, Hosts und Gemeinschaften — überall auf der Welt.',
-    'compass.step1': 'Ziele wählen',
-    'compass.step2': 'Herkunft bestätigen',
-    'compass.step3': 'Dein Entdecker-Typ',
-    'compass.originHint': 'Wir beginnen mit {country} als Herkunft',
-
     'experiences.label': '{country} Erlebnisse',
     'experiences.headline': '{country} wartet auf niemanden. Du auch nicht.',
     'experiences.subtitle': 'Signatur-Erlebnisse kuratiert von {brandName}.',
@@ -1665,32 +1552,6 @@ const CONTENT: Record<string, ContentDict> = {
     'world.community': 'Gemeinschaft',
 
     // Discovery-Seite
-    'compass.title': 'Routen-Discovery',
-    'compass.pageHeadline': 'Finde deine Route',
-    'compass.pageSubtitle':
-      'Entdecke die besten Korridore für deine Fähigkeiten, Sprachen und Ziele. Jede Route verbindet dich mit Chancen, Entdeckern und Erfahrungen im Ausland.',
-    'compass.yourOrigin': 'Dein Ausgangspunkt',
-    'compass.routesFrom': 'Routen von {country}',
-    'compass.corridors': '{count} Korridore',
-    'compass.routesTo': 'Routen nach {country}',
-    'compass.visaInfo': 'Visum-Info',
-    'compass.paymentMethods': 'Zahlungsmethoden',
-    'compass.explorePaths': 'Chancen erkunden',
-    'compass.findPioneers': 'Entdecker finden',
-    'compass.viewGate': '{country} anzeigen',
-    'compass.noRoutes': 'Noch keine Routen kartiert',
-    'compass.noRoutesDesc':
-      'Routen für {country} werden kartiert. In der Zwischenzeit erkunde Chancen im Austausch oder verbinde dich mit Entdeckern.',
-    'compass.exploreExchange': 'Austausch erkunden',
-    'compass.directRoute': 'Direkte Route',
-    'compass.partnerRoute': 'Partner-Route',
-    'compass.emergingRoute': 'Aufkommende Route',
-    'compass.yourMatch': 'Dein Profil-Match',
-    'compass.youSpeak': 'Du sprichst {languages} — hier gesprochen',
-    'compass.craftMatch': 'Dein Handwerk passt: {crafts}',
-    'compass.readyToTravel': 'Du bist reisebereit',
-    'compass.canHost': 'Du kannst Besucher aufnehmen',
-    'compass.marketSignals': 'Marktsignale in diesem Korridor',
 
     // IdentitySwitcher + Nav UI labels
     'nav.activeIdentity': 'Aktive Identität',
@@ -1796,32 +1657,6 @@ const CONTENT: Record<string, ContentDict> = {
     'onboarding.add': 'Hinzufügen',
 
     // Discovery
-    'compass.active': 'Deine Discovery ist aktiv',
-    'compass.ready': 'Deine Discovery ist bereit.',
-    'compass.letsFind': 'Lass uns deinen Weg finden.',
-    'compass.whereAre': 'Wo bist du gerade?',
-    'compass.change': 'Ändern',
-    'compass.whatKind': 'Was für ein Entdecker bist du?',
-    'compass.yourRoute': 'Deine Route',
-    'compass.visaRoute': 'Visum-Route',
-    'compass.payments': 'Zahlungen',
-    'compass.topSectors': 'Top Sektoren',
-    'compass.navigateDifferent': '← Eine andere Route navigieren',
-    'compass.stepLabel1': 'Ziele',
-    'compass.stepLabel2': 'Herkunft',
-    'compass.stepLabel3': 'Entdecker-Typ',
-    'compass.stepLabel4': 'Deine Route',
-    'compass.seeOpenPaths': 'Offene Chancen ansehen →',
-    'compass.selectPioneerType': 'Wähle deinen Entdecker-Typ',
-    'compass.back': '← Zurück',
-    'compass.currentlyIn': 'Aktuell in {name}',
-    'compass.autoDetected': 'Automatisch erkannt · tippe zum Ändern',
-    'compass.locationHint':
-      'Wir nutzen deinen Standort, um die besten Routen und Zahlungskorridore zu finden.',
-    'compass.confirmed': 'Bestätigt — {name} →',
-    'compass.alsoExploring': 'Erkundet auch:',
-    'compass.stepOf': 'Schritt {step} von {total}',
-    'compass.pioneer': 'Entdecker',
 
     'common.pioneers': 'Entdecker',
     'common.active': 'Aktiv',
@@ -2316,28 +2151,6 @@ const CONTENT: Record<string, ContentDict> = {
       'Tritt dem Agent-Netzwerk von {brand} bei. Keine Vorabkosten. Verdiene Provision bei jeder erfolgreichen Vermittlung.',
 
     // Experience Detail
-    'venture.notFoundTitle': 'Chance nicht gefunden',
-    'venture.notFoundDesc': 'Dieses Erlebnis existiert nicht oder wurde geschlossen.',
-    'venture.browseAll': 'Alle Erlebnisse durchsuchen',
-    'venture.backToVentures': 'Zurück zu Erlebnissen',
-    'venture.remoteOk': 'Remote möglich',
-    'venture.aboutPath': 'Über diese Chance',
-    'venture.whatYouDo': 'Was du tun wirst',
-    'venture.requirements': 'Was wir suchen',
-    'venture.benefits': 'Was du bekommst',
-    'venture.compensation': 'Vergütung',
-    'venture.posted': 'Veröffentlicht',
-    'venture.pioneersNeeded': 'Entdecker gesucht',
-    'venture.anchor': 'Host',
-    'venture.chapterOpened': 'Exchange eröffnet!',
-    'venture.chapterReview': 'Der Host wird dein Profil prüfen. Prüfe deinen Hub für Updates.',
-    'venture.goToDashboard': 'Zum Hub →',
-    'venture.chapterNote': 'Das Eröffnen eines {chapter} teilt dein Profil mit diesem {anchor}.',
-    'venture.similarPaths': 'Ähnliche Chancen',
-    'venture.professional': 'Professionell',
-    'venture.explorer': 'Entdecker',
-    'venture.creative': 'Kreativ',
-    'venture.community': 'Community',
 
     // Notifications
     'notif.title': 'Benachrichtigungen',
@@ -2427,30 +2240,6 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.seasonAll': 'Ganzjährig',
 
     // Host Dashboard
-    'anchor.activePaths': 'Aktive Chancen',
-    'anchor.totalChapters': 'Gesamte Exchanges',
-    'anchor.pioneersMatched': 'Entdecker zugeordnet',
-    'anchor.views7d': 'Aufrufe (7T)',
-    'anchor.yourPaths': 'Ihre Chancen',
-    'anchor.newPath': 'Neue Chance',
-    'anchor.openNewPath': 'Eine neue Chance eröffnen',
-    'anchor.toggle': 'Umschalten',
-    'anchor.chapters': 'Exchanges',
-    'anchor.views': 'Aufrufe',
-    'anchor.avgMatch': '{score}% Ø Übereinstimmung',
-    'anchor.recentChapters': 'Kürzliche Exchange-Eröffnungen',
-    'anchor.match': 'Übereinstimmung',
-    'anchor.tabPaths': 'Chancen',
-    'anchor.tabChapters': 'Exchanges',
-    'anchor.tabInsights': 'Einblicke',
-    'anchor.filterAll': 'Alle',
-    'anchor.shortlist': 'Vorauswahl',
-    'anchor.decline': 'Ablehnen',
-    'anchor.noChapters': 'Noch keine Exchanges in dieser Kategorie.',
-    'anchor.compassRecs': 'Discovery-Empfehlungen',
-    'anchor.compassRecsDesc': 'Entdecker, die zu Ihren offenen Chancen passen',
-    'anchor.invite': 'Einladen',
-    'anchor.pathPerformance': 'Chancen-Performance',
 
     // Agent Dashboard
     'agentDash.tabDemand': 'Nachfrage-Feed',
@@ -2558,13 +2347,13 @@ const CONTENT: Record<string, ContentDict> = {
     'postPath.skillsNeeded': 'Benötigte Fähigkeiten',
     'postPath.readyToOpen': 'Bereit, diese Chance zu öffnen?',
     'postPath.readyDesc':
-      'Discovery wird sofort beginnen, Explorers mit Ihrer Chance zu matchen. Sie werden Exchanges in Ihrem Dashboard sehen.',
+      'Discovery wird sofort beginnen, Explorers mit Ihrer Chance zu matchen. Sie werden Exchanges in Ihrem Hub sehen.',
     'postPath.openThisPath': 'Diese Chance öffnen',
     'postPath.openingPath': 'Chance wird geöffnet...',
     'postPath.pathIsOpen': 'Chance ist offen!',
     'postPath.compassRouting':
       'Discovery leitet jetzt Explorers zu {title}. Sie werden in Kürze Exchanges sehen.',
-    'postPath.goToDashboard': 'Zum Dashboard',
+    'postPath.goToDashboard': 'Zum Hub',
     'postPath.openAnother': 'Weiteren öffnen',
 
     // Admin Dashboard
@@ -2572,7 +2361,7 @@ const CONTENT: Record<string, ContentDict> = {
     'admin.badge': 'Admin',
     'admin.backToSite': '← Zurück zur Seite',
     'admin.pioneerView': 'Explorer-Ansicht',
-    'admin.mockWarning': 'Admin-Dashboard — alle Daten sind Mock bis DATABASE_URL konfiguriert ist',
+    'admin.mockWarning': 'Admin-Hub — alle Daten sind Mock bis DATABASE_URL konfiguriert ist',
     'admin.tabOverview': 'Übersicht',
     'admin.tabPioneers': 'Explorers',
     'admin.tabAnchors': 'Hosts',
@@ -2587,7 +2376,7 @@ const CONTENT: Record<string, ContentDict> = {
     'admin.revenueThisMonth': 'Umsatz diesen Monat',
     'admin.mpesaTransactions': 'M-Pesa-Transaktionen',
     'admin.pending': '{count} ausstehend',
-    'admin.checkMpesa': 'M-Pesa-Sandbox-Dashboard prüfen',
+    'admin.checkMpesa': 'M-Pesa-Sandbox-Hub prüfen',
     'admin.recentSignups': 'Neueste Explorer-Anmeldungen',
     'admin.recentChapters': 'Neueste Exchanges',
     'admin.systemHealth': 'Systemzustand',
@@ -2766,7 +2555,7 @@ const CONTENT: Record<string, ContentDict> = {
     // Me (Explorer Dashboard)
     'me.setupTitle': 'Richte zuerst deine Identität ein',
     'me.setupDescription':
-      'Wähle deine Sprachen auf der Startseite, um dein persönliches Dashboard freizuschalten — verwalte deine Chancen, Exchanges und Verbindungen.',
+      'Wähle deine Sprachen auf der Startseite, um deinen persönlichen Hub freizuschalten — verwalte deine Chancen, Exchanges und Verbindungen.',
     'me.goToDiscovery': 'Zur Entdeckung',
     'me.defaultName': 'Explorer',
     'me.connectedTo': 'Verbunden mit {count} Personen',
@@ -2969,10 +2758,6 @@ const CONTENT: Record<string, ContentDict> = {
     'network.subtitle':
       'Hakuna lugha ngumu. Hakuna CV zinazochakaa. Wavumbuzi, Wenyeji, na Wasomi tu — wanaopata kila mmoja.',
 
-    'compass.headline': 'Unataka kwenda wapi?',
-    'compass.subtitle':
-      'Tuambie safari yako kwa hatua 3 za haraka. Tutakupatanisha na Fursa, Wenyeji, na jamii — popote ulimwenguni.',
-
     'experiences.label': 'Uzoefu wa {country}',
     'experiences.headline': '{country} haingojei mtu. Wewe pia usishindwe.',
     'experiences.subtitle': 'Uzoefu wa kipekee ulioandaliwa na {brandName}.',
@@ -3043,11 +2828,6 @@ const CONTENT: Record<string, ContentDict> = {
     'onboarding.openChapter': 'Fungua Exchange Yangu ya Kwanza',
 
     // Discovery
-    'compass.active': 'Ugunduzi wako uko hai',
-    'compass.ready': 'Ugunduzi wako uko tayari.',
-    'compass.whereAre': 'Uko wapi sasa?',
-    'compass.whatKind': 'Ni mvumbuzi wa aina gani?',
-    'compass.yourRoute': 'Njia Yako',
 
     'common.pioneers': 'wavumbuzi',
     'common.active': 'Hai',
@@ -3493,7 +3273,7 @@ const CONTENT: Record<string, ContentDict> = {
     'agent.heroDesc':
       'Agents ni daraja kati ya waajiri wa kimataifa na talanta za ndani. Peleka fursa za kazi kwa jamii yako, fuatilia kila uwekaji, na upate kamisheni kwa kila mfanyakazi anayeajiriwa kupitia mtandao wako.',
     'agent.applyCta': 'Omba kuwa Agent',
-    'agent.viewDemo': 'Angalia Dashboard ya Demo',
+    'agent.viewDemo': 'Angalia Hub ya Demo',
     'agent.statAgents': 'Agents Hai',
     'agent.statPlacements': 'Uwekaji Uliofanywa',
     'agent.statCountries': 'Nchi Zilizofunikwa',
@@ -3539,28 +3319,6 @@ const CONTENT: Record<string, ContentDict> = {
       'Jiunge na mtandao wa Agent wa {brand}. Hakuna gharama ya awali. Pata kamisheni kwa kila uwekaji wenye mafanikio.',
 
     // Experience Detail
-    'venture.notFoundTitle': 'Fursa Haijapatikana',
-    'venture.notFoundDesc': 'Experience hii haipo au imefungwa.',
-    'venture.browseAll': 'Vinjari Experiences Zote',
-    'venture.backToVentures': 'Rudi kwa Experiences',
-    'venture.remoteOk': 'Remote Sawa',
-    'venture.aboutPath': 'Kuhusu Fursa Hii',
-    'venture.whatYouDo': 'Utakachofanya',
-    'venture.requirements': 'Tunachotafuta',
-    'venture.benefits': 'Utakachopata',
-    'venture.compensation': 'Fidia',
-    'venture.posted': 'Ilitangazwa',
-    'venture.pioneersNeeded': 'Wavumbuzi Wanaohitajika',
-    'venture.anchor': 'Mwenyeji',
-    'venture.chapterOpened': 'Exchange Imefunguliwa!',
-    'venture.chapterReview': 'Mwenyeji atakagua wasifu wako. Angalia dashboard yako kwa masasisho.',
-    'venture.goToDashboard': 'Nenda Dashboard →',
-    'venture.chapterNote': 'Kufungua {chapter} kunashiriki wasifu wako na {anchor} hii.',
-    'venture.similarPaths': 'Fursa Zinazofanana',
-    'venture.professional': 'Kitaalamu',
-    'venture.explorer': 'Mgunduzi',
-    'venture.creative': 'Ubunifu',
-    'venture.community': 'Jamii',
 
     // Notifications
     'notif.title': 'Arifa',
@@ -3569,7 +3327,7 @@ const CONTENT: Record<string, ContentDict> = {
     'notif.markAllRead': 'Weka zote kama zilizosomwa',
     'notif.markAsRead': 'Weka kama imesomwa',
     'notif.view': 'Tazama →',
-    'notif.dashboard': '← Dashboard',
+    'notif.dashboard': '← Hub',
     'notif.preferences': 'Mapendeleo',
     'notif.tabAll': 'Zote',
     'notif.tabUnread': 'Hazijasomwa',
@@ -3638,7 +3396,7 @@ const CONTENT: Record<string, ContentDict> = {
       '{amount} kutoka tajriba yako inaenda moja kwa moja kwa {name} Community Based Organisation — kufadhili elimu, afya, na fursa nchini Kenya.',
     'exp.confirmationSent':
       'Uthibitisho umetumwa kwa simu yako. Mtoa huduma atawasiliana nawe ndani ya masaa 24 na maelekezo ya kuchukua kwa undani.',
-    'exp.myDashboard': 'Dashboard Yangu →',
+    'exp.myDashboard': 'Hub Yangu →',
     'exp.browseMore': 'Vinjari Experiences Zaidi',
     'exp.processing': 'Malipo yako yanashughulikiwa...',
     'exp.processingNote': 'Hii itachukua sekunde chache tu.',
@@ -3650,30 +3408,6 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.seasonAll': 'Mwaka Mzima',
 
     // Host Dashboard
-    'anchor.activePaths': 'Fursa Hai',
-    'anchor.totalChapters': 'Exchanges Zote',
-    'anchor.pioneersMatched': 'Wavumbuzi Waliolingana',
-    'anchor.views7d': 'Maoni (siku 7)',
-    'anchor.yourPaths': 'Fursa Zako',
-    'anchor.newPath': 'Fursa Mpya',
-    'anchor.openNewPath': 'Fungua Fursa mpya',
-    'anchor.toggle': 'Badilisha',
-    'anchor.chapters': 'exchanges',
-    'anchor.views': 'maoni',
-    'anchor.avgMatch': '{score}% wastani wa mechi',
-    'anchor.recentChapters': 'Exchanges Zilizofunguliwa Hivi Karibuni',
-    'anchor.match': 'mechi',
-    'anchor.tabPaths': 'Fursa',
-    'anchor.tabChapters': 'Exchanges',
-    'anchor.tabInsights': 'Maarifa',
-    'anchor.filterAll': 'Zote',
-    'anchor.shortlist': 'Orodha Fupi',
-    'anchor.decline': 'Kataa',
-    'anchor.noChapters': 'Hakuna exchanges katika kategoria hii bado.',
-    'anchor.compassRecs': 'Mapendekezo ya Discovery',
-    'anchor.compassRecsDesc': 'Wavumbuzi wanaolingana na Fursa zako zilizo wazi',
-    'anchor.invite': 'Alika',
-    'anchor.pathPerformance': 'Utendaji wa Fursa',
 
     // Agent Dashboard
     'agentDash.tabDemand': 'Mlisho wa Mahitaji',
@@ -3779,7 +3513,7 @@ const CONTENT: Record<string, ContentDict> = {
     'postPath.pathIsOpen': 'Fursa Imefunguliwa!',
     'postPath.compassRouting':
       'Discovery sasa inapeleka Wavumbuzi kwa {title}. Utaona exchanges hivi karibuni.',
-    'postPath.goToDashboard': 'Nenda Dashibodi',
+    'postPath.goToDashboard': 'Nenda Hub',
     'postPath.openAnother': 'Fungua Nyingine',
 
     // Admin Dashboard
@@ -3943,7 +3677,7 @@ const CONTENT: Record<string, ContentDict> = {
     'me.tapToCopy': 'gusa kunakili',
     'me.saving': 'Inahifadhi...',
     'me.saved': 'Imehifadhiwa',
-    'me.tabDashboard': 'Dashibodi',
+    'me.tabDashboard': 'Hub',
     'me.tabSaved': 'Zilizohifadhiwa',
     'me.tabExchanges': 'Mabadilishano',
     'me.tabReferrals': 'Rufaa',
@@ -4139,26 +3873,6 @@ const CONTENT: Record<string, ContentDict> = {
     'onboarding.openingChapter': 'Inafungua exchange yako...',
 
     // Discovery (completing missing keys)
-    'compass.letsFind': 'Hebu tupate fursa yako.',
-    'compass.stepOf': 'Hatua {step} ya {total}',
-    'compass.currentlyIn': 'Sasa hivi {name}',
-    'compass.autoDetected': 'Imegunduliwa moja kwa moja · gonga kubadilisha',
-    'compass.change': 'Badilisha',
-    'compass.locationHint': 'Tunatumia eneo lako kupata njia na korido bora za malipo.',
-    'compass.confirmed': 'Imethibitishwa — {name} →',
-    'compass.alsoExploring': 'Pia inachunguza:',
-    'compass.visaRoute': 'Njia ya Visa',
-    'compass.payments': 'Malipo',
-    'compass.topSectors': 'Sekta Bora',
-    'compass.navigateDifferent': '← Pitia njia tofauti',
-    'compass.stepLabel1': 'Malengo',
-    'compass.stepLabel2': 'Asili',
-    'compass.stepLabel3': 'Aina ya Mvumbuzi',
-    'compass.stepLabel4': 'Njia Yako',
-    'compass.seeOpenPaths': 'Ona Fursa Wazi →',
-    'compass.selectPioneerType': 'Chagua aina yako ya mvumbuzi',
-    'compass.back': '← Rudi',
-    'compass.pioneer': 'Mvumbuzi',
 
     // Country hero taglines
     'hero.tagline.KE': 'Fursa za Kimataifa, Malipo kupitia M-Pesa',
@@ -4252,32 +3966,6 @@ const CONTENT: Record<string, ContentDict> = {
     'world.community': 'Jumuiya',
 
     // Discovery page
-    'compass.title': 'Discovery ya Fursa',
-    'compass.pageHeadline': 'Pata Fursa Yako',
-    'compass.pageSubtitle':
-      "Gundua korido bora kwa ujuzi, lugha, na malengo yako. Kila Discovery inakuunganisha na Fursa, Wavumbuzi, na fursa ng'ambo.",
-    'compass.yourOrigin': 'Asili yako',
-    'compass.routesFrom': 'Njia kutoka {country}',
-    'compass.corridors': 'korido {count}',
-    'compass.routesTo': 'Njia kwenda {country}',
-    'compass.visaInfo': 'Taarifa za Visa',
-    'compass.paymentMethods': 'Njia za Malipo',
-    'compass.explorePaths': 'Chunguza Fursa',
-    'compass.findPioneers': 'Tafuta Wavumbuzi',
-    'compass.viewGate': 'Ona {country}',
-    'compass.noRoutes': 'Hakuna njia zilizowekwa bado',
-    'compass.noRoutesDesc':
-      'Fursa za {country} zinawekwa. Wakati huo, chunguza Fursa kwenye Kubadilishana au unganisha na Wavumbuzi.',
-    'compass.exploreExchange': 'Chunguza Kubadilishana',
-    'compass.directRoute': 'Njia ya Moja kwa Moja',
-    'compass.partnerRoute': 'Njia ya Mshirika',
-    'compass.emergingRoute': 'Njia Inayoibuka',
-    'compass.yourMatch': 'Mechi Yako ya Wasifu',
-    'compass.youSpeak': 'Unazungumza {languages} — inazungumzwa hapa',
-    'compass.craftMatch': 'Ufundi wako unafaa: {crafts}',
-    'compass.readyToTravel': 'Uko tayari kusafiri',
-    'compass.canHost': 'Unaweza kukaribisha wageni',
-    'compass.marketSignals': 'ishara za soko katika ukanda huu',
 
     // IdentitySwitcher + Nav UI
     'nav.activeIdentity': 'Utambulisho Hai',
@@ -4394,13 +4082,6 @@ const CONTENT: Record<string, ContentDict> = {
       'Pas de jargon. Pas de CV qui moisissent dans des boîtes mail. Juste des Explorateurs, des Hôtes et des Explorateurs — qui se trouvent.',
 
     // Discovery CTA
-    'compass.headline': 'Où voulez-vous aller ?',
-    'compass.subtitle':
-      'Décrivez votre parcours en 3 étapes rapides. Nous vous mettrons en relation avec des Opportunités, des Hôtes et des communautés — partout dans le monde.',
-    'compass.step1': 'Choisir les destinations',
-    'compass.step2': "Confirmer l'origine",
-    'compass.step3': 'Votre type de Explorateur',
-    'compass.originHint': 'Nous commencerons avec {country} comme origine',
 
     // Experiences
     'experiences.label': 'Expériences {country}',
@@ -4576,32 +4257,6 @@ const CONTENT: Record<string, ContentDict> = {
     'onboarding.openingChapter': 'Ouverture de votre exchange...',
 
     // Discovery page
-    'compass.active': 'Votre Découverte est active',
-    'compass.ready': 'Votre Découverte est prête.',
-    'compass.letsFind': 'Trouvons votre opportunité.',
-    'compass.stepOf': 'Étape {step} sur {total}',
-    'compass.whereAre': 'Où êtes-vous actuellement basé ?',
-    'compass.currentlyIn': 'Actuellement à {name}',
-    'compass.autoDetected': 'Détecté automatiquement · appuyez pour changer',
-    'compass.change': 'Changer',
-    'compass.locationHint':
-      'Nous utilisons votre localisation pour trouver les meilleurs itinéraires et corridors de paiement.',
-    'compass.confirmed': 'Confirmé — {name} →',
-    'compass.whatKind': 'Quel type de Explorateur êtes-vous ?',
-    'compass.yourRoute': 'Votre Itinéraire',
-    'compass.alsoExploring': 'Explore également :',
-    'compass.visaRoute': 'Itinéraire Visa',
-    'compass.payments': 'Paiements',
-    'compass.topSectors': 'Secteurs principaux',
-    'compass.navigateDifferent': '← Naviguer un itinéraire différent',
-    'compass.stepLabel1': 'Destinations',
-    'compass.stepLabel2': 'Votre Origine',
-    'compass.stepLabel3': 'Type de Explorateur',
-    'compass.stepLabel4': 'Votre Itinéraire',
-    'compass.seeOpenPaths': 'Voir les Opportunités Ouverts →',
-    'compass.selectPioneerType': 'Sélectionnez votre type de Explorateur',
-    'compass.back': '← Retour',
-    'compass.pioneer': 'Explorateur',
 
     // Country-specific hero
     'hero.tagline.KE': 'Opportunités mondiales, payées via M-Pesa',
@@ -4694,32 +4349,6 @@ const CONTENT: Record<string, ContentDict> = {
     'world.community': 'Communauté',
 
     // Discovery page (page-level keys)
-    'compass.title': 'Découverte des Itinéraires',
-    'compass.pageHeadline': 'Trouvez Votre Itinéraire',
-    'compass.pageSubtitle':
-      "Découvrez les meilleurs corridors pour vos compétences, langues et objectifs. Chaque Itinéraire vous connecte à des Opportunités, des Explorateurs et des opportunités à l'étranger.",
-    'compass.yourOrigin': 'Votre origine',
-    'compass.routesFrom': 'Itinéraires depuis {country}',
-    'compass.corridors': '{count} corridors',
-    'compass.routesTo': 'Itinéraires vers {country}',
-    'compass.visaInfo': 'Info Visa',
-    'compass.paymentMethods': 'Méthodes de Paiement',
-    'compass.explorePaths': 'Explorer les Opportunités',
-    'compass.findPioneers': 'Trouver des Explorateurs',
-    'compass.viewGate': 'Voir {country}',
-    'compass.noRoutes': 'Aucun itinéraire cartographié pour le moment',
-    'compass.noRoutesDesc':
-      "Les itinéraires pour {country} sont en cours de cartographie. En attendant, explorez les Opportunités sur l'Échange ou connectez-vous avec des Explorateurs.",
-    'compass.exploreExchange': "Explorer l'Échange",
-    'compass.directRoute': 'Itinéraire Direct',
-    'compass.partnerRoute': 'Itinéraire Partenaire',
-    'compass.emergingRoute': 'Itinéraire Émergent',
-    'compass.yourMatch': 'Correspondance de Votre Profil',
-    'compass.youSpeak': 'Vous parlez {languages} — parlé ici',
-    'compass.craftMatch': 'Votre métier correspond : {crafts}',
-    'compass.readyToTravel': 'Vous êtes prêt à voyager',
-    'compass.canHost': 'Vous pouvez accueillir des visiteurs',
-    'compass.marketSignals': 'signaux de marché dans ce corridor',
 
     // IdentitySwitcher + Nav UI labels
     'nav.activeIdentity': 'Identité Active',
@@ -5235,29 +4864,6 @@ const CONTENT: Record<string, ContentDict> = {
       "Rejoignez le réseau d'Agents de {brand}. Aucun coût initial. Gagnez une commission sur chaque placement réussi.",
 
     // Experience Detail
-    'venture.notFoundTitle': 'Opportunité Non Trouvée',
-    'venture.notFoundDesc': "Cette expérience n'existe pas ou a été clôturée.",
-    'venture.browseAll': 'Parcourir Tous les Expériences',
-    'venture.backToVentures': 'Retour aux Expériences',
-    'venture.remoteOk': 'Télétravail OK',
-    'venture.aboutPath': 'À Propos de cette Opportunité',
-    'venture.whatYouDo': 'Ce Que Vous Ferez',
-    'venture.requirements': 'Ce Que Nous Recherchons',
-    'venture.benefits': 'Ce Que Vous Obtiendrez',
-    'venture.compensation': 'Rémunération',
-    'venture.posted': 'Publié',
-    'venture.pioneersNeeded': 'Explorateurs Recherchés',
-    'venture.anchor': 'Hôte',
-    'venture.chapterOpened': 'Exchange Ouvert !',
-    'venture.chapterReview':
-      "L'Hôte examinera votre profil. Consultez votre tableau de bord pour les mises à jour.",
-    'venture.goToDashboard': 'Aller au Tableau de Bord →',
-    'venture.chapterNote': 'Ouvrir un {chapter} partage votre profil avec cette {anchor}.',
-    'venture.similarPaths': 'Opportunités Similaires',
-    'venture.professional': 'Professionnel',
-    'venture.explorer': 'Explorateur',
-    'venture.creative': 'Créatif',
-    'venture.community': 'Communauté',
 
     // Notifications
     'notif.title': 'Notifications',
@@ -5336,7 +4942,7 @@ const CONTENT: Record<string, ContentDict> = {
       "{amount} de votre expérience va directement à {name} Organisation Communautaire — finançant l'éducation, la santé et les opportunités au Kenya.",
     'exp.confirmationSent':
       'Confirmation envoyée sur votre téléphone. Le prestataire vous contactera sous 24 heures avec les instructions détaillées de prise en charge.',
-    'exp.myDashboard': 'Mon Tableau de Bord →',
+    'exp.myDashboard': 'Mon Hub →',
     'exp.browseMore': 'Parcourir Plus de Expériences',
     'exp.processing': 'Traitement de votre paiement...',
     'exp.processingNote': "Cela ne prendra qu'un instant.",
@@ -5348,30 +4954,6 @@ const CONTENT: Record<string, ContentDict> = {
     'exp.seasonAll': "Toute l'année",
 
     // Host Dashboard
-    'anchor.activePaths': 'Opportunités Actives',
-    'anchor.totalChapters': 'Total Exchanges',
-    'anchor.pioneersMatched': 'Explorateurs Correspondants',
-    'anchor.views7d': 'Vues (7j)',
-    'anchor.yourPaths': 'Vos Opportunités',
-    'anchor.newPath': 'Nouvelle Opportunité',
-    'anchor.openNewPath': 'Ouvrir une nouvelle Opportunité',
-    'anchor.toggle': 'Basculer',
-    'anchor.chapters': 'exchanges',
-    'anchor.views': 'vues',
-    'anchor.avgMatch': '{score}% correspondance moyenne',
-    'anchor.recentChapters': 'Ouvertures de Exchanges Récentes',
-    'anchor.match': 'correspondance',
-    'anchor.tabPaths': 'Opportunités',
-    'anchor.tabChapters': 'Exchanges',
-    'anchor.tabInsights': 'Aperçus',
-    'anchor.filterAll': 'Tous',
-    'anchor.shortlist': 'Présélectionner',
-    'anchor.decline': 'Refuser',
-    'anchor.noChapters': 'Aucun exchange dans cette catégorie pour le moment.',
-    'anchor.compassRecs': 'Recommandations de la Découverte',
-    'anchor.compassRecsDesc': 'Explorateurs correspondant à vos opportunités ouverts',
-    'anchor.invite': 'Inviter',
-    'anchor.pathPerformance': 'Performance des Opportunités',
 
     // Agent Dashboard
     'agentDash.tabDemand': 'Flux de Demande',
@@ -5484,7 +5066,7 @@ const CONTENT: Record<string, ContentDict> = {
     'postPath.pathIsOpen': "L'Opportunité est Ouverte !",
     'postPath.compassRouting':
       'La Découverte route maintenant les Explorateurs vers {title}. Vous verrez les échanges arriver sous peu.',
-    'postPath.goToDashboard': 'Aller au Tableau de Bord',
+    'postPath.goToDashboard': 'Aller au Hub',
     'postPath.openAnother': 'Ouvrir un Autre',
 
     // Admin Dashboard
@@ -5697,7 +5279,7 @@ const CONTENT: Record<string, ContentDict> = {
     'me.tapToCopy': 'appuyer pour copier',
     'me.saving': 'Enregistrement...',
     'me.saved': 'Enregistré',
-    'me.tabDashboard': 'Tableau de Bord',
+    'me.tabDashboard': 'Hub',
     'me.tabSaved': 'Sauvegardés',
     'me.tabExchanges': 'Échanges',
     'me.tabReferrals': 'Parrainages',
@@ -5887,7 +5469,6 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.browseVentures': 'अनुभव ब्राउज़ करें',
     'nav.startCompass': 'खोज शुरू करें',
     'nav.signIn': 'साइन इन करें',
-    'compass.headline': 'आप कहाँ जाना चाहते हैं?',
     'expansion.headline': '{brandName} बस शुरुआत है।',
     'common.pioneers': 'अन्वेषक',
     'common.active': 'सक्रिय',
@@ -5906,7 +5487,6 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.startCompass': '启动探索',
     'nav.signIn': '登录',
     'nav.switchIdentity': '点击切换身份',
-    'compass.headline': '你想去哪里？',
     'expansion.headline': '{brandName} 只是开始。',
     'expansion.live': '已上线',
     'expansion.coming': '即将推出',
@@ -5927,7 +5507,6 @@ const CONTENT: Record<string, ContentDict> = {
     'nav.startCompass': 'Iniciar Descubrimiento',
     'nav.signIn': 'Iniciar sesión',
     'nav.switchIdentity': 'Clic para cambiar identidad',
-    'compass.headline': '¿A dónde quieres ir?',
     'expansion.headline': '{brandName} es solo el comienzo.',
     'expansion.live': 'En vivo ahora',
     'expansion.coming': 'Próximamente',
@@ -5949,7 +5528,6 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.browseVentures': 'Explorar Experiencias',
     'nav.startCompass': 'Iniciar Descoberta',
     'nav.signIn': 'Entrar',
-    'compass.headline': 'Para onde você quer ir?',
     'expansion.headline': '{brandName} é apenas o começo.',
     'expansion.live': 'Ao vivo agora',
     'expansion.coming': 'Em breve',
@@ -5969,7 +5547,6 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.browseVentures': 'Обзор Опытов',
     'nav.startCompass': 'Запустить Открытие',
     'nav.signIn': 'Войти',
-    'compass.headline': 'Куда вы хотите поехать?',
     'expansion.headline': '{brandName} — это только начало.',
     'expansion.live': 'Уже работает',
     'expansion.coming': 'Скоро',
@@ -5987,7 +5564,6 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.browseVentures': '体験を探す',
     'nav.startCompass': 'ディスカバリー開始',
     'nav.signIn': 'サインイン',
-    'compass.headline': 'どこに行きたいですか？',
     'expansion.headline': '{brandName} はほんの始まりです。',
     'common.pioneers': 'エクスプローラー',
     'common.active': 'アクティブ',
@@ -6003,7 +5579,6 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.browseVentures': '체험 둘러보기',
     'nav.startCompass': '디스커버리 시작',
     'nav.signIn': '로그인',
-    'compass.headline': '어디로 가고 싶으세요?',
     'common.pioneers': '탐험가',
     'common.active': '활성',
     'common.home': '홈',
@@ -6018,7 +5593,6 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.browseVentures': 'Deneyimleri Gözat',
     'nav.startCompass': 'Keşif Başlat',
     'nav.signIn': 'Giriş Yap',
-    'compass.headline': 'Nereye gitmek istiyorsun?',
     'common.pioneers': 'kaşifler',
     'common.active': 'Aktif',
     'common.home': 'Ana Sayfa',
@@ -6033,7 +5607,6 @@ const CONTENT: Record<string, ContentDict> = {
     'hero.browseVentures': 'Jelajahi Pengalaman',
     'nav.startCompass': 'Mulai Penemuan',
     'nav.signIn': 'Masuk',
-    'compass.headline': 'Ke mana Anda ingin pergi?',
     'common.pioneers': 'penjelajah',
     'common.active': 'Aktif',
     'common.home': 'Beranda',
@@ -6041,37 +5614,6 @@ const CONTENT: Record<string, ContentDict> = {
 }
 
 // ─── Translation Function ────────────────────────────────────────────
-
-/**
- * Get a translation for a key in a specific language.
- * Falls back to English if the key is missing in the target language.
- * Supports interpolation: {varName} is replaced with the value from vars.
- */
-export function translate(key: string, language: string, vars?: Record<string, string>): string {
-  // Try exact language first, then language prefix (e.g. 'de-CH' → 'de')
-  const langPrefix = language.split('-')[0].toLowerCase()
-  const text = CONTENT[language]?.[key] ?? CONTENT[langPrefix]?.[key] ?? CONTENT.en[key] ?? key
-
-  if (!vars) return text
-
-  // Interpolate {varName} placeholders
-  return text.replace(/\{(\w+)\}/g, (_, varName) => vars[varName] ?? `{${varName}}`)
-}
-
-/**
- * Get all available language codes that have translations
- */
-export function getAvailableLanguages(): string[] {
-  return Object.keys(CONTENT)
-}
-
-/**
- * Check if a language has a specific translation key
- */
-export function hasTranslation(key: string, language: string): boolean {
-  const langPrefix = language.split('-')[0].toLowerCase()
-  return !!(CONTENT[language]?.[key] ?? CONTENT[langPrefix]?.[key])
-}
 
 // ─── Typed Locale System (4 core locales) ───────────────────────────
 

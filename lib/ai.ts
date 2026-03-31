@@ -158,18 +158,3 @@ export async function chatWithAgent(
 
   return response.content[0].type === 'text' ? response.content[0].text : ''
 }
-
-/**
- * Stream chat with agent (for real-time UI).
- */
-export function streamChatWithAgent(
-  systemPrompt: string,
-  messages: { role: 'user' | 'assistant'; content: string }[]
-) {
-  return anthropic.messages.stream({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1024,
-    system: systemPrompt,
-    messages,
-  })
-}

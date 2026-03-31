@@ -19,18 +19,3 @@ export async function notify(input: CreateNotificationInput): Promise<void> {
     console.error('[notify] Failed to create notification:', input)
   }
 }
-
-/** Create notifications for multiple users. */
-export async function notifyMany(
-  userIds: string[],
-  data: Omit<CreateNotificationInput, 'userId'>
-): Promise<void> {
-  if (userIds.length === 0) return
-  try {
-    await db.notification.createMany({
-      data: userIds.map((userId) => ({ ...data, userId })),
-    })
-  } catch {
-    console.error('[notifyMany] Failed:', data)
-  }
-}
