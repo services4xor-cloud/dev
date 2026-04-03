@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 80 (2026-03-31); Maintenance — vocabulary fixes, dead code removal, dependency updates, data cleanup
+> Last updated: Session 81 (2026-04-03); Maintenance — dependency updates, security fix, dead code removal, vocabulary compliance, data verification
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -15,8 +15,8 @@
 | Deploy            | Vercel auto on push                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Core Routes       | 20+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/notifications` `/about` `/pricing` `/contact` `/privacy` `/offline`                                                                                                                                                                                                                                                                                                                      |
 | API routes        | 25+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/identity/photo` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` `/api/exchanges` `/api/exchanges/[id]` `/api/users/[id]` |
-| Library modules   | 15+ (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, i18n.ts, identity-context.tsx, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Jest tests        | 290/290 ✅ (22 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Library modules   | 12 (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, geo.ts, identity-context.tsx, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Jest tests        | 254/254 ✅ (21 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -28,6 +28,40 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 81: Maintenance — Dependencies, Security, Dead Code, Vocabulary, Data
+
+### Dependency Updates
+
+- `npm update` — all patch/minor updates within semver range applied
+- `@anthropic-ai/sdk` 0.80.0 → 0.82.0 — **security fix** (Memory Tool Path Validation sandbox escape GHSA-5474-4w2j-mq4c)
+- 10 vulns remain — all in Next.js 14 / next-auth / eslint-config-next transitive deps (require major upgrades)
+
+### Dead Code Removal (3 files deleted, 1 function removed)
+
+- **Deleted `lib/email.ts`** — entire email module (~200 lines), zero imports in any production or test code
+- **Deleted `lib/endonyms.ts`** — 262 lines of endonym data, no exported functions, zero imports
+- **Deleted `lib/i18n.ts`** + `__tests__/lib/i18n.test.ts` — only imported by its own test, zero production usage
+- **Removed `detectCountryFromTimezone()`** from `lib/geo.ts` — unused function, cleaned up stale header comment
+
+### Vocabulary Compliance (3 fixes)
+
+- **"Admin Dashboard" → "Admin Hub"** in `app/admin/page.tsx` (h1 heading)
+- **"Applications" → "Exchanges"** in `app/host/page.tsx` (section heading)
+- **"Applied for" → "Engaged with"** in `app/host/page.tsx` (status text)
+
+### Data Verification
+
+- **185 countries** — no duplicates, all complete (languages, payments, sectors, faiths)
+- **Enums** — Prisma schema matches TypeScript domain types
+- **VOCAB** — all 9 required terms present, zero legacy terms
+- **Code quality** — no missing 'use client', no console.log leaks, no hardcoded secrets, no TODO/FIXME
+
+### Stats
+
+- Tests: 254/254 (21 suites), TypeScript: 0 errors
 
 ---
 

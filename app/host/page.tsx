@@ -224,11 +224,11 @@ export default function HostDashboardPage() {
           ))}
         </div>
 
-        {/* Applications section */}
+        {/* Exchanges section */}
         {exchanges.length > 0 && (
           <section className="mb-10">
             <h2 className="mb-4 text-base font-semibold text-brand-text">
-              Applications ({exchanges.filter((e) => e.status === 'PENDING').length} pending)
+              Exchanges ({exchanges.filter((e) => e.status === 'PENDING').length} pending)
             </h2>
             <div className="space-y-3">
               {exchanges.map((ex) => (
@@ -254,7 +254,7 @@ export default function HostDashboardPage() {
                         <div>
                           <p className="text-sm font-medium text-brand-text">{ex.explorer.name}</p>
                           <p className="text-xs text-brand-text-muted">
-                            Applied for {ex.opportunity.icon} {ex.opportunity.label}
+                            Engaged with {ex.opportunity.icon} {ex.opportunity.label}
                           </p>
                         </div>
                       </div>

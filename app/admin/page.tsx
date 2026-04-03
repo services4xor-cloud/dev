@@ -127,7 +127,7 @@ export default function AdminDashboard() {
       <header className="border-b border-brand-accent/20 bg-brand-surface px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-brand-accent">Admin Dashboard</h1>
+            <h1 className="text-xl font-bold text-brand-accent">Admin Hub</h1>
             <p className="text-sm text-brand-text-muted">Be[X] Platform Overview</p>
           </div>
           <Link
