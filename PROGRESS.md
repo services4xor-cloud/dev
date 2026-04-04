@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 81 (2026-04-03); Maintenance — dependency updates, security fix, dead code removal, vocabulary compliance, data verification
+> Last updated: Session 82 (2026-04-04); Maintenance — dependencies, vocabulary, race conditions, dead code, data verification
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -16,7 +16,7 @@
 | Core Routes       | 20+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/notifications` `/about` `/pricing` `/contact` `/privacy` `/offline`                                                                                                                                                                                                                                                                                                                      |
 | API routes        | 25+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/identity/photo` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` `/api/exchanges` `/api/exchanges/[id]` `/api/users/[id]` |
 | Library modules   | 12 (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, geo.ts, identity-context.tsx, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Jest tests        | 254/254 ✅ (21 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Jest tests        | 249/249 ✅ (21 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -28,6 +28,51 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 82: Maintenance — Dependencies, Vocabulary, Race Conditions, Dead Code, Data
+
+### Dependency Updates
+
+- `npm update` — all patch/minor updates within semver range applied
+- `maplibre-gl` 5.21.1 → 5.22.0, `@swc/core` 1.15.21 → 1.15.24, `@types/node` updated
+- 10 vulns remain — all in Next.js 14 / next-auth / eslint-config-next transitive deps (require major upgrades)
+
+### Vocabulary Compliance (16 fixes across 4 files)
+
+- **"Apply/Application" → "Engage/Exchange"** in `components/ApplyButton.tsx` (6 fixes: sign-in CTA, success message, already-engaged message, submit button, main CTA, error fallback)
+- **"Active Listings" → "Active Opportunities"** in `app/host/page.tsx`
+- **"Post" → "Create"** in `app/host/page.tsx` (2 fixes: header button, empty-state link) and `app/opportunities/page.tsx` (2 fixes: toggle button, submit button)
+- **"Posted" → "Created"** in `app/host/page.tsx` (date label) and `app/opportunities/page.tsx` (success banner, error fallback)
+- **API comment/error fixes** in `app/api/exchanges/route.ts` (3 fixes: comments + error message + notification text)
+
+### Race Condition Fixes (3 fixes)
+
+- **Referral Claim** (`app/api/referral/claim/route.ts`) — wrapped check-then-create in `db.$transaction()` to prevent double-claim race
+- **Message/Conversation Create** (`app/api/messages/route.ts`) — wrapped findFirst + create + message + update in `db.$transaction()` to prevent duplicate conversations
+- **Exchange Create** (`app/api/exchanges/route.ts`) — added catch for `Unique constraint` error as second defense against concurrent engagement
+
+### Dead Code Removal (3 functions removed, 1 unexported)
+
+- **Removed `getUserEdges()`** from `lib/graph.ts` — zero production imports, only tested
+- **Removed `getCountriesByDimension()` + `filterCountries()`** from `lib/graph.ts` — zero production imports, only tested
+- **Removed `EXPLORER_TYPE_OPTIONS`** from `lib/vocabulary.ts` — zero production imports, only tested
+- **Unexported `getAccessToken()`** in `lib/mpesa.ts` — internal-only function, no external callers
+- Removed corresponding 5 orphaned tests
+
+### Data Verification
+
+- **185 countries** — no duplicates, all complete (languages, payments, sectors, faiths)
+- **Enums** — Prisma schema matches TypeScript domain types exactly
+- **VOCAB** — all required terms present, zero legacy terms
+- **`use client`** — all components with hooks properly annotated
+- **No console.log leaks** — only legitimate `console.warn` in mpesa.ts for missing env vars
+- **No TODO/FIXME/HACK** — zero stale markers in lib/ and app/
+
+### Stats
+
+- Tests: 249/249 (21 suites), TypeScript: 0 errors
 
 ---
 

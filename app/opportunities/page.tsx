@@ -166,7 +166,7 @@ export default function OpportunitiesPage() {
       const data = (await res.json()) as Opportunity & { error?: string }
 
       if (!res.ok) {
-        setError(data.error ?? 'Failed to post opportunity')
+        setError(data.error ?? 'Failed to create opportunity')
         return
       }
 
@@ -194,7 +194,7 @@ export default function OpportunitiesPage() {
                 onClick={() => setShowForm((v) => !v)}
                 className="mt-1 text-sm text-brand-text-muted transition hover:text-brand-accent"
               >
-                {showForm ? 'Cancel' : '+ Post an Opportunity'}
+                {showForm ? 'Cancel' : '+ Create an Opportunity'}
               </button>
             )}
           </div>
@@ -211,7 +211,7 @@ export default function OpportunitiesPage() {
         {/* Success banner */}
         {success && (
           <div className="mb-6 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
-            Opportunity posted successfully.
+            Opportunity created successfully.
           </div>
         )}
 
@@ -313,7 +313,7 @@ export default function OpportunitiesPage() {
                 disabled={submitting}
                 className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-brand-accent transition hover:opacity-90 disabled:opacity-50"
               >
-                {submitting ? 'Posting\u2026' : 'Post Opportunity'}
+                {submitting ? 'Creating\u2026' : 'Create Opportunity'}
               </button>
             </div>
           </form>

@@ -153,7 +153,7 @@ export default function HostDashboardPage() {
       value: stats ? formatAmount(stats.totalRevenue, 'KES') : '—',
     },
     {
-      label: 'Active Listings',
+      label: 'Active Opportunities',
       value: stats?.opportunities.length ?? 0,
     },
   ]
@@ -193,7 +193,7 @@ export default function HostDashboardPage() {
             href="/opportunities"
             className="rounded-md bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            Post New Opportunity
+            Create New Opportunity
           </Link>
         </div>
 
@@ -360,7 +360,7 @@ export default function HostDashboardPage() {
                   href="/opportunities"
                   className="mt-4 inline-block text-sm text-brand-accent hover:underline"
                 >
-                  Post your first opportunity →
+                  Create your first opportunity →
                 </Link>
               </div>
             ) : (
@@ -387,7 +387,7 @@ export default function HostDashboardPage() {
                               .join(' · ')}
                           </p>
                           <p className="mt-1 text-xs text-brand-text-muted">
-                            Posted {formatDate(opp.createdAt)}
+                            Created {formatDate(opp.createdAt)}
                           </p>
                         </div>
                       </div>

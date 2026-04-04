@@ -6,8 +6,8 @@ import { getUserNode } from '@/lib/graph'
 import { notify } from '@/lib/notifications'
 
 // GET /api/exchanges — list exchanges for the current user
-// ?role=explorer → shows user's applications (SEEKS edges)
-// ?role=host → shows applications to user's opportunities (SEEKS edges targeting user's EXPERIENCE nodes)
+// ?role=explorer → shows user's exchanges (SEEKS edges)
+// ?role=host → shows exchanges to user's opportunities (SEEKS edges targeting user's EXPERIENCE nodes)
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions)
   const userId = (session?.user as { id?: string })?.id
@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(result)
 }
 
-// POST /api/exchanges — Explorer applies to an opportunity
+// POST /api/exchanges — Explorer engages with an opportunity
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   const userId = (session?.user as { id?: string })?.id
@@ -133,29 +133,40 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Complete your profile first' }, { status: 400 })
   }
 
-  // Check for existing application
+  // Atomically check + create to prevent race conditions
   const existing = await db.edge.findFirst({
     where: { fromId: userNode.id, toId: opportunityId, relation: 'SEEKS' },
   })
   if (existing) {
     return NextResponse.json(
-      { error: 'You have already applied to this opportunity' },
+      { error: 'You have already engaged with this opportunity' },
       { status: 409 }
     )
   }
 
-  // Create SEEKS edge
-  const edge = await db.edge.create({
-    data: {
-      fromId: userNode.id,
-      toId: opportunityId,
-      relation: 'SEEKS',
-      properties: {
-        status: 'PENDING',
-        ...(message ? { message: String(message).trim().slice(0, 500) } : {}),
+  let edge
+  try {
+    edge = await db.edge.create({
+      data: {
+        fromId: userNode.id,
+        toId: opportunityId,
+        relation: 'SEEKS',
+        properties: {
+          status: 'PENDING',
+          ...(message ? { message: String(message).trim().slice(0, 500) } : {}),
+        },
       },
-    },
-  })
+    })
+  } catch (e) {
+    // Handle race condition: another request created the edge between our check and create
+    if (e instanceof Error && e.message.includes('Unique constraint')) {
+      return NextResponse.json(
+        { error: 'You have already engaged with this opportunity' },
+        { status: 409 }
+      )
+    }
+    throw e
+  }
 
   // Notify the host
   const hostUserId = opportunity.inEdges[0]?.from.userId
@@ -164,7 +175,7 @@ export async function POST(req: NextRequest) {
     notify({
       userId: hostUserId,
       type: 'MATCH',
-      title: `${applicant?.name ?? 'Someone'} applied to ${opportunity.label}`,
+      title: `${applicant?.name ?? 'Someone'} engaged with ${opportunity.label}`,
       body: message ? String(message).trim().slice(0, 100) : undefined,
       link: '/host',
     })

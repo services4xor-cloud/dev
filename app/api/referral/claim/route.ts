@@ -39,23 +39,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Cannot refer yourself' }, { status: 400 })
   }
 
-  // Check if this user already claimed a referral
-  const alreadyClaimed = await db.referral.findFirst({
-    where: { referredId: session.user.id },
-  })
-  if (alreadyClaimed) {
-    return NextResponse.json({ error: 'Referral already claimed' }, { status: 400 })
-  }
+  // Use transaction to prevent race condition on double-claim
+  try {
+    await db.$transaction(async (tx) => {
+      const alreadyClaimed = await tx.referral.findFirst({
+        where: { referredId: session.user.id },
+      })
+      if (alreadyClaimed) {
+        throw new Error('ALREADY_CLAIMED')
+      }
 
-  // Create a new referral record linking referrer → this user
-  await db.referral.create({
-    data: {
-      referrerId: referral.referrerId,
-      referredId: session.user.id,
-      code: `${code}-${session.user.id.slice(0, 6)}`,
-      status: 'JOINED',
-    },
-  })
+      await tx.referral.create({
+        data: {
+          referrerId: referral.referrerId,
+          referredId: session.user.id!,
+          code: `${code}-${session.user.id!.slice(0, 6)}`,
+          status: 'JOINED',
+        },
+      })
+    })
+  } catch (e) {
+    if (e instanceof Error && e.message === 'ALREADY_CLAIMED') {
+      return NextResponse.json({ error: 'Referral already claimed' }, { status: 400 })
+    }
+    throw e
+  }
 
   return NextResponse.json({ claimed: true })
 }

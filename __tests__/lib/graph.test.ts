@@ -1,7 +1,7 @@
 /**
  * Tests for lib/graph.ts — the graph query engine
  */
-import { getNode, filterCountries, createEdge, getUserEdges, buildAgentContext } from '@/lib/graph'
+import { getNode, createEdge, buildAgentContext } from '@/lib/graph'
 
 jest.mock('@/lib/db', () => ({
   db: {
@@ -42,20 +42,6 @@ describe('Graph queries', () => {
 
     const node = await getNode('COUNTRY', 'XX')
     expect(node).toBeNull()
-  })
-
-  test('filterCountries with no filters returns all countries', async () => {
-    const { db } = require('@/lib/db')
-    db.node.findMany.mockResolvedValue([
-      { id: '1', type: 'COUNTRY', code: 'KE' },
-      { id: '2', type: 'COUNTRY', code: 'DE' },
-    ])
-
-    const countries = await filterCountries([])
-    expect(countries).toHaveLength(2)
-    expect(db.node.findMany).toHaveBeenCalledWith({
-      where: { type: 'COUNTRY', active: true },
-    })
   })
 
   describe('createEdge', () => {
@@ -133,57 +119,6 @@ describe('Graph queries', () => {
           update: expect.objectContaining({ properties: props }),
         })
       )
-    })
-  })
-
-  describe('getUserEdges', () => {
-    test('returns empty array when user node not found', async () => {
-      const { db } = require('@/lib/db')
-      db.node.findUnique.mockResolvedValue(null)
-
-      const result = await getUserEdges('user-unknown')
-      expect(result).toEqual([])
-      expect(db.edge.findMany).not.toHaveBeenCalled()
-    })
-
-    test('returns edges for existing user node', async () => {
-      const { db } = require('@/lib/db')
-      const userNode = { id: 'node-user-1', type: 'PERSON', code: 'user-1', userId: 'user-1' }
-      const edges = [
-        {
-          id: 'e1',
-          fromId: 'node-user-1',
-          toId: 'node-ke',
-          relation: 'LIVES_IN',
-          to: { id: 'node-ke', code: 'KE', label: 'Kenya' },
-        },
-      ]
-
-      db.node.findUnique.mockResolvedValue(userNode)
-      db.edge.findMany.mockResolvedValue(edges)
-
-      const result = await getUserEdges('user-1')
-
-      expect(db.node.findUnique).toHaveBeenCalledWith({ where: { userId: 'user-1' } })
-      expect(db.edge.findMany).toHaveBeenCalledWith({
-        where: { fromId: 'node-user-1' },
-        include: { to: true },
-      })
-      expect(result).toEqual(edges)
-    })
-
-    test('filters by relation when provided', async () => {
-      const { db } = require('@/lib/db')
-      const userNode = { id: 'node-user-1', type: 'PERSON', code: 'user-1', userId: 'user-1' }
-      db.node.findUnique.mockResolvedValue(userNode)
-      db.edge.findMany.mockResolvedValue([])
-
-      await getUserEdges('user-1', 'OFFICIAL_LANG')
-
-      expect(db.edge.findMany).toHaveBeenCalledWith({
-        where: { fromId: 'node-user-1', relation: 'OFFICIAL_LANG' },
-        include: { to: true },
-      })
     })
   })
 

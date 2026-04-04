@@ -15,8 +15,8 @@ jest.mock('@/lib/auth', () => ({
   authOptions: {},
 }))
 
-jest.mock('@/lib/db', () => ({
-  db: {
+jest.mock('@/lib/db', () => {
+  const dbObj: Record<string, unknown> = {
     referral: {
       findFirst: jest.fn(),
       findUnique: jest.fn(),
@@ -24,8 +24,10 @@ jest.mock('@/lib/db', () => ({
       count: jest.fn(),
     },
     user: { findUnique: jest.fn() },
-  },
-}))
+    $transaction: jest.fn((fn: (tx: unknown) => Promise<unknown>) => fn(dbObj)),
+  }
+  return { db: dbObj }
+})
 
 // ---- Imports ----
 

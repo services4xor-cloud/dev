@@ -92,12 +92,3 @@ export const EXPLORER_TYPES: Record<
     sectors: ['Healthcare', 'Education', 'Community Development', 'NGO & Charity'],
   },
 }
-
-/**
- * Flattened option list derived from EXPLORER_TYPES, suitable for select/radio inputs.
- * Each option has a `value` (the ExplorerType key) and a `label` with the icon prepended.
- */
-export const EXPLORER_TYPE_OPTIONS = Object.entries(EXPLORER_TYPES).map(([key, val]) => ({
-  value: key,
-  label: `${val.icon} ${val.label}`,
-}))

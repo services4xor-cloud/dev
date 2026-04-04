@@ -27,7 +27,7 @@ function isConfigured(): boolean {
 /**
  * Fetch OAuth access token from Safaricom.
  */
-export async function getAccessToken(): Promise<string> {
+async function getAccessToken(): Promise<string> {
   const key = process.env.MPESA_CONSUMER_KEY!
   const secret = process.env.MPESA_CONSUMER_SECRET!
   const credentials = Buffer.from(`${key}:${secret}`).toString('base64')

@@ -1,7 +1,7 @@
 /**
  * Tests for lib/vocabulary.ts — vocabulary consistency
  */
-import { VOCAB, EXPLORER_TYPES, EXPLORER_TYPE_OPTIONS } from '@/lib/vocabulary'
+import { VOCAB, EXPLORER_TYPES } from '@/lib/vocabulary'
 
 describe('Vocabulary', () => {
   test('VOCAB has no legacy terms', () => {
@@ -32,11 +32,5 @@ describe('Vocabulary', () => {
       expect(type.icon).toBeTruthy()
       expect(type.label).toBeTruthy()
     }
-  })
-
-  test('EXPLORER_TYPE_OPTIONS maps correctly', () => {
-    expect(EXPLORER_TYPE_OPTIONS).toHaveLength(6)
-    expect(EXPLORER_TYPE_OPTIONS[0]).toHaveProperty('value')
-    expect(EXPLORER_TYPE_OPTIONS[0]).toHaveProperty('label')
   })
 })

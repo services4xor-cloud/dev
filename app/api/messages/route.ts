@@ -69,46 +69,48 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Recipient not found' }, { status: 404 })
   }
 
-  // Find existing conversation between the two users
-  const existing = await db.conversation.findFirst({
-    where: {
-      AND: [
-        { participants: { some: { id: userId } } },
-        { participants: { some: { id: recipientId } } },
-      ],
-    },
-    select: { id: true },
-  })
-
   const now = new Date()
 
-  let conversationId: string
-  if (existing) {
-    conversationId = existing.id
-  } else {
-    const conv = await db.conversation.create({
-      data: {
-        participants: { connect: [{ id: userId }, { id: recipientId }] },
-        lastMessageAt: now,
+  // Use transaction to prevent duplicate conversation creation on concurrent requests
+  const { conversationId, message: msg } = await db.$transaction(async (tx) => {
+    const existing = await tx.conversation.findFirst({
+      where: {
+        AND: [
+          { participants: { some: { id: userId } } },
+          { participants: { some: { id: recipientId } } },
+        ],
       },
       select: { id: true },
     })
-    conversationId = conv.id
-  }
 
-  // Create the message
-  const message = await db.message.create({
-    data: {
-      conversationId,
-      senderId: userId,
-      content: content.trim(),
-    },
-  })
+    let convId: string
+    if (existing) {
+      convId = existing.id
+    } else {
+      const conv = await tx.conversation.create({
+        data: {
+          participants: { connect: [{ id: userId }, { id: recipientId }] },
+          lastMessageAt: now,
+        },
+        select: { id: true },
+      })
+      convId = conv.id
+    }
 
-  // Update lastMessageAt on the conversation
-  await db.conversation.update({
-    where: { id: conversationId },
-    data: { lastMessageAt: now },
+    const newMessage = await tx.message.create({
+      data: {
+        conversationId: convId,
+        senderId: userId,
+        content: content.trim(),
+      },
+    })
+
+    await tx.conversation.update({
+      where: { id: convId },
+      data: { lastMessageAt: now },
+    })
+
+    return { conversationId: convId, message: newMessage }
   })
 
   // Notify the recipient
@@ -121,5 +123,5 @@ export async function POST(req: NextRequest) {
     link: `/messages`,
   })
 
-  return NextResponse.json({ conversationId, message }, { status: 201 })
+  return NextResponse.json({ conversationId, message: msg }, { status: 201 })
 }

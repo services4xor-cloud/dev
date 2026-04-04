@@ -15,8 +15,8 @@ jest.mock('@/lib/auth', () => ({
   authOptions: {},
 }))
 
-jest.mock('@/lib/db', () => ({
-  db: {
+jest.mock('@/lib/db', () => {
+  const dbObj: Record<string, unknown> = {
     conversation: {
       findMany: jest.fn(),
       findFirst: jest.fn(),
@@ -31,8 +31,10 @@ jest.mock('@/lib/db', () => ({
     user: {
       findUnique: jest.fn(),
     },
-  },
-}))
+    $transaction: jest.fn((fn: (tx: unknown) => Promise<unknown>) => fn(dbObj)),
+  }
+  return { db: dbObj }
+})
 
 jest.mock('@/lib/notifications', () => ({
   notify: jest.fn(),
