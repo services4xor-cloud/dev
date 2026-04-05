@@ -7,7 +7,7 @@ import { NextRequest } from 'next/server'
 
 jest.mock('next-auth', () => ({ getServerSession: jest.fn() }))
 jest.mock('@/lib/auth', () => ({ authOptions: {} }))
-jest.mock('@/lib/notifications', () => ({ notify: jest.fn() }))
+jest.mock('@/lib/notifications', () => ({ notify: jest.fn().mockResolvedValue(undefined) }))
 jest.mock('@/lib/graph', () => ({ getUserNode: jest.fn() }))
 jest.mock('@/lib/db', () => ({
   db: {

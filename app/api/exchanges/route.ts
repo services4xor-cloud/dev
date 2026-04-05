@@ -71,6 +71,7 @@ export async function GET(req: NextRequest) {
         include: {
           inEdges: {
             where: { relation: 'OFFERS' },
+            take: 1,
             include: { from: { include: { user: { select: { name: true } } } } },
           },
         },
@@ -178,7 +179,7 @@ export async function POST(req: NextRequest) {
       title: `${applicant?.name ?? 'Someone'} engaged with ${opportunity.label}`,
       body: message ? String(message).trim().slice(0, 100) : undefined,
       link: '/host',
-    })
+    }).catch(() => {})
   }
 
   return NextResponse.json({ id: edge.id, status: 'PENDING' }, { status: 201 })

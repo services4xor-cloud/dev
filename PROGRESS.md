@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 82 (2026-04-04); Maintenance — dependencies, vocabulary, race conditions, dead code, data verification
+> Last updated: Session 83 (2026-04-05); Maintenance — dependencies, scalability, race conditions, dead code, pagination, data verification
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -16,7 +16,7 @@
 | Core Routes       | 20+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/notifications` `/about` `/pricing` `/contact` `/privacy` `/offline`                                                                                                                                                                                                                                                                                                                      |
 | API routes        | 25+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/identity/photo` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` `/api/exchanges` `/api/exchanges/[id]` `/api/users/[id]` |
 | Library modules   | 12 (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, geo.ts, identity-context.tsx, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Jest tests        | 249/249 ✅ (21 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Jest tests        | 247/247 ✅ (21 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -31,13 +31,58 @@
 
 ---
 
+## Session 83: Maintenance — Dependencies, Scalability, Pagination, Dead Code, Data
+
+### Dependency Updates
+
+- `npm update` — all patch/minor within semver applied
+- 10 vulns remain — all in Next.js 14 / next-auth / eslint-config-next transitive deps (require major upgrades)
+
+### Scalability Fixes (5 fixes)
+
+- **Race condition** (`app/api/referral/route.ts`) — wrapped findFirst + create in `db.$transaction()` to prevent duplicate referral code creation
+- **Pagination: reviews** (`app/api/reviews/route.ts`) — added `take: 100` to prevent unbounded review queries
+- **Pagination: messages** (`app/api/messages/[id]/route.ts`) — added `take: 200` with `orderBy: desc` + `.reverse()` to limit conversation loading
+- **Host stats optimization** (`app/api/host/stats/route.ts`) — replaced in-memory payment filtering with `db.payment.aggregate()` for revenue + `take: 5` for recent payments
+- **Exchange sub-graph** (`app/api/exchanges/route.ts`) — added `take: 1` to OFFERS inEdges in explorer view to prevent loading all hosts
+
+### Unhandled Promise Fixes (3 routes)
+
+- Added `.catch(() => {})` to `notify()` calls in `exchanges/route.ts`, `messages/route.ts`, `reviews/route.ts` to prevent unhandled promise rejections
+
+### Vocabulary Compliance (2 fixes)
+
+- **"Host (employer)" → "Host (organization)"** in `lib/ai.ts` AI prompt vocabulary line
+- **"dashboard stats" → "Hub stats"** in `app/api/host/stats/route.ts` JSDoc comment
+
+### Dead Code Cleanup (2 changes, 2 tests removed)
+
+- **Unexported `getNode()`** in `lib/graph.ts` — only used internally by `createEdge()` and `buildAgentContext()`, no external callers
+- **Deduplicated `haversineKm()`** in `app/page.tsx` — replaced local copy with import from `lib/geo.ts`
+- Removed 2 orphaned `getNode` tests from `__tests__/lib/graph.test.ts`
+
+### Data Verification
+
+- **185 countries** — no duplicates, all complete (languages, payments, sectors, faiths)
+- **Enums** — Prisma schema matches TypeScript domain types exactly
+- **Indexes** — all foreign keys and lookup fields indexed, composite indexes present
+- **Unique constraints** — Node(type,code), Edge(fromId,toId,relation), Review(authorId,targetId), Referral.code all correct
+- **VOCAB** — all required terms present, zero legacy terms
+- **No console.log leaks, no TODO/FIXME/HACK** in lib/ and app/
+
+### Stats
+
+- Tests: 247/247 (21 suites), TypeScript: 0 errors
+
+---
+
 ## Session 82: Maintenance — Dependencies, Vocabulary, Race Conditions, Dead Code, Data
 
 ### Dependency Updates
 
 - `npm update` — all patch/minor updates within semver range applied
 - `maplibre-gl` 5.21.1 → 5.22.0, `@swc/core` 1.15.21 → 1.15.24, `@types/node` updated
-- 10 vulns remain — all in Next.js 14 / next-auth / eslint-config-next transitive deps (require major upgrades)
+- 10 vulns remain �� all in Next.js 14 / next-auth / eslint-config-next transitive deps (require major upgrades)
 
 ### Vocabulary Compliance (16 fixes across 4 files)
 

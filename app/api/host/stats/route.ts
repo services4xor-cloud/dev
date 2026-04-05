@@ -14,7 +14,7 @@ function getSessionUser(
 
 /**
  * GET /api/host/stats
- * Returns dashboard stats for the authenticated Host.
+ * Returns Hub stats for the authenticated Host.
  * Requires HOST or ADMIN role.
  */
 export async function GET() {
@@ -48,17 +48,22 @@ export async function GET() {
         })
       : []
 
-  // Payments for this user
-  const payments = await db.payment.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: 'desc' },
-  })
+  // Payments for this user — use aggregate for revenue, limit recent list
+  const [recentPayments, revenueAgg] = await Promise.all([
+    db.payment.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+    }),
+    db.payment.aggregate({
+      where: { userId: user.id, status: 'SUCCESS' },
+      _sum: { amount: true },
+      _count: true,
+    }),
+  ])
 
-  const totalRevenue = payments
-    .filter((p) => p.status === 'SUCCESS')
-    .reduce((sum, p) => sum + p.amount, 0)
-
-  const recentPayments = payments.slice(0, 5)
+  const totalRevenue = revenueAgg._sum.amount ?? 0
+  const totalPayments = revenueAgg._count
 
   return NextResponse.json({
     opportunities: offerEdges.map((edge) => ({
@@ -69,7 +74,7 @@ export async function GET() {
       createdAt: edge.to.createdAt,
     })),
     totalOpportunities: offerEdges.length,
-    totalPayments: payments.length,
+    totalPayments,
     totalRevenue,
     recentPayments: recentPayments.map((p) => ({
       id: p.id,

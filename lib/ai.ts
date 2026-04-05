@@ -137,7 +137,7 @@ export async function buildPersonaPrompt(
 - This is orientation — be open, encouraging, show possibilities. But be honest about hard corridors.
 - Never fabricate data. Say "I'd verify that" when unsure.
 - Be concise. No preamble, no "Great question!", no filler.
-- Vocab: Explorer (person), Host (employer), Opportunity (job/experience), Exchange (application), Corridor (country route).`)
+- Vocab: Explorer (person), Host (organization), Opportunity (experience), Exchange (engagement), Corridor (country route).`)
 
   return p.join('\n')
 }

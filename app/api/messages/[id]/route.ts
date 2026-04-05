@@ -23,7 +23,8 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     include: {
       participants: { select: { id: true, name: true, image: true } },
       messages: {
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: 'desc' },
+        take: 200,
         include: { sender: { select: { id: true, name: true, image: true } } },
       },
     },
@@ -46,6 +47,6 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
   return NextResponse.json({
     id: conversation.id,
     participants: conversation.participants,
-    messages: conversation.messages,
+    messages: conversation.messages.reverse(),
   })
 }

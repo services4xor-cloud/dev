@@ -1,7 +1,7 @@
 /**
  * Tests for lib/graph.ts — the graph query engine
  */
-import { getNode, createEdge, buildAgentContext } from '@/lib/graph'
+import { createEdge, buildAgentContext } from '@/lib/graph'
 
 jest.mock('@/lib/db', () => ({
   db: {
@@ -19,30 +19,6 @@ jest.mock('@/lib/db', () => ({
 
 describe('Graph queries', () => {
   beforeEach(() => jest.clearAllMocks())
-
-  test('getNode returns node by type+code', async () => {
-    const { db } = require('@/lib/db')
-    db.node.findUnique.mockResolvedValue({
-      id: '1',
-      type: 'COUNTRY',
-      code: 'KE',
-      label: 'Kenya',
-    })
-
-    const node = await getNode('COUNTRY', 'KE')
-    expect(node?.code).toBe('KE')
-    expect(db.node.findUnique).toHaveBeenCalledWith({
-      where: { type_code: { type: 'COUNTRY', code: 'KE' } },
-    })
-  })
-
-  test('getNode returns null for non-existent node', async () => {
-    const { db } = require('@/lib/db')
-    db.node.findUnique.mockResolvedValue(null)
-
-    const node = await getNode('COUNTRY', 'XX')
-    expect(node).toBeNull()
-  })
 
   describe('createEdge', () => {
     test('returns null when from node not found', async () => {

@@ -37,7 +37,7 @@ jest.mock('@/lib/db', () => {
 })
 
 jest.mock('@/lib/notifications', () => ({
-  notify: jest.fn(),
+  notify: jest.fn().mockResolvedValue(undefined),
 }))
 
 // ---- Imports ----
@@ -508,7 +508,8 @@ describe('GET /api/messages/[id]', () => {
       expect.objectContaining({
         include: expect.objectContaining({
           messages: expect.objectContaining({
-            orderBy: { createdAt: 'asc' },
+            orderBy: { createdAt: 'desc' },
+            take: 200,
           }),
         }),
       })

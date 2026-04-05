@@ -6,6 +6,7 @@ import Link from 'next/link'
 import WorldMap, { type MapProjectionMode } from '@/components/WorldMap'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+import { haversineKm } from '@/lib/geo'
 
 /** Max enrichment steps — oldest drops off when exceeded (ouroboros) */
 const MAX_PATH_STEPS = 5
@@ -46,17 +47,6 @@ export interface ScoredCountry {
   /** Ranked dimension slots: [0]=fill, [1]=outer ring, [2]=inner ring, [3]=thinnest */
   ranked: DimSlot[]
   depth: number // unique dimension count 1-4 (determines intensity)
-}
-
-/** Haversine distance between two lat/lng points in km */
-function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371
-  const dLat = ((lat2 - lat1) * Math.PI) / 180
-  const dLng = ((lng2 - lng1) * Math.PI) / 180
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
 /** Max neighbor detection radius in km (~direct border distance for most countries) */

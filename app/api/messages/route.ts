@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
     title: `New message from ${sender?.name ?? 'someone'}`,
     body: content.trim().slice(0, 100),
     link: `/messages`,
-  })
+  }).catch(() => {})
 
   return NextResponse.json({ conversationId, message: msg }, { status: 201 })
 }

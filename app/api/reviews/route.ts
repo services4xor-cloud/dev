@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
   const reviews = await db.review.findMany({
     where: { targetId },
     orderBy: { createdAt: 'desc' },
+    take: 100,
     select: {
       id: true,
       authorId: true,
@@ -95,7 +96,7 @@ export async function POST(request: NextRequest) {
       title: `${author?.name ?? 'Someone'} left you a ${rating}-star review`,
       body: content.trim().slice(0, 100),
       link: `/me`,
-    })
+    }).catch(() => {})
 
     return NextResponse.json(review, { status: 201 })
   } catch (error) {

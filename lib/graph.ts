@@ -17,7 +17,7 @@ import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/cou
  * @param code - The unique code within that type (e.g., "KE", "en", "islam")
  * @returns The matching node, or null if not found
  */
-export async function getNode(type: NodeType, code: string) {
+async function getNode(type: NodeType, code: string) {
   return db.node.findUnique({
     where: { type_code: { type, code } },
   })
