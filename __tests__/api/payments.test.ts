@@ -129,7 +129,7 @@ describe('GET /api/payments', () => {
     expect(data[0].id).toBe('pay-1')
 
     expect(getDb().payment.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { userId: 'user-1' } })
+      expect.objectContaining({ where: { userId: 'user-1' }, take: 100 })
     )
   })
 })

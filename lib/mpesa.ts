@@ -45,14 +45,14 @@ async function getAccessToken(): Promise<string> {
   return data.access_token
 }
 
-export interface StkPushParams {
+interface StkPushParams {
   phone: string
   amount: number
   reference: string
   description: string
 }
 
-export interface StkPushResult {
+interface StkPushResult {
   success: boolean
   checkoutRequestId?: string
   merchantRequestId?: string

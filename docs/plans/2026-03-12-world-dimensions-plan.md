@@ -15,6 +15,7 @@
 ## Task 1: World Data — All 193 Countries + ~70 Languages
 
 **Files:**
+
 - Create: `lib/world-data.ts`
 - Create: `__tests__/lib/world-data.test.ts`
 
@@ -99,8 +100,8 @@ describe('WORLD_LANGUAGES', () => {
 
   it('getLanguagesForCountry returns spoken languages', () => {
     const kenyaLangs = getLanguagesForCountry('KE')
-    expect(kenyaLangs.some(l => l.code === 'en')).toBe(true)
-    expect(kenyaLangs.some(l => l.code === 'sw')).toBe(true)
+    expect(kenyaLangs.some((l) => l.code === 'en')).toBe(true)
+    expect(kenyaLangs.some((l) => l.code === 'sw')).toBe(true)
   })
 })
 
@@ -167,6 +168,7 @@ git commit -m "feat: add world-data with 193 countries and ~70 languages"
 ## Task 2: Dimension Registries — Faith, Craft, Reach, Culture
 
 **Files:**
+
 - Create: `lib/dimensions.ts`
 - Create: `__tests__/lib/dimensions.test.ts`
 
@@ -199,7 +201,7 @@ describe('FAITH_OPTIONS', () => {
   })
 
   it('includes major world faiths', () => {
-    const ids = FAITH_OPTIONS.map(o => o.id)
+    const ids = FAITH_OPTIONS.map((o) => o.id)
     expect(ids).toContain('islam')
     expect(ids).toContain('christianity')
     expect(ids).toContain('secular')
@@ -208,7 +210,7 @@ describe('FAITH_OPTIONS', () => {
   })
 
   it('has unique IDs', () => {
-    const ids = FAITH_OPTIONS.map(o => o.id)
+    const ids = FAITH_OPTIONS.map((o) => o.id)
     expect(new Set(ids).size).toBe(ids.length)
   })
 })
@@ -219,7 +221,7 @@ describe('CRAFT_SUGGESTIONS', () => {
   })
 
   it('all unique', () => {
-    const lower = CRAFT_SUGGESTIONS.map(s => s.toLowerCase())
+    const lower = CRAFT_SUGGESTIONS.map((s) => s.toLowerCase())
     expect(new Set(lower).size).toBe(lower.length)
   })
 
@@ -247,7 +249,7 @@ describe('REACH_OPTIONS', () => {
   })
 
   it('includes key capabilities', () => {
-    const ids = REACH_OPTIONS.map(o => o.id)
+    const ids = REACH_OPTIONS.map((o) => o.id)
     expect(ids).toContain('can-travel')
     expect(ids).toContain('can-host')
     expect(ids).toContain('digital-only')
@@ -311,6 +313,7 @@ git commit -m "feat: add dimension registries (faith, craft, reach, culture)"
 ## Task 3: Market Data — Platform-Pushed Signals
 
 **Files:**
+
 - Create: `lib/market-data.ts`
 - Create: `__tests__/lib/market-data.test.ts`
 
@@ -347,7 +350,7 @@ describe('MARKET_SIGNALS', () => {
   })
 
   it('has unique IDs', () => {
-    const ids = MARKET_SIGNALS.map(s => s.id)
+    const ids = MARKET_SIGNALS.map((s) => s.id)
     expect(new Set(ids).size).toBe(ids.length)
   })
 })
@@ -430,6 +433,7 @@ git commit -m "feat: add market data with 30+ real-world sector signals"
 ## Task 4: 8-Dimension Scoring Engine
 
 **Files:**
+
 - Create: `lib/dimension-scoring.ts`
 - Create: `__tests__/lib/dimension-scoring.test.ts`
 
@@ -460,8 +464,12 @@ const ME: DimensionProfile = {
 describe('scoreDimensions', () => {
   it('returns score between 0 and 100', () => {
     const them: DimensionProfile = {
-      country: 'DE', city: 'Berlin', languages: ['de', 'en'],
-      craft: ['Marketing'], interests: ['tech'], reach: ['can-host'],
+      country: 'DE',
+      city: 'Berlin',
+      languages: ['de', 'en'],
+      craft: ['Marketing'],
+      interests: ['tech'],
+      reach: ['can-host'],
       isHuman: true,
     }
     const result = scoreDimensions(ME, them, MARKET_SIGNALS)
@@ -471,8 +479,12 @@ describe('scoreDimensions', () => {
 
   it('has all 8 breakdown fields', () => {
     const them: DimensionProfile = {
-      country: 'TZ', city: 'Dar', languages: ['sw', 'en'],
-      craft: ['Safari Guide'], interests: ['safari'], reach: ['can-host'],
+      country: 'TZ',
+      city: 'Dar',
+      languages: ['sw', 'en'],
+      craft: ['Safari Guide'],
+      interests: ['safari'],
+      reach: ['can-host'],
       isHuman: false,
     }
     const result = scoreDimensions(ME, them, MARKET_SIGNALS)
@@ -488,13 +500,21 @@ describe('scoreDimensions', () => {
 
   it('language overlap scores higher than no overlap', () => {
     const shared: DimensionProfile = {
-      country: 'TZ', city: 'Dar', languages: ['sw', 'en'],
-      craft: ['Teaching'], interests: ['education'], reach: ['can-host'],
+      country: 'TZ',
+      city: 'Dar',
+      languages: ['sw', 'en'],
+      craft: ['Teaching'],
+      interests: ['education'],
+      reach: ['can-host'],
       isHuman: false,
     }
     const none: DimensionProfile = {
-      country: 'JP', city: 'Tokyo', languages: ['ja'],
-      craft: ['Teaching'], interests: ['education'], reach: ['can-host'],
+      country: 'JP',
+      city: 'Tokyo',
+      languages: ['ja'],
+      craft: ['Teaching'],
+      interests: ['education'],
+      reach: ['can-host'],
       isHuman: false,
     }
     const s1 = scoreDimensions(ME, shared, MARKET_SIGNALS)
@@ -504,13 +524,21 @@ describe('scoreDimensions', () => {
 
   it('complementary craft scores higher than mirror', () => {
     const complementary: DimensionProfile = {
-      country: 'KE', city: 'Nairobi', languages: ['en'],
-      craft: ['Marketing', 'Sales'], interests: ['tech'], reach: ['digital-only'],
+      country: 'KE',
+      city: 'Nairobi',
+      languages: ['en'],
+      craft: ['Marketing', 'Sales'],
+      interests: ['tech'],
+      reach: ['digital-only'],
       isHuman: false,
     }
     const mirror: DimensionProfile = {
-      country: 'KE', city: 'Nairobi', languages: ['en'],
-      craft: ['Software Engineering', 'UX Design'], interests: ['tech'], reach: ['digital-only'],
+      country: 'KE',
+      city: 'Nairobi',
+      languages: ['en'],
+      craft: ['Software Engineering', 'UX Design'],
+      interests: ['tech'],
+      reach: ['digital-only'],
       isHuman: false,
     }
     const c = scoreDimensions(ME, complementary, MARKET_SIGNALS)
@@ -520,8 +548,12 @@ describe('scoreDimensions', () => {
 
   it('human-to-human gets +10 bonus', () => {
     const human: DimensionProfile = {
-      country: 'KE', city: 'Nairobi', languages: ['en'],
-      craft: ['Teaching'], interests: ['education'], reach: ['can-host'],
+      country: 'KE',
+      city: 'Nairobi',
+      languages: ['en'],
+      craft: ['Teaching'],
+      interests: ['education'],
+      reach: ['can-host'],
       isHuman: true,
     }
     const ai: DimensionProfile = { ...human, isHuman: false }
@@ -533,12 +565,17 @@ describe('scoreDimensions', () => {
 
   it('reach compatibility: can-travel + can-host scores high', () => {
     const host: DimensionProfile = {
-      country: 'TZ', city: 'Arusha', languages: ['en', 'sw'],
-      craft: ['Safari Guide'], interests: ['safari'], reach: ['can-host'],
+      country: 'TZ',
+      city: 'Arusha',
+      languages: ['en', 'sw'],
+      craft: ['Safari Guide'],
+      interests: ['safari'],
+      reach: ['can-host'],
       isHuman: false,
     }
     const digital: DimensionProfile = {
-      ...host, reach: ['digital-only'],
+      ...host,
+      reach: ['digital-only'],
     }
     const h = scoreDimensions(ME, host, MARKET_SIGNALS)
     const d = scoreDimensions(ME, digital, MARKET_SIGNALS)
@@ -547,9 +584,15 @@ describe('scoreDimensions', () => {
 
   it('assigns recommendation label', () => {
     const them: DimensionProfile = {
-      country: 'KE', city: 'Nairobi', languages: ['en', 'sw'],
-      faith: 'christianity', craft: ['Marketing'], interests: ['tech', 'safari'],
-      reach: ['can-host', 'can-mentor'], culture: 'Kikuyu', isHuman: true,
+      country: 'KE',
+      city: 'Nairobi',
+      languages: ['en', 'sw'],
+      faith: 'christianity',
+      craft: ['Marketing'],
+      interests: ['tech', 'safari'],
+      reach: ['can-host', 'can-mentor'],
+      culture: 'Kikuyu',
+      isHuman: true,
     }
     const result = scoreDimensions(ME, them, MARKET_SIGNALS)
     expect(['Perfect', 'Strong', 'Good', 'Possible']).toContain(result.label)
@@ -557,8 +600,12 @@ describe('scoreDimensions', () => {
 
   it('returns highlights array', () => {
     const them: DimensionProfile = {
-      country: 'TZ', city: 'Dar', languages: ['sw', 'en'],
-      craft: ['Safari Guide'], interests: ['safari'], reach: ['can-host'],
+      country: 'TZ',
+      city: 'Dar',
+      languages: ['sw', 'en'],
+      craft: ['Safari Guide'],
+      interests: ['safari'],
+      reach: ['can-host'],
       isHuman: false,
     }
     const result = scoreDimensions(ME, them, MARKET_SIGNALS)
@@ -611,6 +658,7 @@ git commit -m "feat: add 8-dimension scoring engine with complementary craft log
 ## Task 5: AI Agent Network — Persona Generation
 
 **Files:**
+
 - Create: `lib/agents.ts`
 - Create: `__tests__/lib/agents.test.ts`
 
@@ -619,11 +667,7 @@ git commit -m "feat: add 8-dimension scoring engine with complementary craft log
 Create `__tests__/lib/agents.test.ts`:
 
 ```typescript
-import {
-  generateAgentsForCountry,
-  generateAllAgents,
-  type AgentPersona,
-} from '@/lib/agents'
+import { generateAgentsForCountry, generateAllAgents, type AgentPersona } from '@/lib/agents'
 
 describe('generateAgentsForCountry', () => {
   it('returns 3-10 agents for Kenya', () => {
@@ -652,28 +696,28 @@ describe('generateAgentsForCountry', () => {
 
   it('agents have realistic languages for their country', () => {
     const agents = generateAgentsForCountry('KE')
-    const allLangs = agents.flatMap(a => a.languages)
+    const allLangs = agents.flatMap((a) => a.languages)
     expect(allLangs).toContain('en')
     expect(allLangs).toContain('sw')
   })
 
   it('agents have diverse crafts', () => {
     const agents = generateAgentsForCountry('KE')
-    const allCrafts = new Set(agents.flatMap(a => a.craft))
+    const allCrafts = new Set(agents.flatMap((a) => a.craft))
     expect(allCrafts.size).toBeGreaterThanOrEqual(3)
   })
 
   it('generates deterministically (same seed = same output)', () => {
     const a1 = generateAgentsForCountry('KE')
     const a2 = generateAgentsForCountry('KE')
-    expect(a1.map(a => a.id)).toEqual(a2.map(a => a.id))
+    expect(a1.map((a) => a.id)).toEqual(a2.map((a) => a.id))
   })
 })
 
 describe('generateAllAgents', () => {
   it('generates agents for all 193 countries', () => {
     const all = generateAllAgents()
-    const countries = new Set(all.map(a => a.country))
+    const countries = new Set(all.map((a) => a.country))
     expect(countries.size).toBeGreaterThanOrEqual(193)
   })
 
@@ -685,7 +729,7 @@ describe('generateAllAgents', () => {
 
   it('all IDs are unique', () => {
     const all = generateAllAgents()
-    const ids = all.map(a => a.id)
+    const ids = all.map((a) => a.id)
     expect(new Set(ids).size).toBe(ids.length)
   })
 })
@@ -736,6 +780,7 @@ git commit -m "feat: add AI agent network with personas for all 193 countries"
 ## Task 6: Extend Identity Context with New Dimensions
 
 **Files:**
+
 - Modify: `lib/identity-context.tsx`
 - Modify: `__tests__/lib/identity-context.test.ts` (create if doesn't exist)
 
@@ -799,6 +844,7 @@ Expected: FAIL — identity doesn't have `craft`, `reach` fields; no `setFaith`,
 **Step 3: Modify `lib/identity-context.tsx`**
 
 Add to the `Identity` interface:
+
 ```typescript
   faith?: string         // FaithId from dimensions.ts
   craft: string[]        // profession/skill tags
@@ -807,12 +853,14 @@ Add to the `Identity` interface:
 ```
 
 Add to default state:
+
 ```typescript
   craft: [],
   reach: [],
 ```
 
 Add to `IdentityContextValue`:
+
 ```typescript
   setFaith: (faith: string | undefined) => void
   setCraft: (craft: string[]) => void
@@ -821,6 +869,7 @@ Add to `IdentityContextValue`:
 ```
 
 Add setters (same pattern as existing `setLanguages`, `setCity`):
+
 ```typescript
 const setFaith = useCallback((faith: string | undefined) => {
   setIdentity((prev) => ({ ...prev, faith }))
@@ -837,8 +886,10 @@ const setCulture = useCallback((culture: string | undefined) => {
 ```
 
 Update `hasCompletedDiscovery`:
+
 ```typescript
-const hasCompletedDiscovery = identity.languages.length > 0 && identity.interests.length > 0 && identity.craft.length > 0
+const hasCompletedDiscovery =
+  identity.languages.length > 0 && identity.interests.length > 0 && identity.craft.length > 0
 ```
 
 Update localStorage migration to add defaults for missing `craft` and `reach` fields.
@@ -864,6 +915,7 @@ git commit -m "feat: extend identity context with faith, craft, reach, culture d
 ## Task 7: Discovery Flow — Expand from 3 to 5 Steps
 
 **Files:**
+
 - Modify: `components/Discovery.tsx`
 
 **Step 1: Update Discovery.tsx**
@@ -883,6 +935,7 @@ This is a UI task — no separate test file needed (existing visual/behavioral t
 6. **Step 5 stays** — "Your Network Appears": Enhanced with 8-dimension scoring. Show score breakdown visually. Same animated SVG + "Enter My World" CTA.
 
 7. Update `handleComplete` to commit all new fields:
+
 ```typescript
 const handleComplete = () => {
   setLanguages(selectedLanguages)
@@ -917,6 +970,7 @@ git commit -m "feat: expand discovery from 3 to 5 steps with all 8 dimensions"
 ## Task 8: Update Endonyms to Use Intl.DisplayNames
 
 **Files:**
+
 - Modify: `lib/endonyms.ts`
 
 **Step 1: Modify endonyms.ts**
@@ -932,7 +986,9 @@ Replace the manually curated `ENDONYMS` map with `Intl.DisplayNames`:
  */
 
 // Keep the existing ENDONYMS map as fallback only
-const ENDONYMS: Record<string, Record<string, string>> = { /* existing data stays */ }
+const ENDONYMS: Record<string, Record<string, string>> = {
+  /* existing data stays */
+}
 
 export function getLocalizedCountryName(countryCode: string, language: string): string {
   // Try Intl.DisplayNames first (zero maintenance, all languages)
@@ -973,6 +1029,7 @@ git commit -m "feat: switch endonyms to Intl.DisplayNames with manual fallback"
 ## Task 9: Rich Multi-Column Footer
 
 **Files:**
+
 - Modify: `lib/nav-structure.ts`
 - Modify: `components/Footer.tsx`
 
@@ -1076,6 +1133,7 @@ git commit -m "feat: restore rich 4-column footer with explore/connect/community
 ## Task 10: Restore Referral Page
 
 **Files:**
+
 - Create: `app/referral/page.tsx`
 
 **Step 1: Create referral page**
@@ -1110,6 +1168,7 @@ git commit -m "feat: restore referral page with human premium messaging"
 ## Task 11: Restore Media Page
 
 **Files:**
+
 - Create: `app/media/page.tsx`
 - Create: `app/media/layout.tsx`
 
@@ -1128,6 +1187,7 @@ Use Human Exchange Network vocabulary. Replace any "Apply" / "Anchor" language w
 **Step 2: Create layout**
 
 Create `app/media/layout.tsx` with metadata:
+
 ```typescript
 export const metadata = { title: 'Media & Content — The BeNetwork' }
 ```
@@ -1149,6 +1209,7 @@ git commit -m "feat: restore media exchange category landing page"
 ## Task 12: Restore Fashion Page
 
 **Files:**
+
 - Create: `app/fashion/page.tsx`
 - Create: `app/fashion/layout.tsx`
 
@@ -1167,6 +1228,7 @@ Use Human Exchange Network vocabulary. Replace "Hire" with "Connect", "Anchor" w
 **Step 2: Create layout**
 
 Create `app/fashion/layout.tsx` with metadata:
+
 ```typescript
 export const metadata = { title: 'Fashion & Design — The BeNetwork' }
 ```
@@ -1188,6 +1250,7 @@ git commit -m "feat: restore fashion exchange category landing page"
 ## Task 13: Wire AI Agents into Graph + Exchange Pages
 
 **Files:**
+
 - Modify: `lib/graph.ts`
 - Modify: `app/exchange/page.tsx`
 - Modify: `app/world/page.tsx`
@@ -1196,6 +1259,7 @@ git commit -m "feat: restore fashion exchange category landing page"
 **Step 1: Update graph.ts**
 
 Replace the current `buildGraph` function to:
+
 1. Import `generateAllAgents` from `lib/agents.ts` instead of using `MOCK_ALL_PIONEERS`
 2. Import `scoreDimensions` from `lib/dimension-scoring.ts` instead of the current manual scoring
 3. Import `MARKET_SIGNALS` from `lib/market-data.ts`
@@ -1204,11 +1268,12 @@ Replace the current `buildGraph` function to:
 6. Add `isHuman` and `type` fields to `GraphNode`
 
 Update `GraphNode` interface:
+
 ```typescript
 export interface GraphNode {
   id: string
   type: 'you' | 'person' | 'opportunity' | 'community'
-  personType: 'human' | 'ai'  // NEW
+  personType: 'human' | 'ai' // NEW
   label: string
   sublabel: string
   icon: string
@@ -1220,6 +1285,7 @@ export interface GraphNode {
 **Step 2: Update exchange page**
 
 In `app/exchange/page.tsx`:
+
 1. Replace `MOCK_EXCHANGE_PEOPLE` with agents from `generateAllAgents()`
 2. Replace manual scoring with `scoreDimensions()`
 3. Add 🤖/✨ badges to `ExchangeCard` data
@@ -1228,12 +1294,14 @@ In `app/exchange/page.tsx`:
 **Step 3: Update world page**
 
 In `app/world/page.tsx`:
+
 1. Use updated `buildGraph` (which now uses agents + dimension scoring)
 2. Show human/AI distinction in the side panel
 
 **Step 4: Update messages page**
 
 In `app/messages/page.tsx`:
+
 1. Add AI agent conversations alongside existing `MOCK_THREADS`
 2. Show 🤖 badge on AI agent messages
 3. Show ✨ "Real Connection" on human messages
@@ -1260,6 +1328,7 @@ git commit -m "feat: wire AI agents into graph, exchange, and messages with 8-di
 ## Task 14: Update /me Profile with 8 Dimensions
 
 **Files:**
+
 - Modify: `app/me/page.tsx`
 
 **Step 1: Update Me page**
@@ -1292,6 +1361,7 @@ git commit -m "feat: add 8-dimension profile editing to /me page"
 ## Task 15: Update Existing Tests + Run Full Suite
 
 **Files:**
+
 - Modify: `__tests__/lib/vocabulary.test.ts` (if needed)
 - Modify: `__tests__/lib/nav-structure.test.ts` (already updated in Task 9)
 - Fix: any broken tests from deleted pages
@@ -1301,6 +1371,7 @@ git commit -m "feat: add 8-dimension profile editing to /me page"
 Run: `npx jest --no-coverage`
 
 Check for any failures caused by:
+
 - Changed `hasCompletedDiscovery` condition (now requires `craft.length > 0`)
 - New imports in modified files
 - Changed graph.ts interface
@@ -1308,6 +1379,7 @@ Check for any failures caused by:
 **Step 2: Fix any failing tests**
 
 Update test assertions to match new behavior. Key changes to watch for:
+
 - `hasCompletedDiscovery` now requires languages + interests + craft (not just languages + interests)
 - `GraphNode` now has `personType` field
 - Footer tests need updating for `FOOTER_COLUMNS`
@@ -1336,6 +1408,7 @@ git commit -m "fix: update tests for 8-dimension architecture"
 **Step 1: Update PROGRESS.md**
 
 Add entry documenting:
+
 - World data: 193 countries, ~70 languages
 - 8 identity dimensions: Location, Languages, Faith, Craft, Passion, Reach, Culture, Market
 - AI agent network: ~500-1000 personas across all countries

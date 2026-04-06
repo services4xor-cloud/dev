@@ -79,7 +79,7 @@ Full rules → `DESIGN_SYSTEM.md`
 | AI         | Anthropic Claude API (claude-sonnet-4-20250514) |
 | Payments   | M-Pesa Daraja v2 (KE) · Stripe (INT)            |
 | Email      | Resend                                          |
-| Testing    | Jest 30 (376/376, 25 suites) · Playwright       |
+| Testing    | Jest 30 (247/247, 21 suites) · Playwright       |
 | CI/CD      | GitHub Actions → Vercel (auto-deploy on push)   |
 | Formatting | Prettier + ESLint + Husky pre-commit            |
 
@@ -123,33 +123,22 @@ app/
     ├── discovery/ reviews/ users/ impact/ admin/ country/
     └── ...
 
-lib/                      # Core libraries (22 modules)
-├── vocabulary.ts         # BeNetwork terms (Explorer/Host/Opportunity/...)
-├── country-selector.ts   # 120+ countries, 100+ languages, proximity engine
+lib/                      # Core libraries (11 modules)
+├── vocabulary.ts         # Be[X] terms (Explorer/Host/Opportunity/...)
+├── country-selector.ts   # 185 countries, 100+ languages, proximity engine
 ├── ai.ts                 # Claude AI agent — persona builder + chat
 ├── graph.ts              # Graph queries (Node/Edge)
 ├── auth.ts               # NextAuth config (authOptions)
 ├── db.ts                 # Prisma client
 ├── dimensions.ts         # Dimension filter logic
-├── dimension-scoring.ts  # 8-dimension human scoring
-├── semantic-skills.ts    # 68 skills × 12 languages
-├── countries.ts          # Deployment configs (brand, payment, sectors)
-├── i18n.ts               # Internationalization
-├── validation.ts         # Zod schemas
 ├── mpesa.ts              # M-Pesa integration
-├── email.ts              # Resend email
-├── matching.ts           # 4-dimension scoring
-├── compass.ts            # Route corridors
 ├── geo.ts                # Geography utils
-├── endonyms.ts           # Country native names
-├── identity-context.tsx  # React identity context
 ├── notifications.ts      # Notification helpers
-├── country-api.ts        # Country API client
-└── api-client.ts         # Generic API client
+└── country-api.ts        # Country API client
 
 types/domain.ts           # Core entities + enums
 components/               # Shared UI components
-__tests__/                # Jest (361 tests, 25 suites)
+__tests__/                # Jest (247 tests, 21 suites)
 prisma/schema.prisma      # DB schema (14 models)
 ```
 
@@ -160,7 +149,7 @@ prisma/schema.prisma      # DB schema (14 models)
 ```bash
 npm run dev             # localhost:3000
 npm run build           # prisma generate + next build
-npm run test            # Jest (376/376)
+npm run test            # Jest (247/247)
 npm run format          # Prettier
 npm run typecheck       # TypeScript strict
 npx playwright test     # Playwright E2E

@@ -38,13 +38,7 @@ export const VOCAB = {
   discover_cta: 'Tell us who you are',
 } as const
 
-export type ExplorerType =
-  | 'explorer'
-  | 'professional'
-  | 'artisan'
-  | 'guardian'
-  | 'creator'
-  | 'healer'
+type ExplorerType = 'explorer' | 'professional' | 'artisan' | 'guardian' | 'creator' | 'healer'
 
 /**
  * Explorer type definitions keyed by ExplorerType identifier.

@@ -147,7 +147,9 @@ for (const feature of geo.features) {
       geom.type = 'MultiPolygon'
       geom.coordinates = results
       fixed++
-      console.log(`Split: ${feature.properties.name} (Polygon → MultiPolygon, ${results.length} parts)`)
+      console.log(
+        `Split: ${feature.properties.name} (Polygon → MultiPolygon, ${results.length} parts)`
+      )
     }
   } else if (geom.type === 'MultiPolygon') {
     const newPolygons = []
@@ -162,7 +164,9 @@ for (const feature of geo.features) {
     if (changed) {
       geom.coordinates = newPolygons
       fixed++
-      console.log(`Split: ${feature.properties.name} (MultiPolygon, now ${newPolygons.length} parts)`)
+      console.log(
+        `Split: ${feature.properties.name} (MultiPolygon, now ${newPolygons.length} parts)`
+      )
     }
   }
 }

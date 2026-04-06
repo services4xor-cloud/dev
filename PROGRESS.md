@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 83 (2026-04-05); Maintenance — dependencies, scalability, race conditions, dead code, pagination, data verification
+> Last updated: Session 84 (2026-04-06); Maintenance — CLAUDE.md drift fix, dead exports, payments pagination, data verification
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -28,6 +28,47 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 84: Maintenance — Docs Drift, Dead Exports, Pagination, Data
+
+### Documentation Drift (CLAUDE.md)
+
+- `lib/` section listed 22 modules; actual is 11. Removed references to deleted files (email.ts, i18n.ts, endonyms.ts, identity-context.tsx, dimension-scoring.ts, semantic-skills.ts, countries.ts, validation.ts, matching.ts, compass.ts, api-client.ts)
+- Corrected test counts 376/376 → 247/247 (21 suites) in two places
+- Country count in country-selector header: 120+ → 185
+
+### Dead Code — Unexported Internal Symbols
+
+Symbols exported but only used within their own file (YAGNI):
+
+- `lib/dimensions.ts`: `FaithId`, `FaithOption`
+- `lib/mpesa.ts`: `StkPushParams`, `StkPushResult`
+- `lib/country-selector.ts`: `RegionCluster`, `CorridorStrength`, `CountryOption`
+- `lib/vocabulary.ts`: `ExplorerType`
+
+### Scalability Fix
+
+- **Pagination: payments** (`app/api/payments/route.ts`) — GET now `take: 100` to cap payment history response (was unbounded)
+- Test updated to assert the limit (`__tests__/api/payments.test.ts`)
+
+### Data Verification
+
+- 185 countries, 0 duplicates, all fields populated (languages, payments, sectors, faiths, tz, coords)
+- 143 languages in registry, all language codes referenced by countries exist in the registry
+- All timezones present, all coordinates within valid range
+- Zero legacy terms (Pioneer/Anchor/Venture/Compass) in `lib/`, `app/`, `components/`, `types/`
+- Zero `console.log`, zero `TODO/FIXME/HACK` in `lib/` and `app/`
+
+### Dependencies
+
+- All packages already at latest within their current major version — no safe minor/patch upgrades available
+- Remaining advisories require major upgrades (Next 14→16, ESLint 8→10, etc.); deferred to a dedicated upgrade session — correctness priority over upgrades
+
+### Stats
+
+- Tests: 247/247 (21 suites), TypeScript: 0 errors, ESLint: 0 warnings
 
 ---
 

@@ -10,7 +10,7 @@
 // Faith
 // ---------------------------------------------------------------------------
 
-export type FaithId =
+type FaithId =
   | 'islam'
   | 'christianity'
   | 'secular'
@@ -20,7 +20,7 @@ export type FaithId =
   | 'traditional'
   | 'other'
 
-export interface FaithOption {
+interface FaithOption {
   id: FaithId
   label: string // Fallback (English)
   labelKey: string // i18n key

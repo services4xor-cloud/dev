@@ -1,7 +1,7 @@
 {
-    "framework": "nextjs",
-    "github": {
-        "silent": false,
-        "autoAlias": true
-    }
+  "framework": "nextjs",
+  "github": {
+    "silent": false,
+    "autoAlias": true
+  }
 }

@@ -1284,7 +1284,7 @@ export const LANGUAGE_REGISTRY: Record<LanguageCode, Language> = {
 // Country types
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type RegionCluster =
+type RegionCluster =
   | 'east-africa'
   | 'west-africa'
   | 'central-africa'
@@ -1301,7 +1301,7 @@ export type RegionCluster =
   | 'central-asia'
   | 'oceania'
 
-export type CorridorStrength = 'direct' | 'partner' | 'emerging'
+type CorridorStrength = 'direct' | 'partner' | 'emerging'
 
 export type FaithCode =
   | 'christianity'
@@ -1314,7 +1314,7 @@ export type FaithCode =
   | 'secular'
   | 'other'
 
-export interface CountryOption {
+interface CountryOption {
   code: string
   name: string
   flag: string
