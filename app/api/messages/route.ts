@@ -20,6 +20,7 @@ export async function GET() {
       messages: { orderBy: { createdAt: 'desc' }, take: 1 },
     },
     orderBy: { lastMessageAt: 'desc' },
+    take: 100,
   })
 
   const result = conversations.map((c) => ({

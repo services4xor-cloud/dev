@@ -15,6 +15,7 @@ export async function GET() {
         inEdges: {
           where: { relation: 'OFFERS' },
           include: { from: true },
+          take: 1,
         },
       },
       orderBy: { createdAt: 'desc' },

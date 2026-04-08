@@ -492,17 +492,22 @@ describe('GET /api/messages/[id]', () => {
     )
   })
 
-  test('returns messages ordered by createdAt ascending', async () => {
+  test('loads the 200 most recent messages and returns them chronologically', async () => {
     mockGetServerSession.mockResolvedValue(
       makeSession() as unknown as Awaited<ReturnType<typeof getServerSession>>
     )
+    // Prisma fetches newest-first (desc) with take: 200; the route reverses
+    // the result so callers still see messages oldest-first for display.
+    const m1 = { ...mockMessage, id: 'msg-old', createdAt: new Date('2026-01-01T09:00:00Z') }
+    const m2 = { ...mockMessage, id: 'msg-new', createdAt: new Date('2026-01-01T10:00:00Z') }
     getDb().conversation.findFirst.mockResolvedValue({
       ...mockConversation,
-      messages: [],
+      messages: [m2, m1],
     })
     getDb().message.updateMany.mockResolvedValue({ count: 0 })
 
-    await getConversation(makeGetConversationRequest('conv-1'), makeParams('conv-1'))
+    const res = await getConversation(makeGetConversationRequest('conv-1'), makeParams('conv-1'))
+    const data = await res.json()
 
     expect(getDb().conversation.findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -514,5 +519,7 @@ describe('GET /api/messages/[id]', () => {
         }),
       })
     )
+
+    expect(data.messages.map((m: { id: string }) => m.id)).toEqual(['msg-old', 'msg-new'])
   })
 })

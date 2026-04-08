@@ -40,6 +40,7 @@ export async function GET(req: NextRequest) {
         to: true,
       },
       orderBy: { createdAt: 'desc' },
+      take: 100,
     })
 
     const result = exchanges.map((e) => ({
@@ -63,7 +64,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(result)
   }
 
-  // Explorer view — show user's SEEKS edges
+  // Explorer view — show user's SEEKS edges.
+  // inEdges is capped at take: 1 — we only need the host's name, and every
+  // EXPERIENCE has exactly one OFFERS host edge.
   const exchanges = await db.edge.findMany({
     where: { fromId: userNode.id, relation: 'SEEKS' },
     include: {
@@ -71,13 +74,14 @@ export async function GET(req: NextRequest) {
         include: {
           inEdges: {
             where: { relation: 'OFFERS' },
-            take: 1,
             include: { from: { include: { user: { select: { name: true } } } } },
+            take: 1,
           },
         },
       },
     },
     orderBy: { createdAt: 'desc' },
+    take: 100,
   })
 
   const result = exchanges.map((e) => ({
@@ -134,7 +138,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Complete your profile first' }, { status: 400 })
   }
 
-  // Atomically check + create to prevent race conditions
+  // Check for existing Exchange (fast path). The edge.create below is
+  // wrapped in try/catch to catch the race where a second request slips
+  // in between this findFirst and the create call.
   const existing = await db.edge.findFirst({
     where: { fromId: userNode.id, toId: opportunityId, relation: 'SEEKS' },
   })
@@ -172,11 +178,11 @@ export async function POST(req: NextRequest) {
   // Notify the host
   const hostUserId = opportunity.inEdges[0]?.from.userId
   if (hostUserId) {
-    const applicant = await db.user.findUnique({ where: { id: userId }, select: { name: true } })
+    const explorer = await db.user.findUnique({ where: { id: userId }, select: { name: true } })
     notify({
       userId: hostUserId,
       type: 'MATCH',
-      title: `${applicant?.name ?? 'Someone'} engaged with ${opportunity.label}`,
+      title: `${explorer?.name ?? 'An Explorer'} engaged with ${opportunity.label}`,
       body: message ? String(message).trim().slice(0, 100) : undefined,
       link: '/host',
     }).catch(() => {})

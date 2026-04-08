@@ -45,25 +45,27 @@ export async function GET() {
           },
           include: { to: true },
           orderBy: { createdAt: 'desc' },
+          take: 100,
         })
       : []
 
-  // Payments for this user — use aggregate for revenue, limit recent list
-  const [recentPayments, revenueAgg] = await Promise.all([
+  // Aggregate revenue (SUCCESS only), total count, and recent payments in parallel.
+  // Note: _count cannot share this aggregate because the SUCCESS-filter would
+  // cause it to count only successful payments instead of all of them.
+  const [revenueAgg, totalPayments, recentPayments] = await Promise.all([
+    db.payment.aggregate({
+      where: { userId: user.id, status: 'SUCCESS' },
+      _sum: { amount: true },
+    }),
+    db.payment.count({ where: { userId: user.id } }),
     db.payment.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: 'desc' },
       take: 5,
     }),
-    db.payment.aggregate({
-      where: { userId: user.id, status: 'SUCCESS' },
-      _sum: { amount: true },
-      _count: true,
-    }),
   ])
 
   const totalRevenue = revenueAgg._sum.amount ?? 0
-  const totalPayments = revenueAgg._count
 
   return NextResponse.json({
     opportunities: offerEdges.map((edge) => ({

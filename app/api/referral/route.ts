@@ -17,17 +17,16 @@ export async function GET() {
 
   const userId = session.user.id
 
-  // Find or create the user's own referral code record (referredId = null = this is their code)
-  // Wrapped in transaction to prevent duplicate creation on concurrent requests
+  // Find or create the user's own referral code record (referredId = null = this is their code).
+  // Wrapped in a transaction to prevent concurrent GET requests from creating
+  // duplicate referral codes for the same user.
   const referral = await db.$transaction(async (tx) => {
     const existing = await tx.referral.findFirst({
       where: { referrerId: userId, referredId: null },
     })
     if (existing) return existing
-
-    const code = generateCode()
     return tx.referral.create({
-      data: { referrerId: userId, code, status: 'ACTIVE' },
+      data: { referrerId: userId, code: generateCode(), status: 'ACTIVE' },
     })
   })
 

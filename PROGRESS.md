@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 84 (2026-04-06); Maintenance — CLAUDE.md drift fix, dead exports, payments pagination, data verification
+> Last updated: Session 85 (2026-04-08); Maintenance — dependency sweep, data integrity gate, test rebase on top of Sessions 81-84
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -15,8 +15,8 @@
 | Deploy            | Vercel auto on push                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Core Routes       | 20+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/notifications` `/about` `/pricing` `/contact` `/privacy` `/offline`                                                                                                                                                                                                                                                                                                                      |
 | API routes        | 25+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/identity/photo` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` `/api/exchanges` `/api/exchanges/[id]` `/api/users/[id]` |
-| Library modules   | 12 (graph.ts, ai.ts, auth.ts, vocabulary.ts, db.ts, mpesa.ts, geo.ts, identity-context.tsx, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Jest tests        | 247/247 ✅ (21 suites)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Library modules   | 11 (ai.ts, auth.ts, country-api.ts, country-selector.ts, db.ts, dimensions.ts, geo.ts, graph.ts, mpesa.ts, notifications.ts, vocabulary.ts)                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Jest tests        | 253/253 ✅ (22 suites, incl. data integrity gate)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -28,6 +28,66 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 85: Maintenance — Dep Sweep, Data Integrity Gate, Rebase Fixes
+
+> Sessions 81–84 already landed the bulk of this quarter's maintenance work
+> (dead-file removal, scalability fixes, race-condition safety, vocabulary
+> compliance). This session layers three additions on top.
+
+### Dependencies
+
+- `npm update` — applied every remaining safe patch/minor within semver
+  (maplibre-gl 5.21.1→5.22.0, postcss 8.5.8→8.5.9, @swc/core 1.15.21→1.15.24,
+  @types/node 20.19.37→20.19.39, @playwright/test 1.58.2→1.59.1)
+- Remaining advisories all require major upgrades (Next 14→16, React 18→19,
+  Prisma 5→7, Zod 3→4, ESLint 8→10, stripe 15→22, framer-motion 11→12,
+  resend 3→6, typescript 5→6). Deferred — correctness over upgrades.
+
+### Data Integrity Gate (new test suite)
+
+Added `__tests__/data-integrity.test.ts` as a permanent regression gate so
+future drift in the country/language registries is caught at CI time:
+
+- No duplicate country codes (185 unique)
+- Every country has all required fields populated (languages, payment,
+  sectors, faiths, tz, currency)
+- Every country-referenced language code exists in `LANGUAGE_REGISTRY`
+- Coordinates within `[-90, 90]` × `[-180, 180]`
+- Timezones are valid IANA identifiers (verified via `Intl.DateTimeFormat`)
+- No country has duplicate language references inside its own `languages[]`
+
+All 6 checks pass against current data: 185 countries, 143 languages, 0 drift.
+
+### Rebase Reconciliation Fixes
+
+While rebasing on top of Sessions 81–84 two real bugs surfaced in that work
+that would have shipped on Vercel:
+
+- **`app/api/exchanges/route.ts`** — the notification title in the POST
+  branch referenced an undefined `applicant` variable after the vocabulary
+  renaming landed in Session 82 (the variable had been renamed to
+  `explorer` in the lookup line). Fixed the reference.
+- **`app/api/exchanges/route.ts`** — the nested `inEdges` include in the
+  explorer-view query had `take: 1` specified twice (from overlapping
+  Session 82 and Session 83 edits). Deduplicated.
+- **`app/api/host/stats/route.ts`** — `db.payment.aggregate` was called
+  with `{ where: { status: 'SUCCESS' }, _count: true }` and the `_count`
+  result was then assigned to `totalPayments`, meaning `totalPayments`
+  was silently reporting SUCCESS count instead of the true total. Split
+  into a separate unfiltered `db.payment.count()` call so `_sum` stays
+  `SUCCESS`-filtered and the count is accurate.
+- **`__tests__/api/host-stats.test.ts`** — added `payment.count` to the
+  jest mock and asserted the aggregate `where` clause explicitly pins
+  `status: 'SUCCESS'` so this bug can't silently come back.
+
+### Stats
+
+- Tests: 253/253 ✅ (22 suites, including new data integrity suite)
+- TypeScript: 0 errors
+- ESLint: 0 warnings
 
 ---
 

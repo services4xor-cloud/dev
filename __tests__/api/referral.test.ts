@@ -24,6 +24,8 @@ jest.mock('@/lib/db', () => {
       count: jest.fn(),
     },
     user: { findUnique: jest.fn() },
+    // Interactive transactions pass the mocked db as the transactional client
+    // so in-transaction calls (tx.referral.*) route to the same jest mocks.
     $transaction: jest.fn((fn: (tx: unknown) => Promise<unknown>) => fn(dbObj)),
   }
   return { db: dbObj }

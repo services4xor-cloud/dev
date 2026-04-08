@@ -17,7 +17,11 @@ jest.mock('@/lib/db', () => ({
   db: {
     node: { findFirst: jest.fn() },
     edge: { findMany: jest.fn() },
-    payment: { findMany: jest.fn(), aggregate: jest.fn() },
+    payment: {
+      findMany: jest.fn(),
+      count: jest.fn(),
+      aggregate: jest.fn(),
+    },
   },
 }))
 
@@ -113,8 +117,9 @@ describe('GET /api/host/stats', () => {
     const db = getDb()
     db.node.findFirst.mockResolvedValue(mockHostNode)
     db.edge.findMany.mockResolvedValue(mockOfferEdges)
+    db.payment.aggregate.mockResolvedValue({ _sum: { amount: 5000 } })
+    db.payment.count.mockResolvedValue(2)
     db.payment.findMany.mockResolvedValue(mockPayments)
-    db.payment.aggregate.mockResolvedValue({ _sum: { amount: 5000 }, _count: 2 })
 
     const res = await GET()
     expect(res.status).toBe(200)
@@ -126,6 +131,16 @@ describe('GET /api/host/stats', () => {
     expect(data.totalPayments).toBe(2)
     expect(data.totalRevenue).toBe(5000) // only SUCCESS payments
     expect(data.recentPayments).toHaveLength(2)
+
+    // Revenue aggregate must filter by SUCCESS status (scalability + correctness).
+    expect(db.payment.aggregate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { userId: 'host-1', status: 'SUCCESS' },
+        _sum: { amount: true },
+      })
+    )
+    // Recent payments must be capped at 5.
+    expect(db.payment.findMany).toHaveBeenCalledWith(expect.objectContaining({ take: 5 }))
   })
 
   test('returns stats for ADMIN role', async () => {
@@ -137,8 +152,9 @@ describe('GET /api/host/stats', () => {
     const db = getDb()
     db.node.findFirst.mockResolvedValue({ ...mockHostNode, userId: 'admin-1' })
     db.edge.findMany.mockResolvedValue(mockOfferEdges)
+    db.payment.aggregate.mockResolvedValue({ _sum: { amount: 5000 } })
+    db.payment.count.mockResolvedValue(2)
     db.payment.findMany.mockResolvedValue(mockPayments)
-    db.payment.aggregate.mockResolvedValue({ _sum: { amount: 5000 }, _count: 2 })
 
     const res = await GET()
     expect(res.status).toBe(200)
@@ -152,8 +168,9 @@ describe('GET /api/host/stats', () => {
     )
     const db = getDb()
     db.node.findFirst.mockResolvedValue(null)
+    db.payment.aggregate.mockResolvedValue({ _sum: { amount: null } })
+    db.payment.count.mockResolvedValue(0)
     db.payment.findMany.mockResolvedValue([])
-    db.payment.aggregate.mockResolvedValue({ _sum: { amount: null }, _count: 0 })
 
     const res = await GET()
     expect(res.status).toBe(200)
@@ -172,12 +189,15 @@ describe('GET /api/host/stats', () => {
     const db = getDb()
     db.node.findFirst.mockResolvedValue(mockHostNode)
     db.edge.findMany.mockResolvedValue([])
+    // The aggregate already applies `status: 'SUCCESS'` in its where clause,
+    // so the mocked sum reflects only the successful payment.
+    db.payment.aggregate.mockResolvedValue({ _sum: { amount: 1000 } })
+    db.payment.count.mockResolvedValue(3)
     db.payment.findMany.mockResolvedValue([
       { id: 'p1', amount: 1000, currency: 'KES', status: 'SUCCESS', createdAt: new Date() },
       { id: 'p2', amount: 2000, currency: 'KES', status: 'FAILED', createdAt: new Date() },
       { id: 'p3', amount: 3000, currency: 'KES', status: 'PENDING', createdAt: new Date() },
     ])
-    db.payment.aggregate.mockResolvedValue({ _sum: { amount: 1000 }, _count: 3 })
 
     const res = await GET()
     const data = await res.json()

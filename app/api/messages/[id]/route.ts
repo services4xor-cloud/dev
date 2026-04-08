@@ -14,7 +14,8 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
   const { id: conversationId } = params
 
-  // Verify user is a participant
+  // Verify user is a participant and load the 200 most recent messages.
+  // Fetch in desc order to bound the result, then reverse for chronological display.
   const conversation = await db.conversation.findFirst({
     where: {
       id: conversationId,
@@ -47,6 +48,6 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
   return NextResponse.json({
     id: conversation.id,
     participants: conversation.participants,
-    messages: conversation.messages.reverse(),
+    messages: conversation.messages.slice().reverse(),
   })
 }
