@@ -1303,16 +1303,13 @@ type RegionCluster =
 
 type CorridorStrength = 'direct' | 'partner' | 'emerging'
 
-export type FaithCode =
-  | 'christianity'
-  | 'islam'
-  | 'hinduism'
-  | 'buddhism'
-  | 'judaism'
-  | 'shinto'
-  | 'traditional'
-  | 'secular'
-  | 'other'
+import type { FaithId } from '@/lib/dimensions'
+
+/**
+ * Faith code used on country records. Re-exported as an alias of the canonical
+ * `FaithId` from `lib/dimensions` so the two registries can never drift.
+ */
+export type FaithCode = FaithId
 
 interface CountryOption {
   code: string

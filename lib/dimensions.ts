@@ -10,13 +10,14 @@
 // Faith
 // ---------------------------------------------------------------------------
 
-type FaithId =
+export type FaithId =
   | 'islam'
   | 'christianity'
   | 'secular'
   | 'hinduism'
   | 'buddhism'
   | 'judaism'
+  | 'shinto'
   | 'traditional'
   | 'other'
 
@@ -34,6 +35,7 @@ export const FAITH_OPTIONS: FaithOption[] = [
   { id: 'hinduism', label: 'Hinduism', labelKey: 'faith.hinduism', icon: '🕉️' },
   { id: 'buddhism', label: 'Buddhism', labelKey: 'faith.buddhism', icon: '☸️' },
   { id: 'judaism', label: 'Judaism', labelKey: 'faith.judaism', icon: '✡️' },
+  { id: 'shinto', label: 'Shinto', labelKey: 'faith.shinto', icon: '⛩️' },
   {
     id: 'traditional',
     label: 'Traditional / Indigenous',

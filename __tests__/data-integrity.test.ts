@@ -3,6 +3,7 @@
  * Prevents silent drift: bad codes, unknown languages, out-of-range coords, etc.
  */
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY } from '@/lib/country-selector'
+import { FAITH_OPTIONS } from '@/lib/dimensions'
 
 describe('country + language data integrity', () => {
   test('no duplicate country codes', () => {
@@ -56,6 +57,23 @@ describe('country + language data integrity', () => {
   test('no country has duplicate language refs', () => {
     for (const c of COUNTRY_OPTIONS) {
       expect(new Set(c.languages).size).toBe(c.languages.length)
+    }
+  })
+
+  test('every referenced faith exists in FAITH_OPTIONS', () => {
+    const faithIds = new Set(FAITH_OPTIONS.map((f) => f.id))
+    const missing: string[] = []
+    for (const c of COUNTRY_OPTIONS) {
+      for (const fc of c.topFaiths) {
+        if (!faithIds.has(fc)) missing.push(`${c.code}->${fc}`)
+      }
+    }
+    expect(missing).toEqual([])
+  })
+
+  test('no country has duplicate faith refs', () => {
+    for (const c of COUNTRY_OPTIONS) {
+      expect(new Set(c.topFaiths).size).toBe(c.topFaiths.length)
     }
   })
 })

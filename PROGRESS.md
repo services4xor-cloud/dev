@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 85 (2026-04-08); Maintenance — dependency sweep, data integrity gate, test rebase on top of Sessions 81-84
+> Last updated: Session 86 (2026-04-09); Maintenance — shinto data drift fix, Faith type unification, axios patch
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -15,8 +15,8 @@
 | Deploy            | Vercel auto on push                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Core Routes       | 20+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/notifications` `/about` `/pricing` `/contact` `/privacy` `/offline`                                                                                                                                                                                                                                                                                                                      |
 | API routes        | 25+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/identity/photo` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` `/api/exchanges` `/api/exchanges/[id]` `/api/users/[id]` |
-| Library modules   | 11 (ai.ts, auth.ts, country-api.ts, country-selector.ts, db.ts, dimensions.ts, geo.ts, graph.ts, mpesa.ts, notifications.ts, vocabulary.ts)                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Jest tests        | 253/253 ✅ (22 suites, incl. data integrity gate)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Library modules   | 11 (ai.ts, auth.ts, country-api.ts, country-selector.ts, db.ts, dimensions.ts, geo.ts, graph.ts, mpesa.ts, notifications.ts, vocabulary.ts)                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Jest tests        | 255/255 ✅ (22 suites, incl. data integrity gate w/ faith checks)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -28,6 +28,59 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 86: Maintenance — Shinto Drift Fix, Faith Type Unification, Axios Patch
+
+> Session 85 introduced the data-integrity gate but only asserted country,
+> language, coord, and timezone invariants — the faith taxonomy was still
+> drifting silently. This session tightens that gate and fixes the bug it
+> exposes.
+
+### Data Integrity: Faith Taxonomy (TDD)
+
+Added two new invariants to `__tests__/data-integrity.test.ts`:
+
+- Every country-referenced `topFaiths[]` code must exist in `FAITH_OPTIONS`
+- No country may have duplicate faith refs inside its own `topFaiths[]`
+
+The first check caught a real drift: **Japan (`JP`) has `topFaiths: ['buddhism',
+'shinto', 'secular']`** but `FAITH_OPTIONS` in `lib/dimensions.ts` only listed
+8 faiths (no `shinto`). Because the `/api/map/filter`, `/api/map/dimensions`,
+and `/api/map/search` routes all iterate `FAITH_OPTIONS` to build their
+faith-filter buckets, Japan was **unreachable** via any shinto filter — the
+data was live in `COUNTRY_OPTIONS` but dead in the matching pipeline.
+
+Fix (red → green):
+
+- `lib/dimensions.ts` — added `shinto` (⛩️) as the 9th entry in
+  `FAITH_OPTIONS` and to the `FaithId` union. Exported `FaithId` so
+  downstream modules can consume it.
+- `lib/country-selector.ts` — deleted the duplicate local `FaithCode` union
+  and re-declared it as `type FaithCode = FaithId` (imported from
+  `lib/dimensions`). The two lists can never drift again — adding a faith
+  in one place is now a type error in the other.
+
+Net effect: Japan is now reachable through the shinto filter everywhere,
+and the data-integrity gate has 8 checks instead of 6.
+
+### Dependencies
+
+- `axios 1.14.0 → 1.15.0` (safe minor within semver; no changelog breakers
+  relevant to our usage — the GET/POST client in `lib/country-api.ts` and
+  a handful of tests)
+- No other safe upgrades available. Remaining advisories all still require
+  the same deferred major upgrades listed in Session 85 (Next 14→16,
+  React 18→19, Prisma 5→7, Zod 3→4, ESLint 8→10, stripe 15→22,
+  framer-motion 11→12, resend 3→6, typescript 5→6). Correctness over
+  upgrades — same position.
+
+### Stats
+
+- Tests: 255/255 ✅ (22 suites, +2 faith-integrity checks)
+- TypeScript: 0 errors
+- ESLint: 0 warnings
 
 ---
 
