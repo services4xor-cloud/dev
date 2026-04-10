@@ -3,7 +3,7 @@
  *   app/api/onboarding/route.ts (POST)
  *
  * The route creates graph edges for each identity dimension
- * (languages, faith, crafts, interests, locations) via createEdge.
+ * (languages, faith, crafts, interests, locations) via createEdgesBatch.
  */
 import { NextRequest } from 'next/server'
 
@@ -18,17 +18,17 @@ jest.mock('@/lib/auth', () => ({
 }))
 
 jest.mock('@/lib/graph', () => ({
-  createEdge: jest.fn(),
+  createEdgesBatch: jest.fn(),
 }))
 
 // ---- Imports ----
 
 import { POST } from '@/app/api/onboarding/route'
 import { getServerSession } from 'next-auth'
-import { createEdge } from '@/lib/graph'
+import { createEdgesBatch } from '@/lib/graph'
 
 const mockGetServerSession = getServerSession as jest.MockedFunction<typeof getServerSession>
-const mockCreateEdge = createEdge as jest.MockedFunction<typeof createEdge>
+const mockCreateEdgesBatch = createEdgesBatch as jest.MockedFunction<typeof createEdgesBatch>
 
 // ---- Helpers ----
 
@@ -59,10 +59,8 @@ function makePostRequest(body: unknown): NextRequest {
 describe('POST /api/onboarding', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    // Default: createEdge resolves truthy (edge created)
-    mockCreateEdge.mockResolvedValue(
-      {} as ReturnType<typeof createEdge> extends Promise<infer T> ? T : never
-    )
+    // Default: createEdgesBatch returns the number of edges passed in
+    mockCreateEdgesBatch.mockImplementation(async (_fromType, _fromCode, edges) => edges.length)
   })
 
   test('returns 401 without session', async () => {
@@ -110,20 +108,11 @@ describe('POST /api/onboarding', () => {
     expect(data.success).toBe(true)
     expect(data.created.languages).toBe(2)
 
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'LANGUAGE',
-      'sw',
-      'SPEAKS'
-    )
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'LANGUAGE',
-      'en',
-      'SPEAKS'
-    )
+    // Verify the batch call included both languages
+    expect(mockCreateEdgesBatch).toHaveBeenCalledWith('USER', 'alice@example.com', [
+      { toType: 'LANGUAGE', toCode: 'sw', relation: 'SPEAKS' },
+      { toType: 'LANGUAGE', toCode: 'en', relation: 'SPEAKS' },
+    ])
   })
 
   test('creates faith edges for each faith provided', async () => {
@@ -138,20 +127,10 @@ describe('POST /api/onboarding', () => {
     const data = await res.json()
     expect(data.created.faith).toBe(2)
 
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'FAITH',
-      'christianity',
-      'PRACTICES'
-    )
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'FAITH',
-      'islam',
-      'PRACTICES'
-    )
+    expect(mockCreateEdgesBatch).toHaveBeenCalledWith('USER', 'alice@example.com', [
+      { toType: 'FAITH', toCode: 'christianity', relation: 'PRACTICES' },
+      { toType: 'FAITH', toCode: 'islam', relation: 'PRACTICES' },
+    ])
   })
 
   test('creates skill edges for each craft provided', async () => {
@@ -166,20 +145,10 @@ describe('POST /api/onboarding', () => {
     const data = await res.json()
     expect(data.created.crafts).toBe(2)
 
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'SKILL',
-      'software-engineer',
-      'HAS_SKILL'
-    )
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'SKILL',
-      'designer',
-      'HAS_SKILL'
-    )
+    expect(mockCreateEdgesBatch).toHaveBeenCalledWith('USER', 'alice@example.com', [
+      { toType: 'SKILL', toCode: 'software-engineer', relation: 'HAS_SKILL' },
+      { toType: 'SKILL', toCode: 'designer', relation: 'HAS_SKILL' },
+    ])
   })
 
   test('creates sector edges for each interest provided (slugified)', async () => {
@@ -194,20 +163,10 @@ describe('POST /api/onboarding', () => {
     const data = await res.json()
     expect(data.created.interests).toBe(2)
 
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'SECTOR',
-      'technology',
-      'INTERESTED_IN'
-    )
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'SECTOR',
-      'green-energy',
-      'INTERESTED_IN'
-    )
+    expect(mockCreateEdgesBatch).toHaveBeenCalledWith('USER', 'alice@example.com', [
+      { toType: 'SECTOR', toCode: 'technology', relation: 'INTERESTED_IN' },
+      { toType: 'SECTOR', toCode: 'green-energy', relation: 'INTERESTED_IN' },
+    ])
   })
 
   test('creates country edges for each location provided', async () => {
@@ -222,20 +181,10 @@ describe('POST /api/onboarding', () => {
     const data = await res.json()
     expect(data.created.locations).toBe(2)
 
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'COUNTRY',
-      'KE',
-      'LOCATED_IN'
-    )
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'COUNTRY',
-      'DE',
-      'LOCATED_IN'
-    )
+    expect(mockCreateEdgesBatch).toHaveBeenCalledWith('USER', 'alice@example.com', [
+      { toType: 'COUNTRY', toCode: 'KE', relation: 'LOCATED_IN' },
+      { toType: 'COUNTRY', toCode: 'DE', relation: 'LOCATED_IN' },
+    ])
   })
 
   test('creates edges across all dimensions in a single request', async () => {
@@ -264,7 +213,8 @@ describe('POST /api/onboarding', () => {
       interests: 1,
       locations: 1,
     })
-    expect(mockCreateEdge).toHaveBeenCalledTimes(5)
+    // 5 batch calls (one per dimension)
+    expect(mockCreateEdgesBatch).toHaveBeenCalledTimes(5)
   })
 
   test('caps arrays at 20 items per dimension', async () => {
@@ -280,7 +230,11 @@ describe('POST /api/onboarding', () => {
     expect(res.status).toBe(200)
     const data = await res.json()
     expect(data.created.languages).toBe(20)
-    expect(mockCreateEdge).toHaveBeenCalledTimes(20)
+    // Language batch should have exactly 20 items
+    const langCall = mockCreateEdgesBatch.mock.calls.find(
+      (call) => call[2].length > 0 && call[2][0].toType === 'LANGUAGE'
+    )
+    expect(langCall?.[2]).toHaveLength(20)
   })
 
   test('ignores non-string items in dimension arrays', async () => {
@@ -299,20 +253,10 @@ describe('POST /api/onboarding', () => {
     const data = await res.json()
     // Only 'sw' and 'en' are strings
     expect(data.created.languages).toBe(2)
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'LANGUAGE',
-      'sw',
-      'SPEAKS'
-    )
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'LANGUAGE',
-      'en',
-      'SPEAKS'
-    )
+    expect(mockCreateEdgesBatch).toHaveBeenCalledWith('USER', 'alice@example.com', [
+      { toType: 'LANGUAGE', toCode: 'sw', relation: 'SPEAKS' },
+      { toType: 'LANGUAGE', toCode: 'en', relation: 'SPEAKS' },
+    ])
   })
 
   test('treats missing dimension as empty (no edges created for it)', async () => {
@@ -345,7 +289,6 @@ describe('POST /api/onboarding', () => {
     expect(res.status).toBe(200)
     const data = await res.json()
     expect(data.created.languages).toBe(0)
-    expect(mockCreateEdge).not.toHaveBeenCalled()
   })
 
   test('returns 200 with all-zero counts for empty request body', async () => {
@@ -364,7 +307,6 @@ describe('POST /api/onboarding', () => {
       interests: 0,
       locations: 0,
     })
-    expect(mockCreateEdge).not.toHaveBeenCalled()
   })
 
   test('uses user email as node code when session email is available', async () => {
@@ -376,13 +318,11 @@ describe('POST /api/onboarding', () => {
 
     await POST(makePostRequest({ languages: ['sw'] }))
 
-    expect(mockCreateEdge).toHaveBeenCalledWith(
-      'USER',
-      'alice@example.com',
-      'LANGUAGE',
-      'sw',
-      'SPEAKS'
-    )
+    // All batch calls should use email as the userCode
+    for (const call of mockCreateEdgesBatch.mock.calls) {
+      expect(call[0]).toBe('USER')
+      expect(call[1]).toBe('alice@example.com')
+    }
   })
 
   test('falls back to userId as node code when session has no email', async () => {
@@ -393,14 +333,18 @@ describe('POST /api/onboarding', () => {
 
     await POST(makePostRequest({ languages: ['sw'] }))
 
-    expect(mockCreateEdge).toHaveBeenCalledWith('USER', 'user-1', 'LANGUAGE', 'sw', 'SPEAKS')
+    // All batch calls should use user ID as fallback
+    for (const call of mockCreateEdgesBatch.mock.calls) {
+      expect(call[0]).toBe('USER')
+      expect(call[1]).toBe('user-1')
+    }
   })
 
-  test('returns 500 when createEdge throws an error', async () => {
+  test('returns 500 when createEdgesBatch throws an error', async () => {
     mockGetServerSession.mockResolvedValue(
       makeSession() as unknown as Awaited<ReturnType<typeof getServerSession>>
     )
-    mockCreateEdge.mockRejectedValue(new Error('DB connection failed'))
+    mockCreateEdgesBatch.mockRejectedValue(new Error('DB connection failed'))
 
     const res = await POST(makePostRequest({ languages: ['sw'] }))
     expect(res.status).toBe(500)
@@ -408,25 +352,21 @@ describe('POST /api/onboarding', () => {
     expect(data.error).toMatch(/Failed to save dimensions/)
   })
 
-  test('counts only edges where createEdge returns a truthy result', async () => {
+  test('returns count from createEdgesBatch (may differ from input if nodes missing)', async () => {
     mockGetServerSession.mockResolvedValue(
       makeSession({ email: 'alice@example.com' }) as unknown as Awaited<
         ReturnType<typeof getServerSession>
       >
     )
-    // First call returns truthy (created), second returns null (already exists or skipped)
-    mockCreateEdge
-      .mockResolvedValueOnce(
-        {} as ReturnType<typeof createEdge> extends Promise<infer T> ? T : never
-      )
-      .mockResolvedValueOnce(
-        null as ReturnType<typeof createEdge> extends Promise<infer T> ? T : never
-      )
+    // Simulate: batch receives 2 edges but only 1 target node exists
+    mockCreateEdgesBatch.mockImplementation(async (_fromType, _fromCode, edges) => {
+      if (edges.length > 0 && edges[0].toType === 'LANGUAGE') return 1
+      return edges.length
+    })
 
     const res = await POST(makePostRequest({ languages: ['sw', 'en'] }))
     expect(res.status).toBe(200)
     const data = await res.json()
-    // Only the first edge was truthy
     expect(data.created.languages).toBe(1)
   })
 })

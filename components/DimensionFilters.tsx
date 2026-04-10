@@ -22,7 +22,6 @@ interface DimensionsData {
   faith: DimensionOption[]
   sector: DimensionOption[]
   currency: DimensionOption[]
-  timezone: DimensionOption[]
 }
 
 /** What we store per active filter — code for API, label for display, countryCodes for scoring */
@@ -57,7 +56,7 @@ interface DimensionFiltersProps {
   enrichedCountries?: string[]
 }
 
-type DimensionKey = 'language' | 'faith' | 'sector' | 'currency' | 'timezone'
+type DimensionKey = 'language' | 'faith' | 'sector' | 'currency'
 
 /** Priority order: currency > language > sector > faith.
  *  Currency is most differentiating (unique per country) in ×1 mode,
@@ -92,7 +91,6 @@ const DIMENSION_COLORS: Record<string, string> = {
   sector: 'bg-lime-500/20 text-lime-300 border-lime-400/30',
   faith: 'bg-violet-500/20 text-violet-300 border-violet-400/30',
   currency: 'bg-rose-500/20 text-rose-300 border-rose-400/30',
-  timezone: 'bg-blue-500/20 text-blue-300 border-blue-400/30',
 }
 
 /** Overlap multiplier glow — dimension-colored with intensity based on multiplier */

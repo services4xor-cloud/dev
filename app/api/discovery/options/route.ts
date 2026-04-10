@@ -9,21 +9,26 @@ export const dynamic = 'force-dynamic'
  * Returns all active COUNTRY, LANGUAGE, and SECTOR nodes for Discovery wizard dropdowns.
  */
 export async function GET() {
+  const LIMIT = 500
+
   const [countries, languages, sectors] = await Promise.all([
     db.node.findMany({
       where: { type: 'COUNTRY', active: true },
       select: { code: true, label: true, icon: true },
       orderBy: { label: 'asc' },
+      take: LIMIT,
     }),
     db.node.findMany({
       where: { type: 'LANGUAGE', active: true },
       select: { code: true, label: true, icon: true },
       orderBy: { label: 'asc' },
+      take: LIMIT,
     }),
     db.node.findMany({
       where: { type: 'SECTOR', active: true },
       select: { code: true, label: true, icon: true },
       orderBy: { label: 'asc' },
+      take: LIMIT,
     }),
   ])
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { createEdge } from '@/lib/graph'
+import { createEdgesBatch } from '@/lib/graph'
 
 const MAX_ITEMS_PER_DIMENSION = 20
 
@@ -34,37 +34,58 @@ export async function POST(req: NextRequest) {
   const interests = capArray(body.interests)
   const locations = capArray(body.locations)
 
-  // Create edges for each dimension
-  const results = { languages: 0, faith: 0, crafts: 0, interests: 0, locations: 0 }
-
+  // Batch per dimension — avoids N+1 sequential DB calls while preserving per-dimension counts
   try {
-    for (const lang of languages) {
-      const edge = await createEdge('USER', userCode, 'LANGUAGE', lang, 'SPEAKS')
-      if (edge) results.languages++
-    }
+    const [langCount, faithCount, craftCount, interestCount, locationCount] = await Promise.all([
+      createEdgesBatch(
+        'USER',
+        userCode,
+        languages.map((l) => ({
+          toType: 'LANGUAGE' as const,
+          toCode: l,
+          relation: 'SPEAKS' as const,
+        }))
+      ),
+      createEdgesBatch(
+        'USER',
+        userCode,
+        faith.map((f) => ({ toType: 'FAITH' as const, toCode: f, relation: 'PRACTICES' as const }))
+      ),
+      createEdgesBatch(
+        'USER',
+        userCode,
+        crafts.map((c) => ({ toType: 'SKILL' as const, toCode: c, relation: 'HAS_SKILL' as const }))
+      ),
+      createEdgesBatch(
+        'USER',
+        userCode,
+        interests.map((i) => ({
+          toType: 'SECTOR' as const,
+          toCode: i.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          relation: 'INTERESTED_IN' as const,
+        }))
+      ),
+      createEdgesBatch(
+        'USER',
+        userCode,
+        locations.map((l) => ({
+          toType: 'COUNTRY' as const,
+          toCode: l,
+          relation: 'LOCATED_IN' as const,
+        }))
+      ),
+    ])
 
-    for (const f of faith) {
-      const edge = await createEdge('USER', userCode, 'FAITH', f, 'PRACTICES')
-      if (edge) results.faith++
-    }
-
-    for (const craft of crafts) {
-      const edge = await createEdge('USER', userCode, 'SKILL', craft, 'HAS_SKILL')
-      if (edge) results.crafts++
-    }
-
-    for (const interest of interests) {
-      const code = interest.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-      const edge = await createEdge('USER', userCode, 'SECTOR', code, 'INTERESTED_IN')
-      if (edge) results.interests++
-    }
-
-    for (const location of locations) {
-      const edge = await createEdge('USER', userCode, 'COUNTRY', location, 'LOCATED_IN')
-      if (edge) results.locations++
-    }
-
-    return NextResponse.json({ success: true, created: results })
+    return NextResponse.json({
+      success: true,
+      created: {
+        languages: langCount,
+        faith: faithCount,
+        crafts: craftCount,
+        interests: interestCount,
+        locations: locationCount,
+      },
+    })
   } catch {
     return NextResponse.json({ error: 'Failed to save dimensions' }, { status: 500 })
   }

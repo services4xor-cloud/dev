@@ -76,4 +76,42 @@ describe('country + language data integrity', () => {
       expect(new Set(c.topFaiths).size).toBe(c.topFaiths.length)
     }
   })
+
+  test('country codes are 2-letter uppercase ISO 3166-1', () => {
+    const invalid: string[] = []
+    for (const c of COUNTRY_OPTIONS) {
+      if (!/^[A-Z]{2}$/.test(c.code)) invalid.push(c.code)
+    }
+    expect(invalid).toEqual([])
+  })
+
+  test('currency codes are 3-letter uppercase ISO 4217', () => {
+    const invalid: string[] = []
+    for (const c of COUNTRY_OPTIONS) {
+      if (!/^[A-Z]{3}$/.test(c.currency)) invalid.push(`${c.code}:${c.currency}`)
+    }
+    expect(invalid).toEqual([])
+  })
+
+  test('no country has duplicate sector refs', () => {
+    for (const c of COUNTRY_OPTIONS) {
+      expect(new Set(c.topSectors).size).toBe(c.topSectors.length)
+    }
+  })
+
+  test('no empty strings in sector, payment, or faith arrays', () => {
+    const issues: string[] = []
+    for (const c of COUNTRY_OPTIONS) {
+      for (const s of c.topSectors) {
+        if (!s.trim()) issues.push(`${c.code}:sector:empty`)
+      }
+      for (const p of c.payment) {
+        if (!p.trim()) issues.push(`${c.code}:payment:empty`)
+      }
+      for (const f of c.topFaiths) {
+        if (!f.trim()) issues.push(`${c.code}:faith:empty`)
+      }
+    }
+    expect(issues).toEqual([])
+  })
 })

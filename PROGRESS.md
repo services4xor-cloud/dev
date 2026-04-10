@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 86 (2026-04-09); Maintenance — shinto data drift fix, Faith type unification, axios patch
+> Last updated: Session 87 (2026-04-10); Maintenance — dependency cleanup, N+1 fix, data integrity hardening, scalability indexes
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -16,7 +16,7 @@
 | Core Routes       | 20+: `/` `/me` `/agent` `/onboarding` `/opportunities` `/messages` `/be/[code]` `/exchange/[id]` `/login` `/signup` `/admin` `/discovery` `/explorers` `/host` `/payments` `/referral` `/notifications` `/about` `/pricing` `/contact` `/privacy` `/offline`                                                                                                                                                                                                                                                                                                                      |
 | API routes        | 25+: `/api/auth` `/api/map/filter` `/api/agent/chat` `/api/identity` `/api/identity/edges` `/api/identity/photo` `/api/onboarding` `/api/country/[code]` `/api/opportunities` `/api/messages` `/api/messages/[id]` `/api/payments` `/api/payments/[id]` `/api/payments/mpesa-callback` `/api/admin/stats` `/api/discovery` `/api/discovery/options` `/api/explorers` `/api/explorers/[id]` `/api/host/stats` `/api/referral` `/api/referral/claim` `/api/notifications` `/api/reviews` `/api/reviews/[id]` `/api/impact` `/api/exchanges` `/api/exchanges/[id]` `/api/users/[id]` |
 | Library modules   | 11 (ai.ts, auth.ts, country-api.ts, country-selector.ts, db.ts, dimensions.ts, geo.ts, graph.ts, mpesa.ts, notifications.ts, vocabulary.ts)                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| Jest tests        | 255/255 ✅ (22 suites, incl. data integrity gate w/ faith checks)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Jest tests        | 259/259 ✅ (22 suites, incl. data integrity gate w/ 12 checks)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | TypeScript errors | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -28,6 +28,71 @@
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+---
+
+## Session 87: Maintenance — Dependency Cleanup, N+1 Fix, Data Integrity Hardening
+
+> Systematic maintenance session: dependency hygiene, performance fixes,
+> data correctness hardening, scalability improvements.
+
+### Dependency Cleanup
+
+**12 unused dependencies removed** (never imported in source or tests):
+
+- `axios` (replaced by native fetch), `bcryptjs`, `clsx`, `framer-motion`,
+  `lucide-react`, `stripe`, `tailwind-merge`, `@radix-ui/react-dialog`,
+  `@radix-ui/react-select`, `@radix-ui/react-toast`, `react-hot-toast`, `zod`
+- Also removed `@types/bcryptjs` (orphaned type package)
+
+**Updated:**
+
+- `@anthropic-ai/sdk` 0.82.0 → 0.87.0 (API surface unchanged: `messages.create`)
+- `prettier` 3.8.1 → 3.8.2 (patch)
+
+**10 vulnerabilities remain** — all in transitive deps requiring major upgrades
+(Next 14→16, ESLint 8→10, next-auth cookie). Deferred per Session 85 policy:
+correctness over upgrades.
+
+### Scalability Fixes
+
+- **N+1 eliminated in onboarding** (`app/api/onboarding/route.ts`):
+  Replaced sequential `createEdge` loop (up to 300 DB calls) with new
+  `createEdgesBatch` (graph.ts) — 1 FROM lookup + batched TO findMany +
+  transactional upserts. ~3 DB round-trips per dimension instead of 3N.
+- **Missing Prisma indexes added** (`prisma/schema.prisma`):
+  `@@index([lastMessageAt])` on Conversation, `@@index([createdAt])` on Message.
+  Both used in ORDER BY queries for messaging.
+- **Unbounded query bounded** (`app/api/discovery/options/route.ts`):
+  Added `take: 500` limits to all three `findMany` calls (COUNTRY, LANGUAGE,
+  SECTOR nodes).
+
+### Dead Code Removal
+
+- Removed `timezone` from `DimensionFilter` type, `DimensionKey` union,
+  `DimensionsData` interface, and color map — never used in any API route,
+  component, or test.
+
+### Data Integrity Hardening (TDD)
+
+Added 4 new invariants to `__tests__/data-integrity.test.ts` (8 → 12 checks):
+
+- Country codes must be 2-letter uppercase ISO 3166-1
+- Currency codes must be 3-letter uppercase ISO 4217
+- No duplicate sector refs per country
+- No empty strings in sector, payment, or faith arrays
+
+All 12 checks pass against 185 countries.
+
+### Stats
+
+| Metric          | Before        | After        |
+| --------------- | ------------- | ------------ |
+| Dependencies    | 24 prod       | 12 prod      |
+| Jest tests      | 255           | 259          |
+| TypeScript      | 0 err         | 0 err        |
+| Data checks     | 8             | 12           |
+| Onboarding perf | ~300 DB calls | ~15 DB calls |
 
 ---
 

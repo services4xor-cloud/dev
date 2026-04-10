@@ -97,6 +97,60 @@ export async function createEdge(
   })
 }
 
+/**
+ * Batch-create edges from one source node to multiple targets.
+ * Single FROM lookup + batched TO lookups + transactional upserts.
+ * Reduces N+1 queries from 3N to ~3 total DB round-trips.
+ */
+export async function createEdgesBatch(
+  fromType: NodeType,
+  fromCode: string,
+  edges: { toType: NodeType; toCode: string; relation: EdgeRelation }[]
+): Promise<number> {
+  if (edges.length === 0) return 0
+
+  const from = await getNode(fromType, fromCode)
+  if (!from) return 0
+
+  // Group targets by type for efficient batch lookup
+  const byType = new Map<NodeType, string[]>()
+  for (const e of edges) {
+    const arr = byType.get(e.toType) ?? []
+    arr.push(e.toCode)
+    byType.set(e.toType, arr)
+  }
+
+  // Batch-fetch all target nodes
+  const targetNodes = new Map<string, string>() // "TYPE:code" → node.id
+  for (const [type, codes] of Array.from(byType.entries())) {
+    const nodes = await db.node.findMany({
+      where: { type, code: { in: codes } },
+      select: { id: true, type: true, code: true },
+    })
+    for (const n of nodes) {
+      targetNodes.set(`${n.type}:${n.code}`, n.id)
+    }
+  }
+
+  // Build upsert operations for all valid edges
+  const ops = edges
+    .map((e) => {
+      const toId = targetNodes.get(`${e.toType}:${e.toCode}`)
+      if (!toId) return null
+      return db.edge.upsert({
+        where: { fromId_toId_relation: { fromId: from.id, toId, relation: e.relation } },
+        create: { fromId: from.id, toId, relation: e.relation },
+        update: {},
+      })
+    })
+    .filter(Boolean) as ReturnType<typeof db.edge.upsert>[]
+
+  if (ops.length === 0) return 0
+
+  const results = await db.$transaction(ops)
+  return results.length
+}
+
 // ─── Subgraph extraction (for AI agent) ──────────────────────
 
 /**
