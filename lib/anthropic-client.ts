@@ -17,7 +17,7 @@ import { GetWebIdentityTokenCommand, STSClient } from '@aws-sdk/client-sts'
 const AUDIENCE = 'https://api.anthropic.com'
 
 /** STS web identity token for the workload's IAM role (regional endpoint, 15 minutes). */
-async function awsWebIdentityToken(): Promise<string> {
+export async function awsWebIdentityToken(): Promise<string> {
   const sts = new STSClient({ region: process.env.AWS_REGION ?? 'eu-central-1' })
   const res = await sts.send(
     new GetWebIdentityTokenCommand({

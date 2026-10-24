@@ -137,6 +137,9 @@ export async function POST(req: NextRequest) {
     })
   } catch (err) {
     console.error('[agent/chat] Error:', err)
+    if (err instanceof Error && /credit balance/i.test(err.message)) {
+      return new Response('The agent is paused right now. Please try again later.', { status: 503 })
+    }
     return new Response('Something went wrong — please try again.', { status: 500 })
   }
 }

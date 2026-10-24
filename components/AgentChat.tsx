@@ -65,7 +65,7 @@ export default function AgentChat({
         }),
       })
 
-      if (res.status === 429) {
+      if (res.status === 429 || res.status === 503) {
         const limitText = await res.text()
         setMessages((prev) => [...prev, { role: 'assistant', content: limitText }])
         return
