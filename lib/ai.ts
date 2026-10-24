@@ -1,7 +1,7 @@
 /**
  * AI Agent — Claude-powered advisor for the Be[X] map.
  *
- * The prompt carries only real data: live country facts (REST Countries, World Bank,
+ * The prompt carries only real data: live country facts (World Bank,
  * Wikipedia via lib/country-insights), the offerings the Explorer selected, and the
  * published catalog. Listing text is written by Hosts and is fenced as data.
  */

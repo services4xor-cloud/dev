@@ -59,8 +59,8 @@ export default function AgentPage() {
         Ask about countries, partners and offerings.
       </h1>
       <p className="mt-3 max-w-2xl text-brand-text-muted">
-        The agent works with live public data (World Bank, REST Countries, Wikipedia) and the
-        offerings listed on Be[X]. It never books or pays for you.
+        The agent works with live public data (World Bank, Wikipedia) and the offerings listed on
+        Be[X]. It never books or pays for you.
       </p>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_320px]">

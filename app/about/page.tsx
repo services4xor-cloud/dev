@@ -23,7 +23,7 @@ const STEPS = [
 const PRINCIPLES = [
   [
     'Real data only',
-    'Country facts come live from REST Countries, the World Bank and Wikipedia, with sources shown. Nothing is made up.',
+    'Country facts come live from the World Bank and Wikipedia, with sources shown. Nothing is made up.',
   ],
   [
     'Reviewed listings',

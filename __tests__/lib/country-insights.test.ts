@@ -1,19 +1,13 @@
 /**
  * Tests for lib/country-insights.ts with the public APIs mocked.
  */
-jest.mock('@/lib/country-api', () => ({
-  getCountryData: jest.fn(),
-}))
-
-import { getCountryData } from '@/lib/country-api'
 import {
   countryNeighbours,
+  currencyName,
   fetchIndicator,
   fetchWikipediaSummary,
   getCountryInsights,
 } from '@/lib/country-insights'
-
-const mockRest = getCountryData as jest.MockedFunction<typeof getCountryData>
 
 function respond(body: unknown, ok = true) {
   return Promise.resolve({ ok, json: () => Promise.resolve(body) } as Response)
@@ -25,7 +19,6 @@ beforeAll(() => {
 })
 beforeEach(() => {
   fetchMock.mockReset()
-  mockRest.mockReset()
 })
 
 describe('fetchIndicator', () => {
@@ -89,7 +82,6 @@ describe('getCountryInsights', () => {
   })
 
   test('falls back to registry data when every API is down', async () => {
-    mockRest.mockResolvedValue(null)
     fetchMock.mockReturnValue(Promise.reject(new Error('offline')))
     const data = await getCountryInsights('ke')
     expect(data?.code).toBe('KE')
@@ -97,6 +89,32 @@ describe('getCountryInsights', () => {
     expect(data?.indicators).toEqual({})
     expect(data?.summary).toBeNull()
     expect(data?.languages.length).toBeGreaterThan(0)
-    expect(data?.sources.map((s) => s.name)).toEqual(['REST Countries', 'World Bank Open Data'])
+    expect(data?.capital).toBeNull()
+    expect(data?.population).toBeNull()
+    expect(data?.currency).toEqual({ code: 'KES', name: 'Kenyan Shilling', symbol: null })
+    expect(data?.sources.map((s) => s.name)).toEqual(['World Bank Open Data'])
+  })
+
+  test('reads capital and population from the World Bank', async () => {
+    fetchMock.mockImplementation((url: string) => {
+      if (url.includes('/country/CH?')) return respond([{}, [{ capitalCity: 'Bern' }]])
+      if (url.includes('SP.POP.TOTL')) return respond([{}, [{ date: '2025', value: 9_092_436 }]])
+      if (url.includes('NY.GDP.MKTP.CD')) return respond([{}, [{ date: '2025', value: 9e11 }]])
+      if (url.includes('wikipedia')) return respond({ type: 'standard', extract: 'Switzerland…' })
+      return respond([{}, []])
+    })
+    const data = await getCountryInsights('CH')
+    expect(data?.capital).toBe('Bern')
+    expect(data?.population).toBe(9_092_436)
+    expect(data?.indicators).toEqual({ gdp: { value: 9e11, year: '2025' } })
+    expect(data?.flagUrl).toBe('https://flagcdn.com/ch.svg')
+    expect(data?.summary).toBe('Switzerland…')
+  })
+})
+
+describe('currencyName', () => {
+  test('names a currency from its code', () => {
+    expect(currencyName('CHF')).toBe('Swiss Franc')
+    expect(currencyName('??')).toBeNull()
   })
 })

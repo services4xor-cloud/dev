@@ -2,22 +2,25 @@
  * Country insights for the map and the agent: live public data plus Be[X]'s own numbers.
  *
  * Live, read-only sources (no API key, cached for a day):
- *   - REST Countries via lib/country-api (name, flag, capital, languages, currency)
- *   - World Bank indicators API (economy, people, industry structure)
+ *   - World Bank API (capital, population, economy, industry structure)
  *   - Wikipedia REST summary (one-paragraph description)
  * Be[X] data (real, from the database): published offerings and Explorers per country.
  * Shared language / currency neighbours come from the curated registry in
  * lib/country-selector, so the map can show "no borders, just differences".
  *
+ * Names, languages and currency come from the curated registry (lib/country-selector),
+ * currency names from Intl, flags from flagcdn.com. REST Countries is no longer used:
+ * its key-free versions were shut down in 2026.
+ *
  * Every source is optional: a failing API leaves its fields null, never the page.
  */
 import { COUNTRY_OPTIONS, LANGUAGE_REGISTRY, type LanguageCode } from '@/lib/country-selector'
-import { getCountryData } from '@/lib/country-api'
 
 const DAY = 24 * 60 * 60
 
 /** World Bank indicator ids → our field names */
 export const WB_INDICATORS = {
+  population: 'SP.POP.TOTL', // Population, total
   gdp: 'NY.GDP.MKTP.CD', // GDP, current US$
   gdpPerCapita: 'NY.GDP.PCAP.CD', // GDP per capita, current US$
   gdpGrowth: 'NY.GDP.MKTP.KD.ZG', // GDP growth, annual %
@@ -55,7 +58,8 @@ export interface CountryInsights {
   timezone: string | null
   summary: string | null
   wikipediaUrl: string | null
-  indicators: Partial<Record<IndicatorKey, IndicatorValue>>
+  /** Economy and people indicators (population is lifted out into `population`) */
+  indicators: Partial<Record<Exclude<IndicatorKey, 'population'>, IndicatorValue>>
   /** Curated sector focus (Be[X] registry) */
   sectors: string[]
   /** Countries sharing at least one language, most shared languages first */
@@ -98,10 +102,12 @@ export async function fetchIndicator(code: string, id: string): Promise<Indicato
   return { value: row.value, year: row.date }
 }
 
-export async function fetchWorldBank(code: string): Promise<CountryInsights['indicators']> {
+export async function fetchWorldBank(
+  code: string
+): Promise<Partial<Record<IndicatorKey, IndicatorValue>>> {
   const keys = Object.keys(WB_INDICATORS) as IndicatorKey[]
   const values = await Promise.all(keys.map((k) => fetchIndicator(code, WB_INDICATORS[k])))
-  const out: CountryInsights['indicators'] = {}
+  const out: Partial<Record<IndicatorKey, IndicatorValue>> = {}
   keys.forEach((k, i) => {
     const v = values[i]
     if (v) out[k] = v
@@ -121,6 +127,27 @@ export async function fetchWikipediaSummary(
   )
   if (!data?.extract || data.type === 'disambiguation') return null
   return { extract: data.extract, url: data.content_urls?.desktop?.page ?? '' }
+}
+
+/** Capital city from the World Bank country endpoint. */
+export async function fetchWorldBankCountry(
+  code: string
+): Promise<{ capital: string | null } | null> {
+  const data = await getJson<[unknown, { capitalCity?: string }[] | null] | null>(
+    `https://api.worldbank.org/v2/country/${code}?format=json`
+  )
+  const row = Array.isArray(data) ? data[1]?.[0] : null
+  return row ? { capital: row.capitalCity || null } : null
+}
+
+/** 'KES' → 'Kenyan Shilling' (built into the runtime, no network). */
+export function currencyName(code: string): string | null {
+  try {
+    const name = new Intl.DisplayNames(['en'], { type: 'currency' }).of(code)
+    return name && name !== code ? name : null
+  } catch {
+    return null
+  }
 }
 
 /** How many of a country's languages count as "its" languages for matching (by prevalence). */
@@ -174,46 +201,36 @@ export async function getCountryInsights(rawCode: string): Promise<CountryInsigh
   const hit = memo.get(code)
   if (hit && Date.now() - hit.at < DAY * 1000) return hit.data
 
-  const [rest, indicators] = await Promise.all([getCountryData(code), fetchWorldBank(code)])
-  const name = rest?.name ?? reg.name
-  const wiki = await fetchWikipediaSummary(name)
+  const [wb, indicators] = await Promise.all([fetchWorldBankCountry(code), fetchWorldBank(code)])
+  const wiki = await fetchWikipediaSummary(reg.name)
   const { sharedLanguage, sharedCurrency } = countryNeighbours(code)
+  const { population, ...economy } = indicators
 
   const data: CountryInsights = {
     code,
-    name,
-    officialName: rest?.officialName ?? null,
+    name: reg.name,
+    officialName: null,
     flag: reg.flag,
-    flagUrl: rest?.flagUrl ?? null,
-    capital: rest?.capital || null,
-    region:
-      rest?.subregion && rest.subregion !== reg.region ? rest.subregion : regionLabel(reg.region),
-    population: rest?.population || null,
-    currency: rest
-      ? {
-          code: rest.currency,
-          name: rest.currencyName || null,
-          symbol: rest.currencySymbol || null,
-        }
-      : { code: reg.currency, name: null, symbol: null },
-    languages: (rest?.languages ?? reg.languages.map((l) => ({ code: l, name: languageName(l) })))
-      .slice(0, 8)
-      .map((l) => ({ code: l.code, name: l.name })),
+    flagUrl: `https://flagcdn.com/${code.toLowerCase()}.svg`,
+    capital: wb?.capital ?? null,
+    region: regionLabel(reg.region),
+    population: population?.value ?? null,
+    currency: { code: reg.currency, name: currencyName(reg.currency), symbol: null },
+    languages: reg.languages.slice(0, 8).map((l) => ({ code: l, name: languageName(l) })),
     timezone: reg.tz ?? null,
     summary: wiki?.extract ?? null,
     wikipediaUrl: wiki?.url || null,
-    indicators,
+    indicators: economy,
     sectors: reg.topSectors,
     sharedLanguage,
     sharedCurrency,
     sources: [
-      { name: 'REST Countries', url: 'https://restcountries.com' },
       { name: 'World Bank Open Data', url: `https://data.worldbank.org/country/${code}` },
       ...(wiki?.url ? [{ name: 'Wikipedia', url: wiki.url }] : []),
     ],
   }
   // Only memoize a complete answer, so a temporary API outage is retried soon
-  if (rest && Object.keys(indicators).length) memo.set(code, { at: Date.now(), data })
+  if (wb && Object.keys(economy).length) memo.set(code, { at: Date.now(), data })
   return data
 }
 

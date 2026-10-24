@@ -387,7 +387,7 @@ export default function MapExplorer() {
 
       <button
         onClick={toggleProjection}
-        className="absolute bottom-[8.5rem] right-2.5 z-10 rounded-md border border-brand-line bg-brand-surface/95 px-2.5 py-1.5 text-xs text-brand-text shadow hover:border-brand-accent md:bottom-24"
+        className="absolute bottom-[8.5rem] right-2.5 z-10 rounded-md border border-brand-line bg-brand-surface/95 px-2.5 py-1.5 text-xs text-brand-text shadow hover:border-brand-accent md:bottom-[8.25rem]"
       >
         {projection === 'mercator' ? 'Globe' : 'Flat map'}
       </button>
