@@ -1,0 +1,21 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        # Amplify env vars are not visible to the SSR runtime, so copy the ones
+        # the app reads into .env.production. Never add AWS_* here: the SSR
+        # compute role provides its own AWS credentials and region.
+        - env | grep -E '^(DATABASE_URL|NEXTAUTH_|GOOGLE_CLIENT_|ANTHROPIC_|RESEND_API_KEY|ADMIN_EMAILS|EMAIL_FROM|NEXT_PUBLIC_)' >> .env.production
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - .next/cache/**/*
+      - node_modules/**/*
