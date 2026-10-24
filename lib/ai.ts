@@ -5,13 +5,12 @@
  * behavioral rules are compressed. Every token earns its place.
  */
 
-import Anthropic from '@anthropic-ai/sdk'
+import type Anthropic from '@anthropic-ai/sdk'
 import type { AgentDimensions } from '@/types/domain'
 import { buildAgentContext } from '@/lib/graph'
+import { createAnthropicClient } from '@/lib/anthropic-client'
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+const anthropic = createAnthropicClient()
 
 interface EnrichedNode {
   type: string
