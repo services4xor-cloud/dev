@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import AgentChat from '@/components/AgentChat'
+import SelectedOpportunities from '@/components/SelectedOpportunities'
 import DimensionOverlapBar from '@/components/DimensionOverlapBar'
 import type { AgentDimensions } from '@/types/domain'
 import type { ActiveFilter } from '@/components/DimensionFilters'
@@ -55,6 +56,7 @@ export default function AgentPage() {
   const [focusedValue, setFocusedValue] = useState<string | null>(null)
   const [focusHint, setFocusHint] = useState<string | null>(null)
   const [greeting, setGreeting] = useState('Hello')
+  const [opportunityIds, setOpportunityIds] = useState<string[]>([])
 
   // Detect browser language on mount
   useEffect(() => {
@@ -190,7 +192,12 @@ export default function AgentPage() {
       )}
 
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col p-4">
-        <AgentChat dimensions={dimensions} enrichedContext={enrichedContext} />
+        <SelectedOpportunities onChange={setOpportunityIds} />
+        <AgentChat
+          dimensions={dimensions}
+          enrichedContext={enrichedContext}
+          opportunityIds={opportunityIds}
+        />
       </main>
     </div>
   )

@@ -13,6 +13,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "db:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
+    "db:seed:4xor": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-4xor.ts",
     "postinstall": "prisma generate",
     "prepare": "husky"
   },
@@ -30,6 +31,7 @@
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "^5.14.0",
     "@tailwindcss/typography": "^0.5.19",
+    "bcryptjs": "^3.0.2",
     "maplibre-gl": "^5.21.1",
     "next": "^14.2.35",
     "next-auth": "^4.24.7",

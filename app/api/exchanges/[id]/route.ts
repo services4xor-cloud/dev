@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { getUserNode } from '@/lib/graph'
 import { notify } from '@/lib/notifications'
+import { actionEmail, sendEmail } from '@/lib/email'
 
 // PATCH /api/exchanges/[id] — Host accepts or rejects an exchange
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
@@ -73,8 +74,30 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       type: 'MATCH',
       title: `Your Exchange was ${newStatus.toLowerCase()}`,
       body: `${hostName?.name ?? 'A host'} ${newStatus === 'ACCEPTED' ? 'accepted' : 'declined'} your Exchange for ${edge.to.label}`,
-      link: '/me',
+      link: '/bookings',
     })
+    const explorer = await db.user.findUnique({
+      where: { id: edge.from.userId },
+      select: { email: true },
+    })
+    if (explorer) {
+      const base = process.env.NEXTAUTH_URL ?? req.nextUrl.origin
+      sendEmail({
+        to: explorer.email,
+        subject:
+          newStatus === 'ACCEPTED'
+            ? `Confirmed: ${edge.to.label}`
+            : `Your request for ${edge.to.label} was declined`,
+        html: actionEmail(
+          newStatus === 'ACCEPTED' ? 'Your booking is confirmed' : 'Your request was declined',
+          newStatus === 'ACCEPTED'
+            ? `${hostName?.name ?? 'The host'} confirmed ${edge.to.label}. Details and any access link are in My bookings.`
+            : `${hostName?.name ?? 'The host'} declined your request for ${edge.to.label}.`,
+          'Open My bookings',
+          `${base}/bookings`
+        ),
+      }).catch(() => {})
+    }
   }
 
   return NextResponse.json({ id: edge.id, status: newStatus })

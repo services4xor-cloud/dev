@@ -3,11 +3,14 @@
 import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { Suspense } from 'react'
+import PasswordAuthForm from '@/components/PasswordAuthForm'
 
 const ERROR_MESSAGES: Record<string, string> = {
   Callback: 'Google login is not configured yet. Please try again later.',
   OAuthSignin: 'Could not start Google sign-in. Please try again.',
   OAuthCallback: 'Google sign-in failed. Please try again.',
+  OAuthAccountNotLinked: 'This email already has an account. Sign in the way you did before.',
+  InvalidLink: 'That confirmation link is invalid or expired. Sign up again to get a new one.',
   Default: 'Something went wrong. Please try again.',
 }
 
@@ -15,6 +18,11 @@ function LoginContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
   const errorMessage = error ? (ERROR_MESSAGES[error] ?? ERROR_MESSAGES.Default) : null
+  const verified = searchParams.get('verified') === '1'
+  const rawCallback = searchParams.get('callbackUrl') ?? '/'
+  // Only allow same-site relative paths as post-login targets
+  const callbackUrl =
+    rawCallback.startsWith('/') && !rawCallback.startsWith('//') ? rawCallback : '/'
 
   return (
     <div className="flex min-h-screen flex-col bg-brand-bg">
@@ -40,6 +48,12 @@ function LoginContent() {
             </div>
           )}
 
+          {verified && (
+            <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
+              Email confirmed. Sign in with your password.
+            </div>
+          )}
+
           {/* Branding */}
           <div>
             <h2 className="text-3xl font-bold text-brand-accent">Welcome</h2>
@@ -50,7 +64,7 @@ function LoginContent() {
 
           {/* Google Sign-In — official branding for trust */}
           <button
-            onClick={() => signIn('google', { callbackUrl: '/' })}
+            onClick={() => signIn('google', { callbackUrl })}
             className="flex w-full items-center justify-center gap-3 rounded-md border border-[#747775] bg-white px-4 py-3 text-sm font-medium text-[#1f1f1f] shadow-sm transition hover:bg-[#f8f8f8] hover:shadow-md active:bg-[#e8e8e8]"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -88,30 +102,23 @@ function LoginContent() {
             </span>
           </button>
 
-          <button
-            disabled
-            className="flex w-full items-center justify-center gap-3 rounded-md border border-[#747775]/40 bg-white/60 px-4 py-3 text-sm font-medium text-[#1f1f1f]/40 cursor-not-allowed"
-          >
-            <svg
-              className="h-5 w-5 opacity-40"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-            </svg>
-            Magic Link
-            <span className="ml-auto rounded bg-brand-accent/10 px-1.5 py-0.5 text-[10px] text-brand-accent">
-              soon
-            </span>
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-white/10" />
+            <span className="text-xs text-brand-text-muted">or with email</span>
+            <div className="h-px flex-1 bg-white/10" />
+          </div>
 
-          <p className="text-xs text-brand-text-muted/60">
-            No password needed. Your identity, your data.
+          <PasswordAuthForm
+            mode="signin"
+            defaultEmail={searchParams.get('email') ?? ''}
+            callbackUrl={callbackUrl}
+          />
+
+          <p className="text-xs text-brand-text-muted">
+            New here?{' '}
+            <a href="/signup" className="text-brand-accent hover:underline">
+              Create an account
+            </a>
           </p>
         </div>
       </div>

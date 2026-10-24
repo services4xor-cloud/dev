@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import ReviewQueue from '@/components/ReviewQueue'
 
 interface AdminStats {
   explorers: number
@@ -140,6 +141,8 @@ export default function AdminDashboard() {
       </header>
 
       <div className="mx-auto max-w-7xl space-y-8 px-6 py-8">
+        <ReviewQueue />
+
         {/* Primary stat cards */}
         <section>
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand-text-muted">

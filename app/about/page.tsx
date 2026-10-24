@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import PageShell from '@/components/PageShell'
 import HeroSection from '@/components/HeroSection'
-import ExplorerStories from '@/components/ExplorerStories'
 import TrustBadges from '@/components/TrustBadges'
 
 const values = [
@@ -100,7 +99,6 @@ export default function AboutPage() {
       </section>
 
       {/* Explorer Stories */}
-      <ExplorerStories />
 
       {/* Values */}
       <section className="border-t border-brand-accent/10 bg-brand-surface">

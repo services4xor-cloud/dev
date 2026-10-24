@@ -1,37 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
+import type { Prisma } from '@prisma/client'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { getUserNode } from '@/lib/graph'
+import { notify } from '@/lib/notifications'
+import { parseOpportunityInput, readProps, toDTO, KIND_ICONS } from '@/lib/opportunities'
+import { clientIp, rateLimit } from '@/lib/rate-limit'
+
+const HOST_INCLUDE = {
+  inEdges: {
+    where: { relation: 'OFFERS' as const },
+    include: { from: { select: { label: true, icon: true, userId: true } } },
+    take: 1,
+  },
+}
 
 // ─── GET /api/opportunities ───────────────────────────────────
-// Returns all active EXPERIENCE nodes with OFFERS edges (who's offering)
+// Published opportunities for the map and feed.
+// ?mine=1   → the signed-in Host's own opportunities (any status, with access links)
+// ?review=1 → Admin only: opportunities waiting for review
+export async function GET(req: NextRequest) {
+  const mine = req.nextUrl.searchParams.get('mine') === '1'
+  const review = req.nextUrl.searchParams.get('review') === '1'
 
-export async function GET() {
   try {
-    const experiences = await db.node.findMany({
-      where: { type: 'EXPERIENCE', active: true },
-      include: {
-        inEdges: {
-          where: { relation: 'OFFERS' },
-          include: { from: true },
-          take: 1,
-        },
+    let userId: string | undefined
+    let role: string | undefined
+    if (mine || review) {
+      const session = await getServerSession(authOptions)
+      userId = (session?.user as { id?: string } | undefined)?.id
+      role = (session?.user as { role?: string } | undefined)?.role
+      if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      if (review && role !== 'ADMIN') {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      }
+    }
+
+    const nodes = await db.node.findMany({
+      where: {
+        type: 'EXPERIENCE',
+        ...(mine ? { inEdges: { some: { relation: 'OFFERS', from: { userId } } } } : {}),
+        ...(mine || review ? {} : { active: true }),
       },
+      include: HOST_INCLUDE,
       orderBy: { createdAt: 'desc' },
-      take: 50,
+      take: 200,
     })
 
-    const result = experiences.map((node) => {
-      const hostEdge = node.inEdges[0] ?? null
-      return {
-        id: node.id,
-        label: node.label,
-        icon: node.icon ?? '💼',
-        properties: node.properties,
-        host: hostEdge ? { label: hostEdge.from.label, icon: hostEdge.from.icon ?? '🏢' } : null,
-      }
-    })
+    const result = nodes
+      .filter((n) => {
+        const { status } = readProps(n)
+        if (mine) return true
+        if (review) return status === 'IN_REVIEW'
+        return status === 'PUBLISHED'
+      })
+      .map((n) => toDTO(n, n.inEdges[0]?.from ?? null, { includeAccess: mine || review }))
 
     return NextResponse.json(result)
   } catch {
@@ -41,120 +64,86 @@ export async function GET() {
 }
 
 // ─── POST /api/opportunities ──────────────────────────────────
-// Create a new EXPERIENCE node + OFFERS edge. Requires HOST or ADMIN role.
-
-const MAX_TITLE = 120
-const MAX_DESC = 1000
-const MAX_LOCATION = 120
-const MAX_SECTOR = 80
-const MAX_ICON = 10
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 80)
-}
-
+// Any signed-in Explorer can list an Opportunity; doing so makes them a Host.
+// Admin listings go live at once, everyone else's wait for review.
 export async function POST(req: NextRequest) {
-  // Auth check
   const session = await getServerSession(authOptions)
-  if (!session?.user) {
+  const userId = (session?.user as { id?: string } | undefined)?.id
+  const role = (session?.user as { role?: string } | undefined)?.role
+  if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const role = (session.user as { role?: string }).role
-  if (role !== 'HOST' && role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Forbidden: HOST or ADMIN role required' }, { status: 403 })
+
+  if (!(await rateLimit('opportunity-create', userId || clientIp(req.headers), 20, 24 * 60 * 60))) {
+    return NextResponse.json({ error: 'Too many new listings today' }, { status: 429 })
   }
 
-  // Parse body
-  let body: unknown
+  let body: Record<string, unknown>
   try {
-    body = await req.json()
+    body = (await req.json()) as Record<string, unknown>
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { title, description, location, sector, icon } = body as {
-    title?: unknown
-    description?: unknown
-    location?: unknown
-    sector?: unknown
-    icon?: unknown
+  const parsed = parseOpportunityInput(body)
+  if (parsed.error) return NextResponse.json({ error: parsed.error }, { status: 400 })
+  const { label, icon, lat, lng, props } = parsed.data!
+
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { name: true, email: true, role: true, node: true },
+  })
+  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 401 })
+
+  const hostNode =
+    user.node ??
+    (await db.node.create({
+      data: {
+        type: 'USER',
+        code: user.email,
+        label: user.name ?? 'Host',
+        icon: '👤',
+        userId,
+      },
+    }))
+
+  if (user.role === 'EXPLORER') {
+    await db.user.update({ where: { id: userId }, data: { role: 'HOST' } })
   }
 
-  // Validate required fields
-  if (typeof title !== 'string' || !title.trim()) {
-    return NextResponse.json({ error: 'title is required' }, { status: 400 })
-  }
-  if (typeof description !== 'string' || !description.trim()) {
-    return NextResponse.json({ error: 'description is required' }, { status: 400 })
-  }
-  if (typeof location !== 'string' || !location.trim()) {
-    return NextResponse.json({ error: 'location is required' }, { status: 400 })
-  }
-  if (typeof sector !== 'string' || !sector.trim()) {
-    return NextResponse.json({ error: 'sector is required' }, { status: 400 })
-  }
+  const isAdmin = role === 'ADMIN' || user.role === 'ADMIN'
+  const status = isAdmin ? 'PUBLISHED' : 'IN_REVIEW'
+  const code = `${(label ?? 'experience')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 80)}-${Date.now().toString(36)}`
 
-  const safeTitle = title.trim().slice(0, MAX_TITLE)
-  const safeDesc = description.trim().slice(0, MAX_DESC)
-  const safeLocation = location.trim().slice(0, MAX_LOCATION)
-  const safeSector = sector.trim().slice(0, MAX_SECTOR)
-  const safeIcon = typeof icon === 'string' && icon.trim() ? icon.trim().slice(0, MAX_ICON) : '💼'
-
-  // Generate a unique code from the slugified title
-  const baseCode = slugify(safeTitle) || 'experience'
-  const suffix = Date.now().toString(36)
-  const code = `${baseCode}-${suffix}`
-
-  // Get the user's Node
-  const userId = (session.user as { id?: string }).id
-  if (!userId) {
-    return NextResponse.json({ error: 'User ID not found in session' }, { status: 401 })
-  }
-
-  const userNode = await getUserNode(userId)
-  if (!userNode) {
-    return NextResponse.json(
-      { error: 'User node not found. Please complete your profile.' },
-      { status: 400 }
-    )
-  }
-
-  // Create the EXPERIENCE node
-  const experienceNode = await db.node.create({
+  const node = await db.node.create({
     data: {
       type: 'EXPERIENCE',
       code,
-      label: safeTitle,
-      icon: safeIcon,
-      properties: {
-        description: safeDesc,
-        location: safeLocation,
-        sector: safeSector,
-      },
+      label: label!,
+      icon: icon ?? KIND_ICONS[props.kind!],
+      lat: lat ?? null,
+      lng: lng ?? null,
+      properties: { ...props, status } as Prisma.InputJsonValue,
     },
   })
 
-  // Create OFFERS edge from user's node to the experience node
-  await db.edge.create({
-    data: {
-      fromId: userNode.id,
-      toId: experienceNode.id,
-      relation: 'OFFERS',
-    },
-  })
+  await db.edge.create({ data: { fromId: hostNode.id, toId: node.id, relation: 'OFFERS' } })
 
-  return NextResponse.json(
-    {
-      id: experienceNode.id,
-      label: experienceNode.label,
-      icon: experienceNode.icon,
-      properties: experienceNode.properties,
-      host: { label: userNode.label, icon: userNode.icon ?? '🏢' },
-    },
-    { status: 201 }
-  )
+  if (!isAdmin) {
+    const admins = await db.user.findMany({ where: { role: 'ADMIN' }, select: { id: true } })
+    for (const admin of admins) {
+      notify({
+        userId: admin.id,
+        type: 'SYSTEM',
+        title: `New listing to review: ${node.label}`,
+        link: '/admin',
+      }).catch(() => {})
+    }
+  }
+
+  return NextResponse.json(toDTO(node, hostNode, { includeAccess: true }), { status: 201 })
 }

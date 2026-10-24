@@ -3,7 +3,10 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import WorldMap, { type MapProjectionMode } from '@/components/WorldMap'
+import WorldMap, { type MapProjectionMode, type OpportunityPin } from '@/components/WorldMap'
+import OpportunityCard from '@/components/OpportunityCard'
+import type { OpportunityDTO } from '@/lib/opportunities'
+import { getSelected, SELECTION_EVENT, toggleSelected } from '@/lib/selection'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { haversineKm } from '@/lib/geo'
@@ -75,6 +78,37 @@ export default function HomePage() {
     }
     setHydrated(true)
   }, [])
+  // ── Opportunities on the map ──
+  const [opportunities, setOpportunities] = useState<OpportunityDTO[]>([])
+  const [openOpportunity, setOpenOpportunity] = useState<string | null>(null)
+  const [selectedOpps, setSelectedOpps] = useState<string[]>([])
+  useEffect(() => {
+    fetch('/api/opportunities')
+      .then((r) => (r.ok ? (r.json() as Promise<OpportunityDTO[]>) : []))
+      .then(setOpportunities)
+      .catch(() => {})
+    setSelectedOpps(getSelected())
+    const sync = () => setSelectedOpps(getSelected())
+    window.addEventListener(SELECTION_EVENT, sync)
+    return () => window.removeEventListener(SELECTION_EVENT, sync)
+  }, [])
+  const opportunityPins = useMemo<OpportunityPin[]>(
+    () =>
+      opportunities
+        .filter((o) => o.lat !== null && o.lng !== null)
+        .map((o) => ({
+          id: o.id,
+          label: o.label,
+          lat: o.lat as number,
+          lng: o.lng as number,
+          kind: o.properties.kind,
+          selected: selectedOpps.includes(o.id) || openOpportunity === o.id,
+        })),
+    [opportunities, selectedOpps, openOpportunity]
+  )
+  const openOpp = opportunities.find((o) => o.id === openOpportunity) ?? null
+  const userId = (session?.user as { id?: string } | undefined)?.id
+
   const previewCountries: string[] = [] // preview disabled — keep prop for API compat
   const [menuOpen, setMenuOpen] = useState(false)
   const [projection, setProjection] = useState<MapProjectionMode>('mercator')
@@ -354,6 +388,8 @@ export default function HomePage() {
   return (
     <main className="relative h-screen w-screen overflow-hidden">
       <WorldMap
+        opportunityPins={opportunityPins}
+        onOpportunityClick={setOpenOpportunity}
         scoredCountries={scoredCountries}
         previewCountryCodes={previewCountries}
         onCountryClick={(code, name) => {
@@ -384,6 +420,27 @@ export default function HomePage() {
         enrichedCountries={enrichedCountries}
         projection={projection}
       />
+
+      {/* Selected Opportunity — card above the filters */}
+      {openOpp && (
+        <div className="absolute bottom-24 left-1/2 z-40 w-[min(92vw,380px)] -translate-x-1/2 sm:bottom-auto sm:left-auto sm:right-4 sm:top-16 sm:translate-x-0">
+          <div className="relative">
+            <button
+              onClick={() => setOpenOpportunity(null)}
+              aria-label="Close"
+              className="absolute right-2 top-2 z-10 rounded-full px-2 text-lg text-brand-text-muted hover:text-brand-accent"
+            >
+              ×
+            </button>
+            <OpportunityCard
+              opp={openOpp}
+              selected={selectedOpps.includes(openOpp.id)}
+              onToggleSelect={(id) => setSelectedOpps(toggleSelected(id))}
+              isOwn={!!userId && openOpp.host?.userId === userId}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Top bar */}
       <div className="absolute left-0 right-0 top-0 z-30 flex items-center justify-between px-4 py-3">
@@ -443,7 +500,7 @@ export default function HomePage() {
             href="/agent"
             className="text-sm text-brand-text-muted hover:text-brand-accent transition"
           >
-            Agent
+            Agent{selectedOpps.length ? ` (${selectedOpps.length})` : ''}
           </Link>
           <Link
             href="/opportunities"
@@ -451,6 +508,14 @@ export default function HomePage() {
           >
             Opportunities
           </Link>
+          {session && (
+            <Link
+              href="/bookings"
+              className="text-sm text-brand-text-muted hover:text-brand-accent transition"
+            >
+              My bookings
+            </Link>
+          )}
           {session ? (
             <Link
               href="/profile"
@@ -495,6 +560,15 @@ export default function HomePage() {
           >
             Opportunities
           </Link>
+          {session && (
+            <Link
+              href="/bookings"
+              onClick={() => setMenuOpen(false)}
+              className="py-2 text-sm text-brand-text-muted hover:text-brand-accent transition"
+            >
+              My bookings
+            </Link>
+          )}
           {session ? (
             <Link
               href="/profile"

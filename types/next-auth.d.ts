@@ -18,6 +18,9 @@ declare module 'next-auth' {
     role: UserRole
     country: string
     language: string
+    tokenVersion?: number
+    checkedAt?: number
+    revoked?: boolean
   }
 }
 
@@ -27,5 +30,8 @@ declare module 'next-auth/jwt' {
     role: UserRole
     country: string
     language: string
+    tokenVersion?: number
+    checkedAt?: number
+    revoked?: boolean
   }
 }

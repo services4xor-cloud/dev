@@ -12,6 +12,8 @@ jest.mock('@/lib/auth', () => ({
   authOptions: {},
 }))
 
+jest.mock('@/lib/rate-limit', () => ({ rateLimit: jest.fn().mockResolvedValue(true) }))
+
 jest.mock('@/lib/ai', () => ({
   buildPersonaPrompt: jest.fn(),
   chatWithAgent: jest.fn(),
@@ -117,7 +119,7 @@ describe('POST /api/agent/chat', () => {
     const body = await res.text()
     expect(body).toBe('Hello from Kenya!')
 
-    expect(mockBuildPersonaPrompt).toHaveBeenCalledWith({ country: 'KE' }, undefined)
+    expect(mockBuildPersonaPrompt).toHaveBeenCalledWith({ country: 'KE' }, undefined, [])
     expect(mockChatWithAgent).toHaveBeenCalledWith(
       'You are a Be[X] agent...',
       expect.arrayContaining([{ role: 'user', content: 'Tell me about Kenya' }])
@@ -188,5 +190,52 @@ describe('POST /api/agent/chat', () => {
 
     const res = await POST(req)
     expect(res.status).toBe(403)
+  })
+
+  test('passes only published selected opportunities to the prompt', async () => {
+    const { db } = require('@/lib/db')
+    mockGetServerSession.mockResolvedValue({
+      user: { id: 'user-1' },
+      expires: '2099-01-01',
+    })
+    mockBuildPersonaPrompt.mockResolvedValue('prompt')
+    mockChatWithAgent.mockResolvedValue('ok')
+    db.agentChat.create.mockResolvedValue({ id: 'c1' })
+    db.node.findMany.mockResolvedValue([
+      {
+        id: 'o1',
+        label: 'Safari',
+        properties: { kind: 'JOURNEY', status: 'PUBLISHED', price: 100, currency: 'EUR' },
+        inEdges: [{ from: { label: 'BeKenya' } }],
+      },
+      {
+        id: 'o2',
+        label: 'Draft',
+        properties: { kind: 'JOURNEY', status: 'IN_REVIEW' },
+        inEdges: [],
+      },
+    ])
+
+    const res = await POST(
+      makeRequest({
+        dimensions: {},
+        message: 'Is this good for a family?',
+        opportunityIds: ['o1', 'o2', 42],
+      })
+    )
+    expect(res.status).toBe(200)
+    expect(db.node.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: expect.objectContaining({ id: { in: ['o1', 'o2'] } }) })
+    )
+    const selected = mockBuildPersonaPrompt.mock.calls.at(-1)?.[2] as { id: string }[]
+    expect(selected.map((o) => o.id)).toEqual(['o1'])
+  })
+
+  test('returns 429 when the daily agent limit is reached', async () => {
+    const { rateLimit } = require('@/lib/rate-limit')
+    rateLimit.mockResolvedValueOnce(false)
+    mockGetServerSession.mockResolvedValue({ user: { id: 'user-1' }, expires: '2099-01-01' })
+    const res = await POST(makeRequest({ dimensions: {}, message: 'hi' }))
+    expect(res.status).toBe(429)
   })
 })

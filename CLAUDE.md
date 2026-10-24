@@ -70,18 +70,18 @@ Full rules → `DESIGN_SYSTEM.md`
 
 ## 6. Tech Stack
 
-| Layer      | Tech                                            |
-| ---------- | ----------------------------------------------- |
-| Framework  | Next.js 14 App Router (TypeScript)              |
-| Styling    | Tailwind CSS + golden ratio φ=1.618 tokens      |
-| DB         | Prisma 5 + PostgreSQL (Neon) — hybrid graph     |
-| Auth       | NextAuth.js v4 (Google OAuth + Magic Link)      |
-| AI         | Anthropic Claude API (claude-sonnet-4-20250514) |
-| Payments   | M-Pesa Daraja v2 (KE) · Stripe (INT)            |
-| Email      | Resend                                          |
-| Testing    | Jest 30 (247/247, 21 suites) · Playwright       |
-| CI/CD      | GitHub Actions → Vercel (auto-deploy on push)   |
-| Formatting | Prettier + ESLint + Husky pre-commit            |
+| Layer      | Tech                                          |
+| ---------- | --------------------------------------------- |
+| Framework  | Next.js 14 App Router (TypeScript)            |
+| Styling    | Tailwind CSS + golden ratio φ=1.618 tokens    |
+| DB         | Prisma 5 + PostgreSQL (Neon) — hybrid graph   |
+| Auth       | NextAuth.js v4 (Google OAuth + Magic Link)    |
+| AI         | Anthropic Claude API (claude-sonnet-5-5)      |
+| Payments   | M-Pesa Daraja v2 (KE) · Stripe (INT)          |
+| Email      | Resend                                        |
+| Testing    | Jest 30 (247/247, 21 suites) · Playwright     |
+| CI/CD      | GitHub Actions → Vercel (auto-deploy on push) |
+| Formatting | Prettier + ESLint + Husky pre-commit          |
 
 ---
 

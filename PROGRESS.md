@@ -1,7 +1,7 @@
 # Be[Country] — Progress Tracker
 
 > Update after every feature. Agent reads this first.
-> Last updated: Session 87 (2026-04-10); Maintenance — dependency cleanup, N+1 fix, data integrity hardening, scalability indexes
+> Last updated: Session 88 (2026-10-24); End to end: password login, products on the map, agent on selected products, bookings, 4xor page
 > ← [CLAUDE.md](./CLAUDE.md) | [PRD.md](./PRD.md) · [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -21,13 +21,26 @@
 | Build             | ✅ passes (35+ routes incl robots.txt, sitemap.xml)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Architecture      | Hybrid triple-store (Node+Edge in PostgreSQL) + relational auth/payment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | Map               | Fullscreen MapLibre GL JS + 177 countries GeoJSON + dimension filters                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| AI Agents         | Claude API (claude-sonnet-4-20250514) with graph-powered personas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| AI Agents         | Claude API (claude-sonnet-5-5) with graph-powered personas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | Vocabulary        | v2: Explorer/Host/Opportunity/Exchange/Experience/Discovery/Hub/Corridor                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | Legacy terms      | 0 — zero Pioneer/Anchor/Venture/Compass in lib/, app/, components/, types/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | Countries         | 185 in COUNTRY_OPTIONS (all complete: ≥2 langs, ≥2 payments, ≥3 sectors, ≥1 faith) + 100+ languages, 8 faiths, ~50 currencies                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | Identity dims     | 8 (Location, Languages, Faith, Craft, Interests, Reach, Culture, Market)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | DB                | ✅ Neon PostgreSQL — hybrid schema (Node/Edge + User/Payment/Conversation/AgentChat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| Auth              | ✅ NextAuth v4 — Google OAuth + Magic Link (Resend), EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Auth              | ✅ NextAuth v4 — Google OAuth + email/password (verified via Resend) + JWT sessions with sign-out everywhere, EXPLORER/HOST/AGENT/ADMIN roles                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+
+---
+
+## Session 88: End to End — Login, Products, Agent, Bookings, 4xor
+
+- **Login:** email + password accounts (bcrypt, verify link by email, rate limited), Google kept. JWT sessions re-check `tokenVersion` every 5 min; `/api/auth/sign-out-everywhere` revokes all. `ADMIN_EMAILS` promotes admins.
+- **Products:** Opportunities now have kind (Journey, Service, Automation, Experience), status (In review → Published → Archived), price, dates, capacity, demo link and a private access link (`lib/opportunities.ts`). Anyone signed in can submit; admins review in `/admin` and publish. Edit at `/opportunities/[id]/edit`.
+- **Map:** published products show as pins; click opens a card with Book and "+ Ask agent".
+- **Agent:** `/agent` answers about the products you selected (max 10, published only, listing text treated as data). Model `claude-sonnet-5-5`, 100 messages/day per user.
+- **Bookings:** `/bookings` lists your requests; the access link (e.g. 4xor Studio) appears once the host confirms. Provider listings without a login are handled by admins.
+- **Real data:** `npm run db:seed:4xor` adds BeKenya journeys and the 4xor services (social media automation, n8n automation). Fake testimonials removed.
+- **4xor.com:** `/4xor` company page; `middleware.ts` serves it at `/` for `COMPANY_HOSTS`. Map also at `/map`.
+- **Tests:** 4 new suites (opportunities lib + routes, register, rate limit).
 
 ---
 
@@ -449,7 +462,7 @@ Symbols exported but only used within their own file (YAGNI):
 
 - **185 countries** — No duplicates, no empty arrays, all complete
 - **136 languages** — No duplicates, all with country assignments
-- **AI model** — Confirmed `claude-sonnet-4-20250514` in lib/ai.ts matches CLAUDE.md
+- **AI model** — Confirmed `claude-sonnet-5-5` in lib/ai.ts matches CLAUDE.md
 
 ### Stats
 

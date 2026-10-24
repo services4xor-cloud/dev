@@ -3,7 +3,19 @@
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 
-export default function ApplyButton({ opportunityId }: { opportunityId: string }) {
+interface ApplyButtonProps {
+  opportunityId: string
+  /** Shown on the button, e.g. "Book this journey" */
+  label?: string
+  compact?: boolean
+}
+
+/** Book an Opportunity: creates an Exchange the Host then accepts or declines. */
+export default function ApplyButton({
+  opportunityId,
+  label = 'Book this',
+  compact = false,
+}: ApplyButtonProps) {
   const { data: session } = useSession()
   const [state, setState] = useState<'idle' | 'form' | 'sending' | 'done' | 'error' | 'already'>(
     'idle'
@@ -14,10 +26,10 @@ export default function ApplyButton({ opportunityId }: { opportunityId: string }
   if (!session?.user) {
     return (
       <a
-        href="/login"
+        href={`/login?callbackUrl=${encodeURIComponent(`/exchange/${opportunityId}`)}`}
         className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-5 py-2.5 text-sm font-semibold text-brand-accent transition hover:opacity-90"
       >
-        Sign in to engage
+        Sign in to book
       </a>
     )
   }
@@ -52,7 +64,11 @@ export default function ApplyButton({ opportunityId }: { opportunityId: string }
   if (state === 'done') {
     return (
       <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
-        Exchange submitted! The host will review it.
+        Request sent. The host will confirm it, and you can follow it under{' '}
+        <a href="/bookings" className="underline">
+          My bookings
+        </a>
+        .
       </div>
     )
   }
@@ -60,7 +76,11 @@ export default function ApplyButton({ opportunityId }: { opportunityId: string }
   if (state === 'already') {
     return (
       <div className="rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-accent">
-        You have already engaged with this opportunity.
+        You already booked this. See{' '}
+        <a href="/bookings" className="underline">
+          My bookings
+        </a>
+        .
       </div>
     )
   }
@@ -71,7 +91,7 @@ export default function ApplyButton({ opportunityId }: { opportunityId: string }
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Tell the host why you're interested (optional)…"
+          placeholder="Anything the host should know, like dates or group size (optional)…"
           maxLength={500}
           rows={3}
           className="w-full rounded-lg border border-white/10 bg-brand-bg px-3 py-2 text-sm text-brand-text placeholder-brand-text-muted outline-none focus:border-brand-accent/40"
@@ -83,7 +103,7 @@ export default function ApplyButton({ opportunityId }: { opportunityId: string }
             disabled={state === 'sending'}
             className="rounded-lg bg-brand-primary px-5 py-2 text-sm font-semibold text-brand-accent transition hover:opacity-90 disabled:opacity-40"
           >
-            {state === 'sending' ? 'Sending…' : 'Submit Exchange'}
+            {state === 'sending' ? 'Sending…' : 'Send request'}
           </button>
           <button
             onClick={() => {
@@ -103,9 +123,11 @@ export default function ApplyButton({ opportunityId }: { opportunityId: string }
   return (
     <button
       onClick={() => setState('form')}
-      className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-5 py-2.5 text-sm font-semibold text-brand-accent transition hover:opacity-90"
+      className={`inline-flex items-center gap-2 rounded-lg bg-brand-primary font-semibold text-brand-accent transition hover:opacity-90 ${
+        compact ? 'px-3 py-1.5 text-xs' : 'px-5 py-2.5 text-sm'
+      }`}
     >
-      Engage with this Opportunity
+      {label}
     </button>
   )
 }

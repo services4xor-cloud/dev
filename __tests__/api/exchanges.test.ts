@@ -9,6 +9,10 @@ jest.mock('next-auth', () => ({ getServerSession: jest.fn() }))
 jest.mock('@/lib/auth', () => ({ authOptions: {} }))
 jest.mock('@/lib/notifications', () => ({ notify: jest.fn().mockResolvedValue(undefined) }))
 jest.mock('@/lib/graph', () => ({ getUserNode: jest.fn() }))
+jest.mock('@/lib/email', () => ({
+  sendEmail: jest.fn().mockResolvedValue(undefined),
+  actionEmail: jest.fn().mockReturnValue('<html>'),
+}))
 jest.mock('@/lib/db', () => ({
   db: {
     edge: {
@@ -19,7 +23,7 @@ jest.mock('@/lib/db', () => ({
       update: jest.fn(),
     },
     node: { findUnique: jest.fn() },
-    user: { findUnique: jest.fn() },
+    user: { findUnique: jest.fn(), findMany: jest.fn().mockResolvedValue([]) },
   },
 }))
 
@@ -43,6 +47,18 @@ function makeReq(
       ? { body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } }
       : {}),
   })
+}
+
+function publishedOpportunity(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'exp1',
+    type: 'EXPERIENCE',
+    active: true,
+    label: 'Safari',
+    properties: { kind: 'JOURNEY', status: 'PUBLISHED' },
+    inEdges: [{ from: { userId: 'host1' } }],
+    ...overrides,
+  }
 }
 
 describe('GET /api/exchanges', () => {
@@ -91,11 +107,7 @@ describe('POST /api/exchanges', () => {
 
   it('returns 409 if already applied', async () => {
     mockSession.mockResolvedValue({ user: { id: 'u1' } })
-    ;(db.node.findUnique as jest.Mock).mockResolvedValue({
-      id: 'exp1',
-      type: 'EXPERIENCE',
-      inEdges: [],
-    })
+    ;(db.node.findUnique as jest.Mock).mockResolvedValue(publishedOpportunity())
     mockGetUserNode.mockResolvedValue({ id: 'node1' })
     ;(db.edge.findFirst as jest.Mock).mockResolvedValue({ id: 'existing' })
     const res = await POST(
@@ -106,11 +118,7 @@ describe('POST /api/exchanges', () => {
 
   it('creates SEEKS edge on success', async () => {
     mockSession.mockResolvedValue({ user: { id: 'u1' } })
-    ;(db.node.findUnique as jest.Mock).mockResolvedValue({
-      id: 'exp1',
-      type: 'EXPERIENCE',
-      inEdges: [],
-    })
+    ;(db.node.findUnique as jest.Mock).mockResolvedValue(publishedOpportunity())
     mockGetUserNode.mockResolvedValue({ id: 'node1' })
     ;(db.edge.findFirst as jest.Mock).mockResolvedValue(null)
     ;(db.edge.create as jest.Mock).mockResolvedValue({ id: 'edge1' })
@@ -132,6 +140,72 @@ describe('POST /api/exchanges', () => {
         }),
       })
     )
+  })
+})
+
+describe('POST /api/exchanges — booking rules', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('returns 404 for a listing still in review', async () => {
+    mockSession.mockResolvedValue({ user: { id: 'u1' } })
+    ;(db.node.findUnique as jest.Mock).mockResolvedValue(
+      publishedOpportunity({ properties: { kind: 'JOURNEY', status: 'IN_REVIEW' } })
+    )
+    const res = await POST(
+      makeReq('http://localhost/api/exchanges', 'POST', { opportunityId: 'exp1' })
+    )
+    expect(res.status).toBe(404)
+  })
+
+  it('refuses booking your own listing', async () => {
+    mockSession.mockResolvedValue({ user: { id: 'host1' } })
+    ;(db.node.findUnique as jest.Mock).mockResolvedValue(publishedOpportunity())
+    const res = await POST(
+      makeReq('http://localhost/api/exchanges', 'POST', { opportunityId: 'exp1' })
+    )
+    expect(res.status).toBe(400)
+  })
+
+  it('notifies admins when the provider has no login', async () => {
+    const { notify } = require('@/lib/notifications')
+    mockSession.mockResolvedValue({ user: { id: 'u1' } })
+    ;(db.node.findUnique as jest.Mock).mockResolvedValue(
+      publishedOpportunity({ inEdges: [{ from: { userId: null } }] })
+    )
+    mockGetUserNode.mockResolvedValue({ id: 'node1' })
+    ;(db.edge.findFirst as jest.Mock).mockResolvedValue(null)
+    ;(db.edge.create as jest.Mock).mockResolvedValue({ id: 'edge1' })
+    ;(db.user.findMany as jest.Mock).mockResolvedValue([{ id: 'admin1', email: 'a@x.de' }])
+    ;(db.user.findUnique as jest.Mock).mockResolvedValue({ name: 'Alice' })
+    const res = await POST(
+      makeReq('http://localhost/api/exchanges', 'POST', { opportunityId: 'exp1' })
+    )
+    expect(res.status).toBe(201)
+    expect(notify).toHaveBeenCalledWith(expect.objectContaining({ userId: 'admin1' }))
+  })
+})
+
+describe('GET /api/exchanges — access links', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('reveals the access link only for accepted bookings', async () => {
+    mockSession.mockResolvedValue({ user: { id: 'u1' } })
+    mockGetUserNode.mockResolvedValue({ id: 'node1' })
+    const to = {
+      id: 'svc1',
+      label: 'Studio',
+      icon: '📣',
+      properties: { kind: 'SERVICE', status: 'PUBLISHED', accessUrl: 'https://studio.4xor.de/' },
+      inEdges: [],
+    }
+    ;(db.edge.findMany as jest.Mock).mockResolvedValue([
+      { id: 'a', properties: { status: 'ACCEPTED' }, createdAt: new Date(), to },
+      { id: 'b', properties: { status: 'PENDING' }, createdAt: new Date(), to },
+    ])
+    const res = await GET(makeReq())
+    const data = (await res.json()) as { id: string; accessUrl?: string }[]
+    expect(data.find((x) => x.id === 'a')?.accessUrl).toBe('https://studio.4xor.de/')
+    expect(data.find((x) => x.id === 'b')?.accessUrl).toBeUndefined()
   })
 })
 

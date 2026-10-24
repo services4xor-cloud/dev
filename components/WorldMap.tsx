@@ -35,7 +35,27 @@ interface ScoredCountry {
   depth: number // unique dimension count 1-4 → intensity
 }
 
+/** An Opportunity drawn as a pin on the map */
+export interface OpportunityPin {
+  id: string
+  label: string
+  lat: number
+  lng: number
+  kind: string
+  selected?: boolean
+}
+
+/** Pin colour per Opportunity kind (gold = 4xor services/automations) */
+const PIN_COLORS: Record<string, string> = {
+  JOURNEY: '#4FD1C5',
+  EXPERIENCE: '#F6AD55',
+  SERVICE: '#C9A227',
+  AUTOMATION: '#C9A227',
+}
+
 interface WorldMapProps {
+  opportunityPins?: OpportunityPin[]
+  onOpportunityClick?: (id: string) => void
   scoredCountries?: ScoredCountry[]
   onCountryClick: (code: string | null, name?: string) => void
   previewCountryCodes?: string[]
@@ -158,6 +178,8 @@ function greatCircleArc(
 }
 
 export default function WorldMap({
+  opportunityPins = [],
+  onOpportunityClick,
   scoredCountries = [],
   onCountryClick,
   previewCountryCodes = [],
@@ -202,6 +224,15 @@ export default function WorldMap({
 
   const handleMouseMove = useCallback((e: MapLayerMouseEvent) => {
     const features = e.features
+    if (features?.[0]?.layer?.id === 'opportunity-pin') {
+      setHoveredCountry({
+        name: features[0].properties?.label as string,
+        code: '',
+        x: e.point.x,
+        y: e.point.y,
+      })
+      return
+    }
     if (features?.[0]?.properties?.name) {
       setHoveredCountry({
         name: features[0].properties.name,
@@ -216,6 +247,12 @@ export default function WorldMap({
 
   const handleClick = useCallback(
     (e: MapLayerMouseEvent) => {
+      // Opportunity pins sit above the countries and win the click
+      const pin = e.features?.find((f) => f.layer?.id === 'opportunity-pin')
+      if (pin && onOpportunityClick) {
+        onOpportunityClick(pin.properties?.id as string)
+        return
+      }
       // In globe mode, check if click is on the visible hemisphere
       if (projectionMode === 'globe' && e.features?.[0]) {
         const map = mapRef.current
@@ -248,7 +285,7 @@ export default function WorldMap({
       if (tooltipTimer.current) clearTimeout(tooltipTimer.current)
       tooltipTimer.current = setTimeout(() => setHoveredCountry(null), 800)
     },
-    [onCountryClick, projectionMode]
+    [onCountryClick, onOpportunityClick, projectionMode]
   )
 
   const scoreMap = useMemo(() => {
@@ -295,6 +332,32 @@ export default function WorldMap({
       .filter(Boolean)
     return { type: 'FeatureCollection', features }
   }, [enrichedCountries])
+
+  // ─── Opportunity pins ───────────────────────────────────────────────────────
+  // Pins sharing a spot (e.g. several listings in one capital) fan out slightly
+  const opportunityGeoJSON = useMemo(() => {
+    const seen: Record<string, number> = {}
+    const features = opportunityPins.map((p) => {
+      const key = `${p.lat.toFixed(2)},${p.lng.toFixed(2)}`
+      const n = (seen[key] = (seen[key] ?? -1) + 1)
+      const angle = n * 2.4
+      const r = n === 0 ? 0 : 0.6 + 0.25 * Math.sqrt(n)
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [p.lng + r * Math.cos(angle), p.lat + r * Math.sin(angle)],
+        },
+        properties: {
+          id: p.id,
+          label: p.label,
+          color: PIN_COLORS[p.kind] ?? '#F6AD55',
+          selected: p.selected ? 1 : 0,
+        },
+      }
+    })
+    return { type: 'FeatureCollection', features }
+  }, [opportunityPins])
 
   // ─── Map style expressions ──────────────────────────────────────────────────
   // Priority: enriched > scored (with dimension blending) > preview > default
@@ -482,7 +545,9 @@ export default function WorldMap({
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setHoveredCountry(null)}
         onMoveEnd={saveViewport}
-        interactiveLayerIds={['country-fill']}
+        interactiveLayerIds={
+          opportunityPins.length ? ['opportunity-pin', 'country-fill'] : ['country-fill']
+        }
         cursor="pointer"
       >
         {/* Country polygons */}
@@ -574,6 +639,31 @@ export default function WorldMap({
                 'circle-stroke-width': 1.5,
                 'circle-stroke-color': '#FFF8E1',
                 'circle-stroke-opacity': 0.8,
+              }}
+            />
+          </Source>
+        )}
+        {/* Opportunity pins — drawn last so they sit above everything */}
+        {opportunityPins.length > 0 && (
+          <Source id="opportunities" type="geojson" data={opportunityGeoJSON as GeoJSON.GeoJSON}>
+            <Layer
+              id="opportunity-pin-halo"
+              type="circle"
+              paint={{
+                'circle-radius': ['case', ['==', ['get', 'selected'], 1], 13, 9],
+                'circle-color': ['get', 'color'],
+                'circle-opacity': 0.25,
+                'circle-blur': 0.6,
+              }}
+            />
+            <Layer
+              id="opportunity-pin"
+              type="circle"
+              paint={{
+                'circle-radius': ['case', ['==', ['get', 'selected'], 1], 7, 5.5],
+                'circle-color': ['get', 'color'],
+                'circle-stroke-width': ['case', ['==', ['get', 'selected'], 1], 2.5, 1.5],
+                'circle-stroke-color': '#0A0A0F',
               }}
             />
           </Source>

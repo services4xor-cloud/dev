@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import ApplyButton from '@/components/ApplyButton'
+import { formatPrice, KIND_LABELS, readProps } from '@/lib/opportunities'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -32,11 +33,24 @@ export default async function ExchangePage({ params }: PageProps) {
   if (!node) notFound()
 
   const offeredBy = node.inEdges.filter((e) => e.relation === 'OFFERS').map((e) => e.from)
-  const props = node.properties as {
-    description?: string
-    location?: string
-    sector?: string
-  } | null
+  const isOpportunity = node.type === 'EXPERIENCE'
+  const props = isOpportunity
+    ? readProps(node)
+    : (node.properties as {
+        description?: string
+        location?: string
+        sector?: string
+      } | null)
+  // Unpublished listings are only visible to their Host (via the edit page)
+  if (isOpportunity && (readProps(node).status !== 'PUBLISHED' || !node.active)) notFound()
+  const opp = isOpportunity ? readProps(node) : null
+  const price = opp ? formatPrice(opp) : null
+  const bookLabel =
+    opp?.kind === 'JOURNEY'
+      ? 'Book this journey'
+      : opp?.kind === 'SERVICE' || opp?.kind === 'AUTOMATION'
+        ? 'Book this service'
+        : 'Book this'
 
   return (
     <div className="min-h-screen bg-brand-bg p-6">
@@ -49,12 +63,38 @@ export default async function ExchangePage({ params }: PageProps) {
       <h1 className="mb-2 text-3xl font-bold text-brand-accent">
         {node.icon} {node.label}
       </h1>
-      <p className="mb-6 text-sm text-brand-text-muted">{node.type}</p>
+      <p className="mb-6 text-sm text-brand-text-muted">
+        {opp ? KIND_LABELS[opp.kind] : node.type}
+      </p>
+
+      {opp && (
+        <div className="mb-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <span className="font-semibold text-brand-text">{price ?? 'Price on request'}</span>
+          {(opp.startsOn || opp.endsOn) && (
+            <span className="text-brand-text-muted">
+              📅 {opp.startsOn ?? '…'} – {opp.endsOn ?? '…'}
+            </span>
+          )}
+          {opp.capacity && <span className="text-brand-text-muted">👥 {opp.capacity} places</span>}
+          {opp.demoUrl && (
+            <a
+              href={opp.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-accent hover:underline"
+            >
+              See the demo →
+            </a>
+          )}
+        </div>
+      )}
 
       {/* Description */}
       {props?.description && (
         <div className="mb-6">
-          <p className="text-sm leading-relaxed text-brand-text">{props.description}</p>
+          <p className="whitespace-pre-line text-sm leading-relaxed text-brand-text">
+            {props.description}
+          </p>
         </div>
       )}
 
@@ -93,7 +133,7 @@ export default async function ExchangePage({ params }: PageProps) {
       {/* Apply button (only for EXPERIENCE nodes) */}
       {node.type === 'EXPERIENCE' && (
         <div className="mb-8">
-          <ApplyButton opportunityId={node.id} />
+          <ApplyButton opportunityId={node.id} label={bookLabel} />
         </div>
       )}
 

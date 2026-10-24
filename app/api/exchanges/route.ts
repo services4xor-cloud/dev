@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { getUserNode } from '@/lib/graph'
 import { notify } from '@/lib/notifications'
+import { readProps } from '@/lib/opportunities'
+import { actionEmail, sendEmail } from '@/lib/email'
 
 // GET /api/exchanges — list exchanges for the current user
 // ?role=explorer → shows user's exchanges (SEEKS edges)
@@ -25,8 +27,13 @@ export async function GET(req: NextRequest) {
 
   if (role === 'host') {
     // Find all EXPERIENCE nodes this user OFFERS, then find SEEKS edges to those
+    // Admins also handle listings of providers without a login (e.g. BeKenya, 4XOR)
+    const isAdmin = (session?.user as { role?: string } | undefined)?.role === 'ADMIN'
     const offeredExperiences = await db.edge.findMany({
-      where: { fromId: userNode.id, relation: 'OFFERS' },
+      where: {
+        relation: 'OFFERS',
+        OR: [{ fromId: userNode.id }, ...(isAdmin ? [{ from: { userId: null } }] : [])],
+      },
       select: { toId: true },
     })
     const experienceIds = offeredExperiences.map((e) => e.toId)
@@ -84,17 +91,24 @@ export async function GET(req: NextRequest) {
     take: 100,
   })
 
-  const result = exchanges.map((e) => ({
-    id: e.id,
-    status: (e.properties as { status?: string } | null)?.status ?? 'PENDING',
-    createdAt: e.createdAt,
-    opportunity: {
-      id: e.to.id,
-      label: e.to.label,
-      icon: e.to.icon,
-    },
-    host: e.to.inEdges[0]?.from.user?.name ?? e.to.inEdges[0]?.from.label ?? null,
-  }))
+  const result = exchanges.map((e) => {
+    const status = (e.properties as { status?: string } | null)?.status ?? 'PENDING'
+    const { kind, accessUrl } = readProps(e.to)
+    return {
+      id: e.id,
+      status,
+      createdAt: e.createdAt,
+      opportunity: {
+        id: e.to.id,
+        label: e.to.label,
+        icon: e.to.icon,
+        kind,
+      },
+      host: e.to.inEdges[0]?.from.user?.name ?? e.to.inEdges[0]?.from.label ?? null,
+      // The private access link (e.g. 4xor Studio) is only revealed once the Host accepted
+      ...(status === 'ACCEPTED' && accessUrl ? { accessUrl } : {}),
+    }
+  })
 
   return NextResponse.json(result)
 }
@@ -129,8 +143,16 @@ export async function POST(req: NextRequest) {
       },
     },
   })
-  if (!opportunity || opportunity.type !== 'EXPERIENCE') {
+  if (
+    !opportunity ||
+    opportunity.type !== 'EXPERIENCE' ||
+    !opportunity.active ||
+    readProps(opportunity).status !== 'PUBLISHED'
+  ) {
     return NextResponse.json({ error: 'Opportunity not found' }, { status: 404 })
+  }
+  if (opportunity.inEdges[0]?.from.userId === userId) {
+    return NextResponse.json({ error: 'You cannot book your own opportunity' }, { status: 400 })
   }
 
   const userNode = await getUserNode(userId)
@@ -175,17 +197,39 @@ export async function POST(req: NextRequest) {
     throw e
   }
 
-  // Notify the host
+  // Notify the host — or the admins for providers without a login
   const hostUserId = opportunity.inEdges[0]?.from.userId
-  if (hostUserId) {
+  const recipients = hostUserId
+    ? [hostUserId]
+    : (await db.user.findMany({ where: { role: 'ADMIN' }, select: { id: true } })).map((a) => a.id)
+  if (recipients.length) {
     const explorer = await db.user.findUnique({ where: { id: userId }, select: { name: true } })
-    notify({
-      userId: hostUserId,
-      type: 'MATCH',
-      title: `${explorer?.name ?? 'An Explorer'} engaged with ${opportunity.label}`,
-      body: message ? String(message).trim().slice(0, 100) : undefined,
-      link: '/host',
-    }).catch(() => {})
+    const hostEmails = await db.user.findMany({
+      where: { id: { in: recipients } },
+      select: { email: true },
+    })
+    const base = process.env.NEXTAUTH_URL ?? req.nextUrl.origin
+    for (const { email } of hostEmails) {
+      sendEmail({
+        to: email,
+        subject: `New booking request: ${opportunity.label}`,
+        html: actionEmail(
+          'New booking request',
+          `${explorer?.name ?? 'An Explorer'} wants to book ${opportunity.label}. Confirm or decline it in your Host hub.`,
+          'Open Host hub',
+          `${base}/host`
+        ),
+      }).catch(() => {})
+    }
+    for (const recipient of recipients) {
+      notify({
+        userId: recipient,
+        type: 'MATCH',
+        title: `${explorer?.name ?? 'An Explorer'} booked ${opportunity.label}`,
+        body: message ? String(message).trim().slice(0, 100) : undefined,
+        link: '/host',
+      }).catch(() => {})
+    }
   }
 
   return NextResponse.json({ id: edge.id, status: 'PENDING' }, { status: 201 })

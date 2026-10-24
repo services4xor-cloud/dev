@@ -19,10 +19,17 @@ interface EnrichedContext {
 interface AgentChatProps {
   dimensions: AgentDimensions
   enrichedContext?: EnrichedContext
+  /** Opportunities the Explorer selected; the server loads them by id */
+  opportunityIds?: string[]
   onClose?: () => void
 }
 
-export default function AgentChat({ dimensions, enrichedContext, onClose }: AgentChatProps) {
+export default function AgentChat({
+  dimensions,
+  enrichedContext,
+  opportunityIds = [],
+  onClose,
+}: AgentChatProps) {
   const { status } = useSession()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
@@ -54,9 +61,15 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
           enrichedContext,
           message: userMessage,
           conversationId,
+          opportunityIds,
         }),
       })
 
+      if (res.status === 429) {
+        const limitText = await res.text()
+        setMessages((prev) => [...prev, { role: 'assistant', content: limitText }])
+        return
+      }
       if (!res.ok) {
         throw new Error(`Agent error (${res.status})`)
       }
@@ -114,7 +127,9 @@ export default function AgentChat({ dimensions, enrichedContext, onClose }: Agen
       <div className="flex-1 space-y-3 overflow-y-auto p-4">
         {messages.length === 0 && (
           <p className="text-center text-sm text-brand-text-muted">
-            Ask me anything about your selected dimensions.
+            {opportunityIds.length
+              ? 'Ask me anything about the listings you selected.'
+              : 'Ask me anything about your selected dimensions.'}
           </p>
         )}
         {messages.map((msg, i) => (

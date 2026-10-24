@@ -1,12 +1,12 @@
 const badges = [
   {
-    label: 'Identity Verified',
-    detail: 'Every Explorer profile is dimension-verified',
+    label: 'Reviewed Listings',
+    detail: 'Every new listing is checked by our team before it goes on the map',
     icon: '✓',
   },
   {
     label: 'Secure Payments',
-    detail: 'M-Pesa and Stripe with end-to-end encryption',
+    detail: 'Hosts confirm every booking before anything is charged',
     icon: '🔒',
   },
   {
@@ -16,7 +16,7 @@ const badges = [
   },
   {
     label: 'Global Network',
-    detail: '120+ countries connected through identity corridors',
+    detail: '177 countries on one map, in your languages',
     icon: '🌍',
   },
 ]
