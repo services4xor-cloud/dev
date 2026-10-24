@@ -90,7 +90,14 @@ export default function CountryPanel({
     ind.urban
       ? { label: 'In cities', value: `${Math.round(ind.urban.value)}%`, year: ind.urban.year }
       : null,
-  ].filter(Boolean) as { label: string; value: string; year?: string }[]
+    ind.youth
+      ? { label: 'Under 15', value: `${Math.round(ind.youth.value)}%`, year: ind.youth.year }
+      : null,
+  ]
+    .filter((f): f is { label: string; value: string; year?: string } => !!f)
+    .slice(0, 6)
+  // The last figure fills the row, so the grid never shows an empty slot
+  const lastSpan = ['', 'col-span-3', 'col-span-2'][figures.length % 3]
 
   const structure =
     ind.agriculture && ind.industry && ind.services
@@ -161,8 +168,11 @@ export default function CountryPanel({
       {/* Key figures */}
       {figures.length > 0 ? (
         <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-[10px] border border-brand-line bg-brand-line">
-          {figures.map((f) => (
-            <div key={f.label} className="bg-brand-surface px-3 py-2.5">
+          {figures.map((f, i) => (
+            <div
+              key={f.label}
+              className={`bg-brand-surface px-3 py-2.5 ${i === figures.length - 1 ? lastSpan : ''}`}
+            >
               <dt className="text-[0.72rem] text-brand-text-muted">{f.label}</dt>
               <dd className="mt-0.5 font-semibold tabular-nums text-brand-text">{f.value}</dd>
             </div>
