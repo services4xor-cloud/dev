@@ -28,7 +28,11 @@ export default async function FourXorPage() {
 
   const studio = services.find((s) => s.properties.kind === 'SERVICE')
   // Opens the map with our services selected for the agent (BeKenya's stay visible)
-  const mapHref = services.length ? `/map?select=${services.map((s) => s.id).join(',')}` : '/map'
+  const mapHref = services.length
+    ? `/map?select=${services.map((s) => s.code).join(',')}&country=CH`
+    : '/map'
+  const onMap = (s: (typeof services)[number]) =>
+    `/map?select=${s.code}&country=${s.properties.countryCode ?? 'CH'}`
 
   return (
     <main className="min-h-screen bg-brand-bg text-brand-text">
@@ -90,7 +94,10 @@ export default async function FourXorPage() {
               every listing before it goes live.
             </p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm">
-              <Link href="/map" className="text-brand-accent hover:underline">
+              <Link
+                href="/map?select=bekenya-21-days-safari-culture-coast&country=KE"
+                className="text-brand-accent hover:underline"
+              >
                 Try the map →
               </Link>
               <a
@@ -148,10 +155,10 @@ export default async function FourXorPage() {
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {services.map((s) => (
-              <Link
+              <article
                 key={s.id}
-                href={`/exchange/${s.id}`}
-                className="group rounded-xl border border-white/10 bg-brand-surface p-5 transition hover:border-brand-accent/40"
+                id={s.code}
+                className="scroll-mt-6 rounded-xl border border-white/10 bg-brand-surface p-5 transition hover:border-brand-accent/40"
               >
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">{s.icon}</span>
@@ -159,16 +166,25 @@ export default async function FourXorPage() {
                     <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-accent/70">
                       {KIND_LABELS[s.properties.kind]}
                     </p>
-                    <h3 className="font-semibold group-hover:text-brand-accent">{s.label}</h3>
-                    <p className="mt-2 line-clamp-3 text-sm text-brand-text-muted">
-                      {s.properties.description}
-                    </p>
+                    <h3 className="font-semibold">{s.label}</h3>
+                    <p className="mt-2 text-sm text-brand-text-muted">{s.properties.description}</p>
                     <p className="mt-3 text-sm font-medium">
                       {formatPrice(s.properties) ?? 'Price on request'}
                     </p>
+                    <div className="mt-4 flex flex-wrap gap-4 text-sm">
+                      <Link href={onMap(s)} className="text-brand-accent hover:underline">
+                        See it on the map →
+                      </Link>
+                      <Link
+                        href={`/exchange/${s.id}`}
+                        className="text-brand-text-muted hover:text-brand-accent"
+                      >
+                        Book or ask
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </Link>
+              </article>
             ))}
           </div>
         )}

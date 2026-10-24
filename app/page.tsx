@@ -88,20 +88,30 @@ export default function HomePage() {
   const [opportunities, setOpportunities] = useState<OpportunityDTO[]>([])
   const [openOpportunity, setOpenOpportunity] = useState<string | null>(null)
   const [selectedOpps, setSelectedOpps] = useState<string[]>([])
+  const [linkCountry, setLinkCountry] = useState<string | null>(null)
   useEffect(() => {
     fetch('/api/opportunities')
       .then((r) => (r.ok ? (r.json() as Promise<OpportunityDTO[]>) : []))
       .then((list) => {
         setOpportunities(list)
-        // Deep link from 4xor.com and elsewhere: /map?select=<id>,<id> preselects
-        // those listings for the agent and opens the first one
-        const wanted = (new URLSearchParams(window.location.search).get('select') ?? '')
+        // Deep link from 4xor.com and elsewhere: /map?select=<code or id>,…&country=CH
+        // preselects those listings for the agent, opens the first one and
+        // selects the country (default: the first listing's country)
+        const params = new URLSearchParams(window.location.search)
+        const wanted = (params.get('select') ?? '')
           .split(',')
-          .filter((id) => list.some((o) => o.id === id))
+          .map((key) => list.find((o) => o.id === key || o.code === key))
+          .filter((o): o is OpportunityDTO => !!o)
         if (wanted.length) {
-          setSelected(Array.from(new Set([...wanted, ...getSelected()])))
-          setOpenOpportunity(wanted[0])
+          setSelected(Array.from(new Set([...wanted.map((o) => o.id), ...getSelected()])))
+          setOpenOpportunity(wanted[0].id)
         }
+        const country = (
+          params.get('country') ??
+          wanted[0]?.properties.countryCode ??
+          ''
+        ).toUpperCase()
+        if (COUNTRY_NAMES[country]) setLinkCountry(country)
       })
       .catch(() => {})
     setSelectedOpps(getSelected())
@@ -391,6 +401,17 @@ export default function HomePage() {
       })
     }
   }, [])
+
+  // Country from a deep link: select it like a click on the map
+  useEffect(() => {
+    if (!linkCountry) return
+    setEnrichedCountries((prev) =>
+      prev.includes(linkCountry) ? prev : [...prev, linkCountry].slice(-MAX_PATH_STEPS)
+    )
+    setEnrichedNames((prev) => ({ ...prev, [linkCountry]: COUNTRY_NAMES[linkCountry] }))
+    void enrichCountry(linkCountry, COUNTRY_NAMES[linkCountry])
+    setLinkCountry(null)
+  }, [linkCountry, enrichCountry])
 
   // Remove a country's enrichment — remove its filters and from enriched list
   const unenrichCountry = useCallback((code: string) => {

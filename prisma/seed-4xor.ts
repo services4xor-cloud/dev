@@ -2,7 +2,9 @@
 /**
  * Seeds the real 4xor and BeKenya offerings as Opportunities on the map.
  * Idempotent: creates missing listings and never overwrites existing ones,
- * so edits made in the app survive a re-run.
+ * so edits made in the app survive a re-run. With SEED_UPDATE=1 the title,
+ * description, kind and public link of these listings are reset to the
+ * text below (prices, contact and status stay as edited).
  *
  *   npm run db:seed:4xor
  *
@@ -14,6 +16,7 @@
 import { PrismaClient, type Prisma } from '@prisma/client'
 
 const prisma = new PrismaClient()
+const UPDATE = process.env.SEED_UPDATE === '1'
 
 interface Provider {
   code: string
@@ -103,14 +106,14 @@ const LISTINGS: {
         'We plan, write and schedule your social media posts with 4xor Studio, our planner built on OpenClaw and n8n. You approve posts before they go out. After booking you get access to your own Studio workspace.',
       sector: 'Technology and IT',
       priceUnit: 'MONTH',
-      demoUrl: 'https://4xor.com/',
+      demoUrl: 'https://4xor.com/#4xor-social-media-automation',
       accessUrl: 'https://studio.4xor.de/',
     },
   },
   {
     code: '4xor-workflow-automation',
     provider: FOURXOR,
-    label: 'Workflow automation with n8n',
+    label: 'Agent automation: OpenClaw router + n8n workflows',
     icon: '⚙️',
     ...AESCH,
     properties: {
@@ -118,9 +121,9 @@ const LISTINGS: {
       countryCode: 'CH',
       location: 'Aesch, Switzerland · works online worldwide',
       description:
-        'We automate repetitive work for your business with n8n: lead handling, bookings, emails, reports and connections between your tools. We set it up, host it and keep it running.',
+        'An OpenClaw agent router hands each request to the right n8n workflow: lead handling, bookings, emails, reports, social posts and connections between your tools. Or one targeted n8n workflow, like our social media automation. We set it up, host it and keep it running.',
       sector: 'Technology and IT',
-      demoUrl: 'https://4xor.com/',
+      demoUrl: 'https://4xor.com/#4xor-workflow-automation',
     },
   },
 ]
@@ -140,10 +143,27 @@ async function main() {
   for (const p of [BEKENYA, FOURXOR]) providers.set(p.code, await upsertProvider(p))
 
   for (const l of LISTINGS) {
+    const found = await prisma.node.findUnique({
+      where: { type_code: { type: 'EXPERIENCE', code: l.code } },
+    })
+    if (found && UPDATE) {
+      const { description, kind, demoUrl } = l.properties
+      await prisma.node.update({
+        where: { id: found.id },
+        data: {
+          label: l.label,
+          icon: l.icon,
+          properties: {
+            ...((found.properties as Record<string, unknown> | null) ?? {}),
+            description,
+            kind,
+            demoUrl,
+          } as Prisma.InputJsonValue,
+        },
+      })
+    }
     const node =
-      (await prisma.node.findUnique({
-        where: { type_code: { type: 'EXPERIENCE', code: l.code } },
-      })) ??
+      found ??
       (await prisma.node.create({
         data: {
           type: 'EXPERIENCE',

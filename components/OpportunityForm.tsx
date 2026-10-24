@@ -33,6 +33,7 @@ export interface OpportunityFormValues {
   demoUrl: string
   accessUrl: string
   contactEmail: string
+  contactPublic: boolean
 }
 
 export function emptyOpportunityForm(): OpportunityFormValues {
@@ -55,6 +56,7 @@ export function emptyOpportunityForm(): OpportunityFormValues {
     demoUrl: '',
     accessUrl: '',
     contactEmail: '',
+    contactPublic: false,
   }
 }
 
@@ -80,6 +82,7 @@ export function formFromOpportunity(o: OpportunityDTO): OpportunityFormValues {
     demoUrl: p.demoUrl ?? '',
     accessUrl: o.accessUrl ?? '',
     contactEmail: o.contactEmail ?? '',
+    contactPublic: p.contactPublic ?? false,
   }
 }
 
@@ -126,6 +129,7 @@ export default function OpportunityForm({
       demoUrl: form.demoUrl,
       accessUrl: form.accessUrl,
       contactEmail: form.contactEmail,
+      contactPublic: form.contactPublic,
       ...(form.lat.trim() && form.lng.trim() ? { lat: form.lat, lng: form.lng } : {}),
     }
     try {
@@ -411,7 +415,7 @@ export default function OpportunityForm({
 
       <div>
         <label htmlFor="opp-contact" className={label}>
-          Contact email (private)
+          Contact email
         </label>
         <input
           id="opp-contact"
@@ -421,9 +425,16 @@ export default function OpportunityForm({
           placeholder="you@company.com"
           className={input}
         />
+        <label className="mt-2 flex items-center gap-2 text-xs text-brand-text">
+          <input
+            type="checkbox"
+            checked={form.contactPublic}
+            onChange={(e) => set('contactPublic', e.target.checked)}
+          />
+          Show this email on the map (for business addresses)
+        </label>
         <p className="mt-1 text-xs text-brand-text-muted">
-          Visitors write to you through the listing; this address is never shown. Empty = your
-          account email.
+          Visitors can always write to you through the listing. Empty = your account email.
         </p>
       </div>
 

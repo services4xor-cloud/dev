@@ -59,6 +59,26 @@ export default function OpportunityCard({
         <p className="mt-3 line-clamp-3 text-xs text-brand-text-muted/80">{p.description}</p>
       )}
 
+      {(p.demoUrl || opp.contactEmail) && (
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+          {p.demoUrl && (
+            <a
+              href={p.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-accent hover:underline"
+            >
+              Project page →
+            </a>
+          )}
+          {opp.contactEmail && (
+            <a href={`mailto:${opp.contactEmail}`} className="text-brand-accent hover:underline">
+              ✉ {opp.contactEmail}
+            </a>
+          )}
+        </div>
+      )}
+
       <div className="mt-4 flex flex-wrap items-center gap-2 pt-1">
         <button
           onClick={() => onToggleSelect(opp.id)}

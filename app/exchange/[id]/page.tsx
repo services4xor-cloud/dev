@@ -84,7 +84,12 @@ export default async function ExchangePage({ params }: PageProps) {
               rel="noopener noreferrer"
               className="text-brand-accent hover:underline"
             >
-              See the demo →
+              Project page →
+            </a>
+          )}
+          {opp.contactPublic && opp.contactEmail && (
+            <a href={`mailto:${opp.contactEmail}`} className="text-brand-accent hover:underline">
+              ✉ {opp.contactEmail}
             </a>
           )}
         </div>

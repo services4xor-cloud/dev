@@ -51,6 +51,7 @@ describe('parseOpportunityInput', () => {
 describe('readProps and toDTO', () => {
   const node = {
     id: 'n1',
+    code: 'studio',
     label: 'Studio',
     icon: null,
     lat: 1,
@@ -89,6 +90,7 @@ describe('contactEmail', () => {
     expect(data?.props.contactEmail).toBe('me@4xor.com')
     const n = {
       id: 'n',
+      code: 'x',
       label: 'x',
       icon: null,
       lat: 0,
@@ -97,5 +99,7 @@ describe('contactEmail', () => {
     }
     expect(JSON.stringify(toDTO(n, null))).not.toContain('me@4xor.com')
     expect(toDTO(n, null, { includeAccess: true }).contactEmail).toBe('me@4xor.com')
+    const pub = { ...n, properties: { contactEmail: 'me@4xor.com', contactPublic: true } }
+    expect(toDTO(pub, null).contactEmail).toBe('me@4xor.com')
   })
 })

@@ -6,8 +6,8 @@
  * ones from non-admin Hosts start IN_REVIEW and appear on the map only after
  * an Admin publishes them. `accessUrl` (e.g. the 4xor Studio login for a
  * booked service) is private: only the Host, Admins and Explorers whose
- * Exchange was accepted ever see it. `contactEmail` is private too: contact
- * messages are relayed by email, the address is never shown.
+ * Exchange was accepted ever see it. `contactEmail` is private too unless the
+ * Host sets `contactPublic`; contact messages are relayed by email.
  */
 import type { Node } from '@prisma/client'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
@@ -58,13 +58,17 @@ export interface OpportunityProps {
   demoUrl?: string
   /** Private access link revealed after an accepted Exchange */
   accessUrl?: string
-  /** Private: where contact messages go. Never shown on the map. */
+  /** Where contact messages go. Private unless `contactPublic` is set. */
   contactEmail?: string
+  /** Show contactEmail on the map (business addresses); off by default */
+  contactPublic?: boolean
 }
 
 /** Public shape returned by the API and used by the map. */
 export interface OpportunityDTO {
   id: string
+  /** Stable slug, e.g. for anchors on 4xor.com */
+  code: string
   label: string
   icon: string
   lat: number | null
@@ -98,13 +102,14 @@ export function readProps(node: Pick<Node, 'properties'>): OpportunityProps & {
 }
 
 export function toDTO(
-  node: Pick<Node, 'id' | 'label' | 'icon' | 'lat' | 'lng' | 'properties'>,
+  node: Pick<Node, 'id' | 'code' | 'label' | 'icon' | 'lat' | 'lng' | 'properties'>,
   host: { label: string; icon: string | null; userId?: string | null } | null,
   opts: { includeAccess?: boolean } = {}
 ): OpportunityDTO {
   const { accessUrl, contactEmail, ...props } = readProps(node)
   return {
     id: node.id,
+    code: node.code,
     label: node.label,
     icon: node.icon ?? KIND_ICONS[props.kind],
     lat: node.lat,
@@ -112,7 +117,7 @@ export function toDTO(
     properties: props,
     host: host ? { label: host.label, icon: host.icon ?? '🏢', userId: host.userId } : null,
     ...(opts.includeAccess && accessUrl ? { accessUrl } : {}),
-    ...(opts.includeAccess && contactEmail ? { contactEmail } : {}),
+    ...((opts.includeAccess || props.contactPublic) && contactEmail ? { contactEmail } : {}),
   }
 }
 
@@ -241,6 +246,8 @@ export function parseOpportunityInput(
     }
     out.props.contactEmail = email
   }
+
+  if (typeof body.contactPublic === 'boolean') out.props.contactPublic = body.contactPublic
 
   return { data: out }
 }
