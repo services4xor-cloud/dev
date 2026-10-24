@@ -12,8 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "db:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
-    "db:seed:4xor": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-4xor.ts",
+    "db:seed": "ts-node prisma/seed.ts",
+    "db:seed:4xor": "ts-node prisma/seed-4xor.ts",
     "postinstall": "prisma generate",
     "prepare": "husky"
   },
@@ -68,6 +68,6 @@
     "typescript": "^5"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts"
   }
 }
