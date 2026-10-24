@@ -111,7 +111,7 @@ export default function HostDashboardPage() {
 
   if (status === 'loading') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+      <div className="flex flex-1 items-center justify-center py-24">
         <p className="text-brand-text-muted">Loading...</p>
       </div>
     )
@@ -124,7 +124,7 @@ export default function HostDashboardPage() {
   // Role gate
   if (role !== 'HOST' && role !== 'ADMIN') {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-brand-bg px-6 text-center">
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-24 text-center">
         <p className="text-lg font-semibold text-brand-text">This Hub is for Hosts</p>
         <p className="text-sm text-brand-text-muted">
           Your current role does not have access to this area.
@@ -159,41 +159,21 @@ export default function HostDashboardPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-text">
+    <div className="text-brand-text">
       {/* Header */}
-      <header className="border-b border-brand-accent/20 bg-brand-surface">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link
-            href="/"
-            className="text-lg font-bold text-brand-accent hover:opacity-80 transition-opacity"
-          >
-            Be[X]
-          </Link>
-          <Link
-            href="/"
-            className="text-sm text-brand-text-muted hover:text-brand-accent transition-colors"
-          >
-            ← Back to Map
-          </Link>
-        </div>
-      </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
         {/* Page title */}
         <div className="mb-10 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-brand-text sm:text-3xl">
-              Host Hub
-            </h1>
-            <p className="mt-1 text-sm text-brand-text-muted">
-              Manage your opportunities and track activity
+            <p className="eyebrow mb-3">Hosts</p>
+            <h1 className="font-display text-4xl text-brand-text">Requests for your listings</h1>
+            <p className="mt-2 text-brand-text-muted">
+              Confirm or decline bookings, and see activity.
             </p>
           </div>
-          <Link
-            href="/opportunities"
-            className="rounded-md bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          >
-            Create New Opportunity
+          <Link href="/opportunities/new" className="btn btn-primary">
+            List an offering
           </Link>
         </div>
 

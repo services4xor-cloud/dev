@@ -1,183 +1,157 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import ReactMarkdown from 'react-markdown'
-import type { AgentDimensions } from '@/types/domain'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
 }
 
-interface EnrichedContext {
-  countries: string[]
-  allValues: Record<string, string[]>
-  customChips: { dimension: string; label: string }[]
-}
-
 interface AgentChatProps {
-  dimensions: AgentDimensions
-  enrichedContext?: EnrichedContext
-  /** Opportunities the Explorer selected; the server loads them by id */
-  opportunityIds?: string[]
-  onClose?: () => void
+  /** ISO codes of the countries in focus; the server loads their live data */
+  countries: string[]
+  /** Offerings the Explorer selected; the server loads them by id */
+  opportunityIds: string[]
+  /** Starter questions shown before the first message */
+  suggestions: string[]
 }
 
-export default function AgentChat({
-  dimensions,
-  enrichedContext,
-  opportunityIds = [],
-  onClose,
-}: AgentChatProps) {
+export default function AgentChat({ countries, opportunityIds, suggestions }: AgentChatProps) {
   const { status } = useSession()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [conversationId, setConversationId] = useState<string>()
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const endRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  }, [messages, loading])
 
-  const sendMessage = async () => {
-    if (!input.trim() || loading) return
-
-    // Client-side guard — no fetch, no tokens wasted
-    if (status !== 'authenticated') return
-
-    const userMessage = input.trim()
+  async function send(text: string) {
+    const message = text.trim()
+    if (!message || loading || status !== 'authenticated') return
     setInput('')
-    setMessages((prev) => [...prev, { role: 'user', content: userMessage }])
+    setMessages((prev) => [...prev, { role: 'user', content: message }])
     setLoading(true)
-
     try {
       const res = await fetch('/api/agent/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          dimensions,
-          enrichedContext,
-          message: userMessage,
-          conversationId,
-          opportunityIds,
-        }),
+        body: JSON.stringify({ countries, opportunityIds, message, conversationId }),
       })
-
       if (res.status === 429 || res.status === 503) {
         const limitText = await res.text()
         setMessages((prev) => [...prev, { role: 'assistant', content: limitText }])
         return
       }
-      if (!res.ok) {
-        throw new Error(`Agent error (${res.status})`)
-      }
-
-      const newConversationId = res.headers.get('X-Conversation-Id')
-      if (newConversationId) setConversationId(newConversationId)
-
-      const text = await res.text()
-      setMessages((prev) => [...prev, { role: 'assistant', content: text }])
+      if (!res.ok) throw new Error(`Agent error (${res.status})`)
+      const id = res.headers.get('X-Conversation-Id')
+      if (id) setConversationId(id)
+      const reply = await res.text()
+      setMessages((prev) => [...prev, { role: 'assistant', content: reply }])
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: 'Connection error. Please try again.' },
+        { role: 'assistant', content: 'The agent could not answer just now. Please try again.' },
       ])
     } finally {
       setLoading(false)
     }
   }
 
-  // Show auth gate immediately — no network call needed
   if (status === 'unauthenticated') {
     return (
-      <div className="flex h-full flex-col items-center justify-center rounded-xl border border-brand-accent/20 bg-brand-surface px-6 py-12 text-center">
-        <div className="mb-4 text-4xl">🔒</div>
-        <h3 className="mb-2 text-lg font-semibold text-brand-accent">Hold on, Explorer!</h3>
-        <p className="mb-1 text-sm text-brand-text-muted">
-          The agent needs to know who you are before it can guide your journey.
+      <div className="card flex flex-col items-center justify-center px-6 py-14 text-center">
+        <h2 className="font-display text-2xl text-brand-text">Sign in to talk to the agent</h2>
+        <p className="mt-2 max-w-md text-sm text-brand-text-muted">
+          It is free. The agent uses the countries and offerings you picked on the map, with live
+          public data, and keeps your conversation private to you.
         </p>
-        <p className="mb-6 text-xs text-brand-text-muted/60">
-          Sign in and your dimensions will shape a personal life advisor.
-        </p>
-        <a
-          href="/login"
-          className="rounded-lg bg-brand-primary px-6 py-2.5 text-sm font-medium text-brand-accent transition hover:opacity-90"
-        >
-          Sign in to start exploring
+        <a href="/login?callbackUrl=/agent" className="btn btn-primary mt-6">
+          Sign in or create an account
         </a>
       </div>
     )
   }
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-brand-accent/20 bg-brand-surface">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-brand-accent/10 px-4 py-3">
-        <h3 className="font-medium text-brand-accent">Be[X] Agent</h3>
-        {onClose && (
-          <button onClick={onClose} className="text-brand-text-muted hover:text-brand-text">
-            ✕
-          </button>
-        )}
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 space-y-3 overflow-y-auto p-4">
+    <div className="card flex min-h-[28rem] flex-1 flex-col overflow-hidden">
+      <div className="flex-1 space-y-4 overflow-y-auto p-4 sm:p-5" aria-live="polite">
         {messages.length === 0 && (
-          <p className="text-center text-sm text-brand-text-muted">
-            {opportunityIds.length
-              ? 'Ask me anything about the listings you selected.'
-              : 'Ask me anything about your selected dimensions.'}
-          </p>
-        )}
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`rounded-lg px-3 py-2 text-sm ${
-              msg.role === 'user'
-                ? 'ml-8 bg-brand-primary/30 text-brand-text'
-                : 'mr-8 bg-brand-surface text-brand-text'
-            }`}
-          >
-            {msg.role === 'assistant' ? (
-              <div className="prose prose-sm prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:text-brand-accent prose-strong:text-brand-accent prose-a:text-brand-accent">
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
-              </div>
-            ) : (
-              msg.content
-            )}
+          <div>
+            <p className="text-sm text-brand-text-muted">Try one of these, or ask your own:</p>
+            <div className="mt-3 grid gap-2">
+              {suggestions.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => void send(s)}
+                  disabled={status !== 'authenticated'}
+                  className="rounded-lg border border-brand-line bg-brand-surface-2 px-3.5 py-2.5 text-left text-sm text-brand-text transition hover:border-brand-accent"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
-        ))}
+        )}
+        {messages.map((m, i) =>
+          m.role === 'user' ? (
+            <div
+              key={i}
+              className="ml-auto max-w-[85%] rounded-xl rounded-br-sm bg-brand-primary px-3.5 py-2.5 text-sm text-[#f3f5f2]"
+            >
+              {m.content}
+            </div>
+          ) : (
+            <div
+              key={i}
+              className="prose prose-sm prose-invert max-w-none text-brand-text prose-headings:font-display prose-headings:text-brand-text prose-a:text-brand-accent prose-strong:text-brand-text prose-li:my-0.5 prose-p:my-2"
+            >
+              <ReactMarkdown>{m.content}</ReactMarkdown>
+            </div>
+          )
+        )}
         {loading && (
-          <div className="mr-8 animate-pulse rounded-lg bg-brand-surface px-3 py-2 text-sm text-brand-text-muted">
-            Thinking...
+          <div className="flex items-center gap-2 text-sm text-brand-text-muted">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-brand-accent" />
+            Thinking…
           </div>
         )}
-        <div ref={messagesEndRef} />
+        <div ref={endRef} />
       </div>
 
-      {/* Input */}
-      <div className="border-t border-brand-accent/10 p-3">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-            placeholder="Ask the agent..."
-            className="flex-1 rounded-lg border border-brand-accent/20 bg-brand-bg px-3 py-2 text-sm text-brand-text placeholder:text-brand-text-muted focus:border-brand-accent focus:outline-none"
-          />
-          <button
-            onClick={sendMessage}
-            disabled={loading || !input.trim()}
-            className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-brand-accent transition hover:opacity-90 disabled:opacity-50"
-          >
-            Send
-          </button>
-        </div>
-      </div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          void send(input)
+        }}
+        className="flex items-end gap-2 border-t border-brand-line p-3"
+      >
+        <label htmlFor="agent-input" className="sr-only">
+          Your question
+        </label>
+        <textarea
+          id="agent-input"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              void send(input)
+            }
+          }}
+          rows={1}
+          maxLength={4000}
+          placeholder="Ask about partners, industries, work or the offerings…"
+          className="input max-h-40 min-h-[2.75rem] resize-y"
+        />
+        <button type="submit" disabled={loading || !input.trim()} className="btn btn-primary">
+          Send
+        </button>
+      </form>
     </div>
   )
 }

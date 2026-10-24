@@ -240,7 +240,7 @@ export default function DiscoveryPage() {
   // ─── Render ──────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-text">
+    <div className="min-h-[60dvh] bg-brand-bg text-brand-text">
       {/* Header */}
       <header className="border-b border-brand-accent/10 bg-brand-surface px-4 py-3">
         <div className="mx-auto flex max-w-2xl items-center justify-between">

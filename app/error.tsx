@@ -2,7 +2,7 @@
 
 export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-brand-bg px-4">
+    <div className="flex min-h-[60dvh] flex-col items-center justify-center bg-brand-bg px-4">
       <h1 className="mb-4 text-2xl font-bold text-brand-accent">Something went wrong</h1>
       <p className="mb-6 text-sm text-brand-text-muted">
         {error.message || 'An unexpected error occurred.'}

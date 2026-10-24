@@ -5,191 +5,183 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #5c0a14;
-  --color-accent: #c9a227;
-  --color-bg: #0a0a0f;
-  --color-surface: #111118;
-  --color-text: #e8e6e3;
-  --color-text-muted: #9ca3af;
+  /* 4XOR design system (see DESIGN_SYSTEM.md): ink and deep teal on teal-black.
+     Teal carries every action, gold is reserved for highlights (hub, selection).
+     Space-separated RGB so Tailwind opacity modifiers work (bg-brand-accent/20). */
+  --color-primary-rgb: 29 90 75; /* #1d5a4b deep teal: buttons */
+  --color-primary-light-rgb: 31 100 82; /* #1f6452 */
+  --color-deep-rgb: 23 72 60; /* #17483c header and footer bands */
+  --color-accent-rgb: 127 184 166; /* #7fb8a6 links, focus, active */
+  --color-accent-light-rgb: 168 212 197; /* #a8d4c5 */
+  --color-gold-rgb: 217 169 63; /* #d9a93f highlights */
+  --color-bg-rgb: 15 21 19; /* #0f1513 */
+  --color-surface-rgb: 21 29 26; /* #151d1a raised */
+  --color-surface-2-rgb: 11 16 14; /* #0b100e sunk */
+  --color-surface-elevated-rgb: 28 38 34; /* #1c2622 */
+  --color-line-rgb: 38 48 44; /* #26302c */
+  --color-text-rgb: 230 235 232; /* #e6ebe8 */
+  --color-text-muted-rgb: 147 160 154; /* #93a09a */
+  --color-success-rgb: 74 222 128;
+  --font-sans: 'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Newsreader Variable', Georgia, 'Times New Roman', serif;
+  --font-brand: 'Montserrat Variable', system-ui, sans-serif;
+  color-scheme: dark;
 }
 
 body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: rgb(var(--color-bg-rgb));
+  color: rgb(var(--color-text-rgb));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Super Saiyan charging energy for selected country logo */
-@keyframes saiyan-charge {
-  0% {
-    text-shadow: 0 0 2px rgba(201, 162, 39, 0.2);
-    filter: brightness(1);
-  }
-  30% {
-    text-shadow:
-      0 0 6px rgba(201, 162, 39, 0.5),
-      0 0 12px rgba(201, 162, 39, 0.2);
-    filter: brightness(1.05);
-  }
-  60% {
-    text-shadow:
-      0 0 10px rgba(201, 162, 39, 0.7),
-      0 0 20px rgba(201, 162, 39, 0.35),
-      0 0 30px rgba(201, 162, 39, 0.15);
-    filter: brightness(1.12);
-  }
-  85% {
-    text-shadow:
-      0 0 16px rgba(201, 162, 39, 0.9),
-      0 0 32px rgba(201, 162, 39, 0.5),
-      0 0 48px rgba(201, 162, 39, 0.25),
-      0 0 64px rgba(201, 162, 39, 0.1);
-    filter: brightness(1.25);
-  }
-  100% {
-    text-shadow: 0 0 2px rgba(201, 162, 39, 0.2);
-    filter: brightness(1);
-  }
+::selection {
+  background: rgb(var(--color-accent-rgb) / 0.3);
 }
 
-@keyframes saiyan-aura-charge {
-  0% {
+:focus-visible {
+  outline: 2px solid rgb(var(--color-accent-rgb));
+  outline-offset: 2px;
+}
+
+@layer components {
+  /* ── 4XOR components ──────────────────────────────────────────────────────── */
+  .nav-link {
+    position: relative;
+    white-space: nowrap;
+    color: rgb(243 245 242 / 0.84);
+    transition: color 0.2s ease;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 2px;
+    background: #b8e4d5;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+  .nav-link:hover,
+  .nav-link[aria-current] {
+    color: #f3f5f2;
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current]::after {
+    transform: scaleX(1);
+  }
+  .foot-link {
+    color: rgb(243 245 242 / 0.8);
+    transition: color 0.15s ease;
+  }
+  .foot-link:hover {
+    color: #b8e4d5;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    border: 1px solid rgb(var(--color-line-rgb));
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    color: rgb(var(--color-text-rgb));
+    transition:
+      transform 0.15s ease,
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: linear-gradient(180deg, #9cc9ba 0%, rgb(var(--color-accent-rgb)) 60%);
+    color: rgb(var(--color-bg-rgb));
+    border-color: #5f8f80;
     box-shadow:
-      0 0 4px rgba(201, 162, 39, 0.1),
-      inset 0 0 2px rgba(201, 162, 39, 0.05);
+      0 1px 0 rgb(255 255 255 / 0.15) inset,
+      0 8px 20px -10px rgb(var(--color-accent-rgb) / 0.7);
   }
-  30% {
-    box-shadow:
-      0 0 8px rgba(201, 162, 39, 0.3),
-      0 0 16px rgba(201, 162, 39, 0.1),
-      inset 0 0 4px rgba(201, 162, 39, 0.1);
+  .btn-on-deep {
+    background: #f3f5f2;
+    color: #17483c;
+    border-color: #f3f5f2;
   }
-  60% {
-    box-shadow:
-      0 0 14px rgba(201, 162, 39, 0.5),
-      0 0 28px rgba(201, 162, 39, 0.2),
-      0 0 40px rgba(201, 162, 39, 0.08),
-      inset 0 0 6px rgba(201, 162, 39, 0.15);
+  .btn-sm {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.88rem;
   }
-  85% {
-    box-shadow:
-      0 0 20px rgba(201, 162, 39, 0.7),
-      0 0 40px rgba(201, 162, 39, 0.35),
-      0 0 60px rgba(201, 162, 39, 0.15),
-      0 0 80px rgba(201, 162, 39, 0.05),
-      inset 0 0 8px rgba(201, 162, 39, 0.2);
+  @media (hover: hover) {
+    .btn:not(:disabled):hover {
+      border-color: rgb(var(--color-text-rgb));
+      transform: translateY(-1px);
+    }
+    .btn-primary:not(:disabled):hover {
+      border-color: #5f8f80;
+      background: linear-gradient(180deg, #b0d6c9 0%, rgb(var(--color-accent-rgb)) 60%);
+    }
+    .btn-on-deep:not(:disabled):hover {
+      background: #fff;
+      border-color: #fff;
+    }
   }
-  100% {
+  /* Small section label: sentence case in the accent, led by a short rule. */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgb(var(--color-accent-rgb));
+  }
+  .eyebrow::before {
+    content: '';
+    width: 1.25rem;
+    height: 2px;
+    background: currentColor;
+    border-radius: 1px;
+  }
+  .card {
+    background: rgb(var(--color-surface-rgb));
+    border: 1px solid rgb(var(--color-line-rgb));
+    border-radius: 10px;
     box-shadow:
-      0 0 4px rgba(201, 162, 39, 0.1),
-      inset 0 0 2px rgba(201, 162, 39, 0.05);
+      0 1px 2px rgb(6 22 16 / 0.5),
+      0 8px 24px -12px rgb(6 22 16 / 0.7),
+      inset 0 1px 0 rgb(255 255 255 / 0.05);
+  }
+  .input {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid rgb(var(--color-line-rgb));
+    background: rgb(var(--color-surface-2-rgb));
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+    color: rgb(var(--color-text-rgb));
+  }
+  .input::placeholder {
+    color: rgb(var(--color-text-muted-rgb));
+  }
+  .input:focus {
+    outline: none;
+    border-color: rgb(var(--color-accent-rgb));
+  }
+  h1,
+  h2,
+  .font-display {
+    text-wrap: balance;
   }
 }
 
-.logo-saiyan {
-  border-radius: 8px;
-  padding: 4px 10px;
-  animation:
-    saiyan-charge 3s ease-in infinite,
-    saiyan-aura-charge 3s ease-in infinite;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   SHINY RARITY SYSTEM — Pokemon-style tiers for dimension overlap chips
-   Level 0 = Unmatched (no class — dim default)
-   Level 1 = Common match — subtle inner glow, slightly elevated
-   Level 2 = Shiny — outer glow halo, brighter border
-   Level 3 = Ultra — breathing pulse animation + gradient overlay
-   Level 4 = Legendary — diagonal shimmer sweep + multi-layer glow
-   All GPU-accelerated: box-shadow, opacity, background-position
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* ── Level 1: Common — visible glow, clearly different from unmatched ──── */
-.rarity-common {
-  box-shadow:
-    0 0 6px hsla(var(--rarity-hue, 185), 60%, 55%, 0.4),
-    inset 0 0 4px hsla(var(--rarity-hue, 185), 50%, 60%, 0.2);
-  border-color: hsla(var(--rarity-hue, 185), 65%, 60%, 0.55) !important;
-}
-
-/* ── Level 2: Shiny — bright outer halo ───────────────────────────────── */
-.rarity-shiny {
-  --shiny-color: var(--rarity-hue, 185);
-  box-shadow:
-    0 0 10px hsla(var(--shiny-color), 80%, 60%, 0.5),
-    0 0 20px hsla(var(--shiny-color), 70%, 55%, 0.2),
-    0 0 3px hsla(var(--shiny-color), 90%, 70%, 0.4);
-  border-color: hsla(var(--shiny-color), 80%, 68%, 0.65) !important;
-}
-
-/* ── Rank 3: Ultra — breathing glow, clearly animated ─────────────────── */
-@keyframes ultra-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 10px hsla(var(--rarity-hue, 185), 80%, 60%, 0.5),
-      0 0 20px hsla(var(--rarity-hue, 185), 70%, 55%, 0.2),
-      0 0 4px hsla(var(--rarity-hue, 185), 90%, 70%, 0.4);
+/* Phones: pinch to zoom; the zoom buttons would sit under the bottom sheet */
+@media (max-width: 767px) {
+  .maplibregl-ctrl-bottom-right {
+    display: none;
   }
-  50% {
-    box-shadow:
-      0 0 18px hsla(var(--rarity-hue, 185), 85%, 65%, 0.7),
-      0 0 36px hsla(var(--rarity-hue, 185), 75%, 58%, 0.35),
-      0 0 6px hsla(var(--rarity-hue, 185), 90%, 75%, 0.5);
-  }
-}
-
-.rarity-ultra {
-  --ultra-color: var(--rarity-hue, 185);
-  animation: ultra-pulse 2.5s ease-in-out infinite;
-  border-color: hsla(var(--ultra-color), 85%, 72%, 0.75) !important;
-  background-image: linear-gradient(
-    135deg,
-    hsla(var(--ultra-color), 70%, 55%, 0.2) 0%,
-    transparent 50%,
-    hsla(var(--ultra-color), 70%, 55%, 0.15) 100%
-  );
-}
-
-/* ── Rank 4: Legendary — shimmer sweep + intense layered glow ──────────── */
-@keyframes legendary-shimmer {
-  0% {
-    background-position: -200% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
-}
-
-@keyframes legendary-glow {
-  0%,
-  100% {
-    box-shadow:
-      0 0 12px hsla(var(--rarity-hue, 185), 90%, 65%, 0.6),
-      0 0 24px hsla(var(--rarity-hue, 185), 80%, 58%, 0.3),
-      0 0 5px hsla(45, 95%, 65%, 0.3);
-  }
-  50% {
-    box-shadow:
-      0 0 20px hsla(var(--rarity-hue, 185), 95%, 70%, 0.8),
-      0 0 44px hsla(var(--rarity-hue, 185), 85%, 62%, 0.4),
-      0 0 60px hsla(var(--rarity-hue, 185), 75%, 55%, 0.18),
-      0 0 8px hsla(45, 95%, 70%, 0.4);
-  }
-}
-
-.rarity-legendary {
-  --legend-color: var(--rarity-hue, 185);
-  animation:
-    legendary-glow 2s ease-in-out infinite,
-    legendary-shimmer 3s linear infinite;
-  border-color: hsla(var(--legend-color), 90%, 75%, 0.85) !important;
-  background-image: linear-gradient(
-    110deg,
-    transparent 20%,
-    hsla(var(--legend-color), 85%, 78%, 0.22) 40%,
-    hsla(45, 95%, 75%, 0.15) 50%,
-    hsla(var(--legend-color), 85%, 78%, 0.22) 60%,
-    transparent 80%
-  );
-  background-size: 200% 100%;
 }

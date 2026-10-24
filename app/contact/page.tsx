@@ -2,7 +2,7 @@ import PageShell from '@/components/PageShell'
 
 export default function ContactPage() {
   return (
-    <PageShell backLabel="← Back">
+    <PageShell>
       <div className="mx-auto w-full max-w-4xl px-6 py-16">
         <div className="mb-12">
           <h2 className="mb-4 text-3xl font-bold text-brand-text">Get in Touch</h2>

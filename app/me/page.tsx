@@ -457,7 +457,7 @@ export default function MePage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+      <div className="flex min-h-[60dvh] items-center justify-center bg-brand-bg">
         <p className="text-brand-text-muted">Loading identity…</p>
       </div>
     )
@@ -482,7 +482,7 @@ export default function MePage() {
   const hasAnyEdges = edges.length > 0
 
   return (
-    <div className="min-h-screen bg-brand-bg p-6">
+    <div className="min-h-[60dvh] bg-brand-bg p-6">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <AvatarUpload

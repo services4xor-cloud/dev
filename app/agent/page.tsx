@@ -1,204 +1,129 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import AgentChat from '@/components/AgentChat'
 import SelectedOpportunities from '@/components/SelectedOpportunities'
-import DimensionOverlapBar from '@/components/DimensionOverlapBar'
-import type { AgentDimensions } from '@/types/domain'
-import type { ActiveFilter } from '@/components/DimensionFilters'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
+import { getAgentCountries, setAgentCountries } from '@/lib/agent-context'
+import type { OpportunityDTO } from '@/lib/opportunities'
 
-/** Greeting in user's browser language */
-const GREETINGS: Record<string, string> = {
-  en: 'Hello',
-  de: 'Hallo',
-  fr: 'Bonjour',
-  es: 'Hola',
-  pt: 'Olá',
-  it: 'Ciao',
-  nl: 'Hallo',
-  pl: 'Cześć',
-  ru: 'Привет',
-  uk: 'Привіт',
-  ja: 'こんにちは',
-  ko: '안녕하세요',
-  zh: '你好',
-  ar: 'مرحبا',
-  hi: 'नमस्ते',
-  sw: 'Habari',
-  tr: 'Merhaba',
-  th: 'สวัสดี',
-  vi: 'Xin chào',
-  id: 'Halo',
-  ms: 'Halo',
-  ro: 'Bună',
-  cs: 'Ahoj',
-  hu: 'Szia',
-  sv: 'Hej',
-  no: 'Hei',
-  da: 'Hej',
-  fi: 'Hei',
-  el: 'Γεια σου',
-  he: 'שלום',
-  bn: 'হ্যালো',
-  ta: 'வணக்கம்',
-  te: 'హలో',
-  fa: 'سلام',
-}
+const COUNTRY = new Map(COUNTRY_OPTIONS.map((c) => [c.code, c]))
+const SORTED = [...COUNTRY_OPTIONS].sort((a, b) => a.name.localeCompare(b.name))
 
-function getBrowserGreeting(): string {
-  if (typeof navigator === 'undefined') return GREETINGS.en
-  const lang = navigator.language?.slice(0, 2)?.toLowerCase()
-  return GREETINGS[lang] ?? GREETINGS.en
+function suggestionsFor(countries: string[], offerings: OpportunityDTO[]): string[] {
+  const names = countries.map((c) => COUNTRY.get(c)?.name ?? c)
+  const out: string[] = []
+  if (offerings[0]) out.push(`What do I get with "${offerings[0].label}", and who is it for?`)
+  if (names.length >= 2)
+    out.push(
+      `Compare ${names[0]} and ${names[1]}: what connects them in language, trade and business?`
+    )
+  if (names[0]) {
+    out.push(
+      `Which industries are growing in ${names[0]}, and what kinds of business partners should I look for?`
+    )
+    out.push(
+      `What should I know about culture, language and payments before doing business in ${names[0]}?`
+    )
+  }
+  if (out.length < 3)
+    out.push(
+      'Which countries share a language with Switzerland and have a fast-growing tech sector?',
+      'Where could an AI automation service find its first clients outside Europe?',
+      'Plan three weeks in Kenya that mix safari, culture and meeting local businesses.'
+    )
+  return out.slice(0, 4)
 }
 
 export default function AgentPage() {
-  const [filters, setFilters] = useState<ActiveFilter[]>([])
-  const [focusedValue, setFocusedValue] = useState<string | null>(null)
-  const [focusHint, setFocusHint] = useState<string | null>(null)
-  const [greeting, setGreeting] = useState('Hello')
-  const [opportunityIds, setOpportunityIds] = useState<string[]>([])
+  const [countries, setCountries] = useState<string[]>([])
+  const [offerings, setOfferings] = useState<OpportunityDTO[]>([])
+  const [ready, setReady] = useState(false)
 
-  // Detect browser language on mount
   useEffect(() => {
-    setGreeting(getBrowserGreeting())
+    setCountries(getAgentCountries())
+    setReady(true)
   }, [])
-
-  // Load active filters from sessionStorage (set by map page)
-  useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem('bex-map-filters')
-      if (raw) setFilters(JSON.parse(raw) as ActiveFilter[])
-    } catch {
-      // ignore
-    }
-  }, [])
-
-  // Re-read filters when overlap bar syncs changes
-  useEffect(() => {
-    function onStorage() {
-      try {
-        const raw = sessionStorage.getItem('bex-map-filters')
-        if (raw) setFilters(JSON.parse(raw) as ActiveFilter[])
-        else setFilters([])
-      } catch {
-        // ignore
-      }
-    }
-    window.addEventListener('storage', onStorage)
-    // Also listen for custom event from same-page sync
-    window.addEventListener('bex-filters-changed', onStorage)
-    return () => {
-      window.removeEventListener('storage', onStorage)
-      window.removeEventListener('bex-filters-changed', onStorage)
-    }
-  }, [])
-
-  // Convert ALL filters to AgentDimensions — pass everything for rich context
-  const dimensions: AgentDimensions = {}
-  const allDimValues: Record<string, string[]> = {}
-  for (const f of filters) {
-    const dim = f.dimension
-    if (!allDimValues[dim]) allDimValues[dim] = []
-    const label = f.label ?? f.nodeCode
-    if (!allDimValues[dim].includes(label)) allDimValues[dim].push(label)
-    // Set primary (first encountered) for graph lookup
-    if (dim === 'language' && !dimensions.language) dimensions.language = f.nodeCode
-    if (dim === 'faith' && !dimensions.faith) dimensions.faith = f.nodeCode
-    if (dim === 'sector' && !dimensions.sector) dimensions.sector = f.nodeCode
-    if (dim === 'currency' && !dimensions.currency) dimensions.currency = f.nodeCode
-    if (dim === 'culture' && !dimensions.culture) dimensions.culture = f.nodeCode
+  const update = (next: string[]) => {
+    setCountries(next)
+    setAgentCountries(next)
   }
-  // Enriched countries from map
-  let enrichedCountries: string[] = []
-  try {
-    const raw = typeof window !== 'undefined' ? sessionStorage.getItem('bex-map-enriched') : null
-    if (raw) enrichedCountries = JSON.parse(raw) as string[]
-  } catch {
-    /* ignore */
-  }
-  // Pass first country for graph lookup
-  if (!dimensions.country && enrichedCountries.length > 0) {
-    dimensions.country = enrichedCountries[0]
-  }
-  // Fallback country from map selection
-  if (!dimensions.country) {
-    const selected =
-      typeof window !== 'undefined' ? sessionStorage.getItem('bex-map-selected') : null
-    if (selected) dimensions.country = selected
-  }
-  // Attach extra context for the prompt builder
-  const enrichedContext = {
-    countries: enrichedCountries,
-    allValues: allDimValues,
-    customChips: filters
-      .filter((f) => f.source === 'custom')
-      .map((f) => ({
-        dimension: f.dimension,
-        label: f.label ?? f.nodeCode,
-      })),
-  }
-
-  // Focus handler — clicking a dimension chip primes the agent conversation
-  const handleDimensionClick = useCallback(
-    (dimension: string, value: string) => {
-      const key = `${dimension}:${value}`
-      if (focusedValue === key) {
-        // Toggle off
-        setFocusedValue(null)
-        setFocusHint(null)
-      } else {
-        setFocusedValue(key)
-        // Find the label for this value from filters
-        const match = filters.find((f) => f.dimension === dimension && f.nodeCode === value)
-        const label = match?.label ?? value
-        const dimLabel =
-          dimension === 'language'
-            ? 'language'
-            : dimension === 'sector'
-              ? 'sector'
-              : dimension === 'faith'
-                ? 'faith'
-                : 'currency'
-        setFocusHint(`Focus on ${label} (${dimLabel}) connections`)
-      }
-    },
-    [focusedValue, filters]
-  )
+  const onOfferings = useCallback((items: OpportunityDTO[]) => setOfferings(items), [])
+  const suggestions = useMemo(() => suggestionsFor(countries, offerings), [countries, offerings])
 
   return (
-    <div className="flex min-h-screen flex-col bg-brand-bg">
-      <header className="border-b border-brand-accent/10 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-brand-accent">{greeting} — Be[X] Agent</h1>
-            <p className="text-sm text-brand-text-muted">
-              AI persona shaped by your dimension crossings
-            </p>
-          </div>
-          <a href="/" className="text-sm text-brand-text-muted hover:text-brand-accent transition">
-            &larr; Map
-          </a>
+    <main className="mx-auto w-full max-w-6xl px-4 pb-6 pt-8 sm:px-6 sm:pt-12">
+      <p className="eyebrow mb-3">Be[X] agent</p>
+      <h1 className="font-display text-4xl font-medium leading-tight text-brand-text sm:text-5xl">
+        Ask about countries, partners and offerings.
+      </h1>
+      <p className="mt-3 max-w-2xl text-brand-text-muted">
+        The agent works with live public data (World Bank, REST Countries, Wikipedia) and the
+        offerings listed on Be[X]. It never books or pays for you.
+      </p>
+
+      <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_320px]">
+        <div className="flex min-w-0 flex-col">
+          {ready && (
+            <AgentChat
+              countries={countries}
+              opportunityIds={offerings.map((o) => o.id)}
+              suggestions={suggestions}
+            />
+          )}
         </div>
-      </header>
 
-      {/* Dimension overlap context bar */}
-      <DimensionOverlapBar onDimensionClick={handleDimensionClick} focusedValue={focusedValue} />
+        <aside className="space-y-5 lg:order-none">
+          <section className="card p-4">
+            <h2 className="text-sm font-semibold text-brand-text">Countries in focus</h2>
+            {countries.length > 0 ? (
+              <ul className="mt-3 flex flex-wrap gap-1.5">
+                {countries.map((c) => (
+                  <li key={c}>
+                    <span className="inline-flex items-center gap-1.5 rounded-md border border-brand-line bg-brand-surface-2 py-1 pl-2.5 pr-1 text-sm text-brand-text">
+                      {COUNTRY.get(c)?.flag} {COUNTRY.get(c)?.name ?? c}
+                      <button
+                        onClick={() => update(countries.filter((x) => x !== c))}
+                        aria-label={`Remove ${COUNTRY.get(c)?.name ?? c}`}
+                        className="rounded px-1 text-brand-text-muted hover:text-brand-text"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-sm text-brand-text-muted">None. Add one to compare.</p>
+            )}
+            {countries.length < 3 && (
+              <select
+                value=""
+                onChange={(e) => e.target.value && update([...countries, e.target.value])}
+                className="input mt-3 text-sm"
+                aria-label="Add a country"
+              >
+                <option value="">Add a country…</option>
+                {SORTED.filter((c) => !countries.includes(c.code)).map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.flag} {c.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </section>
 
-      {/* Focus hint banner */}
-      {focusHint && (
-        <div className="border-b border-brand-accent/10 bg-brand-accent/5 px-6 py-1.5">
-          <div className="mx-auto max-w-2xl text-xs text-brand-accent/80">{focusHint}</div>
-        </div>
-      )}
+          <section className="card p-4">
+            <h2 className="mb-3 text-sm font-semibold text-brand-text">Offerings you picked</h2>
+            <SelectedOpportunities onChange={onOfferings} />
+          </section>
 
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col p-4">
-        <SelectedOpportunities onChange={setOpportunityIds} />
-        <AgentChat
-          dimensions={dimensions}
-          enrichedContext={enrichedContext}
-          opportunityIds={opportunityIds}
-        />
-      </main>
-    </div>
+          <Link href="/map" className="btn w-full">
+            Back to the map
+          </Link>
+        </aside>
+      </div>
+    </main>
   )
 }

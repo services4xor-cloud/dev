@@ -27,7 +27,7 @@ export default function ApplyButton({
     return (
       <a
         href={`/login?callbackUrl=${encodeURIComponent(`/exchange/${opportunityId}`)}`}
-        className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-5 py-2.5 text-sm font-semibold text-brand-accent transition hover:opacity-90"
+        className={`btn btn-primary ${compact ? 'btn-sm' : ''}`}
       >
         Sign in to book
       </a>
@@ -87,21 +87,21 @@ export default function ApplyButton({
 
   if (state === 'form' || state === 'sending' || state === 'error') {
     return (
-      <div className="space-y-3 rounded-lg border border-white/10 bg-brand-surface p-4">
+      <div className="w-full space-y-3 rounded-lg border border-brand-line bg-brand-surface-2 p-3">
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Anything the host should know, like dates or group size (optional)…"
           maxLength={500}
           rows={3}
-          className="w-full rounded-lg border border-white/10 bg-brand-bg px-3 py-2 text-sm text-brand-text placeholder-brand-text-muted outline-none focus:border-brand-accent/40"
+          className="input text-sm"
         />
         {errorMsg && <p className="text-xs text-red-400">{errorMsg}</p>}
         <div className="flex items-center gap-2">
           <button
             onClick={handleSubmit}
             disabled={state === 'sending'}
-            className="rounded-lg bg-brand-primary px-5 py-2 text-sm font-semibold text-brand-accent transition hover:opacity-90 disabled:opacity-40"
+            className="btn btn-primary btn-sm"
           >
             {state === 'sending' ? 'Sending…' : 'Send request'}
           </button>
@@ -123,9 +123,7 @@ export default function ApplyButton({
   return (
     <button
       onClick={() => setState('form')}
-      className={`inline-flex items-center gap-2 rounded-lg bg-brand-primary font-semibold text-brand-accent transition hover:opacity-90 ${
-        compact ? 'px-3 py-1.5 text-xs' : 'px-5 py-2.5 text-sm'
-      }`}
+      className={`btn btn-primary ${compact ? 'btn-sm' : ''}`}
     >
       {label}
     </button>

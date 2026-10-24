@@ -113,7 +113,7 @@ export default async function ExplorerDetailPage({ params }: { params: { id: str
   ]
 
   return (
-    <main className="min-h-screen bg-brand-bg text-brand-text">
+    <main className="min-h-[60dvh] bg-brand-bg text-brand-text">
       {/* Top bar */}
       <div className="flex items-center border-b border-brand-accent/10 px-4 py-4 sm:px-6">
         <Link

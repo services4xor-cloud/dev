@@ -71,11 +71,16 @@ const config: Config = {
           'surface-elevated': 'rgb(var(--color-surface-elevated-rgb) / <alpha-value>)',
           text: 'rgb(var(--color-text-rgb) / <alpha-value>)',
           success: 'rgb(var(--color-success-rgb) / <alpha-value>)',
+          'text-muted': 'rgb(var(--color-text-muted-rgb) / <alpha-value>)',
+          deep: 'rgb(var(--color-deep-rgb) / <alpha-value>)',
+          gold: 'rgb(var(--color-gold-rgb) / <alpha-value>)',
+          line: 'rgb(var(--color-line-rgb) / <alpha-value>)',
         },
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-plus-jakarta)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)'],
+        display: ['var(--font-display)'],
+        brand: ['var(--font-brand)'],
       },
       animation: {
         'slide-up': 'slideUp 0.3s ease-out',

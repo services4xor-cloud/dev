@@ -19,6 +19,10 @@ jest.mock('@/lib/ai', () => ({
   chatWithAgent: jest.fn(),
 }))
 
+jest.mock('@/lib/country-insights', () => ({
+  getCountryInsights: jest.fn(async (code: string) => ({ code, name: `Country ${code}` })),
+}))
+
 jest.mock('@/lib/db', () => ({
   db: {
     agentChat: {
@@ -57,12 +61,15 @@ function makeRequest(body: unknown): NextRequest {
 }
 
 describe('POST /api/agent/chat', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    jest.clearAllMocks()
+    require('@/lib/db').db.node.findMany.mockResolvedValue([])
+  })
 
   test('returns 401 when no session', async () => {
     mockGetServerSession.mockResolvedValue(null)
 
-    const req = makeRequest({ dimensions: {}, message: 'Hello' })
+    const req = makeRequest({ message: 'Hello' })
     const res = await POST(req)
 
     expect(res.status).toBe(401)
@@ -75,7 +82,7 @@ describe('POST /api/agent/chat', () => {
       ReturnType<typeof getServerSession>
     >)
 
-    const req = makeRequest({ dimensions: {}, message: 'Hello' })
+    const req = makeRequest({ message: 'Hello' })
     const res = await POST(req)
 
     expect(res.status).toBe(401)
@@ -87,7 +94,7 @@ describe('POST /api/agent/chat', () => {
       expires: '2099-01-01',
     })
 
-    const req = makeRequest({ dimensions: {}, message: 'Hello' })
+    const req = makeRequest({ message: 'Hello' })
     const res = await POST(req)
 
     expect(res.status).toBe(401)
@@ -101,13 +108,13 @@ describe('POST /api/agent/chat', () => {
       expires: '2099-01-01',
     })
 
-    mockBuildPersonaPrompt.mockResolvedValue('You are a Be[X] agent...')
+    mockBuildPersonaPrompt.mockReturnValue('You are a Be[X] agent...')
     mockChatWithAgent.mockResolvedValue('Hello from Kenya!')
 
     db.agentChat.create.mockResolvedValue({ id: 'chat-new-1' })
 
     const req = makeRequest({
-      dimensions: { country: 'KE' },
+      countries: ['KE'],
       message: 'Tell me about Kenya',
     })
 
@@ -119,7 +126,11 @@ describe('POST /api/agent/chat', () => {
     const body = await res.text()
     expect(body).toBe('Hello from Kenya!')
 
-    expect(mockBuildPersonaPrompt).toHaveBeenCalledWith({ country: 'KE' }, undefined, [])
+    expect(mockBuildPersonaPrompt).toHaveBeenCalledWith({
+      countries: [{ code: 'KE', name: 'Country KE' }],
+      selected: [],
+      catalog: [],
+    })
     expect(mockChatWithAgent).toHaveBeenCalledWith(
       'You are a Be[X] agent...',
       expect.arrayContaining([{ role: 'user', content: 'Tell me about Kenya' }])
@@ -134,7 +145,7 @@ describe('POST /api/agent/chat', () => {
       expires: '2099-01-01',
     })
 
-    mockBuildPersonaPrompt.mockResolvedValue('System prompt')
+    mockBuildPersonaPrompt.mockReturnValue('System prompt')
     mockChatWithAgent.mockResolvedValue('New reply')
 
     const existingHistory = [
@@ -149,7 +160,7 @@ describe('POST /api/agent/chat', () => {
     db.agentChat.update.mockResolvedValue({ id: 'chat-existing' })
 
     const req = makeRequest({
-      dimensions: { country: 'KE' },
+      countries: ['KE'],
       message: 'Follow-up question',
       conversationId: 'chat-existing',
     })
@@ -183,7 +194,7 @@ describe('POST /api/agent/chat', () => {
     })
 
     const req = makeRequest({
-      dimensions: { country: 'KE' },
+      countries: ['KE'],
       message: 'Sneaky',
       conversationId: 'chat-other',
     })
@@ -198,7 +209,7 @@ describe('POST /api/agent/chat', () => {
       user: { id: 'user-1' },
       expires: '2099-01-01',
     })
-    mockBuildPersonaPrompt.mockResolvedValue('prompt')
+    mockBuildPersonaPrompt.mockReturnValue('prompt')
     mockChatWithAgent.mockResolvedValue('ok')
     db.agentChat.create.mockResolvedValue({ id: 'c1' })
     db.node.findMany.mockResolvedValue([
@@ -218,24 +229,42 @@ describe('POST /api/agent/chat', () => {
 
     const res = await POST(
       makeRequest({
-        dimensions: {},
         message: 'Is this good for a family?',
         opportunityIds: ['o1', 'o2', 42],
       })
     )
     expect(res.status).toBe(200)
-    expect(db.node.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: expect.objectContaining({ id: { in: ['o1', 'o2'] } }) })
+    const arg = mockBuildPersonaPrompt.mock.calls.at(-1)?.[0]
+    expect(arg?.selected?.map((o) => o.id)).toEqual(['o1'])
+    expect(arg?.catalog?.map((o) => o.label)).toEqual(['Safari'])
+  })
+
+  test('keeps only known country codes, at most 3', async () => {
+    const { db } = require('@/lib/db')
+    const { getCountryInsights } = require('@/lib/country-insights')
+    mockGetServerSession.mockResolvedValue({ user: { id: 'user-1' }, expires: '2099-01-01' })
+    mockBuildPersonaPrompt.mockReturnValue('prompt')
+    mockChatWithAgent.mockResolvedValue('ok')
+    db.node.findMany.mockResolvedValue([])
+    db.agentChat.create.mockResolvedValue({ id: 'c1' })
+    const res = await POST(
+      makeRequest({ countries: ['ke', 'XX', 'DE', 'CH', 'GB', 7], message: 'Compare' })
     )
-    const selected = mockBuildPersonaPrompt.mock.calls.at(-1)?.[2] as { id: string }[]
-    expect(selected.map((o) => o.id)).toEqual(['o1'])
+    expect(res.status).toBe(200)
+    expect(getCountryInsights.mock.calls.map((c: string[]) => c[0])).toEqual(['KE', 'DE', 'CH'])
+  })
+
+  test('returns 400 without a message', async () => {
+    mockGetServerSession.mockResolvedValue({ user: { id: 'user-1' }, expires: '2099-01-01' })
+    const res = await POST(makeRequest({ countries: ['KE'] }))
+    expect(res.status).toBe(400)
   })
 
   test('returns 429 when the daily agent limit is reached', async () => {
     const { rateLimit } = require('@/lib/rate-limit')
     rateLimit.mockResolvedValueOnce(false)
     mockGetServerSession.mockResolvedValue({ user: { id: 'user-1' }, expires: '2099-01-01' })
-    const res = await POST(makeRequest({ dimensions: {}, message: 'hi' }))
+    const res = await POST(makeRequest({ message: 'hi' }))
     expect(res.status).toBe(429)
   })
 })

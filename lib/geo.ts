@@ -40,3 +40,48 @@ export function getUtcOffsetMinutes(tz: string): number {
     return 0
   }
 }
+
+// ─── Great circle arc (for connection lines on the map) ─────────────────────
+/** Points along the great circle between two coordinates, as [lng, lat] pairs. */
+export function greatCircleArc(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number,
+  segments = 32
+): [number, number][] {
+  const toRad = Math.PI / 180
+  const toDeg = 180 / Math.PI
+  const φ1 = lat1 * toRad
+  const λ1 = lng1 * toRad
+  const φ2 = lat2 * toRad
+  const λ2 = lng2 * toRad
+  const d =
+    2 *
+    Math.asin(
+      Math.sqrt(
+        Math.sin((φ2 - φ1) / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin((λ2 - λ1) / 2) ** 2
+      )
+    )
+  if (d < 0.001)
+    return [
+      [lng1, lat1],
+      [lng2, lat2],
+    ]
+  const points: [number, number][] = []
+  for (let i = 0; i <= segments; i++) {
+    const f = i / segments
+    const A = Math.sin((1 - f) * d) / Math.sin(d)
+    const B = Math.sin(f * d) / Math.sin(d)
+    const x = A * Math.cos(φ1) * Math.cos(λ1) + B * Math.cos(φ2) * Math.cos(λ2)
+    const y = A * Math.cos(φ1) * Math.sin(λ1) + B * Math.cos(φ2) * Math.sin(λ2)
+    const z = A * Math.sin(φ1) + B * Math.sin(φ2)
+    points.push([Math.atan2(y, x) * toDeg, Math.atan2(z, Math.sqrt(x * x + y * y)) * toDeg])
+  }
+  // Keep the line continuous across the antimeridian
+  for (let i = 1; i < points.length; i++) {
+    while (points[i][0] - points[i - 1][0] > 180) points[i][0] -= 360
+    while (points[i][0] - points[i - 1][0] < -180) points[i][0] += 360
+  }
+  return points
+}

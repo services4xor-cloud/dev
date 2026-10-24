@@ -339,7 +339,7 @@ function MessagesInner() {
 
   if (status === 'loading' || status === 'unauthenticated') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+      <div className="flex flex-1 items-center justify-center py-24">
         <p className="text-brand-text-muted">Loading…</p>
       </div>
     )
@@ -349,20 +349,7 @@ function MessagesInner() {
   const activeOthers = activeConvId ? otherParticipants(activeParticipants, myId) : []
 
   return (
-    <div className="flex h-screen flex-col bg-brand-bg">
-      {/* Top bar */}
-      <header className="border-b border-brand-accent/10 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-brand-accent">Messages</h1>
-            <p className="text-sm text-brand-text-muted">Connect with Explorers and Hosts</p>
-          </div>
-          <a href="/" className="text-sm text-brand-text-muted hover:text-brand-accent transition">
-            &larr; Map
-          </a>
-        </div>
-      </header>
-
+    <div className="flex h-[calc(100dvh-7rem)] min-h-[28rem] flex-col">
       {/* Split layout */}
       <div className="flex min-h-0 flex-1">
         {/* Left sidebar — conversation list */}
@@ -554,7 +541,7 @@ export default function MessagesPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+        <div className="flex flex-1 items-center justify-center py-24">
           <p className="text-brand-text-muted text-sm">Loading…</p>
         </div>
       }

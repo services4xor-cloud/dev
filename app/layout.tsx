@@ -1,12 +1,15 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import '@fontsource-variable/schibsted-grotesk'
+import '@fontsource-variable/newsreader'
+import '@fontsource-variable/montserrat'
 import Providers from '@/components/Providers'
+import SiteChrome from '@/components/site/SiteChrome'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
-
 export const viewport: Viewport = {
-  themeColor: '#5C0A14',
+  themeColor: '#17483c',
+  // Lets the page reach under the iPhone notch and toolbar; padding uses env(safe-area-inset-*)
+  viewportFit: 'cover',
 }
 
 export const metadata: Metadata = {
@@ -37,8 +40,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://api.maptiler.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://api.maptiler.com" />
       </head>
-      <body className={`${inter.className} antialiased`}>
-        <Providers>{children}</Providers>
+      <body className="font-sans antialiased">
+        <Providers>
+          <SiteChrome>{children}</SiteChrome>
+        </Providers>
       </body>
     </html>
   )

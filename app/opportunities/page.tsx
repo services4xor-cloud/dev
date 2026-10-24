@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import DimensionOverlapBar from '@/components/DimensionOverlapBar'
+import PageShell from '@/components/PageShell'
 import OpportunityCard from '@/components/OpportunityCard'
-import OpportunityForm, { emptyOpportunityForm } from '@/components/OpportunityForm'
+import KindDot from '@/components/map/KindDot'
+import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import {
   KIND_LABELS,
   OPPORTUNITY_KINDS,
@@ -14,97 +15,40 @@ import {
 } from '@/lib/opportunities'
 import { getSelected, SELECTION_EVENT, toggleSelected } from '@/lib/selection'
 
-/** Greeting in user's browser language */
-const GREETINGS: Record<string, string> = {
-  en: 'Hello',
-  de: 'Hallo',
-  fr: 'Bonjour',
-  es: 'Hola',
-  pt: 'Olá',
-  it: 'Ciao',
-  nl: 'Hallo',
-  pl: 'Cześć',
-  ru: 'Привет',
-  uk: 'Привіт',
-  ja: 'こんにちは',
-  ko: '안녕하세요',
-  zh: '你好',
-  ar: 'مرحبا',
-  hi: 'नमस्ते',
-  sw: 'Habari',
-  tr: 'Merhaba',
-  th: 'สวัสดี',
-  vi: 'Xin chào',
-  id: 'Halo',
-  ms: 'Halo',
-  ro: 'Bună',
-  cs: 'Ahoj',
-  hu: 'Szia',
-  sv: 'Hej',
-  no: 'Hei',
-  da: 'Hej',
-  fi: 'Hei',
-  el: 'Γεια σου',
-  he: 'שלום',
-  bn: 'হ্যালো',
-  ta: 'வணக்கம்',
-  te: 'హలో',
-  fa: 'سلام',
-}
-
-function getBrowserGreeting(): string {
-  if (typeof navigator === 'undefined') return GREETINGS.en
-  const lang = navigator.language?.slice(0, 2)?.toLowerCase()
-  return GREETINGS[lang] ?? GREETINGS.en
-}
+const COUNTRY = new Map(COUNTRY_OPTIONS.map((c) => [c.code, c]))
 
 const STATUS_STYLES: Record<string, string> = {
-  PUBLISHED: 'border-green-500/30 bg-green-500/10 text-green-400',
-  IN_REVIEW: 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400',
-  ARCHIVED: 'border-white/10 bg-white/5 text-brand-text-muted',
+  PUBLISHED: 'border-brand-accent/40 bg-brand-accent/10 text-brand-accent',
+  IN_REVIEW: 'border-brand-gold/40 bg-brand-gold/10 text-brand-gold',
+  ARCHIVED: 'border-brand-line bg-white/5 text-brand-text-muted',
 }
 const STATUS_LABELS: Record<string, string> = {
   PUBLISHED: 'Live',
-  IN_REVIEW: 'Waiting for review',
+  IN_REVIEW: 'In review',
   ARCHIVED: 'Archived',
 }
 
 export default function OpportunitiesPage() {
   const { data: session } = useSession()
-  const [opportunities, setOpportunities] = useState<OpportunityDTO[]>([])
+  const user = session?.user as { id?: string; role?: string } | undefined
+  const [all, setAll] = useState<OpportunityDTO[] | null>(null)
   const [mine, setMine] = useState<OpportunityDTO[]>([])
-  const [loading, setLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [success, setSuccess] = useState<string | null>(null)
-  const [focusedValue, setFocusedValue] = useState<string | null>(null)
-  const [filterSector, setFilterSector] = useState<string | null>(null)
-  const [filterKind, setFilterKind] = useState<OpportunityKind | null>(null)
+  const [kind, setKind] = useState<OpportunityKind | null>(null)
+  const [country, setCountry] = useState('')
+  const [query, setQuery] = useState('')
   const [selected, setSelectedIds] = useState<string[]>([])
-  const [greeting, setGreeting] = useState('Hello')
+  const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
-    setGreeting(getBrowserGreeting())
     setSelectedIds(getSelected())
+    setSubmitted(new URLSearchParams(window.location.search).has('submitted'))
     const sync = () => setSelectedIds(getSelected())
     window.addEventListener(SELECTION_EVENT, sync)
+    fetch('/api/opportunities')
+      .then((r) => (r.ok ? (r.json() as Promise<OpportunityDTO[]>) : []))
+      .catch(() => [] as OpportunityDTO[])
+      .then(setAll)
     return () => window.removeEventListener(SELECTION_EVENT, sync)
-  }, [])
-
-  const user = session?.user as { id?: string; role?: string } | undefined
-  const isAdmin = user?.role === 'ADMIN'
-
-  useEffect(() => {
-    async function fetchOpportunities() {
-      try {
-        const res = await fetch('/api/opportunities')
-        if (res.ok) setOpportunities((await res.json()) as OpportunityDTO[])
-      } catch {
-        // silently fail — empty state shown
-      } finally {
-        setLoading(false)
-      }
-    }
-    void fetchOpportunities()
   }, [])
 
   useEffect(() => {
@@ -115,195 +59,180 @@ export default function OpportunitiesPage() {
       .catch(() => {})
   }, [user?.id])
 
-  // Dimension click → filter opportunities by matching sector
-  const handleDimensionClick = useCallback(
-    (dimension: string, value: string) => {
-      const key = `${dimension}:${value}`
-      if (focusedValue === key) {
-        setFocusedValue(null)
-        setFilterSector(null)
-      } else {
-        setFocusedValue(key)
-        setFilterSector(dimension === 'sector' ? value : null)
-      }
-    },
-    [focusedValue]
+  const list = useMemo(() => all ?? [], [all])
+  const countries = useMemo(
+    () =>
+      Array.from(new Set(list.map((o) => o.properties.countryCode).filter(Boolean) as string[]))
+        .map((c) => COUNTRY.get(c))
+        .filter((c): c is NonNullable<typeof c> => !!c)
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [list]
   )
-
-  const filteredOpportunities = opportunities.filter((opp) => {
-    if (filterKind && opp.properties.kind !== filterKind) return false
-    if (filterSector) {
-      const sector = opp.properties.sector?.toLowerCase() ?? ''
-      return sector.includes(filterSector.toLowerCase().replace(/-/g, ' '))
-    }
-    return true
-  })
-
-  async function create(body: Record<string, unknown>): Promise<string | null> {
-    const res = await fetch('/api/opportunities', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-    const data = (await res.json()) as OpportunityDTO & { error?: string }
-    if (!res.ok) return data.error ?? 'Failed to create opportunity'
-    setMine((prev) => [data, ...prev])
-    if (data.properties.status === 'PUBLISHED') setOpportunities((prev) => [data, ...prev])
-    setShowForm(false)
-    setSuccess(
-      data.properties.status === 'PUBLISHED'
-        ? 'Published. It is now on the map.'
-        : 'Saved. It goes on the map once an admin approves it.'
+  const q = query.trim().toLowerCase()
+  const shown = list.filter((o) => {
+    const p = o.properties
+    if (kind && p.kind !== kind) return false
+    if (country && p.countryCode !== country) return false
+    if (!q) return true
+    return [o.label, p.description, p.location, p.sector, o.host?.label].some((v) =>
+      v?.toLowerCase().includes(q)
     )
-    setTimeout(() => setSuccess(null), 5000)
-    return null
-  }
+  })
+  const kinds = OPPORTUNITY_KINDS.filter((k) => list.some((o) => o.properties.kind === k))
 
   return (
-    <div className="min-h-screen bg-brand-bg">
-      <header className="border-b border-brand-accent/10 px-6 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-bold text-brand-accent">{greeting} — Opportunities</h1>
-            {user ? (
-              <button
-                onClick={() => setShowForm((v) => !v)}
-                className="mt-1 text-sm text-brand-text-muted transition hover:text-brand-accent"
-              >
-                {showForm ? 'Cancel' : '+ List a journey, service or automation'}
-              </button>
-            ) : (
-              <a
-                href="/login?callbackUrl=/opportunities"
-                className="mt-1 inline-block text-sm text-brand-text-muted transition hover:text-brand-accent"
-              >
-                Sign in to list your own
-              </a>
-            )}
-          </div>
-          <div className="flex items-center gap-4 text-sm">
-            {selected.length > 0 && (
-              <Link href="/agent" className="text-brand-accent hover:underline">
-                Ask agent about {selected.length} →
-              </Link>
-            )}
-            <a href="/" className="text-brand-text-muted transition hover:text-brand-accent">
-              &larr; Map
-            </a>
-          </div>
-        </div>
-      </header>
+    <PageShell
+      eyebrow="Offerings"
+      title="Journeys, services and automations"
+      intro="Everything listed on Be[X], from Hosts around the world. Book, write to the Host, or pick a few and ask the agent."
+    >
+      {submitted && (
+        <p className="mb-6 rounded-lg border border-brand-accent/40 bg-brand-accent/10 px-4 py-3 text-sm text-brand-text">
+          Thanks. Your offering is in review and goes on the map once it is approved.
+        </p>
+      )}
 
-      <DimensionOverlapBar onDimensionClick={handleDimensionClick} focusedValue={focusedValue} />
-
-      <div className="mx-auto max-w-5xl px-6 py-8">
-        {success && (
-          <div className="mb-6 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
-            {success}
+      {user && (
+        <section id="yours" className="mb-12 scroll-mt-24">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-brand-text">Your listings</h2>
+            <Link href="/opportunities/new" className="btn btn-primary btn-sm">
+              List an offering
+            </Link>
           </div>
-        )}
-
-        {showForm && user && (
-          <div className="mb-8">
-            <OpportunityForm
-              initial={emptyOpportunityForm()}
-              submitLabel={isAdmin ? 'Publish' : 'Submit for review'}
-              note={
-                isAdmin
-                  ? 'As an admin, your listing goes live right away.'
-                  : 'An admin checks every new listing before it appears on the map.'
-              }
-              onSubmit={create}
-            />
-          </div>
-        )}
-
-        {mine.length > 0 && (
-          <section className="mb-10">
-            <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-brand-text-muted">
-              Your listings
-            </h2>
-            <div className="divide-y divide-white/5 rounded-xl border border-white/10 bg-brand-surface">
+          {mine.length ? (
+            <ul className="card divide-y divide-brand-line">
               {mine.map((o) => (
-                <div key={o.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
-                  <span className="text-xl">{o.icon}</span>
+                <li key={o.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+                  <KindDot kind={o.properties.kind} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-brand-text">{o.label}</p>
+                    <p className="truncate font-medium text-brand-text">{o.label}</p>
                     <p className="text-xs text-brand-text-muted">
                       {KIND_LABELS[o.properties.kind]}
                       {o.host && !o.host.userId ? ` · ${o.host.label}` : ''}
                     </p>
                   </div>
                   <span
-                    className={`rounded border px-2 py-0.5 text-xs ${STATUS_STYLES[o.properties.status]}`}
+                    className={`rounded-md border px-2 py-0.5 text-xs ${STATUS_STYLES[o.properties.status]}`}
                   >
                     {STATUS_LABELS[o.properties.status]}
                   </span>
+                  {o.properties.status === 'PUBLISHED' && (
+                    <Link
+                      href={`/map?select=${encodeURIComponent(o.code || o.id)}`}
+                      className="text-sm text-brand-text-muted hover:text-brand-accent"
+                    >
+                      On the map
+                    </Link>
+                  )}
                   <Link
                     href={`/opportunities/${o.id}/edit`}
-                    className="text-xs text-brand-accent hover:underline"
+                    className="text-sm font-medium text-brand-accent hover:underline"
                   >
                     Edit
                   </Link>
-                </div>
+                </li>
               ))}
-            </div>
-          </section>
-        )}
+            </ul>
+          ) : (
+            <p className="text-sm text-brand-text-muted">
+              You have not listed anything yet.{' '}
+              <Link href="/opportunities/new" className="text-brand-accent hover:underline">
+                List your first offering
+              </Link>
+            </p>
+          )}
+        </section>
+      )}
 
-        <div className="mb-5 flex flex-wrap gap-2">
-          {[null, ...OPPORTUNITY_KINDS].map((k) => (
+      <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Type of offering">
+          {[null, ...kinds].map((k) => (
             <button
               key={k ?? 'all'}
-              onClick={() => setFilterKind(k)}
-              className={`rounded-full border px-3 py-1 text-xs transition ${
-                filterKind === k
-                  ? 'border-brand-accent/60 bg-brand-accent/15 text-brand-accent'
-                  : 'border-white/10 text-brand-text-muted hover:text-brand-accent'
+              onClick={() => setKind(k)}
+              aria-pressed={kind === k}
+              className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition ${
+                kind === k
+                  ? 'border-brand-accent bg-brand-accent/15 text-brand-text'
+                  : 'border-brand-line text-brand-text-muted hover:text-brand-text'
               }`}
             >
+              {k && <KindDot kind={k} />}
               {k ? `${KIND_LABELS[k]}s` : 'All'}
             </button>
           ))}
         </div>
-
-        {loading ? (
-          <div className="py-16 text-center text-brand-text-muted">Loading opportunities…</div>
-        ) : filteredOpportunities.length === 0 ? (
-          <div className="rounded-xl border border-white/5 bg-brand-surface px-8 py-16 text-center">
-            <div className="mb-3 text-4xl">{'\u{1F30D}'}</div>
-            <p className="text-brand-text-muted">
-              {filterSector || filterKind
-                ? 'Nothing matches this filter.'
-                : 'No opportunities yet.'}
-            </p>
-            {(filterSector || filterKind) && (
-              <button
-                onClick={() => {
-                  setFocusedValue(null)
-                  setFilterSector(null)
-                  setFilterKind(null)
-                }}
-                className="mt-2 text-sm text-brand-accent/70 transition hover:text-brand-accent"
-              >
-                Clear filter
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredOpportunities.map((opp) => (
-              <OpportunityCard
-                key={opp.id}
-                opp={opp}
-                selected={selected.includes(opp.id)}
-                onToggleSelect={(id) => setSelectedIds(toggleSelected(id))}
-                isOwn={!!user?.id && opp.host?.userId === user.id}
-              />
+        <div className="flex gap-2 lg:ml-auto">
+          <select
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            aria-label="Country"
+            className="input w-44 text-sm"
+          >
+            <option value="">All countries</option>
+            {countries.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.flag} {c.name}
+              </option>
             ))}
-          </div>
-        )}
+          </select>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search"
+            aria-label="Search offerings"
+            className="input w-48 text-sm"
+          />
+        </div>
       </div>
-    </div>
+
+      {all === null ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-72 animate-pulse rounded-[10px] bg-brand-surface" />
+          ))}
+        </div>
+      ) : shown.length === 0 ? (
+        <div className="card px-6 py-12 text-center">
+          <p className="text-brand-text-muted">
+            {list.length ? 'Nothing matches these filters.' : 'No offerings yet.'}
+          </p>
+          {list.length > 0 && (
+            <button
+              onClick={() => {
+                setKind(null)
+                setCountry('')
+                setQuery('')
+              }}
+              className="mt-3 text-sm text-brand-accent hover:underline"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {shown.map((o) => (
+            <OpportunityCard
+              key={o.id}
+              opp={o}
+              selected={selected.includes(o.id)}
+              onToggleSelect={(id) => setSelectedIds(toggleSelected(id))}
+              isOwn={!!user?.id && o.host?.userId === user.id}
+            />
+          ))}
+        </div>
+      )}
+
+      {selected.length > 0 && (
+        <div className="sticky bottom-4 mt-8 flex justify-center">
+          <Link href="/agent" className="btn btn-primary shadow-2xl">
+            Ask the agent about {selected.length} {selected.length === 1 ? 'offering' : 'offerings'}
+          </Link>
+        </div>
+      )}
+    </PageShell>
   )
 }

@@ -138,7 +138,7 @@ export default function ExplorersPage() {
   const hasFilters = query || language || sector || country
 
   return (
-    <main className="min-h-screen bg-brand-bg text-brand-text">
+    <main className="min-h-[60dvh] bg-brand-bg text-brand-text">
       {/* Top bar */}
       <div className="flex items-center justify-between border-b border-brand-accent/10 px-4 py-4 sm:px-6">
         <h1 className="text-xl font-bold text-brand-accent">Explorers</h1>

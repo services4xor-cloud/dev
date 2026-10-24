@@ -15,9 +15,7 @@ export default function ContactButton({ opportunityId, compact = false }: Contac
   const [message, setMessage] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
 
-  const buttonClass = compact
-    ? 'rounded-lg border border-brand-accent/30 px-3 py-1.5 text-xs font-medium text-brand-text hover:bg-brand-accent/10'
-    : 'rounded-lg border border-brand-accent/30 px-5 py-2.5 text-sm font-medium text-brand-text hover:bg-brand-accent/10'
+  const buttonClass = compact ? 'btn btn-sm' : 'btn'
 
   if (!session?.user) {
     return (
@@ -39,7 +37,7 @@ export default function ContactButton({ opportunityId, compact = false }: Contac
   if (state === 'idle') {
     return (
       <button type="button" onClick={() => setState('form')} className={buttonClass}>
-        Contact provider
+        Contact
       </button>
     )
   }
@@ -76,7 +74,7 @@ export default function ContactButton({ opportunityId, compact = false }: Contac
         maxLength={2000}
         rows={3}
         placeholder="Your question. The provider replies to your email."
-        className="w-full rounded-lg border border-brand-accent/20 bg-brand-bg px-3 py-2 text-sm text-brand-text placeholder:text-brand-text-muted focus:border-brand-accent focus:outline-none"
+        className="input text-sm"
       />
       {state === 'error' && <p className="text-xs text-red-400">{errorMsg}</p>}
       <div className="flex gap-2">
@@ -84,7 +82,7 @@ export default function ContactButton({ opportunityId, compact = false }: Contac
           type="button"
           onClick={send}
           disabled={state === 'sending' || message.trim().length < 5}
-          className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-brand-accent hover:opacity-90 disabled:opacity-50"
+          className="btn btn-primary btn-sm"
         >
           {state === 'sending' ? 'Sending…' : 'Send'}
         </button>

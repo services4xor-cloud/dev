@@ -1,37 +1,42 @@
-import Link from 'next/link'
-import Footer from '@/components/Footer'
-
 interface PageShellProps {
   children: React.ReactNode
-  backHref?: string
-  backLabel?: string
-  /** Override the header logo text (default: "Be[X]") */
+  /** Page heading */
   title?: string
+  /** Short line under the heading */
+  intro?: string
+  /** Small label above the heading */
+  eyebrow?: string
+  /** Max content width */
+  width?: 'narrow' | 'wide'
 }
 
+/**
+ * Content page frame. Header and footer come from the root layout (SiteChrome);
+ * this adds the heading block and the content column.
+ */
 export default function PageShell({
   children,
-  backHref = '/',
-  backLabel = '← Back to Map',
   title,
+  intro,
+  eyebrow,
+  width = 'wide',
 }: PageShellProps) {
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-text">
-      <header className="border-b border-brand-accent/10 px-4 py-4 sm:px-6">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
-          <h1 className="min-w-0 truncate text-lg font-bold text-brand-accent sm:text-xl">
-            {title ?? 'Be[X]'}
-          </h1>
-          <Link
-            href={backHref}
-            className="shrink-0 text-sm text-brand-text-muted transition hover:text-brand-accent"
-          >
-            {backLabel}
-          </Link>
+    <main
+      className={`mx-auto w-full px-4 pb-8 pt-10 sm:px-6 sm:pt-14 ${width === 'narrow' ? 'max-w-3xl' : 'max-w-6xl'}`}
+    >
+      {(title || eyebrow) && (
+        <div className="mb-8 sm:mb-10">
+          {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
+          {title && (
+            <h1 className="font-display text-4xl font-medium leading-[1.08] text-brand-text sm:text-5xl">
+              {title}
+            </h1>
+          )}
+          {intro && <p className="mt-4 max-w-2xl text-lg text-brand-text-muted">{intro}</p>}
         </div>
-      </header>
-      <main>{children}</main>
-      <Footer />
-    </div>
+      )}
+      {children}
+    </main>
   )
 }

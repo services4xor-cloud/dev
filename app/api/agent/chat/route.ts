@@ -1,7 +1,13 @@
 import { NextRequest } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { buildPersonaPrompt, chatWithAgent, type SelectedOpportunity } from '@/lib/ai'
+import {
+  buildPersonaPrompt,
+  chatWithAgent,
+  type CatalogItem,
+  type SelectedOpportunity,
+} from '@/lib/ai'
+import { getCountryInsights } from '@/lib/country-insights'
 import { db } from '@/lib/db'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { formatPrice, KIND_LABELS, readProps } from '@/lib/opportunities'
@@ -20,12 +26,7 @@ export async function POST(req: NextRequest) {
   }
 
   let body: {
-    dimensions?: Record<string, string>
-    enrichedContext?: {
-      countries?: string[]
-      allValues?: Record<string, string[]>
-      customChips?: { dimension: string; label: string }[]
-    }
+    countries?: unknown
     message?: string
     conversationId?: string
     opportunityIds?: unknown
@@ -36,14 +37,26 @@ export async function POST(req: NextRequest) {
     return new Response('Invalid JSON', { status: 400 })
   }
 
-  const { dimensions, enrichedContext, message, conversationId, opportunityIds } = body
-  if (!message || typeof message !== 'string' || !dimensions) {
-    return new Response('Missing message or dimensions', { status: 400 })
+  const { message, conversationId, opportunityIds } = body
+  if (!message || typeof message !== 'string' || !message.trim()) {
+    return new Response('Missing message', { status: 400 })
   }
 
   if (message.length > 4000) {
     return new Response('Message must be 4000 characters or fewer', { status: 400 })
   }
+
+  // Countries the Explorer is looking at: known ISO codes only, max 3
+  const countryCodes = Array.isArray(body.countries)
+    ? Array.from(
+        new Set(
+          body.countries
+            .filter((x): x is string => typeof x === 'string')
+            .map((x) => x.toUpperCase())
+            .filter((x) => COUNTRY_OPTIONS.some((c) => c.code === x))
+        )
+      ).slice(0, 3)
+    : []
 
   // Cost guard: cap agent messages per Explorer per day
   if (!(await rateLimit('agent', userId, 100, 24 * 60 * 60))) {
@@ -55,29 +68,43 @@ export async function POST(req: NextRequest) {
     ? opportunityIds.filter((x): x is string => typeof x === 'string').slice(0, 10)
     : []
   const selected: SelectedOpportunity[] = []
-  if (ids.length) {
-    const nodes = await db.node.findMany({
-      where: { id: { in: ids }, type: 'EXPERIENCE', active: true },
-      include: {
-        inEdges: { where: { relation: 'OFFERS' }, include: { from: true }, take: 1 },
-      },
-    })
-    for (const n of nodes) {
-      const p = readProps(n)
-      if (p.status !== 'PUBLISHED') continue
-      selected.push({
-        id: n.id,
+  const catalog: CatalogItem[] = []
+  const nodes = await db.node.findMany({
+    where: { type: 'EXPERIENCE', active: true },
+    include: {
+      inEdges: { where: { relation: 'OFFERS' }, include: { from: true }, take: 1 },
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 200,
+  })
+  const appUrl = process.env.NEXTAUTH_URL ?? ''
+  for (const n of nodes) {
+    const p = readProps(n)
+    if (p.status !== 'PUBLISHED') continue
+    const country = COUNTRY_OPTIONS.find((c) => c.code === p.countryCode)?.name
+    const host = n.inEdges[0]?.from.label ?? null
+    if (catalog.length < 40)
+      catalog.push({
         label: n.label,
         kind: KIND_LABELS[p.kind],
-        host: n.inEdges[0]?.from.label ?? null,
-        description: p.description,
-        location: p.location,
-        country: COUNTRY_OPTIONS.find((c) => c.code === p.countryCode)?.name,
+        country,
+        host,
         price: formatPrice(p),
-        dates: p.startsOn || p.endsOn ? `${p.startsOn ?? '?'} to ${p.endsOn ?? '?'}` : undefined,
-        capacity: p.capacity,
+        link: `${appUrl}/exchange/${n.id}`,
       })
-    }
+    if (!ids.includes(n.id)) continue
+    selected.push({
+      id: n.id,
+      label: n.label,
+      kind: KIND_LABELS[p.kind],
+      host,
+      description: p.description,
+      location: p.location,
+      country,
+      price: formatPrice(p),
+      dates: p.startsOn || p.endsOn ? `${p.startsOn ?? '?'} to ${p.endsOn ?? '?'}` : undefined,
+      capacity: p.capacity,
+    })
   }
 
   // Load or create conversation — verify ownership
@@ -94,8 +121,10 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Build persona from graph + enriched context
-  const systemPrompt = await buildPersonaPrompt(dimensions, enrichedContext, selected)
+  const countries = (await Promise.all(countryCodes.map((c) => getCountryInsights(c)))).filter(
+    (c): c is NonNullable<typeof c> => !!c
+  )
+  const systemPrompt = buildPersonaPrompt({ countries, selected, catalog })
 
   // Add new user message, cap history to last 50 turns to limit AI cost
   history.push({ role: 'user', content: message })
@@ -115,14 +144,14 @@ export async function POST(req: NextRequest) {
         where: { id: chatId },
         data: {
           messages: history as Prisma.InputJsonValue,
-          dimensions: dimensions as Prisma.InputJsonValue,
+          dimensions: { countries: countryCodes } as Prisma.InputJsonValue,
         },
       })
     } else {
       const chat = await db.agentChat.create({
         data: {
           userId,
-          dimensions: dimensions as Prisma.InputJsonValue,
+          dimensions: { countries: countryCodes } as Prisma.InputJsonValue,
           messages: history as Prisma.InputJsonValue,
         },
       })

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import PageShell from '@/components/PageShell'
 import { KIND_LABELS, type OpportunityKind } from '@/lib/opportunities'
 
 interface MyExchange {
@@ -39,87 +40,78 @@ export default function BookingsPage() {
 
   if (status === 'unauthenticated') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-brand-bg">
-        <a href="/login?callbackUrl=/bookings" className="text-brand-accent hover:underline">
+      <PageShell eyebrow="Bookings" title="Your bookings">
+        <a href="/login?callbackUrl=/bookings" className="btn btn-primary">
           Sign in to see your bookings
         </a>
-      </div>
+      </PageShell>
     )
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg">
-      <header className="border-b border-brand-accent/10 px-6 py-4">
-        <div className="mx-auto flex max-w-3xl items-center justify-between">
-          <h1 className="text-xl font-bold text-brand-accent">My bookings</h1>
-          <div className="flex gap-4 text-sm">
-            {(role === 'HOST' || role === 'ADMIN') && (
-              <Link
-                href="/host"
-                className="text-brand-text-muted transition hover:text-brand-accent"
-              >
-                Requests for my listings
-              </Link>
-            )}
-            <a href="/" className="text-brand-text-muted transition hover:text-brand-accent">
-              &larr; Map
-            </a>
-          </div>
-        </div>
-      </header>
-      <main className="mx-auto max-w-3xl px-6 py-8">
-        {items === null ? (
-          <p className="text-sm text-brand-text-muted">Loading…</p>
-        ) : items.length === 0 ? (
-          <div className="rounded-xl border border-white/5 bg-brand-surface px-8 py-12 text-center">
-            <p className="text-brand-text-muted">No bookings yet.</p>
-            <Link
-              href="/opportunities"
-              className="mt-2 inline-block text-sm text-brand-accent hover:underline"
-            >
-              Find a journey or service →
-            </Link>
-          </div>
-        ) : (
-          <div className="divide-y divide-white/5 rounded-xl border border-white/10 bg-brand-surface">
-            {items.map((x) => {
-              const st = STATUS[x.status] ?? STATUS.PENDING
-              return (
-                <div key={x.id} className="flex flex-wrap items-center gap-3 px-4 py-4">
-                  <span className="text-2xl">{x.opportunity.icon}</span>
-                  <div className="min-w-0 flex-1">
-                    <Link
-                      href={`/exchange/${x.opportunity.id}`}
-                      className="font-medium text-brand-text hover:text-brand-accent"
-                    >
-                      {x.opportunity.label}
-                    </Link>
-                    <p className="text-xs text-brand-text-muted">
-                      {KIND_LABELS[x.opportunity.kind]}
-                      {x.host ? ` · ${x.host}` : ''} · {new Date(x.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <span className={`rounded border px-2 py-0.5 text-xs ${st.cls}`}>{st.label}</span>
-                  {x.accessUrl && (
-                    <a
-                      href={x.accessUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-semibold text-brand-accent hover:opacity-90"
-                    >
-                      Open →
-                    </a>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )}
-        <p className="mt-6 text-xs text-brand-text-muted">
-          Hosts confirm each request. For services like social media automation, your access link
-          appears here once you are confirmed.
+    <PageShell
+      eyebrow="Bookings"
+      title="Your bookings"
+      intro="Every journey and service you asked for, and where each one stands."
+    >
+      {(role === 'HOST' || role === 'ADMIN') && (
+        <p className="-mt-4 mb-6 text-sm">
+          <Link href="/host" className="text-brand-accent hover:underline">
+            See requests for your listings
+          </Link>
         </p>
-      </main>
-    </div>
+      )}
+      {items === null ? (
+        <p className="text-sm text-brand-text-muted">Loading…</p>
+      ) : items.length === 0 ? (
+        <div className="card px-8 py-12 text-center">
+          <p className="text-brand-text-muted">No bookings yet.</p>
+          <Link
+            href="/opportunities"
+            className="mt-2 inline-block text-sm text-brand-accent hover:underline"
+          >
+            Find a journey or service
+          </Link>
+        </div>
+      ) : (
+        <div className="card divide-y divide-brand-line">
+          {items.map((x) => {
+            const st = STATUS[x.status] ?? STATUS.PENDING
+            return (
+              <div key={x.id} className="flex flex-wrap items-center gap-3 px-4 py-4">
+                <span className="text-2xl">{x.opportunity.icon}</span>
+                <div className="min-w-0 flex-1">
+                  <Link
+                    href={`/exchange/${x.opportunity.id}`}
+                    className="font-medium text-brand-text hover:text-brand-accent"
+                  >
+                    {x.opportunity.label}
+                  </Link>
+                  <p className="text-xs text-brand-text-muted">
+                    {KIND_LABELS[x.opportunity.kind]}
+                    {x.host ? ` · ${x.host}` : ''} · {new Date(x.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <span className={`rounded border px-2 py-0.5 text-xs ${st.cls}`}>{st.label}</span>
+                {x.accessUrl && (
+                  <a
+                    href={x.accessUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary btn-sm"
+                  >
+                    Open
+                  </a>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+      <p className="mt-6 text-xs text-brand-text-muted">
+        Hosts confirm each request. For services like social media automation, your access link
+        appears here once you are confirmed.
+      </p>
+    </PageShell>
   )
 }

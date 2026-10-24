@@ -52,14 +52,14 @@ export default function SettingsPage() {
 
   if (!session) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+      <div className="flex min-h-[60dvh] items-center justify-center bg-brand-bg">
         <p className="text-brand-text-muted">Please sign in to view settings.</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-text">
+    <div className="min-h-[60dvh] bg-brand-bg text-brand-text">
       <header className="border-b border-brand-accent/20 bg-brand-surface">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link

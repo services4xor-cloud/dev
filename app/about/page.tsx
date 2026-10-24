@@ -1,140 +1,83 @@
 import Link from 'next/link'
 import PageShell from '@/components/PageShell'
-import HeroSection from '@/components/HeroSection'
-import TrustBadges from '@/components/TrustBadges'
 
-const values = [
+const STEPS = [
   {
-    name: 'Identity',
-    description:
-      'Who you are shapes where you go. Language, faith, craft, and culture are the foundation of every connection.',
+    title: 'Pick a country on the map',
+    text: 'See live facts from public sources: people, economy, the industries it is strong in, and the countries it shares a language or currency with.',
   },
   {
-    name: 'Connection',
-    description:
-      'Bridges across borders start with shared meaning — not just geography. Find people who see the world as you do.',
+    title: 'Find what is on offer there',
+    text: 'Journeys, experiences, services and automations listed by Hosts. Every listing is checked before it goes on the map.',
   },
   {
-    name: 'Exchange',
-    description:
-      'Skills, culture, and opportunities flow between people when the right corridors are open.',
+    title: 'Ask the agent',
+    text: 'It knows the countries you picked and the offerings you selected, and helps you find partners, industries, work and the right next step.',
   },
   {
-    name: 'Discovery',
-    description:
-      "The world is larger than any algorithm. Explore corridors you didn't know existed.",
+    title: 'Book or write to the Host',
+    text: 'Hosts confirm each booking. You follow it under Bookings, and service access links appear there once you are confirmed.',
   },
 ]
 
-const steps = [
-  {
-    number: '01',
-    title: 'Define your identity',
-    detail:
-      'Add the dimensions that matter to you — languages you speak, faiths you hold, crafts you practice, interests that shape your days.',
-  },
-  {
-    number: '02',
-    title: 'Discover your corridors',
-    detail:
-      'The platform maps corridors between countries that align with your profile, surfacing opportunities other Explorers have discovered.',
-  },
-  {
-    number: '03',
-    title: 'Connect worldwide',
-    detail:
-      'Meet Explorers and Hosts whose identity dimensions overlap with yours — people who share your language, craft, or faith.',
-  },
-  {
-    number: '04',
-    title: 'Exchange and grow',
-    detail:
-      'Exchange skills, culture, and opportunities across borders. Every connection expands what is possible for you.',
-  },
-]
+const PRINCIPLES = [
+  [
+    'Real data only',
+    'Country facts come live from REST Countries, the World Bank and Wikipedia, with sources shown. Nothing is made up.',
+  ],
+  [
+    'Reviewed listings',
+    'A person checks every new listing and every change to a live one before it shows.',
+  ],
+  [
+    'Your data stays yours',
+    'Conversations with the agent are private to you. We do not sell data.',
+  ],
+] as const
 
 export default function AboutPage() {
   return (
-    <PageShell>
-      {/* Hero */}
-      <HeroSection
-        title="About"
-        highlight="Be[X]"
-        description="Be[X] is an identity-first life-routing platform. X is whatever defines you — your country, your tribe, your craft, your faith. We connect people to opportunities, people, and experiences that match who they truly are."
-      />
-
-      {/* Mission */}
-      <section className="border-t border-brand-accent/10 bg-brand-surface">
-        <div className="mx-auto max-w-4xl px-6 py-16">
-          <h2 className="text-2xl font-semibold text-brand-text">Our Mission</h2>
-          <p className="mt-4 text-brand-text-muted leading-relaxed">
-            The world organises itself around proximity and nationality. We believe a deeper
-            organising principle exists — identity. Language, faith, craft, and culture create
-            invisible corridors between people regardless of where they were born. Be[X] makes those
-            corridors visible and walkable.
-          </p>
-          <p className="mt-4 text-brand-text-muted leading-relaxed">
-            Start with countries (BeKenya, BeGermany). Expand to tribes (BeMaasai), locations
-            (BeNairobi), crafts (BeEngineer). One platform, infinite identities — every deployment
-            serves all countries and languages.
-          </p>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="mx-auto max-w-4xl px-6 py-16">
-        <h2 className="text-2xl font-semibold text-brand-text">How It Works</h2>
-        <div className="mt-10 grid gap-8 sm:grid-cols-2">
-          {steps.map(({ number, title, detail }) => (
-            <div
-              key={number}
-              className="rounded-lg border border-brand-accent/20 bg-brand-surface p-6"
-            >
-              <p className="text-3xl font-bold text-brand-accent/40">{number}</p>
-              <h3 className="mt-3 text-base font-semibold text-brand-text">{title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-brand-text-muted">{detail}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Explorer Stories */}
-
-      {/* Values */}
-      <section className="border-t border-brand-accent/10 bg-brand-surface">
-        <div className="mx-auto max-w-4xl px-6 py-16">
-          <h2 className="text-2xl font-semibold text-brand-text">Our Values</h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            {values.map(({ name, description }) => (
-              <div key={name} className="flex gap-4">
-                <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-brand-accent" />
-                <div>
-                  <p className="font-semibold text-brand-text">{name}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-brand-text-muted">
-                    {description}
-                  </p>
-                </div>
-              </div>
-            ))}
+    <PageShell
+      eyebrow="About"
+      title="No borders, just differences."
+      intro="Culture, language and business differ from country to country. Be[X] puts them on one map, so you can find the people, partners and offerings that fit who you are."
+    >
+      <section className="grid gap-4 sm:grid-cols-2">
+        {STEPS.map((s, i) => (
+          <div key={s.title} className="card p-6">
+            <p className="font-display text-3xl text-brand-accent">
+              {String(i + 1).padStart(2, '0')}
+            </p>
+            <h2 className="mt-3 text-lg font-semibold text-brand-text">{s.title}</h2>
+            <p className="mt-2 leading-relaxed text-brand-text-muted">{s.text}</p>
           </div>
-        </div>
+        ))}
       </section>
 
-      {/* Trust Badges */}
-      <TrustBadges />
+      <section className="mt-14 grid gap-8 md:grid-cols-3">
+        {PRINCIPLES.map(([title, text]) => (
+          <div key={title} className="border-t border-brand-line pt-5">
+            <h2 className="font-semibold text-brand-text">{title}</h2>
+            <p className="mt-2 text-brand-text-muted">{text}</p>
+          </div>
+        ))}
+      </section>
 
-      {/* CTA */}
-      <section className="mx-auto max-w-4xl px-6 py-16 text-center">
-        <h2 className="text-2xl font-semibold text-brand-text">Ready to find your corridor?</h2>
-        <p className="mt-3 text-brand-text-muted">
-          Explore the map and discover where your identity takes you.
+      <section className="mt-14 rounded-[10px] bg-brand-deep p-6 text-[#f3f5f2] sm:p-10">
+        <p className="eyebrow mb-3 !text-[#b8e4d5]">Made by 4XOR</p>
+        <h2 className="font-display text-3xl">Software and AI agents from Aesch, Switzerland.</h2>
+        <p className="mt-3 max-w-2xl text-white/80">
+          Be[X] is a 4XOR project. The same team builds AI agents and workflow automation for
+          businesses, and lists them here as offerings.
         </p>
-        <Link
-          href="/"
-          className="mt-8 inline-block rounded-md bg-brand-primary px-8 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-        >
-          Open the Map
-        </Link>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/map" className="btn btn-on-deep">
+            Open the map
+          </Link>
+          <a href="https://4xor.com" className="btn border-white/30 text-white">
+            Visit 4xor.com
+          </a>
+        </div>
       </section>
     </PageShell>
   )

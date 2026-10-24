@@ -111,11 +111,7 @@ export default function PasswordAuthForm({
         className={inputClass}
       />
       {error && <p className="text-xs text-red-400">{error}</p>}
-      <button
-        type="submit"
-        disabled={loading || !email.trim() || !password}
-        className="w-full rounded-lg border border-brand-accent/30 px-4 py-3 text-sm font-medium text-brand-text transition hover:bg-brand-accent/10 disabled:opacity-40"
-      >
+      <button type="submit" disabled={loading || !email.trim() || !password} className="btn w-full">
         {loading
           ? mode === 'register'
             ? 'Creating account…'

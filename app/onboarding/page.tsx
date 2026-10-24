@@ -105,7 +105,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+    <div className="flex min-h-[60dvh] items-center justify-center bg-brand-bg">
       <div className="w-full max-w-md space-y-6 rounded-xl bg-brand-surface p-8">
         <div className="text-center">
           <a href="/" className="text-xs text-brand-text-muted hover:text-brand-accent">

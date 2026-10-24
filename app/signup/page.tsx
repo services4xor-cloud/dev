@@ -44,15 +44,19 @@ function SignupForm() {
     })
   }, [session, refCode])
 
+  const rawCallback = searchParams.get('callbackUrl') ?? '/'
+  const callbackUrl =
+    rawCallback.startsWith('/') && !rawCallback.startsWith('//') ? rawCallback : '/'
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-brand-bg">
-      <div className="w-full max-w-sm space-y-6 rounded-xl bg-brand-surface p-8">
+    <div className="flex flex-1 items-start justify-center px-4 py-16 sm:py-24">
+      <div className="card w-full max-w-sm space-y-6 p-6 sm:p-8">
         <div className="text-center">
-          <a href="/" className="text-xs text-brand-text-muted hover:text-brand-accent">
-            ← Back to Map
-          </a>
-          <h1 className="mt-2 text-2xl font-bold text-brand-accent">Be[X]</h1>
-          <p className="mt-1 text-sm text-brand-text-muted">Join the network</p>
+          <p className="eyebrow">Be[X]</p>
+          <h1 className="mt-2 font-display text-3xl text-brand-text">Create your account</h1>
+          <p className="mt-2 text-sm text-brand-text-muted">
+            Free. Book offerings, list your own and talk to the agent.
+          </p>
         </div>
 
         {referrerName && (
@@ -64,24 +68,27 @@ function SignupForm() {
         )}
 
         <button
-          onClick={() => signIn('google', { callbackUrl: '/' })}
-          className="w-full rounded-lg bg-brand-primary px-4 py-3 font-medium text-brand-accent transition hover:opacity-90"
+          onClick={() => signIn('google', { callbackUrl })}
+          className="btn btn-primary w-full"
         >
           Sign up with Google
         </button>
 
         {/* Divider */}
         <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-white/10" />
+          <div className="h-px flex-1 bg-brand-line" />
           <span className="text-xs text-brand-text-muted">or</span>
-          <div className="h-px flex-1 bg-white/10" />
+          <div className="h-px flex-1 bg-brand-line" />
         </div>
 
-        <PasswordAuthForm mode="register" />
+        <PasswordAuthForm mode="register" callbackUrl={callbackUrl} />
 
-        <p className="text-center text-xs text-brand-text-muted">
+        <p className="text-center text-sm text-brand-text-muted">
           Already have an account?{' '}
-          <a href="/login" className="text-brand-accent hover:underline">
+          <a
+            href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            className="text-brand-accent hover:underline"
+          >
             Sign in
           </a>
         </p>
@@ -94,7 +101,7 @@ export default function SignupPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+        <div className="flex flex-1 items-center justify-center py-24">
           <p className="text-brand-text-muted text-sm animate-pulse">Loading…</p>
         </div>
       }

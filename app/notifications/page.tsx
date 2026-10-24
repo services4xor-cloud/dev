@@ -97,14 +97,14 @@ export default function NotificationsPage() {
 
   if (status === 'loading' || status === 'unauthenticated') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+      <div className="flex min-h-[60dvh] items-center justify-center bg-brand-bg">
         <p className="text-brand-text-muted text-sm">Loading…</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-text">
+    <div className="min-h-[60dvh] bg-brand-bg text-brand-text">
       {/* Top bar */}
       <div className="flex items-center justify-between border-b border-white/5 px-4 py-3 sm:px-6">
         <div className="flex items-center gap-3">

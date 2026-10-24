@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import PageShell from '@/components/PageShell'
 import OpportunityForm, { formFromOpportunity } from '@/components/OpportunityForm'
 import type { OpportunityDTO } from '@/lib/opportunities'
 
@@ -48,31 +49,20 @@ export default function EditOpportunityPage({ params }: { params: { id: string }
 
   if (status === 'unauthenticated') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-brand-bg">
-        <a href="/login" className="text-brand-accent hover:underline">
+      <PageShell title="Edit listing">
+        <a href="/login?callbackUrl=/opportunities%23yours" className="btn btn-primary">
           Sign in to edit
         </a>
-      </div>
+      </PageShell>
     )
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg">
-      <header className="border-b border-brand-accent/10 px-6 py-4">
-        <div className="mx-auto flex max-w-3xl items-center justify-between">
-          <h1 className="text-xl font-bold text-brand-accent">Edit listing</h1>
-          <Link
-            href="/opportunities"
-            className="text-sm text-brand-text-muted transition hover:text-brand-accent"
-          >
-            &larr; Opportunities
-          </Link>
-        </div>
-      </header>
-      <main className="mx-auto max-w-3xl space-y-4 px-6 py-8">
+    <PageShell eyebrow="Your listings" title={opp ? `Edit: ${opp.label}` : 'Edit listing'}>
+      <div className="space-y-4">
         {error && <p className="text-sm text-red-400">{error}</p>}
         {saved && (
-          <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
+          <div className="rounded-lg border border-brand-accent/40 bg-brand-accent/10 px-4 py-3 text-sm text-brand-text">
             {saved}
           </div>
         )}
@@ -93,7 +83,7 @@ export default function EditOpportunityPage({ params }: { params: { id: string }
               {isAdmin && opp.properties.status !== 'PUBLISHED' && (
                 <button
                   onClick={() => void patch({ status: 'PUBLISHED' })}
-                  className="rounded-lg bg-green-600/80 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-600"
+                  className="btn btn-primary"
                 >
                   Publish on the map
                 </button>
@@ -101,7 +91,7 @@ export default function EditOpportunityPage({ params }: { params: { id: string }
               {opp.properties.status !== 'ARCHIVED' && (
                 <button
                   onClick={() => void patch({ status: 'ARCHIVED' })}
-                  className="rounded-lg border border-white/10 px-4 py-2 text-sm text-brand-text-muted transition hover:text-red-400"
+                  className="btn hover:text-red-300"
                 >
                   Archive (take off the map)
                 </button>
@@ -109,7 +99,7 @@ export default function EditOpportunityPage({ params }: { params: { id: string }
             </div>
           </>
         )}
-      </main>
-    </div>
+      </div>
+    </PageShell>
   )
 }

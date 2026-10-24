@@ -48,7 +48,7 @@ export default function ReferralPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+      <div className="flex min-h-[60dvh] items-center justify-center bg-brand-bg">
         <p className="text-brand-text-muted text-sm animate-pulse">Loading…</p>
       </div>
     )
@@ -57,7 +57,7 @@ export default function ReferralPage() {
   if (!session) return null
 
   return (
-    <main className="min-h-screen bg-brand-bg px-4 py-10">
+    <main className="min-h-[60dvh] bg-brand-bg px-4 py-10">
       {/* Header */}
       <div className="mx-auto max-w-lg">
         <Link href="/" className="text-xs text-brand-text-muted hover:text-brand-accent transition">

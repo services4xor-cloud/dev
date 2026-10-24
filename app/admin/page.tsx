@@ -86,7 +86,7 @@ export default function AdminDashboard() {
 
   if (status === 'loading' || loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-brand-bg">
+      <main className="flex flex-1 items-center justify-center py-24">
         <p className="text-brand-text-muted">Loading Hub...</p>
       </main>
     )
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
 
   if (!session || !isAdmin) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-brand-bg">
+      <main className="flex flex-1 flex-col items-center justify-center gap-4 py-24">
         <p className="text-xl font-semibold text-brand-text">Access denied</p>
         <p className="text-brand-text-muted">This area is restricted to administrators.</p>
         <Link href="/" className="text-brand-accent underline hover:opacity-80">
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
 
   if (error) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-brand-bg">
+      <main className="flex flex-1 flex-col items-center justify-center gap-4 py-24">
         <p className="text-xl font-semibold text-red-400">Error</p>
         <p className="text-brand-text-muted">{error}</p>
         <Link href="/" className="text-brand-accent underline hover:opacity-80">
@@ -123,24 +123,12 @@ export default function AdminDashboard() {
   const orderedTypes = [...nodeTypes, ...otherTypes]
 
   return (
-    <main className="min-h-screen bg-brand-bg text-brand-text">
-      {/* Header */}
-      <header className="border-b border-brand-accent/20 bg-brand-surface px-6 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-brand-accent">Admin Hub</h1>
-            <p className="text-sm text-brand-text-muted">Be[X] Platform Overview</p>
-          </div>
-          <Link
-            href="/"
-            className="rounded-md border border-brand-accent/30 px-4 py-2 text-sm text-brand-accent transition-opacity hover:opacity-80"
-          >
-            Back to map
-          </Link>
-        </div>
-      </header>
-
-      <div className="mx-auto max-w-7xl space-y-8 px-6 py-8">
+    <main className="mx-auto w-full max-w-6xl space-y-8 px-4 py-10 text-brand-text sm:px-6">
+      <div>
+        <p className="eyebrow mb-3">Admin</p>
+        <h1 className="font-display text-4xl text-brand-text">Platform overview</h1>
+      </div>
+      <div className="space-y-8">
         <ReviewQueue />
 
         {/* Primary stat cards */}

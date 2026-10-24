@@ -57,11 +57,15 @@ Source of truth: `lib/vocabulary.ts` — import `VOCAB`, never hardcode.
 
 ## 5. Brand Quick Ref
 
+4xor.com design (deep green, teal accent, gold for selection):
+
 ```
-Primary:    #5C0A14  → bg-brand-primary
-Accent:     #C9A227  → text-brand-accent, border-brand-accent/30
-Background: #0A0A0F  → bg-brand-bg
-Surface:    #111118  → bg-brand-surface
+Background: #0f1513  → bg-brand-bg
+Surface:    #151d1a  → bg-brand-surface
+Accent:     #7fb8a6  → text-brand-accent, bg-brand-accent/10
+Deep band:  #17483c  → bg-brand-deep (header, footer)
+Gold:       #d9a93f  → text-brand-gold
+Fonts:      Schibsted Grotesk (sans) · Newsreader (display) · Montserrat (wordmark)
 ```
 
 Full rules → `DESIGN_SYSTEM.md`

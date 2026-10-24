@@ -36,12 +36,12 @@ export interface OpportunityFormValues {
   contactPublic: boolean
 }
 
-export function emptyOpportunityForm(): OpportunityFormValues {
+export function emptyOpportunityForm(countryCode = 'KE'): OpportunityFormValues {
   return {
     title: '',
     description: '',
     kind: 'JOURNEY',
-    countryCode: 'KE',
+    countryCode,
     location: '',
     lat: '',
     lng: '',
@@ -142,17 +142,13 @@ export default function OpportunityForm({
     }
   }
 
-  const input =
-    'w-full rounded-lg border border-white/10 bg-brand-bg px-4 py-2 text-sm text-brand-text placeholder-brand-text-muted/50 outline-none focus:border-brand-accent/40'
+  const input = 'input'
   const label = 'mb-1 block text-sm font-medium text-brand-text-muted'
   const isDated = form.kind === 'JOURNEY' || form.kind === 'EXPERIENCE'
   const isAccess = form.kind === 'SERVICE' || form.kind === 'AUTOMATION'
 
   return (
-    <form
-      onSubmit={(e) => void handleSubmit(e)}
-      className="space-y-4 rounded-xl border border-white/10 bg-brand-surface p-6"
-    >
+    <form onSubmit={(e) => void handleSubmit(e)} className="card space-y-5 p-5 sm:p-6">
       {error && (
         <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           {error}
@@ -242,7 +238,7 @@ export default function OpportunityForm({
         </div>
       </div>
 
-      <details className="rounded-lg border border-white/5 px-4 py-2">
+      <details className="rounded-lg border border-brand-line px-4 py-2">
         <summary className="cursor-pointer text-xs text-brand-text-muted">
           Exact map position (optional, otherwise the country&apos;s capital)
         </summary>
@@ -440,11 +436,7 @@ export default function OpportunityForm({
 
       <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
         {note && <p className="mr-auto text-xs text-brand-text-muted">{note}</p>}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-brand-accent transition hover:opacity-90 disabled:opacity-50"
-        >
+        <button type="submit" disabled={submitting} className="btn btn-primary">
           {submitting ? 'Saving…' : submitLabel}
         </button>
       </div>
