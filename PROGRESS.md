@@ -41,6 +41,9 @@
 - **Real data:** `npm run db:seed:4xor` adds BeKenya journeys and the 4xor services (social media automation, n8n automation). Fake testimonials removed.
 - **4xor.com:** `/4xor` company page; `middleware.ts` serves it at `/` for `COMPANY_HOSTS`. Map also at `/map`.
 - **Tests:** 4 new suites (opportunities lib + routes, register, rate limit).
+- **Contact + own listings:** every signed-in account can book (`ensureUserNode`), edit its own listings, set a contact email (optionally public on the map), and providers get a "Contact" email via Resend with reply-to.
+- **Deep links:** `/map?select=<code>&country=CC` preselects offerings; 4xor service cards link to the map and back (`demoUrl` → `4xor.com/#<code>`). Map has offering search + kind filters.
+- **AWS test site:** Amplify app `bex-4xor-test` (eu-central-1), build spec in `amplify.yml`. Agent authenticates with Anthropic via Workload Identity Federation (`lib/anthropic-client.ts`, compute role `bex-amplify-compute`, 4 `ANTHROPIC_*` IDs as branch env vars); no API key needed. Admin diagnosis: `/api/admin/ai-check`. Verified working 2026-10-24.
 
 ---
 
