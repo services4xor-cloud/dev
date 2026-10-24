@@ -27,6 +27,8 @@ export default async function FourXorPage() {
     .map((n) => toDTO(n, provider))
 
   const studio = services.find((s) => s.properties.kind === 'SERVICE')
+  // Opens the map with our services selected for the agent (BeKenya's stay visible)
+  const mapHref = services.length ? `/map?select=${services.map((s) => s.id).join(',')}` : '/map'
 
   return (
     <main className="min-h-screen bg-brand-bg text-brand-text">
@@ -66,10 +68,10 @@ export default async function FourXorPage() {
             See what you can book
           </a>
           <Link
-            href="/map"
+            href={mapHref}
             className="rounded-lg border border-brand-accent/30 px-6 py-3 text-sm text-brand-text hover:bg-brand-accent/10"
           >
-            Open the map
+            See our services on the map
           </Link>
         </div>
       </section>
@@ -134,7 +136,10 @@ export default async function FourXorPage() {
       <section id="services" className="mx-auto max-w-5xl px-6 py-16">
         <h2 className="text-2xl font-bold">What you can book</h2>
         <p className="mt-2 text-sm text-brand-text-muted">
-          Every service is listed on the map too, so you can ask the agent about it first.
+          Every service is listed on the map too, so you can ask the agent about it first.{' '}
+          <Link href={mapHref} className="text-brand-accent hover:underline">
+            Open them on the map →
+          </Link>
         </p>
         {services.length === 0 ? (
           <p className="mt-8 text-sm text-brand-text-muted">

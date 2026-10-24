@@ -8,7 +8,7 @@ import { NextRequest } from 'next/server'
 jest.mock('next-auth', () => ({ getServerSession: jest.fn() }))
 jest.mock('@/lib/auth', () => ({ authOptions: {} }))
 jest.mock('@/lib/notifications', () => ({ notify: jest.fn().mockResolvedValue(undefined) }))
-jest.mock('@/lib/graph', () => ({ getUserNode: jest.fn() }))
+jest.mock('@/lib/graph', () => ({ ensureUserNode: jest.fn() }))
 jest.mock('@/lib/email', () => ({
   sendEmail: jest.fn().mockResolvedValue(undefined),
   actionEmail: jest.fn().mockReturnValue('<html>'),
@@ -31,10 +31,10 @@ import { GET, POST } from '@/app/api/exchanges/route'
 import { PATCH } from '@/app/api/exchanges/[id]/route'
 import { getServerSession } from 'next-auth'
 import { db } from '@/lib/db'
-import { getUserNode } from '@/lib/graph'
+import { ensureUserNode } from '@/lib/graph'
 
 const mockSession = getServerSession as jest.Mock
-const mockGetUserNode = getUserNode as jest.Mock
+const mockGetUserNode = ensureUserNode as jest.Mock
 
 function makeReq(
   url = 'http://localhost/api/exchanges',

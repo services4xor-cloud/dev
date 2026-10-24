@@ -79,3 +79,23 @@ describe('formatPrice', () => {
     expect(formatPrice({ price: 1350, currency: 'EUR', priceUnit: 'PERSON' })).toMatch(/1,350/)
   })
 })
+
+describe('contactEmail', () => {
+  const base2 = { title: 'Safari', description: 'Five days', kind: 'JOURNEY', countryCode: 'KE' }
+
+  it('validates and keeps it private', () => {
+    expect(parseOpportunityInput({ ...base2, contactEmail: 'nope' }).error).toMatch(/contactEmail/)
+    const { data } = parseOpportunityInput({ ...base2, contactEmail: ' Me@4xor.com ' })
+    expect(data?.props.contactEmail).toBe('me@4xor.com')
+    const n = {
+      id: 'n',
+      label: 'x',
+      icon: null,
+      lat: 0,
+      lng: 0,
+      properties: { contactEmail: 'me@4xor.com' },
+    }
+    expect(JSON.stringify(toDTO(n, null))).not.toContain('me@4xor.com')
+    expect(toDTO(n, null, { includeAccess: true }).contactEmail).toBe('me@4xor.com')
+  })
+})

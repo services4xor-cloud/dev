@@ -231,6 +231,7 @@ export default function OpportunitiesPage() {
                     <p className="truncate text-sm font-medium text-brand-text">{o.label}</p>
                     <p className="text-xs text-brand-text-muted">
                       {KIND_LABELS[o.properties.kind]}
+                      {o.host && !o.host.userId ? ` · ${o.host.label}` : ''}
                     </p>
                   </div>
                   <span

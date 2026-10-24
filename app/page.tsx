@@ -5,8 +5,14 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import WorldMap, { type MapProjectionMode, type OpportunityPin } from '@/components/WorldMap'
 import OpportunityCard from '@/components/OpportunityCard'
-import type { OpportunityDTO } from '@/lib/opportunities'
-import { getSelected, SELECTION_EVENT, toggleSelected } from '@/lib/selection'
+import {
+  KIND_ICONS,
+  KIND_LABELS,
+  OPPORTUNITY_KINDS,
+  type OpportunityDTO,
+  type OpportunityKind,
+} from '@/lib/opportunities'
+import { getSelected, SELECTION_EVENT, setSelected, toggleSelected } from '@/lib/selection'
 import DimensionFilters, { type ActiveFilter } from '@/components/DimensionFilters'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
 import { haversineKm } from '@/lib/geo'
@@ -85,16 +91,45 @@ export default function HomePage() {
   useEffect(() => {
     fetch('/api/opportunities')
       .then((r) => (r.ok ? (r.json() as Promise<OpportunityDTO[]>) : []))
-      .then(setOpportunities)
+      .then((list) => {
+        setOpportunities(list)
+        // Deep link from 4xor.com and elsewhere: /map?select=<id>,<id> preselects
+        // those listings for the agent and opens the first one
+        const wanted = (new URLSearchParams(window.location.search).get('select') ?? '')
+          .split(',')
+          .filter((id) => list.some((o) => o.id === id))
+        if (wanted.length) {
+          setSelected(Array.from(new Set([...wanted, ...getSelected()])))
+          setOpenOpportunity(wanted[0])
+        }
+      })
       .catch(() => {})
     setSelectedOpps(getSelected())
     const sync = () => setSelectedOpps(getSelected())
     window.addEventListener(SELECTION_EVENT, sync)
     return () => window.removeEventListener(SELECTION_EVENT, sync)
   }, [])
+  // Offering filters: kind chips + free-text search over the listings
+  const [pinKind, setPinKind] = useState<OpportunityKind | null>(null)
+  const [pinQuery, setPinQuery] = useState('')
+  const visibleOpps = useMemo(() => {
+    const q = pinQuery.trim().toLowerCase()
+    return opportunities.filter((o) => {
+      if (pinKind && o.properties.kind !== pinKind) return false
+      if (!q) return true
+      return [
+        o.label,
+        o.properties.description,
+        o.properties.location,
+        o.properties.sector,
+        o.properties.countryCode,
+        o.host?.label,
+      ].some((v) => v?.toLowerCase().includes(q))
+    })
+  }, [opportunities, pinKind, pinQuery])
   const opportunityPins = useMemo<OpportunityPin[]>(
     () =>
-      opportunities
+      visibleOpps
         .filter((o) => o.lat !== null && o.lng !== null)
         .map((o) => ({
           id: o.id,
@@ -104,7 +139,7 @@ export default function HomePage() {
           kind: o.properties.kind,
           selected: selectedOpps.includes(o.id) || openOpportunity === o.id,
         })),
-    [opportunities, selectedOpps, openOpportunity]
+    [visibleOpps, selectedOpps, openOpportunity]
   )
   const openOpp = opportunities.find((o) => o.id === openOpportunity) ?? null
   const userId = (session?.user as { id?: string } | undefined)?.id
@@ -420,6 +455,37 @@ export default function HomePage() {
         enrichedCountries={enrichedCountries}
         projection={projection}
       />
+
+      {/* Offering filters */}
+      {opportunities.length > 0 && (
+        <div className="absolute left-4 right-4 top-16 z-30 flex flex-wrap items-center gap-1.5 sm:right-auto sm:max-w-2xl">
+          <input
+            type="search"
+            value={pinQuery}
+            onChange={(e) => setPinQuery(e.target.value)}
+            placeholder="Search offerings"
+            aria-label="Search offerings"
+            className="w-36 rounded-full border border-white/10 bg-brand-surface/80 px-3 py-1 text-xs text-brand-text backdrop-blur placeholder:text-brand-text-muted focus:border-brand-accent focus:outline-none"
+          />
+          {OPPORTUNITY_KINDS.map((k) => (
+            <button
+              key={k}
+              onClick={() => setPinKind(pinKind === k ? null : k)}
+              aria-pressed={pinKind === k}
+              className={`rounded-full border px-2.5 py-1 text-xs backdrop-blur transition ${
+                pinKind === k
+                  ? 'border-brand-accent/60 bg-brand-accent/20 text-brand-accent'
+                  : 'border-white/10 bg-brand-surface/80 text-brand-text-muted hover:text-brand-accent'
+              }`}
+            >
+              {KIND_ICONS[k]} {KIND_LABELS[k]}
+            </button>
+          ))}
+          <span className="px-1 text-xs text-brand-text-muted">
+            {visibleOpps.length} of {opportunities.length}
+          </span>
+        </div>
+      )}
 
       {/* Selected Opportunity — card above the filters */}
       {openOpp && (

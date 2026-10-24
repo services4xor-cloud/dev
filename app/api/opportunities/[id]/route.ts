@@ -91,7 +91,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
   // Empty strings clear optional fields
   const cleared: Record<string, undefined> = {}
-  for (const key of ['price', 'capacity', 'startsOn', 'endsOn', 'demoUrl', 'accessUrl'] as const) {
+  for (const key of [
+    'price',
+    'capacity',
+    'startsOn',
+    'endsOn',
+    'demoUrl',
+    'accessUrl',
+    'contactEmail',
+  ] as const) {
     if (body[key] === '' || body[key] === null) cleared[key] = undefined
   }
   if (cleared.price !== undefined || 'price' in cleared) {

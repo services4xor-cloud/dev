@@ -56,6 +56,45 @@ export async function getUserNode(userId: string) {
   })
 }
 
+/**
+ * Returns the user's graph node, creating or linking it when missing.
+ *
+ * Accounts created before the node hook ran (or whose hook failed) have no
+ * node, which blocked booking and listing. An unlinked node with the user's
+ * email as code is adopted; otherwise a new one is created.
+ *
+ * @param userId - The platform user ID
+ * @returns The user's node, or null if the user does not exist
+ */
+export async function ensureUserNode(userId: string) {
+  const existing = await db.node.findUnique({ where: { userId } })
+  if (existing) return existing
+
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { email: true, name: true },
+  })
+  if (!user) return null
+
+  const byEmail = await db.node.findUnique({
+    where: { type_code: { type: 'USER', code: user.email } },
+  })
+  if (byEmail && !byEmail.userId) {
+    return db.node.update({ where: { id: byEmail.id }, data: { userId } })
+  }
+
+  return db.node.create({
+    data: {
+      type: 'USER',
+      // The email code is taken by another node: fall back to the user id
+      code: byEmail ? `user:${userId}` : user.email,
+      label: user.name ?? 'Explorer',
+      icon: '👤',
+      userId,
+    },
+  })
+}
+
 // ─── Edge operations ─────────────────────────────────────────
 
 /**

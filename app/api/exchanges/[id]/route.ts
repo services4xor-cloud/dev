@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { getUserNode } from '@/lib/graph'
 import { notify } from '@/lib/notifications'
 import { actionEmail, sendEmail } from '@/lib/email'
 
@@ -51,7 +50,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 
   // Verify the current user owns the opportunity (is the host)
-  const userNode = await getUserNode(userId)
   const hostNodeId = edge.to.inEdges[0]?.from.userId
   if (hostNodeId !== userId && role !== 'ADMIN') {
     return NextResponse.json({ error: 'Not your opportunity' }, { status: 403 })

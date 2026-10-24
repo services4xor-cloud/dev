@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import ApplyButton from '@/components/ApplyButton'
+import ContactButton from '@/components/ContactButton'
 import { formatPrice, KIND_LABELS, type OpportunityDTO } from '@/lib/opportunities'
 
 interface OpportunityCardProps {
@@ -71,6 +72,7 @@ export default function OpportunityCard({
           {selected ? '✓ Selected for agent' : '+ Ask agent'}
         </button>
         {!isOwn && <ApplyButton opportunityId={opp.id} label="Book" compact />}
+        {!isOwn && <ContactButton opportunityId={opp.id} compact />}
       </div>
     </div>
   )

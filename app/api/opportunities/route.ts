@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import type { Prisma } from '@prisma/client'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { ensureUserNode } from '@/lib/graph'
 import { notify } from '@/lib/notifications'
 import { parseOpportunityInput, readProps, toDTO, KIND_ICONS } from '@/lib/opportunities'
 import { clientIp, rateLimit } from '@/lib/rate-limit'
@@ -17,7 +18,8 @@ const HOST_INCLUDE = {
 
 // ─── GET /api/opportunities ───────────────────────────────────
 // Published opportunities for the map and feed.
-// ?mine=1   → the signed-in Host's own opportunities (any status, with access links)
+// ?mine=1   → the signed-in Host's own opportunities (any status, with access links);
+//             for Admins also those of providers without a login
 // ?review=1 → Admin only: opportunities waiting for review
 export async function GET(req: NextRequest) {
   const mine = req.nextUrl.searchParams.get('mine') === '1'
@@ -39,7 +41,17 @@ export async function GET(req: NextRequest) {
     const nodes = await db.node.findMany({
       where: {
         type: 'EXPERIENCE',
-        ...(mine ? { inEdges: { some: { relation: 'OFFERS', from: { userId } } } } : {}),
+        // Admins also manage the listings of providers without a login (BeKenya, 4XOR)
+        ...(mine
+          ? {
+              inEdges: {
+                some: {
+                  relation: 'OFFERS',
+                  from: role === 'ADMIN' ? { OR: [{ userId }, { userId: null }] } : { userId },
+                },
+              },
+            }
+          : {}),
         ...(mine || review ? {} : { active: true }),
       },
       include: HOST_INCLUDE,
@@ -91,21 +103,10 @@ export async function POST(req: NextRequest) {
 
   const user = await db.user.findUnique({
     where: { id: userId },
-    select: { name: true, email: true, role: true, node: true },
+    select: { role: true },
   })
-  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 401 })
-
-  const hostNode =
-    user.node ??
-    (await db.node.create({
-      data: {
-        type: 'USER',
-        code: user.email,
-        label: user.name ?? 'Host',
-        icon: '👤',
-        userId,
-      },
-    }))
+  const hostNode = user ? await ensureUserNode(userId) : null
+  if (!user || !hostNode) return NextResponse.json({ error: 'User not found' }, { status: 401 })
 
   if (user.role === 'EXPLORER') {
     await db.user.update({ where: { id: userId }, data: { role: 'HOST' } })

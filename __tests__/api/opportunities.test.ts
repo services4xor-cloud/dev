@@ -10,6 +10,7 @@ jest.mock('@/lib/rate-limit', () => ({
   rateLimit: jest.fn().mockResolvedValue(true),
   clientIp: jest.fn().mockReturnValue('ip'),
 }))
+jest.mock('@/lib/graph', () => ({ ensureUserNode: jest.fn().mockResolvedValue({ id: 'un' }) }))
 jest.mock('@/lib/db', () => ({
   db: {
     node: { findMany: jest.fn(), findUnique: jest.fn(), create: jest.fn(), update: jest.fn() },
@@ -68,6 +69,26 @@ describe('GET /api/opportunities', () => {
     const data = await res.json()
     expect(data).toHaveLength(1)
     expect(JSON.stringify(data)).not.toContain('studio.4xor.de')
+  })
+
+  it("includes provider listings in an admin's own list", async () => {
+    as('a1', 'ADMIN')
+    node.findMany.mockResolvedValue([])
+    await GET(req('/api/opportunities?mine=1'))
+    expect(node.findMany.mock.calls[0][0].where.inEdges.some.from).toEqual({
+      OR: [{ userId: 'a1' }, { userId: null }],
+    })
+  })
+
+  it('never shows the contact email publicly', async () => {
+    node.findMany.mockResolvedValue([
+      {
+        ...listing('PUBLISHED'),
+        properties: { kind: 'SERVICE', status: 'PUBLISHED', contactEmail: 'me@4xor.com' },
+      },
+    ])
+    const data = await (await GET(req('/api/opportunities'))).json()
+    expect(JSON.stringify(data)).not.toContain('me@4xor.com')
   })
 
   it('refuses the review queue to non-admins', async () => {

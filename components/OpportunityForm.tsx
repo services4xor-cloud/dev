@@ -32,6 +32,7 @@ export interface OpportunityFormValues {
   endsOn: string
   demoUrl: string
   accessUrl: string
+  contactEmail: string
 }
 
 export function emptyOpportunityForm(): OpportunityFormValues {
@@ -53,6 +54,7 @@ export function emptyOpportunityForm(): OpportunityFormValues {
     endsOn: '',
     demoUrl: '',
     accessUrl: '',
+    contactEmail: '',
   }
 }
 
@@ -77,6 +79,7 @@ export function formFromOpportunity(o: OpportunityDTO): OpportunityFormValues {
     endsOn: p.endsOn ?? '',
     demoUrl: p.demoUrl ?? '',
     accessUrl: o.accessUrl ?? '',
+    contactEmail: o.contactEmail ?? '',
   }
 }
 
@@ -122,6 +125,7 @@ export default function OpportunityForm({
       endsOn: form.endsOn,
       demoUrl: form.demoUrl,
       accessUrl: form.accessUrl,
+      contactEmail: form.contactEmail,
       ...(form.lat.trim() && form.lng.trim() ? { lat: form.lat, lng: form.lng } : {}),
     }
     try {
@@ -403,6 +407,24 @@ export default function OpportunityForm({
             />
           </div>
         )}
+      </div>
+
+      <div>
+        <label htmlFor="opp-contact" className={label}>
+          Contact email (private)
+        </label>
+        <input
+          id="opp-contact"
+          type="email"
+          value={form.contactEmail}
+          onChange={(e) => set('contactEmail', e.target.value)}
+          placeholder="you@company.com"
+          className={input}
+        />
+        <p className="mt-1 text-xs text-brand-text-muted">
+          Visitors write to you through the listing; this address is never shown. Empty = your
+          account email.
+        </p>
       </div>
 
       <div className="flex flex-wrap items-center justify-end gap-3 pt-2">

@@ -6,7 +6,8 @@
  * ones from non-admin Hosts start IN_REVIEW and appear on the map only after
  * an Admin publishes them. `accessUrl` (e.g. the 4xor Studio login for a
  * booked service) is private: only the Host, Admins and Explorers whose
- * Exchange was accepted ever see it.
+ * Exchange was accepted ever see it. `contactEmail` is private too: contact
+ * messages are relayed by email, the address is never shown.
  */
 import type { Node } from '@prisma/client'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
@@ -57,6 +58,8 @@ export interface OpportunityProps {
   demoUrl?: string
   /** Private access link revealed after an accepted Exchange */
   accessUrl?: string
+  /** Private: where contact messages go. Never shown on the map. */
+  contactEmail?: string
 }
 
 /** Public shape returned by the API and used by the map. */
@@ -72,6 +75,7 @@ export interface OpportunityDTO {
   }
   host: { label: string; icon: string; userId?: string | null } | null
   accessUrl?: string
+  contactEmail?: string
 }
 
 const LIMITS = { title: 120, description: 2000, location: 120, sector: 80, icon: 10, url: 500 }
@@ -98,7 +102,7 @@ export function toDTO(
   host: { label: string; icon: string | null; userId?: string | null } | null,
   opts: { includeAccess?: boolean } = {}
 ): OpportunityDTO {
-  const { accessUrl, ...props } = readProps(node)
+  const { accessUrl, contactEmail, ...props } = readProps(node)
   return {
     id: node.id,
     label: node.label,
@@ -108,6 +112,7 @@ export function toDTO(
     properties: props,
     host: host ? { label: host.label, icon: host.icon ?? '🏢', userId: host.userId } : null,
     ...(opts.includeAccess && accessUrl ? { accessUrl } : {}),
+    ...(opts.includeAccess && contactEmail ? { contactEmail } : {}),
   }
 }
 
@@ -226,6 +231,15 @@ export function parseOpportunityInput(
     const u = httpsUrl(body[key])
     if (u === null) return { error: `${key} must be an https:// link` }
     if (u) out.props[key] = u
+  }
+
+  if (body.contactEmail !== undefined && body.contactEmail !== null && body.contactEmail !== '') {
+    const email =
+      typeof body.contactEmail === 'string' ? body.contactEmail.trim().toLowerCase() : ''
+    if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return { error: 'contactEmail must be a valid email' }
+    }
+    out.props.contactEmail = email
   }
 
   return { data: out }

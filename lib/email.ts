@@ -10,19 +10,28 @@ export async function sendEmail({
   to,
   subject,
   html,
+  replyTo,
 }: {
-  to: string
+  to: string | string[]
   subject: string
   html: string
+  /** Where the recipient's "Reply" goes, e.g. the visitor who wrote */
+  replyTo?: string
 }): Promise<void> {
   const key = process.env.RESEND_API_KEY
   if (!key) {
     if (process.env.NODE_ENV === 'production') throw new Error('RESEND_API_KEY not configured')
     // eslint-disable-next-line no-console
-    console.info(`[email:dev] to=${to} subject="${subject}"\n${html}`)
+    console.info(`[email:dev] to=${to} replyTo=${replyTo ?? '-'} subject="${subject}"\n${html}`)
     return
   }
-  const { error } = await new Resend(key).emails.send({ from: FROM, to, subject, html })
+  const { error } = await new Resend(key).emails.send({
+    from: FROM,
+    to,
+    subject,
+    html,
+    ...(replyTo ? { reply_to: replyTo } : {}),
+  })
   if (error) throw new Error(`Email failed: ${error.message}`)
 }
 
@@ -33,7 +42,7 @@ function escapeHtml(text: string): string {
 /** Simple branded layout with one call-to-action button. Text arguments are plain text. */
 export function actionEmail(title: string, body: string, ctaLabel: string, url: string): string {
   title = escapeHtml(title)
-  body = escapeHtml(body)
+  body = escapeHtml(body).replace(/\n/g, '<br>')
   ctaLabel = escapeHtml(ctaLabel)
   url = escapeHtml(url)
   return `

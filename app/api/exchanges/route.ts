@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { getUserNode } from '@/lib/graph'
+import { ensureUserNode } from '@/lib/graph'
 import { notify } from '@/lib/notifications'
 import { readProps } from '@/lib/opportunities'
 import { actionEmail, sendEmail } from '@/lib/email'
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const role = searchParams.get('role') ?? 'explorer'
 
-  const userNode = await getUserNode(userId)
+  const userNode = await ensureUserNode(userId)
   if (!userNode) {
     return NextResponse.json([])
   }
@@ -155,9 +155,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'You cannot book your own opportunity' }, { status: 400 })
   }
 
-  const userNode = await getUserNode(userId)
+  const userNode = await ensureUserNode(userId)
   if (!userNode) {
-    return NextResponse.json({ error: 'Complete your profile first' }, { status: 400 })
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   // Check for existing Exchange (fast path). The edge.create below is

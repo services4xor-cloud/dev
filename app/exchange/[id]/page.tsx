@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import ApplyButton from '@/components/ApplyButton'
+import ContactButton from '@/components/ContactButton'
 import { formatPrice, KIND_LABELS, readProps } from '@/lib/opportunities'
 
 interface PageProps {
@@ -132,8 +133,9 @@ export default async function ExchangePage({ params }: PageProps) {
 
       {/* Apply button (only for EXPERIENCE nodes) */}
       {node.type === 'EXPERIENCE' && (
-        <div className="mb-8">
+        <div className="mb-8 flex flex-wrap items-start gap-3">
           <ApplyButton opportunityId={node.id} label={bookLabel} />
+          <ContactButton opportunityId={node.id} />
         </div>
       )}
 
