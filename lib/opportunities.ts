@@ -266,3 +266,21 @@ export function formatPrice(
     ? `${amount} ${PRICE_UNIT_LABELS[p.priceUnit]}`
     : amount
 }
+
+/** The 4XOR company site, where 4xor listings send visitors on to the AI social media app */
+const COMPANY_SITE_HOSTS = ['4xor.de', 'www.4xor.de', '4xor.com', 'www.4xor.com']
+
+/** Label for a listing's project link: 4xor links say where they lead. */
+export function projectLinkLabel(demoUrl: string): string {
+  try {
+    const url = new URL(demoUrl)
+    if (COMPANY_SITE_HOSTS.includes(url.hostname)) {
+      return url.pathname.includes('social-media')
+        ? 'Open the AI social media app on 4xor ↗'
+        : 'More on 4xor ↗'
+    }
+  } catch {
+    // Not an absolute URL: fall back to the generic label
+  }
+  return 'Project page ↗'
+}

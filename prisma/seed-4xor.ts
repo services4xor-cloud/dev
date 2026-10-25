@@ -106,7 +106,7 @@ const LISTINGS: {
         'Your channels stay active every week while your team works on customers. Posts are planned, written and scheduled for you, and nothing goes out until you approve it. After booking you get your own 4xor Studio workspace to see and approve every post.',
       sector: 'Technology and IT',
       priceUnit: 'MONTH',
-      demoUrl: 'https://4xor.com/#4xor-social-media-automation',
+      demoUrl: 'https://www.4xor.de/industries/social-media/',
       accessUrl: 'https://studio.4xor.de/',
     },
   },
@@ -123,7 +123,7 @@ const LISTINGS: {
       description:
         'New leads get an answer in minutes, bookings land in your calendar, emails, reports and posts go out on time, and your tools pass data to each other without copy and paste. Your team approves what matters and spends the saved hours on customers. Start with one process and add the next once it pays off. We set it up, run it and keep it working.',
       sector: 'Technology and IT',
-      demoUrl: 'https://4xor.com/#4xor-workflow-automation',
+      demoUrl: 'https://www.4xor.de/',
     },
   },
 ]

@@ -9,13 +9,7 @@ import ComparePanel from '@/components/map/ComparePanel'
 import KindDot from '@/components/map/KindDot'
 import OpportunityCard from '@/components/OpportunityCard'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
-import {
-  formatPrice,
-  KIND_LABELS,
-  OPPORTUNITY_KINDS,
-  type OpportunityDTO,
-  type OpportunityKind,
-} from '@/lib/opportunities'
+import { formatPrice, KIND_LABELS, type OpportunityDTO } from '@/lib/opportunities'
 import { getSelected, SELECTION_EVENT, setSelected, toggleSelected } from '@/lib/selection'
 import { setAgentCountries } from '@/lib/agent-context'
 import { bridgeCountries, compareCountries, MAX_COMPARE } from '@/lib/compare'
@@ -53,7 +47,6 @@ export default function MapExplorer() {
   const [openId, setOpenId] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [query, setQuery] = useState('')
-  const [kind, setKind] = useState<OpportunityKind | null>(null)
   const [projection, setProjection] = useState<MapProjectionMode>('mercator')
   const [flyTo, setFlyTo] = useState<{
     lng: number
@@ -111,16 +104,11 @@ export default function MapExplorer() {
     if (offerings) syncUrl(countries, open)
   }, [offerings, countries, open])
 
-  // ── Filtering: kind + free text; a selected country narrows the list ──
-  const kindsPresent = useMemo(
-    () => OPPORTUNITY_KINDS.filter((k) => all.some((o) => o.properties.kind === k)),
-    [all]
-  )
+  // ── Filtering: free text; a selected country narrows the list ──
   const q = query.trim().toLowerCase()
   const filtered = useMemo(
     () =>
       all.filter((o) => {
-        if (kind && o.properties.kind !== kind) return false
         if (!q) return true
         const p = o.properties
         const countryName = p.countryCode ? COUNTRY.get(p.countryCode)?.name : ''
@@ -128,7 +116,7 @@ export default function MapExplorer() {
           (v) => v?.toLowerCase().includes(q)
         )
       }),
-    [all, kind, q]
+    [all, q]
   )
   const countryMatches = useMemo(
     () =>
@@ -243,6 +231,37 @@ export default function MapExplorer() {
 
   const selectedCount = selectedIds.length
 
+  // Search: top of the panel, and on phones right in the collapsed sheet
+  const searchField = (
+    <label className="relative block">
+      <span className="sr-only">Search countries and offerings</span>
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 20 20"
+        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-text-muted"
+      >
+        <path
+          d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.45 4.39l3.58 3.58-1.06 1.06-3.58-3.58A7 7 0 0 1 2 9Z"
+          fill="currentColor"
+        />
+      </svg>
+      <input
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onFocus={() => setSheetOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && countryMatches[0] && !filtered.length) {
+            pickCountry(countryMatches[0].code)
+            setQuery('')
+          }
+        }}
+        placeholder="Search a country or an offering"
+        className="input pl-9"
+      />
+    </label>
+  )
+
   // ── Panel body (shared by desktop panel and phone sheet) ──
   const list = (
     <OfferingList
@@ -254,84 +273,35 @@ export default function MapExplorer() {
       onOpen={openOffering}
       onClearFilters={() => {
         setQuery('')
-        setKind(null)
       }}
-      filtered={!!(q || kind)}
+      filtered={!!q}
     />
   )
 
-  const panel = (
-    <>
-      <div className="space-y-3 border-b border-brand-line p-4">
-        <label className="relative block">
-          <span className="sr-only">Search countries and offerings</span>
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 20 20"
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-text-muted"
-          >
-            <path
-              d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.45 4.39l3.58 3.58-1.06 1.06-3.58-3.58A7 7 0 0 1 2 9Z"
-              fill="currentColor"
-            />
-          </svg>
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => setSheetOpen(true)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && countryMatches[0] && !filtered.length) {
-                pickCountry(countryMatches[0].code)
+  const panelHead = (
+    <div className="space-y-3 border-b border-brand-line p-4">
+      {searchField}
+      {countryMatches.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {countryMatches.map((c) => (
+            <button
+              key={c.code}
+              onClick={() => {
+                pickCountry(c.code)
                 setQuery('')
-              }
-            }}
-            placeholder="Search a country or an offering"
-            className="input pl-9"
-          />
-        </label>
-        {countryMatches.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {countryMatches.map((c) => (
-              <button
-                key={c.code}
-                onClick={() => {
-                  pickCountry(c.code)
-                  setQuery('')
-                }}
-                className="rounded-md border border-brand-line bg-brand-surface-2 px-2.5 py-1 text-sm text-brand-text hover:border-brand-accent"
-              >
-                {c.flag} {c.name}
-              </button>
-            ))}
-          </div>
-        )}
-        {kindsPresent.length > 1 && (
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Type of offering">
-            {[null, ...kindsPresent].map((k) => {
-              const n = k ? all.filter((o) => o.properties.kind === k).length : all.length
-              const on = kind === k
-              return (
-                <button
-                  key={k ?? 'all'}
-                  onClick={() => setKind(k)}
-                  aria-pressed={on}
-                  className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[0.82rem] transition ${
-                    on
-                      ? 'border-brand-accent bg-brand-accent/15 text-brand-text'
-                      : 'border-brand-line text-brand-text-muted hover:text-brand-text'
-                  }`}
-                >
-                  {k && <KindDot kind={k} />}
-                  {k ? `${KIND_LABELS[k]}s` : 'All'}
-                  <span className="text-brand-text-muted">{n}</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
-      </div>
+              }}
+              className="rounded-md border border-brand-line bg-brand-surface-2 px-2.5 py-1 text-sm text-brand-text hover:border-brand-accent"
+            >
+              {c.flag} {c.name}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 
+  const panelBody = (
+    <>
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4">
         {comparison ? (
           <ComparePanel
@@ -395,6 +365,13 @@ export default function MapExplorer() {
           </button>
         </div>
       )}
+    </>
+  )
+
+  const panel = (
+    <>
+      {panelHead}
+      {panelBody}
     </>
   )
 
@@ -467,7 +444,14 @@ export default function MapExplorer() {
         >
           <span className="h-1 w-10 rounded-full bg-white/25" />
         </button>
-        {!sheetOpen ? (
+        {/* Collapsed with nothing picked: the search itself, so it is one tap away. It stays
+            the same element when the sheet opens, so the keyboard and typed text survive. */}
+        {!open && (sheetOpen || !countries.length) ? (
+          <>
+            {panelHead}
+            {sheetOpen && panelBody}
+          </>
+        ) : !sheetOpen ? (
           <button
             onClick={() => setSheetOpen(true)}
             className="flex items-center gap-3 px-4 pb-4 pt-1 text-left"
@@ -496,10 +480,8 @@ export default function MapExplorer() {
             </span>
             <span className="btn btn-sm">Open</span>
           </button>
-        ) : card ? (
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{card}</div>
         ) : (
-          panel
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{card}</div>
         )}
       </section>
     </div>

@@ -5,7 +5,12 @@ import ApplyButton from '@/components/ApplyButton'
 import ContactButton from '@/components/ContactButton'
 import KindDot from '@/components/map/KindDot'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
-import { formatPrice, KIND_LABELS, type OpportunityDTO } from '@/lib/opportunities'
+import {
+  formatPrice,
+  KIND_LABELS,
+  projectLinkLabel,
+  type OpportunityDTO,
+} from '@/lib/opportunities'
 
 interface OpportunityCardProps {
   opp: OpportunityDTO
@@ -104,7 +109,7 @@ export default function OpportunityCard({
               rel="noopener noreferrer"
               className="font-medium text-brand-accent hover:underline"
             >
-              Project page ↗
+              {projectLinkLabel(p.demoUrl)}
             </a>
           )}
           {opp.contactEmail && (

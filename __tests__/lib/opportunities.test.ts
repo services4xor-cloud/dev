@@ -1,7 +1,13 @@
 /**
  * Tests for lib/opportunities.ts
  */
-import { formatPrice, parseOpportunityInput, readProps, toDTO } from '@/lib/opportunities'
+import {
+  formatPrice,
+  parseOpportunityInput,
+  projectLinkLabel,
+  readProps,
+  toDTO,
+} from '@/lib/opportunities'
 
 const base = { title: 'Safari', description: 'Five days', kind: 'JOURNEY', countryCode: 'ke' }
 
@@ -101,5 +107,18 @@ describe('contactEmail', () => {
     expect(toDTO(n, null, { includeAccess: true }).contactEmail).toBe('me@4xor.com')
     const pub = { ...n, properties: { contactEmail: 'me@4xor.com', contactPublic: true } }
     expect(toDTO(pub, null).contactEmail).toBe('me@4xor.com')
+  })
+})
+
+describe('projectLinkLabel', () => {
+  it('names the AI social media app for the 4xor social media page', () => {
+    expect(projectLinkLabel('https://www.4xor.de/industries/social-media/')).toBe(
+      'Open the AI social media app on 4xor ↗'
+    )
+    expect(projectLinkLabel('https://www.4xor.de/')).toBe('More on 4xor ↗')
+  })
+
+  it('keeps the generic label elsewhere', () => {
+    expect(projectLinkLabel('https://bekenya.com/')).toBe('Project page ↗')
   })
 })
