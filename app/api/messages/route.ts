@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { sendDirectMessage } from '@/lib/conversations'
 import { notify } from '@/lib/notifications'
 
 // GET /api/messages — list user's conversations with last message preview
@@ -70,49 +71,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Recipient not found' }, { status: 404 })
   }
 
-  const now = new Date()
-
-  // Use transaction to prevent duplicate conversation creation on concurrent requests
-  const { conversationId, message: msg } = await db.$transaction(async (tx) => {
-    const existing = await tx.conversation.findFirst({
-      where: {
-        AND: [
-          { participants: { some: { id: userId } } },
-          { participants: { some: { id: recipientId } } },
-        ],
-      },
-      select: { id: true },
-    })
-
-    let convId: string
-    if (existing) {
-      convId = existing.id
-    } else {
-      const conv = await tx.conversation.create({
-        data: {
-          participants: { connect: [{ id: userId }, { id: recipientId }] },
-          lastMessageAt: now,
-        },
-        select: { id: true },
-      })
-      convId = conv.id
-    }
-
-    const newMessage = await tx.message.create({
-      data: {
-        conversationId: convId,
-        senderId: userId,
-        content: content.trim(),
-      },
-    })
-
-    await tx.conversation.update({
-      where: { id: convId },
-      data: { lastMessageAt: now },
-    })
-
-    return { conversationId: convId, message: newMessage }
-  })
+  const { conversationId, message: msg } = await sendDirectMessage(
+    userId,
+    recipientId,
+    content.trim()
+  )
 
   // Notify the recipient
   const sender = await db.user.findUnique({ where: { id: userId }, select: { name: true } })
