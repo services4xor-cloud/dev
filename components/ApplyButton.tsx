@@ -51,19 +51,30 @@ export default function ApplyButton({
         return
       }
       if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error ?? 'Failed to engage')
+        // A gateway error can come back as HTML, so don't trust the body to be JSON
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error ?? 'The request could not be sent. Try again.')
       }
       setState('done')
     } catch (e) {
-      setErrorMsg(e instanceof Error ? e.message : 'Something went wrong')
+      // fetch itself throws a TypeError when the phone is offline
+      setErrorMsg(
+        e instanceof TypeError
+          ? 'No connection. Check your internet and send again.'
+          : e instanceof Error
+            ? e.message
+            : 'Something went wrong'
+      )
       setState('error')
     }
   }
 
   if (state === 'done') {
     return (
-      <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
+      <div
+        role="status"
+        className="w-full rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400"
+      >
         Request sent. The host will confirm it, and you can follow it under{' '}
         <a href="/bookings" className="underline">
           My bookings
@@ -75,7 +86,7 @@ export default function ApplyButton({
 
   if (state === 'already') {
     return (
-      <div className="rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-accent">
+      <div className="w-full rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-accent">
         You already booked this. See{' '}
         <a href="/bookings" className="underline">
           My bookings
@@ -87,7 +98,7 @@ export default function ApplyButton({
 
   if (state === 'form' || state === 'sending' || state === 'error') {
     return (
-      <div className="space-y-3 rounded-lg border border-white/10 bg-brand-surface p-4">
+      <div className="w-full space-y-3 rounded-lg border border-white/10 bg-brand-surface p-4">
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -96,7 +107,11 @@ export default function ApplyButton({
           rows={3}
           className="w-full rounded-lg border border-white/10 bg-brand-bg px-3 py-2 text-sm text-brand-text placeholder-brand-text-muted outline-none focus:border-brand-accent/40"
         />
-        {errorMsg && <p className="text-xs text-red-400">{errorMsg}</p>}
+        {errorMsg && (
+          <p role="alert" className="text-xs text-red-400">
+            {errorMsg}
+          </p>
+        )}
         <div className="flex items-center gap-2">
           <button
             onClick={handleSubmit}

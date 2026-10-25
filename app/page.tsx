@@ -519,12 +519,15 @@ export default function HomePage() {
             >
               ×
             </button>
-            <OpportunityCard
-              opp={openOpp}
-              selected={selectedOpps.includes(openOpp.id)}
-              onToggleSelect={(id) => setSelectedOpps(toggleSelected(id))}
-              isOwn={!!userId && openOpp.host?.userId === userId}
-            />
+            {/* Booking and contact forms grow the card; scroll inside it instead of off-screen */}
+            <div className="max-h-[calc(100dvh-8.5rem)] overflow-y-auto overscroll-contain rounded-xl sm:max-h-[calc(100dvh-6rem)]">
+              <OpportunityCard
+                opp={openOpp}
+                selected={selectedOpps.includes(openOpp.id)}
+                onToggleSelect={(id) => setSelectedOpps(toggleSelected(id))}
+                isOwn={!!userId && openOpp.host?.userId === userId}
+              />
+            </div>
           </div>
         </div>
       )}

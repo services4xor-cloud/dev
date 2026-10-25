@@ -70,6 +70,7 @@ const config: Config = {
           'surface-2': 'rgb(var(--color-surface-2-rgb) / <alpha-value>)',
           'surface-elevated': 'rgb(var(--color-surface-elevated-rgb) / <alpha-value>)',
           text: 'rgb(var(--color-text-rgb) / <alpha-value>)',
+          'text-muted': 'rgb(var(--color-text-muted-rgb) / <alpha-value>)',
           success: 'rgb(var(--color-success-rgb) / <alpha-value>)',
         },
       },

@@ -11,6 +11,20 @@
   --color-surface: #111118;
   --color-text: #e8e6e3;
   --color-text-muted: #9ca3af;
+
+  /* Channels for the brand-* Tailwind colors (tailwind.config.ts), so bg-brand-surface,
+     text-brand-accent/70 etc. resolve. Without them every brand color is transparent. */
+  --color-primary-rgb: 92 10 20;
+  --color-primary-light-rgb: 122 16 32;
+  --color-accent-rgb: 201 162 39;
+  --color-accent-light-rgb: 212 175 55;
+  --color-bg-rgb: 10 10 15;
+  --color-surface-rgb: 17 17 24;
+  --color-surface-2-rgb: 26 26 37;
+  --color-surface-elevated-rgb: 26 10 15;
+  --color-text-rgb: 232 230 227;
+  --color-text-muted-rgb: 156 163 175;
+  --color-success-rgb: 0 102 0;
 }
 
 body {
