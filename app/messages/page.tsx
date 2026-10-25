@@ -175,6 +175,14 @@ function MessagesInner() {
     }
   }, [status, router])
 
+  // Handle ?c= query param — open a conversation by id, e.g. after contacting a provider
+  useEffect(() => {
+    const convId = searchParams.get('c')
+    if (!convId || !conversations.some((c) => c.id === convId)) return
+    setActiveConvId(convId)
+    router.replace('/messages', { scroll: false })
+  }, [searchParams, conversations, router])
+
   // Handle ?to= query param — auto-open or create conversation with recipient
   useEffect(() => {
     const toUserId = searchParams.get('to')

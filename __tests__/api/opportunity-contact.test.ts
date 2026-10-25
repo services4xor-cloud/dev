@@ -10,6 +10,10 @@ jest.mock('@/lib/email', () => ({
   actionEmail: jest.fn().mockReturnValue('<p/>'),
 }))
 jest.mock('@/lib/rate-limit', () => ({ rateLimit: jest.fn().mockResolvedValue(true) }))
+jest.mock('@/lib/conversations', () => ({
+  sendDirectMessage: jest.fn().mockResolvedValue({ conversationId: 'conv-1', message: {} }),
+}))
+jest.mock('@/lib/notifications', () => ({ notify: jest.fn().mockResolvedValue(undefined) }))
 jest.mock('@/lib/db', () => ({
   db: {
     node: { findUnique: jest.fn() },
@@ -20,6 +24,7 @@ jest.mock('@/lib/db', () => ({
 import { getServerSession } from 'next-auth'
 import { db } from '@/lib/db'
 import { sendEmail } from '@/lib/email'
+import { sendDirectMessage } from '@/lib/conversations'
 import { POST } from '@/app/api/opportunities/[id]/contact/route'
 
 const session = getServerSession as jest.Mock
@@ -32,14 +37,26 @@ const post = (body: unknown) =>
     params
   )
 
-function listing(props: Record<string, unknown>, hostEmail: string | null = null) {
+function listing(
+  props: Record<string, unknown>,
+  hostEmail: string | null = null,
+  hostUserId: string | null = hostEmail ? 'host-1' : null
+) {
   return {
     id: 'opp-1',
     type: 'EXPERIENCE',
     label: 'Studio',
     active: true,
     properties: { kind: 'SERVICE', status: 'PUBLISHED', ...props },
-    inEdges: [{ from: { label: 'Host', user: hostEmail ? { email: hostEmail } : null } }],
+    inEdges: [
+      {
+        from: {
+          label: 'Host',
+          userId: hostUserId,
+          user: hostEmail ? { email: hostEmail } : null,
+        },
+      },
+    ],
   }
 }
 
@@ -47,7 +64,7 @@ beforeEach(() => {
   jest.clearAllMocks()
   session.mockResolvedValue({ user: { id: 'u1' } })
   user.findUnique.mockResolvedValue({ name: 'Ana', email: 'ana@x.com' })
-  user.findMany.mockResolvedValue([{ email: 'admin@4xor.com' }])
+  user.findMany.mockResolvedValue([{ id: 'admin-1', email: 'admin@4xor.com' }])
 })
 
 describe('POST /api/opportunities/[id]/contact', () => {
@@ -78,5 +95,34 @@ describe('POST /api/opportunities/[id]/contact', () => {
     node.findUnique.mockResolvedValue(listing({}))
     await post({ message: 'Hello there' })
     expect((sendEmail as jest.Mock).mock.calls[1][0].to).toEqual(['admin@4xor.com'])
+  })
+
+  it('keeps the message in the inbox when the email bounces', async () => {
+    node.findUnique.mockResolvedValue(listing({ contactEmail: 'sales@4xor.com' }))
+    ;(sendEmail as jest.Mock).mockRejectedValueOnce(new Error('domain not verified'))
+    const res = await post({ message: 'Hello there' })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ ok: true, conversationId: 'conv-1' })
+    expect(sendDirectMessage).toHaveBeenCalledWith(
+      'u1',
+      'admin-1',
+      expect.stringContaining('Hello there')
+    )
+  })
+
+  it('writes to the host account in the inbox', async () => {
+    node.findUnique.mockResolvedValue(listing({}, 'host@x.com'))
+    await post({ message: 'Hello there' })
+    expect(sendDirectMessage).toHaveBeenCalledWith(
+      'u1',
+      'host-1',
+      expect.stringContaining('About Studio')
+    )
+  })
+
+  it('fails only when neither inbox nor email can take it', async () => {
+    node.findUnique.mockResolvedValue(listing({}))
+    user.findMany.mockResolvedValue([])
+    expect((await post({ message: 'Hello there' })).status).toBe(503)
   })
 })
