@@ -7,7 +7,7 @@ import { formatPrice, KIND_LABELS, readProps, toDTO } from '@/lib/opportunities'
 export const metadata: Metadata = {
   title: { absolute: '4XOR Software — platforms, agents and automations' },
   description:
-    '4XOR Software builds map platforms with AI agents, social media automation and n8n workflows. See BeKenya and 4xor Studio as live examples.',
+    '4XOR Software takes routine work off your team: enquiries answered, bookings handled, social media posted. See BeKenya and 4xor Studio as live examples.',
 }
 
 export const dynamic = 'force-dynamic'
@@ -117,9 +117,9 @@ export default async function FourXorPage() {
             </p>
             <h2 className="mt-2 text-2xl font-bold">4xor Studio</h2>
             <p className="mt-3 flex-1 text-sm leading-relaxed text-brand-text-muted">
-              Our planner built on OpenClaw and n8n writes and schedules posts for your channels.
-              You approve each post before it goes out. Book it on the map, and once we confirm,
-              your Studio access appears under My bookings.
+              Your channels keep posting every week without taking your time. Posts are planned,
+              written and scheduled for you, and nothing goes out until you approve it. Book it on
+              the map, and once we confirm, your Studio access appears under My bookings.
             </p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm">
               {studio ? (

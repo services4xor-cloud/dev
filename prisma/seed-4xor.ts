@@ -41,7 +41,7 @@ const LISTINGS: {
   {
     code: 'bekenya-21-days-safari-culture-coast',
     provider: BEKENYA,
-    label: '21 Days Kenya: Safari, Culture & Coast',
+    label: '21 days in Kenya: wildlife, culture and the coast in one trip',
     icon: '🧭',
     lat: -1.29,
     lng: 36.82,
@@ -50,7 +50,7 @@ const LISTINGS: {
       countryCode: 'KE',
       location: 'Maasai Mara · Nakuru & Naivasha · Mombasa · Watamu · Tsavo East & Marafa',
       description:
-        '21 days / 20 nights across Kenya with local guides. Days 3–7 Maasai Mara, Lake Nakuru and Naivasha; days 9–10 Mombasa and Fort Jesus; days 11–13 Watamu; days 14–19 Tsavo East and Marafa Canyon.\n\nTours included, hotels on top. €1,350 per person from January to June, €1,620 per person from July to December. Operated by BeKenya Family Limited, Kenya; part of every trip goes to community projects.',
+        'See the Big Five in the Maasai Mara, the lakes of Nakuru and Naivasha, old Mombasa, the beaches of Watamu and the red Marafa Canyon, all in one trip, with local guides who take care of the planning. You come home knowing Kenya, not just its postcards, and part of every trip goes to community projects.\n\n21 days / 20 nights. Days 3–7 Maasai Mara, Lake Nakuru and Naivasha; days 9–10 Mombasa and Fort Jesus; days 11–13 Watamu; days 14–19 Tsavo East and Marafa Canyon. Tours included, hotels on top. €1,350 per person from January to June, €1,620 per person from July to December. Operated by BeKenya Family Limited, Kenya.',
       sector: 'Tourism and Hospitality',
       price: 1350,
       currency: 'EUR',
@@ -61,7 +61,7 @@ const LISTINGS: {
   {
     code: 'bekenya-masai-mara-safari',
     provider: BEKENYA,
-    label: 'Masai Mara Safari Adventure',
+    label: 'Masai Mara safari: the Big Five and the Great Migration',
     icon: '🦓',
     lat: -1.5,
     lng: 35.15,
@@ -70,7 +70,7 @@ const LISTINGS: {
       countryCode: 'KE',
       location: 'Maasai Mara',
       description:
-        'Safari in the Maasai Mara with expert local guides: the Big Five and the Great Migration. Catering and logistics handled by BeKenya.',
+        'Get close to lions, elephants and the Great Migration with local guides who know where to look. Meals and logistics are taken care of, so all you do is enjoy the safari.',
       sector: 'Tourism and Hospitality',
       demoUrl: 'https://bekenya.com/',
     },
@@ -78,7 +78,7 @@ const LISTINGS: {
   {
     code: 'bekenya-watamu-beach',
     provider: BEKENYA,
-    label: 'Watamu Beach Paradise',
+    label: 'Watamu: white sand and coral reefs on the Indian Ocean',
     icon: '🏝️',
     lat: -3.35,
     lng: 40.02,
@@ -87,7 +87,7 @@ const LISTINGS: {
       countryCode: 'KE',
       location: 'Watamu, Indian Ocean coast',
       description:
-        'White sand, coral reefs and the Indian Ocean in Watamu, with a local marine guide and driver.',
+        'Relaxed days on white sand, swimming over coral reefs in clear water. A local marine guide shows you the reef, and a driver takes care of getting around.',
       sector: 'Tourism and Hospitality',
       demoUrl: 'https://bekenya.com/',
     },
@@ -95,7 +95,7 @@ const LISTINGS: {
   {
     code: '4xor-social-media-automation',
     provider: FOURXOR,
-    label: 'Social media automation (4xor Studio)',
+    label: 'Social media that keeps posting, without your time',
     icon: '📣',
     ...AESCH,
     properties: {
@@ -103,7 +103,7 @@ const LISTINGS: {
       countryCode: 'CH',
       location: 'Aesch, Switzerland · works online worldwide',
       description:
-        'We plan, write and schedule your social media posts with 4xor Studio, our planner built on OpenClaw and n8n. You approve posts before they go out. After booking you get access to your own Studio workspace.',
+        'Your channels stay active every week while your team works on customers. Posts are planned, written and scheduled for you, and nothing goes out until you approve it. After booking you get your own 4xor Studio workspace to see and approve every post.',
       sector: 'Technology and IT',
       priceUnit: 'MONTH',
       demoUrl: 'https://4xor.com/#4xor-social-media-automation',
@@ -113,7 +113,7 @@ const LISTINGS: {
   {
     code: '4xor-workflow-automation',
     provider: FOURXOR,
-    label: 'Agent automation: OpenClaw router + n8n workflows',
+    label: 'Hours back every week: routine work that runs by itself',
     icon: '⚙️',
     ...AESCH,
     properties: {
@@ -121,7 +121,7 @@ const LISTINGS: {
       countryCode: 'CH',
       location: 'Aesch, Switzerland · works online worldwide',
       description:
-        'An OpenClaw agent router hands each request to the right n8n workflow: lead handling, bookings, emails, reports, social posts and connections between your tools. Or one targeted n8n workflow, like our social media automation. We set it up, host it and keep it running.',
+        'New leads get an answer in minutes, bookings land in your calendar, emails, reports and posts go out on time, and your tools pass data to each other without copy and paste. Your team approves what matters and spends the saved hours on customers. Start with one process and add the next once it pays off. We set it up, run it and keep it working.',
       sector: 'Technology and IT',
       demoUrl: 'https://4xor.com/#4xor-workflow-automation',
     },

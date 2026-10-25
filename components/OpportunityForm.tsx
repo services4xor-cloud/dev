@@ -200,7 +200,7 @@ export default function OpportunityForm({
           rows={5}
           value={form.description}
           onChange={(e) => set('description', e.target.value)}
-          placeholder="What people get, what is included, who it is for…"
+          placeholder="Start with what people get out of it, then what is included and who it is for…"
           className={input}
         />
       </div>
