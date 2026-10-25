@@ -9,6 +9,7 @@
 import type Anthropic from '@anthropic-ai/sdk'
 import { createAnthropicClient } from '@/lib/anthropic-client'
 import type { CountryInsights } from '@/lib/country-insights'
+import { compareCountries } from '@/lib/compare'
 import { formatCompact } from '@/lib/format'
 
 const anthropic = createAnthropicClient()
@@ -89,10 +90,22 @@ export function buildPersonaPrompt({
     p.push(
       `\n## Countries the Explorer is looking at (live public data)\n${countries.map(countryBlock).join('\n\n')}`
     )
-    if (countries.length > 1)
-      p.push(
-        `Compare these countries where it helps: what connects them (language, currency, trade, diaspora) and where they differ.`
-      )
+    const cmp = countries.length > 1 ? compareCountries(countries.map((c) => c.code)) : null
+    if (cmp) {
+      const name = (code: string) => countries.find((c) => c.code === code)?.name ?? code
+      const lines = [
+        `\n## Comparison`,
+        ...cmp.shared.map(
+          (s) => `- Shared ${s.kind}: ${s.label} (${s.codes.map(name).join(', ')})`
+        ),
+        ...cmp.routes.map(
+          (r) =>
+            `- ${name(r.from)} to ${name(r.to)}: ${r.distance}, ${r.flight} flight, time difference ${r.hoursAhead}h`
+        ),
+        `The Explorer is comparing these countries: explain what connects them (language, currency, trade, diaspora) and where they differ, and what that means for doing business between them.`,
+      ]
+      p.push(lines.join('\n'))
+    }
   }
 
   if (selected.length) {

@@ -40,12 +40,14 @@ const PLAIN_STYLE: StyleSpecification = {
 
 interface MapCanvasProps {
   pins: MapPin[]
-  selectedCountry: string | null
+  /** Selected countries (gold). Two or more are compared and joined by arcs. */
+  selectedCountries: string[]
   /** Countries to highlight (e.g. same language), weight 0..1 */
   highlight: Record<string, number>
   /** Countries that have offerings: a faint tint so the map shows where things are */
   activeCountries: Set<string>
-  onCountryClick: (code: string, name: string) => void
+  /** `additive`: shift/ctrl/cmd was held, to add the country to a comparison */
+  onCountryClick: (code: string, name: string, additive: boolean) => void
   onPinClick: (id: string) => void
   onBackgroundClick?: () => void
   projection: MapProjectionMode
@@ -64,7 +66,7 @@ function savedViewport() {
 
 export default function MapCanvas({
   pins,
-  selectedCountry,
+  selectedCountries,
   highlight,
   activeCountries,
   onCountryClick,
@@ -139,31 +141,39 @@ export default function MapCanvas({
     }
   }, [pins])
 
-  // ── Connection arcs: selected country → highlighted countries ──
+  // ── Connection arcs: between compared countries, or selected country → highlighted ──
   const arcs = useMemo(() => {
-    const from = selectedCountry ? CAPITAL.get(selectedCountry) : null
-    if (!from) return null
-    const targets = Object.entries(highlight)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 24)
-    return {
-      type: 'FeatureCollection' as const,
-      features: targets.flatMap(([code, w]) => {
-        const to = CAPITAL.get(code)
-        if (!to) return []
-        return [
-          {
-            type: 'Feature' as const,
-            geometry: {
-              type: 'LineString' as const,
-              coordinates: greatCircleArc(from.lat, from.lng, to.lat, to.lng),
-            },
-            properties: { w },
+    const arc = (a: string, b: string, w: number, compare: boolean) => {
+      const from = CAPITAL.get(a)
+      const to = CAPITAL.get(b)
+      if (!from || !to) return []
+      return [
+        {
+          type: 'Feature' as const,
+          geometry: {
+            type: 'LineString' as const,
+            coordinates: greatCircleArc(from.lat, from.lng, to.lat, to.lng),
           },
-        ]
-      }),
+          properties: { w, compare: compare ? 1 : 0 },
+        },
+      ]
     }
-  }, [selectedCountry, highlight])
+    const features =
+      selectedCountries.length >= 2
+        ? selectedCountries.flatMap((a, i) =>
+            selectedCountries
+              .slice(i + 1)
+              .map((b) => arc(a, b, 1, true))
+              .flat()
+          )
+        : selectedCountries[0]
+          ? Object.entries(highlight)
+              .sort((x, y) => y[1] - x[1])
+              .slice(0, 24)
+              .flatMap(([code, w]) => arc(selectedCountries[0], code, w, false))
+          : []
+    return features.length ? { type: 'FeatureCollection' as const, features } : null
+  }, [selectedCountries, highlight])
 
   // ── Country styling: selected (gold) > highlighted (teal by weight) > has offerings ──
   const { fillColor, fillOpacity, lineColor, lineWidth } = useMemo(() => {
@@ -172,12 +182,12 @@ export default function MapCanvas({
     const line: unknown[] = ['match', ['get', 'ISO_A2']]
     const width: unknown[] = ['match', ['get', 'ISO_A2']]
     const done = new Set<string>()
-    if (selectedCountry) {
-      color.push(selectedCountry, GOLD)
-      opacity.push(selectedCountry, 0.42)
-      line.push(selectedCountry, GOLD)
-      width.push(selectedCountry, 1.6)
-      done.add(selectedCountry)
+    for (const code of selectedCountries) {
+      color.push(code, GOLD)
+      opacity.push(code, 0.42)
+      line.push(code, GOLD)
+      width.push(code, 1.6)
+      done.add(code)
     }
     for (const [code, w] of Object.entries(highlight)) {
       if (done.has(code)) continue
@@ -206,7 +216,7 @@ export default function MapCanvas({
       lineColor: (empty ? '#3a4641' : line) as unknown as string,
       lineWidth: (empty ? 0.4 : width) as unknown as number,
     }
-  }, [selectedCountry, highlight, activeCountries])
+  }, [selectedCountries, highlight, activeCountries])
 
   const handleMove = useCallback((e: MapLayerMouseEvent) => {
     const f = e.features?.[0]
@@ -222,7 +232,10 @@ export default function MapCanvas({
       if (pin) return onPinClick(pin.properties?.id as string)
       const country = e.features?.find((f) => f.layer?.id === 'country-fill')
       const code = country?.properties?.ISO_A2 as string | undefined
-      if (code && code !== '-99') onCountryClick(code, country?.properties?.name as string)
+      const ev = e.originalEvent as MouseEvent | undefined
+      const additive = !!(ev && (ev.shiftKey || ev.ctrlKey || ev.metaKey))
+      if (code && code !== '-99')
+        onCountryClick(code, country?.properties?.name as string, additive)
       else onBackgroundClick?.()
     },
     [onCountryClick, onPinClick, onBackgroundClick]
@@ -270,8 +283,13 @@ export default function MapCanvas({
               type="line"
               layout={{ 'line-cap': 'round' }}
               paint={{
-                'line-color': ACCENT,
-                'line-width': ['+', 0.6, ['*', 1.4, ['get', 'w']]],
+                'line-color': ['case', ['==', ['get', 'compare'], 1], GOLD, ACCENT],
+                'line-width': [
+                  'case',
+                  ['==', ['get', 'compare'], 1],
+                  2.2,
+                  ['+', 0.6, ['*', 1.4, ['get', 'w']]],
+                ],
                 'line-opacity': ['+', 0.25, ['*', 0.45, ['get', 'w']]],
                 'line-dasharray': [2, 2],
               }}

@@ -56,12 +56,13 @@ describe('buildPersonaPrompt', () => {
     expect(p).toContain('Swahili, English')
     expect(p).toContain('Tanzania')
     expect(p).toContain('<summary source="Wikipedia">')
-    expect(p).not.toContain('Compare these countries')
+    expect(p).not.toContain('## Comparison')
   })
 
   test('asks for a comparison when several countries are in focus', () => {
     const p = buildPersonaPrompt({ countries: [kenya, { ...kenya, code: 'TZ', name: 'Tanzania' }] })
-    expect(p).toContain('Compare these countries')
+    expect(p).toContain('## Comparison')
+    expect(p).toContain('Shared language: Swahili (Kenya, Tanzania)')
   })
 
   test('fences Host-written listing text as data', () => {

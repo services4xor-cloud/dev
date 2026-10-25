@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import MapCanvas, { type MapPin, type MapProjectionMode } from '@/components/map/MapCanvas'
 import CountryPanel, { type CountryData, type HighlightMode } from '@/components/map/CountryPanel'
+import ComparePanel from '@/components/map/ComparePanel'
 import KindDot from '@/components/map/KindDot'
 import OpportunityCard from '@/components/OpportunityCard'
 import { COUNTRY_OPTIONS } from '@/lib/country-selector'
@@ -17,14 +18,15 @@ import {
 } from '@/lib/opportunities'
 import { getSelected, SELECTION_EVENT, setSelected, toggleSelected } from '@/lib/selection'
 import { setAgentCountries } from '@/lib/agent-context'
+import { bridgeCountries, compareCountries, MAX_COMPARE } from '@/lib/compare'
 
 const COUNTRY = new Map(COUNTRY_OPTIONS.map((c) => [c.code, c]))
 const PROJECTION_KEY = 'bex-map-projection'
 
 /** Replace ?country / ?select in the address bar so the current view can be shared. */
-function syncUrl(country: string | null, open: OpportunityDTO | null) {
+function syncUrl(countries: string[], open: OpportunityDTO | null) {
   const url = new URL(window.location.href)
-  if (country) url.searchParams.set('country', country)
+  if (countries.length) url.searchParams.set('country', countries.join(','))
   else url.searchParams.delete('country')
   if (open) url.searchParams.set('select', open.code || open.id)
   else url.searchParams.delete('select')
@@ -41,7 +43,11 @@ export default function MapExplorer() {
   const userId = (session?.user as { id?: string } | undefined)?.id
 
   const [offerings, setOfferings] = useState<OpportunityDTO[] | null>(null)
-  const [country, setCountry] = useState<string | null>(null)
+  /** One country: its panel. Two or three: compared side by side. */
+  const [countries, setCountries] = useState<string[]>([])
+  /** Waiting for the next country click to add it to the comparison */
+  const [comparing, setComparing] = useState(false)
+  const country = countries.length === 1 ? countries[0] : null
   const [countryData, setCountryData] = useState<CountryData | null>(null)
   const [highlightMode, setHighlightMode] = useState<HighlightMode>('language')
   const [openId, setOpenId] = useState<string | null>(null)
@@ -84,11 +90,15 @@ export default function MapExplorer() {
           setOpenId(wanted[0].id)
           setSheetOpen(true)
         }
-        const cc = (params.get('country') ?? wanted[0]?.properties.countryCode ?? '').toUpperCase()
-        if (COUNTRY.has(cc)) {
-          setCountry(cc)
-          const c = COUNTRY.get(cc)!
-          setFlyTo({ lng: c.lng, lat: c.lat, zoom: 3, key: Date.now() })
+        const ccs = (params.get('country') ?? wanted[0]?.properties.countryCode ?? '')
+          .toUpperCase()
+          .split(',')
+          .filter((cc) => COUNTRY.has(cc))
+          .slice(0, MAX_COMPARE)
+        if (ccs.length) {
+          setCountries(Array.from(new Set(ccs)))
+          const c = COUNTRY.get(ccs[0])!
+          setFlyTo({ lng: c.lng, lat: c.lat, zoom: ccs.length > 1 ? 1.8 : 3, key: Date.now() })
         }
       })
     return () => window.removeEventListener(SELECTION_EVENT, sync)
@@ -98,8 +108,8 @@ export default function MapExplorer() {
   const open = all.find((o) => o.id === openId) ?? null
 
   useEffect(() => {
-    if (offerings) syncUrl(country, open)
-  }, [offerings, country, open])
+    if (offerings) syncUrl(countries, open)
+  }, [offerings, countries, open])
 
   // ── Filtering: kind + free text; a selected country narrows the list ──
   const kindsPresent = useMemo(
@@ -156,7 +166,9 @@ export default function MapExplorer() {
     () => new Set(all.map((o) => o.properties.countryCode).filter((c): c is string => !!c)),
     [all]
   )
+  const comparison = useMemo(() => compareCountries(countries), [countries])
   const highlight = useMemo(() => {
+    if (comparison) return bridgeCountries(comparison)
     const out: Record<string, number> = {}
     if (!countryData || countryData.code !== country) return out
     if (highlightMode === 'language') {
@@ -166,14 +178,41 @@ export default function MapExplorer() {
       for (const c of countryData.sharedCurrency) out[c.code] = 1
     }
     return out
-  }, [countryData, country, highlightMode])
+  }, [comparison, countryData, country, highlightMode])
 
   // ── Actions ──
   const selectCountry = useCallback((code: string) => {
-    setCountry(code)
+    setCountries([code])
+    setComparing(false)
     setSheetOpen(true)
     const c = COUNTRY.get(code)
     if (c) setFlyTo({ lng: c.lng, lat: c.lat, zoom: 2.6, key: Date.now() })
+  }, [])
+  /**
+   * A country picked on the map, in search or in a list. It joins the comparison when
+   * one is running, "Compare" was pressed, or shift/ctrl/cmd was held; else it replaces.
+   * Picking a selected country again takes it out.
+   */
+  const pickCountry = useCallback(
+    (code: string, additive = false) => {
+      setSheetOpen(true)
+      setComparing(false)
+      if (countries.includes(code)) {
+        setCountries(countries.filter((c) => c !== code))
+        return
+      }
+      if (countries.length && (additive || comparing || countries.length >= 2)) {
+        setCountries([...countries.slice(0, MAX_COMPARE - 1), code].slice(-MAX_COMPARE))
+        return
+      }
+      selectCountry(code)
+    },
+    [countries, comparing, selectCountry]
+  )
+  const clearCountries = useCallback(() => {
+    setCountries([])
+    setComparing(false)
+    setCountryData(null)
   }, [])
   const openOffering = useCallback(
     (id: string) => {
@@ -186,9 +225,9 @@ export default function MapExplorer() {
     [all]
   )
   const askAgent = useCallback(() => {
-    setAgentCountries(country ? [country] : [])
+    setAgentCountries(countries)
     router.push('/agent')
-  }, [country, router])
+  }, [countries, router])
   const toggleProjection = () => {
     setProjection((p) => {
       const next = p === 'mercator' ? 'globe' : 'mercator'
@@ -243,7 +282,7 @@ export default function MapExplorer() {
             onFocus={() => setSheetOpen(true)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && countryMatches[0] && !filtered.length) {
-                selectCountry(countryMatches[0].code)
+                pickCountry(countryMatches[0].code)
                 setQuery('')
               }
             }}
@@ -257,7 +296,7 @@ export default function MapExplorer() {
               <button
                 key={c.code}
                 onClick={() => {
-                  selectCountry(c.code)
+                  pickCountry(c.code)
                   setQuery('')
                 }}
                 className="rounded-md border border-brand-line bg-brand-surface-2 px-2.5 py-1 text-sm text-brand-text hover:border-brand-accent"
@@ -294,7 +333,16 @@ export default function MapExplorer() {
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4">
-        {country ? (
+        {comparison ? (
+          <ComparePanel
+            codes={comparison.codes}
+            offerings={all}
+            onRemove={(code) => setCountries((cs) => cs.filter((c) => c !== code))}
+            onClear={clearCountries}
+            onOpenOffering={openOffering}
+            onAskAgent={askAgent}
+          />
+        ) : country ? (
           <CountryPanel
             key={country}
             code={country}
@@ -303,12 +351,14 @@ export default function MapExplorer() {
             onHighlightMode={setHighlightMode}
             onData={onCountryData}
             onOpenOffering={openOffering}
-            onSelectCountry={selectCountry}
-            onClose={() => {
-              setCountry(null)
-              setCountryData(null)
-            }}
+            onSelectCountry={pickCountry}
+            onClose={clearCountries}
             onAskAgent={askAgent}
+            onCompare={() => {
+              setComparing((v) => !v)
+              setSheetOpen(false)
+            }}
+            comparing={comparing}
           />
         ) : (
           <>
@@ -318,14 +368,14 @@ export default function MapExplorer() {
                 No borders, just differences.
               </h1>
               <p className="mt-1.5 text-sm leading-relaxed text-brand-text-muted">
-                Pick a country to see its economy, languages and who it connects with, or open an
-                offering on the map.
+                Pick a country to see its economy, languages and who it connects with. Add a second
+                or third (shift-click, or Compare) to see what they share and where they differ.
               </p>
             </div>
             {list}
           </>
         )}
-        {country && filtered.length > 0 && (
+        {countries.length > 0 && filtered.length > 0 && (
           <details className="mt-6">
             <summary className="cursor-pointer text-sm text-brand-text-muted hover:text-brand-text">
               All offerings worldwide ({filtered.length})
@@ -375,10 +425,10 @@ export default function MapExplorer() {
     <div className="absolute inset-0 overflow-hidden">
       <MapCanvas
         pins={pins}
-        selectedCountry={country}
+        selectedCountries={countries}
         highlight={highlight}
         activeCountries={activeCountries}
-        onCountryClick={(code) => (code === country ? setCountry(null) : selectCountry(code))}
+        onCountryClick={(code, _name, additive) => pickCountry(code, additive)}
         onPinClick={openOffering}
         onBackgroundClick={() => setOpenId(null)}
         projection={projection}
@@ -426,16 +476,22 @@ export default function MapExplorer() {
               <span className="block truncate font-display text-lg text-brand-text">
                 {open
                   ? open.label
-                  : country
-                    ? `${COUNTRY.get(country)?.flag ?? ''} ${COUNTRY.get(country)?.name ?? country}`
+                  : countries.length
+                    ? countries
+                        .map((c) => `${COUNTRY.get(c)?.flag ?? ''} ${COUNTRY.get(c)?.name ?? c}`)
+                        .join(' · ')
                     : 'No borders, just differences'}
               </span>
               <span className="block truncate text-xs text-brand-text-muted">
                 {open
                   ? `${KIND_LABELS[open.properties.kind]} · tap for details`
-                  : country
-                    ? 'Economy, languages and connections · tap to open'
-                    : `${all.length} offerings · search a country or tap one on the map`}
+                  : comparing
+                    ? 'Now tap a second country on the map'
+                    : countries.length > 1
+                      ? 'What connects them, where they differ · tap to open'
+                      : country
+                        ? 'Economy, languages and connections · tap to open'
+                        : `${all.length} offerings · search a country or tap one on the map`}
               </span>
             </span>
             <span className="btn btn-sm">Open</span>

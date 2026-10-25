@@ -20,9 +20,29 @@ interface CountryPanelProps {
   onSelectCountry: (code: string) => void
   onClose: () => void
   onAskAgent: () => void
+  /** Start comparing: the next country picked on the map is added */
+  onCompare: () => void
+  /** Waiting for the second country */
+  comparing: boolean
 }
 
 const cache = new Map<string, CountryData>()
+
+/** Live facts for one country, cached for the page's lifetime. */
+export function loadCountryData(code: string): Promise<CountryData> {
+  const hit = cache.get(code)
+  if (hit) return Promise.resolve(hit)
+  return fetch(`/api/country/${code}/insights`)
+    .then((r) => (r.ok ? (r.json() as Promise<CountryData>) : Promise.reject(new Error())))
+    .then((d) => {
+      cache.set(code, d)
+      return d
+    })
+}
+
+export function cachedCountryData(code: string): CountryData | null {
+  return cache.get(code) ?? null
+}
 
 /** Country facts (live public data) + what Be[X] has there + how it connects. */
 export default function CountryPanel({
@@ -35,6 +55,8 @@ export default function CountryPanel({
   onSelectCountry,
   onClose,
   onAskAgent,
+  onCompare,
+  comparing,
 }: CountryPanelProps) {
   const [data, setData] = useState<CountryData | null>(cache.get(code) ?? null)
   const [failed, setFailed] = useState(false)
@@ -51,10 +73,8 @@ export default function CountryPanel({
     }
     setData(null)
     onData(null)
-    fetch(`/api/country/${code}/insights`)
-      .then((r) => (r.ok ? (r.json() as Promise<CountryData>) : Promise.reject(new Error())))
+    loadCountryData(code)
       .then((d) => {
-        cache.set(code, d)
         if (live) {
           setData(d)
           onData(d)
@@ -305,9 +325,20 @@ export default function CountryPanel({
         )}
       </section>
 
-      <button onClick={onAskAgent} className="btn btn-primary w-full">
-        Ask the agent about {data?.name ?? code}
-      </button>
+      <div className="grid gap-2">
+        <button
+          onClick={onCompare}
+          aria-pressed={comparing}
+          className={`btn w-full ${comparing ? 'border-brand-gold text-brand-text' : ''}`}
+        >
+          {comparing
+            ? 'Now pick a second country on the map'
+            : `Compare ${data?.name ?? code} with another country`}
+        </button>
+        <button onClick={onAskAgent} className="btn btn-primary w-full">
+          Ask the agent about {data?.name ?? code}
+        </button>
+      </div>
 
       {data && (
         <p className="text-[0.7rem] leading-relaxed text-brand-text-muted">
