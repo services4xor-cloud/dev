@@ -252,6 +252,7 @@ export default function MapCanvas({
         projection={projection}
         renderWorldCopies={false}
         doubleClickZoom={false}
+        boxZoom={false}
         dragRotate={false}
         minZoom={1}
         maxZoom={7}

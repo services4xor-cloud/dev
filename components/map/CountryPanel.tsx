@@ -293,7 +293,7 @@ export default function CountryPanel({
       <section>
         <h3 className="text-sm font-semibold text-brand-text">On Be[X] in {data?.name ?? code}</h3>
         {offerings.length > 0 ? (
-          <ul className="mt-2 grid gap-1.5">
+          <ul className="mt-2 grid grid-cols-1 gap-1.5">
             {offerings.map((o) => (
               <li key={o.id}>
                 <button

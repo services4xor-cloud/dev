@@ -549,7 +549,7 @@ function OfferingList({
       <p className="mb-2 text-xs text-brand-text-muted">
         {items.length === total ? `${total} offerings` : `${items.length} of ${total} offerings`}
       </p>
-      <ul className="grid gap-2">
+      <ul className="grid grid-cols-1 gap-2">
         {items.map((o) => {
           const c = o.properties.countryCode ? COUNTRY.get(o.properties.countryCode) : null
           const price = formatPrice(o.properties)

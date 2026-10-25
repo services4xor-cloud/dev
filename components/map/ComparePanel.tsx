@@ -97,7 +97,8 @@ export default function ComparePanel({
   const groups = (Object.keys(LINK_LABELS) as LinkKind[])
     .map((kind) => ({ kind, items: cmp.shared.filter((s) => s.kind === kind) }))
     .filter((g) => g.items.length)
-  const rows = ROWS.filter((r) => cmp.codes.some((c) => live[c] && r.value(live[c])))
+  // A row needs a value for at least two countries, else there is nothing to compare
+  const rows = ROWS.filter((r) => cmp.codes.filter((c) => live[c] && r.value(live[c])).length >= 2)
   const cols =
     cmp.codes.length === 2
       ? 'grid-cols-[1fr_5.5rem_5.5rem]'
@@ -112,7 +113,7 @@ export default function ComparePanel({
             Clear
           </button>
         </div>
-        <ul className="mt-2 grid gap-1.5">
+        <ul className="mt-2 grid grid-cols-1 gap-1.5">
           {cmp.codes.map((c) => (
             <li
               key={c}
@@ -246,9 +247,9 @@ export default function ComparePanel({
       <section>
         <h3 className="text-sm font-semibold text-brand-text">Offerings that fit</h3>
         {fits.length ? (
-          <ul className="mt-2 grid gap-1.5">
+          <ul className="mt-2 grid grid-cols-1 gap-1.5">
             {fits.slice(0, 8).map(({ offering: o, reasons }) => (
-              <li key={o.id}>
+              <li key={o.id} className="min-w-0">
                 <button
                   onClick={() => onOpenOffering(o.id)}
                   className="w-full rounded-lg border border-brand-line bg-brand-surface-2 px-3 py-2 text-left text-sm hover:border-brand-accent/60"
