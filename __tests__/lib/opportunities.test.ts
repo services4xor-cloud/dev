@@ -1,7 +1,13 @@
 /**
  * Tests for lib/opportunities.ts
  */
-import { formatPrice, parseOpportunityInput, readProps, toDTO } from '@/lib/opportunities'
+import {
+  formatPrice,
+  parseOpportunityInput,
+  projectLink,
+  readProps,
+  toDTO,
+} from '@/lib/opportunities'
 
 const base = { title: 'Safari', description: 'Five days', kind: 'JOURNEY', countryCode: 'ke' }
 
@@ -101,5 +107,22 @@ describe('contactEmail', () => {
     expect(toDTO(n, null, { includeAccess: true }).contactEmail).toBe('me@4xor.com')
     const pub = { ...n, properties: { contactEmail: 'me@4xor.com', contactPublic: true } }
     expect(toDTO(pub, null).contactEmail).toBe('me@4xor.com')
+  })
+})
+
+describe('projectLink', () => {
+  it('keeps 4xor.com links inside the app on the 4xor page', () => {
+    expect(projectLink('https://4xor.com/#4xor-social-media-automation')).toEqual({
+      href: '/4xor#4xor-social-media-automation',
+      internal: true,
+    })
+    expect(projectLink('https://www.4xor.com/')).toEqual({ href: '/4xor', internal: true })
+  })
+
+  it('leaves other links external', () => {
+    expect(projectLink('https://bekenya.com/')).toEqual({
+      href: 'https://bekenya.com/',
+      internal: false,
+    })
   })
 })

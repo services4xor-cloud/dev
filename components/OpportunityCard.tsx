@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import ApplyButton from '@/components/ApplyButton'
 import ContactButton from '@/components/ContactButton'
-import { formatPrice, KIND_LABELS, type OpportunityDTO } from '@/lib/opportunities'
+import { formatPrice, KIND_LABELS, projectLink, type OpportunityDTO } from '@/lib/opportunities'
 
 interface OpportunityCardProps {
   opp: OpportunityDTO
@@ -22,6 +22,7 @@ export default function OpportunityCard({
 }: OpportunityCardProps) {
   const p = opp.properties
   const price = formatPrice(p)
+  const project = p.demoUrl ? projectLink(p.demoUrl) : null
   return (
     <div
       className={`flex flex-col rounded-xl border bg-brand-surface p-5 transition ${
@@ -61,9 +62,14 @@ export default function OpportunityCard({
 
       {(p.demoUrl || opp.contactEmail) && (
         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs">
-          {p.demoUrl && (
+          {project?.internal && (
+            <Link href={project.href} className="text-brand-accent hover:underline">
+              Continue on 4xor →
+            </Link>
+          )}
+          {project && !project.internal && (
             <a
-              href={p.demoUrl}
+              href={project.href}
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand-accent hover:underline"

@@ -266,3 +266,23 @@ export function formatPrice(
     ? `${amount} ${PRICE_UNIT_LABELS[p.priceUnit]}`
     : amount
 }
+
+/** Hosts this app serves as the 4XOR company page (default of COMPANY_HOSTS in middleware.ts) */
+const COMPANY_PAGE_HOSTS = ['4xor.com', 'www.4xor.com']
+
+/**
+ * Where a listing's project link goes. Links to 4xor.com stay inside the app on
+ * its /4xor page, so a visitor reaches 4xor Studio from there and can come back
+ * to the map; any other link opens in a new tab.
+ */
+export function projectLink(demoUrl: string): { href: string; internal: boolean } {
+  try {
+    const url = new URL(demoUrl)
+    if (COMPANY_PAGE_HOSTS.includes(url.hostname)) {
+      return { href: `/4xor${url.hash}`, internal: true }
+    }
+  } catch {
+    // Not an absolute URL: treat as external text, as before
+  }
+  return { href: demoUrl, internal: false }
+}

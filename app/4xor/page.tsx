@@ -7,7 +7,7 @@ import { formatPrice, KIND_LABELS, readProps, toDTO } from '@/lib/opportunities'
 export const metadata: Metadata = {
   title: { absolute: '4XOR Software — platforms, agents and automations' },
   description:
-    '4XOR Software builds map platforms with AI agents, social media automation and n8n workflows. See BeKenya and 4xor Studio as live examples.',
+    '4XOR Software builds map platforms with AI agents, social media automation and business workflows. See BeKenya and 4xor Studio as live examples.',
 }
 
 export const dynamic = 'force-dynamic'
@@ -40,6 +40,9 @@ export default async function FourXorPage() {
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <span className="text-lg font-bold tracking-tight text-brand-accent">4XOR Software</span>
           <nav className="flex gap-5 text-sm text-brand-text-muted">
+            <Link href={mapHref} className="hover:text-brand-accent">
+              Map
+            </Link>
             <a href="#work" className="hover:text-brand-accent">
               Work
             </a>
@@ -117,9 +120,9 @@ export default async function FourXorPage() {
             </p>
             <h2 className="mt-2 text-2xl font-bold">4xor Studio</h2>
             <p className="mt-3 flex-1 text-sm leading-relaxed text-brand-text-muted">
-              Our planner built on OpenClaw and n8n writes and schedules posts for your channels.
-              You approve each post before it goes out. Book it on the map, and once we confirm,
-              your Studio access appears under My bookings.
+              Our AI social media app writes and schedules posts for your channels. You approve each
+              post before it goes out. Book it on the map, and once we confirm, your Studio access
+              appears under My bookings.
             </p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm">
               {studio ? (
@@ -158,7 +161,7 @@ export default async function FourXorPage() {
               <article
                 key={s.id}
                 id={s.code}
-                className="scroll-mt-6 rounded-xl border border-white/10 bg-brand-surface p-5 transition hover:border-brand-accent/40"
+                className="scroll-mt-6 rounded-xl border border-white/10 bg-brand-surface p-5 transition hover:border-brand-accent/40 target:border-brand-accent target:ring-1 target:ring-brand-accent/40"
               >
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">{s.icon}</span>
@@ -172,12 +175,25 @@ export default async function FourXorPage() {
                       {formatPrice(s.properties) ?? 'Price on request'}
                     </p>
                     <div className="mt-4 flex flex-wrap gap-4 text-sm">
-                      <Link href={onMap(s)} className="text-brand-accent hover:underline">
-                        See it on the map →
+                      {s.id === studio?.id && (
+                        <a
+                          href="https://studio.4xor.de/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-lg bg-brand-primary px-4 py-2 font-semibold text-brand-accent hover:opacity-90"
+                        >
+                          Open the AI social media app →
+                        </a>
+                      )}
+                      <Link
+                        href={onMap(s)}
+                        className="self-center text-brand-accent hover:underline"
+                      >
+                        Back to the map →
                       </Link>
                       <Link
                         href={`/exchange/${s.id}`}
-                        className="text-brand-text-muted hover:text-brand-accent"
+                        className="self-center text-brand-text-muted hover:text-brand-accent"
                       >
                         Book or ask
                       </Link>
